@@ -1,16 +1,18 @@
 package no.nav.testnav.libs.dto.skattekortservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Forskuddstrekk {
 
     private Frikort frikort;

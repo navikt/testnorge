@@ -40,16 +40,6 @@ public class ArbeidsgiverMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-//        factory.classMap(SkattekortResponsIntermediate.Forskuddstrekk.class, Forskuddstrekk.class)
-//                .customize(new CustomMapper<>() {
-//                    @Override
-//                    public void mapAtoB(SkattekortResponsIntermediate.Forskuddstrekk source, Forskuddstrekk target, MappingContext context) {
-//
-//                        target.setTrekkode(Trekkode.valueOf(source.getTrekkode().getValue()));
-//                    }
-//                })
-//                .register();
-
         factory.classMap(SkattekortResponsIntermediate.Frikort.class, Frikort.class)
                 .customize(new CustomMapper<>() {
                     @Override

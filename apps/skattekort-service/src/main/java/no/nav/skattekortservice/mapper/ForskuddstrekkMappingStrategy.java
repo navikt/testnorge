@@ -16,7 +16,7 @@ import java.util.Objects;
 import static java.util.Objects.nonNull;
 
 @Component
-public class TrekktypeMappingStrategy implements MappingStrategy {
+public class ForskuddstrekkMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
@@ -26,15 +26,15 @@ public class TrekktypeMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Skattekort skattekort, no.skatteetaten.fastsetting.formueinntekt.forskudd.skattekorttilarbeidsgiver.v3.Skattekort skattekort2, MappingContext context) {
 
                         skattekort2.getForskuddstrekk().addAll(skattekort.getForskuddstrekk().stream()
-                                .map(trekktype -> {
-                                    if (nonNull(trekktype.getFrikort())) {
-                                        return mapperFacade.map(trekktype.getFrikort(),
+                                .map(forskuddstrekk -> {
+                                    if (nonNull(forskuddstrekk.getFrikort())) {
+                                        return mapperFacade.map(forskuddstrekk.getFrikort(),
                                                 no.skatteetaten.fastsetting.formueinntekt.forskudd.skattekorttilarbeidsgiver.v3.Frikort.class);
-                                    } else if (nonNull(trekktype.getTrekktabell())) {
-                                        return mapperFacade.map(trekktype.getTrekktabell(),
+                                    } else if (nonNull(forskuddstrekk.getTrekktabell())) {
+                                        return mapperFacade.map(forskuddstrekk.getTrekktabell(),
                                                 no.skatteetaten.fastsetting.formueinntekt.forskudd.skattekorttilarbeidsgiver.v3.Trekktabell.class);
-                                    } else if (nonNull(trekktype.getTrekkprosent())) {
-                                        return mapperFacade.map(trekktype.getTrekkprosent(),
+                                    } else if (nonNull(forskuddstrekk.getTrekkprosent())) {
+                                        return mapperFacade.map(forskuddstrekk.getTrekkprosent(),
                                                 no.skatteetaten.fastsetting.formueinntekt.forskudd.skattekorttilarbeidsgiver.v3.Trekkprosent.class);
                                     } else {
                                         return null;
