@@ -202,9 +202,10 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        // Pensjonforvalter / POPP støtter pt ikke sletting
+        // Pensjonforvalter / POPP, AP, UT støtter pt ikke sletting
 
         pensjonforvalterConsumer.sletteTpForhold(identer);
+        pensjonforvalterConsumer.slettePensjonsavtale(identer);
     }
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
