@@ -14,7 +14,7 @@ export const validation = {
 							.min(62, 'Minimum 62 år')
 							.max(72, 'Maksimum 72 år')
 							.required('Feltet er påkrevd')
-							.typeError('Feltet er påkrevd og må ha verdi nellom 62 og 72 år'),
+							.typeError('Feltet er påkrevd og må ha verdi mellom 62 og 72 år'),
 						startAlderMaaned: Yup.number()
 							.min(1, 'Minimum 1 (januar)')
 							.max(12, 'Maksimum 12 (desember)')
