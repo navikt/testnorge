@@ -24,7 +24,7 @@ const poppUrl = (ident, miljoer) =>
 
 const pensjonsavtaleUrl = (miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/pensjonsavtale/hent?miljo=${miljo}`,
+		url: `/testnav-pensjon-testdata-facade-proxy/api/v2/pensjonsavtale/hent?miljo=${miljo}`,
 		miljo: miljo,
 	}))
 

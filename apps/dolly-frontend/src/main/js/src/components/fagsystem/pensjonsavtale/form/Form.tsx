@@ -9,8 +9,10 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { UtbetalingsperioderForm } from '@/components/fagsystem/pensjonsavtale/form/partials/Utbetalingsperioder'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { initialNyPensjonsavtaleVerdier } from '@/components/fagsystem/pensjonsavtale/initalValues' // import './TPForm.less'
-// import './TPForm.less'
+import {
+	initialPensjonsavtale,
+	initialUtbetalingsperiode,
+} from '@/components/fagsystem/pensjonsavtale/initalValues'
 
 export const avtalePath = 'pensjonforvalter.pensjonsavtale'
 const hjelpetekst =
@@ -31,7 +33,7 @@ export const PensjonsavtaleForm = () => {
 				<FormDollyFieldArray
 					name={avtalePath}
 					header="Pensjonsavtale"
-					newEntry={initialNyPensjonsavtaleVerdier}
+					newEntry={initialPensjonsavtale}
 				>
 					{(formPath, idx) => (
 						<React.Fragment key={idx}>
@@ -48,21 +50,13 @@ export const PensjonsavtaleForm = () => {
 										label="Avtalekategori"
 										size={'medium'}
 										options={Options('avtaleKategori')}
+										isClearable={false}
 									/>
 
-									<FormTextInput
-										name={`${formPath}.startAlderAar`}
-										label="Startalder År"
-										type="number"
+									<UtbetalingsperioderForm
+										path={`${formPath}.utbetalingsperioder`}
+										initialUtbetalingsperiode={initialUtbetalingsperiode}
 									/>
-
-									<FormTextInput
-										name={`${formPath}.sluttAlderAar`}
-										label="Sluttalder År"
-										type="number"
-									/>
-
-									<UtbetalingsperioderForm path={`${formPath}.utbetalingsPerioder`} />
 								</div>
 							</React.Fragment>
 						</React.Fragment>

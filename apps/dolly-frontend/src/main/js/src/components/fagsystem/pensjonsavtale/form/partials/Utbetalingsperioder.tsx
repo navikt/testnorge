@@ -3,14 +3,13 @@ import * as React from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { initialUtbetalingsperiodeVerdier } from '@/components/fagsystem/pensjonsavtale/initalValues'
 
-export const UtbetalingsperioderForm = ({ path }: any) => {
+export const UtbetalingsperioderForm = ({ path, initialUtbetalingsperiode }: any) => {
 	return (
 		<FormDollyFieldArray
 			name={path}
 			header="Utbetalingsperioder"
-			newEntry={initialUtbetalingsperiodeVerdier}
+			newEntry={initialUtbetalingsperiode}
 			nested
 		>
 			{(path: any, idx: React.Key) => (
@@ -18,14 +17,15 @@ export const UtbetalingsperioderForm = ({ path }: any) => {
 					<div className="flexbox--flex-wrap">
 						<FormTextInput name={`${path}.startAlderAar`} label="Startalder År" type="number" />
 						<FormSelect
-							name={`${path}.startAlderMaaneder`}
+							name={`${path}.startAlderMaaned`}
 							label="Start Måned"
 							size={'medium'}
 							options={Options('maanedsvelger')}
+							isClearable={false}
 						/>
 						<FormTextInput name={`${path}.sluttAlderAar`} label="Sluttalder År" type="number" />
 						<FormSelect
-							name={`${path}.sluttAlderMaaneder`}
+							name={`${path}.sluttAlderMaaned`}
 							label="Slutt Måned"
 							size={'medium'}
 							options={Options('maanedsvelger')}
@@ -34,12 +34,6 @@ export const UtbetalingsperioderForm = ({ path }: any) => {
 							name={`${path}.aarligUtbetaling`}
 							label="Årlig utbetaling"
 							type="number"
-						/>
-						<FormSelect
-							name={`${path}.grad`}
-							label="Grad"
-							size={'medium'}
-							options={Options('avtaleperiodeGrad')}
 						/>
 					</div>
 				</React.Fragment>

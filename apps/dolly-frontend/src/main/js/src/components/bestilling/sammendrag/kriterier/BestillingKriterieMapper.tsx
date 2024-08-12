@@ -1903,30 +1903,27 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			data.push(pensjonforvalterPopp)
 		}
 
-		if (pensjonKriterier.pensjonsavtale && pensjonKriterier.pensjonsavtale.length > 0) {
+		if (pensjonKriterier.pensjonsavtale && pensjonKriterier.pensjonsavtale?.length > 0) {
 			const penPensjonsavtale = {
 				header: 'Pensjonsavtale (PEN)',
 				itemRows: [],
 			}
 
-			pensjonKriterier.pensjonsavtale.forEach((pensjonsavtale, i) => {
+			pensjonKriterier.pensjonsavtale?.forEach((pensjonsavtale, i) => {
 				penPensjonsavtale.itemRows.push([
 					{ numberHeader: `Pensjonsavtale ${i + 1}` },
 					obj('Produktbetegnelse', pensjonsavtale.produktBetegnelse),
-					obj('Avtalekategori', pensjonsavtale.avtaleKategori),
-					obj('Startalder År', pensjonsavtale.startAlderAar),
-					obj('Sluttalder År', pensjonsavtale.sluttAlderAar),
+					obj('Avtalekategori', showLabel('avtaleKategori', pensjonsavtale.avtaleKategori)),
 				])
 
-				pensjonsavtale.utbetalingsPerioder.forEach((periode, j) => {
+				pensjonsavtale.utbetalingsperioder?.forEach((periode, j) => {
 					penPensjonsavtale.itemRows.push([
 						{ numberHeader: `Utbetalingsperiode ${j + 1}` },
 						obj('Startalder År', periode.startAlderAar),
-						obj('Startalder Måned', periode.startAlderMaaneder),
+						obj('Startalder Måned', showLabel('maanedsvelger', periode.startAlderMaaned)),
 						obj('Sluttalder År', periode.sluttAlderAar),
-						obj('Sluttalder Måned', periode.sluttAlderMaaneder),
+						obj('Sluttalder Måned', showLabel('maanedsvelger', periode.sluttAlderMaaned)),
 						obj('Årlig Utbetaling', periode.aarligUtbetaling),
-						obj('Grad', periode.grad),
 					])
 				})
 			})

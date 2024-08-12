@@ -15,10 +15,7 @@ import { runningE2ETest } from '@/service/services/Request'
 import _ from 'lodash'
 import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
-import {
-	initialPensjonsavtale,
-	initialUtbetalingsperiodeVerdier,
-} from '@/components/fagsystem/pensjonsavtale/initalValues'
+import { initialPensjonsavtale } from '@/components/fagsystem/pensjonsavtale/initalValues'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)

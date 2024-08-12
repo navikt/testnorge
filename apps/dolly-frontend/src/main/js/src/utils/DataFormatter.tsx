@@ -206,6 +206,8 @@ export const showLabel = (optionsGruppe, value) => {
 	if (!value || !optionsGruppe) return value
 	let copyOptionsGruppe = optionsGruppe
 
+	value = value.toString()
+
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 

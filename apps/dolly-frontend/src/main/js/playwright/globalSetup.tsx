@@ -84,7 +84,7 @@ const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/innt
 const pensjonMiljoer = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/miljo/)
 const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp(.*?)q1/)
 const pensjonPensjonsavtale = new RegExp(
-	/testnav-pensjon-testdata-facade-proxy\/api\/v1\/pensjonsavtale\/hent/,
+	/testnav-pensjon-testdata-facade-proxy\/api\/v2\/pensjonsavtale\/hent/,
 )
 const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
 const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
