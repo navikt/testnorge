@@ -167,7 +167,7 @@ export const ForeldreansvarForm = ({
 					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
-			{kanHaForeldreansvar && opts?.personFoerLeggTil && (
+			{ansvar === 'ANDRE' && kanHaForeldreansvar && opts?.personFoerLeggTil && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.ansvarssubjekt`}
 					label="Ansvarssubjekt (barn)"
