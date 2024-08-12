@@ -2131,20 +2131,24 @@ const mapInntektsmelding = (bestillingData, data) => {
 const mapSkattekort = (bestillingData, data) => {
 	const skattekortKriterier = bestillingData.skattekort
 
-	const arbeidsgiver = skattekortKriterier?.arbeidsgiverSkatt?.[0]
-	const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
-	const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
-
-	const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
-		(tilleggsopplysning) => {
-			return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
-		},
-	)
-
 	if (skattekortKriterier) {
 		const skattekort = {
 			header: 'Skattekort (SOKOS)',
-			items: [
+			itemRows: [],
+		}
+
+		skattekortKriterier?.arbeidsgiverSkatt?.forEach((arbeidsgiver, idx) => {
+			const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
+			const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
+
+			const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
+				(tilleggsopplysning) => {
+					return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
+				},
+			)
+
+			skattekort.itemRows.push([
+				{ numberHeader: `Skattekort ${idx + 1}` },
 				obj(
 					'Resultat på forespørsel',
 					showKodeverkLabel('RESULTATSTATUS', arbeidstaker?.resultatPaaForespoersel),
@@ -2155,22 +2159,22 @@ const mapSkattekort = (bestillingData, data) => {
 				obj('Tilleggsopplysning', arrayToString(tilleggsopplysningFormatted)),
 				obj('Arbeidsgiver (org.nr.)', arbeidsgiver?.arbeidsgiveridentifikator?.organisasjonsnummer),
 				obj('Arbeidsgiver (ident)', arbeidsgiver?.arbeidsgiveridentifikator?.personidentifikator),
-			],
-			itemRows: [],
-		}
-
-		trekkListe?.forEach((item, idx) => {
-			const forskuddstrekkType = Object.keys(item)?.filter((key) => item[key])?.[0]
-			const forskuddstrekk = item[forskuddstrekkType]
-			skattekort.itemRows.push([
-				{ numberHeader: `Forskuddstrekk ${idx + 1}: ${toTitleCase(forskuddstrekkType)}` },
-				obj('Trekkode', showKodeverkLabel('TREKKODE', forskuddstrekk?.trekkode)),
-				obj('Frikortbeløp', forskuddstrekk?.frikortbeloep),
-				obj('Tabelltype', showKodeverkLabel('TABELLTYPE', forskuddstrekk?.tabelltype)),
-				obj('Tabellnummer', forskuddstrekk?.tabellnummer),
-				obj('Prosentsats', forskuddstrekk?.prosentsats),
-				obj('Antall måneder for trekk', forskuddstrekk?.antallMaanederForTrekk),
 			])
+
+			trekkListe?.forEach((item, idx) => {
+				const forskuddstrekkType = Object.keys(item)?.filter((key) => item[key])?.[0]
+				const forskuddstrekk = item[forskuddstrekkType]
+
+				skattekort.itemRows.push([
+					{ numberHeader: `Forskuddstrekk ${idx + 1}: ${toTitleCase(forskuddstrekkType)}` },
+					obj('Trekkode', showKodeverkLabel('TREKKODE', forskuddstrekk?.trekkode)),
+					obj('Frikortbeløp', forskuddstrekk?.frikortbeloep),
+					obj('Tabelltype', showKodeverkLabel('TABELLTYPE', forskuddstrekk?.tabelltype)),
+					obj('Tabellnummer', forskuddstrekk?.tabellnummer),
+					obj('Prosentsats', forskuddstrekk?.prosentsats),
+					obj('Antall måneder for trekk', forskuddstrekk?.antallMaanederForTrekk),
+				])
+			})
 		})
 
 		data.push(skattekort)
