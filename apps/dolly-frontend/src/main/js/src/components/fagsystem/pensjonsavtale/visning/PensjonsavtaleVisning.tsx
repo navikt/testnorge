@@ -44,7 +44,7 @@ const Utbetalingsperioder = ({ utbetalingsperioder }) => {
 const Pensjonsavtale = ({ data, setPanelOpen }) => {
 	if (!data) return null
 
-	const isPanelOpen = data?.length < 2
+	const isPanelOpen = data?.length < 3
 
 	return (
 		<Panel
