@@ -15,6 +15,7 @@ import { runningE2ETest } from '@/service/services/Request'
 import _ from 'lodash'
 import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
+import { initialPensjonsavtale } from '@/components/fagsystem/pensjonsavtale/initalValues'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -92,6 +93,9 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntekt} id="inntekt_pensjon" />
 			</AttributtKategori>
+			<AttributtKategori title="Pensjonsavtale" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.pensjonsavtale} />
+			</AttributtKategori>
 			<AttributtKategori title="Tjenestepensjon (TP)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.tp} />
 			</AttributtKategori>
@@ -121,6 +125,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 		tp: 'pensjonforvalter.tp',
 		alderspensjon: 'pensjonforvalter.alderspensjon',
 		uforetrygd: 'pensjonforvalter.uforetrygd',
+		pensjonsavtale: 'pensjonforvalter.pensjonsavtale',
 	}
 	return {
 		inntekt: {
@@ -159,6 +164,14 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 				set(paths.uforetrygd, initialUforetrygd)
 			},
 			remove: () => del(paths.uforetrygd),
+		},
+		pensjonsavtale: {
+			label: 'Har pensjonsavtale',
+			checked: has(paths.pensjonsavtale),
+			add: () => {
+				set(paths.pensjonsavtale, initialPensjonsavtale)
+			},
+			remove: () => del(paths.pensjonsavtale),
 		},
 	}
 }
