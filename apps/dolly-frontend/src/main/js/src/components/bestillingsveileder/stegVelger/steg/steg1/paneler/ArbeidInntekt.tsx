@@ -164,7 +164,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('skattekort'),
 		add: () =>
 			set('skattekort', {
-				arbeidsgiverSkatt: [initialArbeidsgiverSkatt],
+				arbeidsgiverSkatt: [initialArbeidsgiverSkatt()],
 			}),
 		remove: () => del('skattekort'),
 	},

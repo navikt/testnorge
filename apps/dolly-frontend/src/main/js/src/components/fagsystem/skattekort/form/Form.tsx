@@ -17,22 +17,26 @@ import {
 } from '@/components/fagsystem/skattekort/form/Forskuddstrekk'
 import { ArbeidsgiverToggle } from '@/components/fagsystem/skattekort/form/ArbeidsgiverToggle'
 
-export const initialArbeidsgiverSkatt = {
-	arbeidsgiveridentifikator: {
-		organisasjonsnummer: '',
-	},
-	arbeidstaker: [
-		{
-			resultatPaaForespoersel: 'SKATTEKORTOPPLYSNINGER_OK',
-			skattekort: {
-				utstedtDato: '',
-				skattekortidentifikator: Math.floor(100000 + Math.random() * 900000),
-				forskuddstrekk: [initialTrekktabell],
-			},
-			tilleggsopplysning: [],
-			inntektsaar: new Date().getFullYear(),
+export const initialArbeidsgiverSkatt = (
+	skattekortidentifikator = Math.floor(100000 + Math.random() * 900000),
+) => {
+	return {
+		arbeidsgiveridentifikator: {
+			organisasjonsnummer: '',
 		},
-	],
+		arbeidstaker: [
+			{
+				resultatPaaForespoersel: 'SKATTEKORTOPPLYSNINGER_OK',
+				skattekort: {
+					utstedtDato: '',
+					skattekortidentifikator: skattekortidentifikator,
+					forskuddstrekk: [initialTrekktabell],
+				},
+				tilleggsopplysning: [],
+				inntektsaar: new Date().getFullYear(),
+			},
+		],
+	}
 }
 
 export const skattekortAttributt = 'skattekort'
@@ -55,7 +59,7 @@ export const SkattekortForm = () => {
 					<FormDollyFieldArray
 						name="skattekort.arbeidsgiverSkatt"
 						header="Skattekort"
-						newEntry={initialArbeidsgiverSkatt}
+						newEntry={initialArbeidsgiverSkatt()}
 						canBeEmpty={false}
 					>
 						{(path: string) => (
@@ -72,6 +76,7 @@ export const SkattekortForm = () => {
 										name={`${path}.arbeidstaker[0].inntektsaar`}
 										label="Inntektsår"
 										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
+										size="xsmall"
 										isClearable={false}
 									/>
 									<FormDatepicker
@@ -82,12 +87,13 @@ export const SkattekortForm = () => {
 									<FormTextInput
 										name={`${path}.arbeidstaker[0].skattekort.skattekortidentifikator`}
 										label="Skattekortidentifikator"
+										size="xxsmall"
 									/>
 									<FormSelect
 										name={`${path}.arbeidstaker[0].tilleggsopplysning`}
 										label="Tilleggsopplysning"
 										options={tilleggsopplysning}
-										size="large"
+										size="grow"
 										isMulti={true}
 									/>
 								</div>

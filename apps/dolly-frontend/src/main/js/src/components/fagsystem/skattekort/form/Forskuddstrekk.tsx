@@ -44,7 +44,7 @@ const FrikortForm = ({ path, trekkode }) => {
 				name={`${path}.frikort.trekkode`}
 				label="Trekkode"
 				options={trekkode}
-				size="large"
+				size="xlarge"
 			/>
 			<FormTextInput name={`${path}.frikort.frikortbeloep`} label="Frikortbeløp" type="number" />
 		</>
@@ -60,7 +60,7 @@ const TrekktabellForm = ({ path, trekkode }) => {
 				name={`${path}.trekktabell.trekkode`}
 				label="Trekkode"
 				options={trekkode}
-				size="large"
+				size="xlarge"
 			/>
 			<FormSelect
 				name={`${path}.trekktabell.tabelltype`}
@@ -86,7 +86,7 @@ const TrekkprosentForm = ({ path, trekkode }) => {
 				name={`${path}.trekkprosent.trekkode`}
 				label="Trekkode"
 				options={trekkode}
-				size="large"
+				size="xlarge"
 			/>
 			<FormTextInput name={`${path}.trekkprosent.prosentsats`} label="Prosentsats" type="number" />
 			<FormTextInput
