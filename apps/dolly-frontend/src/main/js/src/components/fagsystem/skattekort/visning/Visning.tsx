@@ -19,12 +19,12 @@ type SkattekortVisning = {
 
 type SkattekortData = any
 
-export const showKodeverkLabel = (kodeverkstype: any, value: any) => {
+export const showKodeverkLabel = (kodeverkstype: string, value: string) => {
 	const { kodeverk, loading, error } = useSkattekortKodeverk(kodeverkstype)
 	if (loading || error) {
 		return value
 	}
-	return kodeverk?.find((kode) => kode?.value === value)?.label || value
+	return kodeverk?.find((kode: any) => kode?.value === value)?.label || value
 }
 
 export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
@@ -59,7 +59,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 							const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
 
 							const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
-								(tilleggsopplysning) => {
+								(tilleggsopplysning: string) => {
 									return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
 								},
 							)

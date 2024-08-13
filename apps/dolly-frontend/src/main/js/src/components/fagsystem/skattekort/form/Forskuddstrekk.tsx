@@ -11,6 +11,17 @@ import { toTitleCase } from '@/utils/DataFormatter'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { useFieldArray } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+
+type ForskuddstrekkFormProps = {
+	formMethods: UseFormReturn
+	path: string
+}
+
+type ForskuddstrekkProps = {
+	path: string
+	trekkode: any
+}
 
 const initialFrikort = {
 	frikort: {
@@ -37,7 +48,7 @@ const initialTrekkprosent = {
 	},
 }
 
-const FrikortForm = ({ path, trekkode }) => {
+const FrikortForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 	return (
 		<>
 			<FormSelect
@@ -52,7 +63,7 @@ const FrikortForm = ({ path, trekkode }) => {
 	)
 }
 
-const TrekktabellForm = ({ path, trekkode }) => {
+const TrekktabellForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 	const { kodeverk: tabelltype } = useSkattekortKodeverk('TABELLTYPE')
 
 	return (
@@ -82,7 +93,7 @@ const TrekktabellForm = ({ path, trekkode }) => {
 	)
 }
 
-const TrekkprosentForm = ({ path, trekkode }) => {
+const TrekkprosentForm = ({ path, trekkode }: ForskuddstrekkProps) => {
 	return (
 		<>
 			<FormSelect
@@ -102,7 +113,7 @@ const TrekkprosentForm = ({ path, trekkode }) => {
 	)
 }
 
-export const ForskuddstrekkForm = ({ formMethods, path }) => {
+export const ForskuddstrekkForm = ({ formMethods, path }: ForskuddstrekkFormProps) => {
 	const forskuddstrekkPath = `${path}.forskuddstrekk`
 	const forskuddstrekk = formMethods.watch(forskuddstrekkPath)
 	const fieldMethods = useFieldArray({ control: formMethods.control, name: forskuddstrekkPath })
@@ -117,7 +128,7 @@ export const ForskuddstrekkForm = ({ formMethods, path }) => {
 		<ErrorBoundary>
 			<Kategori title="Forskuddstrekk">
 				<DollyFieldArrayWrapper>
-					{forskuddstrekk.map((trekk, idx) => {
+					{forskuddstrekk.map((trekk: any, idx: number) => {
 						const header = Object.keys(trekk)?.[0]
 						const clickRemove = () => fieldMethods.remove(idx)
 

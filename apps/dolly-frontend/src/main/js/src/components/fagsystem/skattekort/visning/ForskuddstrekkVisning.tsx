@@ -3,14 +3,14 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { toTitleCase } from '@/utils/DataFormatter'
 
-export const ForskuddstrekkVisning = ({ trekkliste }) => {
+export const ForskuddstrekkVisning = ({ trekkliste }: any) => {
 	if (!trekkliste || trekkliste?.length < 1) {
 		return null
 	}
 
 	return (
 		<DollyFieldArray header="Forskuddstrekk" data={trekkliste} nested whiteBackground>
-			{(trekk, idx) => {
+			{(trekk: any, idx: number) => {
 				const forskuddstrekkType = Object.keys(trekk)?.filter((key) => trekk[key])?.[0]
 				const forskuddstrekk = trekk[forskuddstrekkType]
 

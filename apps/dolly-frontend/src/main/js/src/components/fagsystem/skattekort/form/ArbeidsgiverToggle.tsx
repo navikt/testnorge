@@ -3,13 +3,19 @@ import { ToggleGroup } from '@navikt/ds-react'
 import { OrgnummerToggle } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 enum ToggleValg {
 	ORGANISASJON = 'ORGANISASJON',
 	PRIVAT = 'PRIVAT',
 }
 
-export const ArbeidsgiverToggle = ({ formMethods, path }) => {
+type ArbeidsgiverToggleProps = {
+	formMethods: UseFormReturn
+	path: string
+}
+
+export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProps) => {
 	const organisasjonPath = `${path}.organisasjonsnummer`
 	const personPath = `${path}.personidentifikator`
 

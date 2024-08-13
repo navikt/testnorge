@@ -19,7 +19,7 @@ import { ArbeidsgiverToggle } from '@/components/fagsystem/skattekort/form/Arbei
 import { validation } from '@/components/fagsystem/skattekort/form/validation'
 
 export const initialArbeidsgiverSkatt = (
-	skattekortidentifikator = Math.floor(100000 + Math.random() * 900000),
+	skattekortidentifikator = Math.floor(100000 + Math.random() * 900000), //NOSONAR not used in secure contexts
 ) => {
 	return {
 		arbeidsgiveridentifikator: {
@@ -84,7 +84,6 @@ export const SkattekortForm = () => {
 										name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
 										label="Utstedt dato"
 									/>
-									{/*//TODO: Boer vaere random for hvert skattekort vi legger til*/}
 									<FormTextInput
 										name={`${path}.arbeidstaker[0].skattekort.skattekortidentifikator`}
 										label="Skattekortidentifikator"
