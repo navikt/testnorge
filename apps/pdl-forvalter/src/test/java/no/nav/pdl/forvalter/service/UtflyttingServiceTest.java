@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UtflyttingServiceTest {
 
+    private static final String FNR_IDENT = "03012312345";
     @Mock
     private KodeverkConsumer kodeverkConsumer;
 
@@ -52,6 +53,7 @@ class UtflyttingServiceTest {
         when(kodeverkConsumer.getTilfeldigLand()).thenReturn("TGW");
 
         var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
                 .utflytting(List.of(UtflyttingDTO.builder().isNew(true).build()))
                 .build();
 
