@@ -12,13 +12,11 @@ enum ToggleValg {
 export const ArbeidsgiverToggle = ({ formMethods, path }) => {
 	const organisasjonPath = `${path}.organisasjonsnummer`
 	const personPath = `${path}.personidentifikator`
-	const orgnummerLength = 9
 
 	const [inputType, setInputType] = useState(
-		!formMethods.watch(organisasjonPath) ||
-			formMethods.watch(organisasjonPath).length === orgnummerLength
-			? ToggleValg.ORGANISASJON
-			: ToggleValg.PRIVAT,
+		formMethods.watch(`${path}.personidentifikator`)?.length === 11
+			? ToggleValg.PRIVAT
+			: ToggleValg.ORGANISASJON,
 	)
 
 	const handleToggleChange = (value: ToggleValg) => {
@@ -38,7 +36,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }) => {
 				<ToggleGroup
 					size={'small'}
 					onChange={handleToggleChange}
-					defaultValue={ToggleValg.ORGANISASJON}
+					defaultValue={inputType}
 					style={{ backgroundColor: '#ffffff' }}
 				>
 					<ToggleGroup.Item key={ToggleValg.ORGANISASJON} value={ToggleValg.ORGANISASJON}>
@@ -57,7 +55,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }) => {
 					/>
 				) : (
 					<div className="flexbox--flex-wrap" style={{ marginTop: '5px' }}>
-						<FormTextInput name={personPath} label="Personidentifikator" size="medium" />
+						<FormTextInput name={personPath} label="Personidentifikator" size="xlarge" />
 					</div>
 				)}
 			</div>

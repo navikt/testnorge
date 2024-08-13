@@ -16,6 +16,7 @@ import {
 	initialTrekktabell,
 } from '@/components/fagsystem/skattekort/form/Forskuddstrekk'
 import { ArbeidsgiverToggle } from '@/components/fagsystem/skattekort/form/ArbeidsgiverToggle'
+import { validation } from '@/components/fagsystem/skattekort/form/validation'
 
 export const initialArbeidsgiverSkatt = (
 	skattekortidentifikator = Math.floor(100000 + Math.random() * 900000),
@@ -113,3 +114,5 @@ export const SkattekortForm = () => {
 		</Vis>
 	)
 }
+
+SkattekortForm.validation = validation

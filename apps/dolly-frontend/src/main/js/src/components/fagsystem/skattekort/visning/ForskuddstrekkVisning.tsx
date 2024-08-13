@@ -4,6 +4,10 @@ import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Vis
 import { toTitleCase } from '@/utils/DataFormatter'
 
 export const ForskuddstrekkVisning = ({ trekkliste }) => {
+	if (!trekkliste || trekkliste?.length < 1) {
+		return null
+	}
+
 	return (
 		<DollyFieldArray header="Forskuddstrekk" data={trekkliste} nested whiteBackground>
 			{(trekk, idx) => {
