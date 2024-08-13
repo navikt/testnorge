@@ -206,13 +206,13 @@ export const showLabel = (optionsGruppe, value) => {
 	if (!value || !optionsGruppe) return value
 	let copyOptionsGruppe = optionsGruppe
 
-	value = value.toString()
-
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
-	const obj = Options(copyOptionsGruppe).filter(
-		(options) => options.value.toUpperCase() === value.toUpperCase(),
+	const obj = Options(copyOptionsGruppe).filter((options) =>
+		typeof value === 'string'
+			? options.value.toUpperCase() === value.toUpperCase()
+			: options.value === value,
 	)
 
 	if (_.get(obj, 'label') || _.get(obj, '[0].label')) {

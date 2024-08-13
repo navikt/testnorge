@@ -82,6 +82,12 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
 						</li>
 					)}
+					{pensjonforvalter?.pensjonsavtale && (
+						<li>
+							Pensjonsavtale (PEN):&nbsp;
+							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+						</li>
+					)}
 
 					{sykemelding && <li>Sykemelding: q1</li>}
 				</ul>

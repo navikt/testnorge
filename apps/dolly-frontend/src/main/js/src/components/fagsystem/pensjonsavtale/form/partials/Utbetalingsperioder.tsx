@@ -3,14 +3,16 @@ import * as React from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { initialUtbetalingsperiode } from '@/components/fagsystem/pensjonsavtale/initalValues'
 
-export const UtbetalingsperioderForm = ({ path, initialUtbetalingsperiode }: any) => {
+export const UtbetalingsperioderForm = ({ path }: any) => {
 	return (
 		<FormDollyFieldArray
 			name={path}
 			header="Utbetalingsperioder"
 			newEntry={initialUtbetalingsperiode}
 			nested
+			canBeEmpty={false}
 		>
 			{(path: any, idx: React.Key) => (
 				<React.Fragment key={idx}>

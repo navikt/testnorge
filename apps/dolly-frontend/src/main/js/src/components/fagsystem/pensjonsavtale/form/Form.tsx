@@ -9,14 +9,10 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { UtbetalingsperioderForm } from '@/components/fagsystem/pensjonsavtale/form/partials/Utbetalingsperioder'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import {
-	initialPensjonsavtale,
-	initialUtbetalingsperiode,
-} from '@/components/fagsystem/pensjonsavtale/initalValues'
+import { initialPensjonsavtale } from '@/components/fagsystem/pensjonsavtale/initalValues'
 
 export const avtalePath = 'pensjonforvalter.pensjonsavtale'
-const hjelpetekst =
-	'Pensjonsavtale inneholder beskrivelse av opptjeningsår, samt plangte perioder og grad for uttak.'
+const hjelpetekst = 'Pensjonsavtale beskriver type av pensjon, samt utbetalingsperioder og beløp.'
 
 export const PensjonsavtaleForm = () => {
 	const formMethods = useFormContext()
@@ -34,6 +30,7 @@ export const PensjonsavtaleForm = () => {
 					name={avtalePath}
 					header="Pensjonsavtale"
 					newEntry={initialPensjonsavtale}
+					canBeEmpty={false}
 				>
 					{(formPath, idx) => (
 						<React.Fragment key={idx}>
@@ -53,10 +50,7 @@ export const PensjonsavtaleForm = () => {
 										isClearable={false}
 									/>
 
-									<UtbetalingsperioderForm
-										path={`${formPath}.utbetalingsperioder`}
-										initialUtbetalingsperiode={initialUtbetalingsperiode}
-									/>
+									<UtbetalingsperioderForm path={`${formPath}.utbetalingsperioder`} />
 								</div>
 							</React.Fragment>
 						</React.Fragment>
