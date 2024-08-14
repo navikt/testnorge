@@ -7,21 +7,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.util.JavaTimeUtil;
+import no.nav.registre.testnorge.levendearbeidsforhold.util.JavaTimeUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({
         "navArbeidsforholdId",

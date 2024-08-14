@@ -7,22 +7,18 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.util.JavaTimeUtil;
+import no.nav.registre.testnorge.levendearbeidsforhold.util.JavaTimeUtil;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @SuperBuilder
-@EqualsAndHashCode
-@ToString
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

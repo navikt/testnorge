@@ -6,21 +6,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.util.JavaTimeUtil;
+import no.nav.registre.testnorge.levendearbeidsforhold.util.JavaTimeUtil;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({
         "fom",

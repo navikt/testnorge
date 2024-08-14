@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.util;
+package no.nav.registre.testnorge.levendearbeidsforhold.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

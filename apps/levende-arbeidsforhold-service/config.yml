@@ -18,9 +18,6 @@ spec:
     outbound:
       external:
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
-      rules:
-        - application: testnav-levende-arbeidsforhold-service
-          cluster: dev-gcp
   azure:
     application:
       allowAllUsers: true
