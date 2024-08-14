@@ -5,9 +5,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.tenor.TenorOrganisasjonRequest;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.tenor.TenorOversiktOrganisasjonResponse;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -15,15 +16,17 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class HentOrganisasjonCommand implements Callable<TenorOversiktOrganisasjonResponse> {
+public class HentOrganisasjonCommand implements Callable<Mono<TenorOversiktOrganisasjonResponse>> {
     private static final String PATH = "/api/v1/tenor/testdata/organisasjoner";
+
     private final WebClient webClient;
     private final String token;
     private final TenorOrganisasjonRequest tenorOrgRequest;
 
     @SneakyThrows
     @Override
-    public TenorOversiktOrganisasjonResponse call()  {
+    public Mono<TenorOversiktOrganisasjonResponse> call() {
+
         return webClient
                 .post()
                 .uri(builder -> builder
@@ -35,7 +38,6 @@ public class HentOrganisasjonCommand implements Callable<TenorOversiktOrganisasj
                 .retrieve()
                 .bodyToMono(TenorOversiktOrganisasjonResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+                        .filter(WebClientFilter::is5xxException));
     }
 }

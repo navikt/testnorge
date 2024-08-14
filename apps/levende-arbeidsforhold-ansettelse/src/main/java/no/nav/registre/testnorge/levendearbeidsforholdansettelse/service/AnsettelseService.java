@@ -3,21 +3,29 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.DatoIntervall;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsavtale;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AlderspennList;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AliasMethod;
+import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
-import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.*;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ANTALL_ORGANISASJONER;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ANTALL_PERSONER;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ARBEIDSFORHOLD_TYPE;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.STILLINGSPROSENT;
 
 @Slf4j
 @Service
@@ -112,14 +120,14 @@ public class AnsettelseService  {
                     try {
                         List<Ident> muligePersoner = muligePersonerMap.get(iteratorElement);
 
-                        int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
-                        Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
+                        var tilfeldigIndex = tilfeldigTall(muligePersoner.size());
+                        var tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
 
-                        Double stillingsprosent = Double.parseDouble(parametere.get(STILLINGSPROSENT.value));
-                        List<Arbeidsforhold> arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent());
+                        var stillingsprosent = Double.parseDouble(parametere.get(STILLINGSPROSENT.value));
+                        var arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent());
 
                         if(kanAnsettes(stillingsprosent, arbeidsforholdList) ) {
-                            String tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
+                            var tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
 
                             //Try-catch fordi vi møtte på problemer der noen org ikke fikk suksessfulle ansettelser
                             try {
@@ -178,9 +186,10 @@ public class AnsettelseService  {
     }
 
     private boolean kanAnsettes(Double stillingsprosent, List<Arbeidsforhold> arbeidsforholdList) {
+
         if (!arbeidsforholdList.isEmpty()) {
-            for (Arbeidsforhold arbeidsforhold : arbeidsforholdList) {
-                for (Arbeidsavtale arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
+            for (var arbeidsforhold : arbeidsforholdList) {
+                for (var arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
                     if (arbeidsavtale.getBruksperiode().getTom() == null) {
                         stillingsprosent += arbeidsavtale.getStillingsprosent();
                         if (stillingsprosent > 100) return false;

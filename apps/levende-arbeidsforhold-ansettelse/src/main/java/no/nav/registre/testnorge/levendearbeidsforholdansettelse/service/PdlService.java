@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.HentTagsConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.PdlConsumer;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.TagsConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.SokPersonVariables;
@@ -28,7 +28,7 @@ public class PdlService {
     private String from;
     private String to;
     private String postnr;
-    private final HentTagsConsumer hentTagsConsumer;
+    private final TagsConsumer tagsConsumer;
 
     /**
      * Lager SokPersonVariabler som matcher filterene man vil basere søket på, og henter personer fra PDL som
@@ -36,31 +36,31 @@ public class PdlService {
      *
      * @return En liste med identer for personene som matcher søk-variablene
      */
-    public List<Ident> getPersoner(){
+    public List<Ident> getPersoner() {
 
-        SokPersonVariables sokPersonVariables = lagSokPersonVariables(
+        var sokPersonVariables = lagSokPersonVariables(
                 tilfeldigPageNumber(getSokPersonPages()),
                 resultsPerPage,
                 from,
                 to,
                 postnr);
 
-        JsonNode node = pdlConsumer.getSokPerson(sokPersonVariables.lagSokPersonPaging(),
+        var node = pdlConsumer.getSokPerson(sokPersonVariables.lagSokPersonPaging(),
                         sokPersonVariables.lagSokPersonCriteria(),
                         PdlMiljoer.Q2)
                 .block();
 
-        List<Ident> identer = new ArrayList<>();
+        var identer = new ArrayList<Ident>();
 
         assert node != null;
         node.get("data").get("sokPerson").findValues("identer").forEach(
-            hit -> hit.forEach(
-                ident -> {
-                    if(ident.get("gruppe").asText().equals("FOLKEREGISTERIDENT")) {
-                        identer.add(new Ident(ident.get("ident").asText(), ident.get("gruppe").asText()));
-                    }
-                }
-            )
+                hit -> hit.forEach(
+                        ident -> {
+                            if (ident.get("gruppe").asText().equals("FOLKEREGISTERIDENT")) {
+                                identer.add(new Ident(ident.get("ident").asText(), ident.get("gruppe").asText()));
+                            }
+                        }
+                )
         );
         return harBareTestnorgeTags(identer);
     }
@@ -71,14 +71,15 @@ public class PdlService {
      * @param personer Ident-liste med personer man vil sjekke
      * @return En liste med Ident-objekter som oppfyller kravet
      */
-    private List<Ident> harBareTestnorgeTags(List<Ident> personer){
-        List<String> identer = new ArrayList<>();
-        personer.forEach(person -> identer.add(person.getIdent()));
-        TagsDTO tagsDTO = hentTags(identer);
+    private List<Ident> harBareTestnorgeTags(List<Ident> personer) {
 
-        for(var id : tagsDTO.getPersonerTags().entrySet()){
+        var identer = new ArrayList<String>();
+        personer.forEach(person -> identer.add(person.getIdent()));
+        var tagsDTO = hentTags(identer);
+
+        for (var id : tagsDTO.getPersonerTags().entrySet()) {
             List<String> value = id.getValue();
-            if(!(value.size() == 1 && value.getFirst().contains("TESTNORGE"))){
+            if (!(value.size() == 1 && value.getFirst().contains("TESTNORGE"))) {
                 String iden = id.getKey();
                 personer.removeIf(ide -> ide.getIdent().equals(iden));
             }
@@ -93,6 +94,7 @@ public class PdlService {
      * @return Antallet sider med kun ett treff per side fra PDL
      */
     private int getSokPersonPages() {
+
         SokPersonVariables sokPersonVariablesEnPage = SokPersonVariables
                 .builder()
                 .pageNumber(1)
@@ -107,7 +109,7 @@ public class PdlService {
                 .block();
 
         assert node != null;
-        int pages = node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt()/resultsPerPage;
+        int pages = node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt() / resultsPerPage;
         return (pages == 0) ? 1 : pages;
     }
 
@@ -123,30 +125,29 @@ public class PdlService {
     /**
      * Bygger et SokPersonVariables-objekt med de oppgitte parameterene som brukes til å filtrere spørringen mot PDl
      *
-     * @param pageNumber Sidetallet resultatene skal hentes fra
+     * @param pageNumber     Sidetallet resultatene skal hentes fra
      * @param resultsPerPage Antall treff per side
-     * @param from Tidligste dato for alders-intervallet det skal søkes på
-     * @param to Seneste dato for alders-intervallet det skal søkes på
-     * @param postnr Postnummer det skal søkes på
+     * @param from           Tidligste dato for alders-intervallet det skal søkes på
+     * @param to             Seneste dato for alders-intervallet det skal søkes på
+     * @param postnr         Postnummer det skal søkes på
      * @return SokPersonVariables-objekt basert på parameterene
      */
     private SokPersonVariables lagSokPersonVariables(int pageNumber, int resultsPerPage, String from, String to, String postnr) {
-         return SokPersonVariables
-                 .builder()
-                 .pageNumber(pageNumber)
-                 .resultsPerPage(resultsPerPage)
-                 .from(from)
-                 .to(to)
-                 .postnr(postnr)
-                 .build();
+        return SokPersonVariables
+                .builder()
+                .pageNumber(pageNumber)
+                .resultsPerPage(resultsPerPage)
+                .from(from)
+                .to(to)
+                .postnr(postnr)
+                .build();
     }
 
     /**
-     *
      * @param identer Liste med identnummere
      * @return TagsDTO for hver ident i identer-listen
      */
     private TagsDTO hentTags(List<String> identer) {
-         return hentTagsConsumer.hentTags(identer);
+        return tagsConsumer.hentTags(identer);
     }
 }

@@ -62,9 +62,9 @@ public class JobbController {
 
         var tidspunkt = Optional.of("");
 
-        boolean status = jobbScheduler.hentStatusKjorer();
+        var status = jobbScheduler.hentStatusKjorer();
 
-        StatusRespons statusRespons = new StatusRespons();
+        var statusRespons = new StatusRespons();
 
         statusRespons.setStatus(status);
 

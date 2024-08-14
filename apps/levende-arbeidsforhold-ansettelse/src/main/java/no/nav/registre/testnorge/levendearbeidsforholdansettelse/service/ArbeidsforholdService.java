@@ -3,7 +3,12 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.AaregConsumer;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.*;
+import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Ansettelsesperiode;
+import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
+import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.OrdinaerArbeidsavtale;
+import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Organisasjon;
+import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Periode;
+import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Person;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
@@ -60,9 +65,10 @@ public class ArbeidsforholdService {
      * @return Et Arbeidsforhold-objekt basert på parameterene
      */
     private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer, String yrke, String prosent) {
-        List<Arbeidsforhold> arbeidsforholdList = hentArbeidsforhold(ident);
-        double stillingsprosent = Double.parseDouble(prosent);
-        Double antallTimerPrUke = BigDecimal.valueOf(TIMER_HUNDRE_PROSENT*stillingsprosent/HUNDRE_PROSENT).setScale(1, RoundingMode.HALF_UP).doubleValue();
+
+        var arbeidsforholdList = hentArbeidsforhold(ident);
+        var stillingsprosent = Double.parseDouble(prosent);
+        var antallTimerPrUke = BigDecimal.valueOf(TIMER_HUNDRE_PROSENT*stillingsprosent/HUNDRE_PROSENT).setScale(1, RoundingMode.HALF_UP).doubleValue();
         var arbeidsforholdId = new AtomicInteger(arbeidsforholdList.size());
 
         return Arbeidsforhold.builder()

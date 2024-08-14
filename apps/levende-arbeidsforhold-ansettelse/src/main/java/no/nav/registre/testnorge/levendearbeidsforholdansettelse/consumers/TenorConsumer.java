@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.tenor.HentOrganisasjonCommand;
@@ -9,11 +8,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.tenor.Te
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.tenor.TenorOversiktOrganisasjonResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
@@ -27,49 +22,29 @@ public class TenorConsumer {
 
     public TenorConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers,
-            ObjectMapper objectMapper) {
+            Consumers consumers) {
 
         this.serverProperties = consumers.getTestnavTenorSearchService();
         this.tokenExchange = tokenExchange;
 
-        ExchangeStrategies jacksonStrategy = ExchangeStrategies
-                .builder()
-                .codecs(
-                        config -> {
-                            config
-                                    .defaultCodecs()
-                                    .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                            config
-                                    .defaultCodecs()
-                                    .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                        })
-                .build();
-
         this.webClient = WebClient
                 .builder()
-                .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public TenorOversiktOrganisasjonResponse hentOrganisasjonerOversikt(TenorOrganisasjonRequest tenorOrgRequest, String antallOrganisasjoner) {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
 
-        if (accessToken != null) {
-            return new HentOrganisasjonerOversiktCommand(webClient, accessToken.getTokenValue(), tenorOrgRequest, antallOrganisasjoner).call();
-        } else {
-            return new TenorOversiktOrganisasjonResponse();
-        }
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new HentOrganisasjonerOversiktCommand(webClient, token.getTokenValue(),
+                        tenorOrgRequest, antallOrganisasjoner).call())
+                .block();
     }
 
     public TenorOversiktOrganisasjonResponse hentOrganisasjon(TenorOrganisasjonRequest tenorOrgRequest) {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
 
-        if (accessToken != null) {
-            return new HentOrganisasjonCommand(webClient, accessToken.getTokenValue(), tenorOrgRequest).call();
-        } else {
-            return new TenorOversiktOrganisasjonResponse();
-        }
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new HentOrganisasjonCommand(webClient, token.getTokenValue(), tenorOrgRequest).call())
+                .block();
     }
 }

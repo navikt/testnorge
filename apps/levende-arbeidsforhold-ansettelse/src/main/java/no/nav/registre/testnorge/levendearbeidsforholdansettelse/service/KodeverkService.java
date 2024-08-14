@@ -22,7 +22,7 @@ public class KodeverkService {
      * @return En liste av String som er kodene.
      */
     public List<String> hentKodeverkValues(String kodeverk){
-        return kodeverkServiceConsumer.hentKodeverkListe(kodeverk);
+        return kodeverkServiceConsumer.hentKodeverk(kodeverk);
     }
 
 }

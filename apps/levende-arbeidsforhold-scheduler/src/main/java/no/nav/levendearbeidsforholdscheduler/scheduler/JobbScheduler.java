@@ -2,7 +2,6 @@ package no.nav.levendearbeidsforholdscheduler.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,6 @@ import static no.nav.levendearbeidsforholdscheduler.utils.Utils.hentKalender;
 public class JobbScheduler {
 
     private final AnsettelsesService ansettelsesService;
-    @Autowired
     private final ScheduledExecutorService taskScheduler;
 
     private ScheduledFuture<?> scheduledFuture;

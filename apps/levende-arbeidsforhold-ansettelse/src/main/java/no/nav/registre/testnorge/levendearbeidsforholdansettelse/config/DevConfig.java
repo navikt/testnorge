@@ -13,9 +13,9 @@ import static io.micrometer.common.util.StringUtils.isBlank;
 @Configuration
 @Profile("dev")
 @VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
-public class DevConfig  extends AbstractVaultConfiguration {
+public class DevConfig extends AbstractVaultConfiguration {
 
-       private static final String VAULT_TOKEN = "spring.cloud.vault.token";
+    private static final String VAULT_TOKEN = "spring.cloud.vault.token";
 
     @Override
     public VaultEndpoint vaultEndpoint() {
@@ -31,6 +31,6 @@ public class DevConfig  extends AbstractVaultConfiguration {
         if (isBlank(token)) {
             throw new IllegalArgumentException("Påkrevet property 'spring.cloud.vault.token' er ikke satt.");
         }
-        return new TokenAuthentication(System.getProperty(VAULT_TOKEN)); 
+        return new TokenAuthentication(System.getProperty(VAULT_TOKEN));
     }
 }

@@ -51,6 +51,8 @@ dependencies {
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:avro-schema'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -78,14 +80,6 @@ dependencies {
     implementation 'org.apache.kafka:kafka-clients:3.7.0'
     implementation 'io.confluent:kafka-avro-serializer:7.6.0'
     implementation 'org.springframework.kafka:spring-kafka'
-
-    implementation 'no.nav.testnav.libs:avro-schema'
-    implementation 'no.nav.testnav.libs:commands'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:kafka-config'
-    implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:servlet-insecure-security'
-    implementation 'no.nav.testnav.libs:servlet-core'
 }
 java {
     toolchain {

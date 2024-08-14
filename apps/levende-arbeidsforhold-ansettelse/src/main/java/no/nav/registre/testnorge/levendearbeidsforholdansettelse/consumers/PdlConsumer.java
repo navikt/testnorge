@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
@@ -13,21 +12,16 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.Duration;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
@@ -40,25 +34,12 @@ public class PdlConsumer {
     public PdlConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
-        serverProperties = consumers.getPdlProxy();
+            WebClient.Builder webClientBuilder) {
 
+        serverProperties = consumers.getPdlProxy();
         this.tokenService = tokenService;
         webClient = webClientBuilder
             .baseUrl(serverProperties.getUrl())
-            .exchangeStrategies(getJacksonStrategy(objectMapper))
-            .clientConnector(
-                new ReactorClientHttpConnector(
-                    HttpClient.create(
-                        ConnectionProvider
-                            .builder("custom")
-                            .maxConnections(10)
-                            .pendingAcquireMaxCount(5000)
-                            .pendingAcquireTimeout(Duration.ofMinutes(15))
-                            .build())
-            .responseTimeout(Duration.ofSeconds(5))))
             .build();
     }
 
@@ -81,6 +62,7 @@ public class PdlConsumer {
     }
 
     public static String hentQueryResource(String pathResource) {
+
         val resource = new ClassPathResource(pathResource);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
@@ -89,6 +71,4 @@ public class PdlConsumer {
             return null;
         }
     }
-
-
 }

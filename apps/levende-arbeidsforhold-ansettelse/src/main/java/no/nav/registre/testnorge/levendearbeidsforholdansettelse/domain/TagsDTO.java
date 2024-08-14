@@ -13,8 +13,8 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagsDTO {
+
     private Map<String, List<String>> personerTags;
     private String message;
     private String details;
-
 }
