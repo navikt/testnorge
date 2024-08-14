@@ -96,11 +96,11 @@ export const PensjonForm = () => {
 						Generer inntekt
 					</ToggleGroup.Item>
 				</ToggleGroup>
-				{inputType === inputValg.generertInntekt && (
-					<GenerertInntektForm syttenFraOgMedAar={syttenFraOgMedAar} formMethods={formMethods} />
-				)}
 				{inputType === inputValg.fyllInnInntekt && (
 					<FyllInnInntektForm syttenFraOgMedAar={syttenFraOgMedAar} />
+				)}
+				{inputType === inputValg.generertInntekt && (
+					<GenerertInntektForm syttenFraOgMedAar={syttenFraOgMedAar} formMethods={formMethods} />
 				)}
 			</Panel>
 		</Vis>

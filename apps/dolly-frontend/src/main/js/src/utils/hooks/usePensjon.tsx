@@ -62,7 +62,7 @@ export const usePensjonFacadeGenerer = (body: any) => {
 	)
 
 	return {
-		pensjon: data?.data,
+		pensjonResponse: data?.data,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,

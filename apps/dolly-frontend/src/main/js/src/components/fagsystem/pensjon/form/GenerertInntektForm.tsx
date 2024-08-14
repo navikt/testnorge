@@ -28,24 +28,23 @@ const StyledPanel = styled.div`
 `
 
 export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
-	const { pensjon, mutate } = usePensjonFacadeGenerer(
+	const formInntekter = formMethods.watch(`${pensjonGenererPath}.inntekter`)
+	const { pensjonResponse, mutate } = usePensjonFacadeGenerer(
 		formMethods.watch(`${pensjonGenererPath}.generer`),
 	)
 
 	const handleGenerer = () => {
+		formMethods.clearErrors(`${pensjonGenererPath}.inntekter`)
 		mutate().then((values) => {
 			formMethods.setValue(`${pensjonGenererPath}.inntekter`, values?.data?.arInntektGList)
 		})
 	}
 
 	useEffect(() => {
-		if (pensjon) {
-			formMethods.clearErrors(`${pensjonGenererPath}.inntekter`)
-			formMethods.setValue(`${pensjonGenererPath}.inntekter`, pensjon.arInntektGList)
+		if ((!formInntekter || formInntekter?.length === 0) && pensjonResponse) {
+			formMethods.setValue(`${pensjonGenererPath}.inntekter`, pensjonResponse.arInntektGList)
 		}
-	}, [pensjon])
-
-	const genererteInntekter = formMethods.watch(`${pensjonGenererPath}.inntekter`)
+	}, [pensjonResponse])
 
 	return (
 		<Kategori
@@ -102,10 +101,10 @@ export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
 					/>
 				)}
 
-				{genererteInntekter?.length > 0 && (
+				{formInntekter?.length > 0 && (
 					<StyledPanel>
 						<Panel
-							heading={getTittel(genererteInntekter)}
+							heading={getTittel(formInntekter)}
 							startOpen={true}
 							aria-label={'Liste med inntekter'}
 						>
@@ -122,6 +121,10 @@ export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
 											label="Inntekt"
 											type="number"
 											size="small"
+											onBlur={() => {
+												formMethods.setValue(`${path}.generatedG`, 0)
+												formMethods.setValue(`${path}.grunnbelop`, 0)
+											}}
 											useControlled={true}
 										/>
 										<FormTextInput
