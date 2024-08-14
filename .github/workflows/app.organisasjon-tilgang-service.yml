@@ -3,10 +3,11 @@ name: organisasjon-tilgang-service
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-security
-      - apps/organisasjon-tilgang-service/**
-      - .github/workflows/app.organisasjon-tilgang-service.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-security/**"
+      - "apps/organisasjon-tilgang-service/**"
+      - ".github/workflows/app.organisasjon-tilgang-service.yml"
 
 jobs:
   workflow:

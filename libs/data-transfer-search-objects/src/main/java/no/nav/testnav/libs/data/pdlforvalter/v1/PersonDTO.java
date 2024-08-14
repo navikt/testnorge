@@ -16,6 +16,7 @@ import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @Builder
@@ -26,6 +27,7 @@ public class PersonDTO implements Serializable {
 
     private String ident;
     private Identtype identtype;
+    private Boolean standalone;
 
     private List<AdressebeskyttelseDTO> adressebeskyttelse;
     private List<BostedadresseDTO> bostedsadresse;
@@ -45,6 +47,7 @@ public class PersonDTO implements Serializable {
     private List<KontaktadresseDTO> kontaktadresse;
     private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
     private List<NavnDTO> navn;
+    private List<NavPersonIdentifikatorDTO> navPersonIdentifikator;
     private List<OppholdDTO> opphold;
     private List<OppholdsadresseDTO> oppholdsadresse;
     private List<SikkerhetstiltakDTO> sikkerhetstiltak;
@@ -261,6 +264,13 @@ public class PersonDTO implements Serializable {
         return foedselsdato;
     }
 
+    public List<NavPersonIdentifikatorDTO> getNavPersonIdentifikator() {
+        if(isNull(navPersonIdentifikator)) {
+            navPersonIdentifikator = new ArrayList<>();
+        }
+        return navPersonIdentifikator;
+    }
+
     public Identtype getIdenttype() {
 
         if (isNull(ident)) {
@@ -279,5 +289,11 @@ public class PersonDTO implements Serializable {
     public boolean isStrengtFortrolig() {
 
         return getAdressebeskyttelse().stream().anyMatch(AdressebeskyttelseDTO::isStrengtFortrolig);
+    }
+
+    @JsonIgnore
+    public boolean isStandalone() {
+
+        return isTrue(standalone);
     }
 }

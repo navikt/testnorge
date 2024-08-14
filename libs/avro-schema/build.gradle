@@ -1,50 +1,15 @@
 plugins {
-    id "org.sonarqube" version "5.0.0.4638"
-    id 'java-library'
-    id 'maven-publish'
+    id "dolly-libs"
+    id "dolly-libs-publish"
+
     id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
 }
-
-group = 'no.nav.testnav.libs'
 
 sonarqube {
     skipProject = true
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-if (project.hasProperty("releaseVersion")) {
-    version = releaseVersion
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "github"
-            url = uri('https://maven.pkg.github.com/navikt/testnorge')
-            credentials(PasswordCredentials) {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-    publications {
-        gpr(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-
 dependencies {
-    implementation 'org.apache.avro:avro-compiler:1.11.3'
-    implementation 'org.apache.avro:avro-maven-plugin:1.11.3'
+    implementation "org.apache.avro:avro-compiler:$versions.apacheAvro"
+    implementation "org.apache.avro:avro-maven-plugin:$versions.apacheAvro"
 }

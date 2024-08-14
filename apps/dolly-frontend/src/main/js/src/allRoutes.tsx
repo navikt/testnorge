@@ -14,6 +14,8 @@ const TestnorgePage = lazy(() => import('@/pages/testnorgePage/index'))
 const Endringsmelding = lazy(() => import('@/pages/endringsmelding/Endringsmelding'))
 const DollySoekPage = lazy(() => import('@/pages/dollySoek/DollySoekPage'))
 const TenorSoekPage = lazy(() => import('@/pages/tenorSoek/TenorSoekPage'))
+const OrgtilgangPage = lazy(() => import('@/pages/adminPages/Orgtilgang/OrgtilgangPage'))
+const AppstyringPage = lazy(() => import('@/pages/adminPages/Appstyring/AppstyringPage'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
@@ -64,6 +66,16 @@ const allRoutes = [
 		path: '/endringsmelding',
 		breadcrumb: 'Endringsmelding',
 		element: () => <Endringsmelding />,
+	},
+	{
+		path: '/admin/orgtilgang',
+		breadcrumb: 'Organisasjon-tilgang',
+		element: () => <OrgtilgangPage />,
+	},
+	{
+		path: '/admin/appstyring',
+		breadcrumb: 'App-styring',
+		element: () => <AppstyringPage />,
 	},
 ]
 

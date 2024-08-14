@@ -3,11 +3,12 @@ name: inntektsmelding-generator-service
 on:
   push:
     paths:
-      - libs/data-transfer-objects
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/inntektsmelding-generator-service/**
-      - .github/workflows/app.inntektsmelding-generator-service.yml
+      - "plugins/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/inntektsmelding-generator-service/**"
+      - ".github/workflows/app.inntektsmelding-generator-service.yml"
 
 jobs:
   workflow:

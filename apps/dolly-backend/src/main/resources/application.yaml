@@ -236,4 +236,9 @@ consumers:
     namespace: dolly
     url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
+  testnavSkattekortService:
+    name: testnav-skattekort-service
+    namespace: dolly
+    url: http://testnav-skattekort-service.dolly.svc.cluster.local
+    cluster: dev-gcp
     

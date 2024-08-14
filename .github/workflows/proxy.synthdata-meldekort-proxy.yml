@@ -3,12 +3,13 @@ name: synthdata-meldekort-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - libs/reactive-security
-      - libs/security-core
-      - proxies/synthdata-meldekort-proxy/**
-      - .github/workflows/proxy.synthdata-meldekort-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/synthdata-meldekort-proxy/**"
+      - ".github/workflows/proxy.synthdata-meldekort-proxy.yml"
 
 jobs:
   workflow:

@@ -42,6 +42,7 @@ import {
 	useDokarkivData,
 	useHistarkData,
 	useInstData,
+	usePensjonsavtaleData,
 	usePoppData,
 	useTpData,
 	useTransaksjonIdData,
@@ -58,6 +59,7 @@ import {
 	harInntektsmeldingBestilling,
 	harInstBestilling,
 	harMedlBestilling,
+	harPensjonavtaleBestilling,
 	harPoppBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
@@ -68,7 +70,6 @@ import {
 	AlderspensjonVisning,
 	sjekkManglerApData,
 } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
-import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import _has from 'lodash/has'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
@@ -90,6 +91,8 @@ import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
+import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
+import { PensjonsavtaleVisning } from '@/components/fagsystem/pensjonsavtale/visning/PensjonsavtaleVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -117,8 +120,8 @@ export default ({
 
 	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
-	const { organisasjonTilgang } = useOrganisasjonTilgang()
-	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
+	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
 	const bestillinger = []
 
@@ -162,6 +165,11 @@ export default ({
 	const { loading: loadingTpData, tpData } = useTpData(
 		ident.ident,
 		harTpBestilling(bestillingerFagsystemer),
+	)
+
+	const { loading: loadingPensjonsavtaleData, pensjonsavtaleData } = usePensjonsavtaleData(
+		ident.ident,
+		harPensjonavtaleBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingPoppData, poppData } = usePoppData(
@@ -463,6 +471,12 @@ export default ({
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<PensjonsavtaleVisning
+					data={pensjonsavtaleData}
+					loading={loadingPensjonsavtaleData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>

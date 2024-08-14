@@ -16,9 +16,9 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class SkattekortRequestDTO {
 
-    private List<Arbeidsgiver> arbeidsgiver;
+    private List<ArbeidsgiverSkatt> arbeidsgiver;
 
-    public List<Arbeidsgiver> getArbeidsgiver() {
+    public List<ArbeidsgiverSkatt> getArbeidsgiver() {
 
         if (isNull(arbeidsgiver)) {
             arbeidsgiver = new ArrayList<>();

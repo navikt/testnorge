@@ -3,13 +3,14 @@ name: oppsummeringsdokument-service
 on:
   push:
     paths:
-      - libs/data-transfer-objects
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - xsd/arbeidsforhold-xsd
-      - apps/oppsummeringsdokument-service/**
-      - .github/workflows/app.oppsummeringsdokument-service.yml
+      - "plugins/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "xsd/arbeidsforhold-xsd/**"
+      - "apps/oppsummeringsdokument-service/**"
+      - ".github/workflows/app.oppsummeringsdokument-service.yml"
 
 jobs:
   workflow:

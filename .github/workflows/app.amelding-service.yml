@@ -3,14 +3,15 @@ name: amelding-service
 on:
   push:
     paths:
-      - libs/avro-schema
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/reactive-security
-      - libs/security-core
-      - apps/amelding-service/**
-      - .github/workflows/app.amelding-service.yml
+      - "plugins/**"
+      - "libs/avro-schema/**"
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "apps/amelding-service/**"
+      - ".github/workflows/app.amelding-service.yml"
 
 jobs:
   workflow:
