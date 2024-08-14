@@ -21,7 +21,9 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.CommonLoggingErrorHandler;
 
 import java.net.InetSocketAddress;
+import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Random;
 
 @Slf4j
 @EnableKafka
@@ -29,6 +31,7 @@ import java.util.HashMap;
 @Profile({"dev", "prod"})
 public class KafkaConfig {
 
+    private static final Random RANDOM = new SecureRandom();
     private final String groupId;
 
     public KafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {
@@ -37,7 +40,7 @@ public class KafkaConfig {
 
     public ConsumerFactory<String, String> consumerFactory() {
 
-        var randomSuffixGroupID = String.valueOf((int)(Math.random() * 1000));
+        var randomSuffixGroupID = String.valueOf((int)(RANDOM.nextFloat() * 1000));
 
         var inetSocketAddress = new InetSocketAddress(0);
         var props = new HashMap<String, Object>();
