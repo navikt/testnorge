@@ -4,6 +4,7 @@ import { ifPresent, requiredNumber, requiredString } from '@/utils/YupValidation
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
+import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
 
 function calculate_age(dob) {
 	const diff_ms = Date.now() - dob.getTime()
@@ -207,6 +208,7 @@ export const validation = {
 						.required('Generer minst én inntekt'),
 				}),
 			),
+			...PensjonsavtaleForm.validation,
 			...TjenestepensjonForm.validation,
 			...AlderspensjonForm.validation,
 			...UforetrygdForm.validation,

@@ -1,0 +1,81 @@
+{
+  "type" : "record",
+  "name" : "Personhendelse",
+  "namespace" : "no.nav.person.pdl.leesah",
+  "fields" : [ {
+    "name" : "hendelseId",
+    "type" : "string"
+  }, {
+    "name" : "personidenter",
+    "type" : {
+      "type" : "array",
+      "items" : "string"
+    }
+  }, {
+    "name" : "master",
+    "type" : "string"
+  }, {
+    "name" : "opprettet",
+    "type" : {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    }
+  }, {
+    "name" : "opplysningstype",
+    "type" : "string"
+  }, {
+    "name" : "endringstype",
+    "type" : {
+      "type" : "enum",
+      "name" : "Endringstype",
+      "symbols" : [ "OPPRETTET", "KORRIGERT", "ANNULLERT", "OPPHOERT" ]
+    }
+  }, {
+    "name" : "tidligereHendelseId",
+    "type" : [ "null", "string" ],
+    "default" : null
+  }, {
+    "name" : "navn",
+    "type" : [ "null", {
+      "type" : "record",
+      "name" : "Navn",
+      "namespace" : "no.nav.person.pdl.leesah.navn",
+      "fields" : [ {
+        "name" : "fornavn",
+        "type" : "string"
+      }, {
+        "name" : "mellomnavn",
+        "type" : [ "null", "string" ],
+        "default" : null
+      }, {
+        "name" : "etternavn",
+        "type" : "string"
+      }, {
+        "name" : "forkortetNavn",
+        "type" : [ "null", "string" ],
+        "default" : null
+      }, {
+        "name" : "originaltNavn",
+        "type" : [ "null", {
+          "type" : "record",
+          "name" : "OriginaltNavn",
+          "fields" : [ {
+            "name" : "fornavn",
+            "type" : [ "null", "string" ],
+            "default" : null
+          }, {
+            "name" : "mellomnavn",
+            "type" : [ "null", "string" ],
+            "default" : null
+          }, {
+            "name" : "etternavn",
+            "type" : [ "null", "string" ],
+            "default" : null
+          } ]
+        } ],
+        "default" : null
+      } ]
+    } ],
+    "default" : null
+  } ]
+}

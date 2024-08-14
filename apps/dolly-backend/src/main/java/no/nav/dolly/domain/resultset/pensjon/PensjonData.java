@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.pensjon;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -33,12 +34,16 @@ public class PensjonData {
     @Schema(description = "Data for tjenestepensjon (TP)")
     private List<TpOrdning> tp;
 
+    @Schema(description = "Data for pensjonsavtale")
+    private List<Pensjonsavtale> pensjonsavtale;
+
     @Schema(description = "Data for alderspensjon (AP)")
     private Alderspensjon alderspensjon;
 
     @Schema(description = "Data for uføretrygd (UT)")
     private Uforetrygd uforetrygd;
 
+    @JsonIgnore
     public boolean hasInntekt() {
         return nonNull(inntekt);
     }
@@ -47,16 +52,33 @@ public class PensjonData {
         return nonNull(generertInntekt);
     }
 
+    @JsonIgnore
     public boolean hasTp() {
         return !getTp().isEmpty();
     }
 
+    @JsonIgnore
     public boolean hasAlderspensjon() {
         return nonNull(alderspensjon);
     }
 
+    @JsonIgnore
     public boolean hasUforetrygd() {
         return nonNull(uforetrygd);
+    }
+
+    @JsonIgnore
+    public boolean hasPensjonsavtale() {
+
+        return !getPensjonsavtale().isEmpty();
+    }
+
+    public List<Pensjonsavtale> getPensjonsavtale() {
+
+        if (isNull(pensjonsavtale)) {
+            pensjonsavtale = new ArrayList<>();
+        }
+        return pensjonsavtale;
     }
 
     public List<TpOrdning> getTp() {
@@ -203,6 +225,41 @@ public class PensjonData {
         @Schema(description = "Dato iverksatt tom")
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate datoYtelseIverksattTom;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Pensjonsavtale {
+        public enum AvtaleKategori {
+            NONE, UNKNOWN, INDIVIDUELL_ORDNING, PRIVAT_AFP,
+            PRIVAT_TJENESTEPENSJON, OFFENTLIG_TJENESTEPENSJON, FOLKETRYGD
+        }
+
+        private String produktBetegnelse;
+        private AvtaleKategori avtaleKategori;
+        private List<OpprettUtbetalingsperiodeDTO> utbetalingsperioder;
+
+        public List<OpprettUtbetalingsperiodeDTO> getUtbetalingsperioder() {
+
+            if (isNull(utbetalingsperioder)) {
+                utbetalingsperioder = new ArrayList<>();
+            }
+            return utbetalingsperioder;
+        }
+
+        @Data
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class OpprettUtbetalingsperiodeDTO {
+            private Integer startAlderAar;
+            private Integer startAlderMaaned;
+            private Integer sluttAlderAar;
+            private Integer sluttAlderMaaned;
+            private Integer aarligUtbetaling;
+        }
     }
 
     @Data
