@@ -19,14 +19,14 @@ public class Skattekort {
 
     private LocalDate utstedtDato;
     private Long skattekortidentifikator;
-    private List<Trekktype> trekktype;
+    private List<Forskuddstrekk> forskuddstrekk;
 
-    public List<Trekktype> getTrekktype() {
+    public List<Forskuddstrekk> getForskuddstrekk() {
 
-        if (isNull(trekktype)) {
-            trekktype = new ArrayList<>();
+        if (isNull(forskuddstrekk)) {
+            forskuddstrekk = new ArrayList<>();
         }
-        return trekktype;
 
+        return forskuddstrekk;
     }
 }

@@ -3,11 +3,12 @@ name: levende-arbeidsforhold-service
 on:
   push:
     paths:
-      - libs/commands/**
-      - libs/data-transfer-objects/**
+      - libs/kafka-config/**
+      - libs/avro-schema/**
       - libs/security-core/**
       - libs/servlet-core/**
-      - libs/servlet-security/**
+      - libs/servlet-insecure-security/**
+      - libs/reactive-core/**
       - apps/levende-arbeidsforhold-service/**
       - .github/workflows/app.levende-arbeidsforhold-service.yml
 

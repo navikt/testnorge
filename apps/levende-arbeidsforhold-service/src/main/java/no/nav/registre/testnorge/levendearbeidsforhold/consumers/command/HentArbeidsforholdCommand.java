@@ -3,7 +3,8 @@ package no.nav.registre.testnorge.levendearbeidsforhold.consumers.command;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.Arbeidsforhold;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.servletcore.headers.NavHeaders;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,13 +25,13 @@ import static java.lang.String.format;
 @Slf4j
 @RequiredArgsConstructor
 public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>> {
-    private final WebClient webClient;
-    private final String token;
-    private final String ident;
-    private final String miljoe = "q2";
+    private static final String miljoe = "q2";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String CONSUMER = "Dolly";
 
+    private final WebClient webClient;
+    private final String token;
+    private final String ident;
 
     private static String getNavCallId() {
         return format("%s %s", CONSUMER, UUID.randomUUID());
@@ -45,7 +46,9 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
                 .get()
                 .uri(builder -> builder
                         .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
-                        .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
+                        .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning",
+                                "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold",
+                                "ordinaertArbeidsforhold")
                         .build(miljoe))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(NAV_PERSON_IDENT, ident)

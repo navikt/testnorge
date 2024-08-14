@@ -28,7 +28,7 @@ public class SkattekortValidator {
                 .map(ArbeidsgiverSkatt::getArbeidstaker)
                 .flatMap(Collection::stream)
                 .map(Skattekortmelding::getSkattekort)
-                .map(Skattekort::getTrekktype)
+                .map(Skattekort::getForskuddstrekk)
                 .flatMap(Collection::stream)
                 .forEach(trekktype -> {
                     if (trekktype.isAllEmpty()) {
