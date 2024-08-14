@@ -13,11 +13,9 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { CodeView } from '@/components/codeView'
 
 type SkattekortVisning = {
-	liste?: Array<SkattekortData>
+	liste?: Array<any>
 	loading?: boolean
 }
-
-type SkattekortData = any
 
 export const showKodeverkLabel = (kodeverkstype: string, value: string) => {
 	const { kodeverk, loading, error } = useSkattekortKodeverk(kodeverkstype)
@@ -51,7 +49,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 			) : (
 				<ErrorBoundary>
 					<DollyFieldArray header="" data={liste} expandable={liste.length > 5} nested>
-						{(skattekort: SkattekortData, idx: number) => {
+						{(skattekort: any, idx: number) => {
 							const [viserXml, vis, skjul] = useBoolean(false)
 
 							const arbeidsgiver = skattekort?.arbeidsgiver?.[0]
