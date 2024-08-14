@@ -20,7 +20,7 @@ const getTittel = (data) => {
 }
 
 const StyledButton = styled(NavButton)`
-	margin: 10px 10px 10px 2px;
+	margin: 0 10px 15px 2px;
 `
 
 const StyledPanel = styled.div`
@@ -87,9 +87,11 @@ export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
 					checkboxMargin
 				/>
 
-				<StyledButton variant={'secondary'} onClick={handleGenerer} type="button" size="small">
-					Generer
-				</StyledButton>
+				<div className={'flexbox--full-width'}>
+					<StyledButton variant={'primary'} onClick={handleGenerer} type="button" size="small">
+						Generer
+					</StyledButton>
+				</div>
 
 				{formMethods.formState.errors && (
 					<ErrorMessage
