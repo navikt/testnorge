@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
@@ -30,7 +31,8 @@ public class ArtifactUtils {
 
     public static DbVersjonDTO.Master getMaster(DbVersjonDTO artifact, PersonDTO person) {
 
-        return getMaster(artifact, person.getIdenttype());
+        return isTestnorgeIdent(person.getIdent()) ? DbVersjonDTO.Master.PDL :
+                getMaster(artifact, person.getIdenttype());
     }
 
     public static DbVersjonDTO.Master getMaster(DbVersjonDTO artifact, Identtype identtype) {

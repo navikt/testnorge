@@ -58,6 +58,16 @@ export const harApBestilling = (bestillingerFagsystemer) => {
 	return alderspensjon
 }
 
+export const harPensjonavtaleBestilling = (bestillingerFagsystemer) => {
+	let pensjonavtale = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i?.pensjonforvalter?.pensjonsavtale) {
+			pensjonavtale = true
+		}
+	})
+	return pensjonavtale
+}
+
 export const harUforetrygdBestilling = (bestillingerFagsystemer) => {
 	let uforetrygd = false
 	bestillingerFagsystemer?.forEach((i) => {

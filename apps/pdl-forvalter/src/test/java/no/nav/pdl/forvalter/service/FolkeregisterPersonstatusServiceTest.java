@@ -41,6 +41,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterPersonstatus(List.of(FolkeregisterPersonstatusDTO.builder()
                                 .status(FORSVUNNET)
                                 .isNew(true)
@@ -55,6 +56,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterPersonstatus(
                                 List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
@@ -73,6 +75,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterPersonstatus(
                                 List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
@@ -90,6 +93,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterPersonstatus(
                                 List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
