@@ -1,0 +1,47 @@
+﻿apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: testnav-levende-arbeidsforhold-scheduler
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: "{{image}}"
+  port: 8080
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-frontend
+        - application: testnav-levende-arbeidsforhold-ansettelse
+    outbound:
+      rules:
+        - application: testnav-levende-arbeidsforhold-ansettelse
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-levende-arbeidsforhold-scheduler.intern.dev.nav.no"

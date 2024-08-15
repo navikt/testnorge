@@ -1,0 +1,25 @@
+name: levende-arbeidsforhold-scheduler
+
+on:
+  push:
+    paths:
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - apps/levende-arbeidsforhold-scheduler/**
+      - .github/workflows/app.levende-arbeidsforhold-scheduler.yml
+
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/levende-arbeidsforhold-scheduler"
+      deploy-tag: "#deploy-levende-arbeidsforhold-scheduler"
+      sonar-enabled: false
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

@@ -223,6 +223,16 @@ consumers:
     namespace: dolly
     name: testnav-skattekort-service
     url: http://testnav-skattekort-service.dolly.svc.cluster.local
+  testnav-levende-arbeidsforhold-ansettelse:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-levende-arbeidsforhold-ansettelse
+    url: http://testnav-levende-arbeidsforhold-ansettelse.dolly.svc.cluster.local
+  testnav-levende-arbeidsforhold-scheduler:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-levende-arbeidsforhold-scheduler
+    url: http://testnav-levende-arbeidsforhold-scheduler.dolly.svc.cluster.local
 
 management:
   endpoints:

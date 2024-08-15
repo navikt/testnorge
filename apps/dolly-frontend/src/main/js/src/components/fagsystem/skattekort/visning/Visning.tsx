@@ -27,7 +27,7 @@ export const showKodeverkLabel = (kodeverkstype: string, value: string) => {
 
 export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 	if (loading) {
-		return <Loading label="Laster Inntektstub-data" />
+		return <Loading label="Laster skattekort-data" />
 	}
 	if (!liste) {
 		return null
