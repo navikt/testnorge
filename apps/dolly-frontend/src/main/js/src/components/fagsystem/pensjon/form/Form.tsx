@@ -48,7 +48,9 @@ export const PensjonForm = () => {
 	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar()
 	const minAar = new Date().getFullYear() - 17
 	const valgtAar =
-		formMethods.watch(`${pensjonPath}.fomAar`) || formMethods.watch(`${pensjonGenererPath}.fomAar`)
+		inputType === inputValg.fyllInnInntekt
+			? formMethods.watch(`${pensjonPath}.fomAar`)
+			: formMethods.watch(`${pensjonGenererPath}.generer.fomAar`)
 
 	return (
 		<Vis attributt={[pensjonPath, pensjonGenererPath]}>
