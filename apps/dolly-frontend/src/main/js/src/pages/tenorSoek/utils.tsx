@@ -20,7 +20,7 @@ export const createOptions = (
 	if (Array.isArray(options)) {
 		return options.map((option) => ({
 			value: option,
-			label: hasManualOptions ? manualOptions[option] || codeToNorskLabel(option) : option,
+			label: hasManualOptions ? manualOptions[option] : codeToNorskLabel(option),
 		}))
 	} else {
 		return Object.entries(options).map(([key, value]) => ({
