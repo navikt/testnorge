@@ -95,6 +95,8 @@ includeBuild './apps/inntektsmelding-service'
 includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/joark-dokument-service'
 includeBuild './apps/kodeverk-service'
+includeBuild './apps/levende-arbeidsforhold-ansettelse'
+includeBuild './apps/levende-arbeidsforhold-scheduler'
 includeBuild './apps/levende-arbeidsforhold-service'
 includeBuild './apps/miljoer-service'
 includeBuild './apps/oppsummeringsdokument-service'
@@ -124,6 +126,8 @@ includeBuild './apps/tilbakemelding-api'
 includeBuild './apps/tps-messaging-service'
 includeBuild './apps/udi-stub'
 includeBuild './apps/varslinger-service'
+includeBuild './apps/dollystatus'
+includeBuild './apps/skattekort-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -131,6 +135,8 @@ includeBuild './examples/reactive-rest-example'
 
 includeBuild './mocks/tokendings-mock'
 includeBuild './mocks/maskinporten-mock'
+
+
 
 include(':proxies')
 include(':navikt')

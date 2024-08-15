@@ -61,6 +61,7 @@ import {
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
+	harSkattekortBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
 	harUdistubBestilling,
@@ -92,6 +93,8 @@ import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
+import { useSkattekort } from '@/utils/hooks/useSkattekort'
+import { SkattekortVisning } from '@/components/fagsystem/skattekort/visning/Visning'
 import { PensjonsavtaleVisning } from '@/components/fagsystem/pensjonsavtale/visning/PensjonsavtaleVisning'
 
 const getIdenttype = (ident) => {
@@ -150,6 +153,11 @@ export default ({
 	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
 		ident.ident,
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+	)
+
+	const { loading: loadingSkattekort, skattekortData } = useSkattekort(
+		ident.ident,
+		harSkattekortBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingMedl, medl } = useMedlPerson(
@@ -462,6 +470,7 @@ export default ({
 						harInntektsmeldingBestilling(bestillingerFagsystemer) ? inntektsmeldingBestilling : null
 					}
 				/>
+				<SkattekortVisning liste={skattekortData} loading={loadingSkattekort} />
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
 					loading={loadingArbeidsplassencvData}

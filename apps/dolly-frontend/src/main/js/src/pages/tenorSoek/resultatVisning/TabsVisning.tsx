@@ -22,7 +22,6 @@ const TabsVisningFormatter = styled.div`
 
 const StyledCodeView = styled(SyntaxHighlighter)`
 	font-size: 0.9em;
-	max-width: 820px;
 	margin: 0;
 `
 
@@ -61,7 +60,9 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<StyledCodeView language="json">{kildedataPretty}</StyledCodeView>
+					<StyledCodeView language="json" wrapLongLines>
+						{kildedataPretty}
+					</StyledCodeView>
 				</Tabs.Panel>
 			</Tabs>
 		</TabsVisningFormatter>

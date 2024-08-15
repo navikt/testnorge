@@ -1,23 +1,55 @@
-import { PencilWritingIcon } from '@navikt/aksel-icons'
-import { Button } from '@navikt/ds-react'
+import {PencilWritingIcon} from '@navikt/aksel-icons'
+import {Button, Select} from '@navikt/ds-react'
 import React from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import DollyModal from '@/components/ui/modal/DollyModal'
-import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { FormProvider, useForm } from 'react-hook-form'
+import {ErrorBoundary} from '@/components/ui/appError/ErrorBoundary'
+import {useForm} from 'react-hook-form'
+import {FetchData} from "@/pages/adminPages/Appstyring/util/Typer";
 
-export const EditParameter = ({ name, initialValue, getOptions }: any) => {
+interface Props {
+	name: string,
+	label: string
+	initialValue: string,
+	options: Array<string>
+	data: Array<FetchData>
+	setData: (data: Array<FetchData>) => void
+}
+
+export const EditParameter = ({name, label, initialValue, options, data, setData }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const formMethods = useForm({ defaultValues: { [name]: initialValue } })
+	//const formMethods = useForm({ defaultValues: { [name]: initialValue } })
 
-	//TODO: Implementer lagring av verdi paa parameter
-	const onSubmit = (data: any) => {
-		closeModal()
+	const { register, handleSubmit, formState: { errors} } = useForm<{value: string}>(
+		{ defaultValues: {value: initialValue}})
+
+
+	async function oppdaterParameterverdi(value: string) {
+		await fetch(`/testnav-levende-arbeidsforhold-ansettelse/api/oppdatereVerdier/${name}`,
+			{method: "PUT", body: JSON.stringify(value)}).then(res => res.status === 200 ? onSubmit(value) : console.error('Feil feil feil'));
 	}
 
-	const options = getOptions(name)
+	const validerParameter = (value: string | undefined): string | undefined => {
+		if (name === "antallOrganisasjoner") {
+		const antallPersoner = data.find(obj => obj.navn === "antallPersoner")?.verdi
+		if (!value) return 'Må settes'
+		else if (Number.parseInt(value!) > Number.parseInt(antallPersoner!)) return `Kan ikke være flere organisasjoner enn antall personer`
+		}
+		else if (name === "antallPersoner") {
+			const antallOrganisasjoner = data.find(obj => obj.navn === "antallOrganisasjoner")?.verdi
+			if (!value) return 'Må settes'
+			else if (Number.parseInt(value!) < Number.parseInt(antallOrganisasjoner!)) return `Kan ikke være færre personer enn antall organisasjoner`
+		}
+		return undefined
+	}
+
+	const onSubmit = (value: string) => {
+		const kopi = [...data]
+		const nyttObjektIndex = kopi.findIndex(obj => obj.navn === name)
+		kopi[nyttObjektIndex] = {...kopi[nyttObjektIndex], verdi: value}
+		setData(kopi)
+		closeModal()
+	}
 
 	return (
 		<>
@@ -28,21 +60,24 @@ export const EditParameter = ({ name, initialValue, getOptions }: any) => {
 				size={'small'}
 			/>
 			<ErrorBoundary>
-				<FormProvider {...formMethods}>
 					<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'40%'} overflow={'auto'}>
+					<form onSubmit={handleSubmit(({ value}) => {
+						oppdaterParameterverdi(value)
+					})}>
 						<div className="modal">
 							<h1>Rediger parameter</h1>
 							<br />
-							<FormSelect name={name} label={name} options={options} size="grow" />
-							<ModalActionKnapper
-								submitknapp="Lagre"
-								onSubmit={formMethods.handleSubmit(onSubmit)}
-								onAvbryt={closeModal}
-								center
-							/>
+							<Select {...register("value", {
+								validate: validerParameter
+							})} label={label} error={errors.value?.message} style={{marginBottom: '10px'}}>
+								{options.map((option, index) => (
+									<option key={index} value={option}>{option}</option>
+								))}
+							</Select>
+							<Button>Lagre</Button>
 						</div>
+				</form>
 					</DollyModal>
-				</FormProvider>
 			</ErrorBoundary>
 		</>
 	)

@@ -1,0 +1,11 @@
+query($paging: Paging, $criteria: [Criterion]) {
+    sokPerson(paging: $paging, criteria: $criteria) {
+        totalPages
+        hits {
+            identer {
+                ident
+                gruppe
+            }
+        }
+    }
+}
