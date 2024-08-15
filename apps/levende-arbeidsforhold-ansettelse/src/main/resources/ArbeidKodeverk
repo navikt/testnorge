@@ -1,0 +1,28 @@
+export enum ArbeidKodeverk {
+	Yrker = 'Yrker',
+	Arbeidstidsordninger = 'Arbeidstidsordninger',
+	Arbeidsforholdstyper = 'Arbeidsforholdstyper',
+	Avloenningstyper = 'Avlønningstyper',
+	PermisjonsOgPermitteringsBeskrivelse = 'PermisjonsOgPermitteringsBeskrivelse',
+	SluttaarsakAareg = 'SluttårsakAareg',
+	AnsettelsesformAareg = 'AnsettelsesformAareg',
+	Skipsregistre = 'Skipsregistre',
+	Skipstyper = 'Skipstyper',
+	Fartsomraader = 'Fartsområder',
+	Valutaer = 'Valutaer',
+}nais login
+
+gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-levende-arbeidsforhold-ansettelse
+        databases:
+          - name: ansettelse-jobber
+        autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
+        tier: db-f1-micro
+        diskAutoresize: true #Kanskje ikke nødvendig?
+        #collation: DESC
+
+    url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_HOST}:${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_PORT}/${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_DATABASE}?user=${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_USERNAME}&password=${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_PASSWORD}&sslcert=${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_SSLCERT}
+
+{andreSkift=Andre skift, skift365=Skiftarbeid (36,5 t/u), ikkeSkift=Ikke skift, offshore336=Arbeid offshore (33,6 t/u), doegnkontinuerligSkiftOgTurnus355=Døgnkontinuerlig skiftarbeid og turnusarbeid (35,5 t/u), helkontinuerligSkiftOgAndreOrdninger336=Helkontinuerlig skiftarbeid og andre ordninger med 33,6 t/u}

@@ -1,0 +1,52 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: testnav-levende-arbeidsforhold-scheduler
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
+    description: App for å ansette personer i en organisasjon
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  cloud:
+    vault:
+      enabled: false
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+consumers:
+  levende-arbeidsforhold-ansettelse:
+    name: testnav-levende-arbeidsforhold-ansettelse
+    namespace: dolly
+    url: http://testnav-levende-arbeidsforhold-ansettelse.dolly.svc.cluster.local
+    cluster: dev-gcp
