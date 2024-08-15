@@ -8,7 +8,10 @@ const DropdownToggle = () => {
 	const context = useContext(DropdownContext)
 	const { isOpen } = context
 	const location = useLocation()
-	const isFinnPerson = location?.pathname === '/dollysoek' || location?.pathname === '/testnorge'
+	const isFinnPerson =
+		location?.pathname === '/dollysoek' ||
+		location?.pathname === '/testnorge' ||
+		location?.pathname === '/tenor/personer/'
 
 	return (
 		<Dropdown.Toggle
@@ -53,6 +56,14 @@ export const FinnPersonDropdown = () => {
 					>
 						<Icon kind="search" fontSize="1.5rem" />
 						Søk i Tenor
+					</Dropdown.Menu.List.Item>
+					<Dropdown.Menu.List.Item
+						// data-testid={TestComponentSelectors.BUTTON_HEADER_TENOR}
+						onClick={() => navigate('/nyansettelser/')}
+						style={{ color: '#212529' }}
+					>
+						<Icon kind="ansettelse" fontSize="1.5rem" />
+						Vis nyansettelser
 					</Dropdown.Menu.List.Item>
 				</Dropdown.Menu.List>
 			</Dropdown.Menu>

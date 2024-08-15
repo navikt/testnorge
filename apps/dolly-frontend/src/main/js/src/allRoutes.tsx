@@ -2,6 +2,7 @@ import React, { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 import GruppeConnector from '@/pages/gruppe/GruppeConnector'
 import { OrganisasjonTenorSoekPage } from '@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'
+import NyansettelserPage from '@/pages/nyansettelser/NyansettelserPage'
 
 const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
 const Organisasjon = lazy(() => import('@/pages/organisasjoner/Organisasjoner'))
@@ -76,6 +77,11 @@ const allRoutes = [
 		path: '/admin/appstyring',
 		breadcrumb: 'App-styring',
 		element: () => <AppstyringPage />,
+	},
+	{
+		path: '/nyansettelser',
+		breadcrumb: 'Nyansettelser',
+		element: () => <NyansettelserPage />,
 	},
 ]
 
