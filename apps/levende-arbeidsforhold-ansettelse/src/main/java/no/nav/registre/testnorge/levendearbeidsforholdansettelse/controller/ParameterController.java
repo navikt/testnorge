@@ -34,20 +34,16 @@ public class ParameterController {
      */
     @GetMapping
     @Operation(description = "Henter alle parametre for oppretting av arbeidsforhold")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JobbParameter>> hentAlleParametere() {
-        try {
+
             return ResponseEntity.ok(parameterService.hentAlleParametere());
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
     }
 
     /**
      * Endepunktet frontenden bruker for å opdatere gjeldende verdi i jobb_parameter db.
      * @param parameternavn navnet på parameteren som skal bli oppdatert
      * @param verdi ER den nye verdien som skal bli oppdatert
-     * @return Enten den nye jobbParameterEntity eller feilmeldingen.
      */
     @PutMapping("/{parameternavn}")
     @Operation(description = "Legg inn ny verdi på en parameter")

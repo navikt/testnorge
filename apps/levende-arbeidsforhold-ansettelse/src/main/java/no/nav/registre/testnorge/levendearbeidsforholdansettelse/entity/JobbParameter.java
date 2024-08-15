@@ -8,8 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Getter
 @Setter
@@ -32,5 +32,19 @@ public class JobbParameter {
     private String verdi;
 
     @Column(name = "verdier")
-    private List<String> verdier;
+    private String verdier;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof JobbParameter that)) return false;
+
+        return new EqualsBuilder().append(getNavn(), that.getNavn()).append(getTekst(), that.getTekst()).append(getVerdi(), that.getVerdi()).append(getVerdier(), that.getVerdier()).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(getNavn()).append(getTekst()).append(getVerdi()).append(getVerdier()).toHashCode();
+    }
 }

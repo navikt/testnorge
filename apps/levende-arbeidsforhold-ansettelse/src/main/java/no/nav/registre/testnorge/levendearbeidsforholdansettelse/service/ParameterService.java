@@ -46,7 +46,6 @@ public class ParameterService {
      * Funksjon for å oppdatere en verdi i db.
      * @param parameternavn Objektet som skal oppdateres i
      * @param verdi ny verdi for parameter
-     * @return
      */
 
     @Transactional

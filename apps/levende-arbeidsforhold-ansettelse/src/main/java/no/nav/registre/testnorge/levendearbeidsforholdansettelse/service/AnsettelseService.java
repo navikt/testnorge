@@ -30,7 +30,7 @@ import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.J
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AnsettelseService  {
+public class AnsettelseService {
 
     private final PdlService pdlService;
     private final TenorService tenorService;
@@ -90,84 +90,84 @@ public class AnsettelseService  {
         int finalAntallPersPerOrg = antallPersPerOrg;
         //Kjører ansettelse per org
         organisasjoner.forEach(
-            organisasjon -> {
-                if (tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()) == null) {
-                    organisasjon = hentOrganisasjoner(1).getFirst();
-                }
-                String postnr = konverterPostnr(tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()));
+                organisasjon -> {
+                    if (tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()) == null) {
+                        organisasjon = hentOrganisasjoner(1).getFirst();
+                    }
+                    String postnr = konverterPostnr(tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()));
 
-                //Trekker alderspenn fra alias for hver pers som skal ansettes
-                List<Integer> aldersspennIndekser = new ArrayList<>();
-                for (int i = 0; i < finalAntallPersPerOrg; i++) {
-                    aldersspennIndekser.add(alias.aliasDraw());
-                }
+                    //Trekker alderspenn fra alias for hver pers som skal ansettes
+                    List<Integer> aldersspennIndekser = new ArrayList<>();
+                    for (int i = 0; i < finalAntallPersPerOrg; i++) {
+                        aldersspennIndekser.add(alias.aliasDraw());
+                    }
 
-                Iterator<Integer> aldersspennIterator = aldersspennIndekser.iterator();
-                int iteratorElement = aldersspennIterator.next();
+                    Iterator<Integer> aldersspennIterator = aldersspennIndekser.iterator();
+                    int iteratorElement = aldersspennIterator.next();
 
-                //Henter mulige personer per alderspenn basert på postnummer fra org
-                Map<Integer, List<Ident>> muligePersonerMap = new HashMap<>();
-                aldersspennIndekser.forEach(
-                        indeks -> {
-                            if (!muligePersonerMap.containsKey(indeks)) {
-                                muligePersonerMap.put(indeks, hentPersoner(datoIntervaller.get(indeks).getFrom().toString(), datoIntervaller.get(indeks).getTom().toString(), postnr));
-                            }
-                        });
-
-                List<Ident> ansattePersoner = new ArrayList<>();
-
-                //Ansetter personer
-                while (ansattePersoner.size() < finalAntallPersPerOrg) {
-                    try {
-                        List<Ident> muligePersoner = muligePersonerMap.get(iteratorElement);
-
-                        var tilfeldigIndex = tilfeldigTall(muligePersoner.size());
-                        var tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
-
-                        var stillingsprosent = Double.parseDouble(parametere.get(STILLINGSPROSENT.value));
-                        var arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent());
-
-                        if(kanAnsettes(stillingsprosent, arbeidsforholdList) ) {
-                            var tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
-
-                            //Try-catch fordi vi møtte på problemer der noen org ikke fikk suksessfulle ansettelser
-                            try {
-                                var ansettSporring = ansettPerson(tilfeldigPerson.getIdent(),
-                                        organisasjon.getOrganisasjonsnummer(),
-                                        tilfeldigYrke,
-                                        parametere.get(JobbParameterNavn.STILLINGSPROSENT.value));
-                                if (ansettSporring.isPresent() && ansettSporring.get().is2xxSuccessful()) {
-                                    ansattePersoner.add(tilfeldigPerson);
-
-                                    if (aldersspennIterator.hasNext()) {
-                                        iteratorElement = aldersspennIterator.next();
-                                    }
+                    //Henter mulige personer per alderspenn basert på postnummer fra org
+                    Map<Integer, List<Ident>> muligePersonerMap = new HashMap<>();
+                    aldersspennIndekser.forEach(
+                            indeks -> {
+                                if (!muligePersonerMap.containsKey(indeks)) {
+                                    muligePersonerMap.put(indeks, hentPersoner(datoIntervaller.get(indeks).getFrom().toString(), datoIntervaller.get(indeks).getTom().toString(), postnr));
                                 }
-                            }catch (WebClientResponseException e){
-                                log.error(e.toString());
-                                //Løsningen var å hente en ny tilfeldig organisasjon, da ingen personer fikk
-                                //vellykket ansettelse uansett hvor mange vi prøvde å hente
-                                organisasjon = hentOrganisasjoner(1).getFirst();
-                                continue;
-                            }
-                        }
-                        muligePersoner.remove(tilfeldigIndex);
+                            });
 
-                    } catch (NullPointerException e) {
-                        log.error(e.toString());
-                        //Henter ny liste med mulige personer dersom den forrige blir tom uten at man fikk ansatt nok
-                        muligePersonerMap.replace(iteratorElement, hentPersoner(datoIntervaller.get(iteratorElement).getFrom().toString(),
-                                datoIntervaller.get(iteratorElement).getTom().toString(), postnr));
-                    } catch (Exception e) {
-                        log.error(e.toString());
-                        break;
+                    List<Ident> ansattePersoner = new ArrayList<>();
+
+                    //Ansetter personer
+                    while (ansattePersoner.size() < finalAntallPersPerOrg) {
+                        try {
+                            List<Ident> muligePersoner = muligePersonerMap.get(iteratorElement);
+
+                            var tilfeldigIndex = tilfeldigTall(muligePersoner.size());
+                            var tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
+
+                            var stillingsprosent = Double.parseDouble(parametere.get(STILLINGSPROSENT.value));
+                            var arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent());
+
+                            if (kanAnsettes(stillingsprosent, arbeidsforholdList)) {
+                                var tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
+
+                                //Try-catch fordi vi møtte på problemer der noen org ikke fikk suksessfulle ansettelser
+                                try {
+                                    var ansettSporring = ansettPerson(tilfeldigPerson.getIdent(),
+                                            organisasjon.getOrganisasjonsnummer(),
+                                            tilfeldigYrke,
+                                            parametere.get(JobbParameterNavn.STILLINGSPROSENT.value));
+                                    if (ansettSporring.isPresent() && ansettSporring.get().is2xxSuccessful()) {
+                                        ansattePersoner.add(tilfeldigPerson);
+
+                                        if (aldersspennIterator.hasNext()) {
+                                            iteratorElement = aldersspennIterator.next();
+                                        }
+                                    }
+                                } catch (WebClientResponseException e) {
+                                    log.error(e.toString());
+                                    //Løsningen var å hente en ny tilfeldig organisasjon, da ingen personer fikk
+                                    //vellykket ansettelse uansett hvor mange vi prøvde å hente
+                                    organisasjon = hentOrganisasjoner(1).getFirst();
+                                    continue;
+                                }
+                            }
+                            muligePersoner.remove(tilfeldigIndex);
+
+                        } catch (NullPointerException e) {
+                            log.error(e.toString());
+                            //Henter ny liste med mulige personer dersom den forrige blir tom uten at man fikk ansatt nok
+                            muligePersonerMap.replace(iteratorElement, hentPersoner(datoIntervaller.get(iteratorElement).getFrom().toString(),
+                                    datoIntervaller.get(iteratorElement).getTom().toString(), postnr));
+                        } catch (Exception e) {
+                            log.error(e.toString());
+                            break;
+                        }
+                    }
+                    //Logging til db
+                    for (Ident person : ansattePersoner) {
+                        ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get(STILLINGSPROSENT.value)), parametere.get(ARBEIDSFORHOLD_TYPE.value));
                     }
                 }
-                //Logging til db
-                for (Ident person: ansattePersoner){
-                    ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get(STILLINGSPROSENT.value)), parametere.get(ARBEIDSFORHOLD_TYPE.value));
-                }
-            }
         );
     }
 
@@ -203,7 +203,7 @@ public class AnsettelseService  {
 
     private int getAntallAnsettelserHverOrg(int antallPers, int antallOrg) {
         //Kan implementere mer tilfeldig fordelig, foreløpig får alle organisasjonene like mange folk
-        return antallPers/antallOrg;
+        return antallPers / antallOrg;
     }
 
     private int tilfeldigTall(int max) {
