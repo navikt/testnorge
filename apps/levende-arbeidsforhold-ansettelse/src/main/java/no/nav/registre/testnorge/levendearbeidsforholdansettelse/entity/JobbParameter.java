@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "jobb_parameter")
 public class JobbParameter {
+
     @Id
     @Size(max = 255)
     @Column(name = "navn", nullable = false)
@@ -32,6 +33,4 @@ public class JobbParameter {
 
     @Column(name = "verdier")
     private List<String> verdier;
-
-
 }

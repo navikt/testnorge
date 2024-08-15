@@ -19,7 +19,7 @@ import static no.nav.testnav.levendearbeidsforholdscheduler.utils.Utils.sifferTi
 
 @Slf4j
 @RestController
-@RequestMapping("/scheduler")
+@RequestMapping("/api/v1/scheduler")
 @RequiredArgsConstructor
 public class JobbController {
 

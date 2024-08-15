@@ -35,18 +35,19 @@ public class AnsettelseService  {
     private final PdlService pdlService;
     private final TenorService tenorService;
     private final ArbeidsforholdService arbeidsforholdService;
-    private final JobbService jobbService;
+    private final ParameterService parameterService;
     private final KodeverkService kodeverkService;
     private final AnsettelseLoggService ansettelseLoggService;
 
     public void runAnsettelseService() {
+
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
         try {
-            thread.join(3000000); //Timeout etter 3000 sekunder
+            thread.join(300_000); //Timeout etter 300 sekunder
             if (thread.isAlive()) {
                 thread.interrupt();
-                System.out.println("Timeout occurred");
+                log.info("Timeout occurred");
             }
         } catch (InterruptedException e) {
             log.info("Timet ut");
@@ -55,21 +56,21 @@ public class AnsettelseService  {
 
     public void ansettelseService() {
         //Henter yrkeskoder for å gi tilfeldige yrker
-        List<String> yrkeskoder = hentKodeverk();
+        List<String> yrkeskoder = kodeverkService.hentKodeverkValues(KodeverkNavn.YRKER.value);
         if (yrkeskoder.isEmpty()) {
             return;
         }
 
         //Initialiserer liste over alderspenn og liste med tidligste og seneste gyldig dato for ansttelse
         AlderspennList alderspennList = new AlderspennList();
-        List<DatoIntervall> datoIntervaller = alderspennList.getDatoListe();
+        List<DatoIntervall> datoIntervaller = alderspennList.getDatointervaller();
 
         //Initialiserer aliasmetode for å benytte mer realistiske alderspenn i ansettelsene
-        List<Double> sannsynlighetFordeling =  alderspennList.sannsynlighetFordeling;
+        List<Double> sannsynlighetFordeling = AlderspennList.sannsynlighetFordeling;
         AliasMethod alias = new AliasMethod(sannsynlighetFordeling);
 
         //Henter parametere fra db
-        Map<String, String> parametere = hentParametere();
+        var parametere = parameterService.hentParametere();
 
         //Henter organisasjoner fra Tenor
         List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
@@ -170,10 +171,6 @@ public class AnsettelseService  {
         );
     }
 
-    private Map<String, String> hentParametere() {
-        return jobbService.hentParameterMap();
-    }
-
     private List<OrganisasjonDTO> hentOrganisasjoner(int antall) {
         return tenorService.hentOrganisasjoner(antall);
     }
@@ -212,10 +209,6 @@ public class AnsettelseService  {
     private int tilfeldigTall(int max) {
         Random random = new Random();
         return random.nextInt(max);
-    }
-
-    private List<String> hentKodeverk() {
-        return kodeverkService.hentKodeverkValues(KodeverkNavn.YRKER.value);
     }
 
     private String hentTilfeldigYrkeskode(List<String> yrkeskoder) {

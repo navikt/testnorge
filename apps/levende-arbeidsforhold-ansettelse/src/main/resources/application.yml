@@ -5,7 +5,7 @@ spring:
     banner-mode: off
   application:
     name: testnav-levende-arbeidsforhold-ansettelse
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
+    version: 1
     description: App for å ansette personer i en organisasjon
   security:
     oauth2:
@@ -17,6 +17,9 @@ spring:
   cloud:
     vault:
       enabled: false
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
