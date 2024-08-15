@@ -11,6 +11,8 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -32,7 +34,7 @@ public class JobbParameter {
     private String verdi;
 
     @Column(name = "verdier")
-    private String verdier;
+    private List<String> verdier;
 
     @Override
     public boolean equals(Object o) {
