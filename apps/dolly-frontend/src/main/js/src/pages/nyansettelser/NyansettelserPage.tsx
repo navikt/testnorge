@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Box, Pagination, Search, Table } from '@navikt/ds-react'
+import { useLevendeAnsettelseLogg } from '@/utils/hooks/useLevendeAnsettelse'
 
 const data = [
 	{
@@ -71,6 +72,10 @@ export default () => {
 
 	let sortData = data
 	sortData = sortData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+
+	const { loggData, loading, error } = useLevendeAnsettelseLogg(0, 1000, 'id,DESC')
+
+	console.log('loggData: ', loggData) //TODO - SLETT MEG
 
 	return (
 		<>
