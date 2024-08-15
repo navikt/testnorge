@@ -1933,6 +1933,23 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			data.push(penPensjonsavtale)
 		}
 
+		if (pensjonKriterier.generertInntekt) {
+			const generertPopp = {
+				header: 'Generert pensjonsgivende inntekt (POPP)',
+				items: [
+					obj('Fra og med år', pensjonKriterier.generertInntekt.generer?.fomAar),
+					obj('Til og med år', pensjonKriterier.generertInntekt.generer?.tomAar),
+					obj('Gjennomsnitt G-verdi', pensjonKriterier.generertInntekt.generer.averageG),
+					obj(
+						'Tillat inntekt under 1G',
+						oversettBoolean(pensjonKriterier.generertInntekt.generer.tillatInntektUnder1G),
+					),
+				],
+			}
+
+			data.push(generertPopp)
+		}
+
 		if (pensjonKriterier.tp && pensjonKriterier.tp?.length > 0) {
 			const hentTpOrdningNavn = (tpnr) => {
 				if (Options('tpOrdninger')?.length) {

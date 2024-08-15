@@ -88,6 +88,12 @@ public class AaregClient implements ClientRegister {
         return Flux.empty();
     }
 
+    @Override
+    public void release(List<String> identer) {
+
+        // Sletting av arbeidsforhold er pt ikke støttet
+    }
+
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
@@ -95,12 +101,6 @@ public class AaregClient implements ClientRegister {
                     BestillingProgress::setAaregStatus, status);
             return progress;
         };
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-        // Sletting av arbeidsforhold er pt ikke støttet
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,

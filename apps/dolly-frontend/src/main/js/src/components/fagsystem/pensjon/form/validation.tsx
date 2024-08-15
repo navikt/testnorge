@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import _ from 'lodash'
-import { ifPresent, requiredNumber } from '@/utils/YupValidations'
+import { ifPresent, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
@@ -194,6 +194,21 @@ export const validation = {
 						.min(0, 'Tast inn et gyldig beløp')
 						.typeError('Tast inn et gyldig beløp'),
 					redusertMedGrunnbelop: Yup.boolean(),
+				}),
+			),
+			generertInntekt: ifPresent(
+				'$pensjonforvalter.generertInntekt',
+				Yup.object({
+					generer: Yup.object({
+						tomAar: validTomDateTest(requiredNumber).required('Velg et gyldig år'),
+					}),
+					inntekter: Yup.array()
+						.of(
+							Yup.object({
+								inntekt: requiredString,
+							}),
+						)
+						.required('Generer minst én inntekt'),
 				}),
 			),
 			...PensjonsavtaleForm.validation,

@@ -1,8 +1,9 @@
 import Icon from '@/components/ui/icon/Icon'
 
 import './IconItem.less'
+import { Button } from '@navikt/ds-react'
 
-const IconItem: ({
+export const IconItem = ({
 	className,
 	icon,
 	fontSize,
@@ -10,10 +11,10 @@ const IconItem: ({
 	className: string
 	icon: string
 	fontSize?: string
-}) => JSX.Element = ({ className, icon, fontSize }) => (
+}) => (
 	<div className={`icon-item ${className}`}>
-		<Icon kind={icon} fontSize={fontSize} />
+		<Button variant={'tertiary-neutral'} size={'small'} style={{ pointerEvents: 'none' }}>
+			<Icon kind={icon} fontSize={fontSize} />
+		</Button>
 	</div>
 )
-
-export default IconItem
