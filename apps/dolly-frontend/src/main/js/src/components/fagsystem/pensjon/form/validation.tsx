@@ -199,6 +199,9 @@ export const validation = {
 			generertInntekt: ifPresent(
 				'$pensjonforvalter.generertInntekt',
 				Yup.object({
+					generer: Yup.object({
+						tomAar: validTomDateTest(requiredNumber).required('Velg et gyldig år'),
+					}),
 					inntekter: Yup.array()
 						.of(
 							Yup.object({

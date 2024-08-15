@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import api, { fetcher } from '@/api'
 import { v4 as _uuid } from 'uuid'
-import useSWRImmutable from 'swr/immutable'
+import useSWRMutation from 'swr/mutation'
 
 const pensjonVedtakUrl = '/testnav-pensjon-testdata-facade-proxy/api/vedtak'
 const pensjonFacadeGenererUrl =
@@ -40,7 +40,7 @@ const validateBody = (body) => {
 }
 
 export const usePensjonFacadeGenerer = (body: any) => {
-	const { data, isLoading, error, mutate } = useSWRImmutable<PensjonResponse, Error>(
+	const { data, error, trigger } = useSWRMutation<PensjonResponse, Error>(
 		validateBody(body) && pensjonFacadeGenererUrl,
 		(url) => {
 			return api
@@ -58,13 +58,11 @@ export const usePensjonFacadeGenerer = (body: any) => {
 				)
 				.then((response: PensjonResponse) => ({ data: response }))
 		},
-		{ dedupingInterval: 1000 },
 	)
 
 	return {
 		pensjonResponse: data?.data,
-		loading: isLoading,
 		error: error,
-		mutate: mutate,
+		trigger: trigger,
 	}
 }

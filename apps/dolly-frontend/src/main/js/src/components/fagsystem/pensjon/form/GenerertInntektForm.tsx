@@ -29,16 +29,34 @@ const StyledPanel = styled.div`
 
 export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
 	const formInntekter = formMethods.watch(`${pensjonGenererPath}.inntekter`)
-	const { pensjonResponse, mutate } = usePensjonFacadeGenerer(
+	const genererTOM = formMethods.watch(`${pensjonGenererPath}.generer.tomAar`)
+	const genererFOM = formMethods.watch(`${pensjonGenererPath}.generer.fomAar`)
+	const { pensjonResponse, trigger } = usePensjonFacadeGenerer(
 		formMethods.watch(`${pensjonGenererPath}.generer`),
 	)
 
 	const handleGenerer = () => {
-		formMethods.clearErrors(`${pensjonGenererPath}.inntekter`)
-		mutate().then((values) => {
-			formMethods.setValue(`${pensjonGenererPath}.inntekter`, values?.data?.arInntektGList)
-		})
+		formMethods.clearErrors(pensjonGenererPath)
+		trigger()
+			.then((values) => {
+				if (!values) {
+					formMethods.setError(`${pensjonGenererPath}.generer.tomAar`, {
+						message: 'Velg et gyldig år',
+					})
+				}
+				formMethods.setValue(`${pensjonGenererPath}.inntekter`, values?.data?.arInntektGList)
+			})
+			.catch(() => {
+				formMethods.setError(`${pensjonGenererPath}.generer.tomAar`, {
+					message: 'Velg et gyldig år',
+				})
+			})
+		formMethods.trigger(`${pensjonGenererPath}.generer.tomAar`)
 	}
+
+	useEffect(() => {
+		trigger()
+	}, [])
 
 	useEffect(() => {
 		if ((!formInntekter || formInntekter?.length === 0) && pensjonResponse) {
@@ -52,14 +70,17 @@ export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
 				'Generer inntekt for hvert år i perioden. Inntekten vil bli generert basert på G-verdi ' +
 				'og hver inntekt kan deretter endres manuelt.'
 			}
-			title="Generert skjema inntekt"
+			title="Generert skjema for inntekt"
 			vis={pensjonGenererPath}
 		>
 			<div className="flexbox--flex-wrap">
 				<FormSelect
 					name={`${pensjonGenererPath}.generer.fomAar`}
 					label="Fra og med år"
-					options={getYearRangeOptions(syttenFraOgMedAar || 1968, new Date().getFullYear() - 1)}
+					options={getYearRangeOptions(
+						syttenFraOgMedAar || 1968,
+						(genererTOM && genererTOM - 1) || new Date().getFullYear() - 1,
+					)}
 					size={'xsmall'}
 					isClearable={false}
 				/>
@@ -67,7 +88,10 @@ export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
 				<FormSelect
 					name={`${pensjonGenererPath}.generer.tomAar`}
 					label="Til og med år"
-					options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
+					options={getYearRangeOptions(
+						(genererFOM && genererFOM + 1) || 1968,
+						new Date().getFullYear() - 1,
+					)}
 					size={'xsmall'}
 					isClearable={false}
 				/>
