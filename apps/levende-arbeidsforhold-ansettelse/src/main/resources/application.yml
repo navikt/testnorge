@@ -20,6 +20,7 @@ spring:
   flyway:
     locations: classpath:db/migration
     enabled: true
+    baseline-on-migrate: true
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
