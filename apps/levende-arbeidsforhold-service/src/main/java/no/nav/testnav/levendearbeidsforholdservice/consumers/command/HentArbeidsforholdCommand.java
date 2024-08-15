@@ -1,6 +1,7 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg;
+package no.nav.testnav.levendearbeidsforholdservice.consumers.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
@@ -18,11 +19,9 @@ import java.util.concurrent.Callable;
 
 import static java.lang.String.format;
 
-
 @Slf4j
 @RequiredArgsConstructor
 public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>> {
-
     private static final String miljoe = "q2";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String CONSUMER = "Dolly";
@@ -35,11 +34,10 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
+    @SneakyThrows
     @Override
     public Flux<Arbeidsforhold> call() {
-
-        return webClient
-                .get()
+        return webClient.get()
                 .uri(builder -> builder
                         .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
                         .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning",
