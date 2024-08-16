@@ -233,6 +233,7 @@ export const showKodeverkLabel = (kodeverkNavn, value) => {
 	if (loading || error) {
 		return value
 	}
+	console.log('kodeverk: ', kodeverk) //TODO - SLETT MEG
 	return kodeverk?.find((kode) => kode?.value === value)?.label
 }
 
