@@ -223,34 +223,22 @@ export const FormDollyFieldArray = ({
 	maxReachedDescription = null,
 	buttonText = null,
 	errorText = null,
-	removeAllEntries = false,
 }) => {
 	const formMethods = useFormContext()
-	const { append, replace, fields, remove, insert } = useFieldArray({
+	const { append, update, fields, remove } = useFieldArray({
 		control: formMethods.control,
 		name: name,
 	})
-	const values = formMethods.watch(name)
 
 	useEffect(() => {
-		const differentLength = values?.length !== fields?.length
-
-		const fieldsWithoutId = fields?.map(({ id, ...rest }) => rest)
-		// Sjekker om det er noen forskjeller mellom values (form) og gjeldende fields
-		const differentValues = JSON.stringify(values) !== JSON.stringify(fieldsWithoutId)
-
-		// Noen ganger blir formet oppdatert utenfra
+		// Noen ganger blir formet oppdatert utenfra via setValue,
 		// da vil denne sjekken sørge for at vi oppdaterer fields også
-		if (differentLength || differentValues) {
-			replace(values)
+		if (formMethods.watch(name).length !== fields.length) {
+			formMethods.watch(name).forEach((entry, idx) => {
+				update(idx, entry)
+			})
 		}
-	}, [fields, values])
-
-	useEffect(() => {
-		if (removeAllEntries && fields.length > 0) {
-			fields.forEach((_, idx) => remove(idx))
-		}
-	}, [removeAllEntries])
+	}, [fields])
 
 	const addNewEntry = () => {
 		handleNewEntry ? handleNewEntry() : append(newEntry)
