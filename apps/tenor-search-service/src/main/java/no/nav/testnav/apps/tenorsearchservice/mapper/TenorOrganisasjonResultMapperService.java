@@ -16,6 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -75,10 +77,13 @@ public class TenorOrganisasjonResultMapperService {
         organisasjonResponse.setOrganisasjonsnummer(dokument.getTenorMetadata().getId());
         organisasjonResponse.setKilder(dokument.getTenorMetadata().getKilder());
         try {
-            log.info("BRREG kildedata: {}", dokument.getTenorMetadata().getKildedata());
-            organisasjonResponse.setBrregKildedata(objectMapper.readTree(dokument.getTenorMetadata().getKildedata()));
+            if (nonNull(dokument.getTenorMetadata().getKildedata())) {
+                organisasjonResponse.setBrregKildedata(objectMapper.readTree(dokument.getTenorMetadata().getKildedata()));
+            }
         } catch (Exception e) {
-            log.error("Feil ved konvertering av tenor organisasjon BRREG kildedata {}", e.getMessage(), e);
+            log.error("Feil ved konvertering av tenor organisasjon BRREG kildedata {} \nkildedata:\n{}",
+                    e.getMessage(),
+                    dokument.getTenorMetadata().getKildedata(), e);
         }
 
         return organisasjonResponse;
