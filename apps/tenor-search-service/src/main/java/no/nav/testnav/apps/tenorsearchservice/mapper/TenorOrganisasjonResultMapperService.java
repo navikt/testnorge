@@ -70,9 +70,12 @@ public class TenorOrganisasjonResultMapperService {
                 objectMapper.writeValueAsString(dokument),
                 TenorOversiktOrganisasjonResponse.Organisasjon.class);
 
+        log.info("Organisasjon response: {}", organisasjonResponse);
+
         organisasjonResponse.setOrganisasjonsnummer(dokument.getTenorMetadata().getId());
         organisasjonResponse.setKilder(dokument.getTenorMetadata().getKilder());
         try {
+            log.info("BRREG kildedata: {}", dokument.getTenorMetadata().getKildedata());
             organisasjonResponse.setBrregKildedata(objectMapper.readTree(dokument.getTenorMetadata().getKildedata()));
         } catch (Exception e) {
             log.error("Feil ved konvertering av tenor organisasjon BRREG kildedata {}", e.getMessage(), e);
