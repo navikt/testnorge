@@ -28,7 +28,6 @@ import { isSameDay } from 'date-fns'
 
 const testGyldigFom = (val) => {
 	return val.test('is-unique', (selected: string, testContext: any) => {
-		console.log('testContext: ', testContext) //TODO - SLETT MEG
 		const personFoerLeggTil = testContext?.options?.context?.personFoerLeggTil
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 		if (selected === null || selected === '') {
