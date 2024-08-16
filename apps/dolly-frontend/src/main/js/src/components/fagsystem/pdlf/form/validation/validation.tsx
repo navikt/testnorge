@@ -28,12 +28,14 @@ import { isSameDay } from 'date-fns'
 
 const testGyldigFom = (val) => {
 	return val.test('is-unique', (selected: string, testContext: any) => {
+		console.log('testContext: ', testContext) //TODO - SLETT MEG
+		const personFoerLeggTil = testContext?.options?.context?.personFoerLeggTil
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 		if (selected === null || selected === '') {
 			return true
 		}
 		const navn = fullForm?.navn ? [fullForm.navn] : fullForm?.pdldata?.person?.navn
-		const navnFoerLeggTil = fullForm?.personFoerLeggTil?.pdlforvalter?.person?.navn
+		const navnFoerLeggTil = personFoerLeggTil?.pdlforvalter?.person?.navn
 		let antallLike = 0
 		navn?.concat(navnFoerLeggTil)?.forEach((navn) => {
 			if (isSameDay(new Date(navn?.gyldigFraOgMed), new Date(selected))) {
