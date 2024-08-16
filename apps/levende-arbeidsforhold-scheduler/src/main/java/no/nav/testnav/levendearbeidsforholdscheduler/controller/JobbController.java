@@ -9,6 +9,7 @@ import no.nav.testnav.levendearbeidsforholdscheduler.scheduler.JobbScheduler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,10 +28,11 @@ public class JobbController {
 
     /**
      * Request handler funksjon for å restarte scheduler
-     * @param  intervall positivt heltall for å representere times-intervall
+     *
+     * @param intervall positivt heltall for å representere times-intervall
      * @return respons til klienten for den tilsvarende spørringen
      */
-    @GetMapping(value = {"", "/start"})
+    @PutMapping("/start")
     @Operation(description = "Starter scheduleren med en forsinkelse av et gitt intervall på x antall timer")
     public ResponseEntity<String> reschedule(@Schema(description = "Positivt heltall for å representere times-intervall") @RequestParam String intervall) {
 
@@ -40,8 +42,8 @@ public class JobbController {
 
         var resultat = sifferTilHeltall(intervall);
 
-        if (resultat.isPresent()){
-            if (jobbScheduler.startScheduler(resultat.get())){
+        if (resultat.isPresent()) {
+            if (jobbScheduler.startScheduler(resultat.get())) {
                 return ResponseEntity.ok("Aktivering av scheduler var vellykket med intervall: " + intervall);
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -54,6 +56,7 @@ public class JobbController {
     /**
      * Request handler funksjon som returnerer status på om scheduler kjører for øyeblikket og eventuelt tidspunktet
      * for neste gang scheduleren skal kjøre ansettelses-jobben
+     *
      * @return 200 OK, med status- og tidspunkt data på JSON format i response body
      */
     @GetMapping(value = "/status", produces = "application/json")
@@ -68,7 +71,7 @@ public class JobbController {
 
         statusRespons.setStatus(status);
 
-        if (status){
+        if (status) {
             tidspunkt = jobbScheduler.hentTidspunktNesteKjoring();
             if (tidspunkt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -82,13 +85,14 @@ public class JobbController {
 
     /**
      * Request handler funksjon for å stoppe scheduleren
+     *
      * @return true hvis kanselleringen var vellykket
      */
-    @GetMapping(value = "/stopp")
+    @PutMapping("/stopp")
     @Operation(description = "Stopper scheduleren dersom den er aktiv")
     public ResponseEntity<String> stopp() {
 
-        if (!jobbScheduler.stoppScheduler()){
+        if (!jobbScheduler.stoppScheduler()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         } else {
             return ResponseEntity.ok("Deaktivering av scheduler var vellykket");

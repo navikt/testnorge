@@ -12,7 +12,9 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-        - application: testnav-levende-arbeidsforhold-ansettelse
+        - application: dolly-frontend-dev
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
     outbound:
       rules:
         - application: testnav-levende-arbeidsforhold-ansettelse
