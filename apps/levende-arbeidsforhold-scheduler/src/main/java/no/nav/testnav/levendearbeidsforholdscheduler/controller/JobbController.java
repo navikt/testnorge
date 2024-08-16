@@ -1,7 +1,6 @@
 package no.nav.testnav.levendearbeidsforholdscheduler.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdscheduler.domain.RequestDTO;
@@ -36,15 +35,17 @@ public class JobbController {
      */
     @PutMapping("/start")
     @Operation(description = "Starter scheduleren med en forsinkelse av et gitt intervall på x antall timer")
-    public String reschedule(@Schema(description = "Positivt heltall for å representere times-intervall") @RequestBody RequestDTO request) {
+    public String reschedule(@RequestBody RequestDTO request) {
 
-        if (isNull(request.getInterval())) {
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "intervall er ikke spesifisert");
+        log.info("Mottatt parameter request {}", request);
+
+        if (isNull(request.getIntervall())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "intervall er ikke spesifisert");
         }
 
-        jobbScheduler.startScheduler(request.getInterval());
+        jobbScheduler.startScheduler(request.getIntervall());
 
-        return "Aktivering av scheduler var vellykket med intervall: %d".formatted(request.getInterval());
+        return "Aktivering av scheduler var vellykket med intervall: %d".formatted(request.getIntervall());
     }
 
     /**

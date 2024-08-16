@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RequestDTO {
 
-    private Integer interval;
+    private Integer intervall;
 }
