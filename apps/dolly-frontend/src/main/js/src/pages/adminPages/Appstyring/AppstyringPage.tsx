@@ -5,6 +5,7 @@ import { erDollyAdmin } from '@/utils/DollyAdmin'
 import React, { useEffect, useState } from 'react'
 import { FetchData, Jobbstatus } from '@/pages/adminPages/Appstyring/util/Typer'
 import { StatusBox } from '@/pages/adminPages/Appstyring/StatusBox'
+import Request from '@/service/services/Request'
 
 export default () => {
 	if (!erDollyAdmin()) {
@@ -37,7 +38,9 @@ export default () => {
 		let intervall = apiData.find((d) => d.navn == 'intervall')
 
 		if (intervall) {
-			await sendSporringScheduler(`${SCHEDULER_DOMENE}/scheduler?intervall=${intervall.verdi}`)
+			await sendSporringScheduler(
+				`${SCHEDULER_DOMENE}/api/v1/scheduler?intervall=${intervall.verdi}`,
+			)
 		} else {
 			feilHandtering('Intervall er ikke spesifisert')
 		}
@@ -48,7 +51,7 @@ export default () => {
 	 */
 	async function deaktiverScheduler() {
 		if (window.confirm('Vil du deaktivere jobben? Du kan aktivere ny jobb igjen når som helst.')) {
-			await sendSporringScheduler(`${SCHEDULER_DOMENE}/scheduler/stopp`)
+			await sendSporringScheduler(`${SCHEDULER_DOMENE}/api/v1/scheduler/stopp`)
 		}
 	}
 
@@ -59,17 +62,19 @@ export default () => {
 	 */
 	async function sendSporringScheduler(url: string) {
 		setHenterStatus(true)
-		await fetch(url)
-			.then(async (res) => {
-				setTimeout(() => {
-					if (!res.ok) {
-						feilHandtering(`${res.body}`)
-					}
-
-					fetchStatusScheduler()
-					setHenterStatus(false)
-				}, 200)
-			})
+		await Request.put(url)
+			.then((data) => console.log(data))
+			// .then(async (res) => {
+			// 	console.log("data", data)
+			// 	setTimeout(() => {
+			// 		if (!res.ok) {
+			// 			feilHandtering(`${res.body}`)
+			// 		}
+			//
+			// 		fetchStatusScheduler()
+			// 		setHenterStatus(false)
+			// 	}, 200)
+			// })
 			.catch(feilHandtering)
 	}
 	/**
@@ -77,7 +82,7 @@ export default () => {
 	 * eller ikke
 	 */
 	async function fetchStatusScheduler() {
-		const data = await fetch(`${SCHEDULER_DOMENE}/scheduler/status`)
+		const data = await fetch(`${SCHEDULER_DOMENE}/api/v1/scheduler/status`)
 			.then((res) => res.json())
 			.catch(feilHandtering)
 		setStatusData(data)
