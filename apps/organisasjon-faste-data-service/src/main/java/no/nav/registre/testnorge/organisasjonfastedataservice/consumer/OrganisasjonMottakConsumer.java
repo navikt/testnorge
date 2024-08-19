@@ -68,18 +68,23 @@ public class OrganisasjonMottakConsumer {
         Optional.ofNullable(organisasjon.getEpost())
                 .ifPresent(value -> builder.setEpostBuilder(Epost.newBuilder().setEpost(value)));
 
-        return builder
-                .setOrgnummer(organisasjon.getOrgnummer())
-                .setEnhetstype(organisasjon.getEnhetstype())
-                .setNavnBuilder(DetaljertNavn
-                        .newBuilder()
-                        .setNavn1(organisasjon.getNavn())
-                        .setRedigertNavn(organisasjon.getRedigertNavn())
-                )
-                .setUnderenheter(organisasjon.getUnderenheter().stream().map(this::create).collect(Collectors.toList()))
-                .setPostadresse(create(organisasjon.getPostadresse()))
-                .setForretningsadresse(create(organisasjon.getForretningsAdresse()))
-                .build();
+        try {
+            return builder
+                    .setOrgnummer(organisasjon.getOrgnummer())
+                    .setEnhetstype(organisasjon.getEnhetstype())
+                    .setNavnBuilder(DetaljertNavn
+                            .newBuilder()
+                            .setNavn1(organisasjon.getNavn())
+                            .setRedigertNavn(organisasjon.getRedigertNavn())
+                    )
+                    .setUnderenheter(organisasjon.getUnderenheter().stream().map(this::create).collect(Collectors.toList()))
+                    .setPostadresse(create(organisasjon.getPostadresse()))
+                    .setForretningsadresse(create(organisasjon.getForretningsAdresse()))
+                    .build();
+        } catch (AvroRuntimeException e) {
+            log.error("Feil ved mapping av organisasjon: {}", Json.pretty(organisasjon), e);
+            throw e;
+        }
     }
 
 
