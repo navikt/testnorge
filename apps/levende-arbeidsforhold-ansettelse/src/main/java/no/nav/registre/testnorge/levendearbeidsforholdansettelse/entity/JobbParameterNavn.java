@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity;
 
-import lombok.Getter;
-
 public enum JobbParameterNavn {
     ANTALL_ORGANISASJONER ("antallOrganisasjoner"),
     ANTALL_PERSONER ("antallPersoner"),

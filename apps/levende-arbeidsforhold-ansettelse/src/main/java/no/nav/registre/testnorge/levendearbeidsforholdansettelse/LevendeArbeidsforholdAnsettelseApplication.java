@@ -9,5 +9,4 @@ public class LevendeArbeidsforholdAnsettelseApplication {
     public static void main(String[] args) {
         SpringApplication.run(LevendeArbeidsforholdAnsettelseApplication.class, args);
     }
-
 }

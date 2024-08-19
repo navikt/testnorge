@@ -20,15 +20,19 @@ public class SecurityConfig {
         httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
-                        "/internal/**",
-                        "/webjars/**",
-                        "/swagger-resources/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger",
-                        "/error",
-                        "/swagger-ui.html"
-                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
+                                "/internal/**",
+                                "/webjars/**",
+                                "/swagger-resources/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger",
+                                "/error",
+                                "/swagger-ui.html",
+                                "/h2/**",
+                                "/member/**")
+                        .permitAll()
+                        .requestMatchers("/api/**")
+                        .fullyAuthenticated())
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
 
         return httpSecurity.build();

@@ -2,7 +2,10 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Alias metode for å sette opp en alias tabell, for å gjøre utrekk fra en sannsynlighetsfordeling.
@@ -11,39 +14,39 @@ import java.util.*;
  */
 @Slf4j
 public class AliasMethod {
-    List<Double> sannsynlighet;
-    List<Double> q;
-    List<Integer> J;
-    Random random;
 
+    private static final Random RANDOM = new SecureRandom();
+    private final List<Double> sannsynlighet;
+    private final List<Double> q;
+    private final List<Integer> j;
     /**
      * Metoden for å sette opp alias tabellen.
      * @param prob Er listen av tall som utgjør en sannsynlighetsfordeling. Denne behøver ikke å være normalisert
      */
     public AliasMethod(List<Double> prob) {
+
+        sannsynlighet = new ArrayList<Double>();
+        q = new ArrayList<Double>();
+        j = new ArrayList<Integer>();
+
         //Finne summen av sannsynlighetsfordeling for så normalisere sannsynligheten
-        Double sum = prob.stream().mapToDouble(i -> i).sum();
-        sannsynlighet = new ArrayList<>();
-        for(Double i: prob){
-            sannsynlighet.add(i/sum);
+        var sum = prob.stream().mapToDouble(i -> i).sum();
+
+        for(Double i: prob) {
+            sannsynlighet.add(i / sum);
         }
 
         int size = prob.size();
-
-        this.q = new ArrayList<>();
-        this.J = new ArrayList<>();
 
         //initialisere q og j
         // # TODO gjøre dette bedre
         for(int i=0; i<size;i++){
             q.add(0.0);
-            J.add(0);
+            j.add(0);
         }
 
-        this.random = new Random();
-
-        List<Integer> mindre = new ArrayList<>();
-        List<Integer> storre = new ArrayList<>();
+        var mindre = new ArrayList<Integer>();
+        var storre = new ArrayList<Integer>();
 
         //Legge til i mindre hvis q[i] er mindre enn 1 og i større hvis ikke
         for (int i = 0; i < sannsynlighet.size(); i++) {
@@ -57,7 +60,7 @@ public class AliasMethod {
             Integer liten = mindre.removeLast();
             Integer stor = storre.removeLast();
 
-            J.set(liten, stor);
+            j.set(liten, stor);
             q.set(stor, q.get(stor) - (1.0 - q.get(liten)));
 
             if (q.get(stor) < 1.0)
@@ -73,14 +76,14 @@ public class AliasMethod {
      * @return Returnerer indeksen fra sannsynlighetsfordelingen som har blitt trukket.
      */
     public int aliasDraw() {
-        int k = J.size();
-        int nextInt = random.nextInt(k);
+        int k = j.size();
+        int nextInt = RANDOM.nextInt(k);
 
-        double sjekk = random.nextDouble();
+        double sjekk = RANDOM.nextDouble();
         if (sjekk < q.get(nextInt))
             return nextInt;
         else
-            return J.get(nextInt);
+            return j.get(nextInt);
     }
 }
 
