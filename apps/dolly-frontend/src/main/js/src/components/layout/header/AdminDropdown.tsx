@@ -8,7 +8,8 @@ const DropdownToggle = () => {
 	const { isOpen } = context
 	const location = useLocation()
 	const isAdmin =
-		location?.pathname === '/admin/orgtilgang' || location?.pathname === '/admin/appstyring'
+		location?.pathname === '/admin/orgtilgang' ||
+		location?.pathname === '/admin/levendearbeidsforhold'
 
 	return (
 		<Dropdown.Toggle className={isOpen || isAdmin ? 'dropdown-toggle active' : 'dropdown-toggle'}>
@@ -39,7 +40,7 @@ export const AdminDropdown = () => {
 						style={{ color: '#212529' }}
 					>
 						<FingerButtonIcon title="a11y-title" fontSize="1.5rem" />
-						App: Levende arbeidsforhold
+						Levende arbeidsforhold
 					</Dropdown.Menu.List.Item>
 				</Dropdown.Menu.List>
 			</Dropdown.Menu>
