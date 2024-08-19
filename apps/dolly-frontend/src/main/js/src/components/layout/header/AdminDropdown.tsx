@@ -35,11 +35,11 @@ export const AdminDropdown = () => {
 						Organisasjon-tilgang
 					</Dropdown.Menu.List.Item>
 					<Dropdown.Menu.List.Item
-						onClick={() => navigate('/admin/appstyring')}
+						onClick={() => navigate('/admin/levendearbeidsforhold')}
 						style={{ color: '#212529' }}
 					>
 						<FingerButtonIcon title="a11y-title" fontSize="1.5rem" />
-						App-styring
+						App: Levende arbeidsforhold
 					</Dropdown.Menu.List.Item>
 				</Dropdown.Menu.List>
 			</Dropdown.Menu>

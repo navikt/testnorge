@@ -5,7 +5,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import DollyModal from '@/components/ui/modal/DollyModal'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { useForm } from 'react-hook-form'
-import { FetchData } from '@/pages/adminPages/Appstyring/util/Typer'
+import { FetchData } from '@/pages/adminPages/Levendearbeidsforhold/util/Typer'
 
 interface Props {
 	name: string

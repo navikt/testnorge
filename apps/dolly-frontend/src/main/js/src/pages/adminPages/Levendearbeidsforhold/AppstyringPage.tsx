@@ -1,11 +1,10 @@
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import { Alert, Button } from '@navikt/ds-react'
-import { AppstyringTable } from '@/pages/adminPages/Appstyring/AppstyringTable'
+import { AppstyringTable } from '@/pages/adminPages/Levendearbeidsforhold/AppstyringTable'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
 import React, { useEffect, useState } from 'react'
-import { FetchData, Jobbstatus } from '@/pages/adminPages/Appstyring/util/Typer'
-import { StatusBox } from '@/pages/adminPages/Appstyring/StatusBox'
-import Request from '@/service/services/Request'
+import { FetchData, Jobbstatus } from '@/pages/adminPages/Levendearbeidsforhold/util/Typer'
+import { StatusBox } from '@/pages/adminPages/Levendearbeidsforhold/StatusBox'
 
 export default () => {
 	if (!erDollyAdmin()) {
@@ -39,7 +38,7 @@ export default () => {
 
 		if (intervall) {
 			await sendSporringScheduler(
-				`${SCHEDULER_DOMENE}/api/v1/scheduler?intervall=${intervall.verdi}`,
+				`${SCHEDULER_DOMENE}/api/v1/scheduler/start?intervall=${intervall.verdi}`,
 			)
 		} else {
 			feilHandtering('Intervall er ikke spesifisert')
@@ -62,21 +61,22 @@ export default () => {
 	 */
 	async function sendSporringScheduler(url: string) {
 		setHenterStatus(true)
-		await Request.put(url)
-			.then((data) => console.log(data))
-			// .then(async (res) => {
-			// 	console.log("data", data)
-			// 	setTimeout(() => {
-			// 		if (!res.ok) {
-			// 			feilHandtering(`${res.body}`)
-			// 		}
-			//
-			// 		fetchStatusScheduler()
-			// 		setHenterStatus(false)
-			// 	}, 200)
-			// })
+		await fetch(url, {
+			method: 'PUT',
+		})
+			.then(async (res) => {
+				setTimeout(() => {
+					if (!res.ok) {
+						feilHandtering(`${res.body}`)
+					}
+
+					fetchStatusScheduler()
+					setHenterStatus(false)
+				}, 200)
+			})
 			.catch(feilHandtering)
 	}
+
 	/**
 	 * Funksjon som sender spørring til scheduler appen sitt API for å hente ut status på om scheduleren er aktiv
 	 * eller ikke
@@ -109,10 +109,11 @@ export default () => {
 
 	return (
 		<>
-			<h1>App-styring</h1>
-			<Alert variant={'info'} style={{ marginBottom: '15px' }}>
-				Denne siden er under utvikling.
-			</Alert>
+			<h1>Levende arbeidsforhold</h1>
+			<h2>Kontrollpanel for styring av app</h2>
+			{/*<Alert variant={'info'} style={{ marginBottom: '15px' }}>*/}
+			{/*	Denne siden er under utvikling.*/}
+			{/*</Alert>*/}
 			<StatusBox nesteKjoring={statusData.nesteKjoring} status={statusData.status} />
 			{!statusData.status ? (
 				<Button loading={henterStatus} onClick={aktiverScheduler} style={{ marginBottom: '8px' }}>
