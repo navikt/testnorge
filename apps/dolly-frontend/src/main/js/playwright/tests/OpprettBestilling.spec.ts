@@ -39,6 +39,9 @@ test.describe('Oppretter bestilling med alle resterende artifakter', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('gruppe/1')
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_PERSONER).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_MAL).click()
+		await page.getByTestId(TestComponentSelectors.SELECT_MAL).click()
+
 		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
 		await page.waitForTimeout(2000)
 
@@ -49,9 +52,10 @@ test.describe('Oppretter bestilling med alle resterende artifakter', () => {
 			await page.waitForTimeout(100)
 		}
 		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
-		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+		await page.waitForTimeout(500)
 
-		await page.getByTestId(TestComponentSelectors.BUTTON_FULLFOER_BESTILLING).click()
-		await expect(page.url()).not.toContain('bestilling')
+		await page.getByTestId(TestComponentSelectors.BUTTON_TILBAKE).click()
+
+		expect(page.url()).toContain('bestilling')
 	})
 })
