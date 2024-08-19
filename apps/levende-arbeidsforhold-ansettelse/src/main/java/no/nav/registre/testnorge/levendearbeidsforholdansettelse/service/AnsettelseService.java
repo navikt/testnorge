@@ -44,7 +44,7 @@ public class AnsettelseService {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
         try {
-            thread.join(300_000); //Timeout etter 300 sekunder
+            thread.join(3_000_000); //Timeout etter 3000 sekunder
             if (thread.isAlive()) {
                 thread.interrupt();
                 log.info("Timeout occurred");

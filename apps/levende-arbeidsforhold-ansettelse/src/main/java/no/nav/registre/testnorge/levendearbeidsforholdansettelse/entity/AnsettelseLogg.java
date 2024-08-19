@@ -44,7 +44,7 @@ public class AnsettelseLogg {
     private String folkeregisterident;
 
     @NotNull
-    @Column(name = "\"timestamp\"", nullable = false)
+    @Column(name = "timestamp", nullable = false)
     private OffsetDateTime timestamp;
 
     @NotNull
