@@ -3,15 +3,14 @@ package no.nav.testnav.levendearbeidsforholdscheduler.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.levendearbeidsforholdscheduler.domain.RequestDTO;
 import no.nav.testnav.levendearbeidsforholdscheduler.domain.StatusRespons;
 import no.nav.testnav.levendearbeidsforholdscheduler.scheduler.JobbScheduler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,22 +29,20 @@ public class JobbController {
     /**
      * Request handler funksjon for å restarte scheduler
      *
-     * @param request intervall positivt heltall for å representere times-intervall
+     * @param intervall positivt heltall for å representere times-intervall
      * @return respons til klienten for den tilsvarende spørringen
      */
     @PutMapping("/start")
     @Operation(description = "Starter scheduleren med en forsinkelse av et gitt intervall på x antall timer")
-    public String reschedule(@RequestBody RequestDTO request) {
+    public String reschedule(@RequestParam Integer intervall) {
 
-        log.info("Mottatt parameter request {}", request);
-
-        if (isNull(request.getIntervall())) {
+        if (isNull(intervall)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "intervall er ikke spesifisert");
         }
 
-        jobbScheduler.startScheduler(request.getIntervall());
+        jobbScheduler.startScheduler(intervall);
 
-        return "Aktivering av scheduler var vellykket med intervall: %d".formatted(request.getIntervall());
+        return "Aktivering av scheduler var vellykket med intervall: %d".formatted(intervall);
     }
 
     /**
