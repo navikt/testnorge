@@ -9,6 +9,7 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
+	toTitleCase,
 	uppercaseAndUnderscoreToCapitalized,
 } from '@/utils/DataFormatter'
 import {
@@ -27,6 +28,7 @@ import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1931,6 +1933,23 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			data.push(penPensjonsavtale)
 		}
 
+		if (pensjonKriterier.generertInntekt) {
+			const generertPopp = {
+				header: 'Generert pensjonsgivende inntekt (POPP)',
+				items: [
+					obj('Fra og med år', pensjonKriterier.generertInntekt.generer?.fomAar),
+					obj('Til og med år', pensjonKriterier.generertInntekt.generer?.tomAar),
+					obj('Gjennomsnitt G-verdi', pensjonKriterier.generertInntekt.generer.averageG),
+					obj(
+						'Tillat inntekt under 1G',
+						oversettBoolean(pensjonKriterier.generertInntekt.generer.tillatInntektUnder1G),
+					),
+				],
+			}
+
+			data.push(generertPopp)
+		}
+
 		if (pensjonKriterier.tp && pensjonKriterier.tp?.length > 0) {
 			const hentTpOrdningNavn = (tpnr) => {
 				if (Options('tpOrdninger')?.length) {
@@ -2123,6 +2142,59 @@ const mapInntektsmelding = (bestillingData, data) => {
 		if (_.isEmpty(inntektsmeldingKriterier.inntekter)) {
 			data.push(tomInntektsmelding)
 		} else data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
+	}
+}
+
+const mapSkattekort = (bestillingData, data) => {
+	const skattekortKriterier = bestillingData.skattekort
+
+	if (skattekortKriterier) {
+		const skattekort = {
+			header: 'Skattekort (SOKOS)',
+			itemRows: [],
+		}
+
+		skattekortKriterier?.arbeidsgiverSkatt?.forEach((arbeidsgiver, idx) => {
+			const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
+			const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
+
+			const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
+				(tilleggsopplysning) => {
+					return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
+				},
+			)
+
+			skattekort.itemRows.push([
+				{ numberHeader: `Skattekort ${idx + 1}` },
+				obj(
+					'Resultat på forespørsel',
+					showKodeverkLabel('RESULTATSTATUS', arbeidstaker?.resultatPaaForespoersel),
+				),
+				obj('Inntektsår', arbeidstaker?.inntektsaar),
+				obj('Utstedt dato', formatDate(arbeidstaker?.skattekort?.utstedtDato)),
+				obj('Skattekortidentifikator', arbeidstaker?.skattekort?.skattekortidentifikator),
+				obj('Tilleggsopplysning', arrayToString(tilleggsopplysningFormatted)),
+				obj('Arbeidsgiver (org.nr.)', arbeidsgiver?.arbeidsgiveridentifikator?.organisasjonsnummer),
+				obj('Arbeidsgiver (ident)', arbeidsgiver?.arbeidsgiveridentifikator?.personidentifikator),
+			])
+
+			trekkListe?.forEach((item, idx) => {
+				const forskuddstrekkType = Object.keys(item)?.filter((key) => item[key])?.[0]
+				const forskuddstrekk = item[forskuddstrekkType]
+
+				skattekort.itemRows.push([
+					{ numberHeader: `Forskuddstrekk ${idx + 1}: ${toTitleCase(forskuddstrekkType)}` },
+					obj('Trekkode', showKodeverkLabel('TREKKODE', forskuddstrekk?.trekkode)),
+					obj('Frikortbeløp', forskuddstrekk?.frikortbeloep),
+					obj('Tabelltype', showKodeverkLabel('TABELLTYPE', forskuddstrekk?.tabelltype)),
+					obj('Tabellnummer', forskuddstrekk?.tabellnummer),
+					obj('Prosentsats', forskuddstrekk?.prosentsats),
+					obj('Antall måneder for trekk', forskuddstrekk?.antallMaanederForTrekk),
+				])
+			})
+		})
+
+		data.push(skattekort)
 	}
 }
 
@@ -2326,16 +2398,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapSigrunStub(bestillingData, data)
 	mapSigrunstubPensjonsgivende(bestillingData, data)
 	mapInntektStub(bestillingData, data)
+	mapInntektsmelding(bestillingData, data)
+	mapSkattekort(bestillingData, data)
 	mapArbeidsplassenCV(bestillingData, data)
+	mapPensjon(bestillingData, data, navEnheter)
+	mapArena(bestillingData, data)
 	mapSykemelding(bestillingData, data)
 	mapBrregstub(bestillingData, data)
+	mapInst(bestillingData, data)
 	mapKrr(bestillingData, data)
 	mapMedlemskapsperiode(bestillingData, data)
-	mapArena(bestillingData, data)
-	mapInst(bestillingData, data)
 	mapUdiStub(bestillingData, data)
-	mapPensjon(bestillingData, data, navEnheter)
-	mapInntektsmelding(bestillingData, data)
 	mapDokarkiv(bestillingData, data)
 	mapHistark(bestillingData, data)
 	mapOrganisasjon(bestillingData, data)

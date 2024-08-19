@@ -49,12 +49,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 		}
 		if (value === 'Date') {
 			return (
-				<FormDatepicker
-					name={`${path}.${key}`}
-					key={`${path}.${key}`}
-					label={label}
-					size={size}
-				/>
+				<FormDatepicker name={`${path}.${key}`} key={`${path}.${key}`} label={label} size={size} />
 			)
 		}
 		return (

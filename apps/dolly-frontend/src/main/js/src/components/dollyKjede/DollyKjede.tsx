@@ -76,10 +76,10 @@ export default ({
 	const [locked, setLocked] = useState(isLocked)
 
 	const [paginationIndex, setPaginationIndex] = useState(
-		getInitialPaginationIndex(antallItems, maxShownItems)
+		getInitialPaginationIndex(antallItems, maxShownItems),
 	)
 	const [centerIndices, setCenterIndices] = useState(
-		getCenterIndices(paginationIndex, antallItems, maxShownItems)
+		getCenterIndices(paginationIndex, antallItems, maxShownItems),
 	)
 
 	useEffect(() => {
