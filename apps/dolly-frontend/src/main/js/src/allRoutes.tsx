@@ -75,7 +75,7 @@ const allRoutes = [
 		element: () => <OrgtilgangPage />,
 	},
 	{
-		path: '/admin/Levendearbeidsforhold',
+		path: '/admin/levendearbeidsforhold',
 		breadcrumb: 'Levende-arbeidsforhold',
 		element: () => <LevendeArbeidsforholdPage />,
 	},
