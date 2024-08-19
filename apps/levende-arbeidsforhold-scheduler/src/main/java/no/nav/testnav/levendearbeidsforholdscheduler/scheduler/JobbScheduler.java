@@ -22,8 +22,6 @@ import static no.nav.testnav.levendearbeidsforholdscheduler.utils.Utils.hentKale
 @RequiredArgsConstructor
 public class JobbScheduler {
 
-    private final AnsettelsesService ansettelsesService;
-    private final ScheduledExecutorService taskScheduler;
 
     private ScheduledFuture<?> scheduledFuture;
 
@@ -32,8 +30,10 @@ public class JobbScheduler {
 
     private static final int SLUTT_KLOKKESLETT = 12;
     private static final int SLUTT_DAG = 6;
-
     private static final long INITIELL_FORSINKELSE = 0;
+
+    private final AnsettelsesService ansettelsesService;
+    private final ScheduledExecutorService taskScheduler;
 
     /**
      * Funksjon som brukes for å sjekke om scheduleren kjører for øyeblikket

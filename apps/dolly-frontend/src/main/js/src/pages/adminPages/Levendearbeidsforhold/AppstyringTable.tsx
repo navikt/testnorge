@@ -1,11 +1,16 @@
-import {Box, Table} from '@navikt/ds-react'
+import { Box, Table } from '@navikt/ds-react'
 import React from 'react'
-import {ErrorBoundary} from '@/components/ui/appError/ErrorBoundary'
-import {EditParameter} from '@/pages/adminPages/Appstyring/EditParameter'
-import {FetchData} from "@/pages/adminPages/Appstyring/util/Typer";
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { EditParameter } from '@/pages/adminPages/Levendearbeidsforhold/EditParameter'
+import { FetchData } from '@/pages/adminPages/Levendearbeidsforhold/util/Typer'
 
-export const AppstyringTable = ({data, setData}: { data: Array<FetchData>, setData: (data: Array<FetchData>) => void }) => {
-
+export const AppstyringTable = ({
+	data,
+	setData,
+}: {
+	data: Array<FetchData>
+	setData: (data: Array<FetchData>) => void
+}) => {
 	return (
 		<Box background="surface-default" padding="4">
 			<ErrorBoundary>

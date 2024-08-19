@@ -5,7 +5,7 @@ spring:
     banner-mode: off
   application:
     name: testnav-levende-arbeidsforhold-scheduler
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
+    version: 1
     description: App for å ansette personer i en organisasjon
   security:
     oauth2:

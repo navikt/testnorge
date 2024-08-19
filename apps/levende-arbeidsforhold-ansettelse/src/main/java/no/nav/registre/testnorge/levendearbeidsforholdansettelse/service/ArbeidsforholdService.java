@@ -23,15 +23,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdService {
-    private final AaregConsumer aaregConsumer;
-    private final String arbeidstakerType = "Person";
-    private final String arbeidsgiverType = "Organisasjon";
-    private final String arbeidsforholdType = "ordinaertArbeidsforhold"; //#TODO KAN BLI HENTET FRA DB
-    private final String arbeidstidsordning = "ikkeSkift";
-    private final String ansettelsesform = "fast";
-    private final double TIMER_HUNDRE_PROSENT = 37.5;
-    private final int HUNDRE_PROSENT = 100;
 
+    private static final String arbeidstakerType = "Person";
+    private static final String arbeidsgiverType = "Organisasjon";
+    private static final String arbeidsforholdType = "ordinaertArbeidsforhold"; //#TODO KAN BLI HENTET FRA DB
+    private static final String arbeidstidsordning = "ikkeSkift";
+    private static final String ansettelsesform = "fast";
+    private static final double TIMER_HUNDRE_PROSENT = 37.5;
+    private static final int HUNDRE_PROSENT = 100;
+
+    private final AaregConsumer aaregConsumer;
 
     /**
      * @param ident Identnummeret til personen det skal hentes arbeidsforhold for
