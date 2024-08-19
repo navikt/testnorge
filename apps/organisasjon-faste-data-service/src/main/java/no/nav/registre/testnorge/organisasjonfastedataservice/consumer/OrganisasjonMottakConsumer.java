@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -89,7 +91,7 @@ public class OrganisasjonMottakConsumer {
 
 
     private no.nav.testnav.libs.avro.organisasjon.v1.Adresse create(Adresse adresse) {
-        if (adresse == null) {
+        if (isNull(adresse) || isNull(adresse.getPostnr())) {
             return null;
         }
 
