@@ -2,7 +2,7 @@ import { Box, Button, Search, ToggleGroup } from '@navikt/ds-react'
 import React, { useState } from 'react'
 import { PersonIcon, TenancyIcon } from '@navikt/aksel-icons'
 import { Form, FormProvider, useForm } from 'react-hook-form'
-import { getIdentUrl } from '@/utils/hooks/useLevendeArbeidsforhold'
+import { getIdentUrl, getOrgnummerUrl } from '@/utils/hooks/useLevendeArbeidsforhold'
 import Request from '@/service/services/Request'
 
 enum SoekKategorier {
@@ -10,15 +10,26 @@ enum SoekKategorier {
 	ORGNR = 'orgnr',
 }
 
-export const NyansettelserSoek = ({ setIdentSoekData, setPage }) => {
+export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setPage }) => {
 	const [soekKategori, setSoekKategori] = useState(SoekKategorier.IDENT)
 	const [soekValue, setSoekValue] = useState(null)
 
 	const onSubmit = async () => {
-		await Request.get(getIdentUrl(soekValue)).then((response) => {
-			setIdentSoekData(response.data)
-			setPage(1)
-		})
+		if (!soekValue) {
+			nullstill()
+			return
+		}
+		if (soekKategori === SoekKategorier.ORGNR) {
+			await Request.get(getOrgnummerUrl(soekValue)).then((response) => {
+				setOrgnummerSoekData(response.data)
+				setPage(1)
+			})
+		} else {
+			await Request.get(getIdentUrl(soekValue)).then((response) => {
+				setIdentSoekData(response.data)
+				setPage(1)
+			})
+		}
 	}
 
 	const formMethods = useForm({
@@ -30,6 +41,7 @@ export const NyansettelserSoek = ({ setIdentSoekData, setPage }) => {
 		formMethods.reset()
 		setSoekValue(null)
 		setIdentSoekData(null)
+		setOrgnummerSoekData(null)
 		setPage(1)
 	}
 
@@ -62,7 +74,11 @@ export const NyansettelserSoek = ({ setIdentSoekData, setPage }) => {
 						<Search
 							label="Søk etter personident"
 							variant="secondary"
-							placeholder="Søk etter personident ..."
+							placeholder={
+								soekKategori === SoekKategorier.ORGNR
+									? 'Søk etter organisasjonsnummer ...'
+									: 'Søk etter personident ...'
+							}
 							onChange={(value) => {
 								value ? setSoekValue(value) : setSoekValue(null)
 							}}

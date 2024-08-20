@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Pagination, Search, Table, VStack } from '@navikt/ds-react'
+import { Alert, Box, Pagination, Search, Table, VStack } from '@navikt/ds-react'
 import {
 	useLevendeArbeidsforholdIdentsoek,
 	useLevendeArbeidsforholdLogg,
@@ -14,6 +14,7 @@ export default () => {
 	const { loggData, loading, error } = useLevendeArbeidsforholdLogg(0, 1000, 'id,DESC')
 
 	const [identSoekData, setIdentSoekData] = useState(null)
+	const [orgnummerSoekData, setOrgnummerSoekData] = useState(null)
 
 	const [page, setPage] = useState(1)
 	const rowsPerPage = 10
@@ -21,6 +22,8 @@ export default () => {
 	const visData = () => {
 		if (identSoekData) {
 			return identSoekData
+		} else if (orgnummerSoekData) {
+			return orgnummerSoekData
 		} else {
 			return loggData?.content
 		}
@@ -36,10 +39,16 @@ export default () => {
 			<h1>Nyansettelser</h1>
 			{/*TODO: Endre alt til ansettelser?*/}
 			<VStack gap="4">
-				<NyansettelserSoek setIdentSoekData={setIdentSoekData} setPage={setPage} />
+				<NyansettelserSoek
+					setIdentSoekData={setIdentSoekData}
+					setOrgnummerSoekData={setOrgnummerSoekData}
+					setPage={setPage}
+				/>
 				<Box background="surface-default" padding="4">
 					{loading ? (
 						<Loading label="Laster arbeidsforhold ..." />
+					) : sortData?.length < 1 ? (
+						<Alert variant={'info'}>Fant ingen arbeidsforhold</Alert>
 					) : (
 						<div>
 							<Table>

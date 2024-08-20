@@ -11,6 +11,10 @@ export const getIdentUrl = (ident: string) => {
 	return `${levenedeArbeidsforholdUrl}/ident/${ident}`
 }
 
+export const getOrgnummerUrl = (orgnummer: string) => {
+	return `${levenedeArbeidsforholdUrl}/organisasjon/${orgnummer}`
+}
+
 export const useLevendeArbeidsforholdLogg = (page: number, size: number, sort: string) => {
 	const { data, isLoading, error } = useSWR<any, Error>(getLoggUrl(page, size, sort), fetcher)
 
