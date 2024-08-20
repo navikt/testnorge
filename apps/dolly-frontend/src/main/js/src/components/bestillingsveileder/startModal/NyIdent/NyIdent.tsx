@@ -119,6 +119,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 								isDisabled={!malAktiv}
 							/>
 							<FormSelect
+								data-testid={TestComponentSelectors.SELECT_MAL}
 								name="mal"
 								label="Maler"
 								isLoading={loading}

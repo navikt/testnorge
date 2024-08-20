@@ -69,6 +69,7 @@ public class MalBestillingService {
                                 return RsMalBestilling.builder()
                                         .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
                                         .malNavn(bestillingMal.getMalNavn())
+                                        .miljoer(bestillingMal.getMiljoer())
                                         .id(bestillingMal.getId())
                                         .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
                                                 bestillingMal.getBruker() :
@@ -105,6 +106,7 @@ public class MalBestillingService {
                             try {
                                 return RsMalBestilling.builder()
                                         .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
+                                        .miljoer(bestillingMal.getMiljoer())
                                         .malNavn(bestillingMal.getMalNavn())
                                         .id(bestillingMal.getId())
                                         .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
@@ -250,14 +252,6 @@ public class MalBestillingService {
         };
     }
 
-    private static Set<String> toSet(String miljoer) {
-
-        return StringUtils.isNotBlank(miljoer) ?
-                Arrays.stream(miljoer.split(","))
-                        .collect(Collectors.toSet()) :
-                Collections.emptySet();
-    }
-
     private String toJson(RsDollyUtvidetBestilling bestilling) {
 
         try {
@@ -274,5 +268,13 @@ public class MalBestillingService {
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
+    }
+
+    private static Set<String> toSet(String miljoer) {
+
+        return StringUtils.isNotBlank(miljoer) ?
+                Arrays.stream(miljoer.split(","))
+                        .collect(Collectors.toSet()) :
+                Collections.emptySet();
     }
 }
