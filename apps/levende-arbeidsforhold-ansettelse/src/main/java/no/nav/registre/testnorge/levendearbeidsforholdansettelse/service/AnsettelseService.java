@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.DatoIntervall;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
@@ -11,14 +10,15 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.Al
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AliasMethod;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -39,12 +39,13 @@ public class AnsettelseService {
     private final KodeverkService kodeverkService;
     private final AnsettelseLoggService ansettelseLoggService;
 
+    @Async
     public void runAnsettelseService() {
 
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
         try {
-            thread.join(3_000_000); //Timeout etter 3000 sekunder
+            thread.join(3_500_000); //Timeout etter 3000 sekunder
             if (thread.isAlive()) {
                 thread.interrupt();
                 log.info("Timeout occurred");
@@ -54,26 +55,32 @@ public class AnsettelseService {
         }
     }
 
+    @Transactional
     public void ansettelseService() {
+
+        var startTime = System.currentTimeMillis();
+
+        //Henter parametere fra db
+        var parametere = parameterService.hentParametere();
+        log.info("Startet oppretting av {} personer i {} organisasjoner", parametere.get("antallPersoner"),
+                parametere.get("antallOrganisasjoner"));
+
         //Henter yrkeskoder for å gi tilfeldige yrker
-        List<String> yrkeskoder = kodeverkService.hentKodeverkValues(KodeverkNavn.YRKER.value);
+        var yrkeskoder = kodeverkService.hentKodeverkValues(KodeverkNavn.YRKER.value);
         if (yrkeskoder.isEmpty()) {
             return;
         }
 
         //Initialiserer liste over alderspenn og liste med tidligste og seneste gyldig dato for ansttelse
-        AlderspennList alderspennList = new AlderspennList();
-        List<DatoIntervall> datoIntervaller = alderspennList.getDatointervaller();
+        var alderspennList = new AlderspennList();
+        var datoIntervaller = alderspennList.getDatointervaller();
 
         //Initialiserer aliasmetode for å benytte mer realistiske alderspenn i ansettelsene
-        List<Double> sannsynlighetFordeling = AlderspennList.sannsynlighetFordeling;
-        AliasMethod alias = new AliasMethod(sannsynlighetFordeling);
-
-        //Henter parametere fra db
-        var parametere = parameterService.hentParametere();
+        var sannsynlighetFordeling = AlderspennList.sannsynlighetFordeling;
+        var alias = new AliasMethod(sannsynlighetFordeling);
 
         //Henter organisasjoner fra Tenor
-        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
+        var organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
         if (organisasjoner.isEmpty()) {
             return;
         }
@@ -87,7 +94,7 @@ public class AnsettelseService {
             return;
         }
 
-        int finalAntallPersPerOrg = antallPersPerOrg;
+        var finalAntallPersPerOrg = antallPersPerOrg;
         //Kjører ansettelse per org
         organisasjoner.forEach(
                 organisasjon -> {
@@ -106,7 +113,7 @@ public class AnsettelseService {
                     int iteratorElement = aldersspennIterator.next();
 
                     //Henter mulige personer per alderspenn basert på postnummer fra org
-                    Map<Integer, List<Ident>> muligePersonerMap = new HashMap<>();
+                    var muligePersonerMap = new HashMap<Integer, List<Ident>>();
                     aldersspennIndekser.forEach(
                             indeks -> {
                                 if (!muligePersonerMap.containsKey(indeks)) {
@@ -114,12 +121,12 @@ public class AnsettelseService {
                                 }
                             });
 
-                    List<Ident> ansattePersoner = new ArrayList<>();
+                    var ansattePersoner = new ArrayList<Ident>();
 
                     //Ansetter personer
                     while (ansattePersoner.size() < finalAntallPersPerOrg) {
                         try {
-                            List<Ident> muligePersoner = muligePersonerMap.get(iteratorElement);
+                            var muligePersoner = muligePersonerMap.get(iteratorElement);
 
                             var tilfeldigIndex = tilfeldigTall(muligePersoner.size());
                             var tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
@@ -167,6 +174,10 @@ public class AnsettelseService {
                     for (Ident person : ansattePersoner) {
                         ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get(STILLINGSPROSENT.value)), parametere.get(ARBEIDSFORHOLD_TYPE.value));
                     }
+                    long endTime = System.currentTimeMillis();
+                    long totalTime = endTime - startTime;
+                    log.info("Opprettet antall arbeidsforhold: {}, medgått tid: {} sekunder",
+                            ansattePersoner.size(), totalTime /1000);
                 }
         );
     }
