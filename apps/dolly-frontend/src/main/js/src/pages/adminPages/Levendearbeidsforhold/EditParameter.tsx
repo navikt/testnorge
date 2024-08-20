@@ -29,7 +29,7 @@ export const EditParameter = ({ name, label, initialValue, options, data, setDat
 	async function oppdaterParameterverdi(value: string) {
 		await fetch(`/testnav-levende-arbeidsforhold-ansettelse/api/v1/parameter/${name}`, {
 			method: 'PUT',
-			body: JSON.stringify(value),
+			body: value,
 		}).then((res) => (res.status === 200 ? onSubmit(value) : console.error('Feil feil feil')))
 	}
 
