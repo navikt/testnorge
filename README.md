@@ -84,7 +84,7 @@ Eller kjør:
 Kjør kommandoen: 
 
 ```
-JWK=$(cat ./mocks/jwk.json) docker-compose up --build
+JWK=$(cat ./mocks/jwk.json) docker compose up --build
 ```
 
 Deretter kan itegrasjonstester kjøres med kommandoen: 

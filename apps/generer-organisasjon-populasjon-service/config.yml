@@ -31,6 +31,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_12
+        tier: db-custom-1-3840
         databases:
           - name: testnav-generer-organisasjon-populasjon-db
   liveness:

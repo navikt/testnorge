@@ -68,5 +68,6 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_12
+        tier: db-custom-1-3840
         databases:
           - name: testnav-pdl-forvalter-dev-db
