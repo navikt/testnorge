@@ -28,6 +28,7 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'org.postgresql:postgresql'
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
