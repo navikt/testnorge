@@ -50,8 +50,7 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 	return alder
 }
 
-const invalidAlderFom = (inntektFom, values) => {
-	const personFoerLeggTil = values.personFoerLeggTil
+const invalidAlderFom = (inntektFom, values, personFoerLeggTil) => {
 	const importPersoner = values.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
@@ -81,8 +80,7 @@ const invalidAlderFom = (inntektFom, values) => {
 	return false
 }
 
-const invalidAlderTom = (inntektTom, values) => {
-	const personFoerLeggTil = values?.personFoerLeggTil
+const invalidAlderTom = (inntektTom, values, personFoerLeggTil) => {
 	const importPersoner = values?.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
@@ -106,8 +104,7 @@ const invalidAlderTom = (inntektTom, values) => {
 	return false
 }
 
-const invalidDoedsdato = (inntektTom, values) => {
-	const personFoerLeggTil = values.personFoerLeggTil
+const invalidDoedsdato = (inntektTom, values, personFoerLeggTil) => {
 	const importPersoner = values.importPersoner
 
 	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
@@ -141,8 +138,9 @@ const validFomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
 		const inntektFom = value
 
 		const values = context.parent
+		const personFoerLeggTil = context?.options?.context?.personFoerLeggTil
 
-		if (invalidAlderFom(inntektFom, values)) {
+		if (invalidAlderFom(inntektFom, values, personFoerLeggTil)) {
 			return context.createError({ message: 'F.o.m kan tidligst være året personen fyller 17 år' })
 		}
 
@@ -161,14 +159,15 @@ const validTomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
 		let inntektTom = value
 
 		const values = context.parent
+		const personFoerLeggTil = context?.options?.context?.personFoerLeggTil
 
-		if (invalidAlderTom(inntektTom, values)) {
+		if (invalidAlderTom(inntektTom, values, personFoerLeggTil)) {
 			return context.createError({
 				message: 'T.o.m kan ikke være etter året personen fyller 75',
 			})
 		}
 
-		if (invalidDoedsdato(inntektTom, values)) {
+		if (invalidDoedsdato(inntektTom, values, personFoerLeggTil)) {
 			return context.createError({ message: 'T.o.m kan ikke være etter at person har dødd' })
 		}
 

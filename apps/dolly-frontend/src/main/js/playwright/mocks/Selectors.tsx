@@ -95,6 +95,7 @@ export enum TestComponentSelectors {
 	BUTTON_TENOR_CLEAR_HEADER = 'button-tenor-clear-options',
 	BUTTON_MODAL_CLOSE = 'button-modal-lukk',
 	SELECT_PERSON_SEARCH = 'select-person-search',
+	SELECT_MAL = 'select-mal',
 	HOVER_MILJOE = 'hover-miljoe',
 	CHECKBOX_FORBEDRING_ANONYM = 'checkbox-forbedring-anonym',
 	CHECKBOX_TENORSOEK = 'checkbox-tenorsoek',
