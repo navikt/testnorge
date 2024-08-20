@@ -35,6 +35,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_12
+        tier: db-custom-1-3840
         databases:
           - name: testnav-inntektsmelding-service-db
   liveness:
