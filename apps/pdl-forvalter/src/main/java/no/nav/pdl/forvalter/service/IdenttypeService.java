@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
@@ -67,7 +68,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                type.setFoedtEtter(person.getFoedsel().getFirst().getFoedselsdato().plusDays(index + 1L));
+                type.setFoedtEtter(FoedselsdatoUtility.getFoedselsdato(person).plusDays(index + 1L));
 
                 nyPerson = handle(type, nyPerson);
                 type.setKilde(getKilde(type));
