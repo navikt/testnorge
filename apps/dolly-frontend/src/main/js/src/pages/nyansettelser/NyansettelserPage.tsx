@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
-import { Alert, Box, Pagination, Search, Table, VStack } from '@navikt/ds-react'
-import {
-	useLevendeArbeidsforholdIdentsoek,
-	useLevendeArbeidsforholdLogg,
-} from '@/utils/hooks/useLevendeArbeidsforhold'
+import { Alert, Box, Pagination, Table, VStack } from '@navikt/ds-react'
+import { useLevendeArbeidsforholdLogg } from '@/utils/hooks/useLevendeArbeidsforhold'
 import { formatDate } from '@/utils/DataFormatter'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
@@ -38,7 +35,6 @@ export default () => {
 	return (
 		<>
 			<h1>Nyansettelser</h1>
-			{/*TODO: Endre alt til ansettelser?*/}
 			<VStack gap="4">
 				<NyansettelserSoek
 					setIdentSoekData={setIdentSoekData}
@@ -48,7 +44,7 @@ export default () => {
 				<Box background="surface-default" padding="4">
 					{loading ? (
 						<Loading label="Laster arbeidsforhold ..." />
-					) : sortData?.length < 1 ? (
+					) : !sortData || sortData?.length < 1 ? (
 						<Alert variant={'info'}>Fant ingen arbeidsforhold</Alert>
 					) : (
 						<div>
@@ -85,7 +81,7 @@ export default () => {
 												<Table.DataCell width={'15%'}>{formatDate(row.ansattfra)}</Table.DataCell>
 												<Table.DataCell width={'30%'}>
 													{kodeverk?.length > 0
-														? kodeverk?.find((kode) => kode?.value === row.arbeidsforholdType)
+														? kodeverk?.find((kode: any) => kode?.value === row.arbeidsforholdType)
 																?.label
 														: row.arbeidsforholdType}
 												</Table.DataCell>
@@ -101,7 +97,7 @@ export default () => {
 									onPageChange={setPage}
 									count={Math.ceil(visData()?.length / rowsPerPage)}
 									size="small"
-									style={{ marginTop: '20px', justifyContent: 'center' }}
+									style={{ marginTop: '20px' }}
 								/>
 							)}
 						</div>

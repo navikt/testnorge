@@ -1,4 +1,4 @@
-import { Box, Button, Search, ToggleGroup } from '@navikt/ds-react'
+import { Box, Search, ToggleGroup } from '@navikt/ds-react'
 import React, { useState } from 'react'
 import { PersonIcon, TenancyIcon } from '@navikt/aksel-icons'
 import { Form, FormProvider, useForm } from 'react-hook-form'
@@ -10,7 +10,7 @@ enum SoekKategorier {
 	ORGNR = 'orgnr',
 }
 
-export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setPage }) => {
+export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setPage }: any) => {
 	const [soekKategori, setSoekKategori] = useState(SoekKategorier.IDENT)
 	const [soekValue, setSoekValue] = useState(null)
 
@@ -20,12 +20,12 @@ export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setP
 			return
 		}
 		if (soekKategori === SoekKategorier.ORGNR) {
-			await Request.get(getOrgnummerUrl(soekValue)).then((response) => {
+			await Request.get(getOrgnummerUrl(soekValue)).then((response: any) => {
 				setOrgnummerSoekData(response.data)
 				setPage(1)
 			})
 		} else {
-			await Request.get(getIdentUrl(soekValue)).then((response) => {
+			await Request.get(getIdentUrl(soekValue)).then((response: any) => {
 				setIdentSoekData(response.data)
 				setPage(1)
 			})
@@ -34,11 +34,9 @@ export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setP
 
 	const formMethods = useForm({
 		mode: 'onSubmit',
-		// resolver: yupResolver(validation()),
 	})
 
 	const nullstill = () => {
-		formMethods.reset()
 		setSoekValue(null)
 		setIdentSoekData(null)
 		setOrgnummerSoekData(null)
@@ -64,12 +62,7 @@ export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setP
 				/>
 			</ToggleGroup>
 			<FormProvider {...formMethods}>
-				<Form
-					control={formMethods.control}
-					// className={'opprett-tabellrad'}
-					autoComplete={'off'}
-					onSubmit={formMethods.handleSubmit(onSubmit)}
-				>
+				<Form onSubmit={formMethods.handleSubmit(onSubmit)}>
 					<div className="flexbox--flex-wrap" style={{ marginTop: '15px' }}>
 						<Search
 							label="Søk etter personident"
@@ -84,9 +77,6 @@ export const NyansettelserSoek = ({ setIdentSoekData, setOrgnummerSoekData, setP
 							}}
 							onClear={nullstill}
 						/>
-						{/*<Button variant="tertiary" size="small" onClick={nullstill}>*/}
-						{/*	Nullstill*/}
-						{/*</Button>*/}
 					</div>
 				</Form>
 			</FormProvider>

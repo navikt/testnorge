@@ -58,7 +58,6 @@ export const FinnPersonDropdown = () => {
 						Søk i Tenor
 					</Dropdown.Menu.List.Item>
 					<Dropdown.Menu.List.Item
-						// data-testid={TestComponentSelectors.BUTTON_HEADER_TENOR}
 						onClick={() => navigate('/nyansettelser/')}
 						style={{ color: '#212529' }}
 					>
