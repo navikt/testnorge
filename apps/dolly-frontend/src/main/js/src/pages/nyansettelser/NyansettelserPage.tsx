@@ -9,6 +9,7 @@ import { ArbeidKodeverk } from '@/config/kodeverk'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { NyansettelserSoek } from '@/pages/nyansettelser/NyansettelserSoek'
 import Loading from '@/components/ui/loading/Loading'
+import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 
 export default () => {
 	const { loggData, loading, error } = useLevendeArbeidsforholdLogg(0, 1000, 'id,DESC')
@@ -63,16 +64,32 @@ export default () => {
 									{sortData?.map((row: any, idx: number) => {
 										return (
 											<Table.Row key={`${row.id} - ${idx}`}>
-												<Table.DataCell width={'15%'}>{row.folkeregisterident}</Table.DataCell>
-												<Table.DataCell width={'15%'}>{row.organisasjonsnummer}</Table.DataCell>
+												<Table.DataCell width={'20%'}>
+													{
+														<DollyCopyButton
+															displayText={row.folkeregisterident}
+															copyText={row.folkeregisterident}
+															tooltipText={'Kopier ident'}
+														/>
+													}
+												</Table.DataCell>
+												<Table.DataCell width={'20%'}>
+													{
+														<DollyCopyButton
+															displayText={row.organisasjonsnummer}
+															copyText={row.organisasjonsnummer}
+															tooltipText={'Kopier org.nr.'}
+														/>
+													}
+												</Table.DataCell>
 												<Table.DataCell width={'15%'}>{formatDate(row.ansattfra)}</Table.DataCell>
-												<Table.DataCell width={'35%'}>
+												<Table.DataCell width={'30%'}>
 													{kodeverk?.length > 0
 														? kodeverk?.find((kode) => kode?.value === row.arbeidsforholdType)
 																?.label
 														: row.arbeidsforholdType}
 												</Table.DataCell>
-												<Table.DataCell width={'20%'}>{row.stillingsprosent}</Table.DataCell>
+												<Table.DataCell width={'15%'}>{row.stillingsprosent}</Table.DataCell>
 											</Table.Row>
 										)
 									})}
