@@ -16,8 +16,8 @@ public class AnsettelsesCommand implements Callable<Mono<String>> {
     @Override
     public Mono<String> call()  {
 
-        return webClient.get().uri(
-                builder -> builder.path("/api/ansettelse-jobb")
+        return webClient.post().uri(
+                builder -> builder.path("/api/v1/ansettelse")
                         .build())
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()

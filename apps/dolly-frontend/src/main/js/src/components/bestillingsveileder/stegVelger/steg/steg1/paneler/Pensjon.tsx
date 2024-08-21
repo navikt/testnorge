@@ -11,10 +11,10 @@ import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
 import { genInitialAlderspensjonVedtak } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
-import { runningE2ETest } from '@/service/services/Request'
 import _ from 'lodash'
 import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
+import { initialPensjonInntekt } from '@/components/fagsystem/aareg/form/initialValues'
 import { initialPensjonsavtale } from '@/components/fagsystem/pensjonsavtale/initalValues'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
@@ -122,6 +122,7 @@ PensjonPanel.heading = 'Pensjon'
 PensjonPanel.initialValues = ({ set, del, has }: any) => {
 	const paths = {
 		inntekt: 'pensjonforvalter.inntekt',
+		generertInntekt: 'pensjonforvalter.generertInntekt',
 		tp: 'pensjonforvalter.tp',
 		alderspensjon: 'pensjonforvalter.alderspensjon',
 		uforetrygd: 'pensjonforvalter.uforetrygd',
@@ -130,15 +131,9 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 	return {
 		inntekt: {
 			label: 'Har inntekt',
-			checked: has(paths.inntekt),
-			add: () =>
-				set(paths.inntekt, {
-					fomAar: new Date().getFullYear() - 10,
-					tomAar: runningE2ETest() ? new Date().getFullYear() : null,
-					belop: runningE2ETest() ? '12345' : '',
-					redusertMedGrunnbelop: true,
-				}),
-			remove: () => del(paths.inntekt),
+			checked: has(paths.inntekt) || has(paths.generertInntekt),
+			add: () => set(paths.inntekt, initialPensjonInntekt),
+			remove: () => del([paths.inntekt, paths.generertInntekt]),
 		},
 		tp: {
 			label: 'Har tjenestepensjonsforhold',

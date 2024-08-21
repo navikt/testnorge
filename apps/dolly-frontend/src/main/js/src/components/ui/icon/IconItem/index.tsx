@@ -1,5 +1,5 @@
 import './IconItem.less'
-import IconItem from './IconItem'
+import { IconItem } from '@/components/ui/icon/IconItem/IconItem'
 
 const WomanIconItem = () => (
 	<IconItem className={'icon-item--woman'} icon={'woman'} fontSize={'2rem'} />

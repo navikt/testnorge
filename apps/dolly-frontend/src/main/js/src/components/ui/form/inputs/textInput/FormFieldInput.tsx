@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { useFormContext } from 'react-hook-form'
 
@@ -12,14 +10,11 @@ type Props = {
 }
 
 export default ({ name, useOnChange = false, useControlled = false, ...props }: Props) => {
-	const { getValues } = useFormContext()
+	const { watch } = useFormContext()
+	const value = watch(name)
 	return useControlled ? (
-		<DollyTextInput name={name} value={_.get(getValues(), name)} {...props} />
+		<DollyTextInput name={name} value={value} {...props} />
 	) : (
-		<DollyTextInput
-			defaultValue={props.defaultValue || _.get(getValues(), name)}
-			name={name}
-			{...props}
-		/>
+		<DollyTextInput defaultValue={props.defaultValue || value} name={name} {...props} />
 	)
 }

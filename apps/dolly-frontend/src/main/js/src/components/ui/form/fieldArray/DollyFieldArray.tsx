@@ -239,6 +239,7 @@ export const FormDollyFieldArray = ({
 			})
 		}
 	}, [fields])
+
 	const addNewEntry = () => {
 		handleNewEntry ? handleNewEntry() : append(newEntry)
 		formMethods.trigger(name)

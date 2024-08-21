@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreGenerertPoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePensjonsavtaleCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
@@ -18,6 +19,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePensjonsavtaleComm
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
@@ -75,6 +77,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
                         pensjonPoppInntektRequest).call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "popp_lagreGenerertInntekt" })
+    public Flux<PensjonforvalterResponse> lagreGenererteInntekter(PensjonPoppGenerertInntektRequest pensjonPoppGenerertInntektRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagreGenerertPoppInntektCommand(webClient, token.getTokenValue(),
+                        pensjonPoppGenerertInntektRequest).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })

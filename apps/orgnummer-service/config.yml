@@ -62,6 +62,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_14
+        tier: db-custom-1-3840
         name: testnav-orgnummer-pool
         databases:
           - name: testnav-orgnummer-pool

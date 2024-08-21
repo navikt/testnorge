@@ -14,13 +14,12 @@ spec:
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
         - application: dolly-frontend
+        - application: dolly-frontend-dev
         - application: testnav-levende-arbeidsforhold-scheduler
     outbound:
       rules:
-        - application: testnav-levende-arbeidsforhold-scheduler
         - application: testnav-kodeverk-service
         - application: testnav-tenor-search-service
-
       external:
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
@@ -55,14 +54,14 @@ spec:
     - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
   gcp:
     sqlInstances:
-      - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
-        type: POSTGRES_14
+      - type: POSTGRES_14
+        tier: db-custom-1-3840
         databases:
           - name: testnav-levende-arbeidsforhold-db
         insights:
           enabled: true
           recordApplicationTags: true
           recordClientAddress: true
-        tier: db-f1-micro
         diskAutoresize: true #Kanskje ikke nødvendig?
+        autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
         #collation: DESC

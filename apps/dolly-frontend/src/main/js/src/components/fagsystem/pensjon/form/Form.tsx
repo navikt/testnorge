@@ -2,26 +2,35 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from '@/components/fagsystem/pensjon/form/validation'
-import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { getYearRangeOptions } from '@/utils/DataFormatter'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
-import _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
+import { ToggleGroup } from '@navikt/ds-react'
+import {
+	initialPensjonGenerertInntekt,
+	initialPensjonInntekt,
+} from '@/components/fagsystem/aareg/form/initialValues'
+import { FyllInnInntektForm } from '@/components/fagsystem/pensjon/form/FyllInnInntektForm'
+import { GenerertInntektForm } from '@/components/fagsystem/pensjon/form/GenerertInntektForm'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
+export const pensjonGenererPath = 'pensjonforvalter.generertInntekt'
 
 const hjelpetekst =
 	'Hvis nedjuster med grunnbeløp er valgt skal beløp angis som årsbeløp i dagens kroneverdi, ' +
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
+const inputValg = { generertInntekt: 'generer', fyllInnInntekt: 'fyllInn' }
+
 export const PensjonForm = () => {
 	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
+	const [inputType, setInputType] = useState(
+		formMethods.getValues(pensjonGenererPath)
+			? inputValg.generertInntekt
+			: inputValg.fyllInnInntekt,
+	)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
 	function kalkulerIdentFyltSyttenAar() {
@@ -38,19 +47,21 @@ export const PensjonForm = () => {
 
 	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar()
 	const minAar = new Date().getFullYear() - 17
-	const valgtAar = formMethods.watch(`${pensjonPath}.fomAar`)
+	const valgtAar =
+		inputType === inputValg.fyllInnInntekt
+			? formMethods.watch(`${pensjonPath}.fomAar`)
+			: formMethods.watch(`${pensjonGenererPath}.generer.fomAar`)
 
 	return (
-		<Vis attributt={pensjonPath}>
+		<Vis attributt={[pensjonPath, pensjonGenererPath]}>
 			<Panel
 				heading="Pensjonsgivende inntekt (POPP)"
-				hasErrors={panelError(pensjonPath)}
+				hasErrors={panelError(pensjonPath) || panelError(pensjonGenererPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath, pensjonGenererPath])}
 				informasjonstekst={hjelpetekst}
 			>
-				{/*// @ts-ignore*/}
-				{!_.has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
+				{!formMethods.getValues('pdldata.opprettNyPerson.alder') &&
 					valgtAar < minAar &&
 					(nyBestilling || nyBestillingFraMal) && (
 						<StyledAlert variant={'info'} size={'small'}>
@@ -58,32 +69,41 @@ export const PensjonForm = () => {
 							personen får gyldig alder kan denne settes ved å huke av for "Alder" på forrige side.
 						</StyledAlert>
 					)}
-				<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
-					<div className="flexbox--flex-wrap">
-						<FormSelect
-							name={`${pensjonPath}.fomAar`}
-							label="Fra og med år"
-							options={getYearRangeOptions(syttenFraOgMedAar || 1968, new Date().getFullYear() - 1)}
-							isClearable={false}
-						/>
 
-						<FormSelect
-							name={`${pensjonPath}.tomAar`}
-							label="Til og med år"
-							options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
-							isClearable={false}
-						/>
+				<ToggleGroup
+					size={'small'}
+					onChange={(value) => {
+						const isGenerertInntekt = value === inputValg.generertInntekt
+						const activePath = isGenerertInntekt ? pensjonGenererPath : pensjonPath
+						const inactivePath = isGenerertInntekt ? pensjonPath : pensjonGenererPath
+						const currentInitialValues = isGenerertInntekt
+							? initialPensjonGenerertInntekt
+							: initialPensjonInntekt
 
-						<FormTextInput name={`${pensjonPath}.belop`} label="Beløp" type="number" />
-
-						<FormCheckbox
-							name={`${pensjonPath}.redusertMedGrunnbelop`}
-							label="Nedjuster med grunnbeløp"
-							size="small"
-							checkboxMargin
-						/>
-					</div>
-				</Kategori>
+						formMethods.setValue(activePath, currentInitialValues)
+						formMethods.setValue(inactivePath, undefined)
+						setInputType(value)
+					}}
+					defaultValue={
+						formMethods.getValues(pensjonGenererPath)
+							? inputValg.generertInntekt
+							: inputValg.fyllInnInntekt
+					}
+					style={{ margin: '5px 0 5px', backgroundColor: '#ffffff' }}
+				>
+					<ToggleGroup.Item key={inputValg.fyllInnInntekt} value={inputValg.fyllInnInntekt}>
+						Fyll inn inntekt
+					</ToggleGroup.Item>
+					<ToggleGroup.Item key={inputValg.generertInntekt} value={inputValg.generertInntekt}>
+						Generer inntekt
+					</ToggleGroup.Item>
+				</ToggleGroup>
+				{inputType === inputValg.fyllInnInntekt && (
+					<FyllInnInntektForm syttenFraOgMedAar={syttenFraOgMedAar} />
+				)}
+				{inputType === inputValg.generertInntekt && (
+					<GenerertInntektForm syttenFraOgMedAar={syttenFraOgMedAar} formMethods={formMethods} />
+				)}
 			</Panel>
 		</Vis>
 	)
