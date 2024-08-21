@@ -15,7 +15,7 @@ const MalValgWrapper = styled.div`
 `
 
 const getBrukerOptions = (malbestillinger: any) =>
-	Object.keys(malbestillinger).map((ident) => ({
+	Object.keys(malbestillinger)?.map((ident) => ({
 		value: ident,
 		label: ident,
 	}))
@@ -24,7 +24,7 @@ const getMalOptions = (malbestillinger: any, bruker: any) => {
 	if (!malbestillinger || !malbestillinger[bruker]) {
 		return []
 	}
-	return malbestillinger[bruker].map((mal: any) => ({
+	return malbestillinger?.[bruker]?.map((mal: any) => ({
 		value: mal.id,
 		label: mal.malNavn,
 		data: { bestilling: mal.bestilling, malNavn: mal.malNavn },
