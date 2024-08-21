@@ -71,10 +71,15 @@ export const AlderspensjonForm = () =>{ const formMethods = useFormContext()
 	const { harAlder, alderNyPerson, foedtFoer, harGyldigAlder } = sjekkAlderFelt()
 
 	const alderLeggTilPerson = getAlder(
-		_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),
+		_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedselsdato[0].foedselsdato') ||
+			_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),
 	)
+
 	const alderImportertPerson = opts?.importPersoner?.map((person) =>
-		getAlder(_get(person, 'data.hentPerson.foedsel[0].foedselsdato')),
+		getAlder(
+			_get(person, 'data.hentPerson.foedselsdato[0].foedselsdato') ||
+				_get(person, 'data.hentPerson.foedsel[0].foedselsdato'),
+		),
 	)
 
 	const harUgyldigFoedselsaar = () => {

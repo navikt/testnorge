@@ -1,58 +1,20 @@
 plugins {
-    id "org.sonarqube" version "4.4.1.3373"
-    id 'java-library'
-    id 'io.spring.dependency-management' version "1.1.4"
-    id "jacoco"
+    id "dolly-libs"
 }
 
 sonarqube {
     properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnav-kafka-producers"
         property "sonar.projectName", "testnav-kafka-producers"
-        property "sonar.sourceEncoding", "UTF-8"
     }
 }
-
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.1'
-    }
-}
-group = 'no.nav.testnav.libs'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        url = uri('https://packages.confluent.io/maven/')
-    }
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
 
 dependencies {
     implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'no.nav.testnav.libs:avro-schema'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.confluent:kafka-avro-serializer:7.5.1'
+    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

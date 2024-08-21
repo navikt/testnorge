@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
@@ -13,12 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -51,7 +53,8 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
         return person.getFullmakt();
     }
 
-    public void validate(FullmaktDTO fullmakt) {
+    @Override
+    public void validate(FullmaktDTO fullmakt, PersonDTO person) {
 
         if (isNull(fullmakt.getOmraader())) {
             throw new InvalidRequestException(VALIDATION_OMRAADER_ERROR);
@@ -67,7 +70,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
-        if (nonNull(fullmakt.getMotpartsPersonident()) &&
+        if (!isTestnorgeIdent(person.getIdent()) && isNotBlank(fullmakt.getMotpartsPersonident()) &&
                 !personRepository.existsByIdent(fullmakt.getMotpartsPersonident())) {
             throw new InvalidRequestException(format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getMotpartsPersonident()));
         }
@@ -96,16 +99,24 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             }
 
             fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
+
+        } else {
+
+            var motpartPerson = new AtomicReference<DbPerson>();
+            personRepository.findByIdent(fullmakt.getMotpartsPersonident())
+                    .ifPresentOrElse(motpartPerson::set,
+                            () -> motpartPerson.set(personRepository.save(DbPerson.builder()
+                                            .ident(fullmakt.getMotpartsPersonident())
+                                            .person(PersonDTO.builder()
+                                                    .ident(fullmakt.getMotpartsPersonident())
+                                                    .build())
+                                            .sistOppdatert(LocalDateTime.now())
+                                    .build())));
         }
+
         relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
                 fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
 
         fullmakt.setMaster(Master.PDL);
-    }
-
-    @Override
-    public void validate(FullmaktDTO artifact, PersonDTO person) {
-
-        // Ingen validering
     }
 }

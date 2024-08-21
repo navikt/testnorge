@@ -1,15 +1,17 @@
 plugins {
-    id "com.gradle.enterprise" version "3.12.3"
+    id "com.gradle.develocity" version "3.17.4"
 }
 
 rootProject.name = 'brreg-stub'
 
+includeBuild "../../plugins/java"
+
 includeBuild '../../libs/database'
 includeBuild '../../libs/servlet-core'
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
     }
 }

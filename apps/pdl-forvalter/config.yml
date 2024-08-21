@@ -59,12 +59,13 @@ spec:
         - application: testnav-ident-pool
         - application: testnav-kodeverk-service
         - application: testnav-organisasjon-forvalter
+        - application: testnav-person-service
         - application: testnav-tps-messaging-service
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_12
+        tier: db-custom-1-3840
         databases:
           - name: testnav-pdl-forvalter-db
-        tier: db-custom-2-3840

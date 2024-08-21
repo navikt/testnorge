@@ -3,12 +3,14 @@ name: team-dolly-lokal-app
 on:
   push:
     paths:
-      - .nais/team-dolly-lokal-app.yml
-      - .github/workflows/app.team-dolly-lokal-app.yml
+      - "plugins/**"
+      - ".nais/team-dolly-lokal-app.yml"
+      - ".github/workflows/app.team-dolly-lokal-app.yml"
 
 jobs:
   deploy:
     name: Deploy team-dolly-lokal-app
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,4 +20,4 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: .nais/team-dolly-lokal-app.yml
+          RESOURCE: ".nais/team-dolly-lokal-app.yml"

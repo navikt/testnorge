@@ -71,3 +71,5 @@ consumers:
     url: https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no
   testnav-kodeverk-service:
     url: https://testnav-kodeverk-service.intern.dev.nav.no
+  testnav-skattekort-service:
+    url: https://testnav-skattekort-service.intern.dev.nav.no

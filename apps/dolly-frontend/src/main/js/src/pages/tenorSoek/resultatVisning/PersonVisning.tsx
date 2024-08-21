@@ -3,17 +3,18 @@ import React from 'react'
 import _ from 'lodash'
 import { FolkeregisteretVisning } from '@/pages/tenorSoek/resultatVisning/FolkeregisteretVisning'
 import styled from 'styled-components'
-// TODO: Importer denne naar det er mulig aa importere og vise inntekt i Dolly
-// import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'
+import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'
 import Loading from '@/components/ui/loading/Loading'
 import { EnhetsregisteretForetaksregisteretVisning } from '@/pages/tenorSoek/resultatVisning/EnhetsregisteretForetaksregisteretVisning'
 import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
-import { useFinnesIDolly } from '@/utils/hooks/useIdent'
+import { TjenestepensjonsavtaleVisning } from '@/pages/tenorSoek/resultatVisning/TjenestepensjonsavtaleVisning'
+import { SkattemeldingVisning } from '@/pages/tenorSoek/resultatVisning/SkattemeldingVisning'
 
 type PersonVisningProps = {
 	person: any
 	ident: string
+	ibruk: boolean
 	loading: boolean
 	error: any
 }
@@ -31,9 +32,8 @@ const NavnHeader = styled.h2`
 	word-break: break-word;
 	hyphens: auto;
 `
-export const PersonVisning = ({ person, ident, loading, error }: PersonVisningProps) => {
-	const { finnesIDolly, loading: loadingFinnes } = useFinnesIDolly(ident)
 
+export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster person ..." />
 	}
@@ -55,20 +55,19 @@ export const PersonVisning = ({ person, ident, loading, error }: PersonVisningPr
 			<Box background="surface-default" padding="3" borderRadius="medium">
 				<div className="flexbox--space">
 					<NavnHeader>{personData?.visningnavn}</NavnHeader>
-					{loadingFinnes && <Loading onlySpinner />}
-					{!loadingFinnes &&
-						(finnesIDolly ? (
-							<NavigerTilPerson ident={ident} />
-						) : (
-							<ImporterValgtePersoner identer={[ident]} isMultiple={false} />
-						))}
+					{ibruk ? (
+						<NavigerTilPerson ident={ident} />
+					) : (
+						<ImporterValgtePersoner identer={[ident]} isMultiple={false} />
+					)}
 				</div>
 				<FolkeregisteretVisning data={personData} />
+				<TjenestepensjonsavtaleVisning data={personData?.tenorRelasjoner?.tjenestepensjonavtale} />
 				<EnhetsregisteretForetaksregisteretVisning
 					data={_.get(personData, 'tenorRelasjoner.brreg-er-fr')}
 				/>
-				{/*TODO: Vis denne naar det er mulig aa importere og vise inntekt i Dolly*/}
-				{/*<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />*/}
+				<SkattemeldingVisning data={personData?.tenorRelasjoner?.skattemelding} />
+				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
 			</Box>
 		</PersonVisningWrapper>
 	)

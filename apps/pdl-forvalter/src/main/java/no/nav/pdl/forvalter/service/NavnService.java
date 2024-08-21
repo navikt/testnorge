@@ -3,14 +3,11 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class NavnService implements BiValidation<NavnDTO, PersonDTO>  {
+public class NavnService implements BiValidation<NavnDTO, PersonDTO> {
 
     private static final String NAVN_INVALID_ERROR = "Navn er ikke i liste over gyldige verdier";
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
@@ -84,10 +81,7 @@ public class NavnService implements BiValidation<NavnDTO, PersonDTO>  {
 
     private List<NavnDTO> fixGyldigFraOgMed(PersonDTO person) {
 
-        var foedselsdato = person.getFoedsel().stream()
-                .map(foedsel -> getFoedselsdato(person, foedsel))
-                .findFirst()
-                .orElse(LocalDateTime.now());
+        var foedselsdato = FoedselsdatoUtility.getFoedselsdato(person);
 
         var maksDato = person.getNavn().stream()
                 .filter(navn -> nonNull(navn.getGyldigFraOgMed()))
@@ -115,13 +109,5 @@ public class NavnService implements BiValidation<NavnDTO, PersonDTO>  {
                 .forEach(navn -> navn.setId(person.getNavn().size() - version1.getAndIncrement()));
 
         return person.getNavn();
-    }
-
-    private static LocalDateTime getFoedselsdato(PersonDTO personDTO, FoedselDTO foedsel) {
-
-        return nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
-                LocalDate.of(foedsel.getFoedselsaar(),
-                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
-                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay();
     }
 }

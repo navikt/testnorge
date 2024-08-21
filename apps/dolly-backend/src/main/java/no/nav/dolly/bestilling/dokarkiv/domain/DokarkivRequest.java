@@ -28,6 +28,7 @@ public class DokarkivRequest {
     private String behandlingstema;
     private String kanal;
     private String journalfoerendeEnhet;
+    private String eksternReferanseId;
     private AvsenderMottaker avsenderMottaker;
     private Bruker bruker;
     private Sak sak;

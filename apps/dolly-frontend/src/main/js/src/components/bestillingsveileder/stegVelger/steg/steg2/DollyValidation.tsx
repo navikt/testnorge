@@ -21,6 +21,7 @@ import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
+import { SkattekortForm } from '@/components/fagsystem/skattekort/form/Form'
 
 export const DollyValidation = Yup.object({
 	...PdlfForm.validation,
@@ -30,6 +31,7 @@ export const DollyValidation = Yup.object({
 	...SigrunstubPensjonsgivendeForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
+	...SkattekortForm.validation,
 	...SykdomForm.validation,
 	...BrregstubForm.validation,
 	...InstForm.validation,

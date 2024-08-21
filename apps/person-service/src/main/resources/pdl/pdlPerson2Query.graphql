@@ -14,6 +14,7 @@ fragment metadataDetails on Metadata {
         registrertAv
         systemkilde
         type
+        hendelseId
     }
     historisk
     master
@@ -358,6 +359,27 @@ query($ident: ID!, $historikk: Boolean!) {
                 ...metadataDetails
             }
         },
+        foedested {
+            foedested,
+            foedekommune,
+            foedeland,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        },
+        foedselsdato {
+            foedselsdato,
+            foedselsaar,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
         doedfoedtBarn{
             dato,
             folkeregistermetadata {
@@ -553,6 +575,7 @@ query($ident: ID!, $historikk: Boolean!) {
         foreldreansvar(historikk: $historikk) {
             ansvar,
             ansvarlig,
+            ansvarssubjekt,
             ansvarligUtenIdentifikator {
                 navn {
                     fornavn,

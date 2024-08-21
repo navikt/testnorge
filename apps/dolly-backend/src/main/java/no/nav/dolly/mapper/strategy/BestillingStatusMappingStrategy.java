@@ -38,6 +38,7 @@ import static no.nav.dolly.mapper.BestillingPdlOrdreStatusMapper.buildPdlOrdreSt
 import static no.nav.dolly.mapper.BestillingPdlPersonStatusMapper.buildPdlPersonStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
+import static no.nav.dolly.mapper.BestillingSkattekortStatusMapper.buildSkattekortStatusMap;
 import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
@@ -81,9 +82,9 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
+                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlOrdreStatusMap(progresser, objectMapper));
-                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(progresser));
@@ -103,6 +104,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildArbeidsplassenCVStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                     }
                 })

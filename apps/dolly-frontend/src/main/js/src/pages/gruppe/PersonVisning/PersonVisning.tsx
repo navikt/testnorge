@@ -23,7 +23,6 @@ import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
-import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
 import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
@@ -43,6 +42,7 @@ import {
 	useDokarkivData,
 	useHistarkData,
 	useInstData,
+	usePensjonsavtaleData,
 	usePoppData,
 	useTpData,
 	useTransaksjonIdData,
@@ -59,7 +59,9 @@ import {
 	harInntektsmeldingBestilling,
 	harInstBestilling,
 	harMedlBestilling,
+	harPensjonavtaleBestilling,
 	harPoppBestilling,
+	harSkattekortBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
 	harUdistubBestilling,
@@ -69,7 +71,6 @@ import {
 	AlderspensjonVisning,
 	sjekkManglerApData,
 } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
-import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import _has from 'lodash/has'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
@@ -88,8 +89,13 @@ import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigruns
 import { useUdistub } from '@/utils/hooks/useUdistub'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
-import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
+import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
+import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
+import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
+import { useSkattekort } from '@/utils/hooks/useSkattekort'
+import { SkattekortVisning } from '@/components/fagsystem/skattekort/visning/Visning'
+import { PensjonsavtaleVisning } from '@/components/fagsystem/pensjonsavtale/visning/PensjonsavtaleVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -109,7 +115,6 @@ export default ({
 	brukertype,
 	loading,
 	slettPerson,
-	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
@@ -118,8 +123,8 @@ export default ({
 
 	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
-	const { organisasjonTilgang } = useOrganisasjonTilgang()
-	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
+	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
 	const bestillinger = []
 
@@ -150,6 +155,11 @@ export default ({
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
+	const { loading: loadingSkattekort, skattekortData } = useSkattekort(
+		ident.ident,
+		harSkattekortBestilling(bestillingerFagsystemer),
+	)
+
 	const { loading: loadingMedl, medl } = useMedlPerson(
 		ident.ident,
 		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
@@ -163,6 +173,11 @@ export default ({
 	const { loading: loadingTpData, tpData } = useTpData(
 		ident.ident,
 		harTpBestilling(bestillingerFagsystemer),
+	)
+
+	const { loading: loadingPensjonsavtaleData, pensjonsavtaleData } = usePensjonsavtaleData(
+		ident.ident,
+		harPensjonavtaleBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingPoppData, poppData } = usePoppData(
@@ -233,9 +248,8 @@ export default ({
 		ident.ident,
 	)
 
-	const { response: tenorData, loading: loadingTenorData } = useTenorOversikt(
-		ident?.master === 'PDL' ? { identifikator: ident.ident } : null,
-		1,
+	const { person: tenorData, loading: loadingTenorData } = useTenorIdent(
+		ident?.master === 'PDL' ? ident.ident : null,
 	)
 
 	const getGruppeIdenter = () => {
@@ -402,25 +416,20 @@ export default ({
 						/>
 					)}
 					{bestillingIdListe?.length > 0 && (
-						<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
-							OPPRETT MAL
-						</Button>
+						<>
+							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+								OPPRETT MAL
+							</Button>
+							<BestillingSammendragModal bestillinger={ident?.bestillinger} />
+						</>
 					)}
-					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
 							Er du sikker på at du vil slette denne personen?
 						</SlettButton>
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
-						<FrigjoerButton
-							slettPerson={slettPerson}
-							slettPersonOgRelatertePersoner={slettPersonOgRelatertePersoner}
-							loading={loading.slettPerson || loading.slettPersonOgRelatertePersoner}
-							importerteRelatertePersoner={
-								importerteRelatertePersoner.length > 0 ? importerteRelatertePersoner : null
-							}
-						/>
+						<FrigjoerButton slettPerson={slettPerson} loading={loading.slettPerson} />
 					)}
 				</div>
 				{manglerFagsystemdata() && (
@@ -432,7 +441,7 @@ export default ({
 				)}
 				{ident.master === 'PDLF' && <PdlfVisningConnector fagsystemData={data} loading={loading} />}
 				{ident.master === 'PDL' && (
-					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
+					<PdlVisningConnector pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
 				{visArbeidsforhold && (
 					<AaregVisning
@@ -461,6 +470,7 @@ export default ({
 						harInntektsmeldingBestilling(bestillingerFagsystemer) ? inntektsmeldingBestilling : null
 					}
 				/>
+				<SkattekortVisning liste={skattekortData} loading={loadingSkattekort} />
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
 					loading={loadingArbeidsplassencvData}
@@ -470,6 +480,12 @@ export default ({
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<PensjonsavtaleVisning
+					data={pensjonsavtaleData}
+					loading={loadingPensjonsavtaleData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
@@ -528,7 +544,9 @@ export default ({
 				/>
 				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
 				<SkatteetatenVisning
-					data={tenorData?.data?.data?.personer?.find((person: any) => person?.id === ident.ident)}
+					data={tenorData?.data?.data?.dokumentListe?.find((dokument: any) =>
+						dokument.identifikator?.includes(ident.ident),
+					)}
 					loading={loadingTenorData}
 				/>
 				<PersonMiljoeinfo

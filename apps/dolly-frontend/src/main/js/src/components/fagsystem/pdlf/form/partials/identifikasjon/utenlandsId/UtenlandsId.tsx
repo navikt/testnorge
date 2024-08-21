@@ -8,7 +8,7 @@ import { getInitialUtenlandskIdentifikasjonsnummer } from '@/components/fagsyste
 import React, { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
-export const UtenlandsIdForm = ({ path, idx, identtype }) => {
+export const UtenlandsIdForm = ({ path, idx, identtype, identMaster }) => {
 	return (
 		<React.Fragment key={idx}>
 			<FormTextInput name={`${path}.identifikasjonsnummer`} label="Identifikasjonsnummer" />
@@ -25,25 +25,25 @@ export const UtenlandsIdForm = ({ path, idx, identtype }) => {
 				label="Er opphørt"
 				checkboxMargin
 			/>
-			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID' && identMaster !== 'PDL'} />
 		</React.Fragment>
 	)
 }
 
 export const UtenlandsId = () => {
-	const opts = useContext(BestillingsveilederContext)
+	const { identtype, identMaster } = useContext(BestillingsveilederContext)
 
 	return (
 		<FormDollyFieldArray
 			name="pdldata.person.utenlandskIdentifikasjonsnummer"
 			header="Utenlandsk ID"
 			newEntry={getInitialUtenlandskIdentifikasjonsnummer(
-				opts?.identtype === 'NPID' ? 'PDL' : 'FREG',
+				identtype === 'NPID' || identMaster === 'PDL' ? 'PDL' : 'FREG',
 			)}
 			canBeEmpty={false}
 		>
 			{(path: string, idx: number) => (
-				<UtenlandsIdForm path={path} idx={idx} identtype={opts?.identtype} />
+				<UtenlandsIdForm path={path} idx={idx} identtype={identtype} identMaster={identMaster} />
 			)}
 		</FormDollyFieldArray>
 	)

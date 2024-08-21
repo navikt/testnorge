@@ -2,7 +2,7 @@ import Button from '@/components/ui/button/Button'
 import React from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { FlyttPersonModal } from '@/components/ui/button/FlyttPersonButton/FlyttPersonModal'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
@@ -10,7 +10,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	return (
 		<>
 			<Button
-				data-cy={CypressSelector.BUTTON_FLYTT_PERSONER}
+				data-testid={TestComponentSelectors.BUTTON_FLYTT_PERSONER}
 				onClick={openModal}
 				kind="flytt"
 				disabled={disabled}

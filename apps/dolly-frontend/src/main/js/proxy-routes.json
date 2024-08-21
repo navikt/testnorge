@@ -228,5 +228,20 @@
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false
+  },
+  "/testnav-skattekort-service/api": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
+  "/testnav-levende-arbeidsforhold-ansettelse": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
+  "/testnav-levende-arbeidsforhold-scheduler": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
   }
 }

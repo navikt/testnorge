@@ -31,6 +31,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const [step, setStep] = useState(0)
 	const CurrentStepComponent: any = STEPS[step]
+	const stepMaxIndex = STEPS.length - 1
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: initialValues,
@@ -88,7 +89,13 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		<FormProvider {...formMethods}>
 			<Stepper orientation="horizontal" activeStep={step + 1}>
 				{labels.map((label, index) => (
-					<Stepper.Step key={index}>{label.label}</Stepper.Step>
+					<Stepper.Step
+						key={index}
+						completed={index < step}
+						onClick={() => index < stepMaxIndex && setStep(index)}
+					>
+						{label.label}
+					</Stepper.Step>
 				))}
 			</Stepper>
 

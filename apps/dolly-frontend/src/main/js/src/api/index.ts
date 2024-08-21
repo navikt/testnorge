@@ -3,8 +3,9 @@ import { Argument } from 'classnames'
 import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
+import { Logger } from '@/logger/Logger'
 
 const fetchRetry = fetch_retry(originalFetch)
 
@@ -152,10 +153,10 @@ type Config = {
 
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
-		retryOn: (attempt, _error, response) => {
-			if (!response.ok && !runningCypressE2E()) {
+		retryOn: (attempt, error, response) => {
+			if (!response.ok && !runningE2ETest()) {
 				if (
-					response.status === 401 &&
+					response?.status === 401 &&
 					!url.includes('testnav-arbeidsplassencv') &&
 					!url.includes('infostripe')
 				) {
@@ -165,12 +166,19 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 				if (attempt < 4) {
 					return true
 				}
-				throw new Error('Response fra endepunkt var ikke ok')
+				Logger.error({
+					event: `Response fra URL: ${response.url} var ikke OK`,
+					message: error,
+					uuid: window.uuid,
+				})
+				throw new Error(`Response fra endepunkt var ikke ok, max retries oversteget`)
 			}
 			return false
 		},
 		retries: 5,
-		retryDelay: 800,
+		retryDelay: (attempt: number, _error: any, _response: any) => {
+			return Math.pow(2, attempt) * 1000 // 1000, 2000, 4000
+		},
 		method: config.method,
 		redirect: config.redirect,
 		credentials: 'include',
@@ -180,9 +188,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		if (response.redirected) {
 			window.location.href = response.url
 		}
-		if (!response.ok && !runningCypressE2E()) {
+		if (!response.ok && !runningE2ETest()) {
 			if (
-				response.status === 401 &&
+				response?.status === 401 &&
 				!url.includes('testnav-arbeidsplassencv') &&
 				!url.includes('infostripe')
 			) {
@@ -192,6 +200,11 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			if (response.status === 404) {
 				throw new NotFoundError()
 			}
+			Logger.error({
+				event: `Response fra URL: ${response.url} var ikke OK`,
+				message: response.text(),
+				uuid: window.uuid,
+			})
 			throw new Error('Response fra endepunkt var ikke ok')
 		}
 		return response

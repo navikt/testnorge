@@ -3,11 +3,13 @@ name: integration-test
 on:
   push:
     paths:
-      - libs/integration-test/**
-      - .github/workflows/lib.reactive-core.yml
+      - "plugins/**"
+      - "libs/integration-test/**"
+      - ".github/workflows/lib.reactive-core.yml"
 
 jobs:
   workflow:
+    if: github.event.pull_request.draft == false
     uses: ./.github/workflows/common.workflow.libs.backend.yml
     with:
       working-directory: 'libs/integration-test'

@@ -1,6 +1,8 @@
 import React, { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 import GruppeConnector from '@/pages/gruppe/GruppeConnector'
+import { OrganisasjonTenorSoekPage } from '@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'
+import NyansettelserPage from '@/pages/nyansettelser/NyansettelserPage'
 
 const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
 const Organisasjon = lazy(() => import('@/pages/organisasjoner/Organisasjoner'))
@@ -13,6 +15,10 @@ const TestnorgePage = lazy(() => import('@/pages/testnorgePage/index'))
 const Endringsmelding = lazy(() => import('@/pages/endringsmelding/Endringsmelding'))
 const DollySoekPage = lazy(() => import('@/pages/dollySoek/DollySoekPage'))
 const TenorSoekPage = lazy(() => import('@/pages/tenorSoek/TenorSoekPage'))
+const OrgtilgangPage = lazy(() => import('@/pages/adminPages/Orgtilgang/OrgtilgangPage'))
+const LevendeArbeidsforholdPage = lazy(
+	() => import('@/pages/adminPages/Levendearbeidsforhold/AppstyringPage'),
+)
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
@@ -40,6 +46,11 @@ const allRoutes = [
 		element: () => <Organisasjon />,
 	},
 	{
+		path: '/tenor/organisasjoner',
+		breadcrumb: 'Søk i Tenor organisasjoner',
+		element: () => <OrganisasjonTenorSoekPage />,
+	},
+	{
 		path: '/organisasjoner/bestilling',
 		breadcrumb: 'Opprett organisasjon',
 		element: () => <BestillingsveilederConnector />,
@@ -48,7 +59,7 @@ const allRoutes = [
 	{ path: '/ui', breadcrumb: 'UI demo', element: () => <UI /> },
 	{ path: '/dollysoek', breadcrumb: 'Søk i Dolly', element: () => <DollySoekPage /> },
 	{ path: '/testnorge', breadcrumb: 'Søk i Test-Norge', element: () => <TestnorgePage /> },
-	{ path: '/tenor', breadcrumb: 'Søk i Tenor', element: () => <TenorSoekPage /> },
+	{ path: '/tenor/personer', breadcrumb: 'Søk i Tenor personer', element: () => <TenorSoekPage /> },
 	{
 		path: '/importer',
 		breadcrumb: 'Importer',
@@ -58,6 +69,21 @@ const allRoutes = [
 		path: '/endringsmelding',
 		breadcrumb: 'Endringsmelding',
 		element: () => <Endringsmelding />,
+	},
+	{
+		path: '/admin/orgtilgang',
+		breadcrumb: 'Organisasjon-tilgang',
+		element: () => <OrgtilgangPage />,
+	},
+	{
+		path: '/admin/levendearbeidsforhold',
+		breadcrumb: 'Levende-arbeidsforhold',
+		element: () => <LevendeArbeidsforholdPage />,
+	},
+	{
+		path: '/nyansettelser',
+		breadcrumb: 'Nyansettelser',
+		element: () => <NyansettelserPage />,
 	},
 ]
 

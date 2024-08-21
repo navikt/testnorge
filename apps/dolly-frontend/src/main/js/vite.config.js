@@ -51,9 +51,11 @@ export default defineConfig(({ mode }) => ({
 			external: ['./nais.js'],
 		},
 	},
+	optimizeDeps: { exclude: ['node_modules/.cache'] },
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),
+			'#': path.resolve(__dirname, './playwright'),
 		},
 	},
 	server: mode === 'local-dev' && {

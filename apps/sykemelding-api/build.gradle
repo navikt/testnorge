@@ -1,53 +1,11 @@
 plugins {
-    id 'java'
-    id "org.sonarqube" version "4.4.1.3373"
-    id 'org.springframework.boot' version "3.2.1"
-    id 'io.spring.dependency-management' version "1.1.4"
-    id "jacoco"
-}
-
-test {
-    useJUnitPlatform()
+    id "dolly-apps"
 }
 
 sonarqube {
     properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnorge-sykemelding-api"
         property "sonar.projectName", "testnorge-sykemelding-api"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
-bootJar {
-    archiveFileName = "app.jar"
-}
-
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
-    }
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
-        }
-    }
-    maven {
-        url = uri('https://packages.confluent.io/maven/')
     }
 }
 
@@ -61,38 +19,22 @@ dependencies {
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:3.0.3'
+    implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
-    implementation 'jakarta.activation:jakarta.activation-api:2.1.2'
-    implementation 'org.glassfish.jaxb:jaxb-runtime'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    implementation "jakarta.activation:jakarta.activation-api:$versions.jakartaActivation"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'org.apache.kafka:kafka-clients:3.6.1'
-    implementation 'io.confluent:kafka-avro-serializer:7.5.1'
+    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
+    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
 
     testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-}
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
 }

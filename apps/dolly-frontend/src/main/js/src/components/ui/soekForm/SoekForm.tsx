@@ -1,9 +1,17 @@
 import styled from 'styled-components'
 import React from 'react'
+import { Button } from '@navikt/ds-react'
+import { TrashIcon } from '@navikt/aksel-icons'
+import { UseFormGetValues } from 'react-hook-form'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type HeaderProps = {
 	title: string
-	antall: number
+	antall?: number
+	paths: string[]
+	getValues?: UseFormGetValues<any>
+	emptyCategory?: Function
+	dataCy?: string
 }
 
 export const SoekefeltWrapper = styled.div`
@@ -24,6 +32,13 @@ export const SoekKategori = styled.div`
 	flex-wrap: wrap;
 	font-size: medium;
 
+	h4 {
+		display: flex;
+		align-items: center;
+		margin: 15px 0 10px;
+		width: 100%;
+	}
+
 	&& {
 		.dolly-form-input {
 			min-width: 0;
@@ -34,6 +49,7 @@ export const SoekKategori = styled.div`
 
 export const Buttons = styled.div`
 	margin: 15px 0 10px 0;
+
 	&& {
 		button {
 			margin-right: 10px;
@@ -53,6 +69,7 @@ const KategoriCircle = styled.div`
 	border-radius: 50%;
 	margin-left: 10px;
 	background-color: #0067c5ff;
+
 	&& {
 		p {
 			margin: auto;
@@ -65,16 +82,37 @@ const KategoriCircle = styled.div`
 	}
 `
 
-export const Header = ({ title, antall }: HeaderProps) => (
-	<KategoriHeader>
-		<span>{title}</span>
-		{antall > 0 && (
-			<KategoriCircle>
-				<p>{antall}</p>
-			</KategoriCircle>
-		)}
-	</KategoriHeader>
-)
+const KategoriEmptyButton = styled(Button)`
+	position: absolute;
+	right: 10px;
+`
+
+export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy }: HeaderProps) => {
+	const antallValgt = antall ? antall : getAntallRequest(paths, getValues)
+	return (
+		<KategoriHeader data-testid={dataCy}>
+			<span>{title}</span>
+			{antallValgt > 0 && (
+				<KategoriCircle data-testid={TestComponentSelectors.TITLE_TENOR_HEADER_COUNTER}>
+					<p>{antallValgt}</p>
+				</KategoriCircle>
+			)}
+			{paths && (
+				<KategoriEmptyButton
+					onClick={(e) => {
+						e.stopPropagation()
+						emptyCategory?.(paths)
+					}}
+					data-testid={TestComponentSelectors.BUTTON_TENOR_CLEAR_HEADER}
+					variant={'tertiary'}
+					icon={<TrashIcon />}
+					size={'small'}
+					title="Tøm kategori"
+				/>
+			)}
+		</KategoriHeader>
+	)
+}
 
 export const requestIsEmpty = (updatedRequest: any) => {
 	let isEmpty = true
@@ -95,4 +133,17 @@ export const requestIsEmpty = (updatedRequest: any) => {
 	}
 	flatten(updatedRequest)
 	return isEmpty
+}
+
+const getAntallRequest = (liste: string[], getValues: UseFormGetValues<any>) => {
+	let antall = 0
+	liste?.forEach((item) => {
+		const attr = getValues?.(item)
+		if (Array.isArray(attr)) {
+			antall += attr.length
+		} else if (attr || attr === false) {
+			antall++
+		}
+	})
+	return antall
 }

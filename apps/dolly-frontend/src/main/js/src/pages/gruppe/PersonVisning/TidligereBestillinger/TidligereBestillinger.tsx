@@ -3,7 +3,7 @@ import Button from '@/components/ui/button/Button'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { navigerTilBestilling } from '@/ducks/finnPerson'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const NavigerTilBestillingButton = styled(Button)`
 	align-self: center;
@@ -20,7 +20,7 @@ export const TidligereBestillinger = ({ ids }) => {
 				.map((numId) => numId.toString())
 				.map((id) => (
 					<NavigerTilBestillingButton
-						data-cy={CypressSelector.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
+						data-testid={TestComponentSelectors.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
 						key={id}
 						onClick={() => {
 							dispatch(navigerTilBestilling(id))

@@ -2,8 +2,7 @@
 <configuration>
     <springProfile name="prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                <layout class="no.nav.testnav.libs.servletcore.logging.DollyLogbackLayout"/>
+            <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     <maxDepthPerThrowable>256</maxDepthPerThrowable>
@@ -25,8 +24,7 @@
 
     <springProfile name="dev">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                <layout class="no.nav.testnav.libs.servletcore.logging.DollyLogbackLayout"/>
+            <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     <maxDepthPerThrowable>256</maxDepthPerThrowable>

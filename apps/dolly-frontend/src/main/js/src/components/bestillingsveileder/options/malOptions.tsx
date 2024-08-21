@@ -30,6 +30,9 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	if (initialValuesMal.inntektstub) {
 		initialValuesMal.inntektstub = getUpdatedInntektstubData(initialValuesMal.inntektstub)
 	}
+	if (initialValuesMal.skattekort) {
+		initialValuesMal.skattekort = getUpdatedSkattekortData(initialValuesMal.skattekort)
+	}
 	if (initialValuesMal.instdata) {
 		initialValuesMal.instdata = getUpdatedInstData(initialValuesMal.instdata)
 	}
@@ -155,6 +158,25 @@ const getUpdatedAaregData = (aaregData: any) => {
 }
 const getUpdatedInntektsmeldingData = (inntektsmeldingData: any) =>
 	inntektsmeldingData.map((inntekt: any) => updateData(inntekt, initialValues.inntektsmelding))
+
+const getUpdatedSkattekortData = (skattekortData: any) => {
+	const newSkattekortData = Object.assign({}, skattekortData)
+	newSkattekortData.arbeidsgiverSkatt = newSkattekortData.arbeidsgiverSkatt.map(
+		(arbeidsgiver: any) => {
+			const identifikator = Object.fromEntries(
+				Object.entries(arbeidsgiver?.arbeidsgiveridentifikator)?.filter(([key, value]) => value),
+			)
+			_.set(arbeidsgiver, 'arbeidsgiveridentifikator', identifikator)
+			const forskuddstrekk = arbeidsgiver?.arbeidstaker?.[0]?.skattekort?.forskuddstrekk?.map(
+				(forskuddstrekk: any) =>
+					Object.fromEntries(Object.entries(forskuddstrekk)?.filter(([key, value]) => value)),
+			)
+			_.set(arbeidsgiver, 'arbeidstaker[0].skattekort.forskuddstrekk', forskuddstrekk)
+			return arbeidsgiver
+		},
+	)
+	return newSkattekortData
+}
 
 const getUpdatedInstData = (instData: any) =>
 	instData.map((data: any) => updateData(data, initialValues.instdata))

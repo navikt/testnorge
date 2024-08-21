@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.service.AdressehistorikkService;
@@ -20,6 +21,7 @@ import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonRequestDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -71,6 +73,14 @@ public class PersonController {
                                            @RequestParam(required = false) List<String> miljoer) {
 
         return personService.getPerson(ident, nonNull(miljoer) ? miljoer : emptyList());
+    }
+
+    @Operation(description = "Hent persondata uten å eksponere ident")
+    @PostMapping("/ident")
+    public List<PersonMiljoeDTO> getPerson(@RequestBody PersonRequestDTO request,
+                                           @RequestParam(required = false) List<String> miljoer) {
+
+        return personService.getPerson(request.getIdent(), nonNull(miljoer) ? miljoer : emptyList());
     }
 
     @PostMapping("/{ident}/egenansatt")

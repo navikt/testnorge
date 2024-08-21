@@ -11,14 +11,17 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 
 	const brukerveiledning = (
 		<a
-			href="https://navikt.github.io/testnorge/applications/dolly/brukerveiledning"
+			href="https://navikt.github.io/testnorge/docs/applications/dolly/brukerveiledning"
 			target="_blank"
 		>
 			her
 		</a>
 	)
 	const retningslinjer = (
-		<a href="https://navikt.github.io/testnorge/applications/dolly/retningslinjer" target="_blank">
+		<a
+			href="https://navikt.github.io/testnorge/docs/applications/dolly/retningslinjer"
+			target="_blank"
+		>
 			her
 		</a>
 	)

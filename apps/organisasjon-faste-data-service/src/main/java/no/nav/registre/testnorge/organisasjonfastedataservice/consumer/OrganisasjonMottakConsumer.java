@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.organisasjonfastedataservice.consumer;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Adresse;
@@ -12,11 +13,13 @@ import no.nav.testnav.libs.avro.organisasjon.v1.Metadata;
 import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
 import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.avro.AvroRuntimeException;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -67,39 +70,44 @@ public class OrganisasjonMottakConsumer {
         Optional.ofNullable(organisasjon.getEpost())
                 .ifPresent(value -> builder.setEpostBuilder(Epost.newBuilder().setEpost(value)));
 
-        return builder
-                .setOrgnummer(organisasjon.getOrgnummer())
-                .setEnhetstype(organisasjon.getEnhetstype())
-                .setNavnBuilder(DetaljertNavn
-                        .newBuilder()
-                        .setNavn1(organisasjon.getNavn())
-                        .setRedigertNavn(organisasjon.getRedigertNavn())
-                )
-                .setUnderenheter(organisasjon.getUnderenheter().stream().map(this::create).collect(Collectors.toList()))
-                .setPostadresse(create(organisasjon.getPostadresse()))
-                .setForretningsadresse(create(organisasjon.getForretningsAdresse()))
-                .build();
+        try {
+            return builder
+                    .setOrgnummer(organisasjon.getOrgnummer())
+                    .setEnhetstype(organisasjon.getEnhetstype())
+                    .setNavnBuilder(DetaljertNavn
+                            .newBuilder()
+                            .setNavn1(organisasjon.getNavn())
+                            .setRedigertNavn(organisasjon.getRedigertNavn())
+                    )
+                    .setUnderenheter(organisasjon.getUnderenheter().stream().map(this::create).collect(Collectors.toList()))
+                    .setPostadresse(create(organisasjon.getPostadresse()))
+                    .setForretningsadresse(create(organisasjon.getForretningsAdresse()))
+                    .build();
+        } catch (AvroRuntimeException e) {
+            log.error("Feil ved mapping av organisasjon: {}", Json.pretty(organisasjon), e);
+            throw e;
+        }
     }
 
 
     private no.nav.testnav.libs.avro.organisasjon.v1.Adresse create(Adresse adresse) {
-        if (adresse == null) {
+        if (isNull(adresse) || isNull(adresse.getPostnr())) {
             return null;
         }
 
-        if (StringUtils.isBlank(adresse.getKommunenr())) {
-            log.warn("Kommunenr kan ikke være null. Adresse blir satt til null.");
-            return null;
+        try {
+            return no.nav.testnav.libs.avro.organisasjon.v1.Adresse.newBuilder()
+                    .setPostadresse1(adresse.getAdresselinje1())
+                    .setPostadresse2(adresse.getAdresselinje2())
+                    .setPostadresse3(adresse.getAdresselinje3())
+                    .setKommunenummer(adresse.getKommunenr())
+                    .setPoststed(adresse.getPoststed())
+                    .setPostnummer(adresse.getPostnr())
+                    .setLandkode(adresse.getLandkode())
+                    .build();
+        } catch (AvroRuntimeException e) {
+            log.error("Feil ved mapping av adresse: {}", Json.pretty(adresse), e);
+            throw e;
         }
-
-        return no.nav.testnav.libs.avro.organisasjon.v1.Adresse.newBuilder()
-                .setPostadresse1(adresse.getAdresselinje1())
-                .setPostadresse2(adresse.getAdresselinje2())
-                .setPostadresse3(adresse.getAdresselinje3())
-                .setKommunenummer(adresse.getKommunenr())
-                .setPoststed(adresse.getPoststed())
-                .setPostnummer(adresse.getPostnr())
-                .setLandkode(adresse.getLandkode())
-                .build();
     }
 }

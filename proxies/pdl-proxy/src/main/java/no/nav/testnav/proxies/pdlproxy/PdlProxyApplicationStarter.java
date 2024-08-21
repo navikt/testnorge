@@ -54,8 +54,6 @@ public class PdlProxyApplicationStarter {
                                            Consumers consumers) {
         var addHendelselagerApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
                 .apiKeyAuthenticationHeaderFilter(credentialsHolder.hendelselagerApiKey());
-        var addAktoerAdminApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
-                .apiKeyAuthenticationHeaderFilter(credentialsHolder.aktoerAdminApiKey());
         var addElasticSearchBasicAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
                 .basicAuthAuthenticationHeaderFilter(credentialsHolder.elasticUsername(), credentialsHolder.elasticPassword());
 
@@ -65,7 +63,6 @@ public class PdlProxyApplicationStarter {
                 .route(createRoute(consumers.getPdlApiQ1(), tokenService))
                 .route(createRoute(consumers.getPdlTestdata(), tokenService))
                 .route(createRoute("pdl-identhendelse", "http://pdl-identhendelse-lager.pdl.svc.nais.local", addHendelselagerApiKeyAuthenticationHeader))
-                .route(createRoute("pdl-npid", "http://pdl-aktor.pdl.svc.nais.local", addAktoerAdminApiKeyAuthenticationHeader))
                 .route(createRoute("pdl-elastic", "https://pdl-es-q.adeo.no", addElasticSearchBasicAuthenticationHeader))
                 .build();
     }
@@ -89,5 +86,4 @@ public class PdlProxyApplicationStarter {
                                 .map(AccessToken::getTokenValue));
         return createRoute(segment, host, filter);
     }
-
 }

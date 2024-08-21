@@ -13,6 +13,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.time.LocalDateTime;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
@@ -24,12 +25,15 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
 
     private Ansvar ansvar;
     private String ansvarlig;
+    private String ansvarssubjekt;
     private PersonRequestDTO nyAnsvarlig;
     private RelatertBiPersonDTO ansvarligUtenIdentifikator;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime gyldigFraOgMed;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime gyldigTilOgMed;
+    private Boolean harForeldreansvar;
+    private Boolean erAnsvarssubjekt;
 
     private Boolean eksisterendePerson;
 
@@ -47,8 +51,15 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
+    public boolean isNotAnsvarssubjekt() {
+
+        return isBlank(ansvarssubjekt);
+    }
+
+    @JsonIgnore
     @Override
     public String getIdentForRelasjon() {
-        return ansvarlig;
+
+        return isNotBlank(ansvarlig) ? ansvarlig : ansvarssubjekt;
     }
 }

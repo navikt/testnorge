@@ -18,7 +18,7 @@ import {
 
 type SelectProps = {
 	id?: string
-	'data-cy'?: string
+	'data-testid'?: string
 	name: string
 	fieldName?: string
 	value?: any
@@ -85,35 +85,37 @@ export const Select = ({
 	}
 
 	return (
-		<ReactSelect
-			value={!_.isEmpty(formValue) ? formValue : propValue}
-			options={options}
-			name={name}
-			inputId={id || name}
-			placeholder={placeholder}
-			filterOption={createFilter({ ignoreAccents: false })}
-			className={cn('basic-single', className)}
-			classNamePrefix={classNamePrefix}
-			components={{
-				MenuList,
-				Option,
-			}}
-			isDisabled={isDisabled}
-			isSearchable={isSearchable}
-			isLoading={isLoading}
-			isClearable={isClearable}
-			isMulti={isMulti}
-			onChange={onChange}
-			styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
-			// Naar vi bruker modal fra Aksel maa vi referere til modalens className for at dropdowns ikke skal forsvinne bak modalen
-			menuPortalTarget={
-				isInDialog
-					? (document.getElementsByClassName('navds-modal')[0] as HTMLElement)
-					: document.getElementById('react-select-root')
-			}
-			menuPosition={isInDialog ? 'fixed' : undefined}
-			{...rest}
-		/>
+		<span data-testid={rest['data-testid']}>
+			<ReactSelect
+				value={!_.isEmpty(formValue) ? formValue : propValue}
+				options={options}
+				name={name}
+				inputId={id || name}
+				placeholder={placeholder}
+				filterOption={createFilter({ ignoreAccents: false })}
+				className={cn('basic-single', className)}
+				classNamePrefix={classNamePrefix}
+				components={{
+					MenuList,
+					Option,
+				}}
+				isDisabled={isDisabled}
+				isSearchable={isSearchable}
+				isLoading={isLoading}
+				isClearable={isClearable}
+				isMulti={isMulti}
+				onChange={onChange}
+				styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
+				// Naar vi bruker modal fra Aksel maa vi referere til modalens className for at dropdowns ikke skal forsvinne bak modalen
+				menuPortalTarget={
+					isInDialog
+						? (document.getElementsByClassName('navds-modal')[0] as HTMLElement)
+						: document.getElementById('react-select-root')
+				}
+				menuPosition={isInDialog ? 'fixed' : undefined}
+				{...rest}
+			/>
+		</span>
 	)
 }
 
@@ -196,7 +198,7 @@ const P_FormSelect = ({ feil, ...props }: SelectProps) => {
 	)
 }
 
-export const FormSelect = ({ visHvisAvhuket = false, ...props }: SelectProps) => {
+export const FormSelect = ({ visHvisAvhuket = false, vis = true, ...props }: SelectProps) => {
 	const component = <P_FormSelect {...props} />
-	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
+	return vis && (visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component)
 }

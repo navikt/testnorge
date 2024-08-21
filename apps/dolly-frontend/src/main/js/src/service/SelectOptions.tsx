@@ -168,7 +168,6 @@ const selectOptions = {
 		{ value: 'VEGADRESSE', label: adresser.vegadresse },
 		{ value: 'MATRIKKELADRESSE', label: adresser.matrikkeladresse },
 		{ value: 'UTENLANDSK_ADRESSE', label: adresser.utenlandskAdresse },
-		{ value: 'OPPHOLD_ANNET_STED', label: 'Opphold annet sted' },
 	],
 
 	adressetypeKontaktadresse: [
@@ -550,6 +549,32 @@ const selectOptions = {
 		{ value: 'PENSJON_FRA_UTLANDET', label: 'Forventet pensjon fra utlandet' },
 		{ value: 'UTENLANDS_INNTEKT', label: 'Forventet utenlandsinntekt' },
 		{ value: 'ANDRE_PENSJONER_OG_YTELSER', label: 'Forventet andre pensjoner og ytelser' },
+	],
+
+	// Pensjonsavtale:
+	avtaleKategori: [
+		{ value: 'NONE', label: 'Ingenting' },
+		{ value: 'UNKNOWN', label: 'Ukjent' },
+		{ value: 'INDIVIDUELL_ORDNING', label: 'Individuell ordning' },
+		{ value: 'PRIVAT_AFP', label: 'Privat AFP' },
+		{ value: 'PRIVAT_TJENESTEPENSJON', label: 'Privat tjenestepensjon' },
+		{ value: 'OFFENTLIG_TJENESTEPENSJON', label: 'Offentlig tjenestepensjon' },
+		{ value: 'FOLKETRYGD', label: 'Folketrygden' },
+	],
+
+	maanedsvelger: [
+		{ value: 1, label: 'Januar' },
+		{ value: 2, label: 'Februar' },
+		{ value: 3, label: 'Mars' },
+		{ value: 4, label: 'April' },
+		{ value: 5, label: 'Mai' },
+		{ value: 6, label: 'Juni' },
+		{ value: 7, label: 'Juli' },
+		{ value: 8, label: 'August' },
+		{ value: 9, label: 'September' },
+		{ value: 10, label: 'Oktober' },
+		{ value: 11, label: 'November' },
+		{ value: 12, label: 'Desember' },
 	],
 
 	// Arbeidsplassen:

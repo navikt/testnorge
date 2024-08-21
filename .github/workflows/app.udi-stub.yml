@@ -3,12 +3,13 @@ name: testnav-udi-stub
 on:
   push:
     paths:
-      - libs/data-transfer-objects
-      - libs/database
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/udi-stub/**
-      - .github/workflows/app.udi-stub.yml
+      - "plugins/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/database/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/udi-stub/**"
+      - ".github/workflows/app.udi-stub.yml"
 
 jobs:
   workflow:

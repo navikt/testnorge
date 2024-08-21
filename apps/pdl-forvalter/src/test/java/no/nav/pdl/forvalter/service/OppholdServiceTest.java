@@ -102,7 +102,7 @@ class OppholdServiceTest {
                 .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .type(OPPLYSNING_MANGLER)
                 .isNew(true)
-                .build())).get(0);
+                .build())).getFirst();
 
         assertThat(target.getOppholdFra(), is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay())));
     }

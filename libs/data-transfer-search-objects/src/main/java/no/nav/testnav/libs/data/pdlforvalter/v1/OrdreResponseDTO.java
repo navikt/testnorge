@@ -1,13 +1,17 @@
 package no.nav.testnav.libs.data.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -26,6 +30,14 @@ public class OrdreResponseDTO {
 
         private String ident;
         private List<PdlStatusDTO> ordrer;
+
+        public List<PdlStatusDTO> getOrdrer() {
+
+            if (isNull(ordrer)) {
+                ordrer = new ArrayList<>();
+            }
+                return ordrer;
+        }
     }
 
     @Data
@@ -38,6 +50,23 @@ public class OrdreResponseDTO {
         private String ident;
         private PdlArtifact infoElement;
         private List<HendelseDTO> hendelser;
+
+        public List<HendelseDTO> getHendelser() {
+
+            if (isNull(hendelser)) {
+                hendelser = new ArrayList<>();
+            }
+            return hendelser;
+        }
+
+        @JsonIgnore
+        public boolean isDataElement(){
+
+            return infoElement != PdlArtifact.PDL_SLETTING &&
+                    infoElement != PdlArtifact.PDL_SLETTING_HENDELSEID &&
+                    infoElement != PdlArtifact.PDL_OPPRETT_PERSON &&
+                    infoElement != PdlArtifact.PDL_PERSON_MERGE;
+        }
     }
 
     @Data
