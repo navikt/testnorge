@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.UserInfo;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -25,6 +26,8 @@ public class GetUserInfo implements Callable<Optional<UserInfo>> {
 
     @Override
     public Optional<UserInfo> call() {
+        var test = SecurityContextHolder.getContext().getAuthentication();
+        log.info(test.getName());
         var request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         log.trace("Prøver å hente JWT fra request...");
         return Optional.ofNullable(request.getHeader(UserConstant.USER_HEADER_JWT)).map(token -> {
