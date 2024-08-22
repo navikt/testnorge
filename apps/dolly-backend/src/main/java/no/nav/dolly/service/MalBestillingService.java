@@ -73,7 +73,7 @@ public class MalBestillingService {
                     }
                 }
         );
-        
+
         try {
 
             var malBestillinger = IterableUtils.toList(bestillingMalRepository.findAll())
