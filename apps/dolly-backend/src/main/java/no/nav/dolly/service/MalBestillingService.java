@@ -2,6 +2,7 @@ package no.nav.dolly.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -80,7 +81,8 @@ public class MalBestillingService {
                                                     Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
                                             .build();
                                 } catch (JsonProcessingException e) {
-                                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                                    log.error("Feil ved henting av malbestilling: {}", Json.pretty(bestillingMal), e);
+                                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
                                 }
                             })
                             .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
