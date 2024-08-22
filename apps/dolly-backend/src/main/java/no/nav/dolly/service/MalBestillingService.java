@@ -2,7 +2,6 @@ package no.nav.dolly.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -30,7 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -66,58 +64,46 @@ public class MalBestillingService {
         var brukere = brukerService.fetchBrukere();
         brukere.forEach(bruker -> {
                     try {
-                        var maler = bestillingMalRepository.findByBruker(bruker);
-                        log.info("Fant {} maler for bruker: {}", maler.size(), bruker.getBrukernavn());
+                        var maler = getMalbestillingByUser(bruker.getBrukerId());
+                        log.info("Fant maler for bruker: {}", bruker.getBrukernavn());
                     } catch (Exception e) {
                         log.error("Feil ved henting av malbestillinger for bruker: {}", bruker.getBrukernavn(), e);
                     }
                 }
         );
 
-        try {
+        var malBestillinger = IterableUtils.toList(bestillingMalRepository.findAll())
+                .stream()
+                .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
+                        .stream()
+                        .map(bestillingMal -> {
+                            try {
+                                return RsMalBestilling.builder()
+                                        .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
+                                        .malNavn(bestillingMal.getMalNavn())
+                                        .miljoer(bestillingMal.getMiljoer())
+                                        .id(bestillingMal.getId())
+                                        .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
+                                                bestillingMal.getBruker() :
+                                                Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
+                                        .build();
+                            } catch (JsonProcessingException e) {
+                                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                            }
+                        })
+                        .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
+                        .toList()));
 
-            var malBestillinger = IterableUtils.toList(bestillingMalRepository.findAll())
-                    .stream()
-                    .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
-                    .entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
-                            .stream()
-                            .filter(Objects::nonNull)
-                            .map(bestillingMal -> {
-                                log.info("Malbestilling: {}", Json.pretty(bestillingMal));
-                                try {
-                                    if (isNull(bestillingMal.getBestKriterier())) {
-                                        return null;
-                                    }
-                                    return RsMalBestilling.builder()
-                                            .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
-                                            .malNavn(bestillingMal.getMalNavn())
-                                            .miljoer(bestillingMal.getMiljoer())
-                                            .id(bestillingMal.getId())
-                                            .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
-                                                    bestillingMal.getBruker() :
-                                                    Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
-                                            .build();
-                                } catch (JsonProcessingException e) {
-                                    log.error("Feil ved henting av malbestilling: {}", Json.pretty(bestillingMal), e);
-                                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-                                }
-                            })
-                            .filter(Objects::nonNull)
-                            .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
-                            .toList()));
+        malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
+        malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
+                .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
+                .toList());
 
-            malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
-            malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
-                    .flatMap(Collection::stream)
-                    .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
-                    .toList());
+        return malBestillingWrapper;
 
-            return malBestillingWrapper;
-        } catch (Exception e) {
-            log.error("Feil ved henting av malbestillinger", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
     }
 
     @Transactional(readOnly = true)
