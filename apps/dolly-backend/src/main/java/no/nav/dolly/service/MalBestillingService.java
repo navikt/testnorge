@@ -72,6 +72,7 @@ public class MalBestillingService {
                             .stream()
                             .filter(Objects::nonNull)
                             .map(bestillingMal -> {
+                                log.info("Malbestilling: {}", Json.pretty(bestillingMal));
                                 try {
                                     if (isNull(bestillingMal.getBestKriterier())) {
                                         return null;
