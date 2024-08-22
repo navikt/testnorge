@@ -90,6 +90,7 @@ public class MalBestillingService {
                                     throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
                                 }
                             })
+                            .filter(Objects::nonNull)
                             .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                             .toList()));
 
