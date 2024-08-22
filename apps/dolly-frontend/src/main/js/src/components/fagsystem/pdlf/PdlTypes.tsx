@@ -222,6 +222,7 @@ export type NyIdent = {
 	nyttNavn?: {
 		hasMellomnavn: boolean
 	}
+	eksisterendeIdent?: string
 }
 
 export type FalskIdentitetData = {
