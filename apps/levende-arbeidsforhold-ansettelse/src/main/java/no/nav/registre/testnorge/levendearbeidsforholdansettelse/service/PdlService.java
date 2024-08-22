@@ -1,34 +1,30 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.PdlConsumer;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.TagsConsumer;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.SokPersonVariables;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.PersonRequestDTO;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
-@Getter
-@Setter
 @RequiredArgsConstructor
 public class PdlService {
+
+    private static final Random RANDOM = new SecureRandom();
+
     private final PdlConsumer pdlConsumer;
-    private int resultsPerPage = 100;
-    private String from;
-    private String to;
-    private String postnr;
-    private final TagsConsumer tagsConsumer;
 
     /**
      * Lager SokPersonVariabler som matcher filterene man vil basere søket på, og henter personer fra PDL som
@@ -36,118 +32,70 @@ public class PdlService {
      *
      * @return En liste med identer for personene som matcher søk-variablene
      */
-    public List<Ident> getPersoner() {
 
-        var sokPersonVariables = lagSokPersonVariables(
-                tilfeldigPageNumber(getSokPersonPages()),
-                resultsPerPage,
-                from,
-                to,
-                postnr);
+    public List<PdlPersonDTO.Person> getPersoner(PersonRequestDTO personRequest) {
 
-        var node = pdlConsumer.getSokPerson(sokPersonVariables.lagSokPersonPaging(),
-                        sokPersonVariables.lagSokPersonCriteria(),
+        return pdlConsumer.getSokPerson(lagSokPersonPaging(personRequest),
+                        lagSokPersonCriteria(personRequest),
                         PdlMiljoer.Q2)
+                .map(PdlPersonDTO::getData)
+                .filter(data -> nonNull(data.getSokPerson()))
+                .map(PdlPersonDTO.Data::getSokPerson)
+                .map(PdlPersonDTO.SokPerson::getHits)
+                .flatMap(Flux::fromIterable)
+                .map(PdlPersonDTO.Hit::getPerson)
+                .collectList()
                 .block();
-
-        var identer = new ArrayList<Ident>();
-
-        assert node != null;
-        node.get("data").get("sokPerson").findValues("identer").forEach(
-                hit -> hit.forEach(
-                        ident -> {
-                            if (ident.get("gruppe").asText().equals("FOLKEREGISTERIDENT")) {
-                                identer.add(new Ident(ident.get("ident").asText(), ident.get("gruppe").asText()));
-                            }
-                        }
-                )
-        );
-        return harBareTestnorgeTags(identer);
     }
 
-    /**
-     * Sjekker om personene kun brukes i Testnorge
-     *
-     * @param personer Ident-liste med personer man vil sjekke
-     * @return En liste med Ident-objekter som oppfyller kravet
-     */
-    private List<Ident> harBareTestnorgeTags(List<Ident> personer) {
+    private GraphqlVariables.Criteria lagSokPersonCriteria(PersonRequestDTO personRequest) {
 
-        var identer = new ArrayList<String>();
-        personer.forEach(person -> identer.add(person.getIdent()));
-        var tagsDTO = hentTags(identer);
+        var searchRuleFoedselsdato = new java.util.HashMap<String, Object>();
+        searchRuleFoedselsdato.put("from", personRequest.getFrom());
+        searchRuleFoedselsdato.put("to", personRequest.getTo());
 
-        for (var id : tagsDTO.getPersonerTags().entrySet()) {
-            List<String> value = id.getValue();
-            if (!(value.size() == 1 && value.getFirst().contains("TESTNORGE"))) {
-                String iden = id.getKey();
-                personer.removeIf(ide -> ide.getIdent().equals(iden));
-            }
-        }
-        return personer;
-    }
-
-    /**
-     * Henter ut antall sider med ett treff per side fra PDL slik at man
-     * kan hente et tilfeldig sidetall å hente personer fra
-     *
-     * @return Antallet sider med kun ett treff per side fra PDL
-     */
-    private int getSokPersonPages() {
-
-        SokPersonVariables sokPersonVariablesEnPage = SokPersonVariables
-                .builder()
-                .pageNumber(1)
-                .resultsPerPage(1)
-                .from(from)
-                .to(to)
-                .postnr(postnr)
+        GraphqlVariables.Filter filterBostedPostnr = GraphqlVariables.Filter.builder()
+                .fieldName("person.bostedsadresse.vegadresse.postnummer")
+                .searchRule(Map.of("wildcard", personRequest.getPostnr()))
                 .build();
-        JsonNode node = pdlConsumer.getSokPersonPages(sokPersonVariablesEnPage.lagSokPersonPaging(),
-                        sokPersonVariablesEnPage.lagSokPersonCriteria(),
-                        PdlMiljoer.Q2)
-                .block();
 
-        assert node != null;
-        int pages = node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt() / resultsPerPage;
-        return (pages == 0) ? 1 : pages;
-    }
-
-    /**
-     * @param totalPages Maks-antall
-     * @return Et tilfeldig tall mellom 1 og opgitt maks-antall
-     */
-    private int tilfeldigPageNumber(int totalPages) {
-        Random random = new Random();
-        return random.nextInt(totalPages);
-    }
-
-    /**
-     * Bygger et SokPersonVariables-objekt med de oppgitte parameterene som brukes til å filtrere spørringen mot PDl
-     *
-     * @param pageNumber     Sidetallet resultatene skal hentes fra
-     * @param resultsPerPage Antall treff per side
-     * @param from           Tidligste dato for alders-intervallet det skal søkes på
-     * @param to             Seneste dato for alders-intervallet det skal søkes på
-     * @param postnr         Postnummer det skal søkes på
-     * @return SokPersonVariables-objekt basert på parameterene
-     */
-    private SokPersonVariables lagSokPersonVariables(int pageNumber, int resultsPerPage, String from, String to, String postnr) {
-        return SokPersonVariables
-                .builder()
-                .pageNumber(pageNumber)
-                .resultsPerPage(resultsPerPage)
-                .from(from)
-                .to(to)
-                .postnr(postnr)
+        GraphqlVariables.Filter filterOppholdPostnr = GraphqlVariables.Filter.builder()
+                .fieldName("person.oppholdsadresse.vegadresse.postnummer")
+                .searchRule(Map.of("wildcard", personRequest.getPostnr()))
                 .build();
+
+        GraphqlVariables.Filter filterFoedselsdato = GraphqlVariables.Filter.builder()
+                .fieldName("person.foedselsdato.foedselsdato")
+                .searchRule(searchRuleFoedselsdato)
+                .build();
+
+        GraphqlVariables.Filter random = GraphqlVariables.Filter.builder()
+                .fieldName("random")
+                .searchRule(Map.of("random", RANDOM.nextFloat()))
+                .build();
+
+        GraphqlVariables.Filter testnorge = GraphqlVariables.Filter.builder()
+                .fieldName("tags")
+                .searchRule(Map.of("contains", "TESTNORGE"))
+                .build();
+
+        GraphqlVariables.Filter dolly = GraphqlVariables.Filter.builder()
+                .fieldName("tags")
+                .searchRule(Map.of("contains", "DOLLY"))
+                .build();
+
+        var or = Map.of("or", List.of(filterBostedPostnr, filterOppholdPostnr));
+        var not = Map.of("not", List.of(dolly));
+        var and = List.of(testnorge, or, not, filterFoedselsdato, random);
+
+        return GraphqlVariables.Criteria.builder().and(and).build();
     }
 
-    /**
-     * @param identer Liste med identnummere
-     * @return TagsDTO for hver ident i identer-listen
-     */
-    private TagsDTO hentTags(List<String> identer) {
-        return tagsConsumer.hentTags(identer);
+    private GraphqlVariables.Paging lagSokPersonPaging(PersonRequestDTO personRequest) {
+
+        return GraphqlVariables.Paging.builder()
+                .pageNumber(0)
+                .resultsPerPage(personRequest.getResultsPerPage())
+                .build();
     }
 }

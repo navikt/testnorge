@@ -1,30 +1,28 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl;
 
 import lombok.*;
+import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
 
+@Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 public class GraphqlVariables {
 
+    @Data
     @Builder
-    @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Filter {
         private String fieldName;
-        private Map<String, String> searchRule;
+        private Map<String, Object> searchRule;
 
     }
 
+    @Data
     @Builder
-    @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Paging{
@@ -32,18 +30,16 @@ public class GraphqlVariables {
         private int resultsPerPage;
     }
 
+    @Data
     @Builder
-    @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Criteria{
         private List<Object> and;
     }
 
+    @Data
     @Builder
-    @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Root{

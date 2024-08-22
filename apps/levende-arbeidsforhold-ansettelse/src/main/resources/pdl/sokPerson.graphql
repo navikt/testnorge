@@ -13,6 +13,7 @@ query($paging: Paging, $criteria: [Criterion]) {
                 }
                 foedselsdato {
                     foedselsaar
+                    foedselsdato
                 }
                 bostedsadresse {
                     vegadresse{
@@ -31,6 +32,10 @@ query($paging: Paging, $criteria: [Criterion]) {
                         husbokstav
                         postnummer
                     }
+                }
+                folkeregisteridentifikator{
+                    identifikasjonsnummer
+                    status
                 }
             }
         }

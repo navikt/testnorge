@@ -26,7 +26,6 @@ public class ArbeidsforholdService {
 
     private static final String arbeidstakerType = "Person";
     private static final String arbeidsgiverType = "Organisasjon";
-    private static final String arbeidsforholdType = "ordinaertArbeidsforhold"; //#TODO KAN BLI HENTET FRA DB
     private static final String arbeidstidsordning = "ikkeSkift";
     private static final String ansettelsesform = "fast";
     private static final double TIMER_HUNDRE_PROSENT = 37.5;
@@ -51,8 +50,10 @@ public class ArbeidsforholdService {
      * @param stillingsprosent Stillinsprosenten arbeidsforholdet skal ha
      * @return HttpStatusCode basert på resultatet av spørringen
      */
-    public Optional<HttpStatusCode> opprettArbeidsforhold(String ident, String orgnummer, String yrke, String stillingsprosent) {
-        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer, yrke, stillingsprosent));
+    public Optional<HttpStatusCode> opprettArbeidsforhold(String ident, String orgnummer, String yrke,
+                                                          String arbeidsforholdstype, String stillingsprosent) {
+
+        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer, yrke, arbeidsforholdstype, stillingsprosent));
     }
 
 
@@ -65,7 +66,7 @@ public class ArbeidsforholdService {
      * @param prosent Stillinsprosenten arbeidsforholdet skal ha
      * @return Et Arbeidsforhold-objekt basert på parameterene
      */
-    private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer, String yrke, String prosent) {
+    private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer, String yrke, String arbeidsforholdType, String prosent) {
 
         var arbeidsforholdList = hentArbeidsforhold(ident);
         var stillingsprosent = Double.parseDouble(prosent);

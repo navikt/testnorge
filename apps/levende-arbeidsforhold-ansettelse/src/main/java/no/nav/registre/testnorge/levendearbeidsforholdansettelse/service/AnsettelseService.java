@@ -3,9 +3,9 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.PersonRequestDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AlderspennList;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AliasMethod;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
@@ -113,7 +113,7 @@ public class AnsettelseService {
                     int iteratorElement = aldersspennIterator.next();
 
                     //Henter mulige personer per alderspenn basert på postnummer fra org
-                    var muligePersonerMap = new HashMap<Integer, List<Ident>>();
+                    var muligePersonerMap = new HashMap<Integer, List<PdlPersonDTO.Person>>();
                     aldersspennIndekser.forEach(
                             indeks -> {
                                 if (!muligePersonerMap.containsKey(indeks)) {
@@ -121,7 +121,7 @@ public class AnsettelseService {
                                 }
                             });
 
-                    var ansattePersoner = new ArrayList<Ident>();
+                    var ansattePersoner = new ArrayList<PdlPersonDTO.Person>();
 
                     //Ansetter personer
                     while (ansattePersoner.size() < finalAntallPersPerOrg) {
@@ -130,19 +130,23 @@ public class AnsettelseService {
 
                             var tilfeldigIndex = tilfeldigTall(muligePersoner.size());
                             var tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
+                            var ident = tilfeldigPerson.getFolkeregisteridentifikator().stream()
+                                    .filter(PdlPersonDTO.Person.Folkeregisteridentifikator::isIBRUK)
+                                    .map(PdlPersonDTO.Person.Folkeregisteridentifikator::getIdentifikasjonsnummer)
+                                    .findFirst().orElse(null);
 
                             var stillingsprosent = Double.parseDouble(parametere.get(STILLINGSPROSENT.value));
-                            var arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent());
+                            var arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(ident);
 
                             if (kanAnsettes(stillingsprosent, arbeidsforholdList)) {
                                 var tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
 
                                 //Try-catch fordi vi møtte på problemer der noen org ikke fikk suksessfulle ansettelser
                                 try {
-                                    var ansettSporring = ansettPerson(tilfeldigPerson.getIdent(),
+                                    var ansettSporring = ansettPerson(ident,
                                             organisasjon.getOrganisasjonsnummer(),
-                                            tilfeldigYrke,
-                                            parametere.get(JobbParameterNavn.STILLINGSPROSENT.value));
+                                            tilfeldigYrke, parametere.get(ARBEIDSFORHOLD_TYPE.value),
+                                            parametere.get(STILLINGSPROSENT.value));
                                     if (ansettSporring.isPresent() && ansettSporring.get().is2xxSuccessful()) {
                                         ansattePersoner.add(tilfeldigPerson);
 
@@ -161,17 +165,17 @@ public class AnsettelseService {
                             muligePersoner.remove(tilfeldigIndex);
 
                         } catch (NullPointerException e) {
-                            log.error(e.toString());
+                            log.error(e.toString(), e);
                             //Henter ny liste med mulige personer dersom den forrige blir tom uten at man fikk ansatt nok
                             muligePersonerMap.replace(iteratorElement, hentPersoner(datoIntervaller.get(iteratorElement).getFrom().toString(),
                                     datoIntervaller.get(iteratorElement).getTom().toString(), postnr));
                         } catch (Exception e) {
-                            log.error(e.toString());
+                            log.error(e.toString(), e);
                             break;
                         }
                     }
                     //Logging til db
-                    for (Ident person : ansattePersoner) {
+                    for (var person : ansattePersoner) {
                         ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get(STILLINGSPROSENT.value)), parametere.get(ARBEIDSFORHOLD_TYPE.value));
                     }
                     long endTime = System.currentTimeMillis();
@@ -186,11 +190,14 @@ public class AnsettelseService {
         return tenorService.hentOrganisasjoner(antall);
     }
 
-    private List<Ident> hentPersoner(String tidligsteFoedselsdato, String senesteFoedselsdato, String postnr) {
-        pdlService.setFrom(tidligsteFoedselsdato);
-        pdlService.setTo(senesteFoedselsdato);
-        pdlService.setPostnr(postnr);
-        return pdlService.getPersoner();
+    private List<PdlPersonDTO.Person> hentPersoner(String tidligsteFoedselsdato, String senesteFoedselsdato, String postnr) {
+
+        return pdlService.getPersoner(PersonRequestDTO.builder()
+                        .from(tidligsteFoedselsdato)
+                        .to(senesteFoedselsdato)
+                        .postnr(postnr)
+                        .resultsPerPage(10)
+                .build());
     }
 
     private boolean kanAnsettes(Double stillingsprosent, List<Arbeidsforhold> arbeidsforholdList) {
@@ -208,8 +215,10 @@ public class AnsettelseService {
         return true;
     }
 
-    private Optional<HttpStatusCode> ansettPerson(String ident, String orgnummer, String yrke, String stillingsprosent) {
-        return arbeidsforholdService.opprettArbeidsforhold(ident, orgnummer, yrke, stillingsprosent);
+    private Optional<HttpStatusCode> ansettPerson(String ident, String orgnummer, String yrke,
+                                                  String arbeidsforholdstype, String stillingsprosent) {
+
+        return arbeidsforholdService.opprettArbeidsforhold(ident, orgnummer, yrke, arbeidsforholdstype, stillingsprosent);
     }
 
     private int getAntallAnsettelserHverOrg(int antallPers, int antallOrg) {

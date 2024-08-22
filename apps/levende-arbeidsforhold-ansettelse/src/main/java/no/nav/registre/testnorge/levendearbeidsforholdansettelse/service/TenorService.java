@@ -87,12 +87,10 @@ public class TenorService {
      * @return Liste med organisasjonsnummere for det gitte antallet organisasjoner
      */
     private List<String> hentOrgNummere(int antall) {
-        List<TenorOversiktOrganisasjonResponse.Organisasjon> organisasjoner = hentOrganisasjonerOversikt(antall).getData().getOrganisasjoner();
-        List<String> orgNummere = new ArrayList<>();
-        organisasjoner.forEach(
-                org -> orgNummere.add(org.getOrganisasjonsnummer())
-        );
-        return orgNummere;
+
+        return hentOrganisasjonerOversikt(antall).getData().getOrganisasjoner().stream()
+                .map(TenorOversiktOrganisasjonResponse.Organisasjon::getOrganisasjonsnummer)
+                .toList();
     }
 
     /**

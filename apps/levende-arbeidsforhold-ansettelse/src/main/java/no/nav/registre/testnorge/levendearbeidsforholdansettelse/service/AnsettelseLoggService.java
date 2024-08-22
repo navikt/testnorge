@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.AnsettelseLogg;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.AnsettelseLoggRepository;
 import org.springframework.stereotype.Service;
@@ -28,9 +28,13 @@ public class AnsettelseLoggService {
      * @param stillingsprosent Stillingsprosenten i arbeidsavtalen til personen.
      * @param arbeidsforholdType Arbeidsforholdtypen i arbeidsatalen til personen.
      */
-    public void lagreAnsettelse(Ident person, OrganisasjonDTO org, Double stillingsprosent, String arbeidsforholdType){
+    public void lagreAnsettelse(PdlPersonDTO.Person person, OrganisasjonDTO org, Double stillingsprosent, String arbeidsforholdType){
+
         AnsettelseLogg ansettelseLogg = AnsettelseLogg.builder()
-                .folkeregisterident(person.getIdent())
+                .folkeregisterident(person.getFolkeregisteridentifikator().stream()
+                        .filter(PdlPersonDTO.Person.Folkeregisteridentifikator::isIBRUK)
+                        .map(PdlPersonDTO.Person.Folkeregisteridentifikator::getIdentifikasjonsnummer)
+                        .findFirst().orElse(null))
                 .organisasjonsnummer(org.getOrganisasjonsnummer())
                 .timestamp(OffsetDateTime.now())
                 .arbeidsforholdType(arbeidsforholdType)

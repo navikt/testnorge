@@ -1,11 +1,10 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.SokPersonCommand;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.SokPersonPagesCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -14,7 +13,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,26 +38,18 @@ public class PdlConsumer {
         serverProperties = consumers.getPdlProxy();
         this.tokenService = tokenService;
         webClient = webClientBuilder
-            .baseUrl(serverProperties.getUrl())
-            .build();
+                .baseUrl(serverProperties.getUrl())
+                .build();
     }
 
-    public Mono<JsonNode> getSokPerson(
+    public Flux<PdlPersonDTO> getSokPerson(
             GraphqlVariables.Paging paging,
             GraphqlVariables.Criteria criteria,
             PdlMiljoer pdlMiljoe) {
-        return tokenService.exchange(serverProperties)
-                .flatMap((AccessToken token) -> new SokPersonCommand(webClient, paging, criteria, token.getTokenValue(), pdlMiljoe)
-                        .call());
-    }
 
-    public Mono<JsonNode> getSokPersonPages(
-            GraphqlVariables.Paging paging,
-            GraphqlVariables.Criteria criteria,
-            PdlMiljoer pdlMiljoe) {
         return tokenService.exchange(serverProperties)
-                .flatMap((AccessToken token) -> new SokPersonPagesCommand(webClient, paging, criteria, token.getTokenValue(), pdlMiljoe)
-                        .call());
+                .flatMapMany((AccessToken token) -> new SokPersonCommand(webClient, paging, criteria,
+                        token.getTokenValue(), pdlMiljoe).call());
     }
 
     public static String hentQueryResource(String pathResource) {
