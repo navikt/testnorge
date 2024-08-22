@@ -224,6 +224,21 @@ export type NyIdent = {
 	}
 }
 
+export type FalskIdentitetData = {
+	rettIdentitetVedIdentifikasjonsnummer?: string
+	rettIdentitetVedOpplysninger?: {
+		personnavn?: {
+			fornavn?: string
+			mellomnavn?: string
+			etternavn?: string
+		}
+		foedselsdato?: string
+		kjoenn?: string
+		statsborgerskap?: Array<string>
+	}
+	rettIdentitetErUkjent?: boolean
+}
+
 export type SelectedValue = {
 	value: string
 	label: string

@@ -25,6 +25,7 @@ import { Sivilstand } from '@/components/fagsystem/pdlf/bestilling/partials/Sivi
 import { ForelderBarnRelasjon } from '@/components/fagsystem/pdlf/bestilling/partials/ForelderBarnRelasjon'
 import { Foreldreansvar } from '@/components/fagsystem/pdlf/bestilling/partials/Foreldreansvar'
 import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/bestilling/partials/DoedfoedtBarn'
+import { FalskIdentitet } from '@/components/fagsystem/pdlf/bestilling/partials/FalskIdentitet'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -90,6 +91,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<ForelderBarnRelasjon forelderBarnListe={bestilling.pdldata?.person?.forelderBarnRelasjon} />
 			<Foreldreansvar foreldreansvarListe={bestilling.pdldata?.person?.foreldreansvar} />
 			<DoedfoedtBarn doedfoedtBarnListe={bestilling.pdldata?.person?.doedfoedtBarn} />
+			<FalskIdentitet falskIdentitetListe={bestilling.pdldata?.person?.falskIdentitet} />
 		</>
 	)
 }
