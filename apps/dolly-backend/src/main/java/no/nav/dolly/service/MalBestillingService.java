@@ -71,6 +71,9 @@ public class MalBestillingService {
                             .stream()
                             .map(bestillingMal -> {
                                 try {
+                                    if (isNull(bestillingMal.getBestKriterier()) || EMPTY_JSON.equals(bestillingMal.getBestKriterier())) {
+                                        return null;
+                                    }
                                     return RsMalBestilling.builder()
                                             .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
                                             .malNavn(bestillingMal.getMalNavn())
