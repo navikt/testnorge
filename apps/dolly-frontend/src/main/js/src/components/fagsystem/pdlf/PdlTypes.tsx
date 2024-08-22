@@ -43,7 +43,7 @@ export type PersonUtenIdData = {
 	statsborgerskap: string
 }
 
-type Navn = {
+export type Navn = {
 	fornavn: string
 	mellomnavn: string
 	etternavn: string
@@ -244,6 +244,47 @@ export type UtenlandskIdentData = {
 	identifikasjonsnummer: string
 	utstederland: string
 	opphoert: boolean
+}
+
+export type KontaktinformasjonForDoedsboData = {
+	skifteform: string
+	attestutstedelsesdato: string
+	kontaktType: string
+	adresse?: {
+		adresselinje1: string
+		adresselinje2: string
+		postnummer: string
+		poststedsnavn: string
+		landkode: string
+	}
+	advokatSomKontakt?: {
+		organisasjonsnummer: string
+		organisasjonsnavn: string
+		kontaktperson: Navn
+	}
+	organisasjonSomKontakt?: {
+		organisasjonsnummer: string
+		organisasjonsnavn: string
+		kontaktperson: Navn
+	}
+	personSomKontakt?: {
+		identifikasjonsnummer?: string
+		foedsalsdato?: string
+		navn?: Navn
+		nyKontaktperson?: {
+			identtype: string
+			kjoenn: string
+			foedtEtter: string
+			foedtFoer: string
+			alder: string
+			syntetisk: string
+			nyttNavn: {
+				hasMellomnavn: boolean
+			}
+			statsborgerskapLandkode: string
+			gradering: string
+		}
+	}
 }
 
 export type SelectedValue = {

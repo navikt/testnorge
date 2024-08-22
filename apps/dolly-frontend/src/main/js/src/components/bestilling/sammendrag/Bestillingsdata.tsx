@@ -28,6 +28,7 @@ import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/bestilling/partials/D
 import { FalskIdentitet } from '@/components/fagsystem/pdlf/bestilling/partials/FalskIdentitet'
 import { UtenlandskIdent } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskIdent'
 import { NyIdentitet } from '@/components/fagsystem/pdlf/bestilling/partials/NyIdentitet'
+import { KontaktinformasjonForDoedsbo } from '@/components/fagsystem/pdlf/bestilling/partials/KontaktinformasjonForDoedsbo'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -98,6 +99,9 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 				utenlandskIdentListe={bestilling.pdldata?.person?.utenlandskIdentifikasjonsnummer}
 			/>
 			<NyIdentitet nyIdentitetListe={bestilling.pdldata?.person?.nyident} />
+			<KontaktinformasjonForDoedsbo
+				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
+			/>
 		</>
 	)
 }

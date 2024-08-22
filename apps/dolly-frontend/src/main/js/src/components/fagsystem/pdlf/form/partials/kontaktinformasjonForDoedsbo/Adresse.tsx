@@ -13,7 +13,7 @@ export const Adresse = ({ formMethods, path }) => {
 	return (
 		<div className="flexbox--full-width">
 			{visAdresse ? (
-				<Button onClick={setSkjulAdresse} kind="collapse">
+				<Button onClick={setSkjulAdresse} kind="chevron-up">
 					SKJUL ADRESSE-VALG
 				</Button>
 			) : (
