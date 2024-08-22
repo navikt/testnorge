@@ -132,7 +132,7 @@ public class MalBestillingService {
         if (eksisterende.isEmpty()) {
             bestillingMalRepository.save(BestillingMal.builder()
 
-                    .bestKriterier(bestilling.getBestKriterier())
+                    .bestKriterier(formatBestillingKriterier(bestilling.getBestKriterier()))
                     .bruker(bruker)
                     .malNavn(malNavn)
                     .miljoer(bestilling.getMiljoer())
@@ -159,7 +159,7 @@ public class MalBestillingService {
         var maler = bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
         if (maler.isEmpty()) {
             malbestilling = bestillingMalRepository.save(BestillingMal.builder()
-                    .bestKriterier(bestilling.getBestKriterier())
+                    .bestKriterier(formatBestillingKriterier(bestilling.getBestKriterier()))
                     .bruker(bruker)
                     .malNavn(malNavn)
                     .miljoer(bestilling.getMiljoer())
@@ -268,6 +268,10 @@ public class MalBestillingService {
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
+    }
+
+    private String formatBestillingKriterier(String bestillingKriterier) {
+        return bestillingKriterier.replaceAll("fysiskDokument[^,]*+,", "");
     }
 
     private static Set<String> toSet(String miljoer) {

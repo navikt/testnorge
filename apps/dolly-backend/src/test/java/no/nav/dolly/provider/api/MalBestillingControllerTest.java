@@ -1,5 +1,6 @@
 package no.nav.dolly.provider.api;
 
+import com.github.tomakehurst.wiremock.common.Json;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
@@ -30,13 +31,16 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,17 +52,41 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class MalBestillingControllerTest {
 
-    @MockBean
-    @SuppressWarnings("unused")
-    private BestillingElasticRepository bestillingElasticRepository;
+    private static final String MALNAVN = "test";
+    private static final String NYTT_MALNAVN = "nyttMalnavn";
+    private static final String BEST_KRITERIER = "{\"test\":true}";
+    private static final String BEST_KRITERIER_FORMATERT = Json.write("""
+            {
+              "pdldata": {
+                "opprettNyPerson": null,
+                "person": null
+              },
+              "dokarkiv": {
+                "tittel": "Generell fullmakt",
+                "tema": "PEN",
+                "kanal": "NAV_NO",
+                "avsenderMottaker": {
+                  "id": "123456789012",
+                  "idType": "FNR",
+                  "navn": "Lun overgang"
+                },
+                "dokumenter": [
+                  {
+                    "tittel": "dokument.pdf",
+                    "brevkode": "BREV123",
+                    "dokumentvarianter": [
+                      {
+                        "filtype": "PDFA",
+                        "fysiskDokument": "AWDHAWDIui23u21h",
+                        "variantformat": "ARKIV"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+            """);
 
-    @MockBean
-    @SuppressWarnings("unused")
-    private ElasticsearchOperations elasticsearchOperations;
-
-    private final static String MALNAVN = "test";
-    private final static String NYTT_MALNAVN = "nyttMalnavn";
-    private final static String BEST_KRITERIER = "{\"test\":true}";
     private static final Bruker DUMMY_EN = Bruker.builder()
             .brukerId("testbruker_en")
             .brukernavn("test_en")
@@ -77,12 +105,17 @@ class MalBestillingControllerTest {
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_tre")
             .build();
+
     private static final String IDENT = "12345678912";
     private static final String BESKRIVELSE = "Teste";
     private static final String TESTGRUPPE = "Testgruppe";
     private static final String UGYLDIG_BESTILLINGID = "999";
-
-
+    @MockBean
+    @SuppressWarnings("unused")
+    private BestillingElasticRepository bestillingElasticRepository;
+    @MockBean
+    @SuppressWarnings("unused")
+    private ElasticsearchOperations elasticsearchOperations;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -117,10 +150,10 @@ class MalBestillingControllerTest {
     void shouldCreateAndGetMaler()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
-        saveDummyBestillingMal(bruker_en);
-        saveDummyBestillingMal(bruker_to);
+        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var brukerTo = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
+        saveDummyBestillingMal(brukerEn);
+        saveDummyBestillingMal(brukerTo);
 
         mockMvc.perform(get("/api/v1/malbestilling"))
                 .andExpect(status().isOk())
@@ -128,8 +161,8 @@ class MalBestillingControllerTest {
                 .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_to", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].bruker.brukerId").value(bruker_en.getBrukerId()))
-                .andExpect(jsonPath("$.malbestillinger.test_to[0].bruker.brukerId").value(bruker_to.getBrukerId()));
+                .andExpect(jsonPath("$.malbestillinger.test_en[0].bruker.brukerId").value(brukerEn.getBrukerId()))
+                .andExpect(jsonPath("$.malbestillinger.test_to[0].bruker.brukerId").value(brukerTo.getBrukerId()));
     }
 
     @Test
@@ -138,9 +171,9 @@ class MalBestillingControllerTest {
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var testgruppe = saveDummyGruppe();
-        var bestilling = saveDummyBestilling(bruker_en, testgruppe);
+        var bestilling = saveDummyBestilling(brukerEn, testgruppe);
 
         mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", String.valueOf(bestilling.getId()))
@@ -155,12 +188,35 @@ class MalBestillingControllerTest {
 
     @Test
     @Transactional
+    @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
+    void shouldCreateFormatertMalFromExistingOrder()
+            throws Exception {
+
+        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var testgruppe = saveDummyGruppe();
+        var bestilling = saveDummyBestillingMedFormaterteKriterier(brukerEn, testgruppe);
+
+        mockMvc.perform(post("/api/v1/malbestilling")
+                        .queryParam("bestillingId", String.valueOf(bestilling.getId()))
+                        .queryParam("malNavn", MALNAVN))
+                .andExpect((content().string(not("fysiskDokument"))))
+                .andExpect((content().string(containsString("variantformat"))))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/v1/malbestilling")
+                        .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
+                        .queryParam("malNavn", MALNAVN))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @Transactional
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-        var bestillingMal = saveDummyBestillingMal(bruker_en);
+        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var bestillingMal = saveDummyBestillingMal(brukerEn);
 
         mockMvc.perform(put("/api/v1/malbestilling/id/{id}", bestillingMal.getId())
                         .queryParam("malNavn", NYTT_MALNAVN))
@@ -199,6 +255,23 @@ class MalBestillingControllerTest {
                         .ferdig(false)
                         .antallIdenter(1)
                         .bestKriterier(BEST_KRITERIER)
+                        .bruker(bruker)
+                        .beskrivelse(BESKRIVELSE)
+                        .sistOppdatert(LocalDateTime.now())
+                        .ident(IDENT)
+                        .navSyntetiskIdent(true)
+                        .build()
+        );
+    }
+
+    Bestilling saveDummyBestillingMedFormaterteKriterier(Bruker bruker, Testgruppe testgruppe) {
+        return bestillingRepository.save(
+                Bestilling
+                        .builder()
+                        .gruppe(testgruppe)
+                        .ferdig(false)
+                        .antallIdenter(1)
+                        .bestKriterier(BEST_KRITERIER_FORMATERT)
                         .bruker(bruker)
                         .beskrivelse(BESKRIVELSE)
                         .sistOppdatert(LocalDateTime.now())
