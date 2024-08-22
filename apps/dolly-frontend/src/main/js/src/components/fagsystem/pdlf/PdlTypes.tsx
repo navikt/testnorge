@@ -239,6 +239,12 @@ export type FalskIdentitetData = {
 	rettIdentitetErUkjent?: boolean
 }
 
+export type UtenlandskIdentData = {
+	identifikasjonsnummer: string
+	utstederland: string
+	opphoert: boolean
+}
+
 export type SelectedValue = {
 	value: string
 	label: string

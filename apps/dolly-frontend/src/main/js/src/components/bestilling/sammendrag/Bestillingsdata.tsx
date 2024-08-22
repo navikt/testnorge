@@ -26,6 +26,7 @@ import { ForelderBarnRelasjon } from '@/components/fagsystem/pdlf/bestilling/par
 import { Foreldreansvar } from '@/components/fagsystem/pdlf/bestilling/partials/Foreldreansvar'
 import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/bestilling/partials/DoedfoedtBarn'
 import { FalskIdentitet } from '@/components/fagsystem/pdlf/bestilling/partials/FalskIdentitet'
+import { UtenlandskIdent } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskIdent'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -92,6 +93,9 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Foreldreansvar foreldreansvarListe={bestilling.pdldata?.person?.foreldreansvar} />
 			<DoedfoedtBarn doedfoedtBarnListe={bestilling.pdldata?.person?.doedfoedtBarn} />
 			<FalskIdentitet falskIdentitetListe={bestilling.pdldata?.person?.falskIdentitet} />
+			<UtenlandskIdent
+				utenlandskIdentListe={bestilling.pdldata?.person?.utenlandskIdentifikasjonsnummer}
+			/>
 		</>
 	)
 }
