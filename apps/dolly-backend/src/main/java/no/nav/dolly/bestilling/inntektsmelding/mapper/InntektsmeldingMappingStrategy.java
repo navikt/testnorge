@@ -67,8 +67,9 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.Inntektsmelding rsInntektsmelding,
                                         RsInntektsmeldingRequest inntektsmelding, MappingContext context) {
 
-                        inntektsmelding.setAarsakTilInnsending(
-                                nullcheckSetDefaultValue(inntektsmelding.getAarsakTilInnsending(), AarsakInnsendingKodeListe.NY));
+                        inntektsmelding.setAarsakTilInnsending(nonNull(rsInntektsmelding.getAarsakTilInnsending()) ?
+                                mapperFacade.map(rsInntektsmelding.getAarsakTilInnsending(), AarsakInnsendingKodeListe.class) :
+                                AarsakInnsendingKodeListe.NY);
 
                         if (nonNull(rsInntektsmelding.getArbeidsgiver())) {
 

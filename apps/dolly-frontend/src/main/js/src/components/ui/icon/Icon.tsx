@@ -47,6 +47,7 @@ import {
 	PersonGroupFillIcon,
 	PersonGroupIcon,
 	PersonIcon,
+	PersonPlusIcon,
 	PersonTallShortIcon,
 	PhoneIcon,
 	PlusCircleIcon,
@@ -173,6 +174,7 @@ export const icons = {
 	'file-new': FileTextIcon,
 	'file-code': FileCodeIcon,
 	cv: FileTextIcon,
+	ansettelse: PersonPlusIcon,
 }
 
 const px = (v: number) => `${v}px`
