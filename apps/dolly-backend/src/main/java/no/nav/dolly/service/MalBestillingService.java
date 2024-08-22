@@ -60,18 +60,6 @@ public class MalBestillingService {
 
         var malBestillingWrapper = new RsMalBestillingWrapper();
 
-        //TODO: SLETT ETTER FIX
-        var brukere = brukerService.fetchBrukere();
-        brukere.forEach(bruker -> {
-                    try {
-                        var maler = getMalbestillingByUser(bruker.getBrukerId());
-                        log.info("Fant maler for bruker: {}", bruker.getBrukernavn());
-                    } catch (Exception e) {
-                        log.error("Feil ved henting av malbestillinger for bruker: {}", bruker.getBrukernavn(), e);
-                    }
-                }
-        );
-
         var malBestillinger = IterableUtils.toList(bestillingMalRepository.findAll())
                 .stream()
                 .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
