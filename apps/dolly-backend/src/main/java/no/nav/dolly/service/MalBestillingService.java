@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
@@ -38,6 +39,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MalBestillingService {
 
@@ -58,37 +60,43 @@ public class MalBestillingService {
 
         var malBestillingWrapper = new RsMalBestillingWrapper();
 
-        var malBestillinger = IterableUtils.toList(bestillingMalRepository.findAll())
-                .stream()
-                .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
-                .entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
-                        .stream()
-                        .map(bestillingMal -> {
-                            try {
-                                return RsMalBestilling.builder()
-                                        .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
-                                        .malNavn(bestillingMal.getMalNavn())
-                                        .miljoer(bestillingMal.getMiljoer())
-                                        .id(bestillingMal.getId())
-                                        .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
-                                                bestillingMal.getBruker() :
-                                                Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
-                                        .build();
-                            } catch (JsonProcessingException e) {
-                                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-                            }
-                        })
-                        .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
-                        .toList()));
+        try {
 
-        malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
-        malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
-                .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
-                .toList());
+            var malBestillinger = IterableUtils.toList(bestillingMalRepository.findAll())
+                    .stream()
+                    .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
+                    .entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
+                            .stream()
+                            .map(bestillingMal -> {
+                                try {
+                                    return RsMalBestilling.builder()
+                                            .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
+                                            .malNavn(bestillingMal.getMalNavn())
+                                            .miljoer(bestillingMal.getMiljoer())
+                                            .id(bestillingMal.getId())
+                                            .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
+                                                    bestillingMal.getBruker() :
+                                                    Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
+                                            .build();
+                                } catch (JsonProcessingException e) {
+                                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                                }
+                            })
+                            .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
+                            .toList()));
 
-        return malBestillingWrapper;
+            malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
+            malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
+                    .flatMap(Collection::stream)
+                    .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
+                    .toList());
+
+            return malBestillingWrapper;
+        } catch (Exception e) {
+            log.error("Feil ved henting av malbestillinger", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
