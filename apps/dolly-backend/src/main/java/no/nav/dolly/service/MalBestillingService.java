@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -69,9 +70,10 @@ public class MalBestillingService {
                     .entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
                             .stream()
+                            .filter(Objects::nonNull)
                             .map(bestillingMal -> {
                                 try {
-                                    if (isNull(bestillingMal.getBestKriterier()) || EMPTY_JSON.equals(bestillingMal.getBestKriterier())) {
+                                    if (isNull(bestillingMal.getBestKriterier())) {
                                         return null;
                                     }
                                     return RsMalBestilling.builder()
@@ -85,7 +87,7 @@ public class MalBestillingService {
                                             .build();
                                 } catch (JsonProcessingException e) {
                                     log.error("Feil ved henting av malbestilling: {}", Json.pretty(bestillingMal), e);
-                                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+                                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
                                 }
                             })
                             .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
