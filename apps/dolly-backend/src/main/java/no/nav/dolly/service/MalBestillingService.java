@@ -62,19 +62,19 @@ public class MalBestillingService {
 
         var malBestillingWrapper = new RsMalBestillingWrapper();
 
-        try {
-
-            //TODO: SLETT ETTER FIX
-            var brukere = brukerService.fetchBrukere();
-            brukere.forEach(bruker -> {
-                        try {
-                            var maler = bestillingMalRepository.findByBruker(bruker);
-                        } catch (Exception e) {
-                            log.error("Feil ved henting av malbestillinger for bruker: {}", bruker.getBrukernavn(), e);
-                        }
+        //TODO: SLETT ETTER FIX
+        var brukere = brukerService.fetchBrukere();
+        brukere.forEach(bruker -> {
+                    try {
+                        var maler = bestillingMalRepository.findByBruker(bruker);
+                        log.info("Fant {} maler for bruker: {}", maler.size(), bruker.getBrukernavn());
+                    } catch (Exception e) {
+                        log.error("Feil ved henting av malbestillinger for bruker: {}", bruker.getBrukernavn(), e);
                     }
-            );
-
+                }
+        );
+        
+        try {
 
             var malBestillinger = IterableUtils.toList(bestillingMalRepository.findAll())
                     .stream()
