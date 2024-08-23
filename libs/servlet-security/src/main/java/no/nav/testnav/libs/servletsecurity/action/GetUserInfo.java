@@ -7,13 +7,16 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.UserInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
@@ -27,6 +30,16 @@ public class GetUserInfo implements Callable<Optional<UserInfo>> {
 
     @Override
     public Optional<UserInfo> call() {
+        var req = RequestContextHolder.getRequestAttributes();
+
+        if (nonNull(req)) {
+            log.info(Arrays.stream(req.getAttributeNames(RequestAttributes.SCOPE_REQUEST)).reduce("Request attributes: ", (acc, name) -> {
+                if (acc.length() != 11 && name.length() != 11) {
+                    return acc + name + ", ";
+                }
+                return "";
+            }));
+        }
         var requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (isNull(requestAttributes)) {
             log.warn("Fant ikke request attributes i context.");
