@@ -10,8 +10,6 @@ import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
@@ -25,26 +23,12 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
 
     private final GetUserInfo getUserInfo;
 
-    private static String getBrukerId(Bruker bruker) {
-
-        if (isNotBlank(bruker.getBrukerId())) {
-            return bruker.getBrukerId();
-        } else {
-            return nonNull(bruker.getEidAv()) ? bruker.getEidAv().getBrukerId() : bruker.getNavIdent();
-        }
-    }
-
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Testgruppe.class, RsTestgruppe.class)
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
-
-                        var securityContext = (SecurityContext) context.getProperty("securityContext");
-                        if (nonNull(securityContext)) {
-                            SecurityContextHolder.setContext(securityContext);
-                        }
 
                         rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
                         rsTestgruppe.setAntallIBruk((int) testgruppe.getTestidenter().stream()
@@ -61,5 +45,14 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static String getBrukerId(Bruker bruker) {
+
+        if (isNotBlank(bruker.getBrukerId())) {
+            return bruker.getBrukerId();
+        } else {
+            return nonNull(bruker.getEidAv()) ? bruker.getEidAv().getBrukerId() : bruker.getNavIdent();
+        }
     }
 }
