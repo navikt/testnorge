@@ -83,7 +83,7 @@ class NavigasjonServiceTest {
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fullPersonDTO));
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
 
-        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(ident, Bruker.Brukertype.AZURE);
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(ident, Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
 
         StepVerifier.create(result)
                 .expectNext(expected)
@@ -118,7 +118,7 @@ class NavigasjonServiceTest {
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fpAllowed));
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
 
-        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(identAllowed, Bruker.Brukertype.BANKID);
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(identAllowed, Bruker.builder().brukertype(Bruker.Brukertype.BANKID).build());
 
         StepVerifier.create(result)
                 .expectNext(expected)
@@ -148,7 +148,7 @@ class NavigasjonServiceTest {
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fpRefused));
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
 
-        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(identRefused, Bruker.Brukertype.BANKID);
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(identRefused, Bruker.builder().brukertype(Bruker.Brukertype.BANKID).build());
 
         StepVerifier.create(result)
                 .expectError(NotFoundException.class)
@@ -163,7 +163,7 @@ class NavigasjonServiceTest {
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.empty());
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.empty());
 
-        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(ident, Bruker.Brukertype.AZURE);
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(ident, Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
 
         StepVerifier.create(result)
                 .expectError(NotFoundException.class)

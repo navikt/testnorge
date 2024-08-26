@@ -2,6 +2,7 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -45,16 +46,16 @@ public class NavigasjonService {
     private final PdlDataConsumer pdlDataConsumer;
 
     @Transactional(readOnly = true)
-    public Mono<RsWhereAmI> navigerTilIdent(String ident, Bruker.Brukertype brukertype) {
+    public Mono<RsWhereAmI> navigerTilIdent(String ident, Bruker bruker) {
 
         return Flux.merge(getPdlForvalterIdenter(ident),
                         getPdlPersonIdenter(ident))
                 .filter(Objects::nonNull)
-                .filter(ident1 -> filterOnBrukertype(ident, brukertype))
+                .filter(ident1 -> filterOnBrukertype(ident, bruker.getBrukertype()))
                 .distinct()
                 .flatMap(ident1 -> Mono.justOrEmpty(identRepository.findByIdent(ident1))
                         .map(testident -> RsWhereAmI.builder()
-                                .gruppe(mapGruppe(testident.getTestgruppe()))
+                                .gruppe(mapGruppe(testident.getTestgruppe(), bruker.getBrukerId()))
                                 .identHovedperson(testident.getIdent())
                                 .identNavigerTil(ident)
                                 .sidetall(Math.floorDiv(
@@ -85,9 +86,11 @@ public class NavigasjonService {
         return true;
     }
 
-    private RsTestgruppe mapGruppe(Testgruppe testgruppe) {
+    private RsTestgruppe mapGruppe(Testgruppe testgruppe, String brukerId) {
 
-        return mapperFacade.map(testgruppe, RsTestgruppe.class);
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("brukerId", brukerId);
+        return mapperFacade.map(testgruppe, RsTestgruppe.class, context);
     }
 
     private Flux<String> getPdlPersonIdenter(String ident) {

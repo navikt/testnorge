@@ -32,7 +32,5 @@ class TestgruppeControllerDeleteTest extends AbstractControllerTest {
                 .perform(get("/api/v1/gruppe/{id}", testgruppe.getId()))
                 .andExpect(status().isNotFound());
         assertThat(super.findTestgruppeById(testgruppe.getId())).isEmpty();
-
     }
-
 }

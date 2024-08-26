@@ -13,9 +13,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 @Slf4j
 @Component
 public class GetUserInfo implements Callable<Optional<UserInfo>> {
@@ -28,16 +25,9 @@ public class GetUserInfo implements Callable<Optional<UserInfo>> {
 
     @Override
     public Optional<UserInfo> call() {
-        var req = RequestContextHolder.getRequestAttributes();
 
-        if (nonNull(req)) {
-            log.info("RequestAttributes er av type: {}", req.getClass().getName());
-        }
         var requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (isNull(requestAttributes)) {
-            log.warn("Fant ikke request attributes i context.");
-            return Optional.empty();
-        }
+
         var request = requestAttributes.getRequest();
         log.trace("Prøver å hente JWT fra request...");
         return Optional.ofNullable(request.getHeader(UserConstant.USER_HEADER_JWT)).map(token -> {

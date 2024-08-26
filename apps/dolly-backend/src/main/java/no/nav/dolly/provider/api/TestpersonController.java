@@ -140,7 +140,7 @@ public class TestpersonController {
     public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
-        return navigasjonService.navigerTilIdent(ident, bruker.getBrukertype());
+        return navigasjonService.navigerTilIdent(ident, bruker);
     }
 
     @Operation(description = "Sjekk om ønsket testperson finnes i Dolly")
