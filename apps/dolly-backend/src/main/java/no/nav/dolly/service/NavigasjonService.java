@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
@@ -24,11 +25,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.IdentTypeUtil.isTenorIdent;
 
 @Service
 @RequiredArgsConstructor
@@ -44,15 +45,14 @@ public class NavigasjonService {
     private final PdlDataConsumer pdlDataConsumer;
 
     @Transactional(readOnly = true)
-    public Mono<RsWhereAmI> navigerTilIdent(String ident) {
+    public Mono<RsWhereAmI> navigerTilIdent(String ident, Bruker.Brukertype brukertype) {
 
         return Flux.merge(getPdlForvalterIdenter(ident),
                         getPdlPersonIdenter(ident))
                 .filter(Objects::nonNull)
+                .filter(ident1 -> filterOnBrukertype(ident, brukertype))
                 .distinct()
-                .flatMap(ident1 -> Mono.just(identRepository.findByIdent(ident1))
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
+                .flatMap(ident1 -> Mono.justOrEmpty(identRepository.findByIdent(ident1))
                         .map(testident -> RsWhereAmI.builder()
                                 .gruppe(mapGruppe(testident.getTestgruppe()))
                                 .identHovedperson(testident.getIdent())
@@ -67,7 +67,7 @@ public class NavigasjonService {
 
     public Mono<RsWhereAmI> navigerTilBestilling(Long bestillingId) {
 
-        return Mono.just(bestillingService.fetchBestillingById(bestillingId))
+        return Mono.justOrEmpty(bestillingService.fetchBestillingById(bestillingId))
                 .map(bestilling -> RsWhereAmI.builder()
                         .bestillingNavigerTil(bestillingId)
                         .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))
@@ -76,6 +76,13 @@ public class NavigasjonService {
                                         .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, bestillingId))), 10))
                         .build())
                 .switchIfEmpty(Mono.error(() -> new NotFoundException(String.format(IKKE_FUNNET, bestillingId))));
+    }
+
+    private boolean filterOnBrukertype(String ident, Bruker.Brukertype brukertype) {
+        if (brukertype == Bruker.Brukertype.BANKID) {
+            return isTenorIdent(ident);
+        }
+        return true;
     }
 
     private RsTestgruppe mapGruppe(Testgruppe testgruppe) {

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.bestilling.service.OppdaterPersonService;
-import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -21,6 +20,8 @@ import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.OrdreService;
 import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TransaksjonMappingService;
+import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,6 +59,7 @@ public class TestpersonController {
     private final PersonService personService;
     private final NavigasjonService navigasjonService;
     private final OrdreService ordreService;
+    private final GetUserInfo getUserInfo;
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
@@ -133,7 +136,8 @@ public class TestpersonController {
     @GetMapping("/naviger/{ident}")
     public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 
-        return navigasjonService.navigerTilIdent(ident);
+        var brukerType = getAuthUser(getUserInfo).getBrukertype();
+        return navigasjonService.navigerTilIdent(ident, brukerType);
     }
 
     @Operation(description = "Sjekk om ønsket testperson finnes i Dolly")
