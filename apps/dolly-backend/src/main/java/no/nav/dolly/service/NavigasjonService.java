@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
@@ -33,6 +34,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.IdentTypeUtil.isTenorIdent;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class NavigasjonService {
 
@@ -88,6 +90,7 @@ public class NavigasjonService {
 
     private RsTestgruppe mapGruppe(Testgruppe testgruppe, String brukerId) {
 
+        log.info("BrukerId: {}", brukerId);
         var context = new MappingContext.Factory().getContext();
         context.setProperty("brukerId", brukerId);
         return mapperFacade.map(testgruppe, RsTestgruppe.class, context);
