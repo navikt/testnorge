@@ -2,7 +2,6 @@ package no.nav.testnav.levendearbeidsforholdansettelse.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.levendearbeidsforholdansettelse.consumers.AaregConsumer;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.TenorConsumer;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.DatoIntervall;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdDTO;
@@ -20,11 +19,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
 import static java.util.Objects.isNull;
@@ -42,7 +39,6 @@ public class AnsettelseService {
 
     private final PdlService pdlService;
     private final TenorConsumer tenorConsumer;
-    private final AaregConsumer aaregConsumer;
     private final ArbeidsforholdService arbeidsforholdService;
     private final ParameterService parameterService;
     private final KodeverkService kodeverkService;

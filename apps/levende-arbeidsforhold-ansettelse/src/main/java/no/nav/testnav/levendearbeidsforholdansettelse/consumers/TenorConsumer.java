@@ -8,13 +8,11 @@ import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.OrganisasjonRes
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.tenor.TenorOrganisasjonRequest;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.Collection;
-import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.levendearbeidsforholdansettelse.domain.tenor.TenorOrganisasjonSelectOptions.OrganisasjonForm.BEDR;

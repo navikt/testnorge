@@ -5,12 +5,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.tenor.TenorOrganisasjonRequest;
-import no.nav.testnav.levendearbeidsforholdansettelse.domain.tenor.TenorOversiktOrganisasjonResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;

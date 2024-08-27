@@ -42,7 +42,6 @@ public class ArbeidsforholdService {
         return aaregConsumer.hentArbeidsforhold(ident);
     }
 
-
     /**
      * Oppretter arbeidsforhold via aaregConsumer
      *
@@ -56,7 +55,6 @@ public class ArbeidsforholdService {
 
         return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(kanAnsettes, yrke, arbeidsforholdstype, stillingsprosent));
     }
-
 
     /**
      * Bygger et rbeidsforhold-objekt basert på parameterene
