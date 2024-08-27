@@ -399,5 +399,4 @@ public class PdlOrdreService {
                 person.getFoedselsdato() :
                 mapperFacade.mapAsList(person.getFoedsel(), FoedselDTO.class));
     }
-
 }
