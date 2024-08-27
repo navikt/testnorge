@@ -25,7 +25,10 @@ public class GetUserInfo implements Callable<Optional<UserInfo>> {
 
     @Override
     public Optional<UserInfo> call() {
-        var request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        var requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+        var request = requestAttributes.getRequest();
         log.trace("Prøver å hente JWT fra request...");
         return Optional.ofNullable(request.getHeader(UserConstant.USER_HEADER_JWT)).map(token -> {
             log.trace("Fant JWT i request.");
