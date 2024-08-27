@@ -20,7 +20,7 @@ public class MockedJwtAuthenticationTokenUtils {
                                 Jwt
                                         .withTokenValue("test")
                                         .header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                                        .claim("oid", "testbruker_en")
+                                        .claim("oid", "123")
                                         .claim("name", "BRUKER")
                                         .claim("epost", "@@@@")
                                         .build()
