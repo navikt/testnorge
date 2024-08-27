@@ -12,7 +12,7 @@ spring:
   sql:
     init:
       mode: always
-      data-locations: classpath:/db/migration/h2-default-config.sql
+      data-locations: classpath:/db/local/h2-default-config.sql
 
 consumers:
   testnav-kodeverk-service:
