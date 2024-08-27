@@ -6,6 +6,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Component
 public class AnsettelseConsumer {
@@ -24,10 +25,9 @@ public class AnsettelseConsumer {
                 .build();
     }
 
-    public void hentFraAnsettelse() {
+    public Mono<String> opprettAnsettelser() {
 
-        tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new AnsettelsesCommand(webClient, token.getTokenValue()).call())
-                .block();
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new AnsettelsesCommand(webClient, token.getTokenValue()).call());
     }
 }
