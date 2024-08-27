@@ -26,6 +26,7 @@ dependencies {
 
     implementation "jakarta.validation:jakarta.validation-api:$versions.jakartaValidation"
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
 

@@ -16,4 +16,5 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
 }
