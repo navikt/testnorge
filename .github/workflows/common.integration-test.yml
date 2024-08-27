@@ -37,7 +37,7 @@ jobs:
         run: ./gradlew assemble --scan
       - name: "Start docker containers"
         run: |
-          JWK=$(cat ./mocks/jwk.json) docker-compose up -d --build
+          JWK=$(cat ./mocks/jwk.json) docker compose up --build --detach
       - name: "Health check"
         timeout-minutes: 5
         run: |
@@ -52,4 +52,4 @@ jobs:
         run: ./gradlew iTest --scan
       - name: "Stop docker containers"
         run: |
-          docker-compose down -v --remove-orphans
+          docker compose down --remove-orphans --volumes

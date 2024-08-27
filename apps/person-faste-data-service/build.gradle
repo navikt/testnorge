@@ -21,6 +21,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+   
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
     implementation 'org.postgresql:postgresql'

@@ -36,6 +36,7 @@ dependencies {
     implementation "org.apache.avro:avro:$versions.apacheAvro"
 
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'org.postgresql:postgresql'
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"

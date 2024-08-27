@@ -10,7 +10,6 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,19 +28,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest
 class TestgruppeMappingStrategyTest {
 
+    private final static String BRUKERID = "123";
     @MockBean
     private BestillingElasticRepository bestillingElasticRepository;
-
     @MockBean
     private ElasticsearchOperations elasticsearchOperations;
-
-    private final static String BRUKERID = "123";
-
     private MapperFacade mapper;
 
     @BeforeEach
     public void setUpHappyPath() {
-        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(new GetUserInfo("dummy")));
+        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy());
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 

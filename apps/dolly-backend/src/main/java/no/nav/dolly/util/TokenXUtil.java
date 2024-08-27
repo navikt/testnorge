@@ -43,7 +43,7 @@ public final class TokenXUtil {
             return getUserInfo.call()
                     .orElse(null);
         } catch (NullPointerException e) {
-            log.info("Fant ikke BankID request");
+            log.info("Fant ikke BankID brukerinfo");
             return null;
         }
     }
