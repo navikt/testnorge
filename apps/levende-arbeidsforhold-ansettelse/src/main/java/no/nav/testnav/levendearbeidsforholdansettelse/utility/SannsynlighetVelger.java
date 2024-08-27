@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static java.util.Objects.nonNull;
+
 /**
  * Utility for å initialere alderspennlisten for sannsynlighetsfordelingen
  */
@@ -88,7 +90,23 @@ public class SannsynlighetVelger {
             }
         }
 
-        log.info("Stokastisk fordeling {}", fordeling);
+        log.info("Stokastisk fordeling {}", new StringBuilder()
+                .append("alder 18-24 antall: ")
+                .append(pretty(fordeling.get(0)))
+                .append(", alder 25-39 antall: ")
+                .append(pretty(fordeling.get(1)))
+                .append(", alder 40-54 antall: ")
+                .append(pretty(fordeling.get(2)))
+                .append(", alder 55-66 antall: ")
+                .append(pretty(fordeling.get(3)))
+                .append(", alder 67-72 antall: ")
+                .append(pretty(fordeling.get(4))));
+
         return fordeling;
+    }
+
+    private static Integer pretty(Integer value) {
+
+        return nonNull(value) ? value : 0;
     }
 }
