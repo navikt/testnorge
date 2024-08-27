@@ -9,5 +9,4 @@ public class LevendeArbeidsforholdSchedulerApplication {
     public static void main(String[] args) {
         SpringApplication.run(LevendeArbeidsforholdSchedulerApplication.class, args);
     }
-
 }
