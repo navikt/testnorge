@@ -603,6 +603,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 personRepository.findByIdent(relasjon.ansvarlig)
                         .ifPresent(ansvarlig -> ansvarlig.getPerson().getForeldreansvar()
                                 .addFirst(ForeldreansvarDTO.builder()
+                                        .ansvar(foreldreansvar.getAnsvar())
                                         .ansvarssubjekt(relasjon.getBarn().getIdent())
                                         .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
                                         .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
