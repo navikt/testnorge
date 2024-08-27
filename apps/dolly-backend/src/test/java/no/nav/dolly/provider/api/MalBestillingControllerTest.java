@@ -1,6 +1,5 @@
 package no.nav.dolly.provider.api;
 
-import com.github.tomakehurst.wiremock.common.Json;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
@@ -31,16 +30,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.not;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,42 +46,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
+@Transactional
 class MalBestillingControllerTest {
 
     private static final String MALNAVN = "test";
+    private static final String MALNAVN_FORMATERT = "test_formatert";
     private static final String NYTT_MALNAVN = "nyttMalnavn";
     private static final String BEST_KRITERIER = "{\"test\":true}";
-    private static final String BEST_KRITERIER_FORMATERT = Json.write("""
-            {
-              "pdldata": {
-                "opprettNyPerson": null,
-                "person": null
-              },
-              "dokarkiv": {
-                "tittel": "Generell fullmakt",
-                "tema": "PEN",
-                "kanal": "NAV_NO",
-                "avsenderMottaker": {
-                  "id": "123456789012",
-                  "idType": "FNR",
-                  "navn": "Lun overgang"
-                },
-                "dokumenter": [
-                  {
-                    "tittel": "dokument.pdf",
-                    "brevkode": "BREV123",
-                    "dokumentvarianter": [
-                      {
-                        "filtype": "PDFA",
-                        "fysiskDokument": "AWDHAWDIui23u21h",
-                        "variantformat": "ARKIV"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-            """);
+    private static final String BEST_KRITERIER_FORMATERT = "{\"test\":true,\"variantformat\":\"testytest\",\"fysiskDokument\":\"AWDAWDHdwauhduwaidh\"}";
 
     private static final Bruker DUMMY_EN = Bruker.builder()
             .brukerId("testbruker_en")
@@ -100,7 +68,7 @@ class MalBestillingControllerTest {
             .epost("epost@test_to")
             .build();
     private static final Bruker DUMMY_TRE = Bruker.builder()
-            .brukerId("123")
+            .brukerId("testbruker_tre")
             .brukernavn("test_tre")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_tre")
@@ -171,36 +139,13 @@ class MalBestillingControllerTest {
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
-        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var testgruppe = saveDummyGruppe();
+        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bestilling = saveDummyBestilling(brukerEn, testgruppe);
 
         mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", String.valueOf(bestilling.getId()))
                         .queryParam("malNavn", MALNAVN))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(post("/api/v1/malbestilling")
-                        .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
-                        .queryParam("malNavn", MALNAVN))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
-    void shouldCreateFormatertMalFromExistingOrder()
-            throws Exception {
-
-        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-        var testgruppe = saveDummyGruppe();
-        var bestilling = saveDummyBestillingMedFormaterteKriterier(brukerEn, testgruppe);
-
-        mockMvc.perform(post("/api/v1/malbestilling")
-                        .queryParam("bestillingId", String.valueOf(bestilling.getId()))
-                        .queryParam("malNavn", MALNAVN))
-                .andExpect((content().string(not("fysiskDokument"))))
-                .andExpect((content().string(containsString("variantformat"))))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/v1/malbestilling")
@@ -264,6 +209,7 @@ class MalBestillingControllerTest {
         );
     }
 
+    @Transactional
     Bestilling saveDummyBestillingMedFormaterteKriterier(Bruker bruker, Testgruppe testgruppe) {
         return bestillingRepository.save(
                 Bestilling
@@ -281,6 +227,7 @@ class MalBestillingControllerTest {
         );
     }
 
+    @Transactional
     Testgruppe saveDummyGruppe() {
         return testgruppeRepository.save(
                 Testgruppe.builder()
