@@ -58,10 +58,18 @@ const DataVisning = ({ data, miljo }) => {
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
 
+	let status =
+		vedtakData?.[0]?.vedtakStatus === 'FEILET'
+			? vedtakData?.[0]?.sisteOppdatering?.substring(
+					0,
+					vedtakData?.[0]?.sisteOppdatering?.indexOf('<'),
+				)
+			: 'OK'
+
 	return (
 		<>
 			<div className="person-visning_content">
-				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue title="Vedtaksstatus" value={status} />
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
