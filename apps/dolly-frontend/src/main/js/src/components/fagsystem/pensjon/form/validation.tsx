@@ -1,9 +1,10 @@
 import * as Yup from 'yup'
 import _ from 'lodash'
-import { ifPresent, requiredNumber } from '@/utils/YupValidations'
+import { ifPresent, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
+import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
 
 function calculate_age(dob) {
 	const diff_ms = Date.now() - dob.getTime()
@@ -49,8 +50,7 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 	return alder
 }
 
-const invalidAlderFom = (inntektFom, values) => {
-	const personFoerLeggTil = values.personFoerLeggTil
+const invalidAlderFom = (inntektFom, values, personFoerLeggTil) => {
 	const importPersoner = values.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
@@ -80,8 +80,7 @@ const invalidAlderFom = (inntektFom, values) => {
 	return false
 }
 
-const invalidAlderTom = (inntektTom, values) => {
-	const personFoerLeggTil = values?.personFoerLeggTil
+const invalidAlderTom = (inntektTom, values, personFoerLeggTil) => {
 	const importPersoner = values?.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
@@ -105,8 +104,7 @@ const invalidAlderTom = (inntektTom, values) => {
 	return false
 }
 
-const invalidDoedsdato = (inntektTom, values) => {
-	const personFoerLeggTil = values.personFoerLeggTil
+const invalidDoedsdato = (inntektTom, values, personFoerLeggTil) => {
 	const importPersoner = values.importPersoner
 
 	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
@@ -140,8 +138,9 @@ const validFomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
 		const inntektFom = value
 
 		const values = context.parent
+		const personFoerLeggTil = context?.options?.context?.personFoerLeggTil
 
-		if (invalidAlderFom(inntektFom, values)) {
+		if (invalidAlderFom(inntektFom, values, personFoerLeggTil)) {
 			return context.createError({ message: 'F.o.m kan tidligst være året personen fyller 17 år' })
 		}
 
@@ -160,14 +159,15 @@ const validTomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
 		let inntektTom = value
 
 		const values = context.parent
+		const personFoerLeggTil = context?.options?.context?.personFoerLeggTil
 
-		if (invalidAlderTom(inntektTom, values)) {
+		if (invalidAlderTom(inntektTom, values, personFoerLeggTil)) {
 			return context.createError({
 				message: 'T.o.m kan ikke være etter året personen fyller 75',
 			})
 		}
 
-		if (invalidDoedsdato(inntektTom, values)) {
+		if (invalidDoedsdato(inntektTom, values, personFoerLeggTil)) {
 			return context.createError({ message: 'T.o.m kan ikke være etter at person har dødd' })
 		}
 
@@ -195,6 +195,22 @@ export const validation = {
 					redusertMedGrunnbelop: Yup.boolean(),
 				}),
 			),
+			generertInntekt: ifPresent(
+				'$pensjonforvalter.generertInntekt',
+				Yup.object({
+					generer: Yup.object({
+						tomAar: validTomDateTest(requiredNumber).required('Velg et gyldig år'),
+					}),
+					inntekter: Yup.array()
+						.of(
+							Yup.object({
+								inntekt: requiredString,
+							}),
+						)
+						.required('Generer minst én inntekt'),
+				}),
+			),
+			...PensjonsavtaleForm.validation,
 			...TjenestepensjonForm.validation,
 			...AlderspensjonForm.validation,
 			...UforetrygdForm.validation,

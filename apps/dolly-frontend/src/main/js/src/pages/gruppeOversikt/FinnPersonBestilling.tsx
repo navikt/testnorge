@@ -251,7 +251,7 @@ const FinnPersonBestilling = ({
 		<ErrorBoundary>
 			<div>
 				<div
-					data-testId={TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING}
+					data-testid={TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING}
 					className="finnperson-container skjemaelement"
 				>
 					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />

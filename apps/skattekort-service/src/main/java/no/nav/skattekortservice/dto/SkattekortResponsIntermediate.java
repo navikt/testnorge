@@ -1,11 +1,15 @@
 package no.nav.skattekortservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.skattekortservice.v1.IdentifikatorForEnhetEllerPerson;
 
 import java.time.LocalDate;
@@ -88,9 +92,6 @@ public class SkattekortResponsIntermediate {
         private LocalDate utstedtDato;
         private Long skattekortidentifikator;
         private List<Forskuddstrekk> forskuddstrekk;
-        private List<Frikort> frikort;
-        private List<Trekktabell> trekktabell;
-        private List<Trekkprosent> trekkprosent;
 
         public List<Forskuddstrekk> getForskuddstrekk() {
 
@@ -99,59 +100,40 @@ public class SkattekortResponsIntermediate {
             }
             return forskuddstrekk;
         }
-
-        public List<Frikort> getFrikort() {
-
-            if (isNull(frikort)) {
-                frikort = new ArrayList<>();
-            }
-            return frikort;
-        }
-
-        public List<Trekktabell> getTrekktabell() {
-
-            if (isNull(trekktabell)) {
-                trekktabell = new ArrayList<>();
-            }
-            return trekktabell;
-        }
-
-        public List<Trekkprosent> getTrekkprosent() {
-
-            if (isNull(trekkprosent)) {
-                trekkprosent = new ArrayList<>();
-            }
-            return trekkprosent;
-        }
     }
 
     @Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Forskuddstrekk {
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "xsi:type")
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = Frikort.class, name = "Frikort"),
+            @JsonSubTypes.Type(value = Trekktabell.class, name = "Trekktabell"),
+            @JsonSubTypes.Type(value = Trekkprosent.class, name = "Trekkprosent")
+    })
+    public abstract static class Forskuddstrekk {
 
         private Trekkode trekkode;
+        private String type;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Frikort {
-
-        private Trekkode trekkode;
+    public static class Frikort extends Forskuddstrekk {
 
         private Integer frikortbeloep;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Trekktabell {
-
-        private Trekkode trekkode;
+    public static class Trekktabell extends Forskuddstrekk {
 
         private Tabelltype tabelltype;
         private String tabellnummer;
@@ -159,11 +141,12 @@ public class SkattekortResponsIntermediate {
         private Integer antallMaanederForTrekk;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Trekkprosent {
+    public static class Trekkprosent extends Forskuddstrekk {
 
         private Trekkode trekkode;
 

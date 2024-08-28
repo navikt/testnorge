@@ -74,6 +74,7 @@ export const rootPaths = [
 	'medl',
 	'sykemelding',
 	'organisasjon',
+	'skattekort',
 ]
 
 export const harAvhukedeAttributter = (values) => {

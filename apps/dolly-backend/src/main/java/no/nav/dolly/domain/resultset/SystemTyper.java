@@ -32,6 +32,7 @@ public enum SystemTyper {
     PEN_AP("Alderspensjon (AP)"),
     PEN_FORVALTER("Pensjon persondata (PEN)"),
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
+    PEN_PENSJONSAVTALE("Pensjonsavtale (PEN)"),
     PEN_SAMBOER("Pensjon samboerregister"),
     PEN_UT("Uføretrygd (UT)"),
     SIGRUNSTUB("Skatteinntekt grunnlag (SIGRUN)"),

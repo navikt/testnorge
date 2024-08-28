@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -115,7 +116,13 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 }
 
             } else if (bostedadresse.countAdresser() == 0) {
-                bostedadresse.setVegadresse(new VegadresseDTO());
+
+                if (isTestnorgeIdent(person.getIdent())) {
+                    bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+
+                } else {
+                    bostedadresse.setVegadresse(new VegadresseDTO());
+                }
             }
 
         } else if (bostedadresse.countAdresser() == 0) {
@@ -139,14 +146,14 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(bostedadresse, person.getIdent()) ? vegadresse.getMatrikkelId() : null);
             mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
 
             var matrikkeladresse =
                     adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(bostedadresse, person.getIdent()) ? matrikkeladresse.getMatrikkelId() : null);
             mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
 
         } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {

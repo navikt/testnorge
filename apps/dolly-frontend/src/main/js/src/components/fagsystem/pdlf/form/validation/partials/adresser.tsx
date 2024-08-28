@@ -67,6 +67,7 @@ const validFradato = () => {
 					return true
 				}
 				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+				const personFoerLeggTil = testContext?.options?.context?.personFoerLeggTil
 
 				const nyeAdresser = fullForm?.pdldata?.person?.bostedsadresse
 					? [...fullForm.pdldata.person.bostedsadresse]
@@ -84,8 +85,7 @@ const validFradato = () => {
 				}
 
 				nyeAdresser.splice(adresseIndex, 1)
-				const tidligereAdresser =
-					fullForm.personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse || []
+				const tidligereAdresser = personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse || []
 
 				return !(
 					overlapperMedAdresse(val, tildato, nyeAdresser, true) ||

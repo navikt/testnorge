@@ -10,7 +10,7 @@ test.describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 			.first()
 			.click()
 		await page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_BESTILLINGER).click()
-		await page.waitForTimeout(1000)
+		await page.waitForTimeout(2000)
 		await page
 			.getByTestId(TestComponentSelectors.BUTTON_OPEN_BESTILLING)
 			.all()

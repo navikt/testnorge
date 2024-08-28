@@ -31,4 +31,16 @@ public class IdentTypeUtil {
         return isNotBlank(ident) && ident.length() == 11 &&
                 Integer.parseInt(ident.substring(2, 3)) >= 4;
     }
+
+    public static boolean isDollyIdent(String ident) {
+
+        return isSyntetisk(ident) &&
+                ident.substring(2, 3).matches("[4,5]");
+    }
+
+    public static boolean isTenorIdent(String ident) {
+
+        return isSyntetisk(ident) &&
+                ident.substring(2, 3).matches("[8,9]");
+    }
 }

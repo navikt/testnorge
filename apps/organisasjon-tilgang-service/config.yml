@@ -66,6 +66,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_15
+        tier: db-custom-1-3840
         name: testnav-organisasjon-tilganger
         databases:
           - name: testnav-organisasjon-tilganger

@@ -2,6 +2,7 @@ import React, { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 import GruppeConnector from '@/pages/gruppe/GruppeConnector'
 import { OrganisasjonTenorSoekPage } from '@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'
+import NyansettelserPage from '@/pages/nyansettelser/NyansettelserPage'
 
 const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
 const Organisasjon = lazy(() => import('@/pages/organisasjoner/Organisasjoner'))
@@ -15,7 +16,9 @@ const Endringsmelding = lazy(() => import('@/pages/endringsmelding/Endringsmeldi
 const DollySoekPage = lazy(() => import('@/pages/dollySoek/DollySoekPage'))
 const TenorSoekPage = lazy(() => import('@/pages/tenorSoek/TenorSoekPage'))
 const OrgtilgangPage = lazy(() => import('@/pages/adminPages/Orgtilgang/OrgtilgangPage'))
-const AppstyringPage = lazy(() => import('@/pages/adminPages/Appstyring/AppstyringPage'))
+const LevendeArbeidsforholdPage = lazy(
+	() => import('@/pages/adminPages/Levendearbeidsforhold/AppstyringPage'),
+)
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
@@ -73,9 +76,14 @@ const allRoutes = [
 		element: () => <OrgtilgangPage />,
 	},
 	{
-		path: '/admin/appstyring',
-		breadcrumb: 'App-styring',
-		element: () => <AppstyringPage />,
+		path: '/admin/levendearbeidsforhold',
+		breadcrumb: 'Levende-arbeidsforhold',
+		element: () => <LevendeArbeidsforholdPage />,
+	},
+	{
+		path: '/nyansettelser',
+		breadcrumb: 'Nyansettelser',
+		element: () => <NyansettelserPage />,
 	},
 ]
 

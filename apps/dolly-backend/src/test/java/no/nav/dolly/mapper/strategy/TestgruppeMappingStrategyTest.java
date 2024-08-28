@@ -29,14 +29,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest
 class TestgruppeMappingStrategyTest {
 
+    private final static String BRUKERID = "123";
     @MockBean
     private BestillingElasticRepository bestillingElasticRepository;
-
     @MockBean
     private ElasticsearchOperations elasticsearchOperations;
-
-    private final static String BRUKERID = "123";
-
     private MapperFacade mapper;
 
     @BeforeEach

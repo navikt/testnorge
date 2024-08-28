@@ -18,6 +18,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNotNpidIdent;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -224,5 +226,9 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         for (var i = adresser.size(); i > 0; i--) {
             adresser.get(i - 1).setId(adresser.size() - i + 1);
         }
+    }
+    protected boolean isIdSupported(AdresseDTO adresse, String ident) {
+
+        return isNotNpidIdent(ident) && !isTestnorgeIdent(ident) && !adresse.isPdlMaster();
     }
 }
