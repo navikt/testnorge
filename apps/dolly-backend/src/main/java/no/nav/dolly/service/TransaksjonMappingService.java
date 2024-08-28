@@ -57,6 +57,12 @@ public class TransaksjonMappingService {
         transaksjonMappingRepository.deleteAllByIdent(ident);
     }
 
+    @Transactional
+    public void delete(String ident, String miljoe, String system) {
+
+        transaksjonMappingRepository.deleteByIdentAndMiljoeAndSystem(ident, miljoe, system);
+    }
+
     private RsTransaksjonMapping toDTO(TransaksjonMapping transaksjonMapping) {
 
         JsonNode innhold;

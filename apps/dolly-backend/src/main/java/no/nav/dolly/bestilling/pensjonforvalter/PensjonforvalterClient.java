@@ -21,6 +21,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse.SakType;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
@@ -411,29 +412,31 @@ public class PensjonforvalterClient implements ClientRegister {
                 .filter(PensjonData::hasUforetrygd)
                 .map(PensjonData::getUforetrygd)
                 .flatMap(uforetrygd -> Flux.fromIterable(miljoer)
-                        .flatMap(miljoe -> {
+                        .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
+                                .collectList()
+                                .map(vedtak -> {
+                                    if (vedtak.stream().noneMatch(entry -> entry.getSakType() == SakType.UT &&
+                                            entry.getSisteOppdatering().contains("opprettet"))) {
 
-                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe, null)) {
-
-                                var context = MappingContextUtils.getMappingContext();
-                                context.setProperty(IDENT, ident);
-                                context.setProperty(MILJOER, List.of(miljoe));
-                                context.setProperty(NAV_ENHET, navEnhetNr);
-                                return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
-                                        .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
-                                                .map(response -> {
-                                                    response.getStatus().stream()
-                                                            .filter(status -> status.getResponse().isResponse2xx())
-                                                            .forEach(status ->
-                                                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                            PEN_UT, new AtomicReference<>(request)));
-                                                    return response;
-                                                }));
-
-                            } else {
-                                return getStatus(miljoe, 200, "OK");
-                            }
-                        }));
+                                        var context = MappingContextUtils.getMappingContext();
+                                        context.setProperty(IDENT, ident);
+                                        context.setProperty(MILJOER, List.of(miljoe));
+                                        context.setProperty(NAV_ENHET, navEnhetNr);
+                                        return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
+                                                .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
+                                                        .map(response -> {
+                                                            response.getStatus().stream()
+                                                                    .filter(status -> status.getResponse().isResponse2xx())
+                                                                    .forEach(status ->
+                                                                            saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                                                    PEN_UT, new AtomicReference<>(request)));
+                                                            return response;
+                                                        }));
+                                    } else {
+                                        return getStatus(miljoe, 200, "OK");
+                                    }
+                                })))
+                .flatMap(Flux::from);
     }
 
     @SuppressWarnings("java:S3740")
@@ -441,6 +444,7 @@ public class PensjonforvalterClient implements ClientRegister {
             type, AtomicReference vedtak) {
 
         log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
+        transaksjonMappingService.delete(ident, miljoe, type.name());
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
