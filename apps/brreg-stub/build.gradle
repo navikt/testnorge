@@ -59,6 +59,6 @@ dependencies {
     implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    implementation 'jakarta.jws:jakarta.jws-api:3.0.0' //TODO upgrade to JUnit5
+    implementation 'jakarta.jws:jakarta.jws-api:3.0.0'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
