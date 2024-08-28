@@ -123,15 +123,15 @@ public class RolleoversiktService {
 
             for (var personRolle : personRoller) {
                 var egenskap = personRolle.getEgenskap();
-                if (egenskap.equals(Egenskap.Deltager)) {
+                if (egenskap.equals(Egenskap.DELTAGER)) {
                     organisasjon.setDeltakere(oppdaterSamendringsliste(organisasjon.getDeltakere(), enhet, rsRolleoversikt.getFnr(), rsRolleoversikt.getNavn(), personRolle.isFratraadt()));
-                } else if (egenskap.equals(Egenskap.Komplementar)) {
+                } else if (egenskap.equals(Egenskap.KOMPLEMENTAR)) {
                     organisasjon.setKomplementar(oppdaterSamendringsliste(organisasjon.getKomplementar(), enhet, rsRolleoversikt.getFnr(), rsRolleoversikt.getNavn(), personRolle.isFratraadt()));
-                } else if (egenskap.equals(Egenskap.Kontaktperson)) {
+                } else if (egenskap.equals(Egenskap.KONTAKTPERSON)) {
                     organisasjon.setKontaktperson(oppdaterSamendringsliste(organisasjon.getKontaktperson(), enhet, rsRolleoversikt.getFnr(), rsRolleoversikt.getNavn(), personRolle.isFratraadt()));
-                } else if (egenskap.equals(Egenskap.Sameier)) {
+                } else if (egenskap.equals(Egenskap.SAMEIER)) {
                     organisasjon.setSameier(oppdaterSamendringsliste(organisasjon.getSameier(), enhet, rsRolleoversikt.getFnr(), rsRolleoversikt.getNavn(), personRolle.isFratraadt()));
-                } else if (egenskap.equals(Egenskap.Styre)) {
+                } else if (egenskap.equals(Egenskap.STYRE)) {
                     organisasjon.setStyre(oppdaterSamendringsliste(organisasjon.getStyre(), enhet, rsRolleoversikt.getFnr(), rsRolleoversikt.getNavn(), personRolle.isFratraadt()));
                 }
             }
