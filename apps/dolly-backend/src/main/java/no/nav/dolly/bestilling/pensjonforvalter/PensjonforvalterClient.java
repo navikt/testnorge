@@ -389,12 +389,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                         var finalPensjonRequest = new AtomicReference<>(pensjonRequest);
                                         return pensjonforvalterConsumer.lagreAlderspensjon(pensjonRequest)
                                                 .map(response -> {
-                                                    response.getStatus().forEach(status -> {
-                                                        if (status.getResponse().isResponse2xx()) {
+                                                    response.getStatus().forEach(status ->
                                                             saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                    PEN_AP, finalPensjonRequest);
-                                                        }
-                                                    });
+                                                                    PEN_AP, finalPensjonRequest));
                                                     return response;
                                                 });
 
