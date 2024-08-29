@@ -24,7 +24,12 @@ export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
 
 	return (
 		<>
-			<Button onClick={openModal} variant={'tertiary'} icon={<TrashIcon />} size={'small'} />
+			<Button
+				onClick={openModal}
+				variant={'tertiary'}
+				icon={<TrashIcon title={'Slett tilgang'} />}
+				size={'small'}
+			/>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'40%'} overflow={'auto'}>
 				<div className="slettModal">
 					<div className="slettModal slettModal-content">

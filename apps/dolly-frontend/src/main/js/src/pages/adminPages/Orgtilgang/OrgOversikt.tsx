@@ -35,7 +35,7 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 							<Table.HeaderCell scope="col">Form</Table.HeaderCell>
 							<Table.HeaderCell scope="col">Miljø</Table.HeaderCell>
 							<Table.HeaderCell scope="col">Gyldig til</Table.HeaderCell>
-							<Table.HeaderCell scope="col">Endre org</Table.HeaderCell>
+							<Table.HeaderCell scope="col">Endre org.</Table.HeaderCell>
 						</Table.Header>
 						<Table.Body>
 							{organisasjonTilgang?.map(
