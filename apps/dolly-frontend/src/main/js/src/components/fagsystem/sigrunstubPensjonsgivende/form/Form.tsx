@@ -76,7 +76,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 									<FormSelect
 										name={`${path}.inntektsaar`}
 										label="Inntektsår"
-										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
+										options={getYearRangeOptions(2017, subYears(new Date(), 1).getFullYear())}
 										isClearable={false}
 									/>
 									<FormTextInput name={`${path}.testdataEier`} label="Testdataeier" />

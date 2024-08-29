@@ -43,7 +43,7 @@ export const InntektsaarForm = ({ formMethods }) => {
 								<FormSelect
 									name={`${path}.inntektsaar`}
 									label="År"
-									options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
+									options={getYearRangeOptions(2017, subYears(new Date(), 1).getFullYear())}
 									isClearable={false}
 								/>
 								<FormSelect
