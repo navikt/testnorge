@@ -1,4 +1,4 @@
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'

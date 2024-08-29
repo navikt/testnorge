@@ -8,7 +8,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import styled from 'styled-components'
 import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { BankkontoApi, TpsMessagingApi } from '@/service/Api'
 import { formatDate } from '@/utils/DataFormatter'
 

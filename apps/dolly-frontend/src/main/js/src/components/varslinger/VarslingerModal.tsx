@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { isAfter, isBefore } from 'date-fns'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'

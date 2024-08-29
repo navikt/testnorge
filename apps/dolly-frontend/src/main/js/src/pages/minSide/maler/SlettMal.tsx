@@ -1,7 +1,7 @@
 import { Button } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { TrashIcon } from '@navikt/aksel-icons'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import React from 'react'
