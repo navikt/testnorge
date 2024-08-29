@@ -37,7 +37,6 @@ type Arbeidsforhold = {
 	fartoy?: any
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
-	arbeidsforholdId?: string
 	navArbeidsforholdPeriode?: Date
 }
 

@@ -65,7 +65,6 @@ export const initialArbeidsforholdPers = {
 		aktoertype: 'PERS',
 		ident: '',
 	},
-	arbeidsforholdID: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,

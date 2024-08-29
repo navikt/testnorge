@@ -29,6 +29,7 @@ import { FalskIdentitet } from '@/components/fagsystem/pdlf/bestilling/partials/
 import { UtenlandskIdent } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskIdent'
 import { NyIdentitet } from '@/components/fagsystem/pdlf/bestilling/partials/NyIdentitet'
 import { KontaktinformasjonForDoedsbo } from '@/components/fagsystem/pdlf/bestilling/partials/KontaktinformasjonForDoedsbo'
+import { Arbeidsforhold } from '@/components/fagsystem/aareg/bestilling/Arbeidsforhold'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -102,6 +103,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<KontaktinformasjonForDoedsbo
 				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
 			/>
+			<Arbeidsforhold arbeidsforholdListe={bestilling.aareg} />
 		</>
 	)
 }

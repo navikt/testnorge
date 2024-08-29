@@ -1111,6 +1111,7 @@ export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKrite
 	obj('Perioder med permisjon', arbeidsforhold.permisjon?.length),
 	obj('Perioder med permittering', arbeidsforhold.permittering?.length),
 ]
+
 const mapAareg = (bestillingData, data) => {
 	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {

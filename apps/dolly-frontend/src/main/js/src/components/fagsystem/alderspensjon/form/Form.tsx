@@ -15,7 +15,7 @@ import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker
 import { getAlder } from '@/ducks/fagsystem'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import  { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
+import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	genInitialAlderspensjonSoknad,
@@ -35,7 +35,8 @@ const StyledAlert = styled(Alert)`
 
 export const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
-export const AlderspensjonForm = () =>{ const formMethods = useFormContext()
+export const AlderspensjonForm = () => {
+	const formMethods = useFormContext()
 	const { navEnheter } = useNavEnheter()
 
 	const saksbehandler = formMethods.watch(`${alderspensjonPath}.saksbehandler`)
@@ -52,18 +53,20 @@ export const AlderspensjonForm = () =>{ const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
 
-	function sjekkAlderFelt() {const harAlder =
-		_has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
-		_has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
-	const alderNyPerson = formMethods.watch( 'pdldata.opprettNyPerson.alder')
-	const foedtFoer = formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
+	function sjekkAlderFelt() {
+		const harAlder =
+			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
+			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
+		const alderNyPerson = formMethods.watch('pdldata.opprettNyPerson.alder')
+		const foedtFoer =
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
 			new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer'))
-	const iverksettelsesdato =
+		const iverksettelsesdato =
 			formMethods.watch('pensjonforvalter.alderspensjon.iverksettelsesdato') &&
 			new Date(formMethods.watch('pensjonforvalter.alderspensjon.iverksettelsesdato'))
 		const harGyldigAlder =
-		(alderNyPerson && alderNyPerson > 61) ||
-		(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) < new Date()) ||
+			(alderNyPerson && alderNyPerson > 61) ||
+			(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) < new Date()) ||
 			(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) < iverksettelsesdato)
 		return { harAlder, alderNyPerson, foedtFoer, harGyldigAlder }
 	}
@@ -276,14 +279,14 @@ export const AlderspensjonForm = () =>{ const formMethods = useFormContext()
 						<FormDatepicker
 							name={`${alderspensjonPath}.kravFremsattDato`}
 							label="Krav fremsatt dato"
-							date={formMethods.getValues( `${alderspensjonPath}.kravFremsattDato`)}
+							date={formMethods.getValues(`${alderspensjonPath}.kravFremsattDato`)}
 						/>
 					)}
 					<Monthpicker
 						name={`${alderspensjonPath}.iverksettelsesdato`}
 						label="Iverksettelsesdato"
-						date={formMethods.getValues( `${alderspensjonPath}.iverksettelsesdato`)}
-						handleDateChange={(dato: string) =>{
+						date={formMethods.getValues(`${alderspensjonPath}.iverksettelsesdato`)}
+						handleDateChange={(dato: string) => {
 							formMethods.setValue(`${alderspensjonPath}.iverksettelsesdato`, dato, {
 								shouldTouch: true,
 							})
@@ -295,7 +298,6 @@ export const AlderspensjonForm = () =>{ const formMethods = useFormContext()
 							options={randomSaksbehandlere}
 							name={`${alderspensjonPath}.saksbehandler`}
 							label={'Saksbehandler'}
-
 						/>
 					)}
 					{!soknad && (
@@ -303,8 +305,8 @@ export const AlderspensjonForm = () =>{ const formMethods = useFormContext()
 							options={randomAttesterere}
 							name={`${alderspensjonPath}.attesterer`}
 							label={'Attesterer'}
-							/>
-						)}
+						/>
+					)}
 					<FormSelect
 						name={`${alderspensjonPath}.uttaksgrad`}
 						label="Uttaksgrad"
