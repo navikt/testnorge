@@ -296,14 +296,13 @@ public class PensjonData {
             return relasjoner;
         }
 
-        @JsonIgnore
         public boolean isSoknad() {
 
             return isTrue(soknad);
         }
 
         @JsonIgnore
-        public boolean isVedtak(){
+        public boolean isVedtak() {
 
             return isNotTrue(soknad);
         }

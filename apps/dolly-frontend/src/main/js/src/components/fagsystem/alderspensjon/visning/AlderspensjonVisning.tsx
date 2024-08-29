@@ -21,7 +21,6 @@ const DataVisning = ({ data, miljo }) => {
 	)?.label
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
-	console.log('vedtakData', vedtakData)
 
 	return (
 		<>
@@ -29,8 +28,8 @@ const DataVisning = ({ data, miljo }) => {
 				<TitleValue
 					title="Vedtaksstatus"
 					value={
-						vedtakData?.[0]?.vedtakStatus !== 'FEILET'
-							? vedtakData?.[0]?.vedtakStatus
+						vedtakData?.[0]?.sisteOppdatering.includes('opprettet')
+							? 'Iverksatt'
 							: vedtakData?.[0]?.sisteOppdatering
 					}
 				/>
