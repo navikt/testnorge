@@ -368,9 +368,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .flatMap(alderspensjon -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
                                 .collectList()
-                                .map(vedtakResponse -> alderspensjon.isVedtak() && !hasVedtak(vedtakResponse, SakType.AP) ||
-                                        alderspensjon.getSoknad() &&
-                                                !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe, null))
+                                .map(vedtakResponse -> !hasVedtak(vedtakResponse, SakType.AP))
                                 .map(skalOpprette -> {
                                     if (skalOpprette) {
 
