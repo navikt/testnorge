@@ -1,0 +1,29 @@
+@import (reference) '@/styles/variables.less';
+
+.redigerModal {
+  display: flex;
+  flex-direction: column;
+
+  &-content {
+    border-bottom: 1px solid @color-bg-divider;
+
+    h1 {
+      border: none;
+      margin-top: 10px;
+    }
+  }
+
+  &-input {
+    margin-top: 20px;
+    flex-direction: row;
+
+  }
+
+  &-actions {
+    padding: 20px 0 0;
+
+    button {
+      margin: 0 10px;
+    }
+  }
+}

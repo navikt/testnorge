@@ -1,5 +1,5 @@
 import useBoolean from '@/utils/hooks/useBoolean'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import { Button } from '@navikt/ds-react'
 
