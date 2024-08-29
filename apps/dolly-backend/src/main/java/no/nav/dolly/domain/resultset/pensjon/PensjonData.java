@@ -17,6 +17,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @Builder
@@ -292,6 +294,18 @@ public class PensjonData {
                 relasjoner = new ArrayList<>();
             }
             return relasjoner;
+        }
+
+        @JsonIgnore
+        public boolean isSoknad() {
+
+            return isTrue(soknad);
+        }
+
+        @JsonIgnore
+        public boolean isVedtak(){
+
+            return isNotTrue(soknad);
         }
     }
 
