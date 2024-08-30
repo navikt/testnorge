@@ -56,9 +56,9 @@ spec:
     sqlInstances:
       - type: POSTGRES_16
         tier: db-custom-1-3840
-        name: testnav-levende-arbeidsforhold-ansettelse
+        name: testnav-levende-arbeidsforhold
         databases:
-          - name: testnav-levende-arbeidsforhold-ansettelse
+          - name: testnav-levende-arbeidsforhold
         insights:
           enabled: true
           recordApplicationTags: true
