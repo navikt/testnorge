@@ -4,11 +4,10 @@ package no.nav.testnav.levendearbeidsforholdansettelse.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.levendearbeidsforholdansettelse.entity.JobbParameter;
+import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ParameterDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.service.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,10 +33,9 @@ public class ParameterController {
      */
     @GetMapping
     @Operation(description = "Henter alle parametre for oppretting av arbeidsforhold")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<JobbParameter>> hentAlleParametere() {
+    public List<ParameterDTO> hentAlleParametere() {
 
-            return ResponseEntity.ok(parameterService.hentAlleParametere());
+            return parameterService.hentAlleParametere();
     }
 
     /**
