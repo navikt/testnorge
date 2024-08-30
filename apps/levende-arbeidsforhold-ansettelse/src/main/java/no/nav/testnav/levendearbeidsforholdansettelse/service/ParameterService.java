@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class ParameterService {
                         .navn(parameter.getNavn())
                         .tekst(parameter.getTekst())
                         .verdi(parameter.getVerdi())
-                        .verdier(List.of(parameter.getVerdier()))
+                        .verdier(Arrays.asList(parameter.getVerdier().split(",")))
                         .build())
                 .toList();
     }
