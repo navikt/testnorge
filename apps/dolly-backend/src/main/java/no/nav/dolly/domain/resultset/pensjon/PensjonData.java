@@ -330,6 +330,7 @@ public class PensjonData {
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate uforetidspunkt;
         private Integer inntektForUforhet;
+        private Integer inntektEtterUforhet;
         private Integer uforegrad;
         private UforeType minimumInntektForUforhetType;
         private String saksbehandler;
