@@ -1,7 +1,7 @@
 import React from 'react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import useBoolean from '@/utils/hooks/useBoolean'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 
 import './AvbrytModal.less'

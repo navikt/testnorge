@@ -3,7 +3,7 @@ import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/O
 import { TrashIcon } from '@navikt/aksel-icons'
 import useBoolean from '@/utils/hooks/useBoolean'
 import React from 'react'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 
@@ -24,7 +24,12 @@ export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
 
 	return (
 		<>
-			<Button onClick={openModal} variant={'tertiary'} icon={<TrashIcon />} size={'small'} />
+			<Button
+				onClick={openModal}
+				variant={'tertiary'}
+				icon={<TrashIcon title={'Slett tilgang'} />}
+				size={'small'}
+			/>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'40%'} overflow={'auto'}>
 				<div className="slettModal">
 					<div className="slettModal slettModal-content">

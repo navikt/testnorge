@@ -54,10 +54,11 @@ spec:
     - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: POSTGRES_16
         tier: db-custom-1-3840
+        name: testnav-levende-arbeidsforhold
         databases:
-          - name: testnav-levende-arbeidsforhold-db
+          - name: testnav-levende-arbeidsforhold
         insights:
           enabled: true
           recordApplicationTags: true
