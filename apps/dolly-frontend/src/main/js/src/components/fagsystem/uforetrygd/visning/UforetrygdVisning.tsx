@@ -76,6 +76,7 @@ const DataVisning = ({ data, miljo }) => {
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
 				<TitleValue title="Inntekt før uførhet" value={data?.inntektForUforhet} />
+				<TitleValue title="Inntekt etter uførhet" value={data?.inntektEtterUforhet} />
 				<TitleValue
 					title="Type barnetillegg"
 					value={showLabel('barnetilleggType', data?.barnetilleggDetaljer?.barnetilleggType)}
