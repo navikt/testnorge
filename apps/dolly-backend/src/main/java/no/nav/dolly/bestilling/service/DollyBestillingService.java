@@ -9,10 +9,12 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
 import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
+import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
+import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -120,6 +122,8 @@ public class DollyBestillingService {
     public GjenopprettSteg fase2Klienter() {
 
         var klienter = List.of(
+                KontoregisterClient.class,
+                TpsMessagingClient.class,
                 PensjonforvalterClient.class,
                 AaregClient.class,
                 InntektstubClient.class);

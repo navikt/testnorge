@@ -7,6 +7,7 @@ export const initialUforetrygd = {
 	kravFremsattDato: new Date(),
 	onsketVirkningsDato: setDate(addMonths(new Date(), 1), 1),
 	inntektForUforhet: 550000,
+	inntektEtterUforhet: 10000,
 	uforegrad: 100,
 	minimumInntektForUforhetType: null,
 	saksbehandler: null,

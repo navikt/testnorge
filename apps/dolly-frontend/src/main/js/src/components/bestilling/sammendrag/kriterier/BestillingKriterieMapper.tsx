@@ -2022,6 +2022,7 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 					obj('Ønsket virkningsdato', formatDate(uforetrygd.onsketVirkningsDato)),
 					obj('Uføretidspunkt', formatDate(uforetrygd.uforetidspunkt)),
 					obj('Inntekt før uførhet', uforetrygd.inntektForUforhet),
+					obj('Inntekt etter uførhet', uforetrygd.inntektEtterUforhet),
 					obj('Har barnetillegg', oversettBoolean(uforetrygd.barnetilleggDetaljer !== null)),
 					obj(
 						'Type barnetillegg',

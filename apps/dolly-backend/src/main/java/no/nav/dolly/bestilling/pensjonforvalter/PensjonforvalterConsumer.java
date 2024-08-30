@@ -15,6 +15,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreUforetrygdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.PensjonHentVedtakCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePensjonsavtaleCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
@@ -26,6 +27,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
 import no.nav.dolly.config.Consumers;
@@ -171,11 +173,20 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "pen_slettePensjpnsavtale" })
     public void slettePensjonsavtale(List<String> identer) {
 
-        var test = tokenService.exchange(serverProperties)
+        tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(identer)
                         .flatMap(ident -> new SlettePensjonsavtaleCommand(webClient, ident, token.getTokenValue()).call()))
                 .collectList()
                 .subscribe(resultat -> log.info("Slettet pensjonsavtaler (PEN), alle miljøer"));
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pen_hentVedtak" })
+    public Flux<PensjonVedtakResponse> hentVedtak(String ident, String miljoe) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token ->  new PensjonHentVedtakCommand(webClient, ident, miljoe, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Pensjon vedtak for ident {}, miljoe {} mottatt {}",
+                        ident, miljoe, response));
     }
 
     @Override
