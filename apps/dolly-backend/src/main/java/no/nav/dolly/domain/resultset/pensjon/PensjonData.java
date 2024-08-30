@@ -17,6 +17,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @Builder
@@ -293,6 +295,17 @@ public class PensjonData {
             }
             return relasjoner;
         }
+
+        public boolean isSoknad() {
+
+            return isTrue(soknad);
+        }
+
+        @JsonIgnore
+        public boolean isVedtak() {
+
+            return isNotTrue(soknad);
+        }
     }
 
     @Data
@@ -317,6 +330,7 @@ public class PensjonData {
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate uforetidspunkt;
         private Integer inntektForUforhet;
+        private Integer inntektEtterUforhet;
         private Integer uforegrad;
         private UforeType minimumInntektForUforhetType;
         private String saksbehandler;
