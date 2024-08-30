@@ -31,6 +31,7 @@ import { NyIdentitet } from '@/components/fagsystem/pdlf/bestilling/partials/NyI
 import { KontaktinformasjonForDoedsbo } from '@/components/fagsystem/pdlf/bestilling/partials/KontaktinformasjonForDoedsbo'
 import { Arbeidsforhold } from '@/components/fagsystem/aareg/bestilling/Arbeidsforhold'
 import { Sigrunstub } from '@/components/fagsystem/sigrunstub/bestilling/Sigrunstub'
+import { SigrunstubPensjonsgivende } from '@/components/fagsystem/sigrunstubPensjonsgivende/bestilling/SigrunstubPensjonsgivende'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -106,6 +107,9 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			/>
 			<Arbeidsforhold arbeidsforholdListe={bestilling.aareg} />
 			<Sigrunstub sigrunstubListe={bestilling.sigrunstub} />
+			<SigrunstubPensjonsgivende
+				sigrunstubPensjonsgivendeListe={bestilling.sigrunstubPensjonsgivende}
+			/>
 		</>
 	)
 }
