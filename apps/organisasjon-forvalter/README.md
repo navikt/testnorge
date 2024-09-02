@@ -13,7 +13,7 @@ applikasjonen.
 Ha naisdevice kjørende og kjør OrganisasjonForvalterApplicationStarter med følgende argumenter:
 
 ``` 
--Dspring.profiles.active=dev
+-Dspring.profiles.active=local
 -Dspring.cloud.vault.token=[vault-token]
 ```
 
