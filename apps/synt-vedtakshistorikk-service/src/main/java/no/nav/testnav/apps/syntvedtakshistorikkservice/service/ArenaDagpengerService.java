@@ -70,7 +70,7 @@ public class ArenaDagpengerService {
 
         Map<String, List<DagpengerResponseDTO>> responses = new HashMap<>();
         for (var ident : utvalgteIdenter) {
-            var foedselsdato = ident.getFoedsel().getFoedselsdato();
+            var foedselsdato = ident.getFoedselsdato().getFoedselsdato();
 
             var minDate = foedselsdato.plusYears(18).isAfter(MINIMUM_DATE) ? foedselsdato.plusYears(18) : MINIMUM_DATE;
 
@@ -113,7 +113,7 @@ public class ArenaDagpengerService {
         var soknadResponse = arenaForvalterService.opprettMottaDagpengesoknad(soknadRequest);
 
         if (soknadResponse.getFeiledeDagpenger().isEmpty() && !soknadResponse.getNyeDagpenger().isEmpty() && nonNull(vedtakdato)) {
-            var vedtakRequest = getDagpengevedtakRequest(ident, miljoe, vedtakdato, rettighetKode, soknadResponse.getNyeDagpenger().get(0));
+            var vedtakRequest = getDagpengevedtakRequest(ident, miljoe, vedtakdato, rettighetKode, soknadResponse.getNyeDagpenger().getFirst());
             if (isNull(vedtakRequest)) {
                 return Collections.singletonList(soknadResponse);
             }

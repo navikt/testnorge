@@ -1,15 +1,14 @@
 package no.nav.registre.testnorge.personsearchservice.domain;
 
 import no.nav.registre.testnorge.personsearchservice.model.DoedsfallModel;
-import no.nav.registre.testnorge.personsearchservice.model.FoedselModel;
+import no.nav.registre.testnorge.personsearchservice.model.FoedselsdatoModel;
 import no.nav.registre.testnorge.personsearchservice.model.KjoennModel;
 import no.nav.registre.testnorge.personsearchservice.model.NavnModel;
 import no.nav.registre.testnorge.personsearchservice.model.Response;
-import no.nav.registre.testnorge.personsearchservice.model.SivilstandModel;
 import no.nav.registre.testnorge.personsearchservice.model.StatsborgerskapModel;
 import no.nav.registre.testnorge.personsearchservice.model.WithMetadata;
 import no.nav.testnav.libs.dto.personsearchservice.v1.DoedsfallDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
@@ -73,7 +72,7 @@ public class Person {
     }
 
     private LocalDate getFoedselsdato() {
-        return getCurrent(response.getHentPerson().getFoedsel()).map(FoedselModel::getFoedselsdato).orElse(null);
+        return getCurrent(response.getHentPerson().getFoedselsdato()).map(FoedselsdatoModel::getFoedselsdato).orElse(null);
     }
 
     private LocalDate getDoedsdato() {
@@ -147,7 +146,7 @@ public class Person {
                 .ident(getIdent())
                 .kjoenn(getKjoenn())
                 .tags(getTags())
-                .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
+                .foedselsdato(FoedselsdatoDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .doedsfall(DoedsfallDTO.builder().doedsdato(getDoedsdato()).build())
                 .sivilstand(getSivilstand())
                 .statsborgerskap(toDTO(statsborgerskap))

@@ -61,11 +61,22 @@ const DataVisning = ({ data, miljo }) => {
 	return (
 		<>
 			<div className="person-visning_content">
-				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue
+					title="Vedtaksstatus"
+					value={
+						vedtakData?.[0]?.sisteOppdatering.includes('opprettet')
+							? 'Iverksatt'
+							: vedtakData?.[0]?.sisteOppdatering?.substring(
+									0,
+									vedtakData?.[0]?.sisteOppdatering?.indexOf('<'),
+								)
+					}
+				/>
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
 				<TitleValue title="Inntekt før uførhet" value={data?.inntektForUforhet} />
+				<TitleValue title="Inntekt etter uførhet" value={data?.inntektEtterUforhet} />
 				<TitleValue
 					title="Type barnetillegg"
 					value={showLabel('barnetilleggType', data?.barnetilleggDetaljer?.barnetilleggType)}

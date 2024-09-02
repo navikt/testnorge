@@ -1,6 +1,6 @@
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import useBoolean from '@/utils/hooks/useBoolean'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Button from '@/components/ui/button/Button'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
@@ -74,7 +74,7 @@ export const SlettButton = ({
 									? action(slettMedId)?.then(() => {
 											mutate(REGEX_BACKEND_BESTILLINGER)
 											return mutate(REGEX_BACKEND_GRUPPER)
-									  })
+										})
 									: action()?.then(() => mutate(REGEX_BACKEND_GRUPPER))
 								navigateHome && navigate('/')
 							}}

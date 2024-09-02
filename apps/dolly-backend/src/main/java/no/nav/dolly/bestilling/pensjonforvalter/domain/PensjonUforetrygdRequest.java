@@ -20,6 +20,7 @@ public class PensjonUforetrygdRequest {
     private LocalDate onsketVirkningsDato;
     private LocalDate uforetidspunkt;
     private Integer inntektForUforhet;
+    private Integer inntektEtterUforhet;
     private Integer uforegrad;
     private UforeType minimumInntektForUforhetType;
     private String saksbehandler;

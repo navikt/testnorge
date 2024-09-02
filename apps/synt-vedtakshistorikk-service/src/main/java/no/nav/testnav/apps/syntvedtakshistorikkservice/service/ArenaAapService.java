@@ -85,7 +85,7 @@ public class ArenaAapService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var foedselsdato = person.getFoedsel().getFoedselsdato();
+        var foedselsdato = person.getFoedselsdato().getFoedselsdato();
         var ungUfoer = historikk.getUngUfoer();
         if (nonNull(ungUfoer) && !ungUfoer.isEmpty()) {
             for (var vedtak : ungUfoer) {

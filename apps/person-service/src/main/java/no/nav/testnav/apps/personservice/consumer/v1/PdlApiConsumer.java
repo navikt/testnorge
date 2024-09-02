@@ -104,7 +104,7 @@ public class PdlApiConsumer {
         var person = pdlAktoer.getData().getHentPerson();
         log.info("Sjekker ident {} i miljø {}, med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident, miljoe,
                 nonNull(person) ?
-                        Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
+                        Stream.of(person.getNavn(), person.getFoedselsdato(), person.getKjoenn(), person.getFolkeregisterpersonstatus())
                                 .flatMap(Collection::stream)
                                 .map(MetadataDTO::getMetadata)
                                 .map(MetadataDTO.Metadata::getOpplysningsId)
@@ -117,7 +117,7 @@ public class PdlApiConsumer {
         if (nonNull(opplysningId)) {
 
             resultat = nonNull(person) &&
-                    Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
+                    Stream.of(person.getNavn(), person.getFoedselsdato(), person.getKjoenn(), person.getFolkeregisterpersonstatus())
                             .flatMap(Collection::stream)
                             .map(MetadataDTO::getMetadata)
                             .map(MetadataDTO.Metadata::getOpplysningsId)

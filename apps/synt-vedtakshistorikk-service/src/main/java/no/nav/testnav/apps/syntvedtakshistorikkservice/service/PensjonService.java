@@ -37,7 +37,7 @@ public class PensjonService {
     ) {
         var opprettPersonStatus = pensjonTestdataFacadeConsumer.opprettPerson(PensjonTestdataPerson.builder()
                 .bostedsland("NOR")
-                .fodselsDato(person.getFoedsel().getFoedselsdato())
+                .fodselsDato(person.getFoedselsdato().getFoedselsdato())
                 .miljoer(Collections.singletonList(miljoe))
                 .fnr(person.getIdent())
                 .build());
