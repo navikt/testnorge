@@ -51,4 +51,20 @@ public class HentPerson {
         }
         return folkeregisteridentifikator;
     }
+
+    public List<Bostedsadresse> getBostedsadresse() {
+
+        if(isNull(bostedsadresse)) {
+            bostedsadresse = new ArrayList<>();
+        }
+        return bostedsadresse;
+    }
+
+    public List<Folkeregisterpersonstatus> getFolkeregisterpersonstatus() {
+
+        if (isNull(folkeregisterpersonstatus)) {
+            folkeregisterpersonstatus = new ArrayList<>();
+        }
+        return folkeregisterpersonstatus;
+    }
 }
