@@ -25,7 +25,14 @@ const DataVisning = ({ data, miljo }) => {
 	return (
 		<>
 			<div className="person-visning_content">
-				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue
+					title="Vedtaksstatus"
+					value={
+						vedtakData?.[0]?.sisteOppdatering.includes('opprettet')
+							? 'Iverksatt'
+							: vedtakData?.[0]?.sisteOppdatering
+					}
+				/>
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Iverksettelsesdato" value={formatDate(data?.iverksettelsesdato)} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />

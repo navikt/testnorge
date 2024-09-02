@@ -6,15 +6,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.List;
-
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "jobb_parameter")
 public class JobbParameter {
@@ -34,7 +30,7 @@ public class JobbParameter {
     private String verdi;
 
     @Column(name = "verdier")
-    private List<String> verdier;
+    private String verdier;
 
     @Override
     public boolean equals(Object o) {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import useBoolean from '@/utils/hooks/useBoolean'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Button from '@/components/ui/button/Button'
 import Loading from '@/components/ui/loading/Loading'
 

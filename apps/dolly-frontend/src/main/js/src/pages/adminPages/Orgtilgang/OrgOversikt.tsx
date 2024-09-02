@@ -5,6 +5,7 @@ import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 import { DeleteOrganisasjon } from '@/pages/adminPages/Orgtilgang/DeleteOrganisasjon'
 import { OrgtilgangTypes } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
+import { RedigerOrganisasjon } from '@/pages/adminPages/Orgtilgang/RedigerOrganisasjon'
 
 type OversiktTypes = {
 	organisasjonTilgang: Array<OrgtilgangTypes>
@@ -34,7 +35,7 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 							<Table.HeaderCell scope="col">Form</Table.HeaderCell>
 							<Table.HeaderCell scope="col">Miljø</Table.HeaderCell>
 							<Table.HeaderCell scope="col">Gyldig til</Table.HeaderCell>
-							<Table.HeaderCell scope="col">Fjern tilgang</Table.HeaderCell>
+							<Table.HeaderCell scope="col">Endre org.</Table.HeaderCell>
 						</Table.Header>
 						<Table.Body>
 							{organisasjonTilgang?.map(
@@ -50,6 +51,12 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 												<DeleteOrganisasjon
 													orgNr={organisasjonsnummer}
 													navn={navn}
+													mutate={mutate}
+												/>
+												<RedigerOrganisasjon
+													orgNr={organisasjonsnummer}
+													gyldigTil={gyldigTil}
+													miljoe={miljoe}
 													mutate={mutate}
 												/>
 											</Table.DataCell>

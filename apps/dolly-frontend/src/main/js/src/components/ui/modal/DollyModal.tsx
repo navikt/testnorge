@@ -1,5 +1,5 @@
 import Modal from 'react-modal'
-import React, { PureComponent } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import './DollyModal.less'
 import CloseButton from '@/components/ui/button/CloseButton/CloseButton'
 
@@ -21,23 +21,39 @@ const customStyles = {
 	},
 }
 
+type DollyModalProps = {
+	children: ReactNode
+	isOpen?: boolean
+	closeModal: () => void
+	noCloseButton?: boolean
+	width?: string
+	overflow?: string
+	minWidth?: string
+}
+
 Modal.setAppElement('#root')
 
-export default class DollyModal extends PureComponent {
-	render() {
-		const { children, isOpen, closeModal, noCloseButton, width, overflow, minWidth } = this.props
-
+export const DollyModal: React.FC<DollyModalProps> = ({
+	children,
+	isOpen,
+	closeModal,
+	noCloseButton,
+	width,
+	overflow,
+	minWidth,
+}) => {
+	useEffect(() => {
 		if (width && isOpen) customStyles.content.width = width
-		if (minWidth && isOpen) customStyles.content.width = minWidth
+		if (minWidth && isOpen) customStyles.content.minWidth = minWidth
 		if (overflow && isOpen) customStyles.content.overflow = overflow
+	}, [isOpen, width, minWidth, overflow])
 
-		return (
-			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={closeModal} style={customStyles}>
-				<div className="dollymodal">
-					{children}
-					{!noCloseButton && <CloseButton onClick={closeModal} />}
-				</div>
-			</Modal>
-		)
-	}
+	return (
+		<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={closeModal} style={customStyles}>
+			<div className="dollymodal">
+				{children}
+				{!noCloseButton && <CloseButton onClick={closeModal} />}
+			</div>
+		</Modal>
+	)
 }

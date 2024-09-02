@@ -3,7 +3,7 @@ import api, { fetcher } from '@/api'
 import { v4 as _uuid } from 'uuid'
 import useSWRMutation from 'swr/mutation'
 
-const pensjonVedtakUrl = '/testnav-pensjon-testdata-facade-proxy/api/vedtak'
+const pensjonVedtakUrl = '/testnav-pensjon-testdata-facade-proxy/api/v2/vedtak'
 const pensjonFacadeGenererUrl =
 	'/testnav-pensjon-testdata-facade-proxy/api/v1/generate-inntekt-med-gjennomsnitt-g'
 
