@@ -137,11 +137,11 @@ public class IdentService {
 
     private boolean under18VedTidspunkt(PdlPersonBolk.PersonBolk personBolk, LocalDate tidspunkt) {
         var person = personBolk.getPerson();
-        if (nonNull(person) && nonNull(person.getFoedsel()) && !person.getFoedsel().isEmpty()){
-            var foedselsdato = person.getFoedsel().get(0).getFoedselsdato();
+        if (nonNull(person) && nonNull(person.getFoedselsdato()) && !person.getFoedselsdato().isEmpty()){
+            var foedselsdato = person.getFoedselsdato().getFirst().getFoedselsdato();
 
             if(nonNull(person.getDoedsfall()) && !person.getDoedsfall().isEmpty()){
-                var doedsdato = person.getDoedsfall().get(0).getDoedsdato();
+                var doedsdato = person.getDoedsfall().getFirst().getDoedsdato();
                 if (doedsdato.isBefore(tidspunkt.plusDays(1))) return false;
             }
             var alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, tidspunkt));
@@ -160,19 +160,19 @@ public class IdentService {
 
         return Kontoinfo.builder()
                 .fnr(ident.getIdent())
-                .fornavn(navnInfo.isEmpty() ? "" : navnInfo.get(0).getFornavn())
-                .mellomnavn(navnInfo.isEmpty() || isNull(navnInfo.get(0).getMellomnavn()) ? "" : navnInfo.get(0).getMellomnavn())
-                .etternavn(navnInfo.isEmpty() ? "" : navnInfo.get(0).getEtternavn())
+                .fornavn(navnInfo.isEmpty() ? "" : navnInfo.getFirst().getFornavn())
+                .mellomnavn(navnInfo.isEmpty() || isNull(navnInfo.getFirst().getMellomnavn()) ? "" : navnInfo.getFirst().getMellomnavn())
+                .etternavn(navnInfo.isEmpty() ? "" : navnInfo.getFirst().getEtternavn())
                 .kontonummer(ident.getKontonummer())
                 .adresseLinje1(getAdresseLinje(boadresseInfo))
-                .postnr(boadresseInfo.isEmpty() ? "" : boadresseInfo.get(0).getVegadresse().getPostnummer())
+                .postnr(boadresseInfo.isEmpty() ? "" : boadresseInfo.getFirst().getVegadresse().getPostnummer())
                 .landkode("NO")
                 .build();
     }
 
     private String getAdresseLinje(List<PdlPerson.Boadresse> boadresse) {
-        if (boadresse.isEmpty() || isNull(boadresse.get(0).getVegadresse())) return "";
-        var vegadresse = boadresse.get(0).getVegadresse();
+        if (boadresse.isEmpty() || isNull(boadresse.getFirst().getVegadresse())) return "";
+        var vegadresse = boadresse.getFirst().getVegadresse();
         var husbokstav = isNull(vegadresse.getHusbokstav()) ? "" : vegadresse.getHusbokstav();
         return vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer() + husbokstav;
     }

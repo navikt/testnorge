@@ -5,7 +5,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,10 +21,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaAapServiceTest {
@@ -38,7 +38,7 @@ public class ArenaAapServiceTest {
     private final String fnr1 = "27869949421";
     private final PersonDTO person = PersonDTO.builder()
             .ident(fnr1)
-            .foedsel(FoedselDTO.builder()
+            .foedselsdato(FoedselsdatoDTO.builder()
                     .foedselsdato(LocalDate.of(1999, 6, 27))
                     .build())
             .build();
@@ -103,7 +103,7 @@ public class ArenaAapServiceTest {
         var emptyVedtak = arenaAapService.getIkkeAvsluttendeVedtakAap115(null);
 
         assertThat(ikkeAvsluttendeVedtak).hasSize(1);
-        assertThat(ikkeAvsluttendeVedtak.get(0).getVedtaktype()).isEqualTo("O");
+        assertThat(ikkeAvsluttendeVedtak.getFirst().getVedtaktype()).isEqualTo("O");
         assertThat(emptyVedtak).isEmpty();
 
     }
@@ -114,7 +114,7 @@ public class ArenaAapServiceTest {
         var emptyVedtak = arenaAapService.getAvsluttendeVedtakAap115(null);
 
         assertThat(avsluttendeVedtak).hasSize(1);
-        assertThat(avsluttendeVedtak.get(0).getVedtaktype()).isEqualTo("S");
+        assertThat(avsluttendeVedtak.getFirst().getVedtaktype()).isEqualTo("S");
         assertThat(emptyVedtak).isEmpty();
     }
 
@@ -129,7 +129,7 @@ public class ArenaAapServiceTest {
         var response = arenaAapService.fjernAapUngUfoerMedUgyldigeDatoer(vedtak);
 
         assertThat(response).hasSize(1);
-        assertThat(response.get(0).getFraDato()).isEqualTo(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7));
+        assertThat(response.getFirst().getFraDato()).isEqualTo(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7));
     }
 
     @Test

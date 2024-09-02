@@ -1,19 +1,15 @@
-package no.nav.testnav.apps.personservice.consumer.v1.pdl;
+package no.nav.registre.testnorge.personsearchservice.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
 
 @Value
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class FoedselDTO {
-    Integer foedselsaar;
+public class FoedselsdatoModel implements WithMetadata {
     LocalDate foedselsdato;
-    String kilde;
-    String master;
+    Metadata metadata;
 }

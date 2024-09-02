@@ -61,7 +61,7 @@ public class PdlPerson {
 
         private List<Boadresse> bostedsadresse;
         private List<Navn> navn;
-        private List<Foedsel> foedsel;
+        private List<Foedselsdato> foedselsdato;
         private List<Doedsfall> doedsfall;
 
         public List<Boadresse> getBostedsadresse() {
@@ -78,11 +78,11 @@ public class PdlPerson {
             return navn;
         }
 
-        public List<Foedsel> getFoedsel() {
-            if (isNull(foedsel)) {
-                foedsel = new ArrayList<>();
+        public List<Foedselsdato> getFoedselsdato() {
+            if (isNull(foedselsdato)) {
+                foedselsdato = new ArrayList<>();
             }
-            return foedsel;
+            return foedselsdato;
         }
 
         public List<Doedsfall> getDoedsfall() {
@@ -140,13 +140,10 @@ public class PdlPerson {
     @lombok.Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Foedsel {
+    public static class Foedselsdato {
 
         private String foedselsaar;
         private LocalDate foedselsdato;
-        private String foedeland;
-        private String foedested;
-        private String foedekommune;
         private Folkeregistermetadata folkeregistermetadata;
         private Metadata metadata;
     }

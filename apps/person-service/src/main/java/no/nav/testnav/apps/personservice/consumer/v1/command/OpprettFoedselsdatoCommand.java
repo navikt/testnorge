@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.personservice.consumer.v1.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.personservice.consumer.v1.pdl.FoedselDTO;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.FoedselsdatoDTO;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.HendelseDTO;
 import no.nav.testnav.apps.personservice.consumer.v1.header.PdlHeaders;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
@@ -16,20 +16,20 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class OpprettFoedselCommand implements Callable<Mono<HendelseDTO>> {
+public class OpprettFoedselsdatoCommand implements Callable<Mono<HendelseDTO>> {
     private final WebClient webClient;
-    private final FoedselDTO dto;
+    private final FoedselsdatoDTO dto;
     private final String token;
     private final String ident;
 
     @Override
     public Mono<HendelseDTO> call() {
         return webClient.post()
-                .uri("/pdl-testdata/api/v1/bestilling/foedsel")
+                .uri("/pdl-testdata/api/v1/bestilling/foedselsdato")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .body(BodyInserters.fromPublisher(Mono.just(dto), FoedselDTO.class))
+                .body(BodyInserters.fromPublisher(Mono.just(dto), FoedselsdatoDTO.class))
                 .retrieve()
                 .bodyToMono(HendelseDTO.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
