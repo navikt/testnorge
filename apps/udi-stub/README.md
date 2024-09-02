@@ -26,7 +26,7 @@ Ha naisdevice kjørende og kjør UdiStubApplicationStarter med følgende argumen
 
 ```
 --add-opens java.base/java.lang=ALL-UNNAMED
--Dspring.profiles.active=dev
+-Dspring.profiles.active=local
 -Dspring.cloud.vault.token=[vault-token]
 ```
 
