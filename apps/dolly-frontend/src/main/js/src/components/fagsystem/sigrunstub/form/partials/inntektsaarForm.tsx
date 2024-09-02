@@ -38,57 +38,55 @@ export const InntektsaarForm = ({ formMethods }) => {
 			<FormDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
 				{(path) => (
 					<React.Fragment>
-						<React.Fragment>
-							<div className="flexbox--flex-wrap">
-								<FormSelect
-									name={`${path}.inntektsaar`}
-									label="År"
-									options={getYearRangeOptions(2017, subYears(new Date(), 1).getFullYear())}
-									isClearable={false}
-								/>
-								<FormSelect
-									name={`${path}.tjeneste`}
-									label="Tjeneste"
-									options={Options('tjeneste')}
-									isDisabled={formMethods.watch(`${path}.svalbardGrunnlag`, []).length > 0}
-									isClearable={false}
-									size="large"
-									onChange={(target) => handleTjenesteChange(target, path)}
-								/>
-							</div>
-							{tjenesteErValgt(formMethods, path) && (
-								<EnkeltinntektForm
-									path={`${path}.grunnlag`}
-									header="Grunnlag fra Fastlands-Norge"
-									initialGrunnlag={initialGrunnlag}
-									tjeneste={formMethods.watch(`${path}.tjeneste`)}
-									inntektsaar={formMethods.watch(`${path}.inntektsaar`)}
-									formMethods={formMethods}
-								/>
-							)}
-							{formMethods.watch(`${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
-								<EnkeltinntektForm
-									path={`${path}.svalbardGrunnlag`}
-									header="Grunnlag fra Svalbard"
-									initialGrunnlag={initialGrunnlag}
-									tjeneste={formMethods.watch(`${path}.tjeneste`)}
-									inntektsaar={formMethods.watch(`${path}.inntektsaar`)}
-									formMethods={formMethods}
-								/>
-							)}
+						<div className="flexbox--flex-wrap">
+							<FormSelect
+								name={`${path}.inntektsaar`}
+								label="År"
+								options={getYearRangeOptions(2017, subYears(new Date(), 1).getFullYear())}
+								isClearable={false}
+							/>
+							<FormSelect
+								name={`${path}.tjeneste`}
+								label="Tjeneste"
+								options={Options('tjeneste')}
+								isDisabled={formMethods.watch(`${path}.svalbardGrunnlag`, []).length > 0}
+								isClearable={false}
+								size="large"
+								onChange={(target) => handleTjenesteChange(target, path)}
+							/>
+						</div>
+						{tjenesteErValgt(formMethods, path) && (
+							<EnkeltinntektForm
+								path={`${path}.grunnlag`}
+								header="Grunnlag fra Fastlands-Norge"
+								initialGrunnlag={initialGrunnlag}
+								tjeneste={formMethods.watch(`${path}.tjeneste`)}
+								inntektsaar={formMethods.watch(`${path}.inntektsaar`)}
+								formMethods={formMethods}
+							/>
+						)}
+						{formMethods.watch(`${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
+							<EnkeltinntektForm
+								path={`${path}.svalbardGrunnlag`}
+								header="Grunnlag fra Svalbard"
+								initialGrunnlag={initialGrunnlag}
+								tjeneste={formMethods.watch(`${path}.tjeneste`)}
+								inntektsaar={formMethods.watch(`${path}.inntektsaar`)}
+								formMethods={formMethods}
+							/>
+						)}
 
-							<div style={{ marginTop: '20px' }}>
-								<ErrorMessage
-									errors={formMethods.formState.errors}
-									name={`${path}.grunnlag`}
-									render={({ message }) =>
-										errorContext.showError && (
-											<span style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</span>
-										)
-									}
-								/>
-							</div>
-						</React.Fragment>
+						<div style={{ marginTop: '20px' }}>
+							<ErrorMessage
+								errors={formMethods.formState.errors}
+								name={`${path}.grunnlag`}
+								render={({ message }) =>
+									errorContext.showError && (
+										<span style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</span>
+									)
+								}
+							/>
+						</div>
 					</React.Fragment>
 				)}
 			</FormDollyFieldArray>

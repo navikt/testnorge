@@ -16,6 +16,7 @@ import {
 import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import { validation } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/validation'
 import { useFormContext } from 'react-hook-form'
+import _ from 'lodash'
 
 export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {
 	return {
@@ -40,6 +41,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 	const formMethods = useFormContext()
 	const { kodeverk } = usePensjonsgivendeInntektKodeverk()
 	const { skatteordning } = usePensjonsgivendeInntektSkatteordning()
+	const arrayError = _.get(formMethods.formState.errors, 'sigrunstubPensjonsgivende.root')?.message
 
 	useEffect(() => {
 		const pensjonsgivendeInntektPath = 'sigrunstubPensjonsgivende[0].pensjonsgivendeInntekt'
@@ -68,6 +70,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 						name="sigrunstubPensjonsgivende"
 						header="Pensjonsgivende inntekt"
 						newEntry={getInitialSigrunstubPensjonsgivende(kodeverk, skatteordning)}
+						errorText={arrayError}
 						canBeEmpty={false}
 					>
 						{(path) => (
