@@ -17,10 +17,6 @@ spring:
       maximum-pool-size: 3
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 management:
   endpoints:
