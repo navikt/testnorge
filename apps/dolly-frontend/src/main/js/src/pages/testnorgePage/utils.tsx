@@ -6,7 +6,7 @@ export const initialValues = {
 		fra: '',
 		til: '',
 	},
-	foedsel: {
+	foedselsdato: {
 		fom: '',
 		tom: '',
 	},
