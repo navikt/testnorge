@@ -12,7 +12,7 @@ spring:
       generic:
         enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/testnav-pdl-forvalter-db
+    url: jdbc:postgresql://localhost:5432/pdl-forvalter-test
     hikari:
       maximum-pool-size: 10
       minimum-idle: 1

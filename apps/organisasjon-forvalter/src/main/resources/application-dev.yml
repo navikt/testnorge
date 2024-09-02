@@ -5,7 +5,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/organisasjon-forvalter-db
+    url: jdbc:postgresql://localhost:5432/organisasjon-forvalter-test
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1

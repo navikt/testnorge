@@ -10,7 +10,7 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
-    url: jdbc:postgresql://localhost:5432/testnav-identpool
+    url: jdbc:postgresql://localhost:5432/ident-pool-test
     username: postgres
   flyway:
     baseline-on-migrate: true

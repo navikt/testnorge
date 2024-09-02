@@ -11,7 +11,7 @@ spring:
       generic:
         enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/testnav-dolly-backend
+    url: jdbc:postgresql://localhost:5432/dolly-test
     username: postgres
     hikari:
       maximum-pool-size: 3
