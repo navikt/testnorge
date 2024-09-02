@@ -432,6 +432,11 @@ type Navn {
     originaltNavn: OriginaltNavn
 }
 
+type Navspersonidentifikator {
+    identifikasjonsnummer: String!
+    metadata: Metadata!
+}
+
 type Opphold {
     folkeregistermetadata: Folkeregistermetadata!
     metadata: Metadata!
@@ -479,6 +484,7 @@ type Person {
     kontaktadresse(historikk: Boolean = false): [Kontaktadresse!]!
     kontaktinformasjonForDoedsbo(historikk: Boolean = false): [KontaktinformasjonForDoedsbo!]!
     navn(historikk: Boolean = false): [Navn!]!
+    navspersonidentifikator(historikk: Boolean = false): [Navspersonidentifikator!]!
     opphold(historikk: Boolean = false): [Opphold!]!
     oppholdsadresse(historikk: Boolean = false): [Oppholdsadresse!]!
     rettsligHandleevne(historikk: Boolean = false): [RettsligHandleevne!]!

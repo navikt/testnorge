@@ -14,7 +14,8 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor(force = true)
 public class HentPerson {
     List<Navn> navn;
-    List<Foedsel> foedsel;
+    List<Kjoenn> kjoenn;
+    List<Foedselsdato> foedselsdato;
     List<Bostedsadresse> bostedsadresse;
     List<Folkeregisteridentifikator> folkeregisteridentifikator;
     List<Folkeregisterpersonstatus> folkeregisterpersonstatus;
@@ -27,20 +28,20 @@ public class HentPerson {
         return navn;
     }
 
-    public List<Foedsel> getFoedsel() {
+    public List<Foedselsdato> getFoedselsdato() {
 
-        if (isNull(foedsel)) {
-            foedsel = new ArrayList<>();
+        if (isNull(foedselsdato)) {
+            foedselsdato = new ArrayList<>();
         }
-        return foedsel;
+        return foedselsdato;
     }
 
-    public List<Bostedsadresse> getBostedsadresse() {
+    public List<Kjoenn> getKjoenn() {
 
-        if (isNull(bostedsadresse)) {
-            bostedsadresse = new ArrayList<>();
+        if (isNull(kjoenn)) {
+            kjoenn = new ArrayList<>();
         }
-        return bostedsadresse;
+        return kjoenn;
     }
 
     public List<Folkeregisteridentifikator> getFolkeregisteridentifikator() {
@@ -49,13 +50,5 @@ public class HentPerson {
             folkeregisteridentifikator = new ArrayList<>();
         }
         return folkeregisteridentifikator;
-    }
-
-    public List<Folkeregisterpersonstatus> getFolkeregisterpersonstatus() {
-
-        if (isNull(folkeregisterpersonstatus)) {
-            folkeregisterpersonstatus = new ArrayList<>();
-        }
-        return folkeregisterpersonstatus;
     }
 }

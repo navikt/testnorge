@@ -6,7 +6,7 @@ query($ident1: ID!) {
                 opplysningsId
             }
         }
-        foedsel {
+        foedselsdato {
             metadata {
                 opplysningsId
             }

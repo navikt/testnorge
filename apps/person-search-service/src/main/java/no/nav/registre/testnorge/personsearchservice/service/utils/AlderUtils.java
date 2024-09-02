@@ -18,11 +18,11 @@ public class AlderUtils {
 
     public static void addAlderQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addAlderQuery(queryBuilder, search);
-        addFoedselQuery(queryBuilder, search);
+        addFoedselsdatoQuery(queryBuilder, search);
     }
 
-    private static void addFoedselQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getFoedsel())
+    private static void addFoedselsdatoQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getFoedselsdato())
                 .ifPresent(value -> {
                     var tom = isNull(value.getTom()) ? LocalDate.now() : value.getTom();
                     queryFoedselsdato(value.getFom(), tom, queryBuilder);
@@ -35,9 +35,9 @@ public class AlderUtils {
     }
 
     private static void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
-        getBetween(fom, tom, "hentPerson.foedsel.foedselsdato")
+        getBetween(fom, tom, "hentPerson.foedselsdato.foedselsdato")
                 .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.foedsel",
+                                "hentPerson.foedselsdato",
                                 rangeQueryBuilder,
                                 ScoreMode.Avg
                         ))

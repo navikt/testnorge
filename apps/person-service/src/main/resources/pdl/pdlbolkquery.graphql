@@ -353,19 +353,6 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            foedsel {
-                foedselsaar,
-                foedselsdato,
-                foedeland,
-                foedested,
-                foedekommune,
-                folkeregistermetadata {
-                    ...folkeregistermetadataDetails
-                }
-                metadata {
-                    ...metadataDetails
-                }
-            },
             foedselsdato {
                 foedselsaar,
                 foedselsdato,

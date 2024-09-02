@@ -12,7 +12,7 @@ import java.util.List;
 public class HentPersonModel {
     List<NavnModel> navn;
     List<KjoennModel> kjoenn;
-    List<FoedselModel> foedsel;
+    List<FoedselsdatoModel> foedselsdato;
     List<DoedsfallModel> doedsfall;
     List<SivilstandModel> sivilstand;
     List<StatsborgerskapModel> statsborgerskap;
