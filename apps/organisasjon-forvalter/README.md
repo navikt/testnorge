@@ -22,3 +22,5 @@ og legg til i VM options:
 ``` 
 --add-opens java.base/java.lang=ALL-UNNAMED
 ``` 
+
+Applikasjonen er avhengig av en lokal PSQL-database. For mer informasjon se [egen dokumentasjon](../../docs/local_db.md).
