@@ -6,8 +6,8 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 const paths = {
 	fra: 'alder.fra',
 	til: 'alder.til',
-	fom: 'foedsel.fom',
-	tom: 'foedsel.tom',
+	fom: 'foedselsdato.fom',
+	tom: 'foedselsdato.tom',
 }
 
 type Props = {
@@ -38,18 +38,8 @@ export const Alder = ({ formMethods }: Props) => (
 					formMethods.handleSubmit()
 			}}
 		/>
-		<FormDatepicker
-			name={paths.fom}
-			label="Fødselsdato fom"
-			visHvisAvhuket={false}
-			size="medium"
-		/>
-		<FormDatepicker
-			name={paths.tom}
-			label="Fødselsdato tom"
-			visHvisAvhuket={false}
-			size="medium"
-		/>
+		<FormDatepicker name={paths.fom} label="Fødselsdato fom" visHvisAvhuket={false} size="medium" />
+		<FormDatepicker name={paths.tom} label="Fødselsdato tom" visHvisAvhuket={false} size="medium" />
 	</section>
 )
 

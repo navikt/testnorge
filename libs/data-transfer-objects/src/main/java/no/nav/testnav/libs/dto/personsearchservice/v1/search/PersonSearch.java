@@ -2,8 +2,8 @@ package no.nav.testnav.libs.dto.personsearchservice.v1.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class PersonSearch {
     String randomSeed;
     Boolean kunLevende;
     List<String> identer;
-    FoedselSearch foedsel;
+    FoedselsdatoSearch foedselsdato;
     SivilstandSearch sivilstand;
     NasjonalitetSearch nasjonalitet;
     AlderSearch alder;
