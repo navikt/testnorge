@@ -50,13 +50,13 @@ Legg merke til at vi bruker `--exclude-table` i dette eksempelet. I denne databa
 > docker run --name postgres -e POSTGRES_HOST_AUTH_METHOD=trust -p 5432:5432 postgres
 ~~~
 
-Her kjøres containeren uten `--detach`, slik at vi kan følge med på logger i tilfelle feil. Ved seinere `docker start postgres` går den i bakgrunnen.
+Her kjøres containeren uten `--detach`, slik at vi kan følge med på logger i tilfelle feil under import, men det er valgfritt.
 
 ## Importere inn i PSQL
 
-Import gjøres med [psql](https://www.postgresql.org/docs/current/app-psql.html). Et alternativ er [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html), men da må eksporten gjøres med --format=custom og du kan ikke justere på SQLen før import ved behov.
+Import gjøres med [psql](https://www.postgresql.org/docs/current/app-psql.html). Et alternativ er [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html), men da må eksporten gjøres med `--format=custom` og du kan ikke justere på SQLen før import ved behov.
 
-En evt. eksisterende database vil bli erstattet, men du kan fint ha flere databaser samtidig. Hvis du importerer fra de to eksemplene over så vil du for eksempel ha to databaser lokalt ved navn `testnav-dolly-backend` og `dolly-test`.
+En evt. eksisterende database vil bli erstattet, men du kan fint ha flere databaser for flere test-scenarier samtidig. Hvis du importerer fra de to eksemplene over så vil du for eksempel ha to databaser lokalt ved navn `testnav-dolly-backend` og `dolly-test`.
 
 ~~~
 > psql --username=postgres --file=~\dump.sql
