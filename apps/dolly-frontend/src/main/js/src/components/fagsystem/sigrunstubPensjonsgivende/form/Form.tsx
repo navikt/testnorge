@@ -16,6 +16,7 @@ import {
 import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import { validation } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/validation'
 import { useFormContext } from 'react-hook-form'
+import _ from 'lodash'
 
 export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {
 	return {
@@ -40,6 +41,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 	const formMethods = useFormContext()
 	const { kodeverk } = usePensjonsgivendeInntektKodeverk()
 	const { skatteordning } = usePensjonsgivendeInntektSkatteordning()
+	const arrayError = _.get(formMethods.formState.errors, 'sigrunstubPensjonsgivende.root')?.message
 
 	useEffect(() => {
 		const pensjonsgivendeInntektPath = 'sigrunstubPensjonsgivende[0].pensjonsgivendeInntekt'
@@ -68,6 +70,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 						name="sigrunstubPensjonsgivende"
 						header="Pensjonsgivende inntekt"
 						newEntry={getInitialSigrunstubPensjonsgivende(kodeverk, skatteordning)}
+						errorText={arrayError}
 						canBeEmpty={false}
 					>
 						{(path) => (
@@ -76,7 +79,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 									<FormSelect
 										name={`${path}.inntektsaar`}
 										label="Inntektsår"
-										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
+										options={getYearRangeOptions(2017, subYears(new Date(), 1).getFullYear())}
 										isClearable={false}
 									/>
 									<FormTextInput name={`${path}.testdataEier`} label="Testdataeier" />
