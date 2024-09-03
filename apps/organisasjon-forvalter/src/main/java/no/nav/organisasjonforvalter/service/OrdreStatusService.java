@@ -42,8 +42,21 @@ public class OrdreStatusService {
 
     public OrdreResponse getStatus(List<String> orgnumre) {
 
-        var statusMap = statusRepository.findAllByOrganisasjonsnummer(orgnumre)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, "Ingen status funnet for gitte orgnumre"));
+        var statusMap = statusRepository.findAllByOrganisasjonsnummerIn(orgnumre);
+
+        if (orgnumre.stream()
+                .anyMatch(orgnr -> statusMap.stream()
+                        .noneMatch(status -> orgnr.equals(status.getOrganisasjonsnummer())))) {
+
+            return OrdreResponse.builder()
+                    .orgStatus(orgnumre.stream()
+                            .filter(orgnr -> statusMap.stream()
+                                    .noneMatch(status -> orgnr.equals(status.getOrganisasjonsnummer())))
+                            .collect(Collectors.toMap(orgnr -> orgnr, grgnr -> List.of(StatusEnv.builder()
+                                    .status(StatusDTO.Status.NOT_FOUND)
+                                    .build()))))
+                    .build();
+        }
 
         if (statusMap.stream().anyMatch(status -> isBlank(status.getBestId()))) {
             statusMap.stream()
