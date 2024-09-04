@@ -15,12 +15,12 @@ spec:
         - application: dolly-backend-dev
         - application: testnav-budpro-service
   liveness:
-    path: /internal/isAlive
+    path: /internal/liveness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
   readiness:
-    path: /internal/isReady
+    path: /internal/readiness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
