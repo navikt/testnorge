@@ -5,9 +5,9 @@ import jakarta.xml.bind.JAXBElement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter;
-import no.nav.testnav.inntektsmeldinggeneratorservice.provider.dto.InntektsmeldingDTO;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.InntektsmeldingM;
+import no.nav.testnav.inntektsmeldinggeneratorservice.provider.dto.InntektsmeldingDTO;
+import no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,7 +37,7 @@ public class InntektsmeldingV2Controller {
         log.info("Konverterer inntektsmelding til : {}", melding);
         String xml = XmlConverter.toXml(melding, InntektsmeldingM.class);
 
-        if (!XmlConverter.validate(xml, InntektsmeldingM.class)) {
+        if (!XmlConverter.validate(xml)) {
             log.warn("Validering av opprett xml feilet");
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
