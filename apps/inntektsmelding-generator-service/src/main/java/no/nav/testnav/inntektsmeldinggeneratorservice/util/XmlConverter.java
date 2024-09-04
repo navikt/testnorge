@@ -40,7 +40,8 @@ public class XmlConverter {
             String xmlContent = sw.toString()
                     .replace("ns2:", "")
                     .replace(":ns2", "")
-                    .replace("<nil>false</nil>", "");
+                    .replace("<nil>false</nil>", "")
+                    .replaceAll("<\\/*value[ a-z:=\"A-Z\\/\\.0-9-]*>", "");
 
             log.debug("Opprettet xml: {}", xmlContent);
             return xmlContent;
