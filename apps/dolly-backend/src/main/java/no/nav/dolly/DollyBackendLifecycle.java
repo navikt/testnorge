@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.repository.BestillingRepository;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -32,10 +33,11 @@ public class DollyBackendLifecycle implements SmartLifecycle {
     }
 
     @Override
+    @Transactional
     public void start() {
         isRunning = true;
-        var result = repository.stopOrphanedRunning();
-        log.info("Stopped {} orphans", result);
+        var unfinished = repository.stopAllUnfinished();
+        log.info("Stoppet {} kjørende bestilling(er)", unfinished);
     }
 
     @Override
