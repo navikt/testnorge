@@ -29,7 +29,7 @@ export const getInitialKontaktadresse = (master = 'FREG') => ({
 	adressetype: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
-	opprettCoAdresseNavn: null as object,
+	opprettCoAdresseNavn: null as unknown as object,
 	kilde: 'Dolly',
 	master: master,
 })
@@ -94,8 +94,6 @@ export const initialPostboksadresse = {
 export const initialUkjentBosted = {
 	bostedskommune: null as unknown as string,
 }
-
-export const initialOppholdAnnetSted = null as unknown as string
 
 export const initialKontaktinfoForDoedebo = {
 	skifteform: null as unknown as string,
@@ -226,7 +224,7 @@ export const initialOrganisasjon = {
 export const initialPerson = {
 	identifikasjonsnummer: null as unknown as string,
 	foedselsdato: null as unknown as string,
-	navn: null as typeof navn,
+	navn: null as unknown as typeof navn,
 }
 
 export const initialNyPerson = {
@@ -287,7 +285,7 @@ export const initialVergemaal = {
 	sakType: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
-	nyVergeIdent: initialPdlPerson,
+	nyVergeIdent: initialPdlPerson as unknown,
 	vergeIdent: null as unknown as string,
 	mandatType: null as unknown as string,
 	kilde: 'Dolly',
@@ -337,21 +335,6 @@ export const getInitialUtenlandskIdentifikasjonsnummer = (master = 'FREG') => ({
 	kilde: 'Dolly',
 	master: master,
 })
-
-export const initialNyIdent = {
-	eksisterendeIdent: null as unknown as string,
-	identtype: null as unknown as string,
-	kjoenn: null as unknown as string,
-	foedtEtter: null as unknown as string,
-	foedtFoer: null as unknown as string,
-	alder: '',
-	syntetisk: true,
-	nyttNavn: {
-		hasMellomnavn: false,
-	},
-	kilde: 'Dolly',
-	master: 'FREG',
-}
 
 export const getInitialNyIdent = (master = 'FREG') => ({
 	eksisterendeIdent: null as unknown as string,

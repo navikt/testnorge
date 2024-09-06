@@ -39,9 +39,11 @@ import { Form, FormProvider, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
-import { boolean } from 'yup'
 import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
+import DisplayFormState from '@/utils/DisplayFormState'
+import DisplayFormErrors from '@/utils/DisplayFormErrors'
+import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -51,6 +53,7 @@ type VisningTypes = {
 	redigertAttributt?: any
 	path: string
 	ident: string
+	identMaster?: string
 	identtype?: string
 	disableSlett?: boolean
 	personFoerLeggTil?: any
@@ -121,7 +124,7 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
-	identMaster = boolean,
+	identMaster = '',
 	disableSlett = false,
 	personValues = null,
 	relasjoner = null,
@@ -402,6 +405,12 @@ export const VisningRedigerbar = ({
 				{visningModus === Modus.Skriv && (
 					<Form onSubmit={(data) => handleSubmit(data?.data)}>
 						<>
+							{devEnabled && (
+								<>
+									<DisplayFormState />
+									<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+								</>
+							)}
 							<FieldArrayEdit>
 								<div className="flexbox--flex-wrap visning-redigerbar-form">
 									{getForm(formMethods)}

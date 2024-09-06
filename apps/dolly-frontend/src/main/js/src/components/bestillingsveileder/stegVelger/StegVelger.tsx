@@ -26,6 +26,10 @@ import { DollyValidation } from './steg/steg2/DollyValidation'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
+export const devEnabled =
+	window.location.hostname.includes('localhost') ||
+	window.location.hostname.includes('dolly-frontend-dev')
+
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const context = useContext(BestillingsveilederContext)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
@@ -80,10 +84,6 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	}
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
-
-	const devEnabled =
-		window.location.hostname.includes('localhost') ||
-		window.location.hostname.includes('dolly-frontend-dev')
 
 	return (
 		<FormProvider {...formMethods}>

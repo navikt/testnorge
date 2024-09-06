@@ -123,7 +123,6 @@ const VergemaalVisning = ({
 }: VergemaalVisningTypes) => {
 	const initVergemaal = Object.assign(_.cloneDeep(initialVergemaal), data[idx])
 	let initialValues = { vergemaal: initVergemaal }
-	initialValues.vergemaal.nyVergeIdent = initialPdlPerson
 
 	const redigertVergemaalPdlf = _.get(tmpPersoner, `${ident}.person.vergemaal`)?.find(
 		(a: VergemaalValues) => a.id === vergemaalData.id,
@@ -136,6 +135,9 @@ const VergemaalVisning = ({
 	}
 
 	const vergemaalValues = redigertVergemaalPdlf ? redigertVergemaalPdlf : vergemaalData
+
+	initialValues.vergemaal.nyVergeIdent = initialPdlPerson
+
 	let redigertVergemaalValues = redigertVergemaalPdlf
 		? {
 				vergemaal: Object.assign(_.cloneDeep(initialVergemaal), redigertVergemaalPdlf),
