@@ -17,7 +17,7 @@ import static io.micrometer.common.util.StringUtils.isBlank;
 
 @Slf4j
 @Configuration
-@Profile("dev")
+@Profile("local")
 @Import({
         FlywayConfiguration.class,
         VaultHikariConfiguration.class

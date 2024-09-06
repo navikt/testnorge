@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class FoedselSearch {
+public class FoedselsdatoSearch {
     LocalDate fom;
     LocalDate tom;
 }
