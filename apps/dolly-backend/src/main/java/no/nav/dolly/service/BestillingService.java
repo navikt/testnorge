@@ -419,6 +419,10 @@ public class BestillingService {
 
     private String filterAvailable(Collection<String> environments) {
 
+        if (isNull(environments) || environments.isEmpty()) {
+            return null;
+        }
+
         var miljoer = miljoerConsumer.getMiljoer().block();
 
         if (isNull(miljoer)) {
