@@ -112,6 +112,7 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 }
 
 const Inntekt = ({ fields = {}, onValidate, formMethods, path }) => {
+	console.log('fields: ', fields) //TODO - SLETT MEG
 	return (
 		<div className="flexbox--flex-wrap">
 			{fieldResolver('inntektstype', onValidate, formMethods, path, `${path}.inntektstype`, [

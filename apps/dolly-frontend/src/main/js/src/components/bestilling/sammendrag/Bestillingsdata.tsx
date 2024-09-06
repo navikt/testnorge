@@ -32,6 +32,7 @@ import { KontaktinformasjonForDoedsbo } from '@/components/fagsystem/pdlf/bestil
 import { Arbeidsforhold } from '@/components/fagsystem/aareg/bestilling/Arbeidsforhold'
 import { Sigrunstub } from '@/components/fagsystem/sigrunstub/bestilling/Sigrunstub'
 import { SigrunstubPensjonsgivende } from '@/components/fagsystem/sigrunstubPensjonsgivende/bestilling/SigrunstubPensjonsgivende'
+import { Inntektstub } from '@/components/fagsystem/inntektstub/bestilling/Inntektstub'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -110,6 +111,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<SigrunstubPensjonsgivende
 				sigrunstubPensjonsgivendeListe={bestilling.sigrunstubPensjonsgivende}
 			/>
+			<Inntektstub inntektstub={bestilling.inntektstub} />
 		</>
 	)
 }

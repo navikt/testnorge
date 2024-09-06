@@ -6,7 +6,7 @@ import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import { SigrunstubPensjonsgivendeData } from '@/components/fagsystem/sigrunstubPensjonsgivende/SigrunstubPensjonsgivendeTypes.tex'
+import { SigrunstubPensjonsgivendeData } from '@/components/fagsystem/sigrunstubPensjonsgivende/SigrunstubPensjonsgivendeTypes'
 
 type SigrunstubPensjonsgivendeTypes = {
 	sigrunstubPensjonsgivendeListe: Array<SigrunstubPensjonsgivendeData>
