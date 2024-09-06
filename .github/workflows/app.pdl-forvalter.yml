@@ -3,14 +3,16 @@ name: pdl-forvalter
 on:
   push:
     paths:
-      - libs/data-transfer-objects
-      - libs/database
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - libs/testing
-      - apps/pdl-forvalter/**
-      - .github/workflows/app.pdl-forvalter.yml
+      - "plugins/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/data-transfer-search-objects/**"
+      - "libs/database/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/testing/**"
+      - "apps/pdl-forvalter/**"
+      - ".github/workflows/app.pdl-forvalter.yml"
 
 jobs:
   workflow:

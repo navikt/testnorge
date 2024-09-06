@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.testnav.apps.personservice.consumer.v1.pdl.FoedselDTO;
-import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Foedsel;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.FoedselsdatoDTO;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Foedselsdato;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Folkeregisteridentifikator;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.HentPerson;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Navn;
@@ -45,14 +45,14 @@ public class Person {
     public Person(PdlPerson pdlPerson) {
         HentPerson person = pdlPerson.getData().getHentPerson();
         Optional<Navn> navn = person.getNavn().stream().findFirst();
-        Optional<Foedsel> foedsel = person.getFoedsel().stream().findFirst();
+        Optional<Foedselsdato> foedsel = person.getFoedselsdato().stream().findFirst();
 
         ident = person.getFolkeregisteridentifikator()
                 .stream()
                 .findFirst()
                 .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
                 .orElse(null);
-        foedselsdato = foedsel.map(Foedsel::getFoedselsdato).orElse(null);
+        foedselsdato = foedsel.map(Foedselsdato::getFoedselsdato).orElse(null);
         fornavn = navn.map(Navn::getFornavn).orElse(null);
         mellomnavn = navn.map(Navn::getMellomnavn).orElse(null);
         etternavn = navn.map(Navn::getEtternavn).orElse(null);
@@ -75,13 +75,13 @@ public class Person {
                 .build();
     }
 
-    public Optional<FoedselDTO> toFoedselDTO(String kilde) {
+    public Optional<FoedselsdatoDTO> toFoedselDTO(String kilde) {
         if (foedselsdato == null) {
             return Optional.empty();
         }
 
         return Optional.of(
-                FoedselDTO
+                FoedselsdatoDTO
                         .builder()
                         .foedselsaar(foedselsdato.getYear())
                         .foedselsdato(foedselsdato)

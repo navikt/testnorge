@@ -10,7 +10,9 @@ const testForeldreansvar = (val: Yup.StringSchema<string, Yup.AnyObject>) => {
 		const context = testContext.options.context
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-		if (context.leggTilPaaGruppe) return true
+		if (context.leggTilPaaGruppe || context.personFoerLeggTil) {
+			return true
+		}
 
 		const foreldrerelasjoner = []
 			.concat(
@@ -199,7 +201,19 @@ export const sivilstand = Yup.object({
 		then: () => requiredDate,
 		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable()),
 	}),
-	relatertVedSivilstand: Yup.string().nullable(),
+	relatertVedSivilstand: Yup.string()
+		.test('feltet-mangler', 'Partner er påkrevd', (value, testcontext) => {
+			return (
+				value ||
+				(testcontext.parent.type !== 'GIFT' &&
+					testcontext.parent.type !== 'SEPARERT' &&
+					testcontext.parent.type !== 'REGISTRERT_PARTNER' &&
+					testcontext.parent.type !== 'SEPARERT_PARTNER' &&
+					testcontext.parent.type !== 'SAMBOER') ||
+				testcontext.options.context?.identMaster !== 'PDL'
+			)
+		})
+		.nullable(),
 	bekreftelsesdato: Yup.mixed().when('type', {
 		is: (type) => type === 'SAMBOER',
 		then: () => Yup.mixed().notRequired(),
@@ -241,7 +255,49 @@ export const forelderBarnRelasjon = Yup.object().shape(
 	{
 		minRolleForPerson: requiredString,
 		relatertPersonsRolle: requiredString,
-		relatertPerson: Yup.string().nullable(),
+		relatertPerson: Yup.string()
+			.test('er-testnorge-paakrevd', 'Person fra Testnorge er påkrevd', (value, testcontext) => {
+				return testcontext.options.context?.identMaster !== 'PDL' || value
+			})
+			.test(
+				'er-eksisterende-paakrevd',
+				'Relatert person er påkrevd ved "Eksisterende person"',
+				(value, testcontext) => {
+					const forelderBarnRelasjon = testcontext?.from?.find(
+						(element) => element.value?.forelderBarnRelasjon?.length > 0,
+					)
+
+					let isOK = true
+					forelderBarnRelasjon?.value.forelderBarnRelasjon
+						.filter(
+							(relasjon) =>
+								relasjon.typeForelderBarn === 'EKSISTERENDE' && !relasjon.relatertPerson && !value,
+						)
+						.map(() => (isOK = false))
+
+					return isOK
+				},
+			)
+			.test(
+				'er-identisk-person',
+				'Person kan kun benyttes en gang i relasjon',
+				(value, testContext) => {
+					const forelderBarnRelasjon = testContext?.from?.find(
+						(element) => element.value?.forelderBarnRelasjon?.length > 0,
+					)
+
+					if (!forelderBarnRelasjon) {
+						return true
+					}
+
+					const relasjoner = forelderBarnRelasjon?.value.forelderBarnRelasjon
+						.filter((element) => element.relatertPerson)
+						.map((element) => element.relatertPerson)
+
+					return relasjoner?.length === new Set(relasjoner).size
+				},
+			)
+			.nullable(),
 		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
 			then: () => Yup.mixed().notRequired(),
@@ -249,7 +305,7 @@ export const forelderBarnRelasjon = Yup.object().shape(
 		}),
 		nyRelatertPerson: nyPerson.nullable(),
 		deltBosted: Yup.mixed().when('deltBosted', {
-			is: (deltBosted) => deltBosted != undefined && deltBosted != null,
+			is: (deltBosted) => !!deltBosted,
 			then: () => deltBosted.nullable(),
 			otherwise: () => Yup.mixed().notRequired(),
 		}),
@@ -261,10 +317,46 @@ export const foreldreansvar = Yup.object({
 	ansvar: testForeldreansvar(requiredString),
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
+	typeAnsvarlig: Yup.string()
+		.test('type-Ansvarlig-paakrevd', 'Type Ansvarlig må velges', (value, testcontext) => {
+			return !!value || testcontext.parent?.ansvar !== 'ANDRE'
+		})
+		.nullable(),
+	ansvarlig: Yup.string()
+		.test('ansvarlig-andre-paakrevd', 'Ansvarlig person må velges', (value, testcontext) => {
+			return (
+				!!value ||
+				testcontext.parent?.ansvarssubjekt ||
+				testcontext.parent?.ansvar !== 'ANDRE' ||
+				testcontext.parent?.ansvarligUtenIdentifikator ||
+				testcontext.parent?.nyAnsvarlig
+			)
+		})
+		.nullable(),
+	ansvarssubjekt: Yup.string()
+		.test('ansvarssubjekt-er-paakrevd', 'Ansvarssubjekt er påkrevd', (value, testcontext) => {
+			return (
+				!!value ||
+				testcontext.parent?.ansvarlig ||
+				testcontext.parent?.typeAnsvarlig !== 'EKSISTERENDE' ||
+				!testcontext.options?.context?.personFoerLeggTil
+			)
+		})
+		.nullable(),
 })
 
 export const foreldreansvarForBarn = Yup.object({
 	ansvar: testForeldreansvarForBarn(requiredString),
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
+	ansvarlig: Yup.string()
+		.test('ansvarlig-andre-paakrevd', 'Ansvarlig person må velges', (value, testcontext) => {
+			return (
+				!!value ||
+				testcontext.parent?.ansvar !== 'ANDRE' ||
+				testcontext.parent?.ansvarligUtenIdentifikator ||
+				testcontext.parent?.nyAnsvarlig
+			)
+		})
+		.nullable(),
 })

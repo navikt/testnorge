@@ -1,17 +1,20 @@
 plugins {
-    id "com.gradle.enterprise" version "3.12.3"
+    id "com.gradle.develocity" version "3.17.4"
 }
 
 rootProject.name = 'kodeverk-service'
 
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-security'
-includeBuild '../../libs/data-transfer-objects'
+includeBuild "../../plugins/java"
 
-gradleEnterprise {
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/security-core'
+
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
     }
 }

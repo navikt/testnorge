@@ -1,4 +1,4 @@
-import { Box, VStack, Tag, Alert } from '@navikt/ds-react'
+import { Alert, Box, Tag, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
@@ -6,7 +6,7 @@ import Loading from '@/components/ui/loading/Loading'
 import styled from 'styled-components'
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const PersonNavn = styled.h3`
 	word-break: break-word;
@@ -27,6 +27,7 @@ export const TreffListe = ({
 	personListe,
 	markertePersoner,
 	setMarkertePersoner,
+	nesteSide,
 	loading,
 	error,
 }: any) => {
@@ -42,22 +43,34 @@ export const TreffListe = ({
 		setValgtPerson(personListe?.[0] || null)
 	}, [personListe?.[0]])
 
+	useEffect(() => {
+		if (response?.data?.treff || response?.data?.treff === 0) {
+			localStorage['antallTreff'] = response?.data?.treff
+		}
+	}, [response])
+
 	if ((!personListe || personListe?.length === 0) && loading) {
-		return <Loading label="Laster treff ..." />
+		return (
+			<div style={{ marginTop: '-70px' }}>
+				<Loading label="Laster treff ..." />
+			</div>
+		)
 	}
 
 	if (error || response?.error) {
 		return (
-			<Alert variant="error" size="small">{`Feil ved henting av personer: ${
-				error || response?.error
-			}`}</Alert>
+			<Alert
+				variant="error"
+				size="small"
+				style={{ marginTop: '-70px' }}
+			>{`Feil ved henting av personer: ${error || response?.error}`}</Alert>
 		)
 	}
 
-	const antallTreff = response?.data?.treff
+	const antallTreff = localStorage['antallTreff']
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap" style={{ marginTop: '-70px' }}>
 			<div
 				className="flexbox--full-width"
 				style={{ marginBottom: '20px', position: 'sticky', top: '10px', zIndex: 1 }}
@@ -65,7 +78,7 @@ export const TreffListe = ({
 				<Box background="surface-default" padding="3" borderRadius="medium">
 					<div className="flexbox--space">
 						<h2 style={{ margin: '0', alignSelf: 'center' }}>
-							{antallTreff || antallTreff === 0 ? `${antallTreff} treff` : ''}
+							{antallTreff ? `${antallTreff} treff` : ''}
 						</h2>
 						<ImporterValgtePersoner identer={markertePersoner} isMultiple={true} />
 					</div>
@@ -77,7 +90,7 @@ export const TreffListe = ({
 						return (
 							<Box
 								key={person?.id}
-								data-cy={CypressSelector.BUTTON_PERSON_TENORSOEK}
+								data-testid={TestComponentSelectors.BUTTON_PERSON_TENORSOEK}
 								padding="2"
 								background={
 									person?.id === valgtPerson?.id ? 'surface-alt-3-moderate' : 'surface-alt-3-subtle'
@@ -103,7 +116,7 @@ export const TreffListe = ({
 									))}
 								</TagsWrapper>
 								<ListeValg
-									ident={person?.id}
+									person={person}
 									markertePersoner={markertePersoner}
 									setMarkertePersoner={setMarkertePersoner}
 								/>
@@ -116,9 +129,10 @@ export const TreffListe = ({
 						<Loading label="Laster treff ..." />
 					</div>
 				)}
-				{personListe?.length === 200 && antallTreff > 200 && (
+				{!nesteSide && antallTreff > 200 && (
 					<Alert variant="info" size="small" inline style={{ marginTop: '20px' }}>
-						Viser kun de 200 første treffene. <br /> Gjør et nytt søk for å se andre treff.
+						Viser kun de {personListe?.length} første treffene. <br /> Gjør et nytt søk for å se
+						andre treff.
 					</Alert>
 				)}
 			</div>
@@ -132,6 +146,7 @@ export const TreffListe = ({
 					<PersonVisning
 						person={valgtPersonData?.data}
 						ident={valgtPerson?.id}
+						ibruk={valgtPerson?.ibruk}
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
 					/>

@@ -1,3 +1,8 @@
+spring:
+  cloud:
+    vault:
+      enabled: false
+
 management:
   endpoints:
     enabled-by-default: true
@@ -9,8 +14,10 @@ management:
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
-  metrics.export:
-    prometheus.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 server:
   servlet:
     encoding:

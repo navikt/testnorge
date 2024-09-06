@@ -7,25 +7,32 @@ import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
-import {useNavEnheter} from "@/utils/hooks/useNorg2";
-import {usePensjonVedtak} from "@/utils/hooks/usePensjon";
+import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
 
 export const sjekkManglerApData = (apData) => {
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
 }
 
 const DataVisning = ({ data, miljo }) => {
-
 	const { navEnheter } = useNavEnheter()
-	const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === data?.navEnhetId?.toString())
-		?.label
+	const navEnhetLabel = navEnheter?.find(
+		(enhet) => enhet.value === data?.navEnhetId?.toString(),
+	)?.label
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
 
 	return (
 		<>
 			<div className="person-visning_content">
-				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue
+					title="Vedtaksstatus"
+					value={
+						vedtakData?.[0]?.sisteOppdatering.includes('opprettet')
+							? 'Iverksatt'
+							: vedtakData?.[0]?.sisteOppdatering
+					}
+				/>
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Iverksettelsesdato" value={formatDate(data?.iverksettelsesdato)} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
@@ -61,7 +68,7 @@ export const AlderspensjonVisning = ({ data, loading, bestillingIdListe, tilgjen
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
 	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<ErrorBoundary>

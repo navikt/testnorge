@@ -22,6 +22,7 @@ spec:
         - application: testnav-dollystatus
         - application: testnav-helsepersonell-service
         - application: testnav-oversikt-frontend
+        - application: testnav-tenor-search-service
         - application: etterlatte-testdata
           namespace: etterlatte
     outbound:
@@ -64,6 +65,10 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
+      claims:
+        groups:
+          - id: '2d7f1c0d-5784-4f81-8bb2-8f3a79f8f949' #everyone else
+          - id: '9c7efec1-1599-4216-a67e-6fd53a6a951c' #admins
   image: "{{image}}"
   openSearch:
     instance: bestillinger
@@ -105,8 +110,8 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_14
+        tier: db-custom-2-7680
         name: testnav-dolly-backend
         databases:
           - name: testnav-dolly-backend
-        tier: db-custom-2-3840
         autoBackupHour: 2

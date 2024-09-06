@@ -7,11 +7,26 @@ const Bestillingskriterier = React.lazy(
 )
 
 export default function BestillingSammendrag({ bestilling }) {
+	const findFirstIdent = (bestilling: any) => {
+		if (bestilling?.organisasjonNummer) {
+			return null
+		}
+		for (const status of bestilling.status) {
+			for (const statusDetail of status.statuser) {
+				if (statusDetail.identer && statusDetail.identer.length > 0) {
+					return statusDetail.identer[0]
+				}
+			}
+		}
+		return null
+	}
+
 	return (
 		<div className="bestilling-detaljer">
 			<MiljoeStatus bestilling={bestilling} />
 			<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
 				<Bestillingskriterier
+					firstIdent={findFirstIdent(bestilling)}
 					bestilling={bestilling.bestilling}
 					bestillingsinformasjon={{
 						antallIdenter: bestilling.antallIdenter,

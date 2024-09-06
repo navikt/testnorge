@@ -49,9 +49,16 @@ export const UforetrygdForm = () => {
 							formMethods.trigger(`${uforetrygdPath}`)
 						}}
 					/>
+				</div>
+				<div className="flexbox--flex-wrap">
 					<FormTextInput
 						name={`${uforetrygdPath}.inntektForUforhet`}
 						label="Inntekt før uførhet"
+						type="number"
+					/>
+					<FormTextInput
+						name={`${uforetrygdPath}.inntektEtterUforhet`}
+						label="Inntekt etter uførhet"
 						type="number"
 					/>
 				</div>

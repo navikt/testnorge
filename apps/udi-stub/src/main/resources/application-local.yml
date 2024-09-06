@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/udi-stub-dev
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1

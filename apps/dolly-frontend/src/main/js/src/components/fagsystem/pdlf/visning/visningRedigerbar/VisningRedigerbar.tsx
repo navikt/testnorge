@@ -6,7 +6,7 @@ import Button from '@/components/ui/button/Button'
 import _ from 'lodash'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
@@ -39,6 +39,9 @@ import { Form, FormProvider, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
+import { boolean } from 'yup'
+import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
+import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -54,11 +57,14 @@ type VisningTypes = {
 	personValues: any
 	relasjoner: any
 	relatertPersonInfo: any
+	master: any
 }
 
 enum Attributt {
 	Navn = 'navn',
 	Foedsel = 'foedsel',
+	Foedested = 'foedested',
+	Foedselsdato = 'foedselsdato',
 	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
 	Innvandring = 'innflytting',
@@ -115,11 +121,12 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
+	identMaster = boolean,
 	disableSlett = false,
-	personFoerLeggTil = null,
 	personValues = null,
 	relasjoner = null,
 	relatertPersonInfo = null,
+	master = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -196,19 +203,6 @@ export const VisningRedigerbar = ({
 		return submit()
 	}, [])
 
-	const handleSubmitRelatertPerson = useCallback((data: any, ident: string) => {
-		const submit = async () => {
-			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.setStandalone(ident).then((importResponse) => {
-				if (importResponse?.ok) {
-					sendData(data)
-				}
-			})
-		}
-		mountedRef.current = false
-		return submit()
-	}, [])
-
 	const handleDelete = useCallback(() => {
 		const slett = async () => {
 			setVisningModus(Modus.LoadingPdlf)
@@ -221,11 +215,7 @@ export const VisningRedigerbar = ({
 	const handleDeleteRelatertPerson = useCallback(() => {
 		const slett = async () => {
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.setStandalone(relatertPersonInfo?.ident)?.then((importResponse) => {
-				if (importResponse?.ok) {
-					sendSlett()
-				}
-			})
+			sendSlett()
 		}
 		mountedRef.current = false
 		return slett()
@@ -242,10 +232,19 @@ export const VisningRedigerbar = ({
 				return <NavnForm formMethods={formMethods} path={path} />
 			case Attributt.Foedsel:
 				return <FoedselForm formMethods={formMethods} path={path} />
+			case Attributt.Foedested:
+				return <FoedestedForm formMethods={formMethods} path={path} />
+			case Attributt.Foedselsdato:
+				return <FoedselsdatoForm formMethods={formMethods} path={path} />
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
-				return <StatsborgerskapForm path={path} identtype={identtype} />
+				return (
+					<StatsborgerskapForm
+						path={path}
+						kanVelgeMaster={identMaster !== 'PDL' && identtype !== 'NPID'}
+					/>
+				)
 			case Attributt.Innvandring:
 				return <InnvandringForm path={path} />
 			case Attributt.Utvandring:
@@ -267,17 +266,39 @@ export const VisningRedigerbar = ({
 					/>
 				)
 			case Attributt.Boadresse:
-				return <BostedsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
+				return (
+					<BostedsadresseForm
+						formMethods={formMethods}
+						path={path}
+						identtype={identtype}
+						identMaster={master}
+					/>
+				)
 			case Attributt.Oppholdsadresse:
-				return <OppholdsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
+				return (
+					<OppholdsadresseForm
+						formMethods={formMethods}
+						path={path}
+						identtype={identtype}
+						identMaster={master}
+					/>
+				)
 			case Attributt.Kontaktadresse:
-				return <KontaktadresseForm formMethods={formMethods} path={path} identtype={identtype} />
+				return (
+					<KontaktadresseForm
+						formMethods={formMethods}
+						path={path}
+						identtype={identtype}
+						identMaster={master}
+					/>
+				)
 			case Attributt.Adressebeskyttelse:
 				return (
 					<AdressebeskyttelseForm
 						formMethods={formMethods}
 						path={path}
 						identtype={getIdenttype(formMethods, identtype)}
+						identMaster={master}
 					/>
 				)
 			case Attributt.DeltBosted:
@@ -296,6 +317,7 @@ export const VisningRedigerbar = ({
 						formMethods={formMethods}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						identtype={identtype}
+						ident={ident}
 					/>
 				)
 			case Attributt.KontaktinformasjonForDoedsbo:
@@ -313,6 +335,7 @@ export const VisningRedigerbar = ({
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						identtype={identtype}
+						ident={ident}
 					/>
 				)
 			case Attributt.Foreldreansvar:
@@ -377,13 +400,7 @@ export const VisningRedigerbar = ({
 					</>
 				)}
 				{visningModus === Modus.Skriv && (
-					<Form
-						onSubmit={(data) =>
-							relatertPersonInfo?.ident
-								? handleSubmitRelatertPerson(data?.data, relatertPersonInfo.ident)
-								: handleSubmit(data?.data)
-						}
-					>
+					<Form onSubmit={(data) => handleSubmit(data?.data)}>
 						<>
 							<FieldArrayEdit>
 								<div className="flexbox--flex-wrap visning-redigerbar-form">

@@ -72,6 +72,7 @@ const SivilstandLes = ({
 					{!relasjoner && !relasjonRedigert && (
 						<TitleValue title="Relatert person" value={sivilstandData.relatertVedSivilstand} />
 					)}
+					<TitleValue title="Master" value={sivilstandData.master} />
 				</div>
 				{(relasjonRedigert || relasjon) && (
 					<RelatertPerson

@@ -12,6 +12,7 @@ on:
 jobs:
 
   start:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: "Logging"
@@ -48,7 +49,7 @@ jobs:
         if: |
           (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs')) &&
           (!contains(github.event.head_commit.message, '[skip ci]'))
-        run: npm publish
+        run: npm version patch && npm publish
         working-directory: ${{ inputs.working-directory }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

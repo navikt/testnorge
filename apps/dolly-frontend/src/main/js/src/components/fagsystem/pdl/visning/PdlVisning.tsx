@@ -27,6 +27,7 @@ import { getBankkontoData } from '@/components/fagsystem/pdlf/visning/PdlfVisnin
 
 type PdlVisningProps = {
 	pdlData: PdlData
+	tmpPersoner: any
 	fagsystemData?: any
 	loading?: any
 	miljoeVisning?: boolean
@@ -34,6 +35,7 @@ type PdlVisningProps = {
 
 export const PdlVisning = ({
 	pdlData,
+	tmpPersoner,
 	fagsystemData = {},
 	loading = {},
 	miljoeVisning = false,
@@ -45,9 +47,8 @@ export const PdlVisning = ({
 		return null
 	}
 
-	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = pdlData
+	const { hentPerson, hentIdenter, hentGeografiskTilknytning, ident } = pdlData
 	const {
-		foedsel,
 		telefonnummer,
 		vergemaalEllerFremtidsfullmakt,
 		tilrettelagtKommunikasjon,
@@ -67,6 +68,10 @@ export const PdlVisning = ({
 
 	const bankkontoData = getBankkontoData(fagsystemData)
 
+	const pdlfPerson = fagsystemData?.pdlforvalter?.person
+	const identtype = pdlfPerson?.identtype
+	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
+
 	return (
 		<ErrorBoundary>
 			<div className={miljoeVisning ? 'boks' : ''}>
@@ -76,7 +81,7 @@ export const PdlVisning = ({
 					tpsMessagingLoading={loading?.tpsMessaging}
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
-				<Foedsel data={foedsel} erPdlVisning />
+				<Foedsel data={hentPerson} erPdlVisning />
 				<Doedsfall data={doedsfall} erPdlVisning />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
@@ -89,12 +94,37 @@ export const PdlVisning = ({
 					data={bankkontoData}
 					loading={loading?.tpsMessaging || loading?.kontoregister}
 				/>
-				<PdlBoadresse data={bostedsadresse} />
+				<PdlBoadresse
+					data={bostedsadresse}
+					pdlfData={pdlfPerson?.bostedsadresse}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<PdlDeltBosted data={deltBosted} />
-				<PdlOppholdsadresse data={oppholdsadresse} />
+				<PdlOppholdsadresse
+					data={oppholdsadresse}
+					pdlfData={pdlfPerson?.oppholdsadresse}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<PdlOppholdsstatus data={opphold} />
-				<PdlKontaktadresse data={kontaktadresse} />
-				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />
+				<PdlKontaktadresse
+					data={kontaktadresse}
+					pdlfData={pdlfPerson?.kontaktadresse}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
+				<Adressebeskyttelse
+					data={adressebeskyttelse}
+					pdlfData={pdlfPerson?.adressebeskyttelse}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+					erPdlVisning={miljoeVisning}
+				/>
 				<PdlRelasjoner data={hentPerson} />
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />

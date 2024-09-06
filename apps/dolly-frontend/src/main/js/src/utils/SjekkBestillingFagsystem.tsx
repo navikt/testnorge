@@ -8,6 +8,16 @@ export const harAaregBestilling = (bestillingerFagsystemer) => {
 	return aareg
 }
 
+export const harSkattekortBestilling = (bestillingerFagsystemer) => {
+	let skattekort = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i?.skattekort) {
+			skattekort = true
+		}
+	})
+	return skattekort
+}
+
 export const harMedlBestilling = (bestillingerFagsystemer) => {
 	let medl = false
 	bestillingerFagsystemer?.forEach((i) => {
@@ -41,7 +51,7 @@ export const harTpBestilling = (bestillingerFagsystemer) => {
 export const harPoppBestilling = (bestillingerFagsystemer) => {
 	let popp = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.pensjonforvalter?.inntekt) {
+		if (i?.pensjonforvalter?.inntekt || i?.pensjonforvalter?.generertInntekt) {
 			popp = true
 		}
 	})
@@ -56,6 +66,16 @@ export const harApBestilling = (bestillingerFagsystemer) => {
 		}
 	})
 	return alderspensjon
+}
+
+export const harPensjonavtaleBestilling = (bestillingerFagsystemer) => {
+	let pensjonavtale = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i?.pensjonforvalter?.pensjonsavtale) {
+			pensjonavtale = true
+		}
+	})
+	return pensjonavtale
 }
 
 export const harUforetrygdBestilling = (bestillingerFagsystemer) => {

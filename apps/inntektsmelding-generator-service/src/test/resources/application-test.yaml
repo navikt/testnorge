@@ -1,0 +1,13 @@
+TOKEN_X_ISSUER: dummy
+
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+     
+spring:
+  cloud:
+    vault:
+      token: test
+      enabled: false

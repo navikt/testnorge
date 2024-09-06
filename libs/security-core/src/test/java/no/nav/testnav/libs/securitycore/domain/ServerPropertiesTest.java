@@ -13,6 +13,10 @@ class ServerPropertiesTest {
     void testAllPropertiesMissing() {
         try (var factory = Validation.buildDefaultValidatorFactory()) {
             var props = new TestServerProperties();
+            props.setCluster(null);
+            props.setName(null);
+            props.setNamespace(null);
+            props.setUrl(null);
             var violations = factory.getValidator().validate(props);
             assertThat(violations)
                     .hasSize(4)

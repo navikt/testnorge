@@ -19,4 +19,4 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
-          RESOURCE: .nais/maskinporten.yml
+          RESOURCE: ".nais/maskinporten.yml"

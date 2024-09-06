@@ -34,10 +34,20 @@ export const PdlNyPerson = ({
 
 	const disableFoedtDato = !['', null].includes(formMethods.watch(`${nyPersonPath}.alder`))
 
-	const identtypeOptions =
-		erNyIdent && isLeggTil
-			? Options('identtype').filter((a) => a.value !== 'NPID')
-			: Options('identtype')
+	const getIdenttypeOptions = () => {
+		if (erNyIdent && isLeggTil) {
+			const currentIdenttype = opts?.personFoerLeggTil?.pdlforvalter?.person?.identtype
+			if (currentIdenttype === 'DNR') {
+				return Options('identtype').filter((a) => a.value !== 'NPID')
+			}
+			if (currentIdenttype === 'FNR') {
+				return Options('identtype').filter((a) => a.value !== 'NPID' && a.value !== 'DNR')
+			}
+		}
+		return Options('identtype')
+	}
+
+	const identtypeOptions = getIdenttypeOptions()
 
 	const eksisterendePerson = eksisterendePersonPath && formMethods.watch(eksisterendePersonPath)
 

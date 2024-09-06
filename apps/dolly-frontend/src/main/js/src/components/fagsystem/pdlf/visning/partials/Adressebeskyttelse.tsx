@@ -27,6 +27,7 @@ type AdressebeskyttelseVisningTypes = {
 	ident?: string
 	identtype?: string
 	erPdlVisning?: boolean
+	master?: string
 }
 
 type AdressebeskyttelseLesTypes = {
@@ -42,7 +43,10 @@ const AdressebeskyttelseLes = ({ adressebeskyttelse, idx }: AdressebeskyttelseLe
 					title="Gradering"
 					value={showLabel('gradering', adressebeskyttelse.gradering)}
 				/>
-				<TitleValue title="Master" value={adressebeskyttelse.metadata.master} />
+				<TitleValue
+					title="Master"
+					value={adressebeskyttelse.master || adressebeskyttelse.metadata?.master}
+				/>
 			</div>
 		</>
 	)
@@ -56,6 +60,7 @@ const AdressebeskyttelseVisning = ({
 	ident,
 	identtype,
 	erPdlVisning,
+	master,
 }: AdressebeskyttelseVisningTypes) => {
 	const initAdressebeskyttelse = Object.assign(
 		_.cloneDeep(getInitialAdressebeskyttelse()),
@@ -97,12 +102,14 @@ const AdressebeskyttelseVisning = ({
 			path="adressebeskyttelse"
 			ident={ident}
 			identtype={identtype}
+			master={master}
 		/>
 	)
 }
 
 export const Adressebeskyttelse = ({
 	data,
+	pdlfData,
 	tmpPersoner,
 	ident,
 	identtype,
@@ -119,21 +126,29 @@ export const Adressebeskyttelse = ({
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adressebeskyttelse: AdressebeskyttelseData, idx: number) =>
-							erRedigerbar ? (
-								<AdressebeskyttelseVisning
-									adressebeskyttelse={adressebeskyttelse}
-									idx={idx}
-									tmpPersoner={tmpPersoner}
-									ident={ident}
-									identtype={identtype}
-									data={data}
-									erPdlVisning={erPdlVisning}
-								/>
-							) : (
-								<AdressebeskyttelseLes adressebeskyttelse={adressebeskyttelse} idx={idx} />
+						{(adressebeskyttelse: AdressebeskyttelseData, idx: number) => {
+							const master = adressebeskyttelse?.metadata?.master
+							const pdlfElement = pdlfData?.find(
+								(item) => item.hendelseId === adressebeskyttelse?.metadata?.opplysningsId,
 							)
-						}
+							if (erRedigerbar) {
+								return (
+									<AdressebeskyttelseVisning
+										adressebeskyttelse={
+											master === 'PDL' && pdlfElement ? pdlfElement : adressebeskyttelse
+										}
+										idx={idx}
+										tmpPersoner={tmpPersoner}
+										ident={ident}
+										identtype={identtype}
+										data={master === 'PDL' && pdlfData ? pdlfData : data}
+										erPdlVisning={erPdlVisning}
+										master={master}
+									/>
+								)
+							}
+							return <AdressebeskyttelseLes adressebeskyttelse={adressebeskyttelse} idx={idx} />
+						}}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

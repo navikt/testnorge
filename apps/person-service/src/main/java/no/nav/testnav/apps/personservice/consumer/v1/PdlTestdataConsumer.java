@@ -67,7 +67,7 @@ public class PdlTestdataConsumer {
 
     private void opprettFoedsel(Person person, String kilde, AccessToken token) {
         person.toFoedselDTO(kilde)
-                .ifPresent(value -> new OpprettFoedselCommand(webClient, value, token.getTokenValue(), person.getIdent()).call());
+                .ifPresent(value -> new OpprettFoedselsdatoCommand(webClient, value, token.getTokenValue(), person.getIdent()).call());
     }
 
     private void opprettTags(Person person, AccessToken token) {

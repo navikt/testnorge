@@ -1,0 +1,25 @@
+plugins {
+    id "maven-publish"
+}
+
+if (project.hasProperty("releaseVersion")) {
+    version = releaseVersion
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "github"
+            url = uri('https://maven.pkg.github.com/navikt/testnorge')
+            credentials(PasswordCredentials) {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}

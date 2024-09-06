@@ -18,11 +18,6 @@ public class TenorConverterUtility {
         return isNull(verdi) ? "" : " and %s%s:*".formatted(convertNotOperator(verdi), navn);
     }
 
-    private static String convertNotOperator(Boolean verdi) {
-
-        return isFalse(verdi) ? NOT_OPERATOR : "";
-    }
-
     public static String convertObject(String navn, Object verdi) {
 
         return isNull(verdi) || verdi instanceof String string && isBlank(string) ? "" : " and %s:%s".formatted(navn, verdi);
@@ -47,7 +42,7 @@ public class TenorConverterUtility {
     public static String convertEnum(String enumNavn, Enum<?> enumVerdi) {
 
         return isNull(enumVerdi) ? "" : " and %s:%s%s".formatted(enumNavn,
-                enumVerdi.name().substring(0,1).toLowerCase(),
+                enumVerdi.name().substring(0, 1).toLowerCase(),
                 enumVerdi.name().substring(1));
     }
 
@@ -72,5 +67,10 @@ public class TenorConverterUtility {
     public static String guard(StringBuilder builder) {
 
         return builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
+    }
+
+    private static String convertNotOperator(Boolean verdi) {
+
+        return isFalse(verdi) ? NOT_OPERATOR : "";
     }
 }

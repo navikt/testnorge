@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
-import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -64,7 +64,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
         if (isBlank(statsborgerskap.getLandkode())) {
             if (nonNull(innflytting)) {
                 statsborgerskap.setLandkode(innflytting.getFraflyttingsland());
-            } else if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(person.getIdent()))) {
+            } else if (FNR.equals(IdenttypeUtility.getIdenttype(person.getIdent()))) {
                 statsborgerskap.setLandkode(NORGE);
             } else {
                 statsborgerskap.setLandkode(kodeverkConsumer.getTilfeldigLand());

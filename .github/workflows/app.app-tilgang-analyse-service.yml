@@ -3,11 +3,12 @@ name: app-tilgang-analyse-service
 on:
   push:
     paths:
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/reactive-security
-      - apps/app-tilgang-analyse-service/**
-      - .github/workflows/app.app-tilgang-analyse-service.yml
+      - "plugins/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-security/**"
+      - "apps/app-tilgang-analyse-service/**"
+      - ".github/workflows/app.app-tilgang-analyse-service.yml"
 
 jobs:
   workflow:

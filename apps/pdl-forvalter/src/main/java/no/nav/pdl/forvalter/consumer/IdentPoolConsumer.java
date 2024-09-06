@@ -10,7 +10,7 @@ import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -52,9 +52,10 @@ public class IdentPoolConsumer {
 
     public Mono<List<IdentDTO>> releaseIdents(Set<String> identer, Bruker bruker) {
 
-        return tokenExchange.exchange(serverProperties).flatMap(
-                token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
-                        token.getTokenValue()).call());
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
+                        token.getTokenValue()).call())
+                .doOnNext(resultat -> log.info("Slettet identer mot identpool: {}", String.join(",", identer)));
     }
 
     public Flux<IdentpoolLedigDTO> getErLedig(Set<String> identer) {

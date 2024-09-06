@@ -6,10 +6,11 @@ import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/ste
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
-import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 import { useFormContext } from 'react-hook-form'
+import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
 const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
@@ -22,18 +23,12 @@ export const Steg3 = () => {
 
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
-	const { organisasjonTilgang, loading } = useOrganisasjonTilgang()
-	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+	const { organisasjonMiljoe, loading } = useOrganisasjonMiljoe()
+	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
 	const importTestnorge = opts.is.importTestnorge
 
 	const erOrganisasjon = formMethods.getValues('organisasjon')
-	const erQ2MiljoeAvhengig =
-		formMethods.watch('pdldata.person.fullmakt') ||
-		formMethods.watch('pdldata.person.falskIdentitet') ||
-		formMethods.watch('pdldata.person.falskIdentitet') ||
-		formMethods.watch('pdldata.person.utenlandskIdentifikasjonsnummer') ||
-		formMethods.watch('pdldata.person.kontaktinformasjonForDoedsbo')
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
@@ -50,9 +45,9 @@ export const Steg3 = () => {
 		if (loading) {
 			return []
 		} else if (bankIdBruker) {
-			return tilgjengeligMiljoe ? [tilgjengeligMiljoe] : ['q1']
+			return tilgjengeligMiljoe ? tilgjengeligMiljoe.split(',') : ['q1']
 		}
-		return erQ2MiljoeAvhengig ? ['q2'] : []
+		return []
 	}
 
 	const erQ1EllerQ2MiljoeAvhengig = (values: any) => {
@@ -73,8 +68,6 @@ export const Steg3 = () => {
 			formMethods.setValue('environments', ['q1', 'q2'])
 		} else if (formMethods.getValues()?.sykemelding) {
 			formMethods.setValue('environments', ['q1'])
-		} else if (erQ2MiljoeAvhengig) {
-			formMethods.setValue('environments', alleredeValgtMiljoe())
 		} else if (!formMethods.getValues()?.environments) {
 			formMethods.setValue('environments', [])
 		}
@@ -99,7 +92,7 @@ export const Steg3 = () => {
 					bestillingsdata={formMethods.getValues()}
 					heading="Hvilke miljøer vil du opprette i?"
 					bankIdBruker={bankIdBruker}
-					orgTilgang={organisasjonTilgang}
+					orgTilgang={organisasjonMiljoe}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}

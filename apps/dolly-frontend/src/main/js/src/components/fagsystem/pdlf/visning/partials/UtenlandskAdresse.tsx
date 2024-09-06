@@ -23,6 +23,7 @@ type AdresseData = {
 		oppholdAnnetSted?: string
 		coAdressenavn?: string
 		metadata: any
+		master?: string
 	}
 	idx: number
 }
@@ -46,7 +47,7 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 		metadata,
 	} = adresse
 
-	const master = metadata?.master
+	const master = adresse.master || metadata?.master
 
 	return (
 		<>

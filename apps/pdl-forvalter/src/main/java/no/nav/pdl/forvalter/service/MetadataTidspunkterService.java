@@ -10,7 +10,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
@@ -57,55 +58,82 @@ public class MetadataTidspunkterService {
                     var person = dbPerson.getPerson();
 
                     person.getAdressebeskyttelse()
-                            .forEach(this::fixVersioning);
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                     person.getBostedsadresse()
-                            .forEach(this::fixAdresser);
+                            .forEach(MetadataTidspunkterService::fixAdresser);
+                    fixOpphoert(person.getBostedsadresse());
+                    person.getOppholdsadresse()
+                            .forEach(MetadataTidspunkterService::fixAdresser);
+                    fixOpphoert(person.getOppholdsadresse());
+                    person.getKontaktadresse()
+                            .forEach(MetadataTidspunkterService::fixAdresser);
+                    fixOpphoert(person.getKontaktadresse());
                     person.getDeltBosted()
-                            .forEach(this::fixDeltBosted);
+                            .forEach(MetadataTidspunkterService::fixDeltBosted);
                     person.getDoedfoedtBarn()
-                            .forEach(this::fixVersioning);
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                     person.getDoedsfall()
-                            .forEach(this::fixDoedsfall);
+                            .forEach(MetadataTidspunkterService::fixDoedsfall);
                     person.getFoedsel()
                             .forEach(foedsel -> fixFoedsel(foedsel, person));
+                    person.getFoedselsdato()
+                            .forEach(foedselsdato -> fixFoedsel(foedselsdato, person));
+                    person.getFoedested()
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                     person.getFalskIdentitet()
-                            .forEach(this::fixFalskIdentitet);
+                            .forEach(MetadataTidspunkterService::fixFalskIdentitet);
                     person.getFolkeregisterPersonstatus()
-                            .forEach(this::fixFolkerregisterPersonstatus);
+                            .forEach(MetadataTidspunkterService::fixFolkerregisterPersonstatus);
                     person.getForelderBarnRelasjon()
-                            .forEach(this::fixVersioning);
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                     person.getForeldreansvar()
-                            .forEach(this::fixForeldreansvar);
+                            .forEach(MetadataTidspunkterService::fixForeldreansvar);
                     person.getFullmakt()
-                            .forEach(this::fixFullmakt);
+                            .forEach(MetadataTidspunkterService::fixFullmakt);
                     person.getInnflytting()
-                            .forEach(this::fixInnflytting);
+                            .forEach(MetadataTidspunkterService::fixInnflytting);
+                    fixOpphoert(person.getInnflytting());
                     person.getKjoenn()
                             .forEach(kjoenn -> fixKjoenn(kjoenn, person));
                     person.getKontaktinformasjonForDoedsbo()
-                            .forEach(this::fixVersioning);
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                     fixNavn(person);
                     person.getOpphold()
-                            .forEach(this::fixOpphold);
+                            .forEach(MetadataTidspunkterService::fixOpphold);
                     person.getSikkerhetstiltak()
-                            .forEach(this::fixSikkerhetstiltak);
+                            .forEach(MetadataTidspunkterService::fixSikkerhetstiltak);
                     fixSivilstand(person);
+                    fixOpphoert(person.getSivilstand());
                     person.getStatsborgerskap()
-                            .forEach(this::fixStatsborgerskap);
+                            .forEach(MetadataTidspunkterService::fixStatsborgerskap);
                     person.getTelefonnummer()
-                            .forEach(this::fixVersioning);
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                     person.getTilrettelagtKommunikasjon()
-                            .forEach(this::fixVersioning);
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                     person.getUtenlandskIdentifikasjonsnummer()
-                            .forEach(this::fixVersioning);
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                     person.getUtflytting()
-                            .forEach(this::fixUtflytting);
+                            .forEach(MetadataTidspunkterService::fixUtflytting);
+                    fixOpphoert(person.getUtflytting());
                     person.getVergemaal()
-                            .forEach(this::fixVersioning);
+                            .forEach(MetadataTidspunkterService::fixVersioning);
                 });
     }
 
-    private void fixKjoenn(KjoennDTO kjoennDTO, PersonDTO personDTO) {
+    private static void fixOpphoert(List<? extends DbVersjonDTO> opplysningstype) {
+
+        for (var i = opplysningstype.size() - 1; i > 0; i--) {
+            opplysningstype.get(i).getFolkeregistermetadata().setOpphoerstidspunkt(
+                    subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()));
+        }
+    }
+
+    private static LocalDateTime subtractADay(LocalDateTime tidspunkt) {
+
+        return nonNull(tidspunkt) ? tidspunkt.minusDays(1) : null;
+    }
+
+    private static void fixKjoenn(KjoennDTO kjoennDTO, PersonDTO personDTO) {
 
         fixFolkeregisterMetadata(kjoennDTO);
 
@@ -124,7 +152,7 @@ public class MetadataTidspunkterService {
                 .setGyldighetstidspunkt(kjoennDTO.getFolkeregistermetadata().getAjourholdstidspunkt());
     }
 
-    private void fixForeldreansvar(ForeldreansvarDTO foreldreansvarDTO) {
+    private static void fixForeldreansvar(ForeldreansvarDTO foreldreansvarDTO) {
 
         fixFolkeregisterMetadata(foreldreansvarDTO);
 
@@ -133,7 +161,7 @@ public class MetadataTidspunkterService {
         foreldreansvarDTO.getFolkeregistermetadata().setOpphoerstidspunkt(foreldreansvarDTO.getGyldigTilOgMed());
     }
 
-    private void fixFolkerregisterPersonstatus(FolkeregisterPersonstatusDTO personstatusDTO) {
+    private static void fixFolkerregisterPersonstatus(FolkeregisterPersonstatusDTO personstatusDTO) {
 
         fixFolkeregisterMetadata(personstatusDTO);
 
@@ -142,7 +170,7 @@ public class MetadataTidspunkterService {
         personstatusDTO.getFolkeregistermetadata().setOpphoerstidspunkt(personstatusDTO.getGyldigTilOgMed());
     }
 
-    private void fixFalskIdentitet(FalskIdentitetDTO falskIdentitetDTO) {
+    private static void fixFalskIdentitet(FalskIdentitetDTO falskIdentitetDTO) {
 
         fixFolkeregisterMetadata(falskIdentitetDTO);
 
@@ -151,7 +179,7 @@ public class MetadataTidspunkterService {
         falskIdentitetDTO.getFolkeregistermetadata().setOpphoerstidspunkt(falskIdentitetDTO.getGyldigTilOgMed());
     }
 
-    private void fixDeltBosted(DeltBostedDTO deltBostedDTO) {
+    private static void fixDeltBosted(DeltBostedDTO deltBostedDTO) {
 
         fixFolkeregisterMetadata(deltBostedDTO);
 
@@ -160,7 +188,7 @@ public class MetadataTidspunkterService {
         deltBostedDTO.getFolkeregistermetadata().setOpphoerstidspunkt(deltBostedDTO.getSluttdatoForKontrakt());
     }
 
-    private void fixFullmakt(FullmaktDTO fullmaktDTO) {
+    private static void fixFullmakt(FullmaktDTO fullmaktDTO) {
 
         fixFolkeregisterMetadata(fullmaktDTO);
 
@@ -169,7 +197,7 @@ public class MetadataTidspunkterService {
         fullmaktDTO.getFolkeregistermetadata().setOpphoerstidspunkt(fullmaktDTO.getGyldigTilOgMed());
     }
 
-    private void fixOpphold(OppholdDTO oppholdDTO) {
+    private static void fixOpphold(OppholdDTO oppholdDTO) {
 
         fixFolkeregisterMetadata(oppholdDTO);
 
@@ -178,7 +206,7 @@ public class MetadataTidspunkterService {
         oppholdDTO.getFolkeregistermetadata().setOpphoerstidspunkt(oppholdDTO.getOppholdTil());
     }
 
-    private void fixSikkerhetstiltak(SikkerhetstiltakDTO sikkerhetstiltakDTO) {
+    private static void fixSikkerhetstiltak(SikkerhetstiltakDTO sikkerhetstiltakDTO) {
 
         fixFolkeregisterMetadata(sikkerhetstiltakDTO);
 
@@ -187,7 +215,7 @@ public class MetadataTidspunkterService {
         sikkerhetstiltakDTO.getFolkeregistermetadata().setOpphoerstidspunkt(sikkerhetstiltakDTO.getGyldigTilOgMed());
     }
 
-    private void fixSivilstand(PersonDTO person) {
+    private static void fixSivilstand(PersonDTO person) {
 
         person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
 
@@ -214,7 +242,7 @@ public class MetadataTidspunkterService {
                 });
     }
 
-    private void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {
+    private static void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {
 
         fixFolkeregisterMetadata(statsborgerskapDTO);
 
@@ -223,7 +251,7 @@ public class MetadataTidspunkterService {
         statsborgerskapDTO.getFolkeregistermetadata().setOpphoerstidspunkt(statsborgerskapDTO.getGyldigTilOgMed());
     }
 
-    private void fixVersioning(DbVersjonDTO artifact) {
+    private static void fixVersioning(DbVersjonDTO artifact) {
 
         fixFolkeregisterMetadata(artifact);
 
@@ -233,7 +261,7 @@ public class MetadataTidspunkterService {
                 .plusSeconds(artifact.getId()));
     }
 
-    private void fixInnflytting(InnflyttingDTO innflyttingDTO) {
+    private static void fixInnflytting(InnflyttingDTO innflyttingDTO) {
 
         fixFolkeregisterMetadata(innflyttingDTO);
 
@@ -241,7 +269,7 @@ public class MetadataTidspunkterService {
         innflyttingDTO.getFolkeregistermetadata().setGyldighetstidspunkt(innflyttingDTO.getInnflyttingsdato());
     }
 
-    private void fixUtflytting(UtflyttingDTO utflyttingDTO) {
+    private static void fixUtflytting(UtflyttingDTO utflyttingDTO) {
 
         fixFolkeregisterMetadata(utflyttingDTO);
 
@@ -249,7 +277,7 @@ public class MetadataTidspunkterService {
         utflyttingDTO.getFolkeregistermetadata().setGyldighetstidspunkt(utflyttingDTO.getUtflyttingsdato());
     }
 
-    private void fixNavn(PersonDTO personDTO) {
+    private static void fixNavn(PersonDTO personDTO) {
 
         personDTO.getNavn()
                 .forEach(navn -> {
@@ -264,7 +292,7 @@ public class MetadataTidspunkterService {
                 });
     }
 
-    private static LocalDateTime getFoedselsdato(PersonDTO personDTO, FoedselDTO foedsel) {
+    private static LocalDateTime getFoedselsdato(PersonDTO personDTO, FoedselsdatoDTO foedsel) {
 
         return nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
                 LocalDate.of(foedsel.getFoedselsaar(),
@@ -272,7 +300,7 @@ public class MetadataTidspunkterService {
                         DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay();
     }
 
-    private void fixDoedsfall(DoedsfallDTO doedsfallDTO) {
+    private static void fixDoedsfall(DoedsfallDTO doedsfallDTO) {
 
         fixFolkeregisterMetadata(doedsfallDTO);
 
@@ -280,7 +308,7 @@ public class MetadataTidspunkterService {
         doedsfallDTO.getFolkeregistermetadata().setGyldighetstidspunkt(doedsfallDTO.getDoedsdato());
     }
 
-    private void fixFoedsel(FoedselDTO foedselDTO, PersonDTO personDTO) {
+    private static void fixFoedsel(FoedselsdatoDTO foedselDTO, PersonDTO personDTO) {
 
         fixFolkeregisterMetadata(foedselDTO);
 
@@ -290,7 +318,7 @@ public class MetadataTidspunkterService {
         foedselDTO.getFolkeregistermetadata().setGyldighetstidspunkt(dato);
     }
 
-    private void fixAdresser(AdresseDTO adresseDTO) {
+    private static void fixAdresser(AdresseDTO adresseDTO) {
 
         fixFolkeregisterMetadata(adresseDTO);
 
@@ -304,7 +332,7 @@ public class MetadataTidspunkterService {
         }
     }
 
-    private void fixFolkeregisterMetadata(DbVersjonDTO artifact) {
+    private static void fixFolkeregisterMetadata(DbVersjonDTO artifact) {
 
         if (isNull(artifact.getFolkeregistermetadata())) {
             artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());

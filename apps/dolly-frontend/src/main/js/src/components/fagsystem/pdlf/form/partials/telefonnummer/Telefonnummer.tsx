@@ -16,12 +16,6 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
-export interface TelefonnummerArray {
-	person: {
-		telefonnummer: Array<TelefonnummerValues>
-	}
-}
-
 interface TelefonnummerValues {
 	landskode?: string
 	nummer?: string
@@ -43,7 +37,6 @@ const StyledAvansert = styled.div`
 
 const paths = {
 	pdlTelefonnummer: 'pdldata.person.telefonnummer',
-	tpsMTelefonnummer: 'tpsMessaging.telefonnummer',
 }
 
 export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
@@ -91,7 +84,6 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 	useEffect(() => {
 		if (tlfListe && tlfListe.length === 1) {
 			formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-			formMethods.setValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
 			formMethods.trigger()
 		}
 	}, [tlfListe])
@@ -115,22 +107,16 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 		setLand(option.value)
 		formMethods.setValue(`${path}.landskode`, option.landkode)
 		formMethods.setValue(`${path}.land`, option.value)
-		formMethods.setValue(`${paths.tpsMTelefonnummer}[${idx}].landkode`, option.landkode)
 		formMethods.trigger()
 	}
 
 	const handleChangeNummer = (target: { value: string }) => {
 		formMethods.setValue(`${path}.nummer`, target.value)
-		formMethods.setValue(`${paths.tpsMTelefonnummer}[${idx}].telefonnummer`, target.value)
 		formMethods.trigger()
 	}
 
 	const handleChangePrioritet = (value: number) => {
 		formMethods.setValue(`${path}.prioritet`, value)
-		formMethods.setValue(
-			`${paths.tpsMTelefonnummer}[${idx}].telefontype`,
-			value === 2 ? 'HJET' : 'MOBI',
-		)
 		formMethods.trigger()
 	}
 
@@ -168,7 +154,6 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 
 export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 	const tlfListe = formMethods.watch(path || paths.pdlTelefonnummer)
-	const tlfListeTps = formMethods.watch(path || paths.tpsMTelefonnummer)
 
 	if (!tlfListe) {
 		return null
@@ -176,17 +161,13 @@ export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 
 	const handleNewEntry = () => {
 		formMethods.setValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
-		formMethods.setValue(paths.tpsMTelefonnummer, [...tlfListeTps, initialTpsTelefonnummer])
 		formMethods.trigger()
 	}
 
 	const handleRemoveEntry = (idx: number) => {
 		tlfListe.splice(idx, 1)
-		tlfListeTps.splice(idx, 1)
 		formMethods.setValue(paths.pdlTelefonnummer, tlfListe)
-		formMethods.setValue(paths.tpsMTelefonnummer, tlfListeTps)
 		formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-		formMethods.setValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
 		formMethods.trigger()
 	}
 

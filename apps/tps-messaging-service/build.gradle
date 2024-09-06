@@ -1,64 +1,11 @@
 plugins {
-    id 'java'
-    id "org.sonarqube" version "4.4.1.3373"
-    id 'org.springframework.boot' version "3.2.1"
-    id 'io.spring.dependency-management' version "1.1.4"
-    id "jacoco"
-    id("org.openrewrite.rewrite") version("6.6.4")
-}
-
-test {
-    useJUnitPlatform()
-    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
-}
-
-rewrite {
-    activeRecipe("org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2")
+    id "dolly-apps"
 }
 
 sonarqube {
     properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "tps-messaging-service"
         property "sonar.projectName", "tps-messaging-service"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
-
-bootJar {
-    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-    archiveFileName = "app.jar"
-}
-
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
-    }
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
-        }
     }
 }
 
@@ -68,7 +15,6 @@ configurations.implementation {
 }
 
 dependencies {
-    rewrite("org.openrewrite.recipe:rewrite-spring:5.2.0")
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -76,40 +22,26 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.netty:netty-transport-native-epoll' // See above exclusion.
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:3.2.1'
+    implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
     implementation 'com.ibm.icu:icu4j:74.2'
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
-    implementation 'com.sun.xml.bind:jaxb-core'
-    implementation 'org.glassfish.jaxb:jaxb-runtime'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    implementation "com.sun.xml.bind:jaxb-core:$versions.jaxb"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:$versions.navFellesregister"
+    implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:$versions.navFellesregister"
+    implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:$versions.navFellesregister"
 
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:2020.08.27-09.53-183ead3d81eb'
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:2020.08.27-09.53-183ead3d81eb'
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:2020.08.27-09.53-183ead3d81eb'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
+    implementation "org.aspectj:aspectjweaver:$versions.jweaver"
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.aspectj:aspectjweaver:1.9.19'
-
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-
-    testImplementation "org.junit.jupiter:junit-jupiter:5.10.1"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 }

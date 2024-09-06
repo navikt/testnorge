@@ -20,7 +20,8 @@ public class ValidateArtifactsService {
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final DoedsfallService doedsfallService;
     private final FalskIdentitetService falskIdentitetService;
-    private final FoedselService foedselService;
+    private final FoedselsdatoService foedselsdatoService;
+    private final FoedestedService foedestedService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
     private final ForeldreansvarService foreldreansvarService;
@@ -48,7 +49,8 @@ public class ValidateArtifactsService {
                         validate(kjoennService, person.getKjoenn(), person),
                         validate(innflyttingService, person.getInnflytting()),
                         validate(bostedAdresseService, person.getBostedsadresse(), person),
-                        validate(foedselService, person.getFoedsel(), person),
+                        validate(foedselsdatoService, person.getFoedselsdato(), person),
+                        validate(foedestedService, person.getFoedested(), person),
                         validate(statsborgerskapService, person.getStatsborgerskap()),
                         validate(navnService, person.getNavn(), person),
                         validate(oppholdsadresseService, person.getOppholdsadresse(), person),
@@ -65,8 +67,8 @@ public class ValidateArtifactsService {
                         validate(vergemaalService, person.getVergemaal()),
                         validate(falskIdentitetService, person.getFalskIdentitet()),
                         validate(kontaktinformasjonForDoedsboService, person.getKontaktinformasjonForDoedsbo()),
-                        validate(sivilstandService, person.getSivilstand()),
-                        validate(forelderBarnRelasjonService, person.getForelderBarnRelasjon()),
+                        validate(sivilstandService, person.getSivilstand(), person),
+                        validate(forelderBarnRelasjonService, person.getForelderBarnRelasjon(), person),
                         validate(foreldreansvarService, person.getForeldreansvar(), person),
                         validate(sikkerhetstiltakService, person.getSikkerhetstiltak()),
                         validate(doedfoedtBarnService, person.getDoedfoedtBarn()),

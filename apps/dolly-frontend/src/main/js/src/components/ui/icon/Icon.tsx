@@ -15,7 +15,9 @@ import {
 	CandleIcon,
 	ChatElipsisIcon,
 	CheckmarkCircleIcon,
+	ChevronDownDoubleCircleIcon,
 	ChevronDownIcon,
+	ChevronUpDoubleCircleIcon,
 	ChevronUpIcon,
 	EarthIcon,
 	EnvelopeClosedIcon,
@@ -45,11 +47,13 @@ import {
 	PersonGroupFillIcon,
 	PersonGroupIcon,
 	PersonIcon,
+	PersonPlusIcon,
 	PersonTallShortIcon,
 	PhoneIcon,
-	PiggybankIcon,
 	PlusCircleIcon,
+	ReceiptIcon,
 	SackKronerIcon,
+	SackPensionIcon,
 	SilhouetteIcon,
 	StarFillIcon,
 	StarIcon,
@@ -67,7 +71,7 @@ import CheckCircle from '@/assets/icons/custom/CheckCircle.svg?raw'
 import Dolly from '@/assets/icons/custom/Dolly.svg?raw'
 import DollyPanic from '@/assets/icons/custom/DollyPanic.svg?raw'
 import TenorLogo from '@/assets/icons/custom/TenorLogo.svg?raw'
-import Cypress from '@/assets/img/cypress.png'
+import Playwright from '@/assets/img/playwright.png'
 
 import './Icon.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -79,7 +83,7 @@ export const icons = {
 	'report-problem-triangle': ProblemTriangle,
 	dolly: Dolly,
 	dollyPanic: DollyPanic,
-	cypress: Cypress,
+	playwright: Playwright,
 	tenor: TenorLogo,
 
 	trashcan: TrashIcon,
@@ -91,6 +95,7 @@ export const icons = {
 	'star-light': StarIcon,
 	'star-filled': StarFillIcon,
 	eraser: EraserIcon,
+	kvittering: ReceiptIcon,
 	user: PersonCircleIcon,
 	search: MagnifyingGlassIcon,
 	calendar: CalendarIcon,
@@ -102,6 +107,8 @@ export const icons = {
 	kryss: XMarkIcon,
 	'chevron-down': ChevronDownIcon,
 	'chevron-up': ChevronUpIcon,
+	'chevron-down-double-circle': ChevronDownDoubleCircleIcon,
+	'chevron-up-double-circle': ChevronUpDoubleCircleIcon,
 	'thumbs-up': ThumbUpFillIcon,
 	'thumbs-down': ThumbDownFillIcon,
 	lock: PadlockLockedIcon,
@@ -138,14 +145,16 @@ export const icons = {
 	arbeid: WrenchIcon,
 	sigrun: BankNoteIcon,
 	bankkonto: BankNoteIcon,
-	inntektstub: SackKronerIcon,
+	pengesekk: SackKronerIcon,
+	inntektstub: BankNoteIcon,
 	inntektsmelding: BankNoteIcon,
+	skattekort: BankNoteIcon,
 	udi: EarthIcon,
 	kommentar: ChatElipsisIcon,
 	partner: HeartIcon,
 	barn: BabyWrappedIcon,
 	doedfoedt: FlowerPetalFallingIcon,
-	pensjon: PiggybankIcon,
+	pensjon: SackPensionIcon,
 	brreg: Buldings2Icon,
 	dokarkiv: FileTextIcon,
 	copy: FilesIcon,
@@ -165,6 +174,7 @@ export const icons = {
 	'file-new': FileTextIcon,
 	'file-code': FileCodeIcon,
 	cv: FileTextIcon,
+	ansettelse: PersonPlusIcon,
 }
 
 const px = (v: number) => `${v}px`
@@ -192,7 +202,7 @@ const Icon = ({
 		'report-problem-triangle',
 		'dolly',
 		'dollyPanic',
-		'cypress',
+		'playwright',
 		'tenor',
 	]
 
@@ -210,7 +220,7 @@ const Icon = ({
 			title={kind}
 			fontSize={fontSize}
 			className={className}
-			data-cy={props['data-cy']}
+			data-testid={props['data-testid']}
 			onClick={onClick}
 			style={style}
 		/>

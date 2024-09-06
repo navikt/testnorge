@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
@@ -33,6 +34,7 @@ import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.def
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
@@ -44,7 +46,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelasjonDTO> {
+public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRelasjonDTO, PersonDTO> {
 
     private static final String INVALID_PERSON_ID_EXCEPTION = "ForelderBarnRelasjon: Relatert person skal finnes med eller uten ident, " +
             "ikke begge deler";
@@ -78,12 +80,12 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
             }
         }
         nyeRelasjoner
-                .forEach(relasjon -> person.getForelderBarnRelasjon().add(0, relasjon));
+                .forEach(relasjon -> person.getForelderBarnRelasjon().addFirst(relasjon));
         return person.getForelderBarnRelasjon();
     }
 
     @Override
-    public void validate(ForelderBarnRelasjonDTO relasjon) {
+    public void validate(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
         if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) &&
                 (nonNull(relasjon.getRelatertPerson()) || nonNull(relasjon.getNyRelatertPerson()))) {
@@ -103,7 +105,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
             throw new InvalidRequestException(AMBIGUOUS_PERSON_ROLLE_EXCEPTION);
         }
 
-        if (isNotBlank(relasjon.getRelatertPerson()) &&
+        if (!isTestnorgeIdent(person.getIdent()) && isNotBlank(relasjon.getRelatertPerson()) &&
                 !personRepository.existsByIdent(relasjon.getRelatertPerson())) {
 
             throw new InvalidRequestException(String.format(INVALID_RELATERT_PERSON_EXCEPTION,
@@ -121,6 +123,10 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         var request = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         setRelatertPerson(relasjon, hovedperson);
         addForelderBarnRelasjon(relasjon, hovedperson);
+
+        if (isNotBlank(request.getRelatertPerson())) {
+            return emptyList();
+        }
 
         if (request.getRelatertPersonsRolle() == Rolle.BARN &&
                 isNotTrue(request.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
@@ -142,7 +148,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                             .orElseThrow(() -> new NotFoundException("Partner ikke funnet " + sivilstand.getRelatertVedSivilstand())))
                     .findFirst();
             if (partner.isPresent()) {
-                partner.get().getPerson().getForelderBarnRelasjon().add(0,
+                partner.get().getPerson().getForelderBarnRelasjon().addFirst(
                         addForelderBarnRelasjon(request, partner.get().getPerson()));
                 personRepository.save(partner.get());
             }
@@ -182,7 +188,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
     private ForelderBarnRelasjonDTO addForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
         setRolle(relasjon, hovedperson);
-        if (isNull(relasjon.getRelatertPerson())) {
+        if (isBlank(relasjon.getRelatertPerson())) {
             return relasjon;
         }
         createMotsattRelasjon(relasjon, hovedperson.getIdent());
@@ -236,11 +242,11 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
             PersonDTO relatertPerson = createPersonService.execute(relasjon.getNyRelatertPerson());
 
             if (isNotTrue(relasjon.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
-                BostedadresseDTO fellesAdresse = hovedperson.getBostedsadresse().stream()
+                var fellesAdresse = mapperFacade.map(hovedperson.getBostedsadresse().stream()
                         .findFirst()
                         .orElse(BostedadresseDTO.builder()
                                 .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
-                                .build());
+                                .build()), BostedadresseDTO.class);
                 fellesAdresse.setGyldigFraOgMed(getMaxDato(getLastFlyttedato(hovedperson), getLastFlyttedato(relatertPerson)));
                 if (!relatertPerson.getBostedsadresse().isEmpty()) {
                     relatertPerson.getBostedsadresse().set(0, fellesAdresse);
@@ -281,29 +287,34 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private void createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {
 
-        DbPerson relatertPerson = personRepository.findByIdent(relasjon.getRelatertPerson()).get();
-        ForelderBarnRelasjonDTO relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
+        var relatertPerson = new AtomicReference<DbPerson>();
+        personRepository.findByIdent(relasjon.getRelatertPerson())
+                .ifPresentOrElse(relatertPerson::set,
+                        () -> relatertPerson.set(personRepository.save(DbPerson.builder()
+                                .ident(relasjon.getRelatertPerson())
+                                .person(PersonDTO.builder()
+                                        .ident(relasjon.getRelatertPerson())
+                                        .build())
+                                .sistOppdatert(LocalDateTime.now())
+                                .build()))
+                );
+        var relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         relatertFamilierelasjon.setRelatertPerson(hovedperson);
         swapRoller(relatertFamilierelasjon);
-        relatertFamilierelasjon.setId(relatertPerson.getPerson().getForelderBarnRelasjon().stream().findFirst()
+        relatertFamilierelasjon.setId(relatertPerson.get().getPerson().getForelderBarnRelasjon().stream().findFirst()
                 .map(ForelderBarnRelasjonDTO::getId)
                 .orElse(0) + 1);
-        relatertPerson.getPerson().getForelderBarnRelasjon().add(0, relatertFamilierelasjon);
-        personRepository.save(relatertPerson);
+
+        relatertPerson.get().getPerson().getForelderBarnRelasjon().addFirst(relatertFamilierelasjon);
     }
 
     private KjoennDTO.Kjoenn getKjoenn(Rolle rolle) {
 
-        switch (rolle) {
-            case FAR:
-                return MANN;
-            case MOR:
-            case MEDMOR:
-                return KVINNE;
-            case BARN:
-            default:
-                return RANDOM.nextBoolean() ? MANN : KVINNE;
-        }
+        return switch (rolle) {
+            case FAR -> MANN;
+            case MOR, MEDMOR -> KVINNE;
+            default -> RANDOM.nextBoolean() ? MANN : KVINNE;
+        };
     }
 
     private ForelderBarnRelasjonDTO swapRoller(ForelderBarnRelasjonDTO relasjon) {

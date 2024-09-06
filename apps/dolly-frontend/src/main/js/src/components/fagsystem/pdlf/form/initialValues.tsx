@@ -186,16 +186,31 @@ export const initialTilrettelagtKommunikasjon = {
 	master: 'PDL',
 }
 
-export const initialDoedsfall = {
+export const getInitialDoedsfall = (master = 'FREG') => ({
 	doedsdato: new Date(),
 	kilde: 'Dolly',
-	master: 'PDL',
-}
+	master: master,
+})
 
 export const getInitialFoedsel = (master = 'FREG') => ({
 	foedekommune: null as unknown as string,
 	foedeland: null as unknown as string,
 	foedested: null as unknown as string,
+	foedselsaar: null as unknown as number,
+	foedselsdato: null as unknown as string,
+	kilde: 'Dolly',
+	master: master,
+})
+
+export const getInitialFoedested = (master = 'FREG') => ({
+	foedekommune: null as unknown as string,
+	foedeland: null as unknown as string,
+	foedested: null as unknown as string,
+	kilde: 'Dolly',
+	master: master,
+})
+
+export const getInitialFoedselsdato = (master = 'FREG') => ({
 	foedselsaar: null as unknown as number,
 	foedselsdato: null as unknown as string,
 	kilde: 'Dolly',
@@ -304,14 +319,16 @@ export const initialDoedfoedtBarn = {
 	master: 'FREG',
 }
 
-export const initialForeldreansvar = {
+export const getInitialForeldreansvar = (kanHaForeldreansvar = true) => ({
+	harForeldreansvar: kanHaForeldreansvar ? true : undefined,
+	erAnsvarssubjekt: kanHaForeldreansvar ? undefined : true,
 	typeAnsvarlig: null as unknown as string,
 	ansvar: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
-}
+})
 
 export const getInitialUtenlandskIdentifikasjonsnummer = (master = 'FREG') => ({
 	identifikasjonsnummer: '',

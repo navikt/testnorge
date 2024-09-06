@@ -1,49 +1,18 @@
 plugins {
-    id "org.sonarqube" version "4.4.1.3373"
-    id 'java-library'
+    id "dolly-libs"
+
     id 'maven-publish'
-    id 'io.spring.dependency-management' version "1.1.4"
-    id "jacoco"
 }
 
 sonarqube {
     properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnav-reactive-proxy"
         property "sonar.projectName", "testnav-reactive-proxy"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
-
-group = 'no.nav.testnav.libs'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.1'
     }
 }
 
 if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
 }
 
 publishing {
@@ -76,9 +45,6 @@ publishing {
 dependencies {
 
     implementation 'no.nav.testnav.libs:reactive-security'
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

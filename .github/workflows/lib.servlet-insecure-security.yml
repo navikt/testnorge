@@ -3,8 +3,9 @@ name: servlet-insecure-security
 on:
   push:
     paths:
-      - libs/servlet-insecure-security/**
-      - .github/workflows/lib.servlet-insecure-security.yml
+      - "plugins/**"
+      - "libs/servlet-insecure-security/**"
+      - ".github/workflows/lib.servlet-insecure-security.yml"
 
 jobs:
   workflow:

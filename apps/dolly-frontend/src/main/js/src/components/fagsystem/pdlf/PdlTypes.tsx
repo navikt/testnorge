@@ -17,6 +17,8 @@ export type PersonData = {
 	navn?: Array<Navn>
 	kjoenn?: Array<Kjoenn>
 	foedsel?: Array<FoedselData>
+	foedselsdato?: Array<FoedselsdatoData>
+	foedested?: Array<FoedestedData>
 	statsborgerskap?: Array<StatsborgerskapData>
 	adressebeskyttelse?: Array<AdressebeskyttelseData>
 	sivilstand?: Array<SivilstandData>
@@ -55,6 +57,21 @@ export type FoedselData = {
 	id?: number
 }
 
+export type FoedselsdatoData = {
+	foedselsdato: string
+	foedselsaar: number
+	metadata: Metadata
+	id?: number
+}
+
+export type FoedestedData = {
+	foedested: string
+	foedekommune: string
+	foedeland: string
+	metadata: Metadata
+	id?: number
+}
+
 export type DoedsfallData = {
 	doedsdato: string
 	metadata: Metadata
@@ -85,6 +102,8 @@ export type Utflytting = {
 export type AdressebeskyttelseData = {
 	gradering: string
 	id?: number
+	master?: string
+	metadata?: any
 }
 
 export type SivilstandData = {
@@ -100,6 +119,7 @@ export type SivilstandData = {
 
 export type Metadata = {
 	historisk: boolean
+	master?: string
 }
 
 export enum Rolle {

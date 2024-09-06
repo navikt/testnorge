@@ -3,12 +3,13 @@ name: udistub-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - libs/reactive-security
-      - libs/security-core
-      - proxies/udistub-proxy/**
-      - .github/workflows/proxy.udistub-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/udistub-proxy/**"
+      - ".github/workflows/proxy.udistub-proxy.yml"
 
 jobs:
   workflow:

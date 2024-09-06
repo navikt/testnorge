@@ -31,7 +31,8 @@ public class UdiMergeService {
         udiPerson.setIdent(personBolk.getIdent());
         udiPerson.setNavn(mapperFacade.map(personBolk.getPerson().getNavn().stream()
                 .findFirst().orElse(new PdlPerson.Navn()), UdiPersonNavn.class));
-        udiPerson.setFoedselsDato(personBolk.getPerson().getFoedsel().stream().map(PdlPerson.Foedsel::getFoedselsdato)
+        udiPerson.setFoedselsDato(personBolk.getPerson().getFoedselsdato().stream()
+                .map(PdlPerson.Foedselsdato::getFoedselsdato)
                 .findFirst().orElse(null));
 
         udiPerson.setAliaser(personBolk.getPerson().getFolkeregisteridentifikator().stream()

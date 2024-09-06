@@ -148,13 +148,10 @@
       "kontaktinformasjonForDoedsbo": [],
       "utenlandskIdentifikasjonsnummer": [],
       "adressebeskyttelse": [],
-      "foedsel": [
+      "foedselsdato": [
         {
           "foedselsaar": 1952,
           "foedselsdato": "1952-01-01",
-          "foedeland": "NOR",
-          "foedested": null,
-          "foedekommune": "3024",
           "folkeregistermetadata": {
             "aarsak": null,
             "ajourholdstidspunkt": "2022-03-02T09:35:36",

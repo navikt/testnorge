@@ -8,6 +8,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
+import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -129,5 +131,22 @@ public class IdentService {
     public List<Testident> getTestidenterByGruppe(Long id) {
 
         return identRepository.findByTestgruppe(id);
+    }
+
+    public FinnesDTO exists(List<String> identer) {
+
+        var finnes = FinnesDTO.builder()
+                .iBruk(identRepository.findByIdentIn(identer).stream()
+                        .map(Testident::getIdent)
+                        .collect(Collectors.toMap(ident -> ident, ident -> true)))
+                .build();
+
+        identer.forEach(ident -> {
+                    if (!finnes.getIBruk().containsKey(ident)) {
+                        finnes.getIBruk().put(ident, false);
+                    }
+                });
+
+        return finnes;
     }
 }

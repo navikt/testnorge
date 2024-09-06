@@ -29,8 +29,13 @@ spec:
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
+        - application: testnav-levende-arbeidsforhold-ansettelse
     outbound:
+      rules:
+        - application: dolly-backend
+        - application: dolly-backend-dev
       external:
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testdata.api.skatteetaten.no
   liveness:
     path: /internal/isAlive

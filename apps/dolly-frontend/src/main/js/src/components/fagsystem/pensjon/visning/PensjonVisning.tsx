@@ -4,7 +4,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Panel from '@/components/ui/panel/Panel'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
@@ -29,7 +29,7 @@ const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 
 	return (
 		<Panel
-			startOpen={isPanelOpen || runningCypressE2E()}
+			startOpen={isPanelOpen || runningE2ETest()}
 			heading={getTittel(inntekter)}
 			setPanelOpen={setPanelOpen}
 		>
@@ -65,7 +65,7 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.inntekter?.length > 0)?.miljo
 
 	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<ErrorBoundary>

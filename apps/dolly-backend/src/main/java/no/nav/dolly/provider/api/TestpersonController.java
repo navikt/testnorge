@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.bestilling.service.OppdaterPersonService;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -15,11 +16,14 @@ import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.OrdreService;
 import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TransaksjonMappingService;
+import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +45,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,9 +58,11 @@ public class TestpersonController {
     private final OppdaterPersonService oppdaterPersonService;
     private final MapperFacade mapperFacade;
     private final IdentService identService;
+    private final BrukerService brukerService;
     private final PersonService personService;
     private final NavigasjonService navigasjonService;
     private final OrdreService ordreService;
+    private final GetUserInfo getUserInfo;
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
@@ -132,7 +139,8 @@ public class TestpersonController {
     @GetMapping("/naviger/{ident}")
     public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 
-        return navigasjonService.navigerTilIdent(ident);
+        Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        return navigasjonService.navigerTilIdent(ident, bruker);
     }
 
     @Operation(description = "Sjekk om ønsket testperson finnes i Dolly")
@@ -140,6 +148,13 @@ public class TestpersonController {
     public Boolean finnesTestident(@PathVariable String ident) {
 
         return identService.exists(ident);
+    }
+
+    @Operation(description = "Sjekk om testpersoner finnes i Dolly")
+    @GetMapping("/finnes")
+    public FinnesDTO finnesTestident(@RequestParam List<String> identer) {
+
+        return identService.exists(identer);
     }
 
     @Operation(description = "Send ønsket testperson til miljø")

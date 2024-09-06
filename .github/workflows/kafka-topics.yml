@@ -12,6 +12,7 @@ on:
 jobs:
   deploy-kafka-topics-dev:
     name: Deploy to Aiven Dev
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -22,4 +23,4 @@ jobs:
         env:
           CLUSTER: dev-gcp
           VAR: kafka-pool=nav-dev
-          RESOURCE: .nais/topics.yml
+          RESOURCE: ".nais/topics.yml"

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { applicationErrorSelector, clearAllErrors } from '@/ducks/errors'
-import { Toast } from '@/components/ui/toast/Toast'
+import { ErrorToast } from '@/components/ui/toast/ErrorToast'
 import { Dispatch } from 'redux'
 
 const mapStateToProps = (state: {}) => ({
@@ -11,4 +11,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	clearAllErrors: () => dispatch(clearAllErrors()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Toast)
+export default connect(mapStateToProps, mapDispatchToProps)(ErrorToast)

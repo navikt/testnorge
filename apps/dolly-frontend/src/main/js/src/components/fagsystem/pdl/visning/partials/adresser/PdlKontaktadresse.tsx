@@ -1,15 +1,29 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Adresse } from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
+import {
+	Adresse,
+	KontaktadresseVisning,
+} from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { KontaktadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import _ from 'lodash'
 
 type PdlKontaktadresseProps = {
 	data: Array<KontaktadresseData>
+	pdlfData?: Array<KontaktadresseData>
+	tmpPersoner?: any
+	ident?: string
+	identtype?: string
 }
 
 type AdresseProps = {
 	data: KontaktadresseData
-	idx?: number
+	idx: number
+	alleData?: Array<KontaktadresseData>
+	tmpData?: any
+	tmpPersoner?: any
+	ident?: string
+	identtype?: string
+	master?: string
 }
 
 const AdresseVisning = ({ data, idx }: AdresseProps) => {
@@ -20,8 +34,46 @@ const AdresseVisning = ({ data, idx }: AdresseProps) => {
 	)
 }
 
-export const PdlKontaktadresse = ({ data }: PdlKontaktadresseProps) => {
-	if (!data || data.length === 0) {
+const AdresseVisningRedigerbar = ({
+	data,
+	idx,
+	alleData,
+	tmpData,
+	tmpPersoner,
+	ident,
+	identtype,
+	master,
+}: AdresseProps) => {
+	return (
+		<div className="person-visning_content">
+			<KontaktadresseVisning
+				kontaktadresseData={data}
+				idx={idx}
+				data={alleData}
+				tmpData={tmpData}
+				tmpPersoner={tmpPersoner}
+				ident={ident}
+				identtype={identtype}
+				erPdlVisning={false}
+				master={master}
+			/>
+		</div>
+	)
+}
+
+export const PdlKontaktadresse = ({
+	data,
+	pdlfData,
+	tmpPersoner,
+	ident,
+	identtype,
+}: PdlKontaktadresseProps) => {
+	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
+		return null
+	}
+
+	const tmpData = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
 	}
 
@@ -35,8 +87,14 @@ export const PdlKontaktadresse = ({ data }: PdlKontaktadresseProps) => {
 			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
 			<ArrayHistorikk
 				component={AdresseVisning}
+				componentRedigerbar={AdresseVisningRedigerbar}
 				data={gyldigeAdresser}
+				pdlfData={pdlfData}
 				historiskData={historiskeAdresser}
+				tmpData={tmpData}
+				tmpPersoner={tmpPersoner}
+				ident={ident}
+				identtype={identtype}
 				header={''}
 			/>
 		</>

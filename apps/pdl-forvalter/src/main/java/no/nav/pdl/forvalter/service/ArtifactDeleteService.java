@@ -5,7 +5,6 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DeleteRelasjonerUtility;
-import no.nav.pdl.forvalter.utils.HendelseIdService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,9 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTE
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDFOEDT_BARN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDSFALL;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FALSK_IDENTITET;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDESTED;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSEL;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSELSDATO;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
@@ -76,6 +77,30 @@ public class ArtifactDeleteService {
         hendelseIdService.deletePdlHendelse(ident, PDL_FOEDSEL.getDescription(), id);
 
         dbPerson.getPerson().setFoedsel(dbPerson.getPerson().getFoedsel().stream()
+                .filter(type -> !id.equals(type.getId()))
+                .toList());
+    }
+
+    public void deleteFoedested(String ident, Integer id) {
+
+        var dbPerson = getPerson(ident);
+
+        checkExists(dbPerson.getPerson().getFoedested(), id, PDL_FOEDESTED.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_FOEDESTED.getDescription(), id);
+
+        dbPerson.getPerson().setFoedested(dbPerson.getPerson().getFoedested().stream()
+                .filter(type -> !id.equals(type.getId()))
+                .toList());
+    }
+
+    public void deleteFoedselsdato(String ident, Integer id) {
+
+        var dbPerson = getPerson(ident);
+
+        checkExists(dbPerson.getPerson().getFoedselsdato(), id, PDL_FOEDSELSDATO.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_FOEDSELSDATO.getDescription(), id);
+
+        dbPerson.getPerson().setFoedselsdato(dbPerson.getPerson().getFoedselsdato().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
     }
@@ -214,9 +239,10 @@ public class ArtifactDeleteService {
 
         dbPerson.getPerson().getForeldreansvar().stream()
                 .filter(type -> id.equals(type.getId()) &&
-                        isNotBlank(type.getAnsvarlig()))
+                        (isNotBlank(type.getAnsvarlig()) || isNotBlank(type.getAnsvarssubjekt())))
                 .forEach(type -> {
-                    var slettePerson = getPerson(type.getAnsvarlig());
+                    var slettePerson = getPerson(isNotBlank(type.getAnsvarlig()) ?
+                            type.getAnsvarlig() : type.getAnsvarssubjekt());
 
                     DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FORELDREANSVAR_FORELDER);
 

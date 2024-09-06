@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -66,8 +67,9 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.Inntektsmelding rsInntektsmelding,
                                         RsInntektsmeldingRequest inntektsmelding, MappingContext context) {
 
-                        inntektsmelding.setAarsakTilInnsending(
-                                nullcheckSetDefaultValue(inntektsmelding.getAarsakTilInnsending(), AarsakInnsendingKodeListe.NY));
+                        inntektsmelding.setAarsakTilInnsending(nonNull(rsInntektsmelding.getAarsakTilInnsending()) ?
+                                mapperFacade.map(rsInntektsmelding.getAarsakTilInnsending(), AarsakInnsendingKodeListe.class) :
+                                AarsakInnsendingKodeListe.NY);
 
                         if (nonNull(rsInntektsmelding.getArbeidsgiver())) {
 
@@ -104,15 +106,36 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                         inntektsmelding.setStartdatoForeldrepengeperiode(toLocalDateTime(rsInntektsmelding.getStartdatoForeldrepengeperiode()));
 
                         inntektsmelding.setArbeidsforhold(mapperFacade.map(rsInntektsmelding.getArbeidsforhold(), RsArbeidsforhold.class));
-                        inntektsmelding.setGjenopptakelseNaturalytelseListe(rsInntektsmelding.getGjenopptakelseNaturalytelseListe().stream()
-                                .map(ytelse -> mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class))
-                                .toList());
 
                         inntektsmelding.setNaerRelasjon(isTrue(rsInntektsmelding.getNaerRelasjon()));
                         inntektsmelding.setOmsorgspenger(mapperFacade.map(rsInntektsmelding.getOmsorgspenger(), RsOmsorgspenger.class));
-                        inntektsmelding.setOpphoerAvNaturalytelseListe(rsInntektsmelding.getOpphoerAvNaturalytelseListe().stream()
-                                .map(ytelse -> mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class))
-                                .toList());
+
+                        inntektsmelding.setOpphoerAvNaturalytelseListe(
+                                rsInntektsmelding
+                                        .getOpphoerAvNaturalytelseListe()
+                                        .stream()
+                                        .map(ytelse -> {
+                                            var mapped = mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class);
+                                            Optional
+                                                    .ofNullable(ytelse.getNaturalytelseType())
+                                                    .ifPresent(type -> mapped.setNaturalytelseType(type.getJsonValue()));
+                                            return mapped;
+                                        })
+                                        .toList()
+                        );
+                        inntektsmelding.setGjenopptakelseNaturalytelseListe(
+                                rsInntektsmelding
+                                        .getGjenopptakelseNaturalytelseListe()
+                                        .stream()
+                                        .map(ytelse -> {
+                                            var mapped = mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class);
+                                            Optional
+                                                    .ofNullable(ytelse.getNaturalytelseType())
+                                                    .ifPresent(type -> mapped.setNaturalytelseType(type.getJsonValue()));
+                                            return mapped;
+                                        })
+                                .toList()
+                        );
 
                         inntektsmelding.setPleiepengerPerioder(rsInntektsmelding.getPleiepengerPerioder().stream()
                                 .map(periode -> mapperFacade.map(periode, RsPeriode.class))

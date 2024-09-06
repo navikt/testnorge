@@ -1,63 +1,10 @@
 plugins {
-    id 'java'
-    id "org.sonarqube" version "4.4.1.3373"
-    id 'org.springframework.boot' version "3.2.1"
-    id 'io.spring.dependency-management' version "1.1.4"
-    id "jacoco"
-}
-
-test {
-    useJUnitPlatform()
+    id "dolly-proxies"
 }
 
 sonarqube {
     properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "aareg-synt-services-proxy"
         property "sonar.projectName", "aareg-synt-services-proxy"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
-bootJar {
-    archiveFileName = "app.jar"
-}
-
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
-    }
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-dependencies {
-
-    implementation 'no.nav.testnav.libs:reactive-core'
-    implementation 'no.nav.testnav.libs:reactive-proxy'
-
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
-
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-    implementation 'org.hibernate.validator:hibernate-validator'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-}
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
     }
 }

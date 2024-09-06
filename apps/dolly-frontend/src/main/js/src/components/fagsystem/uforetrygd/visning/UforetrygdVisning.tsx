@@ -52,19 +52,31 @@ const BarnetilleggInntektVisning = ({ data, tittel }) => {
 
 const DataVisning = ({ data, miljo }) => {
 	const { navEnheter } = useNavEnheter()
-	const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === data?.navEnhetId?.toString())
-		?.label
+	const navEnhetLabel = navEnheter?.find(
+		(enhet) => enhet.value === data?.navEnhetId?.toString(),
+	)?.label
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
 
 	return (
 		<>
 			<div className="person-visning_content">
-				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue
+					title="Vedtaksstatus"
+					value={
+						vedtakData?.[0]?.sisteOppdatering.includes('opprettet')
+							? 'Iverksatt'
+							: vedtakData?.[0]?.sisteOppdatering?.substring(
+									0,
+									vedtakData?.[0]?.sisteOppdatering?.indexOf('<'),
+								)
+					}
+				/>
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
 				<TitleValue title="Inntekt før uførhet" value={data?.inntektForUforhet} />
+				<TitleValue title="Inntekt etter uførhet" value={data?.inntektEtterUforhet} />
 				<TitleValue
 					title="Type barnetillegg"
 					value={showLabel('barnetilleggType', data?.barnetilleggDetaljer?.barnetilleggType)}
@@ -111,7 +123,7 @@ export const UforetrygdVisning = ({ data, loading, bestillingIdListe, tilgjengel
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
 	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<ErrorBoundary>

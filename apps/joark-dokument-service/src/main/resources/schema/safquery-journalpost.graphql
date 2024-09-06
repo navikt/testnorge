@@ -2,6 +2,8 @@ query journalpost($journalpostId: String!) {
     journalpost(journalpostId: $journalpostId) {
         journalpostId
         temanavn
+        behandlingstema
+        behandlingstemanavn
         avsenderMottaker {
             type
             id

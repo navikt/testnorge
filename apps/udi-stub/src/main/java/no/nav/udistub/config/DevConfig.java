@@ -11,7 +11,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 import static io.micrometer.common.util.StringUtils.isBlank;
 
 @Configuration
-@Profile("dev")
+@Profile("local")
 @VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
 public class DevConfig extends AbstractVaultConfiguration {
 

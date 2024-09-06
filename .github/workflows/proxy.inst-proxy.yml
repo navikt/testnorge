@@ -3,10 +3,11 @@ name: inst-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - proxies/inst-proxy/**
-      - .github/workflows/proxy.inst-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "proxies/inst-proxy/**"
+      - ".github/workflows/proxy.inst-proxy.yml"
 
 jobs:
   workflow:

@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -16,12 +17,14 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static no.nav.pdl.forvalter.service.EnkelAdresseService.getStrengtFortroligKontaktadresse;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNotNpidIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +36,7 @@ public class SwopIdentsService {
 
     private static String opaqifyIdent(String ident) {
 
-        return new StringBuilder()
-                .append('X')
-                .append(ident.substring(1))
-                .toString();
+        return 'X' + ident.substring(1);
     }
 
     private void swopOpplysninger(DbPerson person1, DbPerson person2) {
@@ -69,6 +69,7 @@ public class SwopIdentsService {
         person1.getPerson().getForeldreansvar().addAll(person2.getPerson().getForeldreansvar());
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
         person1.getPerson().setAdressebeskyttelse(person2.getPerson().getAdressebeskyttelse());
+        person1.getPerson().setNavPersonIdentifikator(person2.getPerson().getNavPersonIdentifikator());
 
         if (person1.getPerson().isStrengtFortrolig() || person2.getPerson().isStrengtFortrolig()) {
             person1.getPerson().setBostedsadresse(null);
@@ -80,11 +81,18 @@ public class SwopIdentsService {
         }
 
         var foedsel = person2.getPerson().getFoedsel().stream().findFirst().orElse(new FoedselDTO());
+        var foedested = person2.getPerson().getFoedested().stream().findFirst().orElse(new FoedestedDTO());
         person1.getPerson().getFoedsel()
                 .forEach(foedsel1 -> {
                     foedsel1.setFoedeland(foedsel.getFoedeland());
                     foedsel1.setFoedekommune(foedsel.getFoedekommune());
                     foedsel1.setFoedested(foedsel.getFoedested());
+                });
+        person1.getPerson().getFoedested()
+                .forEach(foedsel1 -> {
+                    foedsel1.setFoedeland(foedested.getFoedeland());
+                    foedsel1.setFoedekommune(foedested.getFoedekommune());
+                    foedsel1.setFoedested(foedested.getFoedested());
                 });
 
         person1.getPerson().setNyident(null);
@@ -93,8 +101,9 @@ public class SwopIdentsService {
             person1.getPerson().setSivilstand(new ArrayList<>(List.of(SivilstandDTO.builder()
                     .id(1)
                     .type(Sivilstand.UGIFT)
-                    .master(FREG)
+                    .master(isNotNpidIdent(person1.getIdent()) ? FREG : PDL)
                     .kilde("Dolly")
+                    .bekreftelsesdato(isNotNpidIdent(person1.getIdent()) ? null : now())
                     .build())));
         }
 
@@ -103,7 +112,7 @@ public class SwopIdentsService {
                         .person(person1)
                         .relatertPerson(relasjon.getRelatertPerson())
                         .relasjonType(relasjon.getRelasjonType())
-                        .sistOppdatert(LocalDateTime.now())
+                        .sistOppdatert(now())
                         .build())
                 .toList());
     }
@@ -141,7 +150,7 @@ public class SwopIdentsService {
                 aliasRepository.save(DbAlias.builder()
                         .tidligereIdent(ident1)
                         .person(oppdatertPerson1.get())
-                        .sistOppdatert(LocalDateTime.now())
+                        .sistOppdatert(now())
                         .build());
 
                 relasjonRepository.deleteAll(person2.get().getRelasjoner());

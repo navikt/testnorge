@@ -6,19 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.isNull;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @Builder
@@ -29,34 +27,39 @@ public class PersonDTO implements Serializable {
 
     private String ident;
     private Identtype identtype;
+    private Boolean standalone;
 
-    private List<NavnDTO> navn;
-    private List<FoedselDTO> foedsel;
-    private List<ForelderBarnRelasjonDTO> forelderBarnRelasjon;
-    private List<SivilstandDTO> sivilstand;
-    private List<DoedsfallDTO> doedsfall;
-    private List<BostedadresseDTO> bostedsadresse;
-    private List<KontaktadresseDTO> kontaktadresse;
-    private List<KjoennDTO> kjoenn;
-    private List<OppholdsadresseDTO> oppholdsadresse;
-    private List<InnflyttingDTO> innflytting;
-    private List<UtflyttingDTO> utflytting;
-    private List<DeltBostedDTO> deltBosted;
-    private List<ForeldreansvarDTO> foreldreansvar;
-    private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
-    private List<UtenlandskIdentifikasjonsnummerDTO> utenlandskIdentifikasjonsnummer;
-    private List<FalskIdentitetDTO> falskIdentitet;
     private List<AdressebeskyttelseDTO> adressebeskyttelse;
-    private List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus;
-    private List<TilrettelagtKommunikasjonDTO> tilrettelagtKommunikasjon;
-    private List<StatsborgerskapDTO> statsborgerskap;
-    private List<OppholdDTO> opphold;
-    private List<TelefonnummerDTO> telefonnummer;
-    private List<FullmaktDTO> fullmakt;
-    private List<VergemaalDTO> vergemaal;
-    private List<SikkerhetstiltakDTO> sikkerhetstiltak;
-    private List<IdentRequestDTO> nyident;
+    private List<BostedadresseDTO> bostedsadresse;
+    private List<DeltBostedDTO> deltBosted;
     private List<DoedfoedtBarnDTO> doedfoedtBarn;
+    private List<DoedsfallDTO> doedsfall;
+    private List<FalskIdentitetDTO> falskIdentitet;
+    private List<FoedestedDTO> foedested;
+    private List<FoedselDTO> foedsel;
+    private List<FoedselsdatoDTO> foedselsdato;
+    private List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus;
+    private List<ForelderBarnRelasjonDTO> forelderBarnRelasjon;
+    private List<ForeldreansvarDTO> foreldreansvar;
+    private List<FullmaktDTO> fullmakt;
+    private List<InnflyttingDTO> innflytting;
+    private List<KjoennDTO> kjoenn;
+    private List<KontaktadresseDTO> kontaktadresse;
+    private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
+    private List<NavnDTO> navn;
+    private List<NavPersonIdentifikatorDTO> navPersonIdentifikator;
+    private List<OppholdDTO> opphold;
+    private List<OppholdsadresseDTO> oppholdsadresse;
+    private List<SikkerhetstiltakDTO> sikkerhetstiltak;
+    private List<SivilstandDTO> sivilstand;
+    private List<StatsborgerskapDTO> statsborgerskap;
+    private List<TelefonnummerDTO> telefonnummer;
+    private List<TilrettelagtKommunikasjonDTO> tilrettelagtKommunikasjon;
+    private List<UtenlandskIdentifikasjonsnummerDTO> utenlandskIdentifikasjonsnummer;
+    private List<UtflyttingDTO> utflytting;
+    private List<VergemaalDTO> vergemaal;
+
+    private List<IdentRequestDTO> nyident;
 
     public List<IdentRequestDTO> getNyident() {
         if (isNull(nyident)) {
@@ -247,14 +250,25 @@ public class PersonDTO implements Serializable {
         return sikkerhetstiltak;
     }
 
-    @JsonIgnore
-    public boolean isStatusIn(FolkeregisterPersonstatus... statuser) {
+    public List<FoedestedDTO> getFoedested() {
+        if (isNull(foedested)) {
+            foedested = new ArrayList<>();
+        }
+        return foedested;
+    }
 
-        return Arrays.asList(statuser).contains(getFolkeregisterPersonstatus().stream()
-                .findFirst().orElse(FolkeregisterPersonstatusDTO.builder()
-                        .status(FOEDSELSREGISTRERT)
-                        .build())
-                .getStatus());
+    public List<FoedselsdatoDTO> getFoedselsdato() {
+        if (isNull(foedselsdato)) {
+            foedselsdato = new ArrayList<>();
+        }
+        return foedselsdato;
+    }
+
+    public List<NavPersonIdentifikatorDTO> getNavPersonIdentifikator() {
+        if(isNull(navPersonIdentifikator)) {
+            navPersonIdentifikator = new ArrayList<>();
+        }
+        return navPersonIdentifikator;
     }
 
     public Identtype getIdenttype() {
@@ -275,5 +289,11 @@ public class PersonDTO implements Serializable {
     public boolean isStrengtFortrolig() {
 
         return getAdressebeskyttelse().stream().anyMatch(AdressebeskyttelseDTO::isStrengtFortrolig);
+    }
+
+    @JsonIgnore
+    public boolean isStandalone() {
+
+        return isTrue(standalone);
     }
 }

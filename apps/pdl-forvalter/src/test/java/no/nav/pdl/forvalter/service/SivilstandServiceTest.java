@@ -46,7 +46,9 @@ class SivilstandServiceTest {
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.validate(request));
+                sivilstandService.validate(request, PersonDTO.builder()
+                                .ident(IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Sivilstand: Relatert person finnes ikke"));
     }

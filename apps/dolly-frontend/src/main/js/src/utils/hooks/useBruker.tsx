@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '@/api'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { ERROR_ACTIVE_USER } from '../../ducks/errors/ErrorMessages'
 
@@ -9,9 +9,6 @@ const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
 const getProfilUrl = '/testnorge-profil-api/api/v1/profil'
 const getProfilBildeUrl = `${getProfilUrl}/bilde`
-
-const getOrganisasjonTilgangUrl = (orgnummer: string) =>
-	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
 
 type BrukerProfil = {
 	visningsNavn: string
@@ -28,12 +25,7 @@ type BrukerType = {
 	brukertype: string
 	epost: string
 	favoritter: []
-}
-
-type OrganisasjonMiljoe = {
-	id: number
-	organisasjonNummer: string
-	miljoe: string
+	grupper: []
 }
 
 export const useAlleBrukere = () => {
@@ -49,7 +41,7 @@ export const useAlleBrukere = () => {
 export const useCurrentBruker = () => {
 	const { data, isLoading, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher)
 
-	if (error && !runningCypressE2E()) {
+	if (error && !runningE2ETest()) {
 		console.error(ERROR_ACTIVE_USER)
 		navigateToLogin()
 	}
@@ -76,28 +68,6 @@ export const useBrukerProfilBilde = () => {
 
 	return {
 		brukerBilde: data,
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useOrganisasjonTilgang = () => {
-	const { brukerProfil } = useBrukerProfil()
-	const orgnummer = brukerProfil?.orgnummer
-
-	if (!orgnummer) {
-		return {
-			loading: false,
-		}
-	}
-
-	const { data, isLoading, error } = useSWR<OrganisasjonMiljoe, Error>(
-		getOrganisasjonTilgangUrl(orgnummer),
-		fetcher,
-	)
-
-	return {
-		organisasjonTilgang: data,
 		loading: isLoading,
 		error: error,
 	}

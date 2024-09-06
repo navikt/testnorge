@@ -7,7 +7,8 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
-import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.IdentRequestDTO;
@@ -67,7 +68,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                type.setFoedtEtter(person.getFoedsel().getFirst().getFoedselsdato().plusDays(index + 1L));
+                type.setFoedtEtter(FoedselsdatoUtility.getFoedselsdato(person).plusDays(index + 1L));
 
                 nyPerson = handle(type, nyPerson);
                 type.setKilde(getKilde(type));
@@ -107,7 +108,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private PersonDTO handle(IdentRequestDTO request, PersonDTO person) {
 
-        PersonDTO nyPerson = null;
+        PersonDTO nyPerson;
 
         if (isNotBlank(request.getEksisterendeIdent())) {
 
@@ -145,7 +146,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         if (nonNull(request.getIdenttype())) {
             return request.getIdenttype();
         }
-        return nonNull(ident) ? IdenttypeFraIdentUtility.getIdenttype(ident) : FNR;
+        return isNotBlank(ident) ? IdenttypeUtility.getIdenttype(ident) : FNR;
     }
 
     private static Kjoenn getTilfeldigKjoenn() {
@@ -158,17 +159,18 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         if (nonNull(request.getKjoenn()) && request.getKjoenn() != UKJENT) {
             return request.getKjoenn();
         }
-        return nonNull(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : getTilfeldigKjoenn();
+        return isNotBlank(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : getTilfeldigKjoenn();
     }
 
     private static LocalDateTime getFoedtFoer(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getFoedtFoer())) {
             return request.getFoedtFoer();
+
         } else if (nonNull(request.getAlder())) {
             return LocalDateTime.now().minusYears(request.getAlder()).minusMonths(3);
         }
-        return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
+        return isNotBlank(ident) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
                 LocalDateTime.now().minusYears(18);
     }
 
@@ -179,11 +181,12 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         } else if (nonNull(request.getAlder())) {
             return LocalDateTime.now().minusYears(request.getAlder()).plusDays(1);
         }
-        return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
+        return isNotBlank(ident) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
                 LocalDateTime.now().minusYears(67);
     }
 
     private static boolean isSyntetisk(IdentRequestDTO request, String ident) {
+
         return nonNull(request.getSyntetisk()) ? request.getSyntetisk() :
                 SyntetiskFraIdentUtility.isSyntetisk(ident);
     }

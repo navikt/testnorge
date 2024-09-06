@@ -3,12 +3,13 @@ name: adresse-service
 on:
   push:
     paths:
-      - libs/data-transfer-objects
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/adresse-service/**
-      - .github/workflows/app.adresse-service.yml
+      - "plugins/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/adresse-service/**"
+      - ".github/workflows/app.adresse-service.yml"
 
 jobs:
   workflow:
