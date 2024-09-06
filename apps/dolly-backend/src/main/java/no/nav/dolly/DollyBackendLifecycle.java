@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.repository.BestillingRepository;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Profile({"dev", "local", "prod"})
 @RequiredArgsConstructor
 @Slf4j
 public class DollyBackendLifecycle implements SmartLifecycle {
