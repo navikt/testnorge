@@ -8,7 +8,7 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump,health
+      exposure.include: info,health,heapdump,prometheus
       path-mapping:
         prometheus: metrics
   endpoint:
@@ -35,3 +35,8 @@ logging:
             security:
               reactive:
                 ReactiveUserDetailsServiceAutoConfiguration: OFF
+
+app:
+  slack:
+    bot-token: ${DOLLY_ALERTS_SLACK_BOT_TOKEN}
+    channel-id: "C02GJN0UR1P"

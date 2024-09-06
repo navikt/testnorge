@@ -38,3 +38,5 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://dollystatus.intern.dev.nav.no"
+  envFrom:
+    - secret: dolly-alerts-slack-bot-token
