@@ -14,7 +14,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @EnableWebSecurity
 @Configuration
-@Profile({ "prod", "dev" })
+@Profile({ "prod", "local" })
 public class SecurityConfig {
 
     @Bean
