@@ -54,10 +54,14 @@ export const Datepicker = ({
 	const selectedDay = getSelectedDay() ? formatDate(getSelectedDay(), format) : ''
 
 	return (
-		<DatePicker {...datepickerProps} dropdownCaption={true} selected={selectedDay}>
+		<DatePicker
+			{...datepickerProps}
+			dropdownCaption={true}
+			// selected={selectedDay}
+		>
 			<DatePicker.Input
 				{...inputProps}
-				value={selectedDay}
+				// value={selectedDay}
 				placeholder={placeholder}
 				size={'small'}
 				disabled={disabled}
