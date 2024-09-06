@@ -239,6 +239,7 @@ export const FormDollyFieldArray = ({
 			})
 		}
 	}, [fields])
+
 	const addNewEntry = () => {
 		handleNewEntry ? handleNewEntry() : append(newEntry)
 		formMethods.trigger(name)
@@ -253,6 +254,7 @@ export const FormDollyFieldArray = ({
 					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
 					const handleRemove = () => {
 						handleRemoveEntry ? handleRemoveEntry(idx) : remove(idx)
+						formMethods.trigger(name)
 					}
 
 					if (nested) {
@@ -299,7 +301,7 @@ export const FormDollyFieldArray = ({
 				{errorText && <FaError>{errorText}</FaError>}
 				<FieldArrayAddButton
 					hoverText={title || (maxEntries === fields.length && maxReachedDescription)}
-					addEntryButtonText={buttonText ? buttonText : header}
+					addEntryButtonText={buttonText || header}
 					onClick={addNewEntry}
 					disabled={disabled || maxEntries === fields.length}
 				/>

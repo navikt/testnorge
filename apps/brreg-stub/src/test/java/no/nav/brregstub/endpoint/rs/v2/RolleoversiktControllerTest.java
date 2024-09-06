@@ -47,6 +47,41 @@ public class RolleoversiktControllerTest {
     @MockBean
     private HentRolleRepository rolleRepository;
 
+    private RsRolleoversikt lagGyldigRsRolleoversikt(
+            String fnr,
+            int orgnummer
+    ) {
+        var rsRolleoversikt = new RsRolleoversikt();
+        rsRolleoversikt.setFnr(fnr);
+        rsRolleoversikt.setHovedstatus(1);
+        var rsNavn = new RsNavn();
+        rsNavn.setNavn1("Navn");
+        rsRolleoversikt.setNavn(rsNavn);
+        var rsAdresse = new RsAdresse();
+        rsAdresse.setAdresse1("Adresse 1");
+        rsAdresse.setLandKode("NO");
+        rsRolleoversikt.setAdresse(rsAdresse);
+        var personRolle = new RsRolleStatus();
+        personRolle.setEgenskap(Egenskap.DELTAGER);
+        personRolle.setFratraadt(false);
+        var enhet = new RsRolle();
+        enhet.setRegistreringsdato(LocalDate.now());
+        enhet.setOrgNr(orgnummer);
+        enhet.setRolle(RolleKode.DELT);
+        enhet.setPersonRolle(Collections.singletonList(personRolle));
+        rsRolleoversikt.getEnheter().add(enhet);
+        return rsRolleoversikt;
+    }
+
+    private HttpEntity createHttpEntity(
+            String ident,
+            RsRolleoversikt body
+    ) {
+        var headers = new HttpHeaders();
+        headers.add("Nav-Personident", ident);
+        return new HttpEntity(body, headers);
+    }
+
     @Test
     @DisplayName("GET rolleoversikt returnerer 404 hvis ikke eksisterer")
     void skalKasteNotFoundHvisRolleIkkeEksister() {
@@ -130,40 +165,5 @@ public class RolleoversiktControllerTest {
         var response =
                 restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.POST, createHttpEntity(fnr, rsRolleoversikt), RsRolleoversikt.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    private RsRolleoversikt lagGyldigRsRolleoversikt(
-            String fnr,
-            int orgnummer
-    ) {
-        var rsRolleoversikt = new RsRolleoversikt();
-        rsRolleoversikt.setFnr(fnr);
-        rsRolleoversikt.setHovedstatus(1);
-        var rsNavn = new RsNavn();
-        rsNavn.setNavn1("Navn");
-        rsRolleoversikt.setNavn(rsNavn);
-        var rsAdresse = new RsAdresse();
-        rsAdresse.setAdresse1("Adresse 1");
-        rsAdresse.setLandKode("NO");
-        rsRolleoversikt.setAdresse(rsAdresse);
-        var personRolle = new RsRolleStatus();
-        personRolle.setEgenskap(Egenskap.Deltager);
-        personRolle.setFratraadt(false);
-        var enhet = new RsRolle();
-        enhet.setRegistreringsdato(LocalDate.now());
-        enhet.setOrgNr(orgnummer);
-        enhet.setRolle(RolleKode.DELT);
-        enhet.setPersonRolle(Collections.singletonList(personRolle));
-        rsRolleoversikt.getEnheter().add(enhet);
-        return rsRolleoversikt;
-    }
-
-    private HttpEntity createHttpEntity(
-            String ident,
-            RsRolleoversikt body
-    ) {
-        var headers = new HttpHeaders();
-        headers.add("Nav-Personident", ident);
-        return new HttpEntity(body, headers);
     }
 }

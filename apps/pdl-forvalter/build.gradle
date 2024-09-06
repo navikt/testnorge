@@ -30,15 +30,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
 
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
+    implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
 
     testImplementation 'no.nav.testnav.libs:testing'
 }

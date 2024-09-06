@@ -4,19 +4,19 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/avro-schema
-      - libs/commands
-      - libs/csv-converter
-      - libs/data-transfer-objects
-      - libs/database
-      - libs/kafka-config
-      - libs/kafka-producers
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - libs/testing
-      - apps/testnorge-statisk-data-forvalter/**
-      - .github/workflows/app.testnorge-statisk-data-forvalter.yml
+      - "libs/avro-schema/**"
+      - "libs/commands/**"
+      - "libs/csv-converter/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/database/**"
+      - "libs/kafka-config/**"
+      - "libs/kafka-producers/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/testing/**"
+      - "apps/testnorge-statisk-data-forvalter/**"
+      - ".github/workflows/app.testnorge-statisk-data-forvalter.yml"
 
 jobs:
   workflow:

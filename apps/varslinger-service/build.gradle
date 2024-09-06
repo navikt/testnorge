@@ -11,7 +11,7 @@ sonarqube {
 
 dependencies {
 
-    implementation 'com.google.guava:guava:33.2.0-jre'
+    implementation "com.google.guava:guava:$versions.guava"
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:database'
@@ -27,11 +27,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

@@ -44,20 +44,21 @@ dependencies {
     implementation 'com.zaxxer:HikariCP'
 
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'com.h2database:h2'
 
     implementation 'wsdl4j:wsdl4j'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     implementation 'no.nav.common:auth'
     implementation 'no.nav.common:util'
     implementation 'no.nav.common:cxf:3.2023.10.17_06.55-4e30d96bba05'
 
     implementation 'com.h2database:h2'
-    implementation "com.sun.xml.ws:jaxws-rt:4.0.2"
+    implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    implementation 'jakarta.jws:jakarta.jws-api:3.0.0' //TODO upgrade to JUnit5
+    implementation 'jakarta.jws:jakarta.jws-api:3.0.0'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

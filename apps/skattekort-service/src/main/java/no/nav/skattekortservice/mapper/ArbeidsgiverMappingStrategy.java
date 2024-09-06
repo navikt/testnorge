@@ -5,7 +5,6 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.skattekortservice.dto.SkattekortResponsIntermediate;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Forskuddstrekk;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Frikort;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Resultatstatus;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekort;
@@ -16,6 +15,8 @@ import no.nav.testnav.libs.dto.skattekortservice.v1.Trekkode;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Trekkprosent;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Trekktabell;
 import org.springframework.stereotype.Component;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
@@ -39,22 +40,12 @@ public class ArbeidsgiverMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(SkattekortResponsIntermediate.Forskuddstrekk.class, Forskuddstrekk.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(SkattekortResponsIntermediate.Forskuddstrekk source, Forskuddstrekk target, MappingContext context) {
-
-                        target.setTrekkode(Trekkode.valueOf(source.getTrekkode().getValue()));
-                    }
-                })
-                .register();
-
         factory.classMap(SkattekortResponsIntermediate.Frikort.class, Frikort.class)
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(SkattekortResponsIntermediate.Frikort source, Frikort target, MappingContext context) {
 
-                        target.setTrekkode(Trekkode.valueOf(source.getTrekkode().getValue()));
+                        target.setTrekkode(getTrekkodeValue(source.getTrekkode()));
                         target.setFrikortbeloep(source.getFrikortbeloep());
                     }
                 })
@@ -65,7 +56,7 @@ public class ArbeidsgiverMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(SkattekortResponsIntermediate.Trekktabell source, Trekktabell target, MappingContext context) {
 
-                        target.setTrekkode(Trekkode.valueOf(source.getTrekkode().getValue()));
+                        target.setTrekkode(getTrekkodeValue(source.getTrekkode()));
                         target.setTabelltype(Tabelltype.valueOf(source.getTabelltype().getValue()));
                         target.setTabellnummer(source.getTabellnummer());
                         target.setProsentsats(source.getProsentsats());
@@ -79,11 +70,16 @@ public class ArbeidsgiverMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(SkattekortResponsIntermediate.Trekkprosent source, Trekkprosent target, MappingContext context) {
 
-                        target.setTrekkode(Trekkode.valueOf(target.getTrekkode().getValue()));
+                        target.setTrekkode(getTrekkodeValue(source.getTrekkode()));
                         target.setProsentsats(source.getProsentsats());
                         target.setAntallMaanederForTrekk(source.getAntallMaanederForTrekk());
                     }
                 })
                 .register();
+    }
+
+    private static Trekkode getTrekkodeValue(SkattekortResponsIntermediate.Trekkode trekkode) {
+
+        return nonNull(trekkode.getValue()) ? Trekkode.valueOf(trekkode.getValue()) : null;
     }
 }

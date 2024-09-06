@@ -24,11 +24,12 @@ dependencies {
     implementation 'io.r2dbc:r2dbc-h2'
     implementation 'org.postgresql:r2dbc-postgresql'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
 
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
     implementation 'org.hibernate.validator:hibernate-validator'
 }

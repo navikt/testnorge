@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/inntektsmelding-generator-service/**
-      - .github/workflows/app.inntektsmelding-generator-service.yml
+      - "libs/data-transfer-objects/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/inntektsmelding-generator-service/**"
+      - ".github/workflows/app.inntektsmelding-generator-service.yml"
 
 jobs:
   workflow:

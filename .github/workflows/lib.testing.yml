@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/testing/**
-      - .github/workflows/lib.testing.yml
+      - "libs/testing/**"
+      - ".github/workflows/lib.testing.yml"
 
 jobs:
   workflow:

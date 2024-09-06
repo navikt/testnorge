@@ -47,6 +47,7 @@ import {
 	PersonGroupFillIcon,
 	PersonGroupIcon,
 	PersonIcon,
+	PersonPlusIcon,
 	PersonTallShortIcon,
 	PhoneIcon,
 	PlusCircleIcon,
@@ -145,7 +146,9 @@ export const icons = {
 	sigrun: BankNoteIcon,
 	bankkonto: BankNoteIcon,
 	pengesekk: SackKronerIcon,
+	inntektstub: BankNoteIcon,
 	inntektsmelding: BankNoteIcon,
+	skattekort: BankNoteIcon,
 	udi: EarthIcon,
 	kommentar: ChatElipsisIcon,
 	partner: HeartIcon,
@@ -171,6 +174,7 @@ export const icons = {
 	'file-new': FileTextIcon,
 	'file-code': FileCodeIcon,
 	cv: FileTextIcon,
+	ansettelse: PersonPlusIcon,
 }
 
 const px = (v: number) => `${v}px`

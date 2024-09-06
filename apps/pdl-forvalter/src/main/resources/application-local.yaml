@@ -11,12 +11,8 @@ spring:
       read-timeout: 30000
       generic:
         enabled: false
-      database:
-        backend: postgresql/preprod-fss
-        enabled: true
-        role: pdl-forvalter-test-admin
   datasource:
-    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/pdl-forvalter-test
+    url: jdbc:postgresql://localhost:5432/pdl-forvalter-test
     hikari:
       maximum-pool-size: 10
       minimum-idle: 1
@@ -25,7 +21,6 @@ spring:
     properties:
       hibernate:
         default-schema: public
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 consumers:
   adresse-service:

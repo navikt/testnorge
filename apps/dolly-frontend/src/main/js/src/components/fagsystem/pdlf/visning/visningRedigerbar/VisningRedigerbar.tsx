@@ -6,7 +6,7 @@ import Button from '@/components/ui/button/Button'
 import _ from 'lodash'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
@@ -203,19 +203,6 @@ export const VisningRedigerbar = ({
 		return submit()
 	}, [])
 
-	const handleSubmitRelatertPerson = useCallback((data: any, ident: string) => {
-		const submit = async () => {
-			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.setStandalone(ident).then((importResponse) => {
-				if (importResponse?.ok) {
-					sendData(data)
-				}
-			})
-		}
-		mountedRef.current = false
-		return submit()
-	}, [])
-
 	const handleDelete = useCallback(() => {
 		const slett = async () => {
 			setVisningModus(Modus.LoadingPdlf)
@@ -228,11 +215,7 @@ export const VisningRedigerbar = ({
 	const handleDeleteRelatertPerson = useCallback(() => {
 		const slett = async () => {
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.setStandalone(relatertPersonInfo?.ident)?.then((importResponse) => {
-				if (importResponse?.ok) {
-					sendSlett()
-				}
-			})
+			sendSlett()
 		}
 		mountedRef.current = false
 		return slett()
@@ -417,13 +400,7 @@ export const VisningRedigerbar = ({
 					</>
 				)}
 				{visningModus === Modus.Skriv && (
-					<Form
-						onSubmit={(data) =>
-							relatertPersonInfo?.ident
-								? handleSubmitRelatertPerson(data?.data, relatertPersonInfo.ident)
-								: handleSubmit(data?.data)
-						}
-					>
+					<Form onSubmit={(data) => handleSubmit(data?.data)}>
 						<>
 							<FieldArrayEdit>
 								<div className="flexbox--flex-wrap visning-redigerbar-form">

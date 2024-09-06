@@ -317,6 +317,11 @@ export const foreldreansvar = Yup.object({
 	ansvar: testForeldreansvar(requiredString),
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
+	typeAnsvarlig: Yup.string()
+		.test('type-Ansvarlig-paakrevd', 'Type Ansvarlig må velges', (value, testcontext) => {
+			return !!value || testcontext.parent?.ansvar !== 'ANDRE'
+		})
+		.nullable(),
 	ansvarlig: Yup.string()
 		.test('ansvarlig-andre-paakrevd', 'Ansvarlig person må velges', (value, testcontext) => {
 			return (
@@ -331,7 +336,10 @@ export const foreldreansvar = Yup.object({
 	ansvarssubjekt: Yup.string()
 		.test('ansvarssubjekt-er-paakrevd', 'Ansvarssubjekt er påkrevd', (value, testcontext) => {
 			return (
-				!!value || testcontext.parent?.ansvarlig || !testcontext.options?.context?.personFoerLeggTil
+				!!value ||
+				testcontext.parent?.ansvarlig ||
+				testcontext.parent?.typeAnsvarlig !== 'EKSISTERENDE' ||
+				!testcontext.options?.context?.personFoerLeggTil
 			)
 		})
 		.nullable(),

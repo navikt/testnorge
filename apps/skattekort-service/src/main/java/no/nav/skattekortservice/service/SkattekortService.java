@@ -12,7 +12,7 @@ import no.nav.skattekortservice.dto.SkattekortResponsIntermediate;
 import no.nav.skattekortservice.dto.SokosRequest;
 import no.nav.skattekortservice.dto.SokosResponse;
 import no.nav.skattekortservice.utility.SkattekortValidator;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Arbeidsgiver;
+import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortResponseDTO;
 import org.json.XML;
@@ -107,10 +107,10 @@ public class SkattekortService {
     }
 
     @SneakyThrows
-    private List<Arbeidsgiver> unmarshal(String xmlData) {
+    private List<ArbeidsgiverSkatt> unmarshal(String xmlData) {
 
         var jsonRoot = XML.toJSONObject(xmlData);
         var intermediate = objectMapper.readValue(jsonRoot.toString(), SkattekortResponsIntermediate.class);
-        return mapperFacade.mapAsList(intermediate.getSkattekortTilArbeidsgiver().getArbeidsgiver(), Arbeidsgiver.class);
+        return mapperFacade.mapAsList(intermediate.getSkattekortTilArbeidsgiver().getArbeidsgiver(), ArbeidsgiverSkatt.class);
     }
 }

@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/avro-schema
-      - libs/data-transfer-objects
-      - libs/servlet-core
-      - apps/sykemelding-api/**
-      - .github/workflows/app.sykemelding-api.yml
+      - "libs/avro-schema/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/servlet-core/**"
+      - "apps/sykemelding-api/**"
+      - ".github/workflows/app.sykemelding-api.yml"
 
 jobs:
   workflow:

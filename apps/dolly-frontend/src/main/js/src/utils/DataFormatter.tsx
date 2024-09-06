@@ -209,8 +209,10 @@ export const showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
-	const obj = Options(copyOptionsGruppe).filter(
-		(options) => options.value.toUpperCase() === value.toUpperCase(),
+	const obj = Options(copyOptionsGruppe).filter((options) =>
+		typeof value === 'string'
+			? options.value.toUpperCase() === value.toUpperCase()
+			: options.value === value,
 	)
 
 	if (_.get(obj, 'label') || _.get(obj, '[0].label')) {
@@ -240,4 +242,19 @@ export const getYearRangeOptions = (start, stop) => {
 		years.push({ value: i, label: i.toString() })
 	}
 	return years.reverse()
+}
+
+export const formatXml = (xml: string, tab = '\t') => {
+	let formatted = ''
+	let indent = ''
+	xml.split(/>\s*</).forEach(function (node) {
+		if (/^\/\w/.exec(node)) {
+			indent = indent.substring(tab.length)
+		}
+		formatted += indent + '<' + node + '>\r\n'
+		if (/^<?\w[^>]*[^/]$/.exec(node)) {
+			indent += tab
+		}
+	})
+	return formatted.substring(1, formatted.length - 3)
 }

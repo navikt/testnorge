@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/reactive-security
-      - apps/person-faste-data-service/**
-      - .github/workflows/app.person-faste-data-service.yml
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-security/**"
+      - "apps/person-faste-data-service/**"
+      - ".github/workflows/app.person-faste-data-service.yml"
 
 jobs:
   workflow:

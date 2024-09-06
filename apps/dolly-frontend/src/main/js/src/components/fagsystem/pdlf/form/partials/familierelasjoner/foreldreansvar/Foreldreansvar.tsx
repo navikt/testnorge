@@ -145,7 +145,7 @@ export const ForeldreansvarForm = ({
 			/>
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-			{ansvar === 'ANDRE' && !opts?.personFoerLeggTil && (
+			{ansvar === 'ANDRE' && (
 				<FormSelect
 					name={`${path}.typeAnsvarlig`}
 					label="Type ansvarlig"
@@ -159,7 +159,7 @@ export const ForeldreansvarForm = ({
 				/>
 			)}
 
-			{(getTypeAnsvarlig() === TypeAnsvarlig.EKSISTERENDE || !kanHaForeldreansvar) && (
+			{getTypeAnsvarlig() === TypeAnsvarlig.EKSISTERENDE && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.ansvarlig`}
 					label="Ansvarlig"
@@ -167,7 +167,7 @@ export const ForeldreansvarForm = ({
 					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
-			{kanHaForeldreansvar && opts?.personFoerLeggTil && (
+			{ansvar === 'ANDRE' && kanHaForeldreansvar && opts?.personFoerLeggTil && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.ansvarssubjekt`}
 					label="Ansvarssubjekt (barn)"

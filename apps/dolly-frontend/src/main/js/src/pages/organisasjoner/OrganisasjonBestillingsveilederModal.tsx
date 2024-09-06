@@ -1,4 +1,4 @@
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 
 import { NyBestillingProps } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 import { NyOrganisasjon } from '@/pages/organisasjoner/NyOrganisasjon/NyOrganisasjon'

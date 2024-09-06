@@ -33,4 +33,6 @@ Det kan være nødvendig å ha disse også:
 -Dhttps.proxyPort=8088 
 -Dhttp.nonProxyHosts=localhost|127.0.0.1|10.254.0.1|*.local|*.adeo.no|*.nav.no|*.aetat.no|*.devillo.no|*.oera.no|*.nais.io 
 ```
+
+Applikasjonen er avhengig av en lokal PSQL-database. For mer informasjon se [egen dokumentasjon](../../docs/local_db.md).
     

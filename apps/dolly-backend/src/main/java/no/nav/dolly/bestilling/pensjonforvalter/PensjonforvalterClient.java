@@ -13,6 +13,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
@@ -20,7 +21,10 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse.SakType;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
@@ -64,7 +68,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_UT;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.poi.util.StringUtil.isNotBlank;
 
 @Slf4j
@@ -83,6 +86,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String TP_FORHOLD = "TpForhold#";
     private static final String PEN_ALDERSPENSJON = "AP#";
     private static final String PEN_UFORETRYGD = "Ufoer#";
+    private static final String PEN_PENSJONSAVTALE = "Pensjonsavtale#";
     private static final String PERIODE = "/periode/";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
@@ -153,8 +157,15 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                             dollyPerson.getIdent(), bestilteMiljoer.get())
                                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())),
 
+                                                                    lagreGenerertInntekt(pensjon,
+                                                                            dollyPerson.getIdent(), bestilteMiljoer.get())
+                                                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())),
+
                                                                     lagreTpForhold(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
-                                                                            .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent()))
+                                                                            .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
+
+                                                                    lagrePensjonsavtale(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
+                                                                            .map(response -> PEN_PENSJONSAVTALE + decodeStatus(response, dollyPerson.getIdent()))
                                                             )
                                                             .collectList()
                                                             .doOnNext(statusResultat::addAll)
@@ -167,7 +178,6 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                                                     utvidetPersondata,
                                                                                                     dollyPerson.getIdent(),
                                                                                                     bestilteMiljoer.get(),
-                                                                                                    isOpprettEndre,
                                                                                                     bestillingId)
                                                                                                     .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, dollyPerson.getIdent())),
 
@@ -176,7 +186,6 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                                                     utvidetPersondata.getT2(),
                                                                                                     dollyPerson.getIdent(),
                                                                                                     bestilteMiljoer.get(),
-                                                                                                    isOpprettEndre,
                                                                                                     bestillingId)
                                                                                                     .map(response -> PEN_UFORETRYGD + decodeStatus(response, dollyPerson.getIdent()))
                                                                                     )
@@ -197,9 +206,10 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        // Pensjonforvalter / POPP støtter pt ikke sletting
+        // Pensjonforvalter / POPP, AP, UT støtter pt ikke sletting
 
         pensjonforvalterConsumer.sletteTpForhold(identer);
+        pensjonforvalterConsumer.slettePensjonsavtale(identer);
     }
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
@@ -350,79 +360,85 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData,
                                                               Tuple2<List<PdlPersonBolk.PersonBolk>, String> utvidetPersondata,
                                                               String ident, Set<String> miljoer,
-                                                              boolean isOpprettEndre, Long bestillingId) {
+                                                              Long bestillingId) {
 
         return Flux.just(pensjonData)
                 .filter(PensjonData::hasAlderspensjon)
                 .map(PensjonData::getAlderspensjon)
                 .flatMap(alderspensjon -> Flux.fromIterable(miljoer)
-                        .flatMap(miljoe -> {
+                        .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
+                                .collectList()
+                                .map(vedtakResponse -> !hasVedtak(vedtakResponse, SakType.AP))
+                                .map(skalOpprette -> {
+                                    if (skalOpprette) {
 
-                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe, null)) {
+                                        AlderspensjonRequest pensjonRequest;
+                                        var context = new MappingContext.Factory().getContext();
+                                        context.setProperty(IDENT, ident);
+                                        context.setProperty(MILJOER, List.of(miljoe));
 
-                                AlderspensjonRequest pensjonRequest;
-                                var context = new MappingContext.Factory().getContext();
-                                context.setProperty(IDENT, ident);
-                                context.setProperty(MILJOER, List.of(miljoe));
+                                        if (alderspensjon.isSoknad()) {
+                                            context.setProperty("relasjoner", utvidetPersondata.getT1());
+                                            pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonSoknadRequest.class, context);
 
-                                if (isTrue(alderspensjon.getSoknad())) {
-                                    context.setProperty("relasjoner", utvidetPersondata.getT1());
-                                    pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonSoknadRequest.class, context);
+                                        } else {
+                                            context.setProperty(NAV_ENHET, utvidetPersondata.getT2());
+                                            pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonVedtakRequest.class, context);
+                                        }
 
-                                } else {
-                                    context.setProperty(NAV_ENHET, utvidetPersondata.getT2());
-                                    pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonVedtakRequest.class, context);
-                                }
+                                        var finalPensjonRequest = new AtomicReference<>(pensjonRequest);
+                                        return pensjonforvalterConsumer.lagreAlderspensjon(pensjonRequest)
+                                                .map(response -> {
+                                                    response.getStatus().forEach(status ->
+                                                            saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                                    PEN_AP, finalPensjonRequest));
+                                                    return response;
+                                                });
 
-                                var finalPensjonRequest = new AtomicReference<>(pensjonRequest);
-                                return pensjonforvalterConsumer.lagreAlderspensjon(pensjonRequest)
-                                        .map(response -> {
-                                            response.getStatus().forEach(status -> {
-                                                if (status.getResponse().isResponse2xx()) {
-                                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                            PEN_AP, finalPensjonRequest);
-                                                }
-                                            });
-                                            return response;
-                                        });
+                                    } else {
+                                        return getStatus(miljoe, 200, "OK");
+                                    }
+                                })))
+                .flatMap(Flux::from);
+    }
 
-                            } else {
-                                return getStatus(miljoe, 200, "OK");
-                            }
-                        }));
+    private static boolean hasVedtak(List<PensjonVedtakResponse> pensjonsvedtak, SakType type) {
+
+        return pensjonsvedtak.stream().anyMatch(entry -> entry.getSakType() == type &&
+                entry.getSisteOppdatering().contains("opprettet"));
     }
 
     private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata, String navEnhetNr,
-                                                           String ident, Set<String> miljoer, boolean isOpprettEndre,
-                                                           Long bestillingId) {
+                                                           String ident, Set<String> miljoer, Long bestillingId) {
 
         return Flux.just(pensjondata)
                 .filter(PensjonData::hasUforetrygd)
                 .map(PensjonData::getUforetrygd)
                 .flatMap(uforetrygd -> Flux.fromIterable(miljoer)
-                        .flatMap(miljoe -> {
+                        .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
+                                .collectList()
+                                .map(vedtak -> {
+                                    if (!hasVedtak(vedtak, SakType.UT)) {
 
-                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe, null)) {
-
-                                var context = MappingContextUtils.getMappingContext();
-                                context.setProperty(IDENT, ident);
-                                context.setProperty(MILJOER, List.of(miljoe));
-                                context.setProperty(NAV_ENHET, navEnhetNr);
-                                return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
-                                        .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
-                                                .map(response -> {
-                                                    response.getStatus().stream()
-                                                            .filter(status -> status.getResponse().isResponse2xx())
-                                                            .forEach(status ->
-                                                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                            PEN_UT, new AtomicReference<>(request)));
-                                                    return response;
-                                                }));
-
-                            } else {
-                                return getStatus(miljoe, 200, "OK");
-                            }
-                        }));
+                                        var context = MappingContextUtils.getMappingContext();
+                                        context.setProperty(IDENT, ident);
+                                        context.setProperty(MILJOER, List.of(miljoe));
+                                        context.setProperty(NAV_ENHET, navEnhetNr);
+                                        return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
+                                                .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
+                                                        .map(response -> {
+                                                            response.getStatus().stream()
+                                                                    .filter(status -> status.getResponse().isResponse2xx())
+                                                                    .forEach(status ->
+                                                                            saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                                                    PEN_UT, new AtomicReference<>(request)));
+                                                            return response;
+                                                        }));
+                                    } else {
+                                        return getStatus(miljoe, 200, "OK");
+                                    }
+                                })))
+                .flatMap(Flux::from);
     }
 
     @SuppressWarnings("java:S3740")
@@ -430,6 +446,7 @@ public class PensjonforvalterClient implements ClientRegister {
             type, AtomicReference vedtak) {
 
         log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
+        transaksjonMappingService.delete(ident, miljoe, type.name());
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
@@ -455,6 +472,22 @@ public class PensjonforvalterClient implements ClientRegister {
                             request.setFnr(ident);
                             request.setMiljoer(List.of(miljoe));
                             return pensjonforvalterConsumer.lagreInntekter(request);
+                        }));
+    }
+
+    private Flux<PensjonforvalterResponse> lagreGenerertInntekt(PensjonData pensjonData, String ident,
+                                                                Set<String> miljoer) {
+
+        return Flux.just(pensjonData)
+                .filter(PensjonData::hasGenerertInntekt)
+                .map(PensjonData::getGenerertInntekt)
+                .flatMap(generertInntekt -> Flux.fromIterable(miljoer)
+                        .flatMap(miljoe -> {
+
+                            var request = mapperFacade.map(generertInntekt, PensjonPoppGenerertInntektRequest.class);
+                            request.setFnr(ident);
+                            request.setMiljoer(List.of(miljoe));
+                            return pensjonforvalterConsumer.lagreGenererteInntekter(request);
                         }));
     }
 
@@ -488,6 +521,23 @@ public class PensjonforvalterClient implements ClientRegister {
                 .collectList()
                 .filter(resultat -> !resultat.isEmpty())
                 .map(PensjonforvalterClient::mergePensjonforvalterResponses);
+    }
+
+    private Flux<PensjonforvalterResponse> lagrePensjonsavtale(PensjonData pensjon, String ident, Set<String> miljoer) {
+
+        return Flux.just(pensjon)
+                .filter(PensjonData::hasPensjonsavtale)
+                .map(PensjonData::getPensjonsavtale)
+                .flatMap(pensjonsavtaler -> Flux.fromIterable(pensjonsavtaler)
+                        .flatMap(pensjonsavtale -> {
+
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty(IDENT, ident);
+                            context.setProperty(MILJOER, miljoer);
+
+                            var pensjonsavtaleRequest = mapperFacade.map(pensjonsavtale, PensjonsavtaleRequest.class, context);
+                            return pensjonforvalterConsumer.lagrePensjonsavtale(pensjonsavtaleRequest);
+                        }));
     }
 
     private String decodeStatus(PensjonforvalterResponse response, String ident) {

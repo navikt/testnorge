@@ -30,6 +30,7 @@ SigrunstubForm.validation = {
 		Yup.array().of(
 			Yup.object({
 				grunnlag: Yup.array()
+					.max(1)
 					.of(
 						Yup.object({
 							tekniskNavn: Yup.string().required('Velg en type inntekt'),
@@ -50,15 +51,20 @@ SigrunstubForm.validation = {
 						}
 						return values.grunnlag?.length > 0 || values.svalbardGrunnlag?.length > 0
 					}),
-				inntektsaar: Yup.number().integer('Ugyldig årstall').required('Tast inn et gyldig år'),
-				svalbardGrunnlag: Yup.array().of(
-					Yup.object({
-						tekniskNavn: Yup.string().required('Velg en type inntekt'),
-						verdi: Yup.number()
-							.min(0, 'Tast inn en gyldig verdi')
-							.typeError('Tast inn en gyldig verdi'),
-					}),
-				),
+				inntektsaar: Yup.number()
+					.min(2017)
+					.integer('Ugyldig årstall')
+					.required('Tast inn et gyldig år'),
+				svalbardGrunnlag: Yup.array()
+					.max(1)
+					.of(
+						Yup.object({
+							tekniskNavn: Yup.string().required('Velg en type inntekt'),
+							verdi: Yup.number()
+								.min(0, 'Tast inn en gyldig verdi')
+								.typeError('Tast inn en gyldig verdi'),
+						}),
+					),
 				tjeneste: Yup.string().required('Velg en type tjeneste'),
 			}),
 		),

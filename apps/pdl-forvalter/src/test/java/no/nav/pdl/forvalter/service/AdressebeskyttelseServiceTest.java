@@ -70,6 +70,7 @@ class AdressebeskyttelseServiceTest {
     void whenStrengtFortroligUtland_thenSetMasterToPdl() {
 
         var request = PersonDTO.builder()
+                .ident(DNR_IDENT)
                 .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
                         .gradering(STRENGT_FORTROLIG_UTLAND)
                         .isNew(true)
@@ -85,6 +86,7 @@ class AdressebeskyttelseServiceTest {
     void whenStrengtFortrolig_thenSetKontaktadresseClearOtherAdresses() {
 
         var request = PersonDTO.builder()
+                .ident(DNR_IDENT)
                 .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
                         .gradering(STRENGT_FORTROLIG)
                         .isNew(true)

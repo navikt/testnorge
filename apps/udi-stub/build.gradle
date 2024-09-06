@@ -23,7 +23,7 @@ configurations {
 dependencies {
     implementation platform('org.testcontainers:testcontainers-bom:1.19.8')
 
-    implementation "com.sun.xml.ws:jaxws-rt:4.0.2"
+    implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:database'
@@ -41,11 +41,12 @@ dependencies {
 
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'com.zaxxer:HikariCP'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     testImplementation 'com.h2database:h2'
     testImplementation 'org.testcontainers:junit-jupiter'

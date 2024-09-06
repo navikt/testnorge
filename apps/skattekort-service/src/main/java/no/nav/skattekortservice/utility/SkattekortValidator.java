@@ -1,7 +1,7 @@
 package no.nav.skattekortservice.utility;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Arbeidsgiver;
+import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekort;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekortmelding;
@@ -25,10 +25,10 @@ public class SkattekortValidator {
     private static void validateSkattekort(SkattekortRequestDTO skattekort) {
 
         skattekort.getArbeidsgiver().stream()
-                .map(Arbeidsgiver::getArbeidstaker)
+                .map(ArbeidsgiverSkatt::getArbeidstaker)
                 .flatMap(Collection::stream)
                 .map(Skattekortmelding::getSkattekort)
-                .map(Skattekort::getTrekktype)
+                .map(Skattekort::getForskuddstrekk)
                 .flatMap(Collection::stream)
                 .forEach(trekktype -> {
                     if (trekktype.isAllEmpty()) {
@@ -44,7 +44,7 @@ public class SkattekortValidator {
     private static void validateArbeidstager(SkattekortRequestDTO skattekort) {
 
         skattekort.getArbeidsgiver().stream()
-                .map(Arbeidsgiver::getArbeidstaker)
+                .map(ArbeidsgiverSkatt::getArbeidstaker)
                 .flatMap(Collection::stream)
                 .forEach(arbeidstaker -> {
                     if (arbeidstaker.isEmptyArbeidstakeridentifikator()) {
@@ -60,7 +60,7 @@ public class SkattekortValidator {
     private static void validateArbeidsgiver(SkattekortRequestDTO skattekort) {
 
         skattekort.getArbeidsgiver().stream()
-                .map(Arbeidsgiver::getArbeidsgiveridentifikator)
+                .map(ArbeidsgiverSkatt::getArbeidsgiveridentifikator)
                 .forEach(arbeidsgiver -> {
                     if (arbeidsgiver.isAllEmpty()) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

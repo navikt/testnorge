@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - navikt/dolly-komponenter/**
-      - .github/workflows/lib.frontend.dolly-komponenter.yml
+      - "navikt/dolly-komponenter/**"
+      - ".github/workflows/lib.frontend.dolly-komponenter.yml"
 
 jobs:
   workflow:

@@ -4,14 +4,14 @@ on:
   push:
     paths:
       - "plugins/**"
-      - proxies/medl-proxy/**
-      - libs/servlet-core
-      - libs/servlet-security
-      - libs/servlet-insecure-security
-      - libs/security-core
-      - libs/database
-      - libs/data-transfer-objects
-      - .github/workflows/proxy.medl-proxy.yml
+      - "proxies/medl-proxy/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/servlet-insecure-security/**"
+      - "libs/security-core/**"
+      - "libs/database/**"
+      - "libs/data-transfer-objects/**"
+      - ".github/workflows/proxy.medl-proxy.yml"
 
 jobs:
   workflow:

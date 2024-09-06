@@ -30,7 +30,6 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.StaleStateException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -52,6 +51,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
@@ -140,7 +140,7 @@ public class BestillingService {
     }
 
     @Transactional
-    @Retryable(StaleStateException.class)
+    @Retryable
     public Bestilling cancelBestilling(Long bestillingId) {
 
         var bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
@@ -214,19 +214,6 @@ public class BestillingService {
         return saveBestillingToDB(bestilling);
     }
 
-    private String filterAvailable(Collection<String> environments) {
-
-        var miljoer = miljoerConsumer.getMiljoer().block();
-        return nonNull(environments) ? environments.stream()
-                .filter(miljoer::contains)
-                .collect(Collectors.joining(",")) : null;
-    }
-
-    private String filterAvailable(String miljoer) {
-
-        return isNotBlank(miljoer) ? filterAvailable(Arrays.asList(miljoer.split(","))) : null;
-    }
-
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall,
                                      List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
@@ -272,7 +259,6 @@ public class BestillingService {
                         .bruker(fetchOrCreateBruker())
                         .build());
     }
-
 
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
@@ -422,7 +408,34 @@ public class BestillingService {
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
                 .arbeidsplassenCV(request.getArbeidsplassenCV())
+                .skattekort(request.getSkattekort())
                 .build());
+    }
+
+    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId) {
+
+        return bestillingProgressRepository.findByBestilling_Id(bestillingId);
+    }
+
+    private String filterAvailable(Collection<String> environments) {
+
+        if (isNull(environments) || environments.isEmpty()) {
+            return null;
+        }
+
+        var miljoer = miljoerConsumer.getMiljoer().block();
+
+        if (isNull(miljoer)) {
+            return null;
+        }
+        return environments.stream()
+                .filter(miljoer::contains)
+                .collect(Collectors.joining(","));
+    }
+
+    private String filterAvailable(String miljoer) {
+
+        return isNotBlank(miljoer) ? filterAvailable(Arrays.asList(miljoer.split(","))) : null;
     }
 
     private String wrapSearchString(String searchString) {
@@ -452,10 +465,5 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
-    }
-
-    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId) {
-
-        return bestillingProgressRepository.findByBestilling_Id(bestillingId);
     }
 }

@@ -346,19 +346,6 @@ query($ident: ID!, $historikk: Boolean!) {
                 ...metadataDetails
             }
         },
-        foedsel {
-            foedselsaar,
-            foedselsdato,
-            foedeland,
-            foedested,
-            foedekommune,
-            folkeregistermetadata {
-                ...folkeregistermetadataDetails
-            }
-            metadata {
-                ...metadataDetails
-            }
-        },
         foedested {
             foedested,
             foedekommune,
@@ -575,6 +562,7 @@ query($ident: ID!, $historikk: Boolean!) {
         foreldreansvar(historikk: $historikk) {
             ansvar,
             ansvarlig,
+            ansvarssubjekt,
             ansvarligUtenIdentifikator {
                 navn {
                     fornavn,

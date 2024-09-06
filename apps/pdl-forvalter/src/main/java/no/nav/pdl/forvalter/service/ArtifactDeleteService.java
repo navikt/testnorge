@@ -239,9 +239,10 @@ public class ArtifactDeleteService {
 
         dbPerson.getPerson().getForeldreansvar().stream()
                 .filter(type -> id.equals(type.getId()) &&
-                        isNotBlank(type.getAnsvarlig()))
+                        (isNotBlank(type.getAnsvarlig()) || isNotBlank(type.getAnsvarssubjekt())))
                 .forEach(type -> {
-                    var slettePerson = getPerson(type.getAnsvarlig());
+                    var slettePerson = getPerson(isNotBlank(type.getAnsvarlig()) ?
+                            type.getAnsvarlig() : type.getAnsvarssubjekt());
 
                     DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FORELDREANSVAR_FORELDER);
 

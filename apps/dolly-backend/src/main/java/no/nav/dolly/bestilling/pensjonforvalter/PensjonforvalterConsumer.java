@@ -7,22 +7,29 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreGenerertPoppInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePensjonsavtaleCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreUforetrygdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.PensjonHentVedtakCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePensjonsavtaleCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -72,6 +79,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
                         pensjonPoppInntektRequest).call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "popp_lagreGenerertInntekt" })
+    public Flux<PensjonforvalterResponse> lagreGenererteInntekter(PensjonPoppGenerertInntektRequest pensjonPoppGenerertInntektRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagreGenerertPoppInntektCommand(webClient, token.getTokenValue(),
+                        pensjonPoppGenerertInntektRequest).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
@@ -146,6 +161,32 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pen_lagrePensjpnsavtale" })
+    public Flux<PensjonforvalterResponse> lagrePensjonsavtale(PensjonsavtaleRequest pensjonsavtaleRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagrePensjonsavtaleCommand(webClient, pensjonsavtaleRequest, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pen_slettePensjpnsavtale" })
+    public void slettePensjonsavtale(List<String> identer) {
+
+        tokenService.exchange(serverProperties)
+                .flatMapMany(token -> Flux.fromIterable(identer)
+                        .flatMap(ident -> new SlettePensjonsavtaleCommand(webClient, ident, token.getTokenValue()).call()))
+                .collectList()
+                .subscribe(resultat -> log.info("Slettet pensjonsavtaler (PEN), alle miljøer"));
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pen_hentVedtak" })
+    public Flux<PensjonVedtakResponse> hentVedtak(String ident, String miljoe) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token ->  new PensjonHentVedtakCommand(webClient, ident, miljoe, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Pensjon vedtak for ident {}, miljoe {} mottatt {}",
+                        ident, miljoe, response));
     }
 
     @Override

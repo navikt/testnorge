@@ -346,7 +346,9 @@ public class PdlOrdreService {
                         deployService.createOrdre(PDL_INNFLYTTING, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getInnflytting()),
                         deployService.createOrdre(PDL_UTFLYTTING, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getUtflytting()),
                         deployService.createOrdre(PDL_DELTBOSTED, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDeltBosted()),
-                        deployService.createOrdre(PDL_FORELDREANSVAR, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getForeldreansvar()),
+                        deployService.createOrdre(PDL_FORELDREANSVAR, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getForeldreansvar().stream()
+                                .filter(ForeldreansvarDTO::isNotAnsvarssubjekt)
+                                .toList()),
                         deployService.createOrdre(PDL_FORELDRE_BARN_RELASJON, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getForelderBarnRelasjon()),
                         deployService.createOrdre(PDL_SIVILSTAND, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getSivilstand().stream()
                                 .filter(SivilstandDTO::isNotSamboer)
@@ -397,5 +399,4 @@ public class PdlOrdreService {
                 person.getFoedselsdato() :
                 mapperFacade.mapAsList(person.getFoedsel(), FoedselDTO.class));
     }
-
 }
