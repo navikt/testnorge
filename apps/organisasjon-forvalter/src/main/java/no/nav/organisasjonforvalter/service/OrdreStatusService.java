@@ -1,8 +1,5 @@
 package no.nav.organisasjonforvalter.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingConsumer;
@@ -12,9 +9,7 @@ import no.nav.organisasjonforvalter.dto.responses.OrdreResponse.StatusEnv;
 import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.dto.responses.StatusDTO;
 import no.nav.organisasjonforvalter.jpa.repository.StatusRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -28,6 +23,7 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.ADDING_TO_QUEUE;
 import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.COMPLETED;
+import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.NOT_FOUND;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -44,33 +40,45 @@ public class OrdreStatusService {
 
         var statusMap = statusRepository.findAllByOrganisasjonsnummerIn(orgnumre);
 
-        if (orgnumre.stream()
-                .anyMatch(orgnr -> statusMap.stream()
-                        .noneMatch(status -> orgnr.equals(status.getOrganisasjonsnummer())))) {
+        var orgnrSomMangler = orgnumre.stream()
+                .filter(orgnr -> statusMap.stream()
+                        .noneMatch(status -> orgnr.equals(status.getOrganisasjonsnummer())))
+                .collect(Collectors.toSet());
+
+        if (!orgnrSomMangler.isEmpty()) {
 
             return OrdreResponse.builder()
-                    .orgStatus(orgnumre.stream()
-                            .filter(orgnr -> statusMap.stream()
-                                    .noneMatch(status -> orgnr.equals(status.getOrganisasjonsnummer())))
-                            .collect(Collectors.toMap(orgnr -> orgnr, grgnr -> List.of(StatusEnv.builder()
-                                    .status(StatusDTO.Status.NOT_FOUND)
-                                    .build()))))
+                    .orgStatus(orgnrSomMangler.stream()
+                            .collect(Collectors.toMap(orgnr -> orgnr, orgnr -> {
+                                var orgIMiljo = importService.getOrganisasjoner(orgnr, null);
+                                return !orgIMiljo.isEmpty() ?
+                                        orgIMiljo.keySet().stream()
+                                                .map(env -> StatusEnv.builder()
+                                                        .status(COMPLETED)
+                                                        .environment(env)
+                                                        .build())
+                                                .toList() :
+                                        List.of(StatusEnv.builder()
+                                                .status(NOT_FOUND)
+                                                .build());
+                            })))
                     .build();
         }
 
+        var oppdatertStatus = statusMap;
         if (statusMap.stream().anyMatch(status -> isBlank(status.getBestId()))) {
-            statusMap.stream()
-                    .map(organisasjonBestillingConsumer::getBestillingId)
-                    .reduce(Flux.empty(), Flux::concat)
+
+            oppdatertStatus = Flux.fromIterable(statusMap)
+                    .flatMap(organisasjonBestillingConsumer::getBestillingId)
                     .collectList()
                     .block();
-            statusRepository.saveAll(statusMap);
+
+            statusRepository.saveAll(oppdatertStatus);
         }
 
-        var orgStatus = statusMap.stream()
+        var orgStatus = Flux.fromIterable(oppdatertStatus)
                 .filter(status -> isNotBlank(status.getBestId()))
-                .map(organisasjonBestillingConsumer::getBestillingStatus)
-                .reduce(Flux.empty(), Flux::concat)
+                .flatMap(organisasjonBestillingConsumer::getBestillingStatus)
                 .collectList()
                 .block();
 
@@ -87,7 +95,7 @@ public class OrdreStatusService {
             }
         }
 
-        if (statusMap.stream().anyMatch(status -> isBlank(status.getBestId()))) {
+        if (oppdatertStatus.stream().anyMatch(status -> isBlank(status.getBestId()))) {
             orgStatus.addAll(statusMap.stream()
                     .filter(status -> isBlank(status.getBestId()))
                     .map(status -> BestillingStatus.builder()
@@ -130,15 +138,5 @@ public class OrdreStatusService {
                                                 .build(),
                                         toList()))))
                 .build();
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeployEntry {
-
-        private String environment;
-        private String uuid;
-        private List<BestillingStatus.ItemDto> lastStatus;
     }
 }

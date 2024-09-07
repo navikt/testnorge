@@ -42,21 +42,18 @@ public class ImportService {
     @Transactional
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
-        var miljoerAaSjekke = nonNull(miljoer) &&
-                miljoer.stream().anyMatch(miljoe ->
-                        miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe))) ?
-
-                miljoer.stream().filter(miljoe ->
-                        miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe)))
+        var miljoerAaSjekke = nonNull(miljoer) && !miljoer.isEmpty() ?
+                miljoerServiceConsumer.getOrgMiljoer().stream()
+                        .filter(miljoer::contains)
                         .collect(Collectors.toSet()) :
-
                 miljoerServiceConsumer.getOrgMiljoer();
 
         var dbOrganisasjon = organisasjonRepository.findByOrganisasjonsnummer(orgnummer);
 
         var organisasjoner =
-                organisasjonServiceConsumer.getStatus(dbOrganisasjon.isPresent() ?
-                        getAllOrgnr(dbOrganisasjon.get(), new HashSet<>()) : Set.of(orgnummer), miljoerAaSjekke);
+                organisasjonServiceConsumer.getStatus(
+                        dbOrganisasjon.map(organisasjon -> getAllOrgnr(organisasjon,
+                                new HashSet<>())).orElseGet(() -> Set.of(orgnummer)), miljoerAaSjekke);
 
         return organisasjoner.keySet().stream()
                 .filter(env -> !organisasjoner.get(env).entrySet().isEmpty())

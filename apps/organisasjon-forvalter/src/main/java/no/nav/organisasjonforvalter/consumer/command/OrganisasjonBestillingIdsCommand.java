@@ -5,14 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
-import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,19 +26,25 @@ public class OrganisasjonBestillingIdsCommand implements Callable<Mono<Status>> 
     public Mono<Status> call() {
 
         return webClient.get()
-                .uri(STATUS_URL.replace("{uuid}", status.getUuid()))
+                .uri(uriBuilder -> uriBuilder.path(STATUS_URL)
+                        .build(status.getUuid()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String[].class)
-                .flatMap(value -> {
-                    status.setBestId(Stream.of(value).findFirst().orElse(null));
-                    return Mono.just(status);
-                })
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(throwable ->
-                        log.error(throwable instanceof WebClientResponseException webClientResponseException ?
-                                webClientResponseException.getResponseBodyAsString() :
-                                throwable.getMessage()));
+                .doOnNext(resultat -> log.info("Melding mottatt {}", resultat))
+                .map(resultat -> Arrays.stream(resultat)
+                                .mapToInt(Integer::parseInt)
+                                .max()
+                                .orElse(0))
+                .doOnNext(resultat -> log.info("Index funnet {}", resultat))
+                .map(index -> Status.builder()
+                        .id(status.getId())
+                        .bestId(index != 0 ? index.toString() : null)
+                        .uuid(status.getUuid())
+                        .miljoe(status.getMiljoe())
+                        .organisasjonsnummer(status.getOrganisasjonsnummer())
+                        .build())
+                .doOnError(WebClientFilter::logErrorMessage);
     }
 }

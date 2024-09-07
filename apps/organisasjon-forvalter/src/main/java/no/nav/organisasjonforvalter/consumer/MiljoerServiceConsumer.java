@@ -8,8 +8,12 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,19 +39,16 @@ public class MiljoerServiceConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    @Cacheable(CACHE_MILJOER)
+    //    @Cacheable(CACHE_MILJOER)
     public Set<String> getOrgMiljoer() {
 
-        try {
-            return Stream.of(tokenExchange.exchange(serverProperties)
-                            .flatMap(token ->
-                                    new MiljoerServiceCommand(webClient, token.getTokenValue()).call()).block())
-                    .filter(env -> !env.equals("u5") && !env.equals("qx"))
-                    .collect(Collectors.toSet());
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å hente miljøer fra miljoer-service", e);
-            return emptySet();
-        }
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token ->
+                        new MiljoerServiceCommand(webClient, token.getTokenValue()).call())
+                .map(miljoer -> Flux.fromIterable(Arrays.asList(miljoer))
+                        .filter(env -> !env.equals("t13") && !env.equals("qx"))
+                        .collect(Collectors.toSet()))
+                .flatMap(Mono::from)
+                .block();
     }
 }
