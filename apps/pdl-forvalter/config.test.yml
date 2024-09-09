@@ -31,6 +31,9 @@ spec:
     periodSeconds: 60
     initialDelay: 60
   observability:
+    logging:
+      destinations:
+        - id: elastic
       autoInstrumentation:
         enabled: true
         runtime: java

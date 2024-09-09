@@ -38,6 +38,9 @@ spec:
     periodSeconds: 5
     failureThreshold: 10
   observability:
+    logging:
+      destinations:
+        - id: elastic
       autoInstrumentation:
         enabled: true
         runtime: java

@@ -71,6 +71,9 @@ spec:
     periodSeconds: 5
     failureThreshold: 500
   observability:
+    logging:
+      destinations:
+        - id: elastic
       autoInstrumentation:
         enabled: true
         runtime: java
