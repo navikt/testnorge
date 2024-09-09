@@ -9,8 +9,25 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
+import { useState } from 'react'
+import styled from 'styled-components'
 
 registerLocale('nb', locale_nb)
+
+const StyledInput = styled(DatePicker.Input)`
+	&&& {
+		p {
+			font-style: italic;
+			font-weight: normal;
+			color: #ba3a26;
+			margin-top: 0.5rem;
+
+			&::before {
+				content: none;
+			}
+		}
+	}
+`
 
 export const Datepicker = ({
 	name,
@@ -25,22 +42,28 @@ export const Datepicker = ({
 	const formMethods = useFormContext()
 	const selectedDate = formMethods.watch(name) ? new Date(formMethods.watch(name)) : undefined
 
+	const [hasError, setHasError] = useState(false)
+
 	const { datepickerProps, inputProps } = useDatepicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onDateChange: onChange || onBlur,
 		disabled: excludeDates,
 		defaultSelected: selectedDate,
+		onValidate: (date) => {
+			setHasError(!date.isValidDate && !date.isEmpty)
+		},
 	})
 
 	return (
 		<DatePicker {...datepickerProps} dropdownCaption={true}>
-			<DatePicker.Input
+			<StyledInput
 				{...inputProps}
 				placeholder={placeholder}
 				size={'small'}
 				disabled={disabled}
 				label={null}
+				error={hasError && 'Ugyldig dato-format'}
 			/>
 		</DatePicker>
 	)
