@@ -6,7 +6,7 @@ spring:
       token: "test"
       enabled: false
   datasource:
-    url: jdbc:tc:postgresql:14.4:///test?TC_REUSABLE=true # 14.4 er versjon p.t. i dev-gcp.
+    url: jdbc:tc:postgresql:15:///test?TC_REUSABLE=true
     username: user
     password: pass
   jpa:
