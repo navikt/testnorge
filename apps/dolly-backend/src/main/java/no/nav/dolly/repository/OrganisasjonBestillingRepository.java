@@ -16,4 +16,14 @@ public interface OrganisasjonBestillingRepository extends CrudRepository<Organis
     int deleteBestillingWithNoChildren(@Param("bestilling") OrganisasjonBestilling bestilling);
 
     List<OrganisasjonBestilling> findByBruker(Bruker bruker);
+
+    @Modifying
+    @Query("""
+        update OrganisasjonBestilling ob
+        set ob.ferdig = true
+        where ob.ferdig = false
+""")
+
+    int stopAllUnfinished();
+
 }

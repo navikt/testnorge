@@ -10,20 +10,13 @@ spring:
       read-timeout: 30000
       generic:
         enabled: false
-      database:
-        backend: postgresql/preprod-fss
-        enabled: true
-        role: dolly-test-admin
   datasource:
-    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/dolly-test
+    url: jdbc:postgresql://localhost:5432/dolly-test
+    username: postgres
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 management:
   endpoints:

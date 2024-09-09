@@ -26,7 +26,7 @@ Ha naisdevice kjørende og kjør UdiStubApplicationStarter med følgende argumen
 
 ```
 --add-opens java.base/java.lang=ALL-UNNAMED
--Dspring.profiles.active=dev
+-Dspring.profiles.active=local
 -Dspring.cloud.vault.token=[vault-token]
 ```
 
@@ -44,3 +44,5 @@ TESTCONTAINERS_RYUK_DISABLED=true
 Applikasjonen kan kjøre lokalt med en h2 database som kjører i minnet. Applikasjonen kan også kjøres i en skytjeneste
 med integrasjon mot Vault og postgresql. Hvis andre integrasjoner er ønskelig må disse implementeres i en egen submodul
 hvor integrasjonen defineres f.eks via en @Configuration annotert klasse.
+
+Applikasjonen er avhengig av en lokal PSQL-database. For mer informasjon se [egen dokumentasjon](../../docs/local_db.md).
