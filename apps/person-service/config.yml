@@ -48,9 +48,9 @@ spec:
     logging:
       destinations:
         - id: elastic
-      autoInstrumentation:
-        enabled: true
-        runtime: java
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 4
