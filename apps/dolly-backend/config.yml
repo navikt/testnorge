@@ -104,7 +104,7 @@ spec:
       memory: 8192Mi
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: POSTGRES_15
         tier: db-custom-2-7680
         name: testnav-dolly-backend
         databases:
