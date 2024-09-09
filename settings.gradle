@@ -35,6 +35,7 @@ includeBuild './proxies/histark-proxy'
 includeBuild './proxies/inntektstub-proxy'
 includeBuild './proxies/inst-proxy'
 includeBuild './proxies/kontoregister-person-proxy'
+includeBuild './proxies/fullmakt-proxy'
 includeBuild './proxies/krrstub-proxy'
 includeBuild './proxies/medl-proxy'
 includeBuild './proxies/modapp-ereg-proxy'
@@ -135,7 +136,6 @@ includeBuild './examples/reactive-rest-example'
 
 includeBuild './mocks/tokendings-mock'
 includeBuild './mocks/maskinporten-mock'
-
 
 
 include(':proxies')
