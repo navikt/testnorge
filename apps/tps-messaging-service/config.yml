@@ -44,7 +44,7 @@ spec:
     limits:
       memory: 2048Mi
     requests:
-      cpu: 4000m
+      cpu: 200m
       memory: 1024Mi
   envFrom:
     - secret: testnav-tps-messaging-service
