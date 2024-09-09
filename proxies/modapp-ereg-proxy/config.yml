@@ -38,6 +38,11 @@ spec:
           cluster: dev-gcp
         - application: ereg-batch-status-service
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: b27jbsl01605.preprod.local
+        - host: b27jbsl01609.preprod.local
+        - host: b27jbsl01610.preprod.local
   liveness:
     path: /internal/isAlive
     initialDelay: 4
