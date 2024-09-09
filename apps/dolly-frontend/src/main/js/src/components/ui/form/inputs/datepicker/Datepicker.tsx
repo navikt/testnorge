@@ -21,7 +21,6 @@ const StyledInput = styled(DatePicker.Input)`
 			font-weight: normal;
 			color: #ba3a26;
 			margin-top: 0.5rem;
-
 			&::before {
 				content: none;
 			}
