@@ -28,6 +28,10 @@ spec:
   prometheus:
     enabled: true
     path: "/internal/prometheus"
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     initialDelay: 45
     path: "/internal/health/readiness"
