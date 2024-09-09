@@ -33,7 +33,7 @@ export const Alder = ({ formMethods }) => {
 		!/\d/.test(event.key) && event.preventDefault()
 
 	const minDateAlder = opts?.identtype === 'NPID' ? new Date('01.01.1870') : new Date('01.01.1900')
-	// console.log('formValues: ', formValues) //TODO - SLETT MEG
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormTextInput
@@ -49,7 +49,6 @@ export const Alder = ({ formMethods }) => {
 				disabled={disableFoedtDato}
 				maxDate={new Date()}
 				minDate={minDateAlder}
-				// value={_.get(formValues, paths.foedtEtter)}
 			/>
 			<FormDatepicker
 				name={paths.foedtFoer}
