@@ -55,6 +55,10 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  observability:
+      autoInstrumentation:
+        enabled: true
+        runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 4

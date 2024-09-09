@@ -89,15 +89,15 @@ spec:
     initialDelay: 20
     periodSeconds: 20
     failureThreshold: 900
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 20
     periodSeconds: 20
     failureThreshold: 900
-  observability:
-    autoInstrumentation:
-      enabled: true
-      runtime: java
   prometheus:
     enabled: true
     path: /internal/metrics

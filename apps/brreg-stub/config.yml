@@ -12,6 +12,10 @@ spec:
     path: /isAlive
     periodSeconds: 30
     initialDelay: 30
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /isReady
     initialDelay: 30

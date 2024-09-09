@@ -32,6 +32,10 @@ spec:
     initialDelay: 30
     periodSeconds: 30
     failureThreshold: 500
+  observability:
+      autoInstrumentation:
+        enabled: true
+        runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 30
