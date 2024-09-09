@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.statusfrontend;
+package no.nav.testnav.apps.statusfrontend.slack;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.info.Info;

@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.statusfrontend;
+package no.nav.testnav.apps.statusfrontend.slack;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.slack.api.Slack;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ class SlackService {
     private static final Instant START_TIME = Instant.now();
     private static final int MESSAGES_PER_PAGE = 100;
 
-    private final Slack slack = Slack.getInstance();
+    final Slack slack = Slack.getInstance();
     private final String botToken;
     private final String channelId;
 
@@ -83,7 +82,7 @@ class SlackService {
 
     }
 
-    private static String getAlertName(String message) {
+    static String getAlertName(String message) {
         return message.substring(message.indexOf("]") + 2);
     }
 
@@ -97,7 +96,7 @@ class SlackService {
         @JsonProperty
         private final Instant timestamp;
 
-        private Alert(Message message) {
+        Alert(Message message) {
             var attachments = message.getAttachments();
             if (attachments != null && !attachments.isEmpty()) {
                 this.message = attachments

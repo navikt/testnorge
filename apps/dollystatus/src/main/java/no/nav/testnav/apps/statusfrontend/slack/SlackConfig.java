@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.statusfrontend;
+package no.nav.testnav.apps.statusfrontend.slack;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
