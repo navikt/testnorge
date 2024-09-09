@@ -11,10 +11,6 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
       httpclient:
@@ -28,3 +24,10 @@ consumers:
     namespace: arbeidsforhold
     url: https://b27jbsl016-MILJOE.preprod.local:8443
     cluster: dev-fss
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
