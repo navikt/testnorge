@@ -6,7 +6,7 @@ import { DollyApi } from '@/service/Api'
 import { useAsync } from 'react-use'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ToggleGroup } from '@navikt/ds-react'
 import Icon from '@/components/ui/icon/Icon'
@@ -23,7 +23,7 @@ interface PdlPersonValues {
 }
 
 const StyledToggleGroup = styled(ToggleGroup)`
-	&&& {
+	&&&& {
 		div {
 			background-color: #ffffff;
 		}
@@ -65,21 +65,20 @@ export const PdlPersonForm = ({
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
 
-	const changeType = (type: string) => {
-		setType(type)
+	useEffect(() => {
 		formMethods.setValue(nyPersonPath, type === PersonType.NY_PERSON ? initialPdlPerson : undefined)
 		formMethods.setValue(
 			eksisterendePersonPath,
 			type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
 		)
 		formMethods.trigger()
-	}
+	}, [type])
 
 	return (
 		<>
 			{!isTestnorgeIdent && (
 				<>
-					<StyledToggleGroup size={'small'} value={type} onChange={changeType} label={'Personvalg'}>
+					<StyledToggleGroup size={'small'} value={type} onChange={setType} label={'Personvalg'}>
 						<ToggleGroup.Item key={PersonType.NY_PERSON} value={PersonType.NY_PERSON}>
 							<Icon
 								key={PersonType.NY_PERSON}
