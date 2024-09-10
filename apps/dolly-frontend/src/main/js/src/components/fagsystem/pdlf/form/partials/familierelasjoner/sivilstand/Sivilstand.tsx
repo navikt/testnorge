@@ -101,6 +101,7 @@ export const SivilstandForm = ({
 			/>
 			{kanHaRelatertPerson && (
 				<PdlPersonExpander
+					path={path}
 					nyPersonPath={`${path}.nyRelatertPerson`}
 					eksisterendePersonPath={`${path}.relatertVedSivilstand`}
 					eksisterendeNyPerson={eksisterendeNyPerson}

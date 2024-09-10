@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import { initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 
 interface PdlPersonValues {
+	path: string
 	nyPersonPath: string
 	eksisterendePersonPath: string
 	label: string
@@ -42,6 +43,7 @@ const PersonType = {
 }
 
 export const PdlPersonForm = ({
+	path,
 	nyPersonPath,
 	eksisterendePersonPath,
 	label,
@@ -71,7 +73,7 @@ export const PdlPersonForm = ({
 			eksisterendePersonPath,
 			type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
 		)
-		formMethods.setValue(eksisterendePersonPath, type === PersonType.EKSISTERENDE_PERSON)
+		formMethods.setValue(`${path}.eksisterendePerson`, type === PersonType.EKSISTERENDE_PERSON)
 		formMethods.trigger()
 	}, [type])
 
