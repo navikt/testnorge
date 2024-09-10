@@ -31,9 +31,12 @@ spec:
     periodSeconds: 60
     initialDelay: 60
   observability:
-      autoInstrumentation:
-        enabled: true
-        runtime: java
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     periodSeconds: 60
@@ -46,7 +49,7 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 1000m
+      cpu: 150m
       memory: 2000Mi
     limits:
       memory: 4000Mi

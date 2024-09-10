@@ -25,9 +25,12 @@ spec:
     periodSeconds: 30
     initialDelay: 30
   observability:
-      autoInstrumentation:
-        enabled: true
-        runtime: java
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 30
@@ -41,7 +44,7 @@ spec:
     limits:
       memory: 2048Mi
     requests:
-      cpu: 4000m
+      cpu: 200m
       memory: 1024Mi
   envFrom:
     - secret: testnav-tps-messaging-service

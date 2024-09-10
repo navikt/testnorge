@@ -32,9 +32,12 @@ spec:
     periodSeconds: 30
     initialDelay: 30
   observability:
-      autoInstrumentation:
-        enabled: true
-        runtime: java
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 30

@@ -33,9 +33,12 @@ spec:
     periodSeconds: 30
     failureThreshold: 500
   observability:
-      autoInstrumentation:
-        enabled: true
-        runtime: java
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 30

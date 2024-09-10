@@ -89,9 +89,12 @@ spec:
     periodSeconds: 2
     failureThreshold: 140
   observability:
-      autoInstrumentation:
-        enabled: true
-        runtime: java
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 20
@@ -102,7 +105,7 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 1000m
+      cpu: 200m
       memory: 1024Mi
     limits:
       memory: 2048Mi

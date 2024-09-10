@@ -90,6 +90,9 @@ spec:
     periodSeconds: 20
     failureThreshold: 900
   observability:
+    logging:
+      destinations:
+        - id: elastic
     autoInstrumentation:
       enabled: true
       runtime: java
@@ -103,7 +106,7 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 5000m
+      cpu: 250m
       memory: 4096Mi
     limits:
       memory: 8192Mi
