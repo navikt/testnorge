@@ -1,0 +1,6 @@
+!**/src/main/**/build/
+!**/src/test/**/build/
+!gradle/wrapper/gradle-wrapper.jar
+*.iml
+.gradle
+build/
