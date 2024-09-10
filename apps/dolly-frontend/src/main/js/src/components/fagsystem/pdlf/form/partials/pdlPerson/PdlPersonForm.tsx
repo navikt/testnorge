@@ -56,7 +56,7 @@ export const PdlPersonForm = ({
 	//@ts-ignore
 	const opts: any = useContext(BestillingsveilederContext)
 	const [type, setType] = useState(
-		formMethods.watch('vergemaal.vergeIdent')
+		formMethods.watch(eksisterendePersonPath)
 			? PersonType.EKSISTERENDE_PERSON
 			: PersonType.NY_PERSON,
 	)
@@ -71,7 +71,7 @@ export const PdlPersonForm = ({
 			eksisterendePersonPath,
 			type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
 		)
-		formMethods.setValue('vergemaal.eksisterendePerson', type === PersonType.EKSISTERENDE_PERSON)
+		formMethods.setValue(eksisterendePersonPath, type === PersonType.EKSISTERENDE_PERSON)
 		formMethods.trigger()
 	}, [type])
 
