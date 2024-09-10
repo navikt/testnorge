@@ -71,6 +71,7 @@ export const PdlPersonForm = ({
 			eksisterendePersonPath,
 			type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
 		)
+		formMethods.setValue('vergemaal.eksisterendePerson', type === PersonType.EKSISTERENDE_PERSON)
 		formMethods.trigger()
 	}, [type])
 
