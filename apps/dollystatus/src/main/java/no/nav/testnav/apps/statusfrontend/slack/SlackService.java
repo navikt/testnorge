@@ -3,6 +3,7 @@ package no.nav.testnav.apps.statusfrontend.slack;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
+import com.slack.api.methods.request.conversations.ConversationsHistoryRequest;
 import com.slack.api.model.Message;
 import com.slack.api.model.ResponseMetadata;
 import lombok.AccessLevel;
@@ -21,7 +22,7 @@ class SlackService {
     private static final Instant START_TIME = Instant.now();
     private static final int MESSAGES_PER_PAGE = 100;
 
-    final Slack slack = Slack.getInstance();
+    final Slack slack;
     private final String botToken;
     private final String channelId;
 
@@ -36,14 +37,16 @@ class SlackService {
             try {
 
                 var currentCursor = cursor;
+                var request = ConversationsHistoryRequest
+                        .builder()
+                        .channel(channelId)
+                        .oldest(String.valueOf(START_TIME.getEpochSecond()))
+                        .limit(MESSAGES_PER_PAGE)
+                        .cursor(currentCursor)
+                        .build();
                 var response = slack
                         .methods(botToken)
-                        .conversationsHistory(request -> request
-                                .channel(channelId)
-                                .oldest(String.valueOf(START_TIME.getEpochSecond()))
-                                .limit(MESSAGES_PER_PAGE)
-                                .cursor(currentCursor)
-                        );
+                        .conversationsHistory(request);
                 if (!response.isOk()) {
                     throw new IOException("Error fetching messages: " + response.getError());
                 }

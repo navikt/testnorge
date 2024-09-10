@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.slack;
 
+import com.slack.api.Slack;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +15,13 @@ public class SlackConfig {
     private String channel;
 
     @Bean
-    SlackService slackService() {
-        return new SlackService(token, channel);
+    Slack slack() {
+        return Slack.getInstance();
+    }
+
+    @Bean
+    SlackService slackService(Slack slack) {
+        return new SlackService(slack, token, channel);
     }
 
 }
