@@ -30,7 +30,7 @@ spec:
         - application: testnav-orgnummer-service
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         tier: db-custom-1-3840
         databases:
           - name: testnav-generer-organisasjon-populasjon-db
