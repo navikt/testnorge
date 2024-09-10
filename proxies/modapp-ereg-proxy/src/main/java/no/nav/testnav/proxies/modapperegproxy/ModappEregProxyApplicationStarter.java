@@ -29,11 +29,6 @@ import java.util.function.Function;
 public class ModappEregProxyApplicationStarter {
 
     private static final String[] miljoer = new String[]{ "q1", "q2", "q4" };
-    private static final Map<String, String> miljoeUrlSegment = Map.of(
-            "q1", "05",
-            "q2", "10",
-            "q4", "09"
-    );
 
     @Bean
     public RouteLocator customRouteLocator(
@@ -45,7 +40,7 @@ public class ModappEregProxyApplicationStarter {
                 .asList(miljoer)
                 .forEach(
                         miljoe -> {
-                            var properties = forEnvironment(consumers.getEregAura(), miljoeUrlSegment.get(miljoe));
+                            var properties = forEnvironment(consumers.getEregAura(), miljoe);
                             routes
                                     .route(createRoute(miljoe, properties.getUrl()));
                         });
@@ -69,7 +64,7 @@ public class ModappEregProxyApplicationStarter {
                 original.getCluster(),
                 original.getNamespace(),
                 original.getName(),
-                original.getUrl().replace("-MILJOE", urlSegment)
+                original.getUrl().replace("{miljoe}", urlSegment)
         );
     }
 }

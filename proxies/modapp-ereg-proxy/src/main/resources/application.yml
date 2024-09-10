@@ -22,7 +22,7 @@ consumers:
   ereg-aura:
     name: ereg-aura
     namespace: arbeidsforhold
-    url: https://b27jbsl016-MILJOE.preprod.local:8443
+    url: https://modapp-{miljoe}.adeo.no
     cluster: dev-fss
 
 server:
