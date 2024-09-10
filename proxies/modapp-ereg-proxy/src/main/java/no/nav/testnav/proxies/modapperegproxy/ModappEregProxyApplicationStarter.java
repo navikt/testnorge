@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.modapperegproxy;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 
+@Slf4j
 @Import({
         CoreConfig.class,
         DevConfig.class,

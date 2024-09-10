@@ -1,6 +1,8 @@
 
 logging:
   level:
+    reactor:
+      netty: INFO
     org:
       springframework:
         cloud:

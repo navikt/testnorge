@@ -15,20 +15,8 @@ spring:
     gateway:
       httpclient:
         response-timeout: 10s
-        wiretap: true
-      httpserver:
-        wiretap: true
     vault:
       enabled: false
-
-logging:
-  level:
-    reactor:
-      netty: INFO
-    org:
-      springframework:
-        cloud:
-          gateway: INFO
 
 consumers:
   ereg-aura:
