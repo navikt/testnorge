@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -58,6 +59,7 @@ public class RsDollyBestilling {
     private String malBestillingNavn;
     private PdlPersondata pdldata;
     private RsDigitalKontaktdata krrstub;
+    private RsFullmakt fullmakt;
     private RsMedl medl;
     private List<RsInstdata> instdata;
     private List<RsAareg> aareg;
