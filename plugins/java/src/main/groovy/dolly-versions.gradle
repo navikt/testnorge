@@ -13,6 +13,7 @@ class DollyVersionCatalog {
     String apachePoi = "5.3.0"
     String assertj = "3.26.0"
     String avro = "7.6.1"
+    String bouncyCastle = "1.78.1"
     String guava = "33.2.0-jre"
     String jackson = "2.17.2"
     String jakartaActivation = "2.1.3"
