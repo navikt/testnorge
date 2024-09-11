@@ -5,7 +5,6 @@ import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.organisasjonforvalter.consumer.command.MiljoerServiceCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -13,12 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.emptySet;
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_MILJOER;
 
 @Slf4j
 @Service
