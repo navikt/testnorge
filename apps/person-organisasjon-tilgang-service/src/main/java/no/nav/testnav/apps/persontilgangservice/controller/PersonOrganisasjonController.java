@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.persontilgangservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.MaskinportenClient;
 import no.nav.testnav.apps.persontilgangservice.controller.dto.OrganisasjonDTO;
 import no.nav.testnav.apps.persontilgangservice.domain.Access;
+import no.nav.testnav.apps.persontilgangservice.domain.AccessToken;
 import no.nav.testnav.apps.persontilgangservice.service.PersonOrganisasjonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +19,15 @@ import reactor.core.publisher.Mono;
 public class PersonOrganisasjonController {
 
     private final PersonOrganisasjonService personOrganisasjonService;
-    private final MaskinportenClient maskinportenClient;
 
     @GetMapping
     public Flux<OrganisasjonDTO> getOrganiasjoner() {
         return personOrganisasjonService.getAccess().map(Access::toDTO);
     }
 
-    @GetMapping
-    public Mono<String> getMaskinportenToken() {
-        return maskinportenClient.getAccessToken().flatMap(accessToken -> Mono.just(accessToken.value()));
+    @GetMapping("/token")
+    public Mono<AccessToken> getMaskinportenToken() {
+        return personOrganisasjonService.getAccessToken();
     }
 
 
