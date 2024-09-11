@@ -1,14 +1,12 @@
-package no.nav.testnav.mocks.tokendingsmock.config;
+package no.nav.testnav.mocks.maskinporten.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
-
 
 @Configuration
 public class OpenApiConfig {

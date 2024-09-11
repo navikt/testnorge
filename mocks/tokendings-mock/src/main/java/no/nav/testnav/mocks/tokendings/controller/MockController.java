@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.tokendingsmock.controller;
+package no.nav.testnav.mocks.tokendings.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +11,8 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.mocks.tokendingsmock.domain.Arguments;
-import no.nav.testnav.mocks.tokendingsmock.service.JwtService;
+import no.nav.testnav.mocks.tokendings.domain.Arguments;
+import no.nav.testnav.mocks.tokendings.service.JwtService;
 
 @Slf4j
 @RestController
@@ -20,11 +20,15 @@ import no.nav.testnav.mocks.tokendingsmock.service.JwtService;
 @RequestMapping("/mock")
 public class MockController {
 
-    private final JwtService jwtService;
+    private final JwtService service;
 
-    @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/token",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public Mono<AccessToken> createToken(Arguments arguments) {
-        var jwt = jwtService.jwtWith(Map.of("pid", arguments.getPid()), arguments.getAudience());
+        var jwt = service.jwtWith(Map.of("pid", arguments.getPid()), arguments.getAudience());
         return Mono.just(new AccessToken(jwt));
     }
 

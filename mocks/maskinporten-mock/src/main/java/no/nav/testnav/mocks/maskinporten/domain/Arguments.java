@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.tokendingsmock.domain;
+package no.nav.testnav.mocks.maskinporten.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,4 @@ import lombok.Setter;
 @Setter
 public class Arguments {
     private String audience;
-    private String subject_token;
-    private String pid;
 }
