@@ -3,7 +3,7 @@ package no.nav.organisasjonforvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,7 +32,7 @@ public class OrganisasjonBestillingIdsCommand implements Callable<Mono<Status>> 
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String[].class)
-                .doOnNext(resultat -> log.info("Melding mottatt {}", resultat))
+                .doOnNext(resultat -> log.info("Melding mottatt {}", Arrays.toString(resultat)))
                 .map(resultat -> Arrays.stream(resultat)
                                 .mapToInt(Integer::parseInt)
                                 .max()

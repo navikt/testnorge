@@ -1,28 +1,23 @@
 package no.nav.organisasjonforvalter.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonServiceConsumer;
 import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
-import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
-import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImportService {
@@ -30,14 +25,6 @@ public class ImportService {
     private final MiljoerServiceConsumer miljoerServiceConsumer;
     private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
     private final MapperFacade mapperFacade;
-    private final OrganisasjonRepository organisasjonRepository;
-
-    private static Set<String> getAllOrgnr(Organisasjon organisasjon, Set<String> orgnr) {
-
-        orgnr.add(organisasjon.getOrganisasjonsnummer());
-        organisasjon.getUnderenheter().forEach(org -> getAllOrgnr(org, orgnr));
-        return orgnr;
-    }
 
     @Transactional
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
@@ -48,58 +35,12 @@ public class ImportService {
                         .collect(Collectors.toSet()) :
                 miljoerServiceConsumer.getOrgMiljoer();
 
-        var dbOrganisasjon = organisasjonRepository.findByOrganisasjonsnummer(orgnummer);
-
-        var organisasjoner =
-                organisasjonServiceConsumer.getStatus(
-                        dbOrganisasjon.map(organisasjon -> getAllOrgnr(organisasjon,
-                                new HashSet<>())).orElseGet(() -> Set.of(orgnummer)), miljoerAaSjekke);
-
-        return organisasjoner.keySet().stream()
-                .filter(env -> !organisasjoner.get(env).entrySet().isEmpty())
-                .map(env -> OrganisasjonMiljoe.builder()
-                        .organisasjon(getOrganisasjon(env, orgnummer, organisasjoner))
-                        .miljoe(env)
-                        .build())
-                .filter(org -> nonNull(org.getOrganisasjon()))
-                .collect(Collectors.toMap(OrganisasjonMiljoe::getMiljoe, OrganisasjonMiljoe::getOrganisasjon));
-    }
-
-    private RsOrganisasjon getOrganisasjon(String env, String orgnummer,
-                                           Map<String, Map<String, Optional<OrganisasjonDTO>>> organisasjoner) {
-
-        OrganisasjonDTO organisasjonDto;
-        if (organisasjoner.get(env).containsKey(orgnummer)) {
-            if (organisasjoner.get(env).get(orgnummer).isPresent()) {
-                organisasjonDto = organisasjoner.get(env).get(orgnummer).get();
-            } else {
-                return null;
-            }
-        } else {
-            var organisasjon = organisasjonServiceConsumer.getStatus(orgnummer, env);
-            if (organisasjon.isPresent()) {
-                organisasjonDto = organisasjon.get();
-            } else {
-                return null;
-            }
-        }
-
-        RsOrganisasjon organisasjon = mapperFacade.map(organisasjonDto, RsOrganisasjon.class);
-        if (nonNull(organisasjonDto.getDriverVirksomheter())) {
-            organisasjon.setUnderenheter(organisasjonDto.getDriverVirksomheter().stream()
-                    .map(orgnr -> getOrganisasjon(env, orgnr, organisasjoner))
-                    .collect(Collectors.toList()));
-        }
-        return organisasjon;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class OrganisasjonMiljoe {
-
-        private RsOrganisasjon organisasjon;
-        private String miljoe;
+          return organisasjonServiceConsumer.getStatus(Set.of(orgnummer), miljoerAaSjekke)
+                  .map(Map::entrySet)
+                  .flatMap(Flux::fromIterable)
+                  .filter(org -> isNotBlank(org.getValue().getOrgnummer()))
+                  .collect(Collectors.toMap(Map.Entry::getKey,
+                          org -> mapperFacade.map(org.getValue(), RsOrganisasjon.class)))
+                  .block();
     }
 }

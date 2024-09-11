@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,7 +34,6 @@ public class MiljoerServiceConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    //    @Cacheable(CACHE_MILJOER)
     public Set<String> getOrgMiljoer() {
 
         return tokenExchange.exchange(serverProperties)
@@ -43,6 +43,7 @@ public class MiljoerServiceConsumer {
                         .filter(env -> !env.equals("t13") && !env.equals("qx"))
                         .collect(Collectors.toSet()))
                 .flatMap(Mono::from)
+                .cache(Duration.ofMinutes(5))
                 .block();
     }
 }

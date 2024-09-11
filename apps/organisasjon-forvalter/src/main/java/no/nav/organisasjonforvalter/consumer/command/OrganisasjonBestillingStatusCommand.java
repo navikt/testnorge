@@ -5,10 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.dto.responses.StatusDTO;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -29,8 +28,8 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
     public Mono<BestillingStatus> call() {
 
         return webClient.get()
-                .uri(STATUS_URL.replace("{uuid}", status.getUuid())
-                        .replace("{id}", status.getBestId()))
+                .uri(uriBuilder -> uriBuilder.path(STATUS_URL)
+                        .build(status.getUuid(), status.getBestId()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(StatusDTO.class)
@@ -42,24 +41,13 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
                         .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(throwable -> log.error(getMessage(throwable)))
-                .onErrorResume(throwable -> getError(status, getMessage(throwable)));
-    }
-
-    private static String getMessage(Throwable throwable) {
-
-        return throwable instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString() :
-                throwable.getMessage();
-    }
-
-    private static Mono<BestillingStatus> getError(Status status, String description) {
-
-        return Mono.just(BestillingStatus.builder()
-                .orgnummer(status.getOrganisasjonsnummer())
-                .uuid(status.getUuid())
-                .miljoe(status.getMiljoe())
-                .feilmelding(description)
-                .build());
+                .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(throwable ->
+                        Mono.just(BestillingStatus.builder()
+                                .orgnummer(status.getOrganisasjonsnummer())
+                                .uuid(status.getUuid())
+                                .miljoe(status.getMiljoe())
+                                .feilmelding(WebClientFilter.getMessage(throwable))
+                                .build()));
     }
 }
