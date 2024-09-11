@@ -1,8 +1,7 @@
 package no.nav.testnav.mocks.maskinporten;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -26,7 +25,7 @@ public class MaskinportenMockApplicationStarter {
         SpringApplication.run(MaskinportenMockApplicationStarter.class, args);
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @UtilityClass
     public static class Utils {
 
         @SneakyThrows

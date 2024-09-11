@@ -1,8 +1,7 @@
 package no.nav.testnav.mocks.tokendings;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,7 +25,7 @@ public class TokendingsMockApplicationStarter {
         SpringApplication.run(TokendingsMockApplicationStarter.class, args);
     }
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @UtilityClass
     public static class Utils {
 
         @SneakyThrows
