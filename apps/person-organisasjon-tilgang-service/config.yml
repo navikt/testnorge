@@ -15,11 +15,6 @@ spec:
       tenant: nav.no
   tokenx:
     enabled: true
-  maskinporten:
-    enabled: true
-    scopes:
-      consumes:
-        - name: "altinn:serviceowner/reportees"
   accessPolicy:
     inbound:
       rules:
