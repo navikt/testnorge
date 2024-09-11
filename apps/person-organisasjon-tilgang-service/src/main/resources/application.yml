@@ -4,7 +4,7 @@ spring:
   application:
     version: application.version.todo
     name: testnav-person-organisasjon-tilgang-service
-    description: Tjeneste for hente tilganger for personer
+    description: Tjeneste for å hente tilganger for personer
   security:
     oauth2:
       resourceserver:

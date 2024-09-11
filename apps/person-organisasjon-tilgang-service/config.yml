@@ -15,14 +15,19 @@ spec:
       tenant: nav.no
   tokenx:
     enabled: true
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "altinn:serviceowner/reportees"
   accessPolicy:
     inbound:
       rules:
         - application: dolly-frontend
         - application: dolly-idporten
         - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
         - application: testnav-bruker-service
-        - application: testnorge-profil-api
         - application: testnorge-profil-api
     outbound:
       external:
