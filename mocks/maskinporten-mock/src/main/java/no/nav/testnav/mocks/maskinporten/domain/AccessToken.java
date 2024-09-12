@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.tokendingsmock.domain;
+package no.nav.testnav.mocks.maskinporten.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

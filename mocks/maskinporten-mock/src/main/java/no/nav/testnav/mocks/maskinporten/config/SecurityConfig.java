@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.tokendingsmock.config;
+package no.nav.testnav.mocks.maskinporten.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http.csrf(ServerHttpSecurity.CsrfSpec::disable).build();
+        return http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .build();
     }
+
 }

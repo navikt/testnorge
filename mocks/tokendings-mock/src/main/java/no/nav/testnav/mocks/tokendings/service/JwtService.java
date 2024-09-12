@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.tokendingsmock.service;
+package no.nav.testnav.mocks.tokendings.service;
 
 
 import com.auth0.jwt.JWT;
@@ -7,48 +7,33 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nimbusds.jose.jwk.RSAKey;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static no.nav.testnav.mocks.tokendings.TokendingsMockApplicationStarter.Utils.loadJson;
 
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-    private static final String jwtSecret;
+
+    private static final String JWK;
 
     static {
-        jwtSecret = loadJson("static/jwk.json");
+        JWK = loadJson("static/jwk.json");
     }
-
-    private static String loadJson(String path) {
-        var resource = new ClassPathResource(path);
-        try (final InputStreamReader stream = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
-            return new BufferedReader(stream)
-                    .lines().collect(Collectors.joining("\n"));
-
-        } catch (IOException e) {
-            throw new RuntimeException("Feil med paring av " + path + ".", e);
-        }
-    }
-
 
     @SneakyThrows
     public DecodedJWT verify(String jwt) {
-        var key = RSAKey.parse(jwtSecret);
-        var verifier = JWT
+        var key = RSAKey.parse(JWK);
+        return JWT
                 .require(Algorithm.RSA256(key.toRSAPublicKey(), (RSAPrivateKey) key.toPrivateKey()))
-                .build();
-        return verifier.verify(jwt);
+                .build()
+                .verify(jwt);
     }
 
 
@@ -64,11 +49,11 @@ public class JwtService {
                 .withJWTId(UUID.randomUUID().toString())
                 .withExpiresAt(new Date(date.getTimeInMillis() + (2 * 60 * 60 * 1000)));
         claims.forEach(builder::withClaim);
-
-        var privateKey = RSAKey.parse(jwtSecret).toPrivateKey();
-
+        var privateKey = (RSAPrivateKey) RSAKey
+                .parse(JWK)
+                .toPrivateKey();
         return builder
-                .sign(Algorithm.RSA256(null, (RSAPrivateKey) privateKey));
+                .sign(Algorithm.RSA256(null, privateKey));
     }
 
 }
