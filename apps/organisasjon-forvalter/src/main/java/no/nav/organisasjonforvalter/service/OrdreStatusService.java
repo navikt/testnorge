@@ -117,21 +117,23 @@ public class OrdreStatusService {
                         .collect(Collectors.groupingBy(BestillingStatus::getOrgnummer))
                         .entrySet().stream()
                         .collect(Collectors.toMap(Map.Entry::getKey, org -> org.getValue().stream()
-                                .map(value -> {
-                                    try {
-                                        return StatusEnv.builder()
-                                                .status(nonNull(value.getStatus()) ? value.getStatus().getStatus() : ERROR)
-                                                .details(nonNull(value.getStatus()) ? value.getStatus().getDescription() : "Se feilbeskrivelse")
-                                                .environment(value.getMiljoe())
-                                                .error(nonNull(value.getFeilmelding()) ?
-                                                        objectMapper.readValue(value.getFeilmelding(), JsonNode.class) :
-                                                        null)
-                                                .build();
-                                    } catch (JsonProcessingException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                })
+                                .map(value -> StatusEnv.builder()
+                                        .status(nonNull(value.getStatus()) ? value.getStatus().getStatus() : ERROR)
+                                        .details(nonNull(value.getStatus()) ? value.getStatus().getDescription() : "Se feilbeskrivelse")
+                                        .environment(value.getMiljoe())
+                                        .error(convertFeilmelding(value.getFeilmelding()))
+                                        .build())
                                 .toList())))
                 .build();
+    }
+
+    private Object convertFeilmelding(String feilmelding) {
+
+        try {
+            return isNotBlank(feilmelding) ? objectMapper.readValue(feilmelding, JsonNode.class) : null;
+
+        } catch (JsonProcessingException e) {
+            return feilmelding;
+        }
     }
 }

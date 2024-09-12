@@ -42,9 +42,9 @@ public class OrganisasjonServiceConsumer {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(miljoer)
-                        .map(orgnr -> Flux.fromIterable(orgnummere)
-                                .flatMap(miljoe -> new OrganisasjonServiceCommand(webClient, orgnr, miljoe, token.getTokenValue()).call())
-                        .collect(Collectors.toMap(orgMap -> orgnr, orgMap -> orgMap))))
+                        .map(miljoe -> Flux.fromIterable(orgnummere)
+                                .flatMap(orgnr -> new OrganisasjonServiceCommand(webClient, orgnr, miljoe, token.getTokenValue()).call())
+                        .collect(Collectors.toMap(orgMap -> miljoe, orgMap -> orgMap))))
                 .flatMap(Mono::flux);
     }
 }

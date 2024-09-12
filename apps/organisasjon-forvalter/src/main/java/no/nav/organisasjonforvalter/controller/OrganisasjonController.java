@@ -19,6 +19,7 @@ import no.nav.organisasjonforvalter.service.OrdreStatusService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +35,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
 
 @RestController
-@RequestMapping("api/v2/organisasjoner")
+@RequestMapping(value = "api/v2/organisasjoner", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class OrganisasjonController {
 

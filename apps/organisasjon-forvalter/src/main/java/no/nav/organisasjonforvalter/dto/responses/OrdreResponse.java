@@ -28,6 +28,6 @@ public class OrdreResponse {
         private String environment;
         private StatusDTO.Status status;
         private String details;
-        private JsonNode error;
+        private Object error;
     }
 }
