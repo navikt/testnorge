@@ -9,6 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+
 spec:
   tokenx:
     enabled: true
@@ -88,6 +89,13 @@ spec:
     initialDelay: 20
     periodSeconds: 20
     failureThreshold: 900
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 20
@@ -98,13 +106,13 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 5000m
+      cpu: 250m
       memory: 4096Mi
     limits:
       memory: 8192Mi
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: POSTGRES_15
         tier: db-custom-2-7680
         name: testnav-dolly-backend
         databases:

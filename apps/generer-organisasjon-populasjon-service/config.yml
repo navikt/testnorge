@@ -30,7 +30,7 @@ spec:
         - application: testnav-orgnummer-service
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         tier: db-custom-1-3840
         databases:
           - name: testnav-generer-organisasjon-populasjon-db
@@ -39,6 +39,13 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 4
