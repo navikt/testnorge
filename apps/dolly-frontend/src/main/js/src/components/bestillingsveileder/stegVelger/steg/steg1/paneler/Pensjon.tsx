@@ -21,7 +21,6 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
-	const harValgtAp = _.has(formValues, 'pensjonforvalter.alderspensjon')
 	const harValgtUforetrygd = _.has(formValues, 'pensjonforvalter.uforetrygd')
 
 	const harGyldigApBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
@@ -35,28 +34,6 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 			(status) => status.id === 'PEN_UT' && status.statuser?.some((item) => item.melding === 'OK'),
 		),
 	)
-
-	const getTitleAlderspensjon = () => {
-		if (harGyldigApBestilling) {
-			return 'Personen har allerede alderspensjon'
-		} else if (harGyldigUforetrygdBestilling) {
-			return 'Personen har allerede uføretrygd'
-		} else if (harValgtUforetrygd) {
-			return 'Person kan ikke ha alderspensjon og uføretrygd samtidig'
-		}
-		return null
-	}
-
-	const getTitleUforetrygd = () => {
-		if (harGyldigUforetrygdBestilling) {
-			return 'Personen har allerede uføretrygd'
-		} else if (harGyldigApBestilling) {
-			return 'Personen har allerede alderspensjon'
-		} else if (harValgtAp) {
-			return 'Person kan ikke ha uføretrygd og alderspensjon samtidig'
-		}
-		return null
-	}
 
 	const infoTekst =
 		'Pensjon: \nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\n' +
@@ -100,18 +77,10 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 				<Attributt attr={sm.attrs.tp} />
 			</AttributtKategori>
 			<AttributtKategori title="Alderspensjon" attr={sm.attrs}>
-				<Attributt
-					attr={sm.attrs.alderspensjon}
-					disabled={harGyldigApBestilling || harGyldigUforetrygdBestilling || harValgtUforetrygd}
-					title={getTitleAlderspensjon()}
-				/>
+				<Attributt attr={sm.attrs.alderspensjon} />
 			</AttributtKategori>
 			<AttributtKategori title="Uføretrygd" attr={sm.attrs}>
-				<Attributt
-					attr={sm.attrs.uforetrygd}
-					disabled={harGyldigUforetrygdBestilling || harGyldigApBestilling || harValgtAp}
-					title={getTitleUforetrygd()}
-				/>
+				<Attributt attr={sm.attrs.uforetrygd} />
 			</AttributtKategori>
 		</Panel>
 	)

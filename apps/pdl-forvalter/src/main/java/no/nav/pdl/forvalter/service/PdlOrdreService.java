@@ -388,15 +388,15 @@ public class PdlOrdreService {
 
     private List<? extends DbVersjonDTO> getFoedested(PersonDTO person) {
 
-        return utenHistorikk(!person.getFoedested().isEmpty() ?
+        return !person.getFoedested().isEmpty() ?
                 person.getFoedested() :
-                mapperFacade.mapAsList(person.getFoedsel(), FoedestedDTO.class));
+                mapperFacade.mapAsList(person.getFoedsel(), FoedestedDTO.class);
     }
 
     private List<? extends DbVersjonDTO> getFoedselsdato(PersonDTO person) {
 
-        return utenHistorikk(!person.getFoedselsdato().isEmpty() ?
+        return !person.getFoedselsdato().isEmpty() ?
                 person.getFoedselsdato() :
-                mapperFacade.mapAsList(person.getFoedsel(), FoedselDTO.class));
+                mapperFacade.mapAsList(person.getFoedsel(), FoedselDTO.class);
     }
 }

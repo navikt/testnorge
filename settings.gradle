@@ -69,6 +69,7 @@ includeBuild './libs/servlet-insecure-security'
 includeBuild './libs/servlet-security'
 includeBuild './libs/slack'
 includeBuild './libs/testing'
+includeBuild './libs/vault'
 
 includeBuild './apps/adresse-service'
 includeBuild './apps/amelding-service'
