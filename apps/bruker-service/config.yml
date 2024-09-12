@@ -51,7 +51,7 @@ spec:
     path: /internal/metrics
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         tier: db-custom-1-3840
         databases:
           - name: testnav-bruker-service-db

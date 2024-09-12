@@ -6,7 +6,7 @@ spring:
       database:
         enabled: false
   datasource:
-    url: jdbc:tc:postgresql:12:///test_database
+    url: jdbc:tc:postgresql:15:///test_database
     username: user
     password: password
   jpa:

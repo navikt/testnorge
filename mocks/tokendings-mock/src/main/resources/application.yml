@@ -1,4 +1,3 @@
 spring:
   application:
     name: tokendings-mock
-    desciption: En mock for tokendings
