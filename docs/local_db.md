@@ -47,7 +47,7 @@ Legg merke til at vi bruker `--exclude-table` i dette eksempelet. I denne databa
 **Dette gjøres bare én gang.** Vi lager oss en container kalt `postgres`, der auth er slått av fra din Docker host. Default-brukeren `postgres` vil stå som eier av alle tabeller.
 
 ~~~
-> docker run --name postgres -e POSTGRES_HOST_AUTH_METHOD=trust -p 5432:5432 postgres
+> docker run --name postgres -e POSTGRES_HOST_AUTH_METHOD=trust -p 5432:5432 postgres -c
 ~~~
 
 Her kjøres containeren uten `--detach`, slik at vi kan følge med på logger i tilfelle feil under import, men det er valgfritt.

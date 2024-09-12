@@ -11,12 +11,9 @@ spring:
       generic:
         enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/dolly-test
-    username: postgres
-    hikari:
-      maximum-pool-size: 3
-      minimum-idle: 1
+    url: jdbc:postgresql://localhost:5432/postgres
     driver-class-name: org.postgresql.Driver
+    username: postgres
 
 management:
   endpoints:
