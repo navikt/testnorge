@@ -14,6 +14,7 @@ import no.nav.organisasjonforvalter.jpa.repository.StatusRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class OrdreStatusService {
 
         var statusMap = statusRepository.findAllByOrganisasjonsnummerIn(orgnumre);
 
-        var orgnrSomMangler = orgnumre.stream()
+        var orgnrIkkeFunnet = orgnumre.stream()
                 .filter(orgnr -> statusMap.stream()
                         .noneMatch(status -> orgnr.equals(status.getOrganisasjonsnummer())))
                 .filter(orgnr -> orgImiljo.stream()
@@ -55,7 +56,7 @@ public class OrdreStatusService {
                 .collect(Collectors.toSet());
 
         var oppdatertStatus = statusMap.stream()
-                .filter(status -> orgnrSomMangler.stream()
+                .filter(status -> orgnrIkkeFunnet.stream()
                         .noneMatch(orgnr -> orgnr.equals(status.getOrganisasjonsnummer())))
                 .toList();
 
@@ -69,11 +70,20 @@ public class OrdreStatusService {
             statusRepository.saveAll(oppdatertStatus);
         }
 
-        var orgStatus = Flux.fromIterable(oppdatertStatus)
-                .filter(status -> isNotBlank(status.getBestId()))
-                .flatMap(organisasjonBestillingConsumer::getBestillingStatus)
-                .collectList()
-                .block();
+        var orgStatus = new ArrayList<BestillingStatus>();
+
+        if (oppdatertStatus.stream().noneMatch(status -> orgImiljo.stream()
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .anyMatch(iMiljoe -> iMiljoe.getValue().getOrganisasjonsnummer()
+                        .equals(status.getOrganisasjonsnummer())))) {
+
+            orgStatus.addAll(Flux.fromIterable(oppdatertStatus)
+                    .filter(status -> isNotBlank(status.getBestId()))
+                    .flatMap(organisasjonBestillingConsumer::getBestillingStatus)
+                    .collectList()
+                    .block());
+        }
 
         orgStatus.addAll(statusMap.stream()
                 .filter(status -> isBlank(status.getBestId()))
@@ -102,7 +112,7 @@ public class OrdreStatusService {
                 .flatMap(Collection::stream)
                 .toList());
 
-        orgStatus.addAll(orgnrSomMangler.stream()
+        orgStatus.addAll(orgnrIkkeFunnet.stream()
                 .map(orgnr -> BestillingStatus.builder()
                         .orgnummer(orgnr)
                         .status(StatusDTO.builder()
