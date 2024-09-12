@@ -3,7 +3,6 @@ package no.nav.organisasjonforvalter.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
 import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
 import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
 import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
@@ -18,7 +17,6 @@ import no.nav.organisasjonforvalter.service.OrdreService;
 import no.nav.organisasjonforvalter.service.OrdreStatusService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Objects.nonNull;
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
 
 @RestController
 @RequestMapping(value = "api/v2/organisasjoner", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,9 +43,7 @@ public class OrganisasjonController {
     private final ImportService importService;
     private final DrivervirksomheterService drivervirksomheterService;
     private final GetAuthenticatedId getAuthenticatedId;
-    private final MiljoerServiceConsumer miljoerServiceConsumer;
 
-    @CacheEvict(value = CACHE_BEDRIFT, allEntries = true)
     @PostMapping
     @Operation(description = "Opprett organisasjon med angitte egenskaper")
     public BestillingResponse createOrganisasjon(@RequestBody BestillingRequest request) {
