@@ -154,7 +154,7 @@ export const VisningRedigerbar = ({
 
 	const sendData = (data) => {
 		const id = _.get(data, `${path}.id`)
-		const itemData = _.get(data, path)
+		const itemData = formMethods.watch(path)
 		return PdlforvalterApi.putAttributt(ident, path?.toLowerCase(), id, itemData)
 			.catch((error: Error) => {
 				pdlfError(error)
@@ -403,7 +403,11 @@ export const VisningRedigerbar = ({
 					</>
 				)}
 				{visningModus === Modus.Skriv && (
-					<Form onSubmit={(data) => handleSubmit(data?.data)}>
+					<Form
+						onSubmit={(data) => {
+							return handleSubmit(data?.data)
+						}}
+					>
 						<>
 							{devEnabled && (
 								<>
