@@ -6,14 +6,22 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React from 'react'
 import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
 
-export const FyllInnInntektForm = ({ syttenFraOgMedAar }) => {
+export const FyllInnInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
+	const visFomAar = formMethods.watch(`${pensjonPath}.tomAar`)
+	const visTomAar = formMethods.watch(`${pensjonPath}.fomAar`)
+
 	return (
 		<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
 			<div className="flexbox--flex-wrap">
 				<FormSelect
 					name={`${pensjonPath}.fomAar`}
 					label="Fra og med år"
-					options={getYearRangeOptions(syttenFraOgMedAar || 1968, new Date().getFullYear() - 1)}
+					options={getYearRangeOptions(
+						gyldigFraOgMedAar && gyldigFraOgMedAar < new Date().getFullYear()
+							? gyldigFraOgMedAar
+							: 1968,
+						visFomAar || new Date().getFullYear() - 1,
+					)}
 					size={'xsmall'}
 					isClearable={false}
 				/>
@@ -21,7 +29,7 @@ export const FyllInnInntektForm = ({ syttenFraOgMedAar }) => {
 				<FormSelect
 					name={`${pensjonPath}.tomAar`}
 					label="Til og med år"
-					options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
+					options={getYearRangeOptions(visTomAar || 1968, new Date().getFullYear() - 1)}
 					size={'xsmall'}
 					isClearable={false}
 				/>
