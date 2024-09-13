@@ -1,7 +1,7 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { validation } from '@/components/fagsystem/pensjon/form/validation'
+import { getAlder, validation } from '@/components/fagsystem/pensjon/form/validation'
 import React, { useContext, useState } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -33,24 +33,22 @@ export const PensjonForm = () => {
 	)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
-	function kalkulerIdentFyltSyttenAar() {
-		const curDate = new Date()
-		const alder =
-			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
-			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') !== null
-				? curDate.getFullYear() -
-					// @ts-ignore
-					new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer')).getFullYear()
-				: formMethods.watch('pdldata.opprettNyPerson.alder')
-		return alder && curDate.getFullYear() - alder + 17
+	const curDate = new Date()
+
+	const alder =
+		formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
+		formMethods.watch('pdldata.opprettNyPerson.foedtFoer') !== null
+			? curDate.getFullYear() -
+				// @ts-ignore
+				new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer')).getFullYear()
+			: getAlder(formMethods.watch(), opts?.personFoerLeggTil, opts?.importPersoner)
+
+	function kalkulerIdentGyldigAlder() {
+		const minAlder = alder && (curDate.getFullYear() - alder < 1997 ? 17 : 13)
+		return alder && curDate.getFullYear() - alder + minAlder
 	}
 
-	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar()
-	const minAar = new Date().getFullYear() - 17
-	const valgtAar =
-		inputType === inputValg.fyllInnInntekt
-			? formMethods.watch(`${pensjonPath}.fomAar`)
-			: formMethods.watch(`${pensjonGenererPath}.generer.fomAar`)
+	const gyldigFraOgMedAar = kalkulerIdentGyldigAlder()
 
 	return (
 		<Vis attributt={[pensjonPath, pensjonGenererPath]}>
@@ -61,14 +59,12 @@ export const PensjonForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath, pensjonGenererPath])}
 				informasjonstekst={hjelpetekst}
 			>
-				{!formMethods.getValues('pdldata.opprettNyPerson.alder') &&
-					valgtAar < minAar &&
-					(nyBestilling || nyBestillingFraMal) && (
-						<StyledAlert variant={'info'} size={'small'}>
-							Pensjonsgivende inntekt kan settes fra året personen fyller 17 år. For å sikre at
-							personen får gyldig alder kan denne settes ved å huke av for "Alder" på forrige side.
-						</StyledAlert>
-					)}
+				{!alder && (nyBestilling || nyBestillingFraMal) && (
+					<StyledAlert variant={'info'} size={'small'}>
+						Pensjonsgivende inntekt kan settes tidligst fra året personen fyller 13 år. For å sikre
+						at personen får gyldig alder kan denne settes ved å huke av for "Alder" på forrige side.
+					</StyledAlert>
+				)}
 
 				<ToggleGroup
 					size={'small'}
@@ -99,10 +95,10 @@ export const PensjonForm = () => {
 					</ToggleGroup.Item>
 				</ToggleGroup>
 				{inputType === inputValg.fyllInnInntekt && (
-					<FyllInnInntektForm syttenFraOgMedAar={syttenFraOgMedAar} />
+					<FyllInnInntektForm gyldigFraOgMedAar={gyldigFraOgMedAar} formMethods={formMethods} />
 				)}
 				{inputType === inputValg.generertInntekt && (
-					<GenerertInntektForm syttenFraOgMedAar={syttenFraOgMedAar} formMethods={formMethods} />
+					<GenerertInntektForm gyldigFraOgMedAar={gyldigFraOgMedAar} formMethods={formMethods} />
 				)}
 			</Panel>
 		</Vis>
