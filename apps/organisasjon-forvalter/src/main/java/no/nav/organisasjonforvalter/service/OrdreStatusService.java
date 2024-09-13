@@ -71,21 +71,24 @@ public class OrdreStatusService {
 
         var orgStatus = new ArrayList<BestillingStatus>();
 
-        if (oppdatertStatus.stream().noneMatch(status -> orgImiljo.stream()
-                .map(Map::entrySet)
-                .flatMap(Collection::stream)
-                .anyMatch(iMiljoe -> iMiljoe.getValue().getOrganisasjonsnummer()
-                        .equals(status.getOrganisasjonsnummer())))) {
+        orgStatus.addAll(Flux.fromIterable(oppdatertStatus)
+                .filter(status -> isNotBlank(status.getBestId()))
+                .filter(status -> orgImiljo.stream()
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream)
+                        .noneMatch(iMiljo -> status.getMiljoe().equals(iMiljo.getKey()) &&
+                                status.getOrganisasjonsnummer().equals(iMiljo.getValue().getOrganisasjonsnummer())))
+                .flatMap(organisasjonBestillingConsumer::getBestillingStatus)
+                .collectList()
+                .block());
 
-            orgStatus.addAll(Flux.fromIterable(oppdatertStatus)
-                    .filter(status -> isNotBlank(status.getBestId()))
-                    .flatMap(organisasjonBestillingConsumer::getBestillingStatus)
-                    .collectList()
-                    .block());
-        }
-
-        orgStatus.addAll(statusMap.stream()
+        orgStatus.addAll(oppdatertStatus.stream()
                 .filter(status -> isBlank(status.getBestId()))
+                .filter(status -> orgImiljo.stream()
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream)
+                        .noneMatch(iMiljo -> status.getMiljoe().equals(iMiljo.getKey()) &&
+                                status.getOrganisasjonsnummer().equals(iMiljo.getValue().getOrganisasjonsnummer())))
                 .map(status -> BestillingStatus.builder()
                         .orgnummer(status.getOrganisasjonsnummer())
                         .miljoe(status.getMiljoe())
