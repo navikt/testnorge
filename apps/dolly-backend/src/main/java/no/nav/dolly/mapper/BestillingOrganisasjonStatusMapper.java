@@ -66,7 +66,7 @@ public class BestillingOrganisasjonStatusMapper {
 
     private static String getOrgStatusDetailForMiljo(List<OrganisasjonDeployStatus.OrgStatus> orgStatuser, String miljo) {
         return orgStatuser.stream()
-                .filter(orgStatus -> orgStatus.getEnvironment().equals(miljo))
+                .filter(orgStatus -> miljo.equals(orgStatus.getEnvironment()))
                 .findFirst().orElseGet(OrganisasjonDeployStatus.OrgStatus::new)
                 .getDetails();
     }

@@ -75,7 +75,7 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Fant ikke bestilling med id " + bestillingId));
 
         OrganisasjonBestillingProgress bestillingProgress;
-        List<OrgStatus> orgStatusList = null;
+        List<OrgStatus> orgStatusList;
 
         try {
             bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId)
@@ -89,7 +89,7 @@ public class OrganisasjonBestillingService {
         }
 
         return RsOrganisasjonBestillingStatus.builder()
-                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatusList) ? orgStatusList : emptyList()))
+                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, orgStatusList))
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .organisasjonNummer(bestillingProgress.getOrganisasjonsnummer())
@@ -247,11 +247,12 @@ public class OrganisasjonBestillingService {
         bestilling.setFeil(feil);
 
         var ferdig = orgStatus.stream()
-                .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
+                .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream()
+                        .anyMatch(status -> status.equals(o.getStatus()) &&
+                                (isBlank(o.getError()) || !o.getError().contains("404"))));
 
         bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());
-
     }
 
     private String forvalterStatusDetails(OrgStatus orgStatus) {
