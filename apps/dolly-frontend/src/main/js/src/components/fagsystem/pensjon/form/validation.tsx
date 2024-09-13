@@ -57,7 +57,6 @@ export const getAlder = (values, personFoerLeggTil, importPersoner) => {
 
 const invalidAlderFom = (inntektFom, values, personFoerLeggTil, minAlder) => {
 	const importPersoner = values.importPersoner
-
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
 	const foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	const foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
