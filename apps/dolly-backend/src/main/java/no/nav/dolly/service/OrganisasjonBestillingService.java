@@ -44,7 +44,6 @@ import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonS
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.FAILED;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -82,9 +81,7 @@ public class OrganisasjonBestillingService {
             bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId)
                     .stream().findFirst().orElseThrow(() -> new NotFoundException("Status ikke funnet for bestillingId " + bestillingId));
 
-            if (isNotTrue(bestilling.getFerdig())) {
-                orgStatusList = getOrgforvalterStatus(bestilling, bestillingProgress);
-            }
+            orgStatusList = getOrgforvalterStatus(bestilling, bestillingProgress);
 
         } catch (WebClientResponseException e) {
             log.info("Status ennå ikke opprettet for bestilling");
@@ -250,7 +247,7 @@ public class OrganisasjonBestillingService {
         bestilling.setFeil(feil);
 
         var ferdig = orgStatus.stream()
-                .anyMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
+                .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
 
         bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());

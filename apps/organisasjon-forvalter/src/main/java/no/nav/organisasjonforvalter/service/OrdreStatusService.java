@@ -1,8 +1,5 @@
 package no.nav.organisasjonforvalter.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingConsumer;
@@ -36,7 +33,6 @@ public class OrdreStatusService {
     private final OrganisasjonBestillingConsumer organisasjonBestillingConsumer;
     private final StatusRepository statusRepository;
     private final ImportService importService;
-    private final ObjectMapper objectMapper;
 
     public OrdreResponse getStatus(List<String> orgnumre) {
 
@@ -132,19 +128,9 @@ public class OrdreStatusService {
                                         .status(nonNull(value.getStatus()) ? value.getStatus().getStatus() : ERROR)
                                         .details(nonNull(value.getStatus()) ? value.getStatus().getDescription() : "Se feilbeskrivelse")
                                         .environment(value.getMiljoe())
-                                        .error(convertFeilmelding(value.getFeilmelding()))
+                                        .error(value.getFeilmelding())
                                         .build())
                                 .toList())))
                 .build();
-    }
-
-    private Object convertFeilmelding(String feilmelding) {
-
-        try {
-            return isNotBlank(feilmelding) ? objectMapper.readValue(feilmelding, JsonNode.class) : null;
-
-        } catch (JsonProcessingException e) {
-            return feilmelding;
-        }
     }
 }

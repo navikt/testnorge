@@ -27,6 +27,6 @@ public class OrdreResponse {
         private String environment;
         private StatusDTO.Status status;
         private String details;
-        private Object error;
+        private String error;
     }
 }
