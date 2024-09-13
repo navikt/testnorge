@@ -35,13 +35,11 @@ export const PensjonForm = () => {
 
 	const curDate = new Date()
 
-	const alder =
-		formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
-		formMethods.watch('pdldata.opprettNyPerson.foedtFoer') !== null
-			? curDate.getFullYear() -
-				// @ts-ignore
-				new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer')).getFullYear()
-			: getAlder(formMethods.watch(), opts?.personFoerLeggTil, opts?.importPersoner)
+	const alder = formMethods.watch('pdldata.opprettNyPerson.foedtFoer')
+		? curDate.getFullYear() -
+			// @ts-ignore
+			new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer')).getFullYear()
+		: getAlder(formMethods.watch(), opts?.personFoerLeggTil, opts?.importPersoner)
 
 	function kalkulerIdentGyldigAlder() {
 		const minAlder = alder && (curDate.getFullYear() - alder < 1997 ? 17 : 13)
