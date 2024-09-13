@@ -50,7 +50,6 @@ public class OrdreStatusService {
                 .filter(orgnr -> statusMap.stream()
                         .noneMatch(status -> orgnr.equals(status.getOrganisasjonsnummer())))
                 .filter(orgnr -> orgImiljo.stream()
-                        .filter(iMiljoe -> !iMiljoe.isEmpty())
                         .flatMap(iMiljoe -> iMiljoe.values().stream())
                         .noneMatch(iMiljo -> orgnr.equals(iMiljo.getOrganisasjonsnummer())))
                 .collect(Collectors.toSet());
@@ -98,7 +97,6 @@ public class OrdreStatusService {
                 .toList());
 
         orgStatus.addAll(orgImiljo.stream()
-                .filter(iMiljo -> !iMiljo.isEmpty())
                 .map(iMiljo -> iMiljo.entrySet().stream()
                         .map(entry -> BestillingStatus.builder()
                                 .orgnummer(entry.getValue().getOrganisasjonsnummer())

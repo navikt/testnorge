@@ -1,18 +1,9 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/organisasjon-forvalter-test
-    hikari:
-      maximum-pool-size: 3
-      minimum-idle: 1
+    url: jdbc:postgresql://localhost:5434/postgres
     driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-        default-schema: public
-    show-sql: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    username: postgres
   cloud:
     vault:
       host: vault.adeo.no
