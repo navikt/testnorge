@@ -295,6 +295,11 @@ const texts = {
 	ufoeregrad: 'Uføregrad',
 	pensjonsgrad: 'Pensjonsgrad',
 	heravEtterlattepensjon: 'Herav etterlattepensjon',
+
+	//FELLES
+	beloep: 'Beløp',
+	startOpptjeningsperiode: 'Start opptjeningsperiode',
+	sluttOpptjeningsperiode: 'Slutt opptjeningsperiode',
 }
 
 export default (key) => (texts[key] ? texts[key] : key)
