@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.function.Function;
 
 @Slf4j

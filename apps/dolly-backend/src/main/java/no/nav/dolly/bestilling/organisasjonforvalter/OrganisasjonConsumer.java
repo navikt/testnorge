@@ -67,7 +67,7 @@ public class OrganisasjonConsumer {
                 .flatMapMany(token -> new GetOrganisasjonCommand(webClient, orgnumre, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "organisasjon-hent"})
+    @Timed(name = "providers", tags = {"operation", "organisasjon-status-hent"})
     public OrganisasjonDeployStatus hentOrganisasjonStatus(List<String> orgnumre) {
         var navCallId = getNavCallId();
         log.info("Organisasjon hent request sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
