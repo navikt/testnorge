@@ -22,11 +22,6 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  ereg-batch-status-service:
-    url: http://ereg-batch-status-service.dolly.svc.cluster.local
-    cluster: dev-gcp
-    namespace: dolly
-    name: ereg-batch-status-service
   jenkins:
     url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
     name: testnorge-batch-adeo-proxy
