@@ -23,7 +23,7 @@ public class UpdateOrganisasjonBestillingCommand implements Runnable {
     public void run() {
         webClient
                 .put()
-                .uri(builder -> builder.path("/api/v1/order/{uuid}/items/{id}").build(uuid, id))
+                .uri(builder -> builder.path("/api/v2/order/{uuid}/items/{id}").build(uuid, id))
                 .body(BodyInserters.fromPublisher(Mono.just(orderDTO), OrderDTO.class))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()

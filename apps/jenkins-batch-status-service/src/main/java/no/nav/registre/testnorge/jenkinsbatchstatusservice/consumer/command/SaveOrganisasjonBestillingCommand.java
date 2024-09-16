@@ -21,7 +21,7 @@ public class SaveOrganisasjonBestillingCommand implements Callable<Long> {
     public Long call() {
         return webClient
                 .put()
-                .uri(builder -> builder.path("/api/v1/order/{uuid}").build(uuid))
+                .uri(builder -> builder.path("/api/v2/order/{uuid}").build(uuid))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Long.class)
