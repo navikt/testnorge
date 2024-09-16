@@ -57,21 +57,24 @@ const DataVisning = ({ data, miljo }) => {
 	)?.label
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+	const vedtakUT = vedtakData?.find((vedtak) => vedtak?.sakType === 'UT')
+
+	const getSisteOppdatering = (sisteOppdatering: string) => {
+		if (sisteOppdatering?.includes('opprettet')) {
+			return 'Iverksatt'
+		} else if (sisteOppdatering?.indexOf('<') > 0) {
+			return sisteOppdatering?.substring(0, sisteOppdatering?.indexOf('<'))
+		} else if (sisteOppdatering?.indexOf('{') > 0) {
+			return sisteOppdatering?.substring(0, sisteOppdatering?.indexOf('{'))
+		} else {
+			return sisteOppdatering
+		}
+	}
 
 	return (
 		<>
 			<div className="person-visning_content">
-				<TitleValue
-					title="Vedtaksstatus"
-					value={
-						vedtakData?.[0]?.sisteOppdatering.includes('opprettet')
-							? 'Iverksatt'
-							: vedtakData?.[0]?.sisteOppdatering?.substring(
-									0,
-									vedtakData?.[0]?.sisteOppdatering?.indexOf('<'),
-								)
-					}
-				/>
+				<TitleValue title="Vedtaksstatus" value={getSisteOppdatering(vedtakUT?.sisteOppdatering)} />
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />

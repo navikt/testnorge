@@ -21,6 +21,7 @@ const DataVisning = ({ data, miljo }) => {
 	)?.label
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+	const vedtakAP = vedtakData?.find((vedtak) => vedtak?.sakType === 'AP')
 
 	return (
 		<>
@@ -28,9 +29,9 @@ const DataVisning = ({ data, miljo }) => {
 				<TitleValue
 					title="Vedtaksstatus"
 					value={
-						vedtakData?.[0]?.sisteOppdatering.includes('opprettet')
+						vedtakAP?.sisteOppdatering?.includes('opprettet')
 							? 'Iverksatt'
-							: vedtakData?.[0]?.sisteOppdatering
+							: vedtakAP?.sisteOppdatering
 					}
 				/>
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
