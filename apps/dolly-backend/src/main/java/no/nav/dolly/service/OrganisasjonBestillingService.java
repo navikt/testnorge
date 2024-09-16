@@ -251,6 +251,7 @@ public class OrganisasjonBestillingService {
         bestilling.setFeil(feil);
 
         var ferdig = orgStatus.stream()
+                .filter(o -> ArrayUtils.contains(bestilling.getMiljoer().split(","), o.getEnvironment()))
                 .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream()
                         .anyMatch(status -> status.equals(o.getStatus())) &&
                         ArrayUtils.contains(bestilling.getMiljoer().split(","), o.getEnvironment()));
