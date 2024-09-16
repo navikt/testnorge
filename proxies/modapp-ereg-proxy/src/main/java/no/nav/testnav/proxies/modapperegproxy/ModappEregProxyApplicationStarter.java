@@ -1,7 +1,6 @@
 package no.nav.testnav.proxies.modapperegproxy;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +19,6 @@ import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
-        DevConfig.class,
         SecurityConfig.class
 })
 @SpringBootApplication
