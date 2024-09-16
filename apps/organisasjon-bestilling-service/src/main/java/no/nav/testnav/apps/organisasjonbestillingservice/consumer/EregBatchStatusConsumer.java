@@ -25,27 +25,27 @@ public class EregBatchStatusConsumer {
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
-
-    public Long getStatusKode(no.nav.testnav.apps.organisasjonbestillingservice.domain.v1.Order order) {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
-        var command = new GetEregBatchStatusCommand(
-                webClient,
-                order.getBatchId(),
-                accessToken.getTokenValue(),
-                order.getMiljo()
-        );
-        return command.call();
-    }
-
-    public Long getStatusKode(Order order) {
-        var accessToken = tokenExchange.exchange(serverProperties).block();
-        var command = new GetEregBatchStatusCommand(
-                webClient,
-                order.getBatchId(),
-                accessToken.getTokenValue(),
-                order.getMiljo()
-        );
-        return command.call();
-    }
+//
+//    public Long getStatusKode(no.nav.testnav.apps.organisasjonbestillingservice.domain.v1.Order order) {
+//        var accessToken = tokenExchange.exchange(serverProperties).block();
+//        var command = new GetEregBatchStatusCommand(
+//                webClient,
+//                order.getBatchId(),
+//                accessToken.getTokenValue(),
+//                order.getMiljo()
+//        );
+//        return command.call();
+//    }
+//
+//    public Long getStatusKode(Order order) {
+//        var accessToken = tokenExchange.exchange(serverProperties).block();
+//        var command = new GetEregBatchStatusCommand(
+//                webClient,
+//                order.getBatchId(),
+//                accessToken.getTokenValue(),
+//                order.getMiljo()
+//        );
+//        return command.call();
+//    }
 
 }

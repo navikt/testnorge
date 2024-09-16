@@ -1,6 +1,5 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingIdsCommand;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingStatusCommand;
@@ -9,11 +8,9 @@ import no.nav.organisasjonforvalter.jpa.entity.Status;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-@Slf4j
 @Service
 public class OrganisasjonBestillingConsumer {
 

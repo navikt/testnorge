@@ -23,6 +23,7 @@ public class StatusDTO {
             case ERROR -> "Ukjent feil";
             case FAILED -> "Ukjent kristisk feil";
             case RUNNING -> "Bestillingen blir prosessert av EREG";
+            case PENDING_COMPLETE -> "Venter på status av oppretting";
             case COMPLETED -> "Bestilling er fullført";
             case NOT_FOUND -> "Finner ikke bestilling. Loggene kan ha blitt slettet";
             case ADDING_TO_QUEUE -> "Bestillingen venter på tildeling av plass i køen";
