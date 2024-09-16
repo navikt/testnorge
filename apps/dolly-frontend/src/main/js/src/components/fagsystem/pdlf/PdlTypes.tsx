@@ -174,7 +174,7 @@ export type VergemaalValues = {
 	sakType?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
-	nyVergeIdent?: NyIdent
+	nyVergeIdent?: NyIdent | undefined
 	vergeIdent?: string
 	id: number
 }

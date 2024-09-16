@@ -7,6 +7,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface PdlPersonValues {
+	path: string
 	nyPersonPath: string
 	eksisterendePersonPath: string
 	eksisterendeNyPerson?: Option
@@ -18,6 +19,7 @@ interface PdlPersonValues {
 }
 
 export const PdlPersonExpander = ({
+	path,
 	nyPersonPath,
 	eksisterendePersonPath,
 	eksisterendeNyPerson = null,
@@ -50,6 +52,7 @@ export const PdlPersonExpander = ({
 				))}
 			{visPersonValg && (
 				<PdlPersonForm
+					path={path}
 					nyPersonPath={nyPersonPath}
 					eksisterendePersonPath={eksisterendePersonPath}
 					label={label}
