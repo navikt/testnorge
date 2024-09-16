@@ -27,6 +27,9 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
     @Override
     public Mono<BestillingStatus> call() {
 
+        log.info("Henter status fra Organisasjon-Bestilling-Service uuid: {} id :{}",
+                status.getUuid(), status.getBestId());
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(STATUS_URL)
                         .build(status.getUuid(), status.getBestId()))
