@@ -21,13 +21,13 @@ import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -251,10 +251,11 @@ public class OrganisasjonBestillingService {
         bestilling.setFeil(feil);
 
         var ferdig = orgStatus.stream()
-                .filter(o -> ArrayUtils.contains(bestilling.getMiljoer().split(","), o.getEnvironment()))
                 .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream()
-                        .anyMatch(status -> status.equals(o.getStatus())) &&
-                        ArrayUtils.contains(bestilling.getMiljoer().split(","), o.getEnvironment()));
+                        .anyMatch(status -> status.equals(o.getStatus()))) &&
+                Arrays.stream(bestilling.getMiljoer().split(","))
+                        .allMatch(miljoe -> orgStatus.stream()
+                                .anyMatch(o -> o.getEnvironment().equals(miljoe)));
 
         bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());
