@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -53,12 +56,12 @@ public class OrderServiceV2 {
 
         var order = entity.get();
 
-        if (order.getBatchId() != null) {
+        if (nonNull(order.getBatchId())) {
 
-            return Status.NOT_FOUND;
+            return Status.PENDING_COMPLETE;
         }
 
-        if (order.getBuildId() == null) {
+        if (isNull(order.getBuildId())) {
             return Status.ADDING_TO_QUEUE;
         }
 
