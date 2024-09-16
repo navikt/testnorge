@@ -10,13 +10,14 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:servlet-security"
+    implementation "no.nav.testnav.libs:vault"
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-security"
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
@@ -30,9 +31,9 @@ dependencies {
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'
-    implementation 'org.apache.commons:commons-text:1.11.0'
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0"
+    implementation "org.apache.commons:commons-text:1.11.0"
 
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }
