@@ -6,6 +6,7 @@ public enum Status {
     ADDING_TO_QUEUE,
     IN_QUEUE_WAITING_TO_START,
     RUNNING,
+    PENDING_COMPLETE,
     COMPLETED,
     ERROR,
     FAILED;

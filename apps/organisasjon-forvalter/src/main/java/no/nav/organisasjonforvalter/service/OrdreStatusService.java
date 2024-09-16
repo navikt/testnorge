@@ -1,33 +1,27 @@
 package no.nav.organisasjonforvalter.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingConsumer;
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.dto.responses.OrdreResponse;
 import no.nav.organisasjonforvalter.dto.responses.OrdreResponse.StatusEnv;
-import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.dto.responses.StatusDTO;
 import no.nav.organisasjonforvalter.jpa.repository.StatusRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
 import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.ADDING_TO_QUEUE;
 import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.COMPLETED;
+import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.ERROR;
+import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.NOT_FOUND;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -42,90 +36,101 @@ public class OrdreStatusService {
 
     public OrdreResponse getStatus(List<String> orgnumre) {
 
-        var statusMap = statusRepository.findAllByOrganisasjonsnummer(orgnumre)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, "Ingen status funnet for gitte orgnumre"));
+        var orgImiljo = orgnumre.stream()
+                .map(orgnr -> importService.getOrganisasjoner(orgnr, null))
+                .toList();
 
-        if (statusMap.stream().anyMatch(status -> isBlank(status.getBestId()))) {
-            statusMap.stream()
-                    .map(organisasjonBestillingConsumer::getBestillingId)
-                    .reduce(Flux.empty(), Flux::concat)
+        var statusMap = statusRepository.findAllByOrganisasjonsnummerIn(orgnumre);
+
+        var orgnrIkkeFunnet = orgnumre.stream()
+                .filter(orgnr -> statusMap.stream()
+                        .noneMatch(status -> orgnr.equals(status.getOrganisasjonsnummer())))
+                .filter(orgnr -> orgImiljo.stream()
+                        .flatMap(iMiljoe -> iMiljoe.values().stream())
+                        .noneMatch(iMiljo -> orgnr.equals(iMiljo.getOrganisasjonsnummer())))
+                .collect(Collectors.toSet());
+
+        var oppdatertStatus = statusMap.stream()
+                .filter(status -> orgnrIkkeFunnet.stream()
+                        .noneMatch(orgnr -> orgnr.equals(status.getOrganisasjonsnummer())))
+                .toList();
+
+        if (oppdatertStatus.stream().anyMatch(status -> isBlank(status.getBestId()))) {
+
+            oppdatertStatus = Flux.fromIterable(statusMap)
+                    .flatMap(organisasjonBestillingConsumer::getBestillingId)
                     .collectList()
                     .block();
-            statusRepository.saveAll(statusMap);
+
+            statusRepository.saveAll(oppdatertStatus);
         }
 
-        var orgStatus = statusMap.stream()
+        var orgStatus = new ArrayList<BestillingStatus>();
+
+        orgStatus.addAll(Flux.fromIterable(oppdatertStatus)
                 .filter(status -> isNotBlank(status.getBestId()))
-                .map(organisasjonBestillingConsumer::getBestillingStatus)
-                .reduce(Flux.empty(), Flux::concat)
+                .filter(status -> orgImiljo.stream()
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream)
+                        .noneMatch(iMiljo -> status.getMiljoe().equals(iMiljo.getKey()) &&
+                                status.getOrganisasjonsnummer().equals(iMiljo.getValue().getOrganisasjonsnummer())))
+                .flatMap(organisasjonBestillingConsumer::getBestillingStatus)
                 .collectList()
-                .block();
+                .block());
 
-        var firstOrg = nonNull(orgStatus) ? orgStatus.stream().findFirst().orElse(null) : null;
+        orgStatus.addAll(oppdatertStatus.stream()
+                .filter(status -> isBlank(status.getBestId()))
+                .filter(status -> orgImiljo.stream()
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream)
+                        .noneMatch(iMiljo -> status.getMiljoe().equals(iMiljo.getKey()) &&
+                                status.getOrganisasjonsnummer().equals(iMiljo.getValue().getOrganisasjonsnummer())))
+                .map(status -> BestillingStatus.builder()
+                        .orgnummer(status.getOrganisasjonsnummer())
+                        .miljoe(status.getMiljoe())
+                        .status(StatusDTO.builder()
+                                .status(ADDING_TO_QUEUE)
+                                .description("Bestilling venter på å starte")
+                                .build())
+                        .build())
+                .toList());
 
-        var orgIMiljoe = false;
+        orgStatus.addAll(orgImiljo.stream()
+                .map(iMiljo -> iMiljo.entrySet().stream()
+                        .map(entry -> BestillingStatus.builder()
+                                .orgnummer(entry.getValue().getOrganisasjonsnummer())
+                                .status(StatusDTO.builder()
+                                        .status(COMPLETED)
+                                        .description("Fant organisasjonen i miljø")
+                                        .build())
+                                .miljoe(entry.getKey())
+                                .build())
+                        .toList())
+                .flatMap(Collection::stream)
+                .toList());
 
-        if (nonNull(firstOrg)) {
-            Map<String, RsOrganisasjon> organisasjoner = importService.getOrganisasjoner(firstOrg.getOrgnummer(), Set.of(firstOrg.getMiljoe()));
-            log.info("Leter etter organisasjoner i miljoe: {}", firstOrg.getMiljoe());
-            if (!organisasjoner.isEmpty()) {
-                log.info("Fant org: {} i miljoe: {}", firstOrg.getOrgnummer(), firstOrg.getMiljoe());
-                orgIMiljoe = true;
-            }
-        }
-
-        if (statusMap.stream().anyMatch(status -> isBlank(status.getBestId()))) {
-            orgStatus.addAll(statusMap.stream()
-                    .filter(status -> isBlank(status.getBestId()))
-                    .map(status -> BestillingStatus.builder()
-                            .orgnummer(status.getOrganisasjonsnummer())
-                            .miljoe(status.getMiljoe())
-                            .status(StatusDTO.builder()
-                                    .status(ADDING_TO_QUEUE)
-                                    .description("Bestilling venter på å starte")
-                                    .build())
-                            .build())
-                    .toList());
-        }
-
-        if (orgIMiljoe) {
-            return OrdreResponse.builder()
-                    .orgStatus(orgStatus
-                            .stream()
-                            .collect(Collectors.groupingBy(BestillingStatus::getOrgnummer,
-                                    mapping(status -> StatusEnv.builder()
-                                                    .status(COMPLETED)
-                                                    .details("Fant organisasjon i miljø")
-                                                    .environment(status.getMiljoe())
-                                                    .error(status.getFeilmelding())
-                                                    .build(),
-                                            toList()))))
-                    .build();
-        }
+        orgStatus.addAll(orgnrIkkeFunnet.stream()
+                .map(orgnr -> BestillingStatus.builder()
+                        .orgnummer(orgnr)
+                        .status(StatusDTO.builder()
+                                .status(NOT_FOUND)
+                                .description("Ikke funnet")
+                                .build())
+                        .build())
+                .toList());
 
         return OrdreResponse.builder()
-                .orgStatus((nonNull(orgStatus) ? orgStatus : new ArrayList<BestillingStatus>())
-                        .stream()
-                        .collect(Collectors.groupingBy(BestillingStatus::getOrgnummer,
-                                mapping(status -> StatusEnv.builder()
-                                                .status(nonNull(status.getStatus()) ?
-                                                        status.getStatus().getStatus() : null)
-                                                .details(nonNull(status.getStatus()) ?
-                                                        status.getStatus().getDescription() : null)
-                                                .environment(status.getMiljoe())
-                                                .error(status.getFeilmelding())
-                                                .build(),
-                                        toList()))))
+                .orgStatus(orgStatus.stream()
+                        .collect(Collectors.groupingBy(BestillingStatus::getOrgnummer))
+                        .entrySet().stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, org -> org.getValue().stream()
+                                .map(value -> StatusEnv.builder()
+                                        .status(nonNull(value.getStatus()) ? value.getStatus().getStatus() : ERROR)
+                                        .details(nonNull(value.getStatus()) ? value.getStatus().getDescription() : "Se feilbeskrivelse")
+                                        .environment(value.getMiljoe())
+                                        .error(value.getFeilmelding())
+                                        .build())
+                                .toList())))
                 .build();
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeployEntry {
-
-        private String environment;
-        private String uuid;
-        private List<BestillingStatus.ItemDto> lastStatus;
     }
 }

@@ -16,13 +16,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.ERROR;
 import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.OK;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
@@ -82,10 +86,19 @@ public class OrdreService {
 
     private void deployOrganisasjon(String uuid, Organisasjon organisasjon, String env) {
 
-        if (organisasjonServiceConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).isEmpty()) {
+        var orgStatus = organisasjonServiceConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env)
+                        .collectList()
+                        .block();
+
+        if (isNull(orgStatus) || orgStatus.stream()
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .allMatch(org -> isBlank(org.getValue().getOrgnummer()))) {
+
             organisasjonMottakConsumer.opprettOrganisasjon(uuid, organisasjon, env);
 
         } else {
+
             organisasjonMottakConsumer.endreOrganisasjon(uuid, organisasjon, env);
         }
     }

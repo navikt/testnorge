@@ -5,6 +5,10 @@ spring:
     name: Testnav-Organisasjon-Forvalter
     version: 1.0
     description: Bestilling, persistering og opphenting av testorganisasjoner
+  flyway:
+    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    locations: classpath:db/migration
+    baseline-on-migrate: true
   security:
     oauth2:
       resourceserver:
@@ -12,10 +16,6 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER} 
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 springdoc:
   swagger-ui:

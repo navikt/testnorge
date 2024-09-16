@@ -43,8 +43,6 @@ kafka.groupid: testnav-organisasjon-mottak-service-v1
 JENKINS_SERVER_Q1: q1-ereg@b27jbsl01602.preprod.local
 JENKINS_SERVER_Q2: q2-ereg@b27jbsl01610.preprod.local
 JENKINS_SERVER_Q4: q4-ereg@b27jbsl01609.preprod.local
-JENKINS_SERVER_Q5: q5-ereg@b27jbsl01615.preprod.local
-JENKINS_SERVER_T3: t3-ereg@d26jbsl01597.test.local
 
 management:
   endpoints:
