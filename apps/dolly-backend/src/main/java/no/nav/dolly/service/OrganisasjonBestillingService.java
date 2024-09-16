@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -251,8 +252,10 @@ public class OrganisasjonBestillingService {
 
         var ferdig = orgStatus.stream()
                 .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream()
-                        .anyMatch(status -> status.equals(o.getStatus()) &&
-                                (isBlank(o.getError()) || !o.getError().contains("404"))));
+                        .anyMatch(status -> status.equals(o.getStatus()))) &&
+                orgStatus.stream()
+                        .allMatch(o -> Arrays.stream(bestilling.getMiljoer().split(","))
+                                .anyMatch(miljoe -> o.getEnvironment().equals(miljoe)));
 
         bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());
