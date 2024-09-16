@@ -14,6 +14,7 @@ includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/testing'
+includeBuild '../../libs/vault'
 
 develocity {
     buildScan {
