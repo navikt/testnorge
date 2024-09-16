@@ -79,16 +79,51 @@ export const PdlVisning = ({
 					data={hentPerson}
 					tpsMessagingData={fagsystemData?.tpsMessaging}
 					tpsMessagingLoading={loading?.tpsMessaging}
+					pdlfData={pdlfPerson}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
-				<Foedsel data={hentPerson} erPdlVisning />
-				<Doedsfall data={doedsfall} erPdlVisning />
+				<Foedsel
+					data={hentPerson}
+					pdlfData={pdlfPerson?.foedsel}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erPdlVisning={miljoeVisning}
+				/>
+				<Doedsfall
+					data={doedsfall}
+					pdlfData={pdlfPerson?.doedsfall}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erPdlVisning={miljoeVisning}
+				/>
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
-				<PdlNasjonalitet data={hentPerson} />
+				<PdlNasjonalitet
+					data={hentPerson}
+					pdlfData={pdlfPerson}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />
-				<PdlFullmakt data={fullmakt} />
-				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
+				<PdlFullmakt
+					data={fullmakt}
+					pdlfData={pdlfPerson?.fullmakt}
+					pdlfRelasjoner={fagsystemData?.pdlforvalter?.relasjoner}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erPdlVisning={miljoeVisning}
+				/>
+				<PdlSikkerhetstiltak
+					data={sikkerhetstiltak}
+					pdlfData={pdlfPerson?.sikkerhetstiltak}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erPdlVisning={miljoeVisning}
+				/>
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
 					data={bankkontoData}
@@ -125,7 +160,13 @@ export const PdlVisning = ({
 					identtype={identtype}
 					erPdlVisning={miljoeVisning}
 				/>
-				<PdlRelasjoner data={hentPerson} />
+				<PdlRelasjoner
+					data={hentPerson}
+					pdlfData={pdlfPerson}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<KontaktinformasjonForDoedsbo

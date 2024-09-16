@@ -28,8 +28,10 @@ import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRe
 
 type FoedselTypes = {
 	data: PersonData
+	pdlfData?: PersonData
 	tmpPersoner?: Array<FoedselData>
 	ident?: string
+	identtype?: string
 	erPdlVisning?: boolean
 	erRedigerbar?: boolean
 }
@@ -84,6 +86,7 @@ const FoedselVisning = ({
 	ident,
 	getInitialFoedsel,
 	name,
+	master,
 }: FoedselVisningTypes) => {
 	const initFoedsel = Object.assign(_.cloneDeep(getInitialFoedsel()), data[idx])
 	const initialValues = { [name]: initFoedsel }
@@ -110,12 +113,14 @@ const FoedselVisning = ({
 			redigertAttributt={redigertFoedselValues}
 			path={name}
 			ident={ident}
+			master={master}
 		/>
 	)
 }
 
 export const Foedsel = ({
 	data,
+	pdlfData,
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
@@ -185,22 +190,26 @@ export const Foedsel = ({
 						</>
 					) : (
 						<DollyFieldArray data={foedsel} header="" nested>
-							{(item: FoedselData, idx: number) =>
-								erRedigerbar ? (
-									<FoedselVisning
-										foedsel={item}
-										idx={idx}
-										//@ts-ignore
-										data={foedsel}
-										ident={ident}
-										erPdlVisning={erPdlVisning}
-										tmpPersoner={tmpPersoner}
-										getInitialFoedsel={getInitialFoedsel}
-										name="foedsel"
-									/>
-								) : (
-									<FoedselLes foedsel={item} idx={idx} />
-								)
+							{(item: FoedselData, idx: number) =>{
+                                const master = item?.metadata?.master
+                                const pdlfElement = pdlfData?.find(
+                                    (element) => element.hendelseId === item?.metadata?.opplysningsId,
+                                )
+                                if (erRedigerbar && master !== 'FREG') {
+                                    return (
+                                        <FoedselVisning
+                                            foedsel={master === 'PDL' && pdlfElement ? pdlfElement : item}
+                                            idx={idx}
+                                            data={master === 'PDL' && pdlfData ? pdlfData : foedsel}
+                                            ident={ident}
+                                            erPdlVisning={erPdlVisning}
+                                            tmpPersoner={tmpPersoner}
+                                            master={master}
+                                        />
+                                    )
+                                }
+                                return <FoedselLes foedsel={item} idx={idx} />
+                            }
 							}
 						</DollyFieldArray>
 					)}

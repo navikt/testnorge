@@ -20,16 +20,91 @@ interface SikkerhetstiltakProps {
 	formMethods: UseFormReturn
 }
 
-export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
+export const SikkerhetstiltakForm = ({ formMethods, path }: SikkerhetstiltakProps) => {
 	const opts = useContext(BestillingsveilederContext)
 	const [randomNavUsers, setRandomNavUsers] = useState([])
-
 	const { navEnheter } = useNavEnheter()
 
 	useEffect(() => {
 		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
 	}, [])
 
+	const indexBeskrSikkerhetTiltak = 7
+
+	const handleSikkerhetstiltakChange = (option: Option) => {
+		handleValueChange(option.value, 'tiltakstype')
+		handleValueChange(
+			option.label === 'Opphørt' ? option.label : option.label.substring(indexBeskrSikkerhetTiltak),
+			'beskrivelse',
+		)
+	}
+
+	const handleValueChange = (value: Date | string, name: string) => {
+		formMethods.setValue(`${path}.${name}`, value)
+		formMethods.trigger('pdldata.person.sikkerhetstiltak')
+	}
+
+	const personident = formMethods.watch(`${path}.kontaktperson.personident`)
+	const gyldigFraOgMed = formMethods.watch(`path.gyldigFraOgMed`)
+
+	return (
+		<div className="flexbox--flex-wrap">
+			<DollySelect
+				name={`${path}.tiltakstype`}
+				label="Type sikkerhetstiltak"
+				options={
+					opts?.personFoerLeggTil
+						? Options('sikkerhetstiltakType')
+						: Options('sikkerhetstiltakType').filter((option) => option.label !== 'Opphørt')
+				}
+				size="large"
+				onChange={(option: Option) => handleSikkerhetstiltakChange(option)}
+				value={formMethods.watch(`${path}.tiltakstype`)}
+				isClearable={false}
+			/>
+			<FormSelect
+				options={
+					_.isEmpty(personident)
+						? randomNavUsers
+						: randomNavUsers.concat({ value: personident, label: personident })
+				}
+				isClearable={false}
+				name={`${path}.kontaktperson.personident`}
+				placeholder={'Velg ...'}
+				label={'Kontaktperson'}
+			/>
+			<FormSelect
+				name={`${path}.kontaktperson.enhet`}
+				label={'NAV kontor'}
+				size={'xxxlarge'}
+				options={navEnheter}
+			/>
+			<InputWarning
+				visWarning={gyldigFraOgMed && !isToday(gyldigFraOgMed)}
+				warningText="TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et
+							gyldig sikkerhetstiltak fra TPS er ønsket."
+			>
+				<FormDatepicker
+					name={`${path}.gyldigFraOgMed`}
+					label="Sikkerhetstiltak starter"
+					onChange={(date: Date) => {
+						handleValueChange(date, 'gyldigFraOgMed')
+					}}
+				/>
+			</InputWarning>
+			<FormDatepicker
+				name={`${path}.gyldigTilOgMed`}
+				label="Sikkerhetstiltak opphører"
+				onChange={(date: Date) => {
+					handleValueChange(date, 'gyldigTilOgMed')
+				}}
+			/>
+			<AvansertForm path={path} kanVelgeMaster={false} />
+		</div>
+	)
+}
+
+export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 	const rootPath = 'pdldata.person.sikkerhetstiltak'
 
 	const sikkerhetstiltakListe = formMethods.watch(rootPath)
@@ -38,96 +113,16 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 		return null
 	}
 
-	const indexBeskrSikkerhetTiltak = 7
-
-	const handleSikkerhetstiltakChange = (option: Option, idx: number) => {
-		handleValueChange(option.value, 'tiltakstype', idx)
-		handleValueChange(
-			option.label === 'Opphørt' ? option.label : option.label.substring(indexBeskrSikkerhetTiltak),
-			'beskrivelse',
-			idx,
-		)
-	}
-
-	const handleValueChange = (value: Date | string, name: string, idx: number) => {
-		formMethods.setValue(`${rootPath}[${idx}].${name}`, value)
-		formMethods.trigger(rootPath)
-	}
-
 	return (
 		<Vis attributt={rootPath}>
-			<div className="flexbox--flex-wrap">
-				<FormDollyFieldArray
-					name={rootPath}
-					header="Sikkerhetstiltak"
-					newEntry={initialSikkerhetstiltak}
-					canBeEmpty={false}
-				>
-					{(path: string, idx: number) => {
-						const personident = formMethods.watch(`${path}.kontaktperson.personident`)
-						const gyldigFraOgMed = formMethods.watch(
-							`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`,
-						)
-						return (
-							<>
-								<DollySelect
-									name={`${path}.tiltakstype`}
-									label="Type sikkerhetstiltak"
-									options={
-										opts.personFoerLeggTil
-											? Options('sikkerhetstiltakType')
-											: Options('sikkerhetstiltakType').filter(
-													(option) => option.label !== 'Opphørt',
-												)
-									}
-									size="large"
-									onChange={(option: Option) => handleSikkerhetstiltakChange(option, idx)}
-									value={formMethods.watch(`${path}.tiltakstype`)}
-									isClearable={false}
-								/>
-								<FormSelect
-									options={
-										_.isEmpty(personident)
-											? randomNavUsers
-											: randomNavUsers.concat({ value: personident, label: personident })
-									}
-									isClearable={false}
-									name={`${path}.kontaktperson.personident`}
-									placeholder={'Velg ...'}
-									label={'Kontaktperson'}
-								/>
-								<FormSelect
-									name={`${path}.kontaktperson.enhet`}
-									label={'NAV kontor'}
-									size={'xxxlarge'}
-									options={navEnheter}
-								/>
-								<InputWarning
-									visWarning={gyldigFraOgMed && !isToday(gyldigFraOgMed)}
-									warningText="TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et
-							gyldig sikkerhetstiltak fra TPS er ønsket."
-								>
-									<FormDatepicker
-										name={`${path}.gyldigFraOgMed`}
-										label="Sikkerhetstiltak starter"
-										onChange={(date: Date) => {
-											handleValueChange(date, 'gyldigFraOgMed', idx)
-										}}
-									/>
-								</InputWarning>
-								<FormDatepicker
-									name={`${path}.gyldigTilOgMed`}
-									label="Sikkerhetstiltak opphører"
-									onChange={(date: Date) => {
-										handleValueChange(date, 'gyldigTilOgMed', idx)
-									}}
-								/>
-								<AvansertForm path={path} kanVelgeMaster={false} />
-							</>
-						)
-					}}
-				</FormDollyFieldArray>
-			</div>
+			<FormDollyFieldArray
+				name={rootPath}
+				header="Sikkerhetstiltak"
+				newEntry={initialSikkerhetstiltak}
+				canBeEmpty={false}
+			>
+				{(path: string) => <SikkerhetstiltakForm formMethods={formMethods} path={path} />}
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

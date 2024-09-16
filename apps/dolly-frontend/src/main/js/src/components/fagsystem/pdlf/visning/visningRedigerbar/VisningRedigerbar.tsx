@@ -39,12 +39,14 @@ import { Form, FormProvider, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
+import { SikkerhetstiltakForm } from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 import { boolean } from 'yup'
 import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 
 type VisningTypes = {
 	getPdlForvalter: Function
+	getPdl: Function
 	dataVisning: any
 	initialValues: any
 	eksisterendeNyPerson?: Option
@@ -71,6 +73,7 @@ enum Attributt {
 	Utvandring = 'utflytting',
 	Vergemaal = 'vergemaal',
 	Fullmakt = 'fullmakt',
+	Sikkerhetstiltak = 'sikkerhetstiltak',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
@@ -114,6 +117,7 @@ const Knappegruppe = styled.div`
 
 export const VisningRedigerbar = ({
 	getPdlForvalter,
+	getPdl,
 	dataVisning,
 	initialValues,
 	eksisterendeNyPerson = null,
@@ -161,7 +165,9 @@ export const VisningRedigerbar = ({
 					setVisningModus(Modus.LoadingPdl)
 					DollyApi.sendOrdre(ident).then(() => {
 						getPdlForvalter().then(() => {
-							setVisningModus(Modus.Les)
+							getPdl().then(() => {
+								setVisningModus(Modus.Les)
+							})
 						})
 					})
 				}
@@ -182,7 +188,9 @@ export const VisningRedigerbar = ({
 					setVisningModus(Modus.LoadingPdl)
 					DollyApi.sendOrdre(ident).then(() => {
 						getPdlForvalter().then(() => {
-							setVisningModus(Modus.Les)
+							getPdl().then(() => {
+								setVisningModus(Modus.Les)
+							})
 						})
 					})
 				}
@@ -197,6 +205,8 @@ export const VisningRedigerbar = ({
 	const handleSubmit = useCallback((data: any) => {
 		const submit = async () => {
 			setVisningModus(Modus.LoadingPdlf)
+			setErrorMessagePdlf(null)
+			setErrorMessagePdl(null)
 			await sendData(data)
 		}
 		mountedRef.current = false
@@ -265,6 +275,8 @@ export const VisningRedigerbar = ({
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
+			case Attributt.Sikkerhetstiltak:
+				return <SikkerhetstiltakForm formMethods={formMethods} path={path} />
 			case Attributt.Boadresse:
 				return (
 					<BostedsadresseForm

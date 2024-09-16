@@ -8,9 +8,19 @@ import { PdlDoedfoedtBarn } from '@/components/fagsystem/pdl/visning/partials/re
 type PdlRelasjonerProps = {
 	data: HentPerson
 	visTittel?: boolean
+	pdlfData?: HentPerson
+	tmpPersoner?: any
+	ident?: string
+	identtype?: string
 }
 
-export const PdlRelasjoner = ({ data }: PdlRelasjonerProps) => {
+export const PdlRelasjoner = ({
+	data,
+	pdlfData,
+	tmpPersoner,
+	ident,
+	identtype,
+}: PdlRelasjonerProps) => {
 	if (!data) {
 		return null
 	}
@@ -27,7 +37,13 @@ export const PdlRelasjoner = ({ data }: PdlRelasjonerProps) => {
 	return (
 		<ErrorBoundary>
 			<>
-				<PdlPartner data={partnere} />
+				<PdlPartner
+					data={partnere}
+					pdlfData={pdlfData?.sivilstand}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<PdlDoedfoedtBarn data={doedfoedtBarn} />
 				<PdlForeldreBarn data={foreldreBarn} />
 				<PdlForeldreansvar data={foreldreansvar} />

@@ -131,7 +131,7 @@ export const Adressebeskyttelse = ({
 							const pdlfElement = pdlfData?.find(
 								(item) => item.hendelseId === adressebeskyttelse?.metadata?.opplysningsId,
 							)
-							if (erRedigerbar) {
+							if (erRedigerbar && master !== 'FREG') {
 								return (
 									<AdressebeskyttelseVisning
 										adressebeskyttelse={

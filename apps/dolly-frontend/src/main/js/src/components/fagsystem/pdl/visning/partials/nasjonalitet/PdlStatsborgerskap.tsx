@@ -3,6 +3,8 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { formatDate } from '@/utils/DataFormatter'
 import { Statsborgerskap } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import React from 'react'
+import { StatsborgerskapVisning } from '@/components/fagsystem/pdlf/visning/partials/Statsborgerskap'
 
 type StatsborgerskapProps = {
 	data: Statsborgerskap
@@ -13,7 +15,7 @@ type VisningProps = {
 	statsborgerskapListe: [Statsborgerskap]
 }
 
-const StatsborgerskapVisning = ({ data, idx }: StatsborgerskapProps) => {
+const StatsborgerskapPdlVisning = ({ data, idx }: StatsborgerskapProps) => {
 	if (data) {
 		return (
 			<div key={idx} className="person-visning_content">
@@ -31,8 +33,39 @@ const StatsborgerskapVisning = ({ data, idx }: StatsborgerskapProps) => {
 	return null
 }
 
-export const PdlStatsborgerskap = ({ statsborgerskapListe }: VisningProps) => {
-	if (statsborgerskapListe?.length < 1) {
+const StatsborgerskapVisningRedigerbar = ({
+	data,
+	idx,
+	alleData,
+	tmpPersoner,
+	ident,
+	identtype,
+	master,
+}) => {
+	return (
+		<div className="person-visning_content">
+			<StatsborgerskapVisning
+				statsborgerskapData={data}
+				idx={idx}
+				data={alleData}
+				tmpPersoner={tmpPersoner}
+				ident={ident}
+				erPdlVisning={false}
+				identtype={identtype}
+				master={master}
+			/>
+		</div>
+	)
+}
+
+export const PdlStatsborgerskap = ({
+	statsborgerskapListe,
+	pdlfData,
+	tmpPersoner,
+	ident,
+	identtype,
+}: VisningProps) => {
+	if (statsborgerskapListe?.length < 1 && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
 		return null
 	}
 
@@ -44,11 +77,18 @@ export const PdlStatsborgerskap = ({ statsborgerskapListe }: VisningProps) => {
 	)
 
 	return (
-		<ArrayHistorikk
-			component={StatsborgerskapVisning}
-			data={gyldigeStatsborgerskap}
-			historiskData={historiskeStatsborgerskap}
-			header="Statsborgerskap"
-		/>
+		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
+			<ArrayHistorikk
+				component={StatsborgerskapPdlVisning}
+				componentRedigerbar={StatsborgerskapVisningRedigerbar}
+				data={gyldigeStatsborgerskap}
+				pdlfData={pdlfData}
+				historiskData={historiskeStatsborgerskap}
+				tmpPersoner={tmpPersoner}
+				ident={ident}
+				identtype={identtype}
+				header="Statsborgerskap"
+			/>
+		</div>
 	)
 }

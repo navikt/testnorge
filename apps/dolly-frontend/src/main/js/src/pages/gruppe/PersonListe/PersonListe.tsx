@@ -234,7 +234,10 @@ export default function PersonListe({
 
 	const updatePersonHeader = () => {
 		personListe.map((person) => {
-			const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
+			const redigertPerson =
+				person?.kilde === 'TEST-NORGE'
+					? _.get(tmpPersoner?.pdl, `${person?.identNr}.person`)
+					: _.get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
 			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
 			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
 				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
