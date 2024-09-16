@@ -59,25 +59,6 @@ public class OrderController {
         return ResponseEntity.created(uri).build();
     }
 
-//    @GetMapping("/{uuid}/items")
-//    public ResponseEntity<List<ItemDTO>> getItems(@PathVariable("uuid") String uuid) {
-//        log.info("Henter status for uuid: {}.", uuid);
-//        var items = service.getStatusBy(uuid);
-//        if (items == null) {
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.ok(items);
-//    }
-//
-//    @GetMapping("/{uuid}/items/{id}")
-//    public ResponseEntity<ItemDTO> getItem(@PathVariable("id") Long id) {
-//        var item = service.getStatusBy(id);
-//        if (item == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(item);
-//    }
-
     @DeleteMapping("/{uuid}")
     public ResponseEntity<HttpStatus> delete(@PathVariable("uuid") String uuid) {
         service.delete(uuid);
