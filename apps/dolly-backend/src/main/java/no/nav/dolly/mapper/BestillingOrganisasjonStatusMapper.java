@@ -14,6 +14,7 @@ import java.util.Map;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.ORGANISASJON_FORVALTER;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -29,8 +30,6 @@ public class BestillingOrganisasjonStatusMapper {
 
         List.of(progress.getOrganisasjonsforvalterStatus()
                 .replace(",q", "$q")
-                .replace(",t", "$t")
-                .replace(",u", "$u")
                 .split("\\$")).forEach(status -> {
             String[] environMsg = status.split(":", 2);
             if (environMsg.length < 2) {
@@ -65,9 +64,11 @@ public class BestillingOrganisasjonStatusMapper {
     }
 
     private static String getOrgStatusDetailForMiljo(List<OrganisasjonDeployStatus.OrgStatus> orgStatuser, String miljo) {
-        return orgStatuser.stream()
+
+        return nonNull(orgStatuser) ? orgStatuser.stream()
                 .filter(orgStatus -> miljo.equals(orgStatus.getEnvironment()))
-                .findFirst().orElseGet(OrganisasjonDeployStatus.OrgStatus::new)
-                .getDetails();
+                .map(status -> "%s %s".formatted(status.getDetails(),
+                        status.getDetails().contains("feil") ? status.getError() : ""))
+                .findFirst().orElse("") : "";
     }
 }

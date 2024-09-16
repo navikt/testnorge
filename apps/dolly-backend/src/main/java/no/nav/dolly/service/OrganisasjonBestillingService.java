@@ -44,6 +44,7 @@ import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonS
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.FAILED;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -75,13 +76,15 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Fant ikke bestilling med id " + bestillingId));
 
         OrganisasjonBestillingProgress bestillingProgress;
-        List<OrgStatus> orgStatusList;
+        List<OrgStatus> orgStatusList = null;
 
         try {
             bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId)
                     .stream().findFirst().orElseThrow(() -> new NotFoundException("Status ikke funnet for bestillingId " + bestillingId));
 
-            orgStatusList = getOrgforvalterStatus(bestilling, bestillingProgress);
+            if (isNotTrue(bestilling.getFerdig())) {
+                orgStatusList = getOrgforvalterStatus(bestilling, bestillingProgress);
+            }
 
         } catch (WebClientResponseException e) {
             log.info("Status ennå ikke opprettet for bestilling");
@@ -272,17 +275,21 @@ public class OrganisasjonBestillingService {
 
         log.info("Status for org deploy på org: {} - {}", bestillingProgress.getOrganisasjonsnummer(), organisasjonDeployStatus);
 
-        var orgStatus = organisasjonDeployStatus.getOrgStatus()
-                .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
+        if (nonNull(organisasjonDeployStatus)) {
+            var orgStatus = organisasjonDeployStatus.getOrgStatus()
+                    .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
 
-        updateBestilling(bestilling, orgStatus);
+            updateBestilling(bestilling, orgStatus);
 
-        var forvalterStatus = orgStatus.stream()
-                .map(org -> org.getEnvironment() + ":" + forvalterStatusDetails(org))
-                .collect(Collectors.joining(","));
-        bestillingProgress.setOrganisasjonsforvalterStatus(forvalterStatus);
+            var forvalterStatus = orgStatus.stream()
+                    .map(org -> org.getEnvironment() + ":" + forvalterStatusDetails(org))
+                    .collect(Collectors.joining(","));
+            bestillingProgress.setOrganisasjonsforvalterStatus(forvalterStatus);
+            return orgStatus;
 
-        return orgStatus;
+        } else {
+            return emptyList();
+        }
     }
 
     private String toJson(Object object) {

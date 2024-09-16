@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -85,8 +86,9 @@ public class OrganisasjonConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .retrieve()
                         .bodyToMono(OrganisasjonDeployStatus.class)
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException)))
+                        .doOnError(WebClientFilter::logErrorMessage)
+                        .onErrorResume(throwable -> Mono.empty())
+                )
                 .block();
     }
 
