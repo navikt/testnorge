@@ -250,7 +250,7 @@ public class OrganisasjonBestillingService {
 
         bestilling.setFeil(feil);
 
-        var ferdig = orgStatus.stream()
+        var ferdig = !orgStatus.isEmpty() && orgStatus.stream()
                 .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream()
                         .anyMatch(status -> status.equals(o.getStatus()))) &&
                 Arrays.stream(bestilling.getMiljoer().split(","))
