@@ -27,7 +27,7 @@ const StyledPanel = styled.div`
 	width: 790px;
 `
 
-export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
+export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 	const formInntekter = formMethods.watch(`${pensjonGenererPath}.inntekter`)
 	const genererTOM = formMethods.watch(`${pensjonGenererPath}.generer.tomAar`)
 	const genererFOM = formMethods.watch(`${pensjonGenererPath}.generer.fomAar`)
@@ -78,7 +78,7 @@ export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
 					name={`${pensjonGenererPath}.generer.fomAar`}
 					label="Fra og med år"
 					options={getYearRangeOptions(
-						syttenFraOgMedAar || 1968,
+						gyldigFraOgMedAar || 1968,
 						(genererTOM && genererTOM - 1) || new Date().getFullYear() - 1,
 					)}
 					size={'xsmall'}

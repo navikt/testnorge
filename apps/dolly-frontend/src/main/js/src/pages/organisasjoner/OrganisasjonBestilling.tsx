@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
-import { OrganisasjonItem } from '@/components/ui/icon/IconItem'
+import { BestillingIconItem } from '@/components/ui/icon/IconItem'
 import Icon from '@/components/ui/icon/Icon'
 import BestillingDetaljer from '@/components/bestilling/detaljer/BestillingDetaljer'
 import { OrgStatus } from '@/components/fagsystem/organisasjoner/types'
@@ -92,7 +92,7 @@ export default function OrganisasjonBestilling({
 				data={bestillingStatuser}
 				columns={columns}
 				pagination
-				iconItem={<OrganisasjonItem />}
+				iconItem={<BestillingIconItem />}
 				onExpand={(bestilling: OrgStatus) => {
 					return (
 						<BestillingDetaljer

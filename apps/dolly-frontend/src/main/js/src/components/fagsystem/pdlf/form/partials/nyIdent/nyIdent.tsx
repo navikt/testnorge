@@ -33,6 +33,7 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 				return (
 					<div className="flexbox--flex-wrap">
 						<PdlPersonExpander
+							path={path}
 							nyPersonPath={path}
 							eksisterendePersonPath={`${path}.eksisterendeIdent`}
 							label="NY IDENTITET"

@@ -5,7 +5,7 @@
             <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
-                    <maxDepthPerThrowable>256</maxDepthPerThrowable>
+                    
                     <maxLength>10280</maxLength>
                     <shortenedClassNameLength>20</shortenedClassNameLength>
                     <exclude>^sun\.reflect\..*\.invoke</exclude>
@@ -27,7 +27,7 @@
             <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
-                    <maxDepthPerThrowable>256</maxDepthPerThrowable>
+                    
                     <maxLength>10280</maxLength>
                     <shortenedClassNameLength>20</shortenedClassNameLength>
                     <exclude>^sun\.reflect\..*\.invoke</exclude>
