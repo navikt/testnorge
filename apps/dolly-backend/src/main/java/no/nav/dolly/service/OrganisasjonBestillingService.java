@@ -254,8 +254,8 @@ public class OrganisasjonBestillingService {
                 .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream()
                         .anyMatch(status -> status.equals(o.getStatus()))) &&
                 orgStatus.stream()
-                        .allMatch(o -> Arrays.stream(bestilling.getMiljoer().split(","))
-                                .anyMatch(miljoe -> o.getEnvironment().equals(miljoe)));
+                        .map(OrgStatus::getEnvironment)
+                        .allMatch(o -> Arrays.asList(bestilling.getMiljoer().split(",")).contains(o));
 
         bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());
