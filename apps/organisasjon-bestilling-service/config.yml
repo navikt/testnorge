@@ -33,9 +33,6 @@ spec:
         - application: testnav-organisasjon-mottak-service
           cluster: dev-gcp
     outbound:
-      rules:
-        - application: ereg-batch-status-service
-          cluster: dev-gcp
       external:
         - host: testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
   gcp:
