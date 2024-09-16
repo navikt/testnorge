@@ -23,7 +23,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:servlet-security'
-    implementation 'no.nav.testnav.libs:commands'
+    implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'

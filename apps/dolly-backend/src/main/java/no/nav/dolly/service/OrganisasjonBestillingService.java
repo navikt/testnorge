@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -92,7 +93,7 @@ public class OrganisasjonBestillingService {
         }
 
         return RsOrganisasjonBestillingStatus.builder()
-                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatusList) ? orgStatusList : emptyList()))
+                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, orgStatusList))
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .organisasjonNummer(bestillingProgress.getOrganisasjonsnummer())
@@ -249,12 +250,15 @@ public class OrganisasjonBestillingService {
 
         bestilling.setFeil(feil);
 
-        var ferdig = orgStatus.stream()
-                .anyMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
+        var ferdig = !orgStatus.isEmpty() && orgStatus.stream()
+                .allMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream()
+                        .anyMatch(status -> status.equals(o.getStatus()))) &&
+                Arrays.stream(bestilling.getMiljoer().split(","))
+                        .allMatch(miljoe -> orgStatus.stream()
+                                .anyMatch(o -> o.getEnvironment().equals(miljoe)));
 
         bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());
-
     }
 
     private String forvalterStatusDetails(OrgStatus orgStatus) {
@@ -274,17 +278,21 @@ public class OrganisasjonBestillingService {
 
         log.info("Status for org deploy på org: {} - {}", bestillingProgress.getOrganisasjonsnummer(), organisasjonDeployStatus);
 
-        var orgStatus = organisasjonDeployStatus.getOrgStatus()
-                .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
+        if (nonNull(organisasjonDeployStatus)) {
+            var orgStatus = organisasjonDeployStatus.getOrgStatus()
+                    .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
 
-        updateBestilling(bestilling, orgStatus);
+            updateBestilling(bestilling, orgStatus);
 
-        var forvalterStatus = orgStatus.stream()
-                .map(org -> org.getEnvironment() + ":" + forvalterStatusDetails(org))
-                .collect(Collectors.joining(","));
-        bestillingProgress.setOrganisasjonsforvalterStatus(forvalterStatus);
+            var forvalterStatus = orgStatus.stream()
+                    .map(org -> org.getEnvironment() + ":" + forvalterStatusDetails(org))
+                    .collect(Collectors.joining(","));
+            bestillingProgress.setOrganisasjonsforvalterStatus(forvalterStatus);
+            return orgStatus;
 
-        return orgStatus;
+        } else {
+            return emptyList();
+        }
     }
 
     private String toJson(Object object) {
