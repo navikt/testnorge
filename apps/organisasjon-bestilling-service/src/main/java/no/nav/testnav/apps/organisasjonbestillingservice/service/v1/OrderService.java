@@ -38,27 +38,27 @@ public class OrderService {
                 .collect(Collectors.toSet());
     }
 
-    public ItemDTO getStatusBy(Long id) {
-        var model = repository.findById(id);
-        if (model.isEmpty()) {
-            return null;
-        }
-        var value = model.get();
-        if (value.getBatchId() == null) {
-            return new ItemDTO(id, Status.NOT_STARTED);
-        }
-        var order = new Order(value);
-        var kode = consumer.getStatusKode(order);
-        return new ItemDTO(id, toStatus(kode));
-    }
+//    public ItemDTO getStatusBy(Long id) {
+//        var model = repository.findById(id);
+//        if (model.isEmpty()) {
+//            return null;
+//        }
+//        var value = model.get();
+//        if (value.getBatchId() == null) {
+//            return new ItemDTO(id, Status.NOT_STARTED);
+//        }
+//        var order = new Order(value);
+//        var kode = consumer.getStatusKode(order);
+//        return new ItemDTO(id, toStatus(kode));
+//    }
 
-    public List<ItemDTO> getStatusBy(String uuid) {
-        log.info("Henter status for uuid: {}", uuid);
-        var list = repository.findBy(uuid);
-        return list.stream()
-                .map(value -> getStatusBy(value.getId()))
-                .collect(Collectors.toList());
-    }
+//    public List<ItemDTO> getStatusBy(String uuid) {
+//        log.info("Henter status for uuid: {}", uuid);
+//        var list = repository.findBy(uuid);
+//        return list.stream()
+//                .map(value -> getStatusBy(value.getId()))
+//                .collect(Collectors.toList());
+//    }
 
     public void deleteAll() {
         repository.deleteAll();
