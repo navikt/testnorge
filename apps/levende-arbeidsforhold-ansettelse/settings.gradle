@@ -12,7 +12,6 @@ includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/data-transfer-search-objects'
 includeBuild '../../libs/database'
 includeBuild '../../libs/vault'
-includeBuild '../../.github/workflows'
 
 develocity {
     buildScan {
