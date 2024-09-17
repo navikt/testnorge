@@ -14,9 +14,21 @@ spring:
   cloud:
     gateway:
       httpclient:
-        response-timeout: 1200s
+        response-timeout: 30s
+        wiretap: true
+      httpserver:
+        wiretap: true
     vault:
       enabled: false
+
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
 
 server:
   servlet:
