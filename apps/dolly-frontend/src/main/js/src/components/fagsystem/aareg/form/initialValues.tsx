@@ -90,7 +90,7 @@ export const initialPeriode = {
 }
 
 export const initialPensjonInntekt = {
-	fomAar: new Date().getFullYear() - 10,
+	fomAar: runningE2ETest() ? new Date().getFullYear() - 10 : null,
 	tomAar: runningE2ETest() ? new Date().getFullYear() : null,
 	belop: runningE2ETest() ? '12345' : '',
 	redusertMedGrunnbelop: true,
@@ -98,7 +98,7 @@ export const initialPensjonInntekt = {
 
 export const initialPensjonGenerertInntekt = {
 	generer: {
-		fomAar: new Date().getFullYear() - 10,
+		fomAar: null,
 		averageG: 1.5,
 		tillatInntektUnder1G: false,
 	},

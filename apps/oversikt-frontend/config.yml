@@ -28,7 +28,6 @@ spec:
       rules:
         - application: dolly-backend
         - application: dolly-backend-dev
-        - application: ereg-batch-status-service
         - application: generer-navn-service
         - application: organisasjon-bestilling-service
         - application: synthdata-amelding

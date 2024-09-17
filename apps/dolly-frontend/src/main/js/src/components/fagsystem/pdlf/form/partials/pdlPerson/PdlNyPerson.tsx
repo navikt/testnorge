@@ -105,6 +105,7 @@ export const PdlNyPerson = ({
 					label="Gradering"
 					options={Options('gradering')}
 					isDisabled={hasEksisterendePerson}
+					size={'large'}
 				/>
 			)}
 			<FormCheckbox

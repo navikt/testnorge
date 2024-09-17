@@ -1,18 +1,21 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+@Slf4j
 @RequiredArgsConstructor
-public class OrganisasjonServiceCommand implements Callable<Mono<OrganisasjonDTO>> {
+public class OrganisasjonServiceCommand implements Callable<Flux<OrganisasjonDTO>> {
 
     private static final String STATUS_URL = "/api/v1/organisasjoner/{orgnummer}";
     private static final String MILJOE = "miljo";
@@ -23,14 +26,21 @@ public class OrganisasjonServiceCommand implements Callable<Mono<OrganisasjonDTO
     private final String token;
 
     @Override
-    public Mono<OrganisasjonDTO> call() {
+    public Flux<OrganisasjonDTO> call() {
+
+        log.info("Henter organisasjon {} fra miljø {} ", orgnummer, environment);
 
         return webClient.get()
-                .uri(STATUS_URL.replace("{orgnummer}", orgnummer))
+                .uri(uriBuilder -> uriBuilder.path(STATUS_URL)
+                        .build(orgnummer))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(MILJOE, environment)
                 .retrieve()
-                .bodyToMono(OrganisasjonDTO.class)
+                .bodyToFlux(OrganisasjonDTO.class)
+                .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(throwable -> Mono.just(OrganisasjonDTO.builder()
+                        .error(WebClientFilter.getMessage(throwable))
+                        .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

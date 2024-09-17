@@ -20,6 +20,7 @@ public class OrganisasjonDTO {
 
     public static final String NOT_FOUND = "Ikke funnet";
 
+    private final String error;
     private final String orgnummer;
     private final String enhetType;
     private final String navn;
@@ -28,17 +29,6 @@ public class OrganisasjonDTO {
     private final AdresseDTO forretningsadresser;
     private final String redigertnavn;
     private final List<String> driverVirksomheter;
-
-    public OrganisasjonDTO(OrganisasjonDTO dto) {
-        this.orgnummer = dto.getOrgnummer();
-        this.enhetType = dto.getEnhetType();
-        this.navn = dto.getNavn();
-        this.juridiskEnhet = dto.getJuridiskEnhet();
-        this.postadresse = dto.getPostadresse();
-        this.forretningsadresser = dto.getForretningsadresser();
-        this.redigertnavn = dto.getRedigertnavn();
-        this.driverVirksomheter = dto.getDriverVirksomheter();
-    }
 
     @JsonIgnore
     public boolean isFunnet() {
