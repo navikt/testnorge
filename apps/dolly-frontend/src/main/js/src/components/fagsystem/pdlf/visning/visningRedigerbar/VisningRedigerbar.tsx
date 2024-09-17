@@ -16,7 +16,6 @@ import { BostedsadresseForm } from '@/components/fagsystem/pdlf/form/partials/ad
 import { OppholdsadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
-import { FullmaktForm } from '@/components/fagsystem/pdlf/form/partials/fullmakt/Fullmakt'
 import { SivilstandForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import {
 	AdressebeskyttelseForm,
@@ -44,6 +43,7 @@ import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foed
 import DisplayFormState from '@/utils/DisplayFormState'
 import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
+import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 
 type VisningTypes = {
 	getPdlForvalter: Function

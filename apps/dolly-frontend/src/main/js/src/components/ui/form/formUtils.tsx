@@ -64,6 +64,7 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.nyident',
 		'pdldata.person.kontaktinformasjonForDoedsbo',
 		'aareg',
+		'fullmakt',
 		'sigrunstub',
 		'sigrunstubPensjonsgivende',
 		'inntektstub',

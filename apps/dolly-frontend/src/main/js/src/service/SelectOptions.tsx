@@ -594,6 +594,12 @@ const selectOptions = {
 		{ value: 'ETTER_AVTALE', label: 'Kan begynne etter nærmere avtale' },
 	],
 
+	fullmaktHandling: [
+		{ value: 'LES', label: 'Les' },
+		{ value: 'KOMMUNISER', label: 'Kommuniser' },
+		{ value: 'SKRIV', label: 'Skriv' },
+	],
+
 	arbeidsmengde: [
 		{ value: 'HELTID', label: 'Heltid' },
 		{ value: 'DELTID', label: 'Deltid' },

@@ -17,6 +17,8 @@ import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTy
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import { FullmaktVisning } from '@/components/fagsystem/fullmakt/visning/FullmaktVisning'
+import { FullmaktTypes } from '@/components/fagsystem/fullmakt/FullmaktTypes'
 
 type PersondetaljerTypes = {
 	data: any
@@ -25,6 +27,7 @@ type PersondetaljerTypes = {
 	erPdlVisning: boolean
 	tpsMessaging: any
 	tpsMessagingLoading?: boolean
+	fullmaktData: FullmaktTypes
 	skjermingData: Skjerming
 	erRedigerbar?: boolean
 }
@@ -32,6 +35,7 @@ type PersondetaljerTypes = {
 type PersonTypes = {
 	person: PersonData
 	skjerming?: Skjerming
+	fullmakt?: FullmaktTypes
 	redigertPerson: any
 	tpsMessaging: any
 	tpsMessagingLoading?: boolean
@@ -69,6 +73,7 @@ const NavnVisning = ({ navn, showMaster }) => {
 const PersondetaljerLes = ({
 	person,
 	skjerming,
+	fullmakt,
 	redigertPerson,
 	tpsMessaging,
 	tpsMessagingLoading,
@@ -84,6 +89,7 @@ const PersondetaljerLes = ({
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
 			<SkjermingVisning data={skjerming} />
+			<FullmaktVisning data={fullmakt} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
 	)
@@ -96,6 +102,7 @@ export const Persondetaljer = ({
 	erPdlVisning = false,
 	tpsMessaging,
 	tpsMessagingLoading = false,
+	fullmaktData,
 	skjermingData,
 	erRedigerbar = true,
 }: PersondetaljerTypes) => {
@@ -128,6 +135,7 @@ export const Persondetaljer = ({
 
 	const redigertPersonPdlf = _.get(tmpPersoner?.pdlforvalter, `${ident}.person`)
 	const redigertSkjerming = _.get(tmpPersoner?.skjermingsregister, `${ident}`)
+	const redigertFullmakt = _.get(tmpPersoner?.fullmakt, `${ident}`)
 
 	const personValues = redigertPersonPdlf ? redigertPersonPdlf : data
 	const redigertPdlfPersonValues = redigertPersonPdlf
@@ -157,6 +165,7 @@ export const Persondetaljer = ({
 					{erPdlVisning || !erRedigerbar ? (
 						<PersondetaljerLes
 							person={data}
+							fullmakt={fullmaktData}
 							skjerming={skjermingData}
 							redigertPerson={redigertPerson}
 							tpsMessaging={tpsMessaging}
@@ -168,6 +177,7 @@ export const Persondetaljer = ({
 								dataVisning={
 									<PersondetaljerLes
 										person={personValues}
+										fullmakt={redigertFullmakt ? redigertFullmakt : fullmaktData}
 										skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
 										redigertPerson={redigertPerson}
 										tpsMessaging={tpsMessaging}

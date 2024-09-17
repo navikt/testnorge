@@ -10,7 +10,6 @@ import {
 	getInitialKjoenn,
 	getInitialNavn,
 	getInitialStatsborgerskap,
-	initialFullmakt,
 	initialSikkerhetstiltak,
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
@@ -39,12 +38,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil || opts.is.leggTilPaaGruppe
 
-	const testNorgePerson = opts?.identMaster === 'PDL'
 	const npidPerson = opts?.identtype === 'NPID'
 	const ukjentGruppe = !gruppeId
-	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
-	const testNorgeFlere = testNorgePerson && opts?.antall > 1
-	const tekstFlerePersoner = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
@@ -58,7 +53,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			(testnorgeIdent && (ukjentGruppe || opts?.antall > 1)) ||
 			(harTestnorgeIdenter && leggTilPaaGruppe)
 		) {
-			ignoreKeys.push('fullmakt', 'vergemaal', 'innvandretFraLand', 'utvandretTilLand')
+			ignoreKeys.push('vergemaal', 'innvandretFraLand', 'utvandretTilLand')
 		}
 		if (sm.attrs.utenlandskBankkonto.checked) {
 			ignoreKeys.push('norskBankkonto')
@@ -106,13 +101,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						disabled={sm.attrs.norskBankkonto.checked}
 					/>
 					<Attributt attr={sm.attrs.telefonnummer} />
-					<Attributt
-						attr={sm.attrs.fullmakt}
-						disabled={ukjentGruppe || testNorgeFlere}
-						title={
-							(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstFlerePersoner) || ''
-						}
-					/>
 					<Attributt attr={sm.attrs.sikkerhetstiltak} />
 					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 				</AttributtKategori>
@@ -176,15 +164,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						''
 					}
 				/>
-				<Attributt
-					attr={sm.attrs.fullmakt}
-					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
-					title={
-						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
-						''
-					}
-				/>
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 			</AttributtKategori>
@@ -236,7 +215,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			tpsM: 'tpsMessaging.telefonnummer',
 		},
 		vergemaal: 'pdldata.person.vergemaal',
-		fullmakt: 'pdldata.person.fullmakt',
 		sikkerhetstiltak: 'pdldata.person.sikkerhetstiltak',
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
 	}
@@ -407,12 +385,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			checked: has(paths.vergemaal),
 			add: () => set(paths.vergemaal, [initialVergemaal]),
 			remove: () => del(paths.vergemaal),
-		},
-		fullmakt: {
-			label: 'Fullmakt',
-			checked: has(paths.fullmakt),
-			add: () => set(paths.fullmakt, [initialFullmakt]),
-			remove: () => del(paths.fullmakt),
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
