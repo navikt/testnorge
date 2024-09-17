@@ -59,6 +59,12 @@ spec:
         - application: popp-testdata
           namespace: pensjonopptjening
           cluster: dev-gcp
+        - application: pensjon-afp-offentlig-mock-q1
+          namespace:  pensjon-pen-q1
+          cluster: dev-fss
+        - application: pensjon-afp-offentlig-mock-q2
+          namespace: pensjon-pen-q2
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4

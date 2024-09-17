@@ -31,7 +31,12 @@ server:
 
 consumers:
   samboer-testdata:
-    name: pensjon-samboerforhold-backend-MILJOE
+    name: pensjon-samboerforhold-backend-{miljoe}
     namespace: pensjon-person
-    url:  https://pensjon-samboerforhold-backend-MILJOE.intern.dev.nav.no
+    url:  https://pensjon-samboerforhold-backend-{miljoe}.intern.dev.nav.no
     cluster: dev-gcp
+  afp-offentlig:
+    name: pensjon-afp-offentlig-mock-{miljoe}
+    namespace: pensjon-pen-{miljoe}
+    url:  https://pensjon-afp-offentlig-mock-{miljoe}.intern.dev.nav.no'
+    cluster: dev-fss

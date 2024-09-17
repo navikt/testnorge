@@ -39,13 +39,23 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
         Arrays
                 .stream(MILJOER)
                 .forEach(
-                        miljoe ->
-                                routes.route(
-                                        spec -> spec
-                                                .path("/" + miljoe + "/api/samboer/**")
-                                                .filters(filterSPec -> filterSPec.filter(getAuthenticationFilter(tokenService, consumers.getSamboerTestdata(), miljoe))
-                                                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}"))
-                                                .uri(forEnvironment(consumers.getSamboerTestdata(), miljoe).getUrl())));
+                        miljoe -> {
+                            routes.route(
+                                    spec -> spec
+                                            .path("/" + miljoe + "/api/samboer/**")
+                                            .filters(filterSPec -> filterSPec.filter(getAuthenticationFilter(tokenService,
+                                                            consumers.getSamboerTestdata().getMiljoe(miljoe)))
+                                                    .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}"))
+                                            .uri(consumers.getSamboerTestdata().getMiljoe(miljoe).getUrl()));
+
+                            routes.route(
+                                    spec -> spec
+                                            .path("/" + miljoe + "/api/mock-oppsett/**")
+                                            .filters(filterSpec -> filterSpec.filter(getAuthenticationFilter(tokenService,
+                                                            consumers.getAfpOffentlig().getMiljoe(miljoe)))
+                                                    .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}"))
+                                            .uri(consumers.getAfpOffentlig().getMiljoe(miljoe).getUrl()));
+                        });
         routes
                 .route(
                         spec -> spec
@@ -59,23 +69,14 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
         return routes.build();
     }
 
+
     private GatewayFilter getAuthenticationFilter(TrygdeetatenAzureAdTokenService tokenService,
-                                                  ServerProperties serverProperties,
-                                                  String miljoe) {
+                                                  ServerProperties serverProperties) {
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
                         () -> tokenService
-                                .exchange(forEnvironment(serverProperties, miljoe))
+                                .exchange(serverProperties)
                                 .map(AccessToken::getTokenValue));
-    }
-
-    private static ServerProperties forEnvironment(ServerProperties original, String env) {
-        return ServerProperties.of(
-                original.getCluster(),
-                original.getNamespace(),
-                original.getName().replace("MILJOE", env),
-                original.getUrl().replace("MILJOE", env + ("q1".equals(env) ? ".very" : ""))
-        );
     }
 
     public static void main(String[] args) {
