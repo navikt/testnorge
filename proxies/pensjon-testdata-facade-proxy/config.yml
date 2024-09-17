@@ -56,14 +56,11 @@ spec:
         - application: pensjon-samboerforhold-backend-q2
           namespace: pensjon-person
           cluster: dev-gcp
-        - application: popp-testdata
-          namespace: pensjonopptjening
-          cluster: dev-gcp
         - application: pensjon-afp-offentlig-mock-q1
-          namespace:  pensjon-pen-q1
+          namespace: pensjon-saksbehandling
           cluster: dev-fss
         - application: pensjon-afp-offentlig-mock-q2
-          namespace: pensjon-pen-q2
+          namespace: pensjon-saksbehandling
           cluster: dev-fss
   liveness:
     path: /internal/isAlive

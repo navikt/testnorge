@@ -26,6 +26,8 @@ server:
     include-message: always
 
 consumers:
+  pensjon-testdata-facade:
+    url: http://pensjon-testdata-facade.pensjontestdata.svc.nais.local
   samboer-testdata:
     name: pensjon-samboerforhold-backend-{miljoe}
     namespace: pensjon-person
@@ -33,6 +35,6 @@ consumers:
     cluster: dev-gcp
   afp-offentlig:
     name: pensjon-afp-offentlig-mock-{miljoe}
-    namespace: pensjon-pen-{miljoe}
-    url:  https://pensjon-afp-offentlig-mock-{miljoe}.intern.dev.nav.no
+    namespace: pensjon-saksbehandling
+    url:  http://pensjon-afp-offentlig-mock-{miljoe}.pensjon-saksbehandling.svc.nais.local
     cluster: dev-fss

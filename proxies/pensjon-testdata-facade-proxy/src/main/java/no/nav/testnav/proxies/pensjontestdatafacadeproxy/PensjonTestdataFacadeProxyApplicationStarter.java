@@ -63,7 +63,7 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                                 .filters(gatewayFilterSpec -> gatewayFilterSpec
                                         .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
                                 ) //Auth header er required men sjekkes ikke utover det
-                                .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
+                                .uri(consumers.getPensjonTestdataFacade().getUrl()))
                 .build();
 
         return routes.build();

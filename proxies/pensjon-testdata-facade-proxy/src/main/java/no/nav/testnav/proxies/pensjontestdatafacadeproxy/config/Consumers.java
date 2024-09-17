@@ -26,6 +26,7 @@ public class Consumers {
 
     private SamboerServerProperties samboerTestdata;
     private AfpOffentligServerProperties afpOffentlig;
+    private ServerProperties pensjonTestdataFacade;
 
     public static class SamboerServerProperties extends ServerProperties {
 
@@ -46,7 +47,7 @@ public class Consumers {
 
             return ServerProperties.of(
                     this.getCluster(),
-                    this.getNamespace().replace("{miljoe}", env),
+                    this.getNamespace(),
                     this.getName().replace("{miljoe}", env),
                     this.getUrl().replace("{miljoe}", env)
             );
