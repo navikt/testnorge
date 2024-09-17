@@ -30,6 +30,7 @@ public enum SystemTyper {
     PDL_ORDRE("Ordre til PDL"),
     PDL_PERSONSTATUS("Person finnes i PDL"),
     PEN_AP("Alderspensjon (AP)"),
+    PEN_AFP_OFFENTLIG("AFP offentlig (PEN)"),
     PEN_FORVALTER("Pensjon persondata (PEN)"),
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
     PEN_PENSJONSAVTALE("Pensjonsavtale (PEN)"),

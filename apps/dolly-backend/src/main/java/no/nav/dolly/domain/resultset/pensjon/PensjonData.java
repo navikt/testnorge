@@ -14,7 +14,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +55,7 @@ public class PensjonData {
         return nonNull(inntekt);
     }
 
+    @JsonIgnore
     public boolean hasGenerertInntekt() {
         return nonNull(generertInntekt);
     }
@@ -79,6 +79,11 @@ public class PensjonData {
     public boolean hasPensjonsavtale() {
 
         return !getPensjonsavtale().isEmpty();
+    }
+
+    @JsonIgnore
+    public boolean hasAfpOffentlig() {
+        return nonNull(afpOffentlig);
     }
 
     public List<Pensjonsavtale> getPensjonsavtale() {
@@ -425,7 +430,7 @@ public class PensjonData {
         private LocalDate virkningsDato;
         @Min(2024)
         @Schema(description = "Årstall (fra dropdown?), laveste verdi er 2024")
-        private Year sistBenyttetG;
+        private Integer sistBenyttetG;
         private List<DatoBeloep> belopsListe;
 
         public List<DatoBeloep> getBelopsListe() {
