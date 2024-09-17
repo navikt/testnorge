@@ -2,5 +2,3 @@
 consumers:
   pensjon-testdata-facade:
     url: https://pensjon-testdata-facade.dev.intern.nav.no
-  afp-offentlig:
-    url: https://pensjon-afp-offentlig-mock-{miljoe}.intern.dev.nav.no

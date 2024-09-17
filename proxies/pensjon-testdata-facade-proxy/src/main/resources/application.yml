@@ -48,5 +48,5 @@ consumers:
   afp-offentlig:
     name: pensjon-afp-offentlig-mock-{miljoe}
     namespace: pensjon-saksbehandling
-    url:  http://pensjon-afp-offentlig-mock-{miljoe}.pensjon-saksbehandling.svc.nais.local
-    cluster: dev-fss
+    url:  https://pensjon-afp-offentlig-mock-{miljoe}.intern.dev.nav.no
+    cluster: dev-gcp
