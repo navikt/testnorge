@@ -5,3 +5,7 @@ consumers:
     name: pensjon-dummy
     namespace: dummy
     url: https://pensjon-dummy.dummy.no
+  afp-offentlig:
+    name: pensjon-dummy
+    namespace: dummy
+    url: https://pensjon-dummy.dummy.no

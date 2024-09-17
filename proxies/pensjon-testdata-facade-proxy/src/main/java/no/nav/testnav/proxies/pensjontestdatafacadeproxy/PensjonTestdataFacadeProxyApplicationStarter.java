@@ -69,7 +69,6 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
         return routes.build();
     }
 
-
     private GatewayFilter getAuthenticationFilter(TrygdeetatenAzureAdTokenService tokenService,
                                                   ServerProperties serverProperties) {
         return AddAuthenticationRequestGatewayFilterFactory
@@ -82,5 +81,4 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
     public static void main(String[] args) {
         SpringApplication.run(PensjonTestdataFacadeProxyApplicationStarter.class, args);
     }
-
 }
