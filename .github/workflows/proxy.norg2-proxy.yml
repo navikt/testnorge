@@ -15,7 +15,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/norg2-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-norg2"
     permissions:
       contents: read
       id-token: write

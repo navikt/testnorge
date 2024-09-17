@@ -15,7 +15,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/aareg-synt-services-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-aareg"
     permissions:
       contents: read
       id-token: write
