@@ -38,7 +38,7 @@ public class FullmaktProxyApplicationStarter {
         return builder
                 .routes()
                 .route(
-                        spec -> spec.path("/api/v2/**")
+                        spec -> spec.path("/api/**")
                                 .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
                                 .uri(consumers.getFullmakt().getUrl()))
                 .build();
