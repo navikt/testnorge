@@ -49,12 +49,12 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
                 .bodyValue(afpOffentligRequest)
                 .retrieve()
                 .toBodilessEntity()
-                .map(response -> pensjonforvalterResponse(miljoe, HttpStatus.valueOf(response.getStatusCode().value())))
+                .map(response -> pensjonforvalterResponse(miljoe, ident, HttpStatus.valueOf(response.getStatusCode().value())))
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
+                .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, ident, error)));
     }
 
-    private static PensjonforvalterResponse pensjonforvalterResponse(String miljoe, HttpStatus status) {
+    private static PensjonforvalterResponse pensjonforvalterResponse(String miljoe, String ident, HttpStatus status) {
 
         var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
                 .miljo(miljoe)
@@ -63,7 +63,7 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
                                 .status(status.value())
                                 .reasonPhrase(status.getReasonPhrase())
                                 .build())
-                        .path(PEN_AFP_OFFENTLIG_URL.replace("{miljoe}", miljoe))
+                        .path(PEN_AFP_OFFENTLIG_URL.replace("{miljoe}", miljoe).replace("{ident}", ident))
                         .build())
                 .build();
 
@@ -72,7 +72,7 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
                 .build();
     }
 
-    private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, Throwable error) {
+    private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, String ident, Throwable error) {
 
         var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
                 .miljo(miljoe)
@@ -82,7 +82,7 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
                                 .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                 .build())
                         .message(WebClientFilter.getMessage(error))
-                        .path(PEN_AFP_OFFENTLIG_URL.replace("{miljoe}", miljoe))
+                        .path(PEN_AFP_OFFENTLIG_URL.replace("{miljoe}", miljoe).replace("{ident}", ident))
                         .build())
                 .build();
 

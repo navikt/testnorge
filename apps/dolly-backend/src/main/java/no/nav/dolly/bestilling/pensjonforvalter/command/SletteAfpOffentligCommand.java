@@ -23,7 +23,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class SletteAfpOffentligCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
-    private static final String AFP_OFFENTLIG_URL = "/{miljoe}/api/mock-oppsett/{fnr}";
+    private static final String AFP_OFFENTLIG_URL = "/{miljoe}/api/mock-oppsett/{ident}";
 
     private final WebClient webClient;
     private final String ident;
