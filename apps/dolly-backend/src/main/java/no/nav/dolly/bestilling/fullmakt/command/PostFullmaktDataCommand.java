@@ -3,10 +3,12 @@ package no.nav.dolly.bestilling.fullmakt.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
@@ -22,20 +24,22 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> {
+public class PostFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> {
 
-    private static final String HENT_FULLMAKT_URL = "/api/fullmektig";
+    private static final String POST_FULLMAKT_URL = "/api/fullmektig";
 
     private final WebClient webClient;
     private final String ident;
+    private final RsFullmakt request;
     private final String token;
 
     public Flux<FullmaktResponse> call() {
 
-        return webClient.get()
+        return webClient.post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(HENT_FULLMAKT_URL)
+                        .path(POST_FULLMAKT_URL)
                         .build())
+                .body(BodyInserters.fromValue(request))
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HEADER_NAV_PERSON_IDENT, ident)

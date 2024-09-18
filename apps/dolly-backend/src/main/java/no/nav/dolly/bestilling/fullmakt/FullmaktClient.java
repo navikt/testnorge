@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.fullmakt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
@@ -34,10 +33,6 @@ public class FullmaktClient implements ClientRegister {
 
         if (nonNull(bestilling.getFullmakt())) {
 
-            var context = new MappingContext.Factory().getContext();
-            context.setProperty("ident", dollyPerson.getIdent());
-            context.setProperty("bestilling", bestilling);
-
             return Flux.from(fullmaktConsumer.createFullmaktData(bestilling.getFullmakt()))
                     .map(this::getStatus)
                     .map(status -> futurePersist(progress, status));
@@ -55,10 +50,7 @@ public class FullmaktClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        //TODO: Legge til sletting dersom det trengs
-//        fullmaktConsumer.deleteKontaktdata(identer)
-//                .collectList()
-//                .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
+        //TODO: Legge til sletting dersom det eksisterer i pdl-fullmakt
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

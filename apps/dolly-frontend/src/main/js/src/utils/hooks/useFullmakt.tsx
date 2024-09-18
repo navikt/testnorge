@@ -1,13 +1,21 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
+import { Option } from '@/service/SelectOptionsOppslag'
 
-type TemaType = {
-	label?: string
-	value?: string
+type NodeType = {
+	kode: string
+	hjelpetekst?: { nb: string } | null
+	termer: any
+	undernoder?: Record<string, NodeType> | null
+}
+
+type HierarkiType = {
+	hierarkinivaaer: string[]
+	noder: Record<string, NodeType>
 }
 
 export const useFullmektig = () => {
-	const { data, isLoading, error } = useSWR<TemaType, Error>(
+	const { data, isLoading, error } = useSWR<any, Error>(
 		[
 			'/testnav-fullmakt-proxy/api/fullmektig',
 			{ accept: 'application/json', 'Content-Type': 'application/json' },
@@ -22,18 +30,45 @@ export const useFullmektig = () => {
 	}
 }
 
-export const useFullmaktTemaMedHandling = () => {
-	const { data, isLoading, error } = useSWR<TemaType, Error>(
+export const useFullmaktOmraader = () => {
+	const { data, isLoading, error } = useSWR<HierarkiType, Error>(
 		[
-			'/testnav-fullmakt-proxy/api/fullmektig/temaMedHandling',
+			'/testnav-fullmakt-proxy/api/omraade',
 			{ accept: 'application/json', 'Content-Type': 'application/json' },
 		],
 		([url, headers]) => fetcher(url, headers),
 	)
 
+	const omraadeKodeverk = data?.noder
+
 	return {
-		omraader: data,
+		omraadeKodeverk: mapOmraadeKodeverkToOptions(omraadeKodeverk),
 		loading: isLoading,
 		error: error,
 	}
+}
+const mapOmraadeKodeverkToOptions = (
+	omraadeKodeverk: Record<string, NodeType> | undefined,
+): Option[] => {
+	if (!omraadeKodeverk) {
+		return []
+	}
+	const options: Option[] = []
+
+	const traverseNodes = (nodes: Record<string, NodeType>) => {
+		for (const key in nodes) {
+			const node = nodes[key]
+			if (node.undernoder) {
+				traverseNodes(node.undernoder)
+			} else {
+				options.push({
+					value: node.kode,
+					label: node.termer.nb,
+				})
+			}
+		}
+	}
+
+	traverseNodes(omraadeKodeverk)
+	return options
 }

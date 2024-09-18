@@ -2,13 +2,11 @@ import * as React from 'react'
 import { useContext, useEffect } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { validation } from '@/components/fagsystem/skjermingsregister/form/validation'
@@ -17,7 +15,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
-import { useFullmaktTemaMedHandling } from '@/utils/hooks/useFullmakt'
+import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
@@ -42,16 +40,13 @@ const fullmaktAttributter = ['fullmakt', 'pdl.person.fullmakt']
 export const Fullmakt = ({ formMethods, path, eksisterendeNyPerson = null }: FullmaktProps) => {
 	const legacyFullmakt = formMethods.watch('pdldata.person.fullmakt')
 	const opts: any = useContext(BestillingsveilederContext)
+	const { omraadeKodeverk } = useFullmaktOmraader()
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
-	const { omraader } = useFullmaktTemaMedHandling()
 
 	useEffect(() => {
 		mapLegacyFullmaktTilNyFullmakt(legacyFullmakt)
 	}, [legacyFullmakt])
-
-	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
-	const fullmaktOptions = SelectOptionsFormat.formatOptions('fullmaktOmraader', fullmaktOmraader)
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -66,7 +61,7 @@ export const Fullmakt = ({ formMethods, path, eksisterendeNyPerson = null }: Ful
 							<FormSelect
 								name={`${path}.tema`}
 								label="Tema"
-								options={fullmaktOptions}
+								options={omraadeKodeverk}
 								size="grow"
 								isClearable={false}
 							/>

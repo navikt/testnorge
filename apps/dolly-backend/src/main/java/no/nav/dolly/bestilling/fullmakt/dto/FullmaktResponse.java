@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -19,6 +22,13 @@ public class FullmaktResponse {
     private HttpStatus status;
     private String melding;
     private List<Fullmakt> fullmakt;
+
+    public List<Fullmakt> getFullmakt() {
+        if (isNull(fullmakt)) {
+            fullmakt = new ArrayList<>();
+        }
+        return fullmakt;
+    }
 
     @Data
     @Builder
@@ -44,6 +54,14 @@ public class FullmaktResponse {
         private String kilde;
         private String fullmaktsgiverNavn;
         private String fullmektigsNavn;
+
+
+        public List<Omraade> getOmraade() {
+            if (isNull(omraade)) {
+                omraade = new ArrayList<>();
+            }
+            return omraade;
+        }
     }
 
     @Data
