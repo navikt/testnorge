@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import {
@@ -9,55 +9,26 @@ import {
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
 import { genInitialAlderspensjonVedtak } from '@/components/fagsystem/alderspensjon/form/initialValues'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
-import _ from 'lodash'
 import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
 import { initialPensjonInntekt } from '@/components/fagsystem/aareg/form/initialValues'
 import { initialPensjonsavtale } from '@/components/fagsystem/pensjonsavtale/initalValues'
+import { initialAfpOffentlig } from '@/components/fagsystem/afpOffentlig/form/initialValues'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
-
-	const harValgtUforetrygd = _.has(formValues, 'pensjonforvalter.uforetrygd')
-
-	const harGyldigApBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
-		bestilling.status?.some(
-			(status) => status.id === 'PEN_AP' && status.statuser?.some((item) => item?.melding === 'OK'),
-		),
-	)
-
-	const harGyldigUforetrygdBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
-		bestilling.status?.some(
-			(status) => status.id === 'PEN_UT' && status.statuser?.some((item) => item.melding === 'OK'),
-		),
-	)
 
 	const infoTekst =
 		'Pensjon: \nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\n' +
 		'Tjenestepensjon: \nTjenestepensjonsforhold lagt til i TP. \n\n' +
 		'Alderspensjon: \nAlderspensjonssak med vedtak blir lagt til i PEN.'
 
-	const getIgnoreKeys = () => {
-		const ignoreKeys = []
-		if (harGyldigApBestilling || harGyldigUforetrygdBestilling || harValgtUforetrygd) {
-			ignoreKeys.push('alderspensjon')
-		}
-		if (harGyldigUforetrygdBestilling || harGyldigApBestilling || !harValgtUforetrygd) {
-			ignoreKeys.push('uforetrygd')
-		}
-		return ignoreKeys
-	}
-
 	return (
 		<Panel
 			heading={PensjonPanel.heading}
 			informasjonstekst={infoTekst}
-			checkAttributeArray={() => {
-				sm.batchAdd(getIgnoreKeys())
-			}}
+			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="pensjon"
 			startOpen={harValgtAttributt(formValues, [
@@ -82,6 +53,9 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 			<AttributtKategori title="Uføretrygd" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.uforetrygd} />
 			</AttributtKategori>
+			<AttributtKategori title="AFP offentlig" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.afpOffentlig} />
+			</AttributtKategori>
 		</Panel>
 	)
 }
@@ -96,6 +70,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 		alderspensjon: 'pensjonforvalter.alderspensjon',
 		uforetrygd: 'pensjonforvalter.uforetrygd',
 		pensjonsavtale: 'pensjonforvalter.pensjonsavtale',
+		afpOffentlig: 'pensjonforvalter.afpOffentlig',
 	}
 	return {
 		inntekt: {
@@ -136,6 +111,14 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 				set(paths.pensjonsavtale, initialPensjonsavtale)
 			},
 			remove: () => del(paths.pensjonsavtale),
+		},
+		afpOffentlig: {
+			label: 'Har AFP offentlig',
+			checked: has(paths.afpOffentlig),
+			add: () => {
+				set(paths.afpOffentlig, initialAfpOffentlig)
+			},
+			remove: () => del(paths.afpOffentlig),
 		},
 	}
 }
