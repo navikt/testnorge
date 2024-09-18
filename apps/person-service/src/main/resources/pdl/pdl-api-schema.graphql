@@ -899,7 +899,7 @@ input SearchRule {
     " Begrenser treff til kun de hvor felt har input verdi"
     equals: String
     " Sjekker om feltet finnes / at det ikke har en null verdi."
-    exists: String
+    exists: Boolean
     """
 
     Søk fra og med (se fromExcluding for bare fra men ikke med)
@@ -921,7 +921,7 @@ input SearchRule {
     " Filtrerer bort treff hvor felt inneholder input verdi"
     notEquals: String
     " Søk som gir tilfeldig poengsum til hvert treff (kun ment til generering av testdata)"
-    random: String
+    random: Float
     " Regex søk for spesielle situasjoner (Dette er en treg opprasjon og bør ikke brukes)"
     regex: String
     " Gir treff når opgitt feltstarter med opgitt verdi."
