@@ -33,6 +33,7 @@ import { Arbeidsforhold } from '@/components/fagsystem/aareg/bestilling/Arbeidsf
 import { Sigrunstub } from '@/components/fagsystem/sigrunstub/bestilling/Sigrunstub'
 import { SigrunstubPensjonsgivende } from '@/components/fagsystem/sigrunstubPensjonsgivende/bestilling/SigrunstubPensjonsgivende'
 import { Inntektstub } from '@/components/fagsystem/inntektstub/bestilling/Inntektstub'
+import { Inntektsmelding } from '@/components/fagsystem/inntektsmelding/bestilling/Inntektsmelding'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -112,6 +113,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 				sigrunstubPensjonsgivendeListe={bestilling.sigrunstubPensjonsgivende}
 			/>
 			<Inntektstub inntektstub={bestilling.inntektstub} />
+			<Inntektsmelding inntektsmelding={bestilling.inntektsmelding} />
 		</>
 	)
 }
