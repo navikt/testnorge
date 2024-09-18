@@ -6,6 +6,7 @@ import useSWRMutation from 'swr/mutation'
 const pensjonVedtakUrl = '/testnav-pensjon-testdata-facade-proxy/api/v2/vedtak'
 const pensjonFacadeGenererUrl =
 	'/testnav-pensjon-testdata-facade-proxy/api/v1/generate-inntekt-med-gjennomsnitt-g'
+const tpOrdningUrl = '/testnav-pensjon-testdata-facade-proxy/api/v1/tp/ordning'
 
 export const usePensjonVedtak = (ident, miljo) => {
 	const { data, isLoading, error } = useSWR<string[], Error>(
@@ -64,5 +65,27 @@ export const usePensjonFacadeGenerer = (body: any) => {
 		pensjonResponse: data?.data,
 		error: error,
 		trigger: trigger,
+	}
+}
+
+export const useTpOrdning = () => {
+	// const { data, isLoading, error } = useSWR<any, Error>(
+	// 	[
+	// 		tpOrdningUrl,
+	// 		{ headers: { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' } },
+	// 	],
+	// 	([url, headers]) => fetcher(url, headers),
+	// )
+	const { data, isLoading, error } = useSWR<any, Error>(tpOrdningUrl, fetcher)
+
+	const options = data?.map((tpOrdning) => ({
+		value: tpOrdning.tpnr,
+		label: `${tpOrdning.tpnr} - ${tpOrdning.navn}`,
+	}))
+
+	return {
+		tpOrdningData: options,
+		loading: isLoading,
+		error: error,
 	}
 }

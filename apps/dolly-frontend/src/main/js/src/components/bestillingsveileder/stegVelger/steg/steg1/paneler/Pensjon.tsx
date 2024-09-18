@@ -14,7 +14,9 @@ import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/For
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
 import { initialPensjonInntekt } from '@/components/fagsystem/aareg/form/initialValues'
 import { initialPensjonsavtale } from '@/components/fagsystem/pensjonsavtale/initalValues'
-import { initialAfpOffentlig } from '@/components/fagsystem/afpOffentlig/form/initialValues'
+import { initialAfpOffentlig } from '@/components/fagsystem/afpOffentlig/initialValues'
+import { avtalePath } from '@/components/fagsystem/pensjonsavtale/form/Form'
+import { afpOffentligPath } from '@/components/fagsystem/afpOffentlig/form/Form'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -33,9 +35,11 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 			iconType="pensjon"
 			startOpen={harValgtAttributt(formValues, [
 				pensjonPath,
+				avtalePath,
 				tpPath,
 				alderspensjonPath,
 				uforetrygdPath,
+				afpOffentligPath,
 			])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>

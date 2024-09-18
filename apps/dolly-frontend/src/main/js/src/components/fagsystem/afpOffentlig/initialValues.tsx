@@ -1,3 +1,8 @@
+export const initialBeloep = {
+	fomDato: '',
+	belop: 0,
+}
+
 export const initialAfpOffentlig = {
 	// direktekall: [],
 	mocksvar: [
@@ -6,12 +11,7 @@ export const initialAfpOffentlig = {
 			statusAfp: '',
 			virkningsDato: '',
 			sistBenyttetG: 2024,
-			belopsListe: [
-				{
-					fomDato: '',
-					belop: 0,
-				},
-			],
+			belopsListe: [initialBeloep],
 		},
 	],
 }
