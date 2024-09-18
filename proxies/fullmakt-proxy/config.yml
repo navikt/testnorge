@@ -1,17 +1,4 @@
-﻿---
-apiVersion: nais.io/v1
-kind: AzureAdApplication
-metadata:
-  name: testnav-fullmakt-proxy-trygdeetaten
-  namespace: dolly
-  labels:
-    team: dolly
-spec:
-  secretName: azure-trygdeetaten-testnav-fullmakt-proxy-trygdeetaten
-  secretKeyPrefix: "AZURE_TRYGDEETATEN"
-  tenant: trygdeetaten.no
----
-apiVersion: "nais.io/v1alpha1"
+﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnav-fullmakt-proxy
@@ -46,6 +33,10 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: pdl-fullmakt
+          namespace: pdl
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -65,7 +56,5 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  envFrom:
-    - secret: azure-trygdeetaten-testnav-fullmakt-proxy-trygdeetaten
   ingresses:
     - "https://testnav-fullmakt-proxy.dev-fss-pub.nais.io"

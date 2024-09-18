@@ -2,49 +2,59 @@ package no.nav.testnav.proxies.fullmaktproxy;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.proxies.fullmaktproxy.config.Consumers;
 import no.nav.testnav.proxies.fullmaktproxy.config.LocalVaultConfig;
+import no.nav.testnav.proxies.fullmaktproxy.consumer.FakedingsConsumer;
+import no.nav.testnav.proxies.fullmaktproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
+import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+
+import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
         LocalVaultConfig.class,
         SecurityConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
 })
 @SpringBootApplication
 public class FullmaktProxyApplicationStarter {
-
     @Bean
-    public RouteLocator customRouteLocator(
-            RouteLocatorBuilder builder,
-            TrygdeetatenAzureAdTokenService tokenService,
-            Consumers consumers
-    ) {
-        var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(
-                        () -> tokenService
-                                .exchange(consumers.getFullmakt())
-                                .map(AccessToken::getTokenValue));
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
+                                           Consumers consumers,
+                                           FakedingsConsumer fakedingsConsumer,
+                                           TokenXService tokenXService) {
         return builder
                 .routes()
-                .route(
-                        spec -> spec.path("/api/**")
-                                .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
-                                .uri(consumers.getFullmakt().getUrl()))
+                .route(createRoute(
+                        consumers
+                                .getFullmakt()
+                                .getUrl(),
+                        AddAuthenticationRequestGatewayFilterFactory
+                                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService, consumers.getFullmakt())))
                 .build();
     }
 
     public static void main(String[] args) {
         SpringApplication.run(FullmaktProxyApplicationStarter.class, args);
+    }
+
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String url, GatewayFilter filter) {
+        return spec -> spec
+                .path("/**")
+                .filters(
+                        filterSpec -> filterSpec
+                                .rewritePath("/(?<segment>.*)", "/pam-cv-api/${segment}")
+                                .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
+                                .filter(filter))
+                .uri(url);
     }
 }
