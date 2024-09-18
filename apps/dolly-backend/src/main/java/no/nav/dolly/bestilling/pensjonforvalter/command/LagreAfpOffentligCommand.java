@@ -39,7 +39,7 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
         log.info("Pensjon afp-offentlig {} {}, callId: {}", miljoe, afpOffentligRequest, callId);
        
         return webClient
-                .post()
+                .put()
                 .uri(uriBuilder -> uriBuilder
                         .path(PEN_AFP_OFFENTLIG_URL)
                         .build(miljoe, ident))

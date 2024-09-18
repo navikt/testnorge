@@ -34,7 +34,7 @@ public class SletteAfpOffentligCommand implements Callable<Mono<Pensjonforvalter
     public Mono<PensjonforvalterResponse> call() {
 
         var callId = generateCallId();
-        log.info("Pensjon slette pensjonsavtale callId: {}", callId);
+        log.info("Pensjon slette AFP-Offentlig callId: {}", callId);
 
         return webClient
                 .delete()

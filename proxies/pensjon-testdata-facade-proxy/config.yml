@@ -58,10 +58,10 @@ spec:
           cluster: dev-gcp
         - application: pensjon-afp-offentlig-mock-q1
           namespace: pensjon-saksbehandling
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: pensjon-afp-offentlig-mock-q2
           namespace: pensjon-saksbehandling
-          cluster: dev-fss
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
