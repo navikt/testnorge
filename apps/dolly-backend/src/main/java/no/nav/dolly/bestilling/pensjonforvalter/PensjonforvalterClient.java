@@ -88,7 +88,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String PEN_ALDERSPENSJON = "AP#";
     private static final String PEN_UFORETRYGD = "Ufoer#";
     private static final String PEN_PENSJONSAVTALE = "Pensjonsavtale#";
-    private static final String PEN_AFP_OFFENTLIG = "AfpOffentlig";
+    private static final String PEN_AFP_OFFENTLIG = "AfpOffentlig#";
     private static final String PERIODE = "/periode/";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
