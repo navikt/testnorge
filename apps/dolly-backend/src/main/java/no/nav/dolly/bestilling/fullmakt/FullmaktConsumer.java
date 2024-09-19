@@ -3,13 +3,16 @@ package no.nav.dolly.bestilling.fullmakt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.bestilling.fullmakt.command.DeleteFullmaktDataCommand;
 import no.nav.dolly.bestilling.fullmakt.command.GetFullmaktDataCommand;
+import no.nav.dolly.bestilling.fullmakt.command.PostFullmaktDataCommand;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -43,11 +46,11 @@ public class FullmaktConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_createData" })
-    public Mono<FullmaktResponse> createFullmaktData(RsFullmakt fullmakt) {
+    public Mono<FullmaktResponse> createFullmaktData(RsFullmakt fullmakt, String ident) {
 
         log.info("Fullmakt opprett {}", fullmakt);
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new FullmaktDataPostCommand(webClient, fullmakt, token.getTokenValue()).call());
+                .flatMap(token -> new PostFullmaktDataCommand(webClient, token.getTokenValue(), ident, fullmakt).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
@@ -58,6 +61,14 @@ public class FullmaktConsumer implements ConsumerStatus {
                         .delayElements(Duration.ofMillis(100))
                         .flatMap(idx -> new GetFullmaktDataCommand(webClient, identer.get(idx),
                                 token.getTokenValue()).call()));
+    }
+
+    @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
+    public Mono<ResponseEntity<Void>> deleteFullmaktData(String ident, Integer fullmaktId) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new DeleteFullmaktDataCommand(webClient, ident, fullmaktId,
+                        token.getTokenValue()).call());
     }
 
     @Override

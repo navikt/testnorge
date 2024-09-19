@@ -33,15 +33,12 @@ public class FullmaktClient implements ClientRegister {
 
         if (nonNull(bestilling.getFullmakt())) {
 
-            return Flux.from(fullmaktConsumer.createFullmaktData(bestilling.getFullmakt()))
+            return Flux.from(fullmaktConsumer.createFullmaktData(bestilling.getFullmakt(), dollyPerson.getIdent()))
                     .map(this::getStatus)
                     .map(status -> futurePersist(progress, status));
         }
 
         //TODO: Kunne opprette fullmakt ved gjeldende person i gruppen eller lage ny gjennom pdl-forvalter
-        //TODO: Fjerne trygdeetaten fra proxy og informere PDL om dette
-        //TODO: Fullmakt-proxy - bruke oppsett fra cv-proxy som legger på tokenX fra header mot fakedings
-        //TODO: Fullmektig get og Post er på helt samme endepunkt-url
         //TODO: Lage ny fullmektig option i dolly-bestilling, prøve å få det bakoverkompatibelt
 
         return Flux.empty();
@@ -50,7 +47,12 @@ public class FullmaktClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        //TODO: Legge til sletting dersom det eksisterer i pdl-fullmakt
+        identer.forEach(ident -> {
+            var fullmaktResponse = fullmaktConsumer.getFullmaktData(List.of(ident)).blockFirst();
+            fullmaktResponse.getFullmakt().forEach(fullmakt -> {
+                fullmaktConsumer.deleteFullmaktData(ident, fullmakt.getFullmaktId()).block();
+            });
+        });
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

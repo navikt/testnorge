@@ -3,13 +3,13 @@ package no.nav.dolly.bestilling.fullmakt.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
-import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -24,29 +24,28 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> {
+public class DeleteFullmaktDataCommand implements Callable<Mono<ResponseEntity<Void>>> {
 
-    private static final String POST_FULLMAKT_URL = "/api/fullmektig";
+    private static final String DELETE_FULLMAKT_URL = "/api/fullmakt/{fullmaktId}";
 
     private final WebClient webClient;
-    private final String token;
     private final String ident;
-    private final RsFullmakt request;
+    private final Integer fullmaktId;
+    private final String token;
 
-    public Mono<FullmaktResponse> call() {
+    public Mono<ResponseEntity<Void>> call() {
 
-        return webClient.post()
+        return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(POST_FULLMAKT_URL)
-                        .build())
-                .body(BodyInserters.fromValue(request))
+                        .path(DELETE_FULLMAKT_URL)
+                        .build(fullmaktId))
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .bodyToMono(FullmaktResponse.class)
+                .toBodilessEntity()
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
