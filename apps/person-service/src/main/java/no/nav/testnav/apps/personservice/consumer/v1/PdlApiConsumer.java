@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -94,7 +95,7 @@ public class PdlApiConsumer {
                             if (isNotPresent(tuple.getT1()) || isNotPresent(tuple.getT2())) {
                                 return Optional.empty();
                             }
-                            return Optional.of(tuple.getT1().getData().getHentIdenter().getIdenter().get(0));
+                            return Optional.of(tuple.getT1().getData().getHentIdenter().getIdenter().getFirst());
                         }));
     }
 
@@ -136,7 +137,7 @@ public class PdlApiConsumer {
                         String.join(", ", opplysningId) :
                         null);
 
-        boolean resultat;
+
         if (nonNull(opplysningId)) {
 
             return opplysningId.stream()
@@ -144,18 +145,16 @@ public class PdlApiConsumer {
 
         } else {
 
-            List<PdlAktoer.AktoerIdent> identer = nonNull(pdlAktoer) && nonNull(pdlAktoer.getData()) && nonNull(pdlAktoer.getData().getHentIdenter()) ?
+            List<PdlAktoer.AktoerIdent> identer = nonNull(pdlAktoer.getData().getHentIdenter()) ?
                     pdlAktoer.getData().getHentIdenter().getIdenter() : emptyList();
 
-            resultat = nonNull(pdlAktoer) &&
+            return
                     pdlAktoer.getErrors().stream().noneMatch(value -> value.getMessage().equals("Fant ikke person")) &&
                     identer.stream()
                             .filter(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "AKTORID")))
                             .anyMatch(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "FOLKEREGISTERIDENT")) ||
                                     identer.stream().anyMatch(ident2 -> isGruppe(ident2, "NPID")));
         }
-
-        return resultat;
     }
 
     private static Set<String> getOpplysningIds(HentPerson hentPerson) {
@@ -167,7 +166,8 @@ public class PdlApiConsumer {
                     try {
                         return (List<? extends MetadataDTO>) method.invoke(hentPerson);
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
+                        log.error("Feilet å lese verdi fra getter {} ", e.getMessage(), e);
+                        return new ArrayList<MetadataDTO>();
                     }
                 })
                 .flatMap(Collection::stream)
