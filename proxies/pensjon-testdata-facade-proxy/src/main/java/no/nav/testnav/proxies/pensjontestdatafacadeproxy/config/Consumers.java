@@ -24,6 +24,33 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter(PACKAGE)
 public class Consumers {
 
-    private ServerProperties samboerTestdata;
+    private SamboerServerProperties samboerTestdata;
+    private AfpOffentligServerProperties afpOffentlig;
+    private ServerProperties pensjonTestdataFacade;
 
+    public static class SamboerServerProperties extends ServerProperties {
+
+        public ServerProperties getMiljoe(String env) {
+
+            return ServerProperties.of(
+                    this.getCluster(),
+                    this.getNamespace(),
+                    this.getName().replace("{miljoe}", env),
+                    this.getUrl().replace("{miljoe}", env + ("q1".equals(env) ? ".very" : ""))
+            );
+        }
+    }
+
+    public static class AfpOffentligServerProperties extends ServerProperties {
+
+        public ServerProperties getMiljoe(String env) {
+
+            return ServerProperties.of(
+                    this.getCluster(),
+                    this.getNamespace(),
+                    this.getName().replace("{miljoe}", env),
+                    this.getUrl().replace("{miljoe}", env)
+            );
+        }
+    }
 }
