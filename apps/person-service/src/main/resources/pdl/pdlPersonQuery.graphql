@@ -11,12 +11,137 @@ query($ident1: ID!) {
                 opplysningsId
             }
         }
+        foedested {
+            metadata {
+                opplysningsId
+            }
+        }
         kjoenn {
             metadata {
                 opplysningsId
             }
         }
+        bostedsadresse {
+            metadata {
+                opplysningsId
+            }
+        }
+        oppholdsadresse {
+            metadata {
+                opplysningsId
+            }
+        }
+        kontaktadresse {
+            metadata {
+                opplysningsId
+            }
+        }
+        innflyttingTilNorge {
+            metadata {
+                opplysningsId
+            }
+        }
+        utflyttingFraNorge {
+            metadata {
+                opplysningsId
+            }
+        }
+        doedsfall {
+            metadata {
+                opplysningsId
+            }
+        }
+        vergemaalEllerFremtidsfullmakt {
+            metadata {
+                opplysningsId
+            }
+        }
+        doedfoedtBarn {
+            metadata {
+                opplysningsId
+            }
+        }
+        adressebeskyttelse {
+            metadata {
+                opplysningsId
+            }
+        }
+        falskIdentitet {
+            metadata {
+                opplysningsId
+            }
+        }
+        utenlandskIdentifikasjonsnummer {
+            metadata {
+                opplysningsId
+            }
+        }
+        tilrettelagtKommunikasjon {
+            metadata {
+                opplysningsId
+            }
+        }
+        sikkerhetstiltak {
+            metadata {
+                opplysningsId
+            }
+        }
         folkeregisterpersonstatus {
+            metadata {
+                opplysningsId
+            }
+        }
+        deltBosted {
+            metadata {
+                opplysningsId
+            }
+        }
+        forelderBarnRelasjon {
+            metadata {
+                opplysningsId
+            }
+        }
+        foreldreansvar {
+            metadata {
+                opplysningsId
+            }
+        }
+        kontaktinformasjonForDoedsbo {
+            metadata {
+                opplysningsId
+            }
+        }
+        navspersonidentifikator {
+            metadata {
+                opplysningsId
+            }
+        }
+        folkeregisteridentifikator {
+            metadata {
+                opplysningsId
+            }
+        }
+        sivilstand {
+            metadata {
+                opplysningsId
+            }
+        }
+        statsborgerskap {
+            metadata {
+                opplysningsId
+            }
+        }
+        telefonnummer {
+            metadata {
+                opplysningsId
+            }
+        }
+        opphold {
+            metadata {
+                opplysningsId
+            }
+        }
+        fullmakt {
             metadata {
                 opplysningsId
             }

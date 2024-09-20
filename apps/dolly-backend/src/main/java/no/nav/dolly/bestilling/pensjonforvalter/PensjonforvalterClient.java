@@ -9,6 +9,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AfpOffentligRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
@@ -87,6 +88,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String PEN_ALDERSPENSJON = "AP#";
     private static final String PEN_UFORETRYGD = "Ufoer#";
     private static final String PEN_PENSJONSAVTALE = "Pensjonsavtale#";
+    private static final String PEN_AFP_OFFENTLIG = "AfpOffentlig#";
     private static final String PERIODE = "/periode/";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
@@ -165,7 +167,10 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                             .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
 
                                                                     lagrePensjonsavtale(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
-                                                                            .map(response -> PEN_PENSJONSAVTALE + decodeStatus(response, dollyPerson.getIdent()))
+                                                                            .map(response -> PEN_PENSJONSAVTALE + decodeStatus(response, dollyPerson.getIdent())),
+
+                                                                    lagreAfpOffentlig(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
+                                                                            .map(response -> PEN_AFP_OFFENTLIG + decodeStatus(response, dollyPerson.getIdent()))
                                                             )
                                                             .collectList()
                                                             .doOnNext(statusResultat::addAll)
@@ -210,6 +215,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         pensjonforvalterConsumer.sletteTpForhold(identer);
         pensjonforvalterConsumer.slettePensjonsavtale(identer);
+        pensjonforvalterConsumer.sletteAfpOffentlig(identer);
     }
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
@@ -537,6 +543,21 @@ public class PensjonforvalterClient implements ClientRegister {
 
                             var pensjonsavtaleRequest = mapperFacade.map(pensjonsavtale, PensjonsavtaleRequest.class, context);
                             return pensjonforvalterConsumer.lagrePensjonsavtale(pensjonsavtaleRequest);
+                        }));
+    }
+
+    private Flux<PensjonforvalterResponse> lagreAfpOffentlig(PensjonData pensjonData, String ident, Set<String> miljoer) {
+
+        return Flux.just(pensjonData)
+                .filter(PensjonData::hasAfpOffentlig)
+                .map(PensjonData::getAfpOffentlig)
+                .flatMap(pensjon -> Flux.fromIterable(miljoer)
+                        .flatMap(miljoe -> {
+
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty(IDENT, ident);
+                            var request = mapperFacade.map(pensjon, AfpOffentligRequest.class, context);
+                            return pensjonforvalterConsumer.lagreAfpOffentlig(request, miljoe);
                         }));
     }
 
