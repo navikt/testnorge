@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.fullmakt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
@@ -23,7 +22,6 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class FullmaktClient implements ClientRegister {
 
-    private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
     private final FullmaktConsumer fullmaktConsumer;
