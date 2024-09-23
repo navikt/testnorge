@@ -133,8 +133,17 @@ public class AaregClient implements ClientRegister {
                                     return aaregConsumer.opprettArbeidsforhold(entry, miljoe, token);
                                 }),
                         Flux.fromIterable(eksistens.getEksisterendeArbeidsforhold())
+                                .filter(arbeidsforhold -> eksistens.getUbestemmeligArbeidsforhold().stream()
+                                        .noneMatch(ubestemmelig -> isEqualArbeidsforhold(ubestemmelig, arbeidsforhold)))
                                 .flatMap(eksisterende -> appendArbeidsforholdId(response, eksisterende)
-                                        .flatMap(arbeidsforhold -> aaregConsumer.endreArbeidsforhold(arbeidsforhold, miljoe, token))))
+                                        .flatMap(arbeidsforhold -> aaregConsumer.endreArbeidsforhold(arbeidsforhold, miljoe, token))),
+                        Flux.fromIterable(eksistens.getUbestemmeligArbeidsforhold())
+                                .map(ubestemmelig -> ArbeidsforholdRespons.builder()
+                                        .miljo(miljoe)
+                                        .build())
+                                .reduce(Flux.empty(), (a, b) -> Flux.just(b))
+                                .flatMap(Flux::next)
+                                .map(t -> (ArbeidsforholdRespons) t))
                 .map(reply -> decodeStatus(miljoe, reply));
     }
 
