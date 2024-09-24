@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-komponenter",
-  "version": "1.4.6",
+  "version": "1.4.8",
   "description": "Bibliotek for diverse dolly komponenter.",
   "main": "dist/cjs/index.js",
   "type": "module",
