@@ -16,6 +16,8 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
 import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
+import { Omraade } from '@/components/fagsystem/fullmakt/FullmaktTypes'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
@@ -35,7 +37,23 @@ const mapLegacyFullmaktTilNyFullmakt = (legacyFullmakt: any) => {
 	}
 }
 
-const fullmaktAttributter = ['fullmakt', 'pdl.person.fullmakt']
+const fullmaktAttributter = ['fullmakt', 'pdldata.person.fullmakt']
+
+const hasUserInput = (formMethods: UseFormReturn) => {
+	const fullmaktArray = formMethods.watch('fullmakt')
+	if (!fullmaktArray || fullmaktArray.length === 0) {
+		return false
+	}
+	if (fullmaktArray.length > 1) {
+		return true
+	}
+	const fullmaktValues = fullmaktArray[0]
+	return (
+		fullmaktValues.gyldigFraOgMed ||
+		fullmaktValues.gyldigTilOgMed ||
+		fullmaktValues.omraade?.tema !== ''
+	)
+}
 
 export const Fullmakt = ({ formMethods, path, eksisterendeNyPerson = null }: FullmaktProps) => {
 	const legacyFullmakt = formMethods.watch('pdldata.person.fullmakt')
@@ -43,10 +61,16 @@ export const Fullmakt = ({ formMethods, path, eksisterendeNyPerson = null }: Ful
 	const { omraadeKodeverk } = useFullmaktOmraader()
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
+	console.log('formMethods.watch(path): ', formMethods.watch(path)) //TODO - SLETT MEG
+	const chosenTemaValues =
+		(path && formMethods.watch(path)?.omraade?.map((omraade: Omraade) => omraade.tema)) || []
+	console.log('chosenTemaValues: ', chosenTemaValues) //TODO - SLETT MEG
 
 	useEffect(() => {
-		mapLegacyFullmaktTilNyFullmakt(legacyFullmakt)
-	}, [legacyFullmakt])
+		if (!hasUserInput(formMethods)) {
+			mapLegacyFullmaktTilNyFullmakt(legacyFullmakt)
+		}
+	}, [])
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -55,27 +79,29 @@ export const Fullmakt = ({ formMethods, path, eksisterendeNyPerson = null }: Ful
 				header="Områder"
 				newEntry={{ tema: '', handling: [] }}
 			>
-				{(path: string) => {
-					return (
-						<>
-							<FormSelect
-								name={`${path}.tema`}
-								label="Tema"
-								options={omraadeKodeverk}
-								size="grow"
-								isClearable={false}
-							/>
-							<FormSelect
-								name={`${path}.handling`}
-								label="Handling"
-								options={Options('fullmaktHandling')}
-								size="small"
-								isClearable={false}
-								isMulti={true}
-							/>
-						</>
-					)
-				}}
+				{(path: string) => (
+					<>
+						<FormSelect
+							name={`${path}.tema`}
+							label="Tema"
+							placeholder={formMethods.watch(`${path}.tema`) || 'Velg ...'}
+							options={omraadeKodeverk.filter(
+								(option: Option) => !chosenTemaValues.includes(option.value),
+							)}
+							size="xlarge"
+							isClearable={false}
+							normalFontPlaceholder={true}
+						/>
+						<FormSelect
+							name={`${path}.handling`}
+							label="Handling"
+							options={Options('fullmaktHandling')}
+							size="grow"
+							isClearable={true}
+							isMulti={true}
+						/>
+					</>
+				)}
 			</FormDollyFieldArray>
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />

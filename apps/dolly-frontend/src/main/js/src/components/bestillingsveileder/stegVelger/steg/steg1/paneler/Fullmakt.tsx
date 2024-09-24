@@ -53,7 +53,7 @@ FullmaktPanel.initialValues = ({ set, opts, del, has }: any) => {
 	return {
 		fullmakt: {
 			label: 'Har fullmektig',
-			checked: has('fullmakt') || has('pdl.person.fullmakt'),
+			checked: has('fullmakt') || has('pdldata.person.fullmakt'),
 			add: () => {
 				set('fullmakt', [initialValues])
 			},
