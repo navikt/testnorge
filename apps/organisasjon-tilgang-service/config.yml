@@ -26,7 +26,6 @@ spec:
         - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
-        - application: testnav-organisasjon-tilgang-frontend
         - application: testnav-oversikt-frontend
     outbound:
       external:

@@ -3,6 +3,7 @@ package no.nav.testnav.apps.persontilgangservice.controller;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.persontilgangservice.controller.dto.OrganisasjonDTO;
 import no.nav.testnav.apps.persontilgangservice.domain.Access;
+import no.nav.testnav.apps.persontilgangservice.domain.AccessToken;
 import no.nav.testnav.apps.persontilgangservice.service.PersonOrganisasjonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,12 @@ public class PersonOrganisasjonController {
     public Flux<OrganisasjonDTO> getOrganiasjoner() {
         return personOrganisasjonService.getAccess().map(Access::toDTO);
     }
+
+    @GetMapping("/token")
+    public Mono<AccessToken> getMaskinportenToken() {
+        return personOrganisasjonService.getAccessToken();
+    }
+
 
     @GetMapping("/{organisasjonsnummer}")
     public Mono<ResponseEntity<OrganisasjonDTO>> getOrganiasjoner(@PathVariable String organisasjonsnummer) {

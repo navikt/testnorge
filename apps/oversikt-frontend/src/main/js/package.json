@@ -1,7 +1,8 @@
 {
   "name": "oversikt-frontend",
-  "version": "1.2.14",
+  "version": "1.2.16",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@navikt/dolly-komponenter": "^1.3.19",
     "@navikt/ds-react": "^6.0.0",
@@ -32,7 +33,7 @@
     "typescript": "^5.0.2",
     "vite": "^5.0.12",
     "vite-plugin-svgr": "^4.0.0",
-    "vite-tsconfig-paths": "^4.0.0",
+    "vite-tsconfig-paths": "^5.0.1",
     "webpack-bundle-analyzer": "^4.8.0"
   },
   "scripts": {
