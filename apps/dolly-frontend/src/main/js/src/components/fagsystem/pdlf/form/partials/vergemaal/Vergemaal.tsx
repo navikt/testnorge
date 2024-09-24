@@ -45,6 +45,7 @@ export const VergemaalForm = ({
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 			<PdlPersonExpander
+				path={path}
 				nyPersonPath={`${path}.nyVergeIdent`}
 				eksisterendePersonPath={`${path}.vergeIdent`}
 				eksisterendeNyPerson={eksisterendeNyPerson}

@@ -74,7 +74,7 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         tier: db-custom-1-3840
         databases:
           - name: testnav-pdl-forvalter-dev-db

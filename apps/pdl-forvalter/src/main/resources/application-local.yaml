@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: testnav-pdl-forvalter
@@ -9,14 +8,13 @@ spring:
       fail-fast: true
       connection-timeout: 15000
       read-timeout: 30000
-      generic:
-        enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/pdl-forvalter-test
+    url: jdbc:postgresql://localhost:5433/pdl-forvalter-test
     hikari:
       maximum-pool-size: 10
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
+    username: postgres
   jpa:
     properties:
       hibernate:

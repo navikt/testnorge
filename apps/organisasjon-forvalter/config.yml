@@ -45,7 +45,7 @@ spec:
         - application: testnav-tps-messaging-service
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         tier: db-custom-1-3840
         databases:
           - name: organisasjon-forvalter-db

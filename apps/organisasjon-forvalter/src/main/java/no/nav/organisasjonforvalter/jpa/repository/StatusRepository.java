@@ -6,7 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface StatusRepository extends CrudRepository<Status, Long> {
 
@@ -14,5 +13,5 @@ public interface StatusRepository extends CrudRepository<Status, Long> {
             "where s.id in (select max(u.id) from Status u " +
             "where u.organisasjonsnummer in (:orgnr) " +
             "group by u.organisasjonsnummer, u.miljoe)")
-    Optional<List<Status>> findAllByOrganisasjonsnummer(@Param(value = "orgnr") List<String> organisasjonsnummer);
+    List<Status> findAllByOrganisasjonsnummerIn(@Param("orgnr") List<String> organisasjonsnummer);
 }

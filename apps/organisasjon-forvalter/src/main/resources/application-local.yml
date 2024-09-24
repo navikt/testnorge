@@ -1,22 +1,9 @@
 
 spring:
-  flyway:
-    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
-    locations: classpath:db/migration
-    baseline-on-migrate: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/organisasjon-forvalter-test
-    hikari:
-      maximum-pool-size: 3
-      minimum-idle: 1
+    url: jdbc:postgresql://localhost:5434/postgres
     driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-        default-schema: public
-    show-sql: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    username: postgres
   cloud:
     vault:
       host: vault.adeo.no
@@ -29,14 +16,14 @@ spring:
 
 consumers:
   generer-navn-service:
-    url: https://generer-navn-service.inten.dev.nav.no
+    url: https://generer-navn-service.intern.dev.nav.no
   testnav-orgnummer-service:
-    url: https://testnav-orgnummer-service.inten.dev.nav.no
+    url: https://testnav-orgnummer-service.intern.dev.nav.no
   organisasjon-bestilling-service:
-    url: https://organisasjon-bestilling-service.inten.dev.nav.no
+    url: https://organisasjon-bestilling-service.intern.dev.nav.no
   testnav-adresse-service:
-    url: https://testnav-adresse-service.inten.dev.nav.no
+    url: https://testnav-adresse-service.intern.dev.nav.no
   testnav-organisasjon-service:
-    url: https://testnav-organisasjon-service.inten.dev.nav.no
+    url: https://testnav-organisasjon-service.intern.dev.nav.no
   testnav-miljoer-service:
-    url: https://testnav-miljoer-service.inten.dev.nav.no
+    url: https://testnav-miljoer-service.intern.dev.nav.no

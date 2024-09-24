@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AFP_OFFENTLIG;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
@@ -35,6 +36,7 @@ public final class BestillingPensjonforvalterStatusMapper {
     private static final String UFORETRYGD = "Ufoer";
     private static final String SAMBOER = "Samboer";
     private static final String PENSJONSAVTALE = "Pensjonsavtale";
+    private static final String PEN_AFPOFFENTLIG = "AfpOffentlig";
 
     public static List<RsStatusRapport> buildPensjonforvalterStatusMap(List<BestillingProgress> progressList) {
 
@@ -68,6 +70,7 @@ public final class BestillingPensjonforvalterStatusMapper {
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, UFORETRYGD, PEN_UT));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ALDERSPENSJON, PEN_AP));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJONSAVTALE, PEN_PENSJONSAVTALE));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PEN_AFPOFFENTLIG, PEN_AFP_OFFENTLIG));
 
         return statusRapporter;
     }

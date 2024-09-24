@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useContext } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
@@ -9,7 +10,6 @@ import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface FullmaktProps {
@@ -40,6 +40,7 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
 			<PdlPersonExpander
+				path={path}
 				nyPersonPath={`${path}.nyFullmektig`}
 				eksisterendePersonPath={`${path}.motpartsPersonident`}
 				label={'FULLMEKTIG'}

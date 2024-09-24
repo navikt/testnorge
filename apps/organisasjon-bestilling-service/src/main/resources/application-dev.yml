@@ -7,10 +7,14 @@ spring:
   flyway:
     enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
+    url: jdbc:h2:mem:testdb
     username: sa
     password:
     driverClassName: org.h2.Driver
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:/db/dev/h2-init-db.sql
   jpa:
     properties:
       hibernate:

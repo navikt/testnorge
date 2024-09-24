@@ -1,9 +1,5 @@
 
 spring:
-  flyway:
-    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
-    locations: classpath:db/migration
-    baseline-on-migrate: true
   datasource:
     url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_HOST}:${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_PORT}/${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_DATABASE}?user=${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_USERNAME}&password=${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_PASSWORD}
     driverClassName: org.postgresql.Driver
@@ -17,3 +13,10 @@ spring:
   cloud:
     vault:
       enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          jwk-set-uri: ${TOKEN_X_JWKS_URI}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
