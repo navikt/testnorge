@@ -10,5 +10,7 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation "no.nav.testnav.libs:vault"
+    
+    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
 }

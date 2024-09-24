@@ -2,7 +2,6 @@ package no.nav.testnav.proxies.udistubproxy;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
@@ -19,7 +18,6 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 @Import({
         CoreConfig.class,
-        DevConfig.class,
         SecurityConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })

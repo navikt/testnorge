@@ -8,6 +8,7 @@ includeBuild "../../plugins/java"
 
 includeBuild '../../libs/database'
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/vault'
 
 develocity {
     buildScan {

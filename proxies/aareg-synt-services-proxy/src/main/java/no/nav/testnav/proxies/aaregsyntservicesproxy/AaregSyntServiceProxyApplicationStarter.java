@@ -1,7 +1,6 @@
 package no.nav.testnav.proxies.aaregsyntservicesproxy;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Import;
 
 @Import({
         CoreConfig.class,
-        DevConfig.class,
         SecurityConfig.class
 })
 @SpringBootApplication

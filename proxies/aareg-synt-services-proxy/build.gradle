@@ -8,3 +8,7 @@ sonarqube {
         property "sonar.projectName", "aareg-synt-services-proxy"
     }
 }
+
+dependencies {
+    implementation "no.nav.testnav.libs:vault"
+}
