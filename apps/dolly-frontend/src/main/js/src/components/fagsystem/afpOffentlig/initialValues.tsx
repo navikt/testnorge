@@ -3,15 +3,15 @@ export const initialBeloep = {
 	belop: 0,
 }
 
+export const initialMocksvar = {
+	tpId: '',
+	statusAfp: '',
+	virkningsDato: '',
+	sistBenyttetG: 2024,
+	belopsListe: [initialBeloep],
+}
+
 export const initialAfpOffentlig = {
-	// direktekall: [],
-	mocksvar: [
-		{
-			tpId: '',
-			statusAfp: '',
-			virkningsDato: '',
-			sistBenyttetG: 2024,
-			belopsListe: [initialBeloep],
-		},
-	],
+	direktekall: [],
+	mocksvar: [initialMocksvar],
 }

@@ -51,6 +51,7 @@ import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visni
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
+	harAfpOffentligBestilling,
 	harApBestilling,
 	harArbeidsplassenBestilling,
 	harArenaBestilling,
@@ -96,6 +97,8 @@ import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 import { useSkattekort } from '@/utils/hooks/useSkattekort'
 import { SkattekortVisning } from '@/components/fagsystem/skattekort/visning/Visning'
 import { PensjonsavtaleVisning } from '@/components/fagsystem/pensjonsavtale/visning/PensjonsavtaleVisning'
+import { useMockOppsett } from '@/utils/hooks/usePensjon'
+import { AfpOffentligVisning } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -227,6 +230,12 @@ export default ({
 		'PEN_UT',
 		harUforetrygdBestilling(bestillingerFagsystemer),
 		pensjonEnvironments,
+	)
+
+	const { mockOppsett: afpOffentligData, loading: afpOffentligLoading } = useMockOppsett(
+		pensjonEnvironments,
+		ident.ident,
+		harAfpOffentligBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingSykemeldingData, data: sykemeldingData } = useTransaksjonIdData(
@@ -369,6 +378,7 @@ export default ({
 		)
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
+
 	return (
 		<ErrorBoundary>
 			<div className="person-visning">
@@ -504,6 +514,12 @@ export default ({
 				<UforetrygdVisning
 					data={uforetrygdData}
 					loading={loadingUforetrygdData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<AfpOffentligVisning
+					data={afpOffentligData}
+					loading={afpOffentligLoading}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
