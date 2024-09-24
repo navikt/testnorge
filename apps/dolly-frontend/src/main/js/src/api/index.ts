@@ -124,7 +124,8 @@ export const fetcher = (url, headers) =>
 			if (
 				(reason?.response?.status === 401 || reason?.response?.status === 403) &&
 				!url.includes('testnav-arbeidsplassencv') &&
-				!url.includes('infostripe')
+				!url.includes('infostripe') &&
+				!url.includes('norg2')
 			) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
@@ -158,7 +159,8 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 				if (
 					response?.status === 401 &&
 					!url.includes('testnav-arbeidsplassencv') &&
-					!url.includes('infostripe')
+					!url.includes('infostripe') &&
+					!url.includes('norg2')
 				) {
 					console.error('Auth feilet, navigerer til login')
 					navigateToLogin()
@@ -192,7 +194,8 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			if (
 				response?.status === 401 &&
 				!url.includes('testnav-arbeidsplassencv') &&
-				!url.includes('infostripe')
+				!url.includes('infostripe') &&
+				!url.includes('norg2')
 			) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()

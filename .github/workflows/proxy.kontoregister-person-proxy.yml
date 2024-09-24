@@ -17,7 +17,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/kontoregister-person-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-kontoregister-person"
     permissions:
       contents: read
       id-token: write

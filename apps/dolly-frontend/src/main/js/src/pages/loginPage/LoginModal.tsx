@@ -95,6 +95,7 @@ export default () => {
 					Logg inn med NAV epost
 				</NavButton>
 				<NavButton
+					data-testid={TestComponentSelectors.BUTTON_LOGIN_BANKID}
 					className="login-modal_button-bankid"
 					variant={'primary'}
 					onClick={redirectOnClick('/oauth2/authorization/idporten', true)}

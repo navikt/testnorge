@@ -1,7 +1,6 @@
 export enum TestComponentSelectors {
 	INPUT_MINSIDE_SOEK_MAL = 'input-minside-mal',
 	INPUT_TESTNORGE_FNR = 'input-testnorge-fnr',
-	INPUT_TENORSOEK_FNR = 'input-tenorsoek-fnr',
 	INPUT_NAVN = 'input-navn',
 	INPUT_NY_GRUPPE_NAVN = 'input-ny-gruppe-navn',
 	INPUT_NY_GRUPPE_HENSIKT = 'input-ny-gruppe-hensikt',
@@ -34,6 +33,7 @@ export enum TestComponentSelectors {
 	TITLE_TENOR_HEADER_COUNTER = 'title-tenor-header-counter',
 	BUTTON_NY_GRUPPE = 'button-ny-gruppe',
 	BUTTON_LOGIN_NAV = 'button-login-nav',
+	BUTTON_LOGIN_BANKID = 'button-login-bankid',
 	BUTTON_OPPRETT = 'button-opprett',
 	BUTTON_OPPRETT_PERSONER = 'button-opprett-personer',
 	BUTTON_OPPRETT_ORGANISASJON = 'button-opprett-organisasjon',
@@ -94,6 +94,7 @@ export enum TestComponentSelectors {
 	BUTTON_ORGANISASJON_TENORSOEK = 'button-organisasjon-tenorsoek',
 	BUTTON_TENOR_CLEAR_HEADER = 'button-tenor-clear-options',
 	BUTTON_MODAL_CLOSE = 'button-modal-lukk',
+	BUTTON_VELG_ORG_BRUKER = 'button-velg-org-bruker',
 	SELECT_PERSON_SEARCH = 'select-person-search',
 	SELECT_MAL = 'select-mal',
 	HOVER_MILJOE = 'hover-miljoe',

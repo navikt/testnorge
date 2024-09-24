@@ -104,7 +104,6 @@ includeBuild './apps/organisasjon-faste-data-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/organisasjon-mottak-service'
 includeBuild './apps/organisasjon-service'
-includeBuild './apps/organisasjon-tilgang-frontend'
 includeBuild './apps/organisasjon-tilgang-service'
 includeBuild './apps/orgnummer-service'
 includeBuild './apps/oversikt-frontend'
@@ -134,7 +133,6 @@ includeBuild './examples/reactive-rest-example'
 
 includeBuild './mocks/tokendings-mock'
 includeBuild './mocks/maskinporten-mock'
-
 
 
 include(':proxies')
