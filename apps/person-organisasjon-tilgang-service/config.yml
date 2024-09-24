@@ -21,8 +21,8 @@ spec:
         - application: dolly-frontend
         - application: dolly-idporten
         - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
         - application: testnav-bruker-service
-        - application: testnorge-profil-api
         - application: testnorge-profil-api
     outbound:
       external:

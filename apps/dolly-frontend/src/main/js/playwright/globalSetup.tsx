@@ -11,7 +11,7 @@ import {
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
 	eksisterendeGruppeMock,
-	gjeldendeBrukerMock,
+	gjeldendeAzureBrukerMock,
 	gjeldendeProfilMock,
 	histarkMock,
 	instMock,
@@ -109,7 +109,7 @@ const organisasjonerForBruker = new RegExp(/dolly-backend\/api\/v1\/organisasjon
 const mockRoutes: RouteInfo[] = [
 	{ url: api, response: [] },
 	{ url: weatherApi, status: 404, response: {} },
-	{ url: current, response: gjeldendeBrukerMock },
+	{ url: current, response: gjeldendeAzureBrukerMock },
 	{ url: profil, response: gjeldendeProfilMock },
 	{ url: miljoer, response: miljoeMock },
 	{ url: pensjonMiljoer, response: miljoeMock },
