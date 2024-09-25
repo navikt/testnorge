@@ -8,7 +8,6 @@ const pensjonVedtakUrl = `${baseUrl}/api/v2/vedtak`
 const pensjonFacadeGenererUrl = `${baseUrl}/api/v1/generate-inntekt-med-gjennomsnitt-g`
 const tpOrdningUrl = `${baseUrl}/api/v1/tp/ordning`
 const muligedirektekallUrl = `${baseUrl}/q1/api/mock-oppsett/muligedirektekall`
-//TODO: Hva gjør vi med miljoet i denne?
 
 const getMockOppsettUrl = (miljoer, ident) => {
 	return miljoer.map((miljoe) => ({

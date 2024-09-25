@@ -30,35 +30,33 @@ export const showTpNavn = (tpId) => {
 
 const DataVisning = ({ data }) => {
 	return (
-		<>
-			<div className="person-visning_content">
-				<TitleValue
-					title="Direktekall"
-					value={data?.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')}
-					size="full-width"
-				/>
-				<DollyFieldArray data={data?.mocksvar} header="AFP offentlig">
-					{(mocksvar, idx) => (
-						<React.Fragment key={idx}>
-							<TitleValue title="TP-ordning" value={showTpNavn(mocksvar?.tpId)} />
-							<TitleValue title="Status AFP" value={showLabel('statusAfp', mocksvar?.statusAfp)} />
-							<TitleValue title="Virkningsdato" value={formatDate(mocksvar?.virkningsDato)} />
-							<TitleValue title="Sist benyttet G" value={mocksvar?.sistBenyttetG} />
-							{mocksvar?.belopsListe?.length > 0 && (
-								<DollyFieldArray data={mocksvar?.belopsListe} header="Beløp" nested>
-									{(belop, idy) => (
-										<React.Fragment key={idx + idy}>
-											<TitleValue title="F.o.m. dato" value={formatDate(belop?.fomDato)} />
-											<TitleValue title="Beløp" value={belop?.belop} />
-										</React.Fragment>
-									)}
-								</DollyFieldArray>
-							)}
-						</React.Fragment>
-					)}
-				</DollyFieldArray>
-			</div>
-		</>
+		<div className="person-visning_content">
+			<TitleValue
+				title="Direktekall"
+				value={data?.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')}
+				size="full-width"
+			/>
+			<DollyFieldArray data={data?.mocksvar} header="AFP offentlig">
+				{(mocksvar, idx) => (
+					<React.Fragment key={idx}>
+						<TitleValue title="TP-ordning" value={showTpNavn(mocksvar?.tpId)} />
+						<TitleValue title="Status AFP" value={showLabel('statusAfp', mocksvar?.statusAfp)} />
+						<TitleValue title="Virkningsdato" value={formatDate(mocksvar?.virkningsDato)} />
+						<TitleValue title="Sist benyttet G" value={mocksvar?.sistBenyttetG} />
+						{mocksvar?.belopsListe?.length > 0 && (
+							<DollyFieldArray data={mocksvar?.belopsListe} header="Beløp" nested>
+								{(belop, idy) => (
+									<React.Fragment key={idx + idy}>
+										<TitleValue title="F.o.m. dato" value={formatDate(belop?.fomDato)} />
+										<TitleValue title="Beløp" value={belop?.belop} />
+									</React.Fragment>
+								)}
+							</DollyFieldArray>
+						)}
+					</React.Fragment>
+				)}
+			</DollyFieldArray>
+		</div>
 	)
 }
 
@@ -95,7 +93,7 @@ export const AfpOffentligVisning = ({ data, loading, bestillingIdListe, tilgjeng
 					bestilteMiljoer={bestilteMiljoer}
 					errorMiljoer={errorMiljoer}
 					forsteMiljo={forsteMiljo}
-					data={filteredData ? filteredData : data}
+					data={filteredData || data}
 				>
 					<DataVisning />
 				</MiljoTabs>
