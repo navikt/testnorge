@@ -1,6 +1,7 @@
 import { test as base } from '@playwright/test'
 import {
 	aaregMock,
+	afpOffentligMock,
 	ameldingMock,
 	arenaMock,
 	backendBestillingerMock,
@@ -86,6 +87,7 @@ const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp
 const pensjonPensjonsavtale = new RegExp(
 	/testnav-pensjon-testdata-facade-proxy\/api\/v2\/pensjonsavtale\/hent/,
 )
+const afpOffentlig = new RegExp(/testnav-pensjon-testdata-facade-proxy\/q1\/api\/mock-oppsett/)
 const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
 const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
@@ -147,6 +149,7 @@ const mockRoutes: RouteInfo[] = [
 	{ url: pensjon, response: pensjonMock },
 	{ url: pensjonTp, response: pensjonTpMock },
 	{ url: pensjonPensjonsavtale, response: pensjonPensjonsavtaleMock },
+	{ url: afpOffentlig, response: afpOffentligMock },
 	{ url: sigrunstub, response: sigrunstubMock },
 	{ url: udistub, response: udistubMock },
 	{ url: kodeverk, response: kodeverkMock },

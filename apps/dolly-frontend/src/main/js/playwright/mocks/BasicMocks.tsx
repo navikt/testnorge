@@ -883,6 +883,24 @@ export const pensjonTpMock = [{ ordning: '4095' }, { ordning: '3010' }]
 
 export const pensjonPensjonsavtaleMock = [{}, {}]
 
+export const afpOffentligMock = {
+	direktekall: [],
+	mocksvar: [
+		{
+			tpId: '4099',
+			statusAfp: 'INNVILGET',
+			virkningsDato: '2024-09-01T00:00:00',
+			sistBenyttetG: 2024,
+			belopsListe: [
+				{
+					fomDato: '2024-09-02T00:00:00',
+					belop: '10000',
+				},
+			],
+		},
+	],
+}
+
 export const tagsMock = [{ tag: 'DUMMY', beskrivelse: 'Dummy' }]
 
 export const kontoregisterMock = {
@@ -1487,6 +1505,21 @@ export const backendBestillingerMock = [
 				],
 			},
 			{
+				id: 'PEN_AFP_OFFENTLIG',
+				navn: 'AFP offentlig (PEN)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
 				id: 'INNTKMELD',
 				navn: 'Inntektsmelding (ALTINN/JOARK)',
 				statuser: [
@@ -1683,6 +1716,23 @@ export const backendBestillingerMock = [
 						],
 					},
 				],
+				afpOffentlig: {
+					direktekall: [],
+					mocksvar: [
+						{
+							tpId: '4099',
+							statusAfp: 'INNVILGET',
+							virkningsDato: '2024-09-01T00:00:00',
+							sistBenyttetG: 2024,
+							belopsListe: [
+								{
+									fomDato: '2024-09-02T00:00:00',
+									belop: '10000',
+								},
+							],
+						},
+					],
+				},
 			},
 			inntektsmelding: {
 				inntekter: [
