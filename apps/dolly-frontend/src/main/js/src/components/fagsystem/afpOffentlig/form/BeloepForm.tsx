@@ -4,10 +4,10 @@ import React from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
-export const BelopForm = ({ path }) => {
+export const BelopForm = ({ path }: { path: string }) => {
 	return (
 		<FormDollyFieldArray name={path} header="Beløp" newEntry={initialBeloep} nested>
-			{(belop, idx) => (
+			{(belop: string, idx: number) => (
 				<div key={idx} className="flexbox">
 					<FormDatepicker name={`${belop}.fomDato`} label="F.o.m. dato" />
 					<FormTextInput name={`${belop}.belop`} label="Beløp" type="number" />

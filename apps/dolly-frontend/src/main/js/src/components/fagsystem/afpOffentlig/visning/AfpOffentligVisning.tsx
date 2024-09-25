@@ -9,8 +9,25 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { useTpOrdning } from '@/utils/hooks/usePensjon'
+import {
+	AfpOffentligTypes,
+	BeloepTypes,
+	MocksvarTypes,
+} from '@/components/fagsystem/afpOffentlig/afpOffentligTypes'
 
-export const sjekkManglerAfpOffentligData = (afpOffentligData) => {
+type MiljoDataTypes = {
+	miljo: string
+	data: AfpOffentligTypes
+}
+
+type VisningTypes = {
+	data: Array<MiljoDataTypes>
+	loading: boolean
+	bestillingIdListe: Array<string>
+	tilgjengeligMiljoe: string
+}
+
+export const sjekkManglerAfpOffentligData = (afpOffentligData: Array<MiljoDataTypes>) => {
 	return (
 		afpOffentligData?.length < 1 ||
 		afpOffentligData?.every(
@@ -19,16 +36,16 @@ export const sjekkManglerAfpOffentligData = (afpOffentligData) => {
 	)
 }
 
-export const showTpNavn = (tpId) => {
+export const showTpNavn = (tpId: string) => {
 	const { tpOrdningData } = useTpOrdning()
-	const tpOrdning = tpOrdningData?.find((tpOrdning) => tpOrdning.value === tpId)
+	const tpOrdning = tpOrdningData?.find((tpOrdning: any) => tpOrdning.value === tpId)
 	if (tpOrdning) {
 		return tpOrdning.label
 	}
 	return tpId
 }
 
-const DataVisning = ({ data }) => {
+const DataVisning = ({ data }: { data: AfpOffentligTypes }) => {
 	return (
 		<div className="person-visning_content">
 			<TitleValue
@@ -37,7 +54,7 @@ const DataVisning = ({ data }) => {
 				size="full-width"
 			/>
 			<DollyFieldArray data={data?.mocksvar} header="AFP offentlig">
-				{(mocksvar, idx) => (
+				{(mocksvar: MocksvarTypes, idx: number) => (
 					<React.Fragment key={idx}>
 						<TitleValue title="TP-ordning" value={showTpNavn(mocksvar?.tpId)} />
 						<TitleValue title="Status AFP" value={showLabel('statusAfp', mocksvar?.statusAfp)} />
@@ -45,7 +62,7 @@ const DataVisning = ({ data }) => {
 						<TitleValue title="Sist benyttet G" value={mocksvar?.sistBenyttetG} />
 						{mocksvar?.belopsListe?.length > 0 && (
 							<DollyFieldArray data={mocksvar?.belopsListe} header="Beløp" nested>
-								{(belop, idy) => (
+								{(belop: BeloepTypes, idy: number) => (
 									<React.Fragment key={idx + idy}>
 										<TitleValue title="F.o.m. dato" value={formatDate(belop?.fomDato)} />
 										<TitleValue title="Beløp" value={belop?.belop} />
@@ -60,7 +77,12 @@ const DataVisning = ({ data }) => {
 	)
 }
 
-export const AfpOffentligVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
+export const AfpOffentligVisning = ({
+	data,
+	loading,
+	bestillingIdListe,
+	tilgjengeligMiljoe,
+}: VisningTypes) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'PEN_AFP_OFFENTLIG')
 
 	if (loading) {
@@ -75,7 +97,6 @@ export const AfpOffentligVisning = ({ data, loading, bestillingIdListe, tilgjeng
 
 	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
 	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
-
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
 	const filteredData =

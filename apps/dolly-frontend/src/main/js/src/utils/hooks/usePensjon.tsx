@@ -80,7 +80,7 @@ export const usePensjonFacadeGenerer = (body: any) => {
 export const useTpOrdning = () => {
 	const { data, isLoading, error } = useSWR<any, Error>(tpOrdningUrl, fetcher)
 
-	const options = data?.map((tpOrdning) => ({
+	const options = data?.map((tpOrdning: any) => ({
 		value: tpOrdning.tpnr,
 		label: `${tpOrdning.tpnr} - ${tpOrdning.navn}`,
 	}))
@@ -95,7 +95,7 @@ export const useTpOrdning = () => {
 export const useMuligeDirektekall = () => {
 	const { data, isLoading, error } = useSWR<any, Error>(muligedirektekallUrl, fetcher)
 
-	const options = data?.muligeDirekteKall?.map((direktekall) => ({
+	const options = data?.muligeDirekteKall?.map((direktekall: any) => ({
 		value: direktekall.tpId,
 		label: `${direktekall.tpId} - ${direktekall.navn}`,
 	}))
@@ -107,7 +107,7 @@ export const useMuligeDirektekall = () => {
 	}
 }
 
-export const useMockOppsett = (miljoer, ident, harBestilling) => {
+export const useMockOppsett = (miljoer: Array<string>, ident: string, harBestilling: boolean) => {
 	const mockOppsettUrl = harBestilling ? getMockOppsettUrl(miljoer, ident) : null
 	const { data, isLoading, error } = useSWR<any, Error>(mockOppsettUrl, multiFetcherAfpOffentlig)
 

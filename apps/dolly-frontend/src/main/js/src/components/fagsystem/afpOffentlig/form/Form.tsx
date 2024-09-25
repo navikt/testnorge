@@ -12,6 +12,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { BelopForm } from '@/components/fagsystem/afpOffentlig/form/BeloepForm'
 import { validation } from '@/components/fagsystem/afpOffentlig/form/validation'
+import { MocksvarTypes } from '@/components/fagsystem/afpOffentlig/afpOffentligTypes'
 
 export const afpOffentligPath = 'pensjonforvalter.afpOffentlig'
 
@@ -23,14 +24,14 @@ export const AfpOffentligForm = () => {
 
 	const valgteDirektekall = formMethods.watch(`${afpOffentligPath}.direktekall`)
 	const filterTpOrdningOptions = tpOrdningData?.filter(
-		(option) => !valgteDirektekall?.includes(option.value),
+		(option: any) => !valgteDirektekall?.includes(option.value),
 	)
 
 	const valgteTpOrdninger = formMethods
 		.watch(`${afpOffentligPath}.mocksvar`)
-		?.map((mocksvar) => mocksvar.tpId)
+		?.map((mocksvar: MocksvarTypes) => mocksvar.tpId)
 	const filterDirektekallOptions = direktekallData?.filter(
-		(option) => !valgteTpOrdninger?.includes(option.value),
+		(option: any) => !valgteTpOrdninger?.includes(option.value),
 	)
 
 	return (
@@ -58,7 +59,7 @@ export const AfpOffentligForm = () => {
 						newEntry={initialMocksvar}
 						canBeEmpty={false}
 					>
-						{(formPath, idx) => (
+						{(formPath: string, idx: number) => (
 							<React.Fragment key={idx}>
 								<div className={'flexbox--flex-wrap'}>
 									<FormSelect
@@ -66,14 +67,12 @@ export const AfpOffentligForm = () => {
 										label="TP-ordning"
 										size={'xxlarge'}
 										options={filterTpOrdningOptions}
-										// isClearable={false}
 									/>
 									<FormSelect
 										name={`${formPath}.statusAfp`}
 										label="Status AFP"
 										size={'medium'}
 										options={Options('statusAfp')}
-										// isClearable={false}
 									/>
 									<FormDatepicker name={`${formPath}.virkningsDato`} label="Virkningsdato" />
 									<FormSelect
