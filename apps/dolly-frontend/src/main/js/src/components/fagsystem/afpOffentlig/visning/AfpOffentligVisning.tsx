@@ -19,17 +19,16 @@ export const sjekkManglerAfpOffentligData = (afpOffentligData) => {
 	)
 }
 
-const DataVisning = ({ data }) => {
+export const showTpNavn = (tpId) => {
 	const { tpOrdningData } = useTpOrdning()
-
-	const showTpNavn = (tpId) => {
-		const tpOrdning = tpOrdningData?.find((tpOrdning) => tpOrdning.value === tpId)
-		if (tpOrdning) {
-			return tpOrdning.label
-		}
-		return tpId
+	const tpOrdning = tpOrdningData?.find((tpOrdning) => tpOrdning.value === tpId)
+	if (tpOrdning) {
+		return tpOrdning.label
 	}
+	return tpId
+}
 
+const DataVisning = ({ data }) => {
 	return (
 		<>
 			<div className="person-visning_content">
