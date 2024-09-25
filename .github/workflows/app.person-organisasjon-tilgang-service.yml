@@ -17,7 +17,6 @@ jobs:
     with:
       working-directory: "apps/person-organisasjon-tilgang-service"
       deploy-tag: "#deploy-person-organisasjon-tilgang-service"
-      deploy-tag-test: "#deploy-test-person-organisasjon-tilgang-service"
     permissions:
       contents: read
       id-token: write

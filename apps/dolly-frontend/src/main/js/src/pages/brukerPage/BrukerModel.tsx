@@ -7,6 +7,7 @@ import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '@/service/Api'
 import { NotFoundError } from '@/error'
 import { Navigate } from 'react-router-dom'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
+import { Logger } from '@/logger/Logger'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -22,14 +23,33 @@ export default () => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
+					Logger.error({
+						event: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
+						message: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
+						uuid: window.uuid,
+					})
 					navigateToLogin(UNKNOWN_ERROR)
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch((_e: NotFoundError) => navigateToLogin(ORG_ERROR))
-			.catch((_e: Error) => navigateToLogin(UNKNOWN_ERROR))
+			.catch((_e: NotFoundError) => {
+				Logger.error({
+					event: 'Fant ingen organisasjoner for bankid bruker',
+					message: 'Fant ingen organisasjoner for bankid bruker',
+					uuid: window.uuid,
+				})
+				navigateToLogin(ORG_ERROR)
+			})
+			.catch((e: Error) => {
+				Logger.error({
+					event: e.name,
+					message: e.message,
+					uuid: window.uuid,
+				})
+				navigateToLogin(UNKNOWN_ERROR)
+			})
 	}, [])
 
 	const selectOrganisasjon = (org: Organisasjon) => {
@@ -41,19 +61,38 @@ export default () => {
 				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
+					Logger.error({
+						event: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
+						message: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
+						uuid: window.uuid,
+					})
 					navigateToLogin(UNKNOWN_ERROR)
 				}
 			})
 			.catch((_e: NotFoundError) => {
 				setLoading(false)
 			})
-			.catch((_e: Error) => {
+			.catch((e: Error) => {
+				Logger.error({
+					event: e.name,
+					message: e.message,
+					uuid: window.uuid,
+				})
 				navigateToLogin(UNKNOWN_ERROR)
 			})
 	}
 
 	const addToSession = (org: string) => {
-		SessionApi.addToSession(org).then(() => setSessionUpdated(true))
+		SessionApi.addToSession(org)
+			.then(() => setSessionUpdated(true))
+			.catch(() => {
+				Logger.error({
+					event: 'Klarte ikke å sette session for bankid bruker',
+					message: 'Klarte ikke å sette session for bankid bruker',
+					uuid: window.uuid,
+				})
+				setSessionUpdated(false)
+			})
 	}
 
 	if (sessionUpdated) {
