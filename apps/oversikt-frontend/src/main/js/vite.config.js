@@ -1,5 +1,5 @@
-import { defineConfig, splitVendorChunkPlugin } from 'vite'
-import viteTsconfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vite'
+import tsconfigPaths from 'vite-tsconfig-paths'
 import svgr from 'vite-plugin-svgr'
 import proxyRoutes from './proxy-routes.json'
 import { resolve } from 'path'
@@ -26,5 +26,5 @@ export default defineConfig(({ mode }) => ({
 		proxy: proxyRoutes,
 		port: 3000,
 	},
-	plugins: [react(), svgr(), viteTsconfigPaths(), splitVendorChunkPlugin()],
+	plugins: [react(), svgr(), tsconfigPaths()],
 }))

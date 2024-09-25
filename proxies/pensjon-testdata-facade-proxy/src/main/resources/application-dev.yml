@@ -1,0 +1,4 @@
+
+consumers:
+  pensjon-testdata-facade:
+    url: https://pensjon-testdata-facade.dev.intern.nav.no

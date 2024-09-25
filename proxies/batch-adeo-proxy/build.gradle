@@ -8,3 +8,7 @@ sonarqube {
         property "sonar.projectName", "testnorge-batch-adeo-proxy"
     }
 }
+
+dependencies {
+    implementation "no.nav.testnav.libs:vault"
+}

@@ -9,11 +9,12 @@ spring:
       connection-timeout: 15000
       read-timeout: 30000
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5433/pdl-forvalter-test
     hikari:
       maximum-pool-size: 10
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
+    username: postgres
   jpa:
     properties:
       hibernate:

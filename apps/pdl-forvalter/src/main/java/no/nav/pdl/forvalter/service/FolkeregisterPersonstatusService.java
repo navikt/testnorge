@@ -110,6 +110,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             personstatus.setGyldigFraOgMed(person.getFalskIdentitet().stream()
                     .filter(FalskIdentitetDTO::isFalskIdentitet)
                     .map(FalskIdentitetDTO::getGyldigFraOgMed)
+                    .filter(Objects::nonNull)
                     .findFirst()
                     .orElse(LocalDateTime.now()));
 

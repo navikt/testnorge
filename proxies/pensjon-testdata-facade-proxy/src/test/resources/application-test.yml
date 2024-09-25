@@ -1,7 +1,10 @@
-TOKEN_X_ISSUER: dummy
 
 consumers:
   samboer-testdata:
+    name: pensjon-dummy
+    namespace: dummy
+    url: https://pensjon-dummy.dummy.no
+  afp-offentlig:
     name: pensjon-dummy
     namespace: dummy
     url: https://pensjon-dummy.dummy.no

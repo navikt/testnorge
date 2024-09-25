@@ -1,7 +1,6 @@
 package no.nav.testnav.proxies.safproxy;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
@@ -23,7 +22,6 @@ import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
-        DevConfig.class,
         SecurityConfig.class
 })
 @SpringBootApplication
