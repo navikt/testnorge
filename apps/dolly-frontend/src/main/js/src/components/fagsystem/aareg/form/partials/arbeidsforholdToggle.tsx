@@ -112,8 +112,8 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 						header="Arbeidsforhold"
 						newEntry={
 							typeArbeidsgiver === ArbeidsgiverTyper.privat
-								? { ...initialArbeidsforholdPers, arbeidsforholdstype: '' }
-								: { ...initialArbeidsforholdOrg, arbeidsforholdstype: '' }
+								? { ...initialArbeidsforholdPers, arbeidsforholdstype: 'ordinaertArbeidsforhold' }
+								: { ...initialArbeidsforholdOrg, arbeidsforholdstype: 'ordinaertArbeidsforhold' }
 						}
 						canBeEmpty={false}
 					>

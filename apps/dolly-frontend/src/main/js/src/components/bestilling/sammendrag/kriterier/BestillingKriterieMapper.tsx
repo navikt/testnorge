@@ -1056,7 +1056,7 @@ export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKrite
 	},
 	obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
 	obj('Arbeidsgiver ident', arbeidsforhold.arbeidsgiver?.ident),
-	obj('Arbeidsforhold-ID', arbeidsforhold.arbeidsforholdID),
+	obj('Arbeidsforhold-ID', arbeidsforhold.arbeidsforholdId),
 	obj('Ansatt fra', formatDate(arbeidsforhold.ansettelsesPeriode?.fom)),
 	obj('Ansatt til', formatDate(arbeidsforhold.ansettelsesPeriode?.tom)),
 	{
