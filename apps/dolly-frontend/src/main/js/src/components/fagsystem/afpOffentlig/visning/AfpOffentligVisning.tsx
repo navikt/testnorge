@@ -44,14 +44,16 @@ const DataVisning = ({ data }) => {
 							<TitleValue title="Status AFP" value={showLabel('statusAfp', mocksvar?.statusAfp)} />
 							<TitleValue title="Virkningsdato" value={formatDate(mocksvar?.virkningsDato)} />
 							<TitleValue title="Sist benyttet G" value={mocksvar?.sistBenyttetG} />
-							<DollyFieldArray data={mocksvar?.belopsListe} header="Beløp" nested>
-								{(belop, idy) => (
-									<React.Fragment key={idx + idy}>
-										<TitleValue title="F.o.m. dato" value={formatDate(belop?.fomDato)} />
-										<TitleValue title="Beløp" value={belop?.belop} />
-									</React.Fragment>
-								)}
-							</DollyFieldArray>
+							{mocksvar?.belopsListe?.length > 0 && (
+								<DollyFieldArray data={mocksvar?.belopsListe} header="Beløp" nested>
+									{(belop, idy) => (
+										<React.Fragment key={idx + idy}>
+											<TitleValue title="F.o.m. dato" value={formatDate(belop?.fomDato)} />
+											<TitleValue title="Beløp" value={belop?.belop} />
+										</React.Fragment>
+									)}
+								</DollyFieldArray>
+							)}
 						</React.Fragment>
 					)}
 				</DollyFieldArray>

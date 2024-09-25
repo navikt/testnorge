@@ -1,12 +1,12 @@
 export const initialBeloep = {
-	fomDato: '',
+	fomDato: null,
 	belop: 0,
 }
 
 export const initialMocksvar = {
-	tpId: '',
-	statusAfp: '',
-	virkningsDato: '',
+	tpId: null,
+	statusAfp: null,
+	virkningsDato: null,
 	sistBenyttetG: 2024,
 	belopsListe: [initialBeloep],
 }

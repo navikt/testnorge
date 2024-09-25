@@ -11,6 +11,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { BelopForm } from '@/components/fagsystem/afpOffentlig/form/BeloepForm'
+import { validation } from '@/components/fagsystem/afpOffentlig/form/validation'
 
 export const afpOffentligPath = 'pensjonforvalter.afpOffentlig'
 
@@ -91,3 +92,5 @@ export const AfpOffentligForm = () => {
 		</Vis>
 	)
 }
+
+AfpOffentligForm.validation = validation
