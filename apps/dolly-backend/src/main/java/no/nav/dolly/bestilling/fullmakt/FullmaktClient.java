@@ -37,7 +37,6 @@ public class FullmaktClient implements ClientRegister {
         }
 
         //TODO: Kunne opprette fullmakt ved gjeldende person i gruppen eller lage ny gjennom pdl-forvalter
-        //TODO: Lage ny fullmektig option i dolly-bestilling, prøve å få det bakoverkompatibelt
 
         return Flux.empty();
     }

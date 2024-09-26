@@ -3,11 +3,11 @@ import {
 	Attributt,
 	AttributtKategori,
 } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
-import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
+import { initialFullmakt, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
-import { adresseAttributter } from '@/components/fagsystem/pdlf/form/partials/adresser/Adresser'
 import React, { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { fullmaktAttributter } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 
 export const FullmaktPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(FullmaktPanel.initialValues)
@@ -27,7 +27,7 @@ export const FullmaktPanel = ({ stateModifier, formValues }: any) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="fullmakt"
-			startOpen={harValgtAttributt(formValues, adresseAttributter)}
+			startOpen={harValgtAttributt(formValues, fullmaktAttributter)}
 		>
 			<AttributtKategori title="Fullmakt" attr={sm.attrs}>
 				<Attributt
@@ -56,9 +56,11 @@ FullmaktPanel.initialValues = ({ set, opts, del, has }: any) => {
 			checked: has('fullmakt') || has('pdldata.person.fullmakt'),
 			add: () => {
 				set('fullmakt', [initialValues])
+				set('pdldata.person.fullmakt', [{ nyfullMektig: initialPdlPerson }])
 			},
 			remove: () => {
 				del('fullmakt')
+				del('pdldata.person.fullmakt')
 			},
 		},
 	}

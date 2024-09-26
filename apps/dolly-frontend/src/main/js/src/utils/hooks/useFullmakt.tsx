@@ -9,8 +9,7 @@ type NodeType = {
 	undernoder?: Record<string, NodeType> | null
 }
 
-type HierarkiType = {
-	hierarkinivaaer: string[]
+type FullmaktKodeverkType = {
 	noder: Record<string, NodeType>
 }
 
@@ -31,7 +30,7 @@ export const useFullmektig = () => {
 }
 
 export const useFullmaktOmraader = () => {
-	const { data, isLoading, error } = useSWR<HierarkiType, Error>(
+	const { data, isLoading, error } = useSWR<FullmaktKodeverkType, Error>(
 		[
 			'/testnav-fullmakt-proxy/api/omraade',
 			{ accept: 'application/json', 'Content-Type': 'application/json' },
@@ -63,7 +62,7 @@ const mapOmraadeKodeverkToOptions = (
 			} else {
 				options.push({
 					value: node.kode,
-					label: node.termer.nb,
+					label: `${node.termer.nb} - ${node.kode}`,
 				})
 			}
 		}

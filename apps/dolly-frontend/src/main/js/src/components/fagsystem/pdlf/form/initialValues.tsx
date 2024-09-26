@@ -49,13 +49,6 @@ export const initialDeltBosted = {
 	sluttdatoForKontrakt: null as unknown as string,
 }
 
-export const initalFullmakt = {
-	gyldigFraOgMed: null as unknown as string,
-	gyldigTilOgMed: null as unknown as string,
-	fullmektig: null as unknown as string,
-	omraader: [] as any,
-}
-
 export const getInitialAdressebeskyttelse = (master = 'FREG') => ({
 	gradering: null as unknown as string,
 	kilde: 'Dolly',
@@ -362,8 +355,7 @@ export const initialFullmakt = {
 	omraade: [{ tema: '', handling: [] }] as any,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
-	motpartsPersonident: null as unknown as string,
-	nyFullmektig: initialPdlPerson,
+	fullmektig: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 }

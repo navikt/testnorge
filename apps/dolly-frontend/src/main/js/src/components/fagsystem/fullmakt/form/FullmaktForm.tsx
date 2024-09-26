@@ -5,7 +5,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
+import { initialFullmakt, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -18,26 +18,58 @@ import { useFormContext } from 'react-hook-form'
 import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
 import { Omraade } from '@/components/fagsystem/fullmakt/FullmaktTypes'
 import { Option } from '@/service/SelectOptionsOppslag'
+import Loading from '@/components/ui/loading/Loading'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
 	path?: string
+	opts?: any
 	eksisterendeNyPerson?: any
+	omraadeKodeverk: Option[]
 }
 
-const mapLegacyFullmaktTilNyFullmakt = (legacyFullmakt: any) => {
-	if (!legacyFullmakt) return null
-	const { gyldigFraOgMed, gyldigTilOgMed, omraader, fullmektig } = legacyFullmakt
-	//TODO: Skrive denne når ny fullmakt er ferdig
-	return {
-		gyldigFraOgMed,
-		gyldigTilOgMed,
-		omraader,
-		nyFullmektig: fullmektig,
+const alleHandlinger = ['LES', 'SKRIV', 'KOMMUNISER']
+
+const mapLegacyFullmaktTilNyFullmakt = (
+	legacyFullmakt: any,
+	formMethods: UseFormReturn,
+	omraadeKodeverk: Option[],
+) => {
+	if (!legacyFullmakt || legacyFullmakt.length === 0) {
+		return null
 	}
+	const nyeFullmakter = legacyFullmakt
+		.filter((gammelFullmakt) => gammelFullmakt.omraader)
+		.map((gammelFullmakt) => ({
+			omraader: undefined, //Navn på feltet er endret i ny ekstern fullmakt
+			gyldigFraOgMed: gammelFullmakt.gyldigFraOgMed,
+			gyldigTilOgMed: gammelFullmakt.gyldigTilOgMed,
+			fullmektig: gammelFullmakt.motpartsPersonident,
+			omraade: gammelFullmakt.omraader.map((legacyOmraade, index) => {
+				if (legacyOmraade === '*') {
+					//TODO: Handle "alle" value
+					return { tema: 'AAP', handling: alleHandlinger }
+				}
+				if (omraadeKodeverk.filter((option) => option.value === legacyOmraade)?.length === 0) {
+					console.warn(
+						'Fant ikke gammel kodeverk-verdi fra denne malen i nytt kodeverk. Velger annen verdi',
+					)
+					return {
+						tema: omraadeKodeverk[omraadeKodeverk.length - index]?.value,
+						handling: alleHandlinger,
+					}
+				}
+				return {
+					tema: legacyOmraade,
+					handling: alleHandlinger,
+				}
+			}),
+		}))
+	formMethods.setValue('fullmakt', nyeFullmakter)
+	formMethods.setValue('pdldata.person.fullmakt', [{ nyfullMektig: initialPdlPerson }])
 }
 
-const fullmaktAttributter = ['fullmakt', 'pdldata.person.fullmakt']
+export const fullmaktAttributter = ['fullmakt', 'pdldata.person.fullmakt']
 
 const hasUserInput = (formMethods: UseFormReturn) => {
 	const fullmaktArray = formMethods.watch('fullmakt')
@@ -51,26 +83,36 @@ const hasUserInput = (formMethods: UseFormReturn) => {
 	return (
 		fullmaktValues.gyldigFraOgMed ||
 		fullmaktValues.gyldigTilOgMed ||
-		fullmaktValues.omraade?.tema !== ''
+		fullmaktValues.omraade?.[0]?.tema !== ''
 	)
 }
 
-export const Fullmakt = ({ formMethods, path, eksisterendeNyPerson = null }: FullmaktProps) => {
-	const legacyFullmakt = formMethods.watch('pdldata.person.fullmakt')
-	const opts: any = useContext(BestillingsveilederContext)
-	const { omraadeKodeverk } = useFullmaktOmraader()
+const getFullmaktTemaLabel = (temaValue: string, omraadeKodeverk: Option[]) => {
+	if (!temaValue || !omraadeKodeverk || omraadeKodeverk.length === 0) {
+		return null
+	}
+	const valgtOption = omraadeKodeverk.filter((option) => option.value === temaValue)?.[0]
+	return valgtOption ? `${valgtOption.label}` : temaValue
+}
 
-	const isTestnorgeIdent = opts?.identMaster === 'PDL'
-	console.log('formMethods.watch(path): ', formMethods.watch(path)) //TODO - SLETT MEG
-	const chosenTemaValues =
-		(path && formMethods.watch(path)?.omraade?.map((omraade: Omraade) => omraade.tema)) || []
-	console.log('chosenTemaValues: ', chosenTemaValues) //TODO - SLETT MEG
+export const Fullmakt = ({
+	formMethods,
+	path,
+	opts,
+	eksisterendeNyPerson = null,
+	omraadeKodeverk,
+}: FullmaktProps) => {
+	const legacyFullmakt = formMethods.watch('pdldata.person.fullmakt')
 
 	useEffect(() => {
 		if (!hasUserInput(formMethods)) {
-			mapLegacyFullmaktTilNyFullmakt(legacyFullmakt)
+			mapLegacyFullmaktTilNyFullmakt(legacyFullmakt, formMethods, omraadeKodeverk)
 		}
 	}, [])
+
+	const isTestnorgeIdent = opts?.identMaster === 'PDL'
+	const chosenTemaValues =
+		(path && formMethods.watch(path)?.omraade?.map((omraade: Omraade) => omraade.tema)) || []
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -84,7 +126,10 @@ export const Fullmakt = ({ formMethods, path, eksisterendeNyPerson = null }: Ful
 						<FormSelect
 							name={`${path}.tema`}
 							label="Tema"
-							placeholder={formMethods.watch(`${path}.tema`) || 'Velg ...'}
+							placeholder={
+								getFullmaktTemaLabel(formMethods.watch(`${path}.tema`), omraadeKodeverk) ||
+								'Velg ...'
+							}
 							options={omraadeKodeverk.filter(
 								(option: Option) => !chosenTemaValues.includes(option.value),
 							)}
@@ -125,6 +170,18 @@ export const Fullmakt = ({ formMethods, path, eksisterendeNyPerson = null }: Ful
 
 export const FullmaktForm = () => {
 	const formMethods = useFormContext()
+	const fullmaktValues = formMethods.watch('fullmakt')
+	const { omraadeKodeverk, loading } = useFullmaktOmraader()
+	const opts: any = useContext(BestillingsveilederContext)
+
+	if (loading) {
+		return <Loading label={'Laster områdekodeverk...'} />
+	}
+
+	if (!fullmaktValues || fullmaktValues?.length === 0) {
+		formMethods.setValue('fullmakt', [initialFullmakt])
+	}
+
 	return (
 		<Vis attributt={fullmaktAttributter}>
 			<Panel
@@ -139,7 +196,14 @@ export const FullmaktForm = () => {
 					newEntry={initialFullmakt}
 					canBeEmpty={false}
 				>
-					{(path: string) => <Fullmakt formMethods={formMethods} path={path} />}
+					{(path: string) => (
+						<Fullmakt
+							formMethods={formMethods}
+							path={path}
+							omraadeKodeverk={omraadeKodeverk}
+							opts={opts}
+						/>
+					)}
 				</FormDollyFieldArray>
 			</Panel>
 		</Vis>
