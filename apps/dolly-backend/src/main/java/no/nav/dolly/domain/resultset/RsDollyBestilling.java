@@ -59,7 +59,7 @@ public class RsDollyBestilling {
     private String malBestillingNavn;
     private PdlPersondata pdldata;
     private RsDigitalKontaktdata krrstub;
-    private RsFullmakt fullmakt;
+    private List<RsFullmakt> fullmakt;
     private RsMedl medl;
     private List<RsInstdata> instdata;
     private List<RsAareg> aareg;
@@ -113,6 +113,13 @@ public class RsDollyBestilling {
             instdata = new ArrayList<>();
         }
         return instdata;
+    }
+
+    public List<RsFullmakt> getFullmakt() {
+        if (isNull(fullmakt)) {
+            fullmakt = new ArrayList<>();
+        }
+        return fullmakt;
     }
 
     @JsonIgnore

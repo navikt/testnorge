@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -31,7 +32,7 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
     private final WebClient webClient;
     private final String token;
     private final String ident;
-    private final RsFullmakt request;
+    private final List<RsFullmakt> request;
 
     public Mono<FullmaktResponse> call() {
 

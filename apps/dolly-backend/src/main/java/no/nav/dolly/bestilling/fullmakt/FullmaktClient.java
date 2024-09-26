@@ -15,6 +15,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -29,11 +30,18 @@ public class FullmaktClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getFullmakt())) {
+        if (nonNull(bestilling.getFullmakt()) && !bestilling.getFullmakt().isEmpty()) {
 
-            return Flux.from(fullmaktConsumer.createFullmaktData(bestilling.getFullmakt(), dollyPerson.getIdent()))
+            bestilling.setFullmakt(bestilling.getFullmakt().stream().map(fullmakt -> {
+                if (isNull(fullmakt.getFullmektig())) {
+                    fullmakt.setFullmektig(dollyPerson.getIdent());
+                }
+                return fullmakt;
+            }).toList());
+
+            return Flux.from(Flux.just(bestilling.getFullmakt()).flatMap(fullmakt -> fullmaktConsumer.createFullmaktData(fullmakt, dollyPerson.getIdent()))
                     .map(this::getStatus)
-                    .map(status -> futurePersist(progress, status));
+                    .map(status -> futurePersist(progress, status)));
         }
 
         //TODO: Kunne opprette fullmakt ved gjeldende person i gruppen eller lage ny gjennom pdl-forvalter

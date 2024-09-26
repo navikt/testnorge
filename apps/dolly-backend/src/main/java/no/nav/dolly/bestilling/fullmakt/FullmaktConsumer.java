@@ -46,7 +46,7 @@ public class FullmaktConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_createData" })
-    public Mono<FullmaktResponse> createFullmaktData(RsFullmakt fullmakt, String ident) {
+    public Mono<FullmaktResponse> createFullmaktData(List<RsFullmakt> fullmakt, String ident) {
 
         log.info("Fullmakt opprett {}", fullmakt);
         return tokenService.exchange(serverProperties)
