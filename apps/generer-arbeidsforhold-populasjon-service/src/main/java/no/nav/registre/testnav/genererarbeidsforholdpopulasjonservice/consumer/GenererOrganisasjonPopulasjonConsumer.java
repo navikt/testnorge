@@ -17,12 +17,12 @@ public class GenererOrganisasjonPopulasjonConsumer {
 
     public GenererOrganisasjonPopulasjonConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder) {
 
         serverProperties = consumers.getTestnavGenererOrganisasjonPopulasjonService();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

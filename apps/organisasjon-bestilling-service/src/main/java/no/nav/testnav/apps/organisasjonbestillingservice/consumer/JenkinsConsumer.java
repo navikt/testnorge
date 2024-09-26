@@ -24,11 +24,11 @@ public class JenkinsConsumer {
 
     public JenkinsConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getJenkins();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

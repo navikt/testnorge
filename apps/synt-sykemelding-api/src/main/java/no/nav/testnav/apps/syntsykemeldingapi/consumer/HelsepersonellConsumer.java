@@ -9,9 +9,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.exception.HelsepersonellNotFoundEx
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.reactive.function.client.WebClient;
-
 
 import static java.util.Objects.nonNull;
 
@@ -24,11 +22,12 @@ public class HelsepersonellConsumer {
 
     public HelsepersonellConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getTestnavHelsepersonellService();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

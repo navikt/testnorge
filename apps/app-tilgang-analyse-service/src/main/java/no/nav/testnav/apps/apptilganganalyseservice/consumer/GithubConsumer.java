@@ -18,10 +18,11 @@ public class GithubConsumer {
     private static final int PAGE_SIZE = 100;
     private final WebClient webClient;
 
-    public GithubConsumer(@Value("${consumers.github.url}") String url, @Value("${consumers.github.token}") String token) {
+    public GithubConsumer(@Value("${consumers.github.url}") String url,
+                          @Value("${consumers.github.token}") String token,
+                          WebClient.Builder webClientBuilder) {
 
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(url)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "token " + token)
                 .exchangeStrategies(ExchangeStrategies.builder()
