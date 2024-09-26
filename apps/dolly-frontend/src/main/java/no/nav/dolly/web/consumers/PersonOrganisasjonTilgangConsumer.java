@@ -2,8 +2,8 @@ package no.nav.dolly.web.consumers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.consumers.command.GetPersonOrganisasjonTilgangCommand;
 import no.nav.dolly.web.config.Consumers;
+import no.nav.dolly.web.consumers.command.GetPersonOrganisasjonTilgangCommand;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.MediaType;
@@ -27,7 +27,8 @@ public class PersonOrganisasjonTilgangConsumer {
     public PersonOrganisasjonTilgangConsumer(
             Consumers consumers,
             AccessService accessService,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder) {
 
         this.accessService = accessService;
         serverProperties = consumers.getTestnavPersonOrganisasjonTilgangService();
@@ -39,8 +40,7 @@ public class PersonOrganisasjonTilgangConsumer {
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 }).build();
 
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();

@@ -22,11 +22,11 @@ public class OrganisasjonForvalterConsumer {
 
     public OrganisasjonForvalterConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getOrgForvalter();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

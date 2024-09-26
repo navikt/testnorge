@@ -32,7 +32,9 @@ public class AaregConsumer {
     public AaregConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder) {
+
         serverProperties = consumers.getTestnavAaregProxy();
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies
@@ -47,8 +49,7 @@ public class AaregConsumer {
                                     .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                         })
                 .build();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();

@@ -27,11 +27,12 @@ public class SyntElsamConsumer {
 
     public SyntElsamConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder) {
+
         serverProperties = consumers.getSyntSykemelding();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(ExchangeStrategies
                         .builder()
                         .codecs(configurer -> configurer

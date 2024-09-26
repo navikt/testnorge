@@ -11,17 +11,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class PdlAdresseConsumer {
+
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
     public PdlAdresseConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getPdlServices();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

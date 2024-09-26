@@ -23,11 +23,12 @@ public class DollyBackendConsumer {
     private final ServerProperties dollyBackendProperties;
     private final ServerProperties dollyBackendPropertiesDev;
 
-    public DollyBackendConsumer(TokenExchange tokenExchange, Consumers serverProperties) {
-        this.webClient = WebClient.builder()
+    public DollyBackendConsumer(TokenExchange tokenExchange, Consumers serverProperties,
+                                WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getDollyBackend().getUrl())
                 .build();
-        this.webClientDev = WebClient.builder()
+        this.webClientDev = webClientBuilder
                 .baseUrl(serverProperties.getDollyBackendDev().getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

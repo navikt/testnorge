@@ -48,8 +48,10 @@ public class PdlApiConsumer {
     public PdlApiConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
+
         serverProperties = consumers.getPdlProxy();
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
@@ -63,8 +65,7 @@ public class PdlApiConsumer {
                                     .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                         })
                 .build();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();

@@ -27,12 +27,12 @@ public class OrganisasjonFasteDataConsumer {
     public OrganisasjonFasteDataConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            GenererNavnConsumer genererNavnConsumer) {
+            GenererNavnConsumer genererNavnConsumer,
+            WebClient.Builder webClientBuilder) {
 
         serverProperties = consumers.getTestnavOrganisasjonFasteDataService();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.genererNavnConsumer = genererNavnConsumer;

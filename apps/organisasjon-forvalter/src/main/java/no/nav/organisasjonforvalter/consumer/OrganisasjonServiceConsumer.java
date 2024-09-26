@@ -25,9 +25,10 @@ public class OrganisasjonServiceConsumer {
 
     public OrganisasjonServiceConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder) {
         serverProperties = consumers.getTestnavOrganisasjonService();
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

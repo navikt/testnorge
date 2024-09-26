@@ -45,7 +45,8 @@ public class TpsMessagingConsumer {
     public TpsMessagingConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder) {
 
         serverProperties = consumers.getTpsMessagingService();
         this.accessTokenService = tokenExchange;
@@ -59,8 +60,7 @@ public class TpsMessagingConsumer {
                 }).build();
 
 
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();
