@@ -137,6 +137,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
             if (isNotCurrentStatus(MIDLERTIDIG, person)) {
                 personstatus.setStatus(MIDLERTIDIG);
+                personstatus.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
             }
             return personstatus;
 
@@ -146,24 +147,21 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
                 if (isNotCurrentStatus(IKKE_BOSATT, person)) {
                     personstatus.setStatus(IKKE_BOSATT);
+                    personstatus.setGyldigFraOgMed(getBoadresseGyldigFraDato(person));
                 }
 
             } else if (nonNull(person.getBostedsadresse().getFirst().getUkjentBosted())) {
 
                 if (isNotCurrentStatus(FOEDSELSREGISTRERT, person)) {
                     personstatus.setStatus(FOEDSELSREGISTRERT);
+                    personstatus.setGyldigFraOgMed(getBoadresseGyldigFraDato(person));
                 }
 
             } else if (isNotCurrentStatus(BOSATT, person)) {
 
                 personstatus.setStatus(BOSATT);
+                personstatus.setGyldigFraOgMed(getBoadresseGyldigFraDato(person));
             }
-
-            personstatus.setGyldigFraOgMed(person.getBostedsadresse().stream()
-                    .map(BostedadresseDTO::getGyldigFraOgMed)
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .orElse(FoedselsdatoUtility.getFoedselsdato(person)));
 
             return personstatus;
 
@@ -188,10 +186,19 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         // Ingen validering
     }
 
-    private void setGyldigTilOgMed(List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus) {
+    private static   LocalDateTime getBoadresseGyldigFraDato(PersonDTO person) {
+
+        return person.getBostedsadresse().stream()
+                .map(BostedadresseDTO::getGyldigFraOgMed)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(FoedselsdatoUtility.getFoedselsdato(person));
+    }
+
+    private static void setGyldigTilOgMed(List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus) {
 
         for (var i = 0; i < folkeregisterPersonstatus.size(); i++) {
-            if (i + 1 < folkeregisterPersonstatus.size()) {
+            if (i + 1 < folkeregisterPersonstatus.size() && nonNull(folkeregisterPersonstatus.get(i).getGyldigFraOgMed())) {
                 folkeregisterPersonstatus.get(i + 1)
                         .setGyldigTilOgMed(folkeregisterPersonstatus.get(i).getGyldigFraOgMed().minusDays(1));
             }
