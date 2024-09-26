@@ -186,7 +186,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         // Ingen validering
     }
 
-    private static   LocalDateTime getBoadresseGyldigFraDato(PersonDTO person) {
+    private static LocalDateTime getBoadresseGyldigFraDato(PersonDTO person) {
 
         return person.getBostedsadresse().stream()
                 .map(BostedadresseDTO::getGyldigFraOgMed)
