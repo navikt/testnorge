@@ -67,8 +67,8 @@ public class PersonArtifactService {
         person.setForeldreansvar(foreldreansvarService.convert(person));
         person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
         person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
-        person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
         person.setNavPersonIdentifikator(navPersonIdentifikatorService.convert(person));
+        person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
 
         person = identtypeService.convert(person);
 

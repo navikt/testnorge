@@ -80,7 +80,7 @@ public class MergeService {
             if (isNull(requestElement.getFolkeregistermetadata())) {
                 requestElement.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
-            infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
+            infoElementDbPerson.addFirst(mapperFacade.map(requestElement, requestElement.getClass()));
         }
     }
 }
