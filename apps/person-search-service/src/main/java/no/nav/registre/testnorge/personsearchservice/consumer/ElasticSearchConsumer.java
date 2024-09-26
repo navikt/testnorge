@@ -29,11 +29,12 @@ public class ElasticSearchConsumer {
     public ElasticSearchConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
+
         serverProperties = consumers.getTestnavPdlProxy();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

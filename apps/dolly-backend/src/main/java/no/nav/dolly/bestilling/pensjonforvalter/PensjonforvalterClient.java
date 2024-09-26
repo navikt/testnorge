@@ -141,6 +141,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                             log.warn("Persondata for {} gir tom response fra PDL", dollyPerson.getIdent());
                                         }
                                     })
+                                    .filter(utvidetPersondata -> !utvidetPersondata.getT1().isEmpty())
                                     .flatMap(utvidetPersondata -> Flux.concat(
                                                     opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer, utvidetPersondata.getT1())
                                                             .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
@@ -150,6 +151,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                             )
                                             .collectList()
                                             .doOnNext(statusResultat::addAll)
+                                            .filter(status -> status.stream().allMatch(entry -> entry.contains("OK")))
                                             .map(status -> Flux.just(bestilling1)
                                                     .filter(bestilling2 -> nonNull(bestilling2.getPensjonforvalter()))
                                                     .map(RsDollyUtvidetBestilling::getPensjonforvalter)

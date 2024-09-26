@@ -19,10 +19,11 @@ public class SokosSkattekortConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
-    public SokosSkattekortConsumer(TokenExchange tokenExchange, Consumers consumers) {
+    public SokosSkattekortConsumer(TokenExchange tokenExchange, Consumers consumers,
+                                   WebClient.Builder webClientBuilder) {
 
         this.serverProperties = consumers.getSokosSkattekort();
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

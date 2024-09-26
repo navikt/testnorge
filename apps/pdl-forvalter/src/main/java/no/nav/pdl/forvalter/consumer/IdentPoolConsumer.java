@@ -27,18 +27,19 @@ public class IdentPoolConsumer {
     private static final String RELEASE_IDENTS_URL = ACQUIRE_IDENTS_URL + "/frigjoer";
     private static final String IBRUK_IDENTS_URL = ACQUIRE_IDENTS_URL + "/bruk";
     private static final String REKVIRERT_AV = "rekvirertAv=";
-    private final WebClient webClient;
 
+    private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
     public IdentPoolConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getIdentPool();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

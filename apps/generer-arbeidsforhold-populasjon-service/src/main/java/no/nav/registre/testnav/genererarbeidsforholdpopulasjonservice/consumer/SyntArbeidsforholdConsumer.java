@@ -28,13 +28,13 @@ public class SyntArbeidsforholdConsumer {
     public SyntArbeidsforholdConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder) {
 
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getSyntAmelding();
         this.objectMapper = objectMapper;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
                     clientDefaultCodecsConfigurer

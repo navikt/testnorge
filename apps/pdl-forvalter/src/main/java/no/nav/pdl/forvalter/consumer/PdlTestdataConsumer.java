@@ -53,11 +53,12 @@ public class PdlTestdataConsumer {
             TokenExchange tokenExchange,
             Consumers consumers,
             ObjectMapper objectMapper,
-            PersonServiceConsumer personServiceConsumer) {
+            PersonServiceConsumer personServiceConsumer,
+            WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getPdlProxy();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
