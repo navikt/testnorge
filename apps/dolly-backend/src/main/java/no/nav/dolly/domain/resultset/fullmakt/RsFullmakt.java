@@ -34,7 +34,10 @@ public class RsFullmakt {
         return omraade;
     }
 
+    @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Omraade {
         private String tema;
         private List<String> handling;
