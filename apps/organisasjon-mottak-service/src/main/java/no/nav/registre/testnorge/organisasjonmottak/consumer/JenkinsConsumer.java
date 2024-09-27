@@ -29,14 +29,14 @@ public class JenkinsConsumer {
             Consumers consumers,
             TokenExchange tokenExchange,
             JenkinsBatchStatusConsumer jenkinsBatchStatusConsumer,
-            OrganisasjonBestillingConsumer organisasjonBestillingConsumer) {
+            OrganisasjonBestillingConsumer organisasjonBestillingConsumer,
+            WebClient.Builder webClientBuilder) {
         this.organisasjonBestillingConsumer = organisasjonBestillingConsumer;
         serverProperties = consumers.getJenkins();
         this.tokenExchange = tokenExchange;
         this.jenkinsBatchStatusConsumer = jenkinsBatchStatusConsumer;
         this.env = env;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

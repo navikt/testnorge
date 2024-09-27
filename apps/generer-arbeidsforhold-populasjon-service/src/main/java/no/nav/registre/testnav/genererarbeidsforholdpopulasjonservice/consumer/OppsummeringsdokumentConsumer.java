@@ -42,15 +42,15 @@ public class OppsummeringsdokumentConsumer {
             TokenExchange tokenExchange,
             Consumers consumers,
             ObjectMapper objectMapper,
-            ApplicationProperties applicationProperties) {
+            ApplicationProperties applicationProperties,
+            WebClient.Builder webClientBuilder) {
 
         this.applicationProperties = applicationProperties;
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getOppsummeringsdokumentService();
         this.executor = Executors.newFixedThreadPool(20);
 
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
                     clientDefaultCodecsConfigurer.defaultCodecs().maxInMemorySize(BYTE_COUNT);

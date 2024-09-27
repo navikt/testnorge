@@ -12,10 +12,10 @@ public class KodeverkConsumer {
     private final WebClient webClient;
 
     public KodeverkConsumer(
-            Consumers consumers
+            Consumers consumers,
+            WebClient.Builder webClientBuilder
     ) {
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(ExchangeStrategies
                         .builder()
                         .codecs(configurer -> configurer

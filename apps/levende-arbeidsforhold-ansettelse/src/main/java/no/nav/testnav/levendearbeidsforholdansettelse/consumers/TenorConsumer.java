@@ -29,13 +29,13 @@ public class TenorConsumer {
 
     public TenorConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
 
         this.serverProperties = consumers.getTestnavTenorSearchService();
         this.tokenExchange = tokenExchange;
 
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

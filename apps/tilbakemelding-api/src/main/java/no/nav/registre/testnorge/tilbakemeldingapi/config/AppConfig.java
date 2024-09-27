@@ -1,14 +1,14 @@
 package no.nav.registre.testnorge.tilbakemeldingapi.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.slack.consumer.SlackConsumer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 @Import({
@@ -22,9 +22,10 @@ public class AppConfig {
             @Value("${consumers.slack.token}") String token,
             @Value("${consumers.slack.baseUrl}") String baseUrl,
             @Value("${http.proxy:#{null}}") String proxyHost,
-            ApplicationProperties properties
+            ApplicationProperties properties,
+            WebClient .Builder webClientBuilder
     ) {
-        return new SlackConsumer(token, baseUrl, proxyHost, properties.getName());
+        return new SlackConsumer(token, baseUrl, proxyHost, properties.getName(), webClientBuilder);
     }
 
 

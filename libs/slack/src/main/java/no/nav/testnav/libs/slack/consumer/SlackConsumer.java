@@ -1,17 +1,16 @@
 package no.nav.testnav.libs.slack.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.slack.command.PublishMessageCommand;
+import no.nav.testnav.libs.slack.command.UploadFileCommand;
+import no.nav.testnav.libs.slack.dto.Message;
+import no.nav.testnav.libs.slack.dto.SlackResponse;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-
-import no.nav.testnav.libs.slack.command.PublishMessageCommand;
-import no.nav.testnav.libs.slack.command.UploadFileCommand;
-import no.nav.testnav.libs.slack.dto.Message;
-import no.nav.testnav.libs.slack.dto.SlackResponse;
 
 @Slf4j
 public class SlackConsumer {
@@ -23,15 +22,15 @@ public class SlackConsumer {
             String token,
             String baseUrl,
             String proxyHost,
-            String applicationName
+            String applicationName,
+            WebClient.Builder webClientBuilder
     ) {
         this.token = token;
         this.applicationName = applicationName;
-        var builder = WebClient.builder();
         if (proxyHost != null) {
             log.info("Setter opp proxy host {} for Slack api", proxyHost);
             var uri = URI.create(proxyHost);
-            builder.clientConnector(new ReactorClientHttpConnector(
+            webClientBuilder.clientConnector(new ReactorClientHttpConnector(
                 HttpClient
                     .create()
                     .proxy(proxy -> proxy
@@ -40,7 +39,7 @@ public class SlackConsumer {
                         .port(uri.getPort()))
             ));
         }
-        webClient = builder
+        this.webClient = webClientBuilder
                 .baseUrl(baseUrl)
                 .build();
     }
