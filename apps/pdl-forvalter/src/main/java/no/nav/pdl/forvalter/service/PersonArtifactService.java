@@ -19,7 +19,6 @@ public class PersonArtifactService {
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
     private final ForeldreansvarService foreldreansvarService;
-    private final FullmaktService fullmaktService;
     private final IdenttypeService identtypeService;
     private final InnflyttingService innflyttingService;
     private final KjoennService kjoennService;
@@ -56,7 +55,6 @@ public class PersonArtifactService {
         person.setOpphold(oppholdService.convert(person.getOpphold()));
         person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
         person.setDoedsfall(doedsfallService.convert(person));
-        person.setFullmakt(fullmaktService.convert(person));
         person.setKontaktadresse(kontaktAdresseService.convert(person, relaxed));
         person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService.convert(person));
         person.setVergemaal(vergemaalService.convert(person));
