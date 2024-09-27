@@ -18,7 +18,6 @@ import './Gruppe.less'
 import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
 import { ToggleGroup } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { isEmpty } from 'lodash'
 
 export type GruppeProps = {
 	visning: string
@@ -113,7 +112,7 @@ export default ({
 	return (
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppeId={gruppe.id} />
-			{ikkeFerdigBestillinger && !isEmpty(ikkeFerdigBestillinger) && (
+			{ikkeFerdigBestillinger && (
 				// @ts-ignore
 				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={ikkeFerdigBestillinger} />
 			)}
