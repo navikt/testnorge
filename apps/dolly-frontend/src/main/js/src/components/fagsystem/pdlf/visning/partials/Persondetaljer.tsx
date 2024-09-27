@@ -17,6 +17,7 @@ import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTy
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 
 type PersondetaljerTypes = {
 	data: any
@@ -38,6 +39,7 @@ type PersonTypes = {
 }
 
 const getCurrentPersonstatus = (data: any) => {
+	console.log('data: ', data) //TODO - SLETT MEG
 	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
 		const statuser = data.folkeregisterpersonstatus.filter((status: any) => {
 			return !status?.metadata?.historisk
@@ -48,6 +50,58 @@ const getCurrentPersonstatus = (data: any) => {
 		return statuser.length > 0 ? statuser[0] : null
 	}
 	return null
+}
+
+const Personstatus = ({ personstatus }) => {
+	return (
+		<>
+			<TitleValue title="Status" value={showLabel('personstatus', personstatus?.status)} />
+			<TitleValue title="Gyldig fra og med" value={formatDate(personstatus?.gyldigFraOgMed)} />
+			<TitleValue title="Gyldig til og med" value={formatDate(personstatus?.gyldigTilOgMed)} />
+		</>
+	)
+}
+
+const PersonstatusVisning = ({ personstatusListe }) => {
+	console.log('personstatusListe: ', personstatusListe) //TODO - SLETT MEG
+	if (!personstatusListe || personstatusListe?.length === 0) {
+		return null
+	}
+
+	if (personstatusListe?.length === 1) {
+		return (
+			<TitleValue
+				title="Personstatus"
+				value={showLabel('personstatus', personstatusListe[0].status)}
+			/>
+		)
+	}
+
+	const gyldigePersonstatuser = personstatusListe?.filter(
+		(status) => !status?.folkeregistermetadata?.opphoerstidspunkt,
+	)
+	const historiskePersonstatuser = personstatusListe?.filter(
+		(status) => status?.folkeregistermetadata?.opphoerstidspunkt,
+	)
+
+	if (personstatusListe?.length > 1) {
+		return (
+			<ArrayHistorikk
+				component={Personstatus}
+				data={gyldigePersonstatuser}
+				historiskData={historiskePersonstatuser}
+				header="Personstatus"
+			/>
+		)
+	}
+
+	return (
+		<>
+			<TitleValue title="Status" value={showLabel('personstatus', personstatus?.status)} />
+			<TitleValue title="Gyldig fra og med" value={formatDate(personstatus?.gyldigFraOgMed)} />
+			<TitleValue title="Gyldig til og med" value={formatDate(personstatus?.gyldigTilOgMed)} />
+		</>
+	)
 }
 
 const NavnVisning = ({ navn, showMaster }) => {
@@ -83,6 +137,11 @@ const PersondetaljerLes = ({
 			{navnListe?.length === 1 && <NavnVisning navn={navnListe[0]} />}
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
+			<PersonstatusVisning
+				personstatus={
+					redigertPerson?.folkeregisterPersonstatus || person?.folkeregisterPersonstatus
+				}
+			/>
 			<SkjermingVisning data={skjerming} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
