@@ -32,12 +32,12 @@ public class AltinnConsumer {
     public AltinnConsumer(
             AltinnConfig altinnConfig,
             MaskinportenConsumer maskinportenConsumer,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder) {
 
         this.altinnConfig = altinnConfig;
         this.maskinportenConsumer = maskinportenConsumer;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(altinnConfig.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
                     clientDefaultCodecsConfigurer

@@ -1,7 +1,6 @@
 package no.nav.testnav.proxies.eregproxy;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +17,6 @@ import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
-        DevConfig.class,
         SecurityConfig.class
 })
 @SpringBootApplication

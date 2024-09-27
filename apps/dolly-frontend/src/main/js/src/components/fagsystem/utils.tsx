@@ -20,19 +20,6 @@ export const testDatoTom = (val, fomPath, feilmelding = 'Dato må være etter fr
 	})
 }
 
-export const filtrerKeysMedKunNullVerdier = (data) => {
-	if (!data) {
-		return null
-	}
-	JSON.stringify(
-		data,
-		(_key, value) => {
-			return value === null || value === '' ? undefined : value
-		},
-		4,
-	)
-}
-
 export const getEksisterendeNyPerson = (
 	relasjoner: Array<Relasjon>,
 	ident: String,

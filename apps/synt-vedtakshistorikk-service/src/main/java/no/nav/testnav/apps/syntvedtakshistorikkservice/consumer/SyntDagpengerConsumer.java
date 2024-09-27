@@ -26,12 +26,13 @@ public class SyntDagpengerConsumer {
 
     public SyntDagpengerConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder
     ) {
+
         serverProperties = consumers.getSyntDagpenger();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(ExchangeStrategies
                         .builder()
                         .codecs(configurer -> configurer
@@ -50,7 +51,7 @@ public class SyntDagpengerConsumer {
                     .flatMap(accessToken -> new HentDagpengevedtakCommand(webClient, request, rettighet, accessToken.getTokenValue()).call())
                     .block();
             if (nonNull(response) && !response.isEmpty()) {
-                return response.get(0);
+                return response.getFirst();
             } else {
                 return null;
             }

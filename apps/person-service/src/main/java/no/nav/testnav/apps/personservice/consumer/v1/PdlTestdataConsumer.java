@@ -3,7 +3,11 @@ package no.nav.testnav.apps.personservice.consumer.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.config.Consumers;
-import no.nav.testnav.apps.personservice.consumer.v1.command.*;
+import no.nav.testnav.apps.personservice.consumer.v1.command.OpprettFoedselsdatoCommand;
+import no.nav.testnav.apps.personservice.consumer.v1.command.OpprettPersonCommand;
+import no.nav.testnav.apps.personservice.consumer.v1.command.PostAdresseCommand;
+import no.nav.testnav.apps.personservice.consumer.v1.command.PostNavnCommand;
+import no.nav.testnav.apps.personservice.consumer.v1.command.PostTagsCommand;
 import no.nav.testnav.apps.personservice.consumer.v1.exception.PdlCreatePersonException;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -27,7 +31,8 @@ public class PdlTestdataConsumer {
     public PdlTestdataConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
         serverProperties = consumers.getPdlProxy();
         this.tokenExchange = tokenExchange;
@@ -42,8 +47,7 @@ public class PdlTestdataConsumer {
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
                 .build();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();

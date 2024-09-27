@@ -35,8 +35,8 @@ public class MaskinportenConsumer {
     private final MaskinportenConfig maskinportenConfig;
     private final Mono<AccessToken> accessToken;
 
-    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig) {
-        this.webClient = WebClient.builder().build();
+    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig, WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.build();
         this.maskinportenConfig = maskinportenConfig;
         var wellKnownMono = cache(
                 new GetWellKnownCommand(webClient, maskinportenConfig).call(),

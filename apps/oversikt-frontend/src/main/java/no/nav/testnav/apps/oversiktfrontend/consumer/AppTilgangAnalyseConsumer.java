@@ -23,11 +23,12 @@ public class AppTilgangAnalyseConsumer {
 
     public AppTilgangAnalyseConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder) {
+
         serverProperties = consumers.getTestnavAppTilgangAnalyseService();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -15,12 +15,13 @@ public class AnsettelseConsumer {
     private final TokenExchange tokenExchange;
 
     public AnsettelseConsumer(Consumers consumers,
-                              TokenExchange tokenExchange) {
+                              TokenExchange tokenExchange,
+                              WebClient.Builder webClientBuilder) {
+
         this.serverProperties = consumers.getLevendeArbeidsforholdAnsettelse();
         this.tokenExchange = tokenExchange;
 
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
