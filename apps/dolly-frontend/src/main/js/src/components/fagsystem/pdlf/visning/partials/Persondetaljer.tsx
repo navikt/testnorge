@@ -38,32 +38,23 @@ type PersonTypes = {
 	tpsMessagingLoading?: boolean
 }
 
-const getCurrentPersonstatus = (data: any) => {
-	console.log('data: ', data) //TODO - SLETT MEG
-	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
-		const statuser = data.folkeregisterpersonstatus.filter((status: any) => {
-			return !status?.metadata?.historisk
-		})
-		return statuser.length > 0 ? statuser[0] : null
-	} else if (data?.folkeregisterPersonstatus && data?.folkeregisterPersonstatus?.[0] !== null) {
-		const statuser = data.folkeregisterPersonstatus
-		return statuser.length > 0 ? statuser[0] : null
-	}
-	return null
-}
-
-const Personstatus = ({ personstatus }) => {
+const Personstatus = (personstatus) => {
 	return (
 		<>
-			<TitleValue title="Status" value={showLabel('personstatus', personstatus?.status)} />
-			<TitleValue title="Gyldig fra og med" value={formatDate(personstatus?.gyldigFraOgMed)} />
-			<TitleValue title="Gyldig til og med" value={formatDate(personstatus?.gyldigTilOgMed)} />
+			<TitleValue title="Status" value={showLabel('personstatus', personstatus?.data?.status)} />
+			<TitleValue
+				title="Gyldig fra og med"
+				value={formatDate(personstatus?.data?.gyldigFraOgMed)}
+			/>
+			<TitleValue
+				title="Gyldig til og med"
+				value={formatDate(personstatus?.data?.gyldigTilOgMed)}
+			/>
 		</>
 	)
 }
 
 const PersonstatusVisning = ({ personstatusListe }) => {
-	console.log('personstatusListe: ', personstatusListe) //TODO - SLETT MEG
 	if (!personstatusListe || personstatusListe?.length === 0) {
 		return null
 	}
@@ -77,30 +68,16 @@ const PersonstatusVisning = ({ personstatusListe }) => {
 		)
 	}
 
-	const gyldigePersonstatuser = personstatusListe?.filter(
-		(status) => !status?.folkeregistermetadata?.opphoerstidspunkt,
-	)
-	const historiskePersonstatuser = personstatusListe?.filter(
-		(status) => status?.folkeregistermetadata?.opphoerstidspunkt,
-	)
-
-	if (personstatusListe?.length > 1) {
-		return (
-			<ArrayHistorikk
-				component={Personstatus}
-				data={gyldigePersonstatuser}
-				historiskData={historiskePersonstatuser}
-				header="Personstatus"
-			/>
-		)
-	}
+	const gyldigPersonstatus = personstatusListe[0]
+	const historiskePersonstatuser = personstatusListe.slice(1)
 
 	return (
-		<>
-			<TitleValue title="Status" value={showLabel('personstatus', personstatus?.status)} />
-			<TitleValue title="Gyldig fra og med" value={formatDate(personstatus?.gyldigFraOgMed)} />
-			<TitleValue title="Gyldig til og med" value={formatDate(personstatus?.gyldigTilOgMed)} />
-		</>
+		<ArrayHistorikk
+			component={Personstatus}
+			data={[gyldigPersonstatus]}
+			historiskData={historiskePersonstatuser}
+			header="Personstatus"
+		/>
 	)
 }
 
@@ -129,19 +106,25 @@ const PersondetaljerLes = ({
 }: PersonTypes) => {
 	const navnListe = person?.navn
 	const personKjoenn = person?.kjoenn?.[0]
-	const personstatus = getCurrentPersonstatus(redigertPerson || person)
+	const personstatus = person?.folkeregisterPersonstatus
 
 	return (
 		<div className="person-visning_redigerbar">
 			<TitleValue title="Ident" value={person?.ident} />
 			{navnListe?.length === 1 && <NavnVisning navn={navnListe[0]} />}
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
-			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
-			<PersonstatusVisning
-				personstatus={
-					redigertPerson?.folkeregisterPersonstatus || person?.folkeregisterPersonstatus
-				}
-			/>
+			{personstatus?.length > 1 ? (
+				<PersonstatusVisning
+					personstatusListe={
+						redigertPerson?.folkeregisterPersonstatus || person?.folkeregisterPersonstatus
+					}
+				/>
+			) : (
+				<TitleValue
+					title="Personstatus"
+					value={showLabel('personstatus', personstatus?.[0]?.status)}
+				/>
+			)}
 			<SkjermingVisning data={skjerming} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
