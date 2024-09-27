@@ -119,7 +119,7 @@
     "changeOrigin": true,
     "secure": false
   },
-  "/testnav-pensjon-testdata-facade-proxy/api": {
+  "/testnav-pensjon-testdata-facade-proxy/": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false

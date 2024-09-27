@@ -29,6 +29,7 @@ import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgiv
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
+import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -2047,6 +2048,31 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 				],
 			}
 			data.push(pensjonforvalterUforetrygd)
+		}
+
+		if (pensjonKriterier?.afpOffentlig) {
+			const afpOffentlig = pensjonKriterier.afpOffentlig
+
+			const pensjonforvalterAfpOffentlig = {
+				header: 'AFP Offentlig',
+				items: [
+					obj('Direktekall', afpOffentlig.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')),
+				],
+				itemRows: [],
+			}
+
+			afpOffentlig?.mocksvar?.forEach((mocksvar, i) => {
+				pensjonforvalterAfpOffentlig.itemRows.push([
+					{ numberHeader: `AFP offentlig ${i + 1}` },
+					obj('TP-ordning', showTpNavn(mocksvar.tpId)),
+					obj('Status AFP', showLabel('statusAfp', mocksvar.statusAfp)),
+					obj('Virkningsdato', formatDate(mocksvar.virkningsDato)),
+					obj('Sist benyttet G', mocksvar.sistBenyttetG),
+					obj('Antall beløp', mocksvar.belopsListe?.length),
+				])
+			})
+
+			data.push(pensjonforvalterAfpOffentlig)
 		}
 	}
 }
