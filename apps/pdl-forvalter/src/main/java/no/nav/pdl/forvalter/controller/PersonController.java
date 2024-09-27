@@ -160,9 +160,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/foedested/{id}")
     @Operation(description = "Slett angitt foedested for person")
     public void deleteFoedested(@Parameter(description = "Ident for testperson")
-                              @PathVariable String ident,
-                              @Parameter(description = "id som identifiserer foedested")
-                              @PathVariable Integer id) {
+                                @PathVariable String ident,
+                                @Parameter(description = "id som identifiserer foedested")
+                                @PathVariable Integer id) {
 
         artifactDeleteService.deleteFoedested(ident, id);
     }
@@ -170,9 +170,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/foedselsdato/{id}")
     @Operation(description = "Slett angitt foedselsdato for person")
     public void deleteFoedselsdato(@Parameter(description = "Ident for testperson")
-                              @PathVariable String ident,
-                              @Parameter(description = "id som identifiserer foedselsdato")
-                              @PathVariable Integer id) {
+                                   @PathVariable String ident,
+                                   @Parameter(description = "id som identifiserer foedselsdato")
+                                   @PathVariable Integer id) {
 
         artifactDeleteService.deleteFoedselsdato(ident, id);
     }
@@ -648,16 +648,6 @@ public class PersonController {
                                    @RequestBody List<TelefonnummerDTO> telefonnumre) {
 
         artifactUpdateService.updateTelefonnummer(ident, telefonnumre);
-    }
-
-    @DeleteMapping(value = "/{ident}/fullmakt/{id}")
-    @Operation(description = "Slett angitt fullmakt for person")
-    public void deleteFullmakt(@Parameter(description = "Ident for testperson")
-                               @PathVariable String ident,
-                               @Parameter(description = "id som identifiserer fullmakt")
-                               @PathVariable Integer id) {
-
-        artifactDeleteService.deleteFullmakt(ident, id);
     }
 
     @PutMapping(value = "/{ident}/fullmakt/{id}")

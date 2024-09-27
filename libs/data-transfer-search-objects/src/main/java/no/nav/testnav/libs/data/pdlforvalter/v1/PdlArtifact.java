@@ -16,7 +16,6 @@ public enum PdlArtifact {
     PDL_FOLKEREGISTER_PERSONSTATUS("FolkeregisterPersonstatus"),
     PDL_FORELDREANSVAR("Foreldreansvar"),
     PDL_FORELDRE_BARN_RELASJON("ForelderBarnRelasjon"),
-    PDL_FULLMAKT("Fullmakt"),
     PDL_INNFLYTTING("Innflytting"),
     PDL_KJOENN("Kjoenn"),
     PDL_KONTAKTADRESSE("Kontaktadresse"),
