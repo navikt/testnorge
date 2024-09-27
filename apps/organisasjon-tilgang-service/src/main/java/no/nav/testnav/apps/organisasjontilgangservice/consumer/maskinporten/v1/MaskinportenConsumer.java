@@ -33,9 +33,9 @@ public class MaskinportenConsumer {
     private final MaskinportenConfig maskinportenConfig;
     private final Mono<AccessToken> accessToken;
 
-    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig) {
+    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig, WebClient.Builder webClientBuilder) {
 
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .build();
 
         this.maskinportenConfig = maskinportenConfig;

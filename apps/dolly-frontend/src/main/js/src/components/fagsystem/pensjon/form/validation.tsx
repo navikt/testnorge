@@ -6,6 +6,7 @@ import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/For
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
 import { getYear } from 'date-fns'
+import { AfpOffentligForm } from '@/components/fagsystem/afpOffentlig/form/Form'
 
 function calculate_age(dob) {
 	const diff_ms = Date.now() - dob.getTime()
@@ -224,6 +225,7 @@ export const validation = {
 			...TjenestepensjonForm.validation,
 			...AlderspensjonForm.validation,
 			...UforetrygdForm.validation,
+			...AfpOffentligForm.validation,
 		}),
 	),
 }

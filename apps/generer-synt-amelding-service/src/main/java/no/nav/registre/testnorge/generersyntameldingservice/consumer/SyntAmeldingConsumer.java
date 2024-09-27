@@ -22,11 +22,12 @@ public class SyntAmeldingConsumer {
     private final TokenExchange tokenExchange;
 
     public SyntAmeldingConsumer(TokenExchange tokenExchange,
-                                Consumers consumers) {
+                                Consumers consumers,
+                                WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getSyntAmelding();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(
                         ExchangeStrategies
                                 .builder()

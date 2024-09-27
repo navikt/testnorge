@@ -80,6 +80,20 @@ export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) => {
 	)
 }
 
+export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = null) => {
+	return Promise.allSettled(
+		miljoUrlListe.map((obj) =>
+			fetcher(obj.url, headers)
+				.then((result) => {
+					return { miljo: obj.miljo, data: result }
+				})
+				.catch((feil) => {
+					return { miljo: obj.miljo, feil: feil }
+				}),
+		),
+	).then((liste) => liste?.map((item) => item?.value))
+}
+
 export const multiFetcherDokarkiv = (miljoUrlListe) =>
 	Promise.all(
 		miljoUrlListe?.map((obj) =>

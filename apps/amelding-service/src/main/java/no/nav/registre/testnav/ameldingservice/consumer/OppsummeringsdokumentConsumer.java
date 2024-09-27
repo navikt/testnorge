@@ -30,10 +30,11 @@ public class OppsummeringsdokumentConsumer {
     public OppsummeringsdokumentConsumer(
             Consumers consumers,
             ObjectMapper objectMapper,
-            ApplicationProperties applicationProperties) {
+            ApplicationProperties applicationProperties,
+            WebClient.Builder webClientBuilder) {
+
         this.applicationProperties = applicationProperties;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(consumers.getOppsummeringsdokumentService().getUrl())
                 .codecs(
                         clientDefaultCodecsConfigurer -> {

@@ -13,7 +13,6 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.BufferedReader;
@@ -40,10 +39,10 @@ public class PdlProxyConsumer {
 
     public PdlProxyConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder) {
         serverProperties = consumers.getPdlApiProxy();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
@@ -57,7 +56,7 @@ public class PdlProxyConsumer {
                     .flatMap(accessToken -> new GetPdlPersonCommand(ident, query, accessToken.getTokenValue(), webClient).call())
                     .block();
             if (nonNull(response) && nonNull(response.getErrors()) && !response.getErrors().isEmpty()) {
-                log.error("Klarte ikke hente pdlperson: " + response.getErrors().get(0).getMessage());
+                log.error("Klarte ikke hente pdlperson: " + response.getErrors().getFirst().getMessage());
                 return null;
             }
             return response;

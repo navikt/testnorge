@@ -486,6 +486,15 @@ const selectOptions = {
 
 	tpOrdninger: [],
 
+	//AFP
+	statusAfp: [
+		{ value: 'UKJENT', label: 'Ukjent' },
+		{ value: 'INNVILGET', label: 'Innvilget' },
+		{ value: 'SOKT', label: 'Søkt' },
+		{ value: 'AVSLAG', label: 'Avslag' },
+		{ value: 'IKKE_SOKT', label: 'Ikke søkt' },
+	],
+
 	// PDL vergemaal:
 	pdlVergemaalType: [
 		{ value: 'ensligMindreaarigAsylsoeker', label: 'Enslig mindreårig asylsøker' },

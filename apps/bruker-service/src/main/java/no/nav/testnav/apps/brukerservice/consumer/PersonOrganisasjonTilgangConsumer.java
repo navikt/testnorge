@@ -23,7 +23,8 @@ public class PersonOrganisasjonTilgangConsumer {
     public PersonOrganisasjonTilgangConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder) {
         serverProperties = consumers.getTestnavPersonOrganisasjonTilgangService();
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies
@@ -36,8 +37,7 @@ public class PersonOrganisasjonTilgangConsumer {
                                     .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                         })
                 .build();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();
