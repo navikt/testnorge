@@ -121,7 +121,7 @@ export const PdlPersonForm = ({
 							(opts?.antall > 1 && 'Valg er kun tilgjengelig for individ, ikke for gruppe') || ''
 						}
 					>
-						{type === PersonType.EKSISTERENDE_PERSON && (
+						{(type === PersonType.EKSISTERENDE_PERSON || isTestnorgeIdent) && (
 							<PdlEksisterendePerson
 								nyPersonPath={nyPersonPath}
 								eksisterendePersonPath={eksisterendePersonPath}

@@ -108,6 +108,7 @@ export default ({
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	const erLaast = gruppe.erLaast
+
 	return (
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppeId={gruppe.id} />

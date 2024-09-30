@@ -39,7 +39,7 @@ public final class BestillingPdlOrdreStatusMapper {
         bestProgress.forEach(progress -> {
             if (isNotBlank(progress.getPdlOrdreStatus()) && isNotBlank(progress.getIdent())) {
 
-                if (progress.getPdlOrdreStatus().contains("PDL_")) {
+                if (progress.getPdlOrdreStatus().contains("PDL_") || progress.getPdlOrdreStatus().contains("\"ordrer\":[]")) {
                     extractStatus(meldingIdents, progress, objectMapper);
 
                 } else {
