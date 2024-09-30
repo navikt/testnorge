@@ -15,7 +15,6 @@ export const initialForenkletOppgjoersordningOrg = {
 		yrke: '',
 	},
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
-	navArbeidsforholdPeriode: null,
 }
 
 export const initialForenkletOppgjoersordningPers = {
@@ -32,7 +31,6 @@ export const initialForenkletOppgjoersordningPers = {
 		yrke: '',
 	},
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
-	navArbeidsforholdPeriode: null,
 }
 
 export const initialArbeidsforholdOrg = {
@@ -55,7 +53,6 @@ export const initialArbeidsforholdOrg = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
-	navArbeidsforholdPeriode: undefined,
 	antallTimerForTimeloennet: [],
 	utenlandsopphold: [],
 	permisjon: [],
@@ -82,7 +79,6 @@ export const initialArbeidsforholdPers = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
-	navArbeidsforholdPeriode: null,
 }
 
 export const initialPeriode = {

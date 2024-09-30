@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -23,34 +23,73 @@ import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import _ from 'lodash'
-import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
 
-type Arbeidsforhold = {
-	isOppdatering?: boolean
-	type?: string
-	ansettelsesPeriode?: Ansettelsesperiode
-	antallTimerForTimeloennet?: Array<unknown>
-	arbeidsavtaler?: Array<unknown>
-	arbeidsgiver?: ArbeidsgiverProps
-	fartoy?: any
-	permisjonPermitteringer?: Array<unknown>
-	utenlandsopphold?: Array<unknown>
-	arbeidsforholdId?: string
-	navArbeidsforholdPeriode?: Date
-}
+export const hentStoersteArregdata = () => {
+	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	if (_.isEmpty(personFoerLeggTil?.aareg)) {
+		return null
+	}
 
-type ArbeidsgiverProps = {
-	type?: string
-	orgnummer?: string
-	offentligIdent?: string
-}
+	let stoersteAaregdata: any = []
+	personFoerLeggTil?.aareg?.forEach((aareg: any) => {
+		if (aareg.data?.length > stoersteAaregdata.length) {
+			stoersteAaregdata = aareg?.data
+		}
+	})
 
-type Ansettelsesperiode = {
-	fom?: string
-	tom?: string
-	sluttaarsak?: string
+	stoersteAaregdata.sort((a: any, b: any) => a.arbeidsforholdId.localeCompare(b.arbeidsforholdId))
+
+	let copy = structuredClone(stoersteAaregdata)
+
+	copy.forEach((aareg: any) => {
+		aareg.arbeidsgiver['orgnummer'] = aareg?.arbeidsgiver?.organisasjonsnummer
+		aareg.arbeidsgiver['aktoertype'] = aareg.arbeidsgiver?.type === 'Organisasjon' ? 'ORG' : 'PERS'
+		aareg.arbeidsgiver['ident'] = aareg?.arbeidsgiver?.offentligIdent
+		aareg['arbeidsforholdstype'] = aareg.type
+		aareg['arbeidsavtale'] = aareg.arbeidsavtaler?.[0]
+		aareg.arbeidsavtale['avtaltArbeidstimerPerUke'] = Number(
+			aareg.arbeidsavtaler?.[0]?.antallTimerPrUke,
+		)
+		aareg['arbeidsavtaler'] = undefined
+		aareg['ansettelsesPeriode'] = {}
+		aareg.ansettelsesPeriode['fom'] = aareg.ansettelsesperiode?.periode?.fom
+		aareg.ansettelsesPeriode['tom'] = aareg.ansettelsesperiode?.periode?.tom
+		aareg.ansettelsesPeriode['sluttaarsak'] = aareg.ansettelsesperiode?.sluttaarsak
+		aareg.ansettelsesperiode = undefined
+		if (aareg.utenlandsopphold) {
+			aareg.utenlandsopphold.forEach((opphold: any) => (opphold['land'] = opphold.landkode))
+		}
+		if (aareg.type === 'maritimtArbeidsforhold') {
+			aareg['fartoy'] = []
+			aareg.fartoy.push({
+				fartsomraade: aareg.arbeidsavtale?.fartsomraade,
+				skipsregister: aareg.arbeidsavtale.skipsregister,
+				skipstype: aareg.arbeidsavtale?.skipstype,
+			})
+		}
+		aareg['permisjon'] = []
+		aareg['permittering'] = []
+		if (aareg.permisjonPermitteringer) {
+			aareg.permisjonPermitteringer.forEach((permisjonPermittering: any) => {
+				if (permisjonPermittering.type === 'permittering') {
+					aareg.permittering.push({
+						permitteringsPeriode: permisjonPermittering.periode,
+						permitteringsprosent: permisjonPermittering.prosent,
+					})
+				} else {
+					aareg.permisjon.push({
+						permisjonsPeriode: permisjonPermittering.periode,
+						permisjonsprosent: permisjonPermittering.prosent,
+						permisjon: permisjonPermittering.type,
+					})
+				}
+			})
+		}
+	})
+
+	return copy
 }
 
 export const ArbeidsforholdForm = ({
@@ -61,83 +100,6 @@ export const ArbeidsforholdForm = ({
 	arbeidsgiverType,
 	warningMessage,
 }) => {
-	const hentUnikeAaregBestillinger = (bestillinger) => {
-		if (_.isEmpty(bestillinger) || ameldingIndex) {
-			return null
-		}
-
-		const aaregBestillinger = bestillinger
-			?.filter((bestilling) => bestilling?.data?.aareg)
-			?.flatMap((bestilling) => bestilling.data?.aareg)
-			?.filter((bestilling) => _.isEmpty(bestilling?.amelding))
-
-		return _.uniqWith(
-			aaregBestillinger,
-			(best1: Arbeidsforhold, best2) =>
-				best1?.arbeidsgiver?.orgnummer === best2?.arbeidsgiver?.orgnummer,
-		)
-	}
-
-	const hentStoersteArregdata = () => {
-		const { personFoerLeggTil } = useContext(BestillingsveilederContext)
-		if (_.isEmpty(personFoerLeggTil?.aareg) || ameldingIndex) {
-			return null
-		}
-
-		let stoersteAaregdata: any = []
-		personFoerLeggTil?.aareg?.forEach((aareg: any) => {
-			if (aareg.data?.length > stoersteAaregdata.length) {
-				stoersteAaregdata = aareg?.data
-			}
-		})
-
-		stoersteAaregdata.sort((a: any, b: any) => a.arbeidsforholdId.localeCompare(b.arbeidsforholdId))
-
-		let copy = structuredClone(stoersteAaregdata)
-
-		copy.forEach((aareg: any) => {
-			aareg.arbeidsgiver['orgnummer'] = aareg?.arbeidsgiver?.organisasjonsnummer
-			aareg.arbeidsgiver['aktoertype'] =
-				aareg.arbeidsgiver?.type === 'Organisasjon' ? 'ORG' : 'PERS'
-			aareg.arbeidsgiver['ident'] = aareg?.arbeidsgiver?.offentligIdent
-			aareg['arbeidsforholdstype'] = aareg.type
-			aareg['arbeidsavtale'] = aareg.arbeidsavtaler?.[0]
-			aareg.arbeidsavtale['avtaltArbeidstimerPerUke'] = Number(
-				aareg.arbeidsavtaler?.[0]?.antallTimerPrUke,
-			)
-			aareg['arbeidsavtaler'] = undefined
-			aareg['ansettelsesPeriode'] = {}
-			aareg.ansettelsesPeriode['fom'] = aareg.ansettelsesperiode?.periode?.fom
-			aareg.ansettelsesPeriode['tom'] = aareg.ansettelsesperiode?.periode?.tom
-			aareg.ansettelsesPeriode['sluttaarsak'] = aareg.ansettelsesperiode?.sluttaarsak
-			aareg.ansettelsesperiode = undefined
-			// aareg['navArbeidsforholdPeriode'] = {}
-			if (aareg.utenlandsopphold) {
-				aareg.utenlandsopphold.forEach((opphold: any) => (opphold['land'] = opphold.landkode))
-			}
-			aareg['permisjon'] = []
-			aareg['permittering'] = []
-			if (aareg.permisjonPermitteringer) {
-				aareg.permisjonPermitteringer.forEach((permisjonPermittering: any) => {
-					if (permisjonPermittering.type === 'permittering') {
-						aareg.permittering.push({
-							permitteringsPeriode: permisjonPermittering.periode,
-							permitteringsprosent: permisjonPermittering.prosent,
-						})
-					} else {
-						aareg.permisjon.push({
-							permisjonsPeriode: permisjonPermittering.periode,
-							permisjonsprosent: permisjonPermittering.prosent,
-							permisjon: permisjonPermittering.type,
-						})
-					}
-				})
-			}
-		})
-
-		return copy
-	}
-
 	const harGjortFormEndringer = () => {
 		if (watch('aareg').length > 1) {
 			return true
@@ -148,22 +110,10 @@ export const ArbeidsforholdForm = ({
 		)
 	}
 
-	const { setError, watch, control, getValues, setValue, trigger, resetField } = useFormContext()
-	const eksisterendeArbeidsforholdPeriode = watch(`${path}.navArbeidsforholdPeriode`)
-	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(
-		eksisterendeArbeidsforholdPeriode
-			? new Date(
-					eksisterendeArbeidsforholdPeriode.year,
-					eksisterendeArbeidsforholdPeriode.monthValue,
-				)
-			: null,
-	)
-	const { tidligereBestillinger }: any = useContext(BestillingsveilederContext)
-	// const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
+	const { setError, watch, getValues, setValue, trigger } = useFormContext()
 
-	console.log('tideligereAaregBestillinger', hentUnikeAaregBestillinger(tidligereBestillinger))
 	const tidligereAaregdata = hentStoersteArregdata()
-	console.log('tidligereAaregdata', tidligereAaregdata)
+
 	const erLaastArbeidsforhold = arbeidsforholdIndex < tidligereAaregdata?.length
 
 	useEffect(() => {
@@ -274,19 +224,6 @@ export const ArbeidsforholdForm = ({
 		}
 	}
 
-	useEffect(() => {
-		setValue(
-			`${path}.navArbeidsforholdPeriode`,
-			navArbeidsforholdPeriode
-				? {
-						year: navArbeidsforholdPeriode.getFullYear(),
-						monthValue: navArbeidsforholdPeriode.getMonth(),
-					}
-				: undefined,
-		)
-		trigger()
-	}, [navArbeidsforholdPeriode])
-
 	const checkAktiveArbeidsforhold = () => {
 		const aaregValues = getValues('aareg')
 		const aktiveArbeidsforhold = aaregValues.map((arbeidsforhold) => {
@@ -375,14 +312,6 @@ export const ArbeidsforholdForm = ({
 					size="xlarge"
 					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
 					isDisabled={!_.get(getValues(), `${path}.ansettelsesPeriode.tom`)}
-				/>
-				<Monthpicker
-					name={`${path}.navArbeidsforholdPeriode`}
-					date={navArbeidsforholdPeriode}
-					label="NAV arbeidsforholdsperiode"
-					onChange={setNavArbeidsforholdPeriode}
-					value={navArbeidsforholdPeriode}
-					isClearable={true}
 				/>
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<FormSelect

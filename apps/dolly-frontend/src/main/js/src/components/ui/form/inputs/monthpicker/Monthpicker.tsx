@@ -26,19 +26,9 @@ export const Monthpicker = ({
 	minDate = null,
 	maxDate = null,
 	placeholder = null,
-	...props
 }: MonthpickerProps) => {
 	const formMethods = useFormContext()
-	const val = formMethods.watch(name)
-
-	function getEksisterendeVerdi() {
-		if (name.includes('navArbeidsforholdPeriode')) {
-			return val?.year ? new Date(val?.year, val?.monthValue) : null
-		}
-		return val
-	}
-
-	const eksisterendeVerdi = getEksisterendeVerdi()
+	const eksisterendeVerdi = formMethods.watch(name)
 
 	const formattedDate =
 		eksisterendeVerdi instanceof Date
