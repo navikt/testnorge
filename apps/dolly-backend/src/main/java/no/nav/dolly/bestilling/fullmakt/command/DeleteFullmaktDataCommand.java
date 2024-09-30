@@ -17,7 +17,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
@@ -39,7 +38,7 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<ResponseEntity<V
                         .build(fullmaktId))
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HEADER_NAV_PERSON_IDENT, ident)
+                .header("fnr", ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
