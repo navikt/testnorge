@@ -26,6 +26,7 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(throwable -> log.error("Feil ved henting av fakedings token i fullmakt-proxy", throwable));
+                .doOnError(throwable -> log.error("Feil ved henting av fakedings token i fullmakt-proxy", throwable))
+                .doOnSuccess(response -> log.info("Hentet fakedings token i fullmakt-proxy: {}", response));
     }
 }
