@@ -3,7 +3,7 @@ name: db-organisasjon-forvalter
 on:
   push:
     paths:
-      - "apps/dolly-db/**"
+      - "apps/dolly-db/db.organisasjon.forvalter.yml"
       - ".github/workflows/db.organisasjon-forvalter.yml"
 
 jobs:

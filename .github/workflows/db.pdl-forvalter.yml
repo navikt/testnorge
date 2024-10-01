@@ -3,7 +3,7 @@ name: db-pdl-forvalter
 on:
   push:
     paths:
-      - "apps/dolly-db/**"
+      - "apps/dolly-db/db.pdl-forvalter.yml"
       - ".github/workflows/db.pdl-forvalter.yml"
 
 jobs:
