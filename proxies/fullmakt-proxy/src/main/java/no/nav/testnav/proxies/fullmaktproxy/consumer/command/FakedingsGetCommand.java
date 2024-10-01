@@ -22,10 +22,12 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
                 .uri(uriBuilder -> uriBuilder.path(FAKEDINGS_URL)
                         .queryParam("pid", ident)
                         .queryParam("aud", "dev-fss:pdl:pdl-fullmakt")
+                        .queryParam("idp", "https://test.idporten.no")
                         .queryParam("acr", "Level4")
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(throwable -> log.error("Feil ved henting av fakedings token i fullmakt-proxy", throwable));
+                .doOnError(throwable -> log.error("Feil ved henting av fakedings token i fullmakt-proxy", throwable))
+                .doOnSuccess(response -> log.info("Fakedings token hentet: {}", response));
     }
 }
