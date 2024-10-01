@@ -52,7 +52,7 @@ public class WebClientConfig {
                                             .option(EpollChannelOption.TCP_KEEPIDLE, 300)
                                             .option(EpollChannelOption.TCP_KEEPINTVL, 60)
                                             .option(EpollChannelOption.TCP_KEEPCNT, 8)
-                                            .responseTimeout(Duration.ofSeconds(5))
+                                            .responseTimeout(Duration.ofSeconds(10))
                             ));
 
         } catch (NoSuchBeanDefinitionException e) {

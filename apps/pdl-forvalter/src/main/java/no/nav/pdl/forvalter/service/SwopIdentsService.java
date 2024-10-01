@@ -70,6 +70,7 @@ public class SwopIdentsService {
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
         person1.getPerson().setAdressebeskyttelse(person2.getPerson().getAdressebeskyttelse());
         person1.getPerson().setNavPersonIdentifikator(person2.getPerson().getNavPersonIdentifikator());
+        person1.getPerson().setFolkeregisterPersonstatus(person2.getPerson().getFolkeregisterPersonstatus());
 
         if (person1.getPerson().isStrengtFortrolig() || person2.getPerson().isStrengtFortrolig()) {
             person1.getPerson().setBostedsadresse(null);
