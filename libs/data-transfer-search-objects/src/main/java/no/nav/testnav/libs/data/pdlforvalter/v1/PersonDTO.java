@@ -8,10 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
@@ -265,7 +269,7 @@ public class PersonDTO implements Serializable {
     }
 
     public List<NavPersonIdentifikatorDTO> getNavPersonIdentifikator() {
-        if(isNull(navPersonIdentifikator)) {
+        if (isNull(navPersonIdentifikator)) {
             navPersonIdentifikator = new ArrayList<>();
         }
         return navPersonIdentifikator;
@@ -295,5 +299,23 @@ public class PersonDTO implements Serializable {
     public boolean isStandalone() {
 
         return isTrue(standalone);
+    }
+
+    @JsonIgnore
+    public boolean isNotChanged() {
+
+        return Arrays.stream(this.getClass().getMethods())
+                .filter(method -> method.getName().startsWith("get"))
+                .filter(method -> method.getReturnType().equals(List.class))
+                .map(method -> {
+                    try {
+                        return method.invoke(this);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        return emptyList();
+                    }
+                })
+                .map(result -> (List<? extends DbVersjonDTO>) result)
+                .flatMap(Collection::stream)
+                .noneMatch(entity -> isTrue(entity.getIsNew()));
     }
 }
