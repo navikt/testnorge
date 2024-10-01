@@ -20,7 +20,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
@@ -236,10 +235,6 @@ public class PersonService {
         }
         if (request.getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isUgift)) {
             request.getPerson().getSivilstand().addFirst(new SivilstandDTO());
-        }
-        if (request.getPerson().getFolkeregisterPersonstatus().isEmpty() &&
-                Identtype.NPID != getIdenttype(request.getPerson().getIdent())) {
-            request.getPerson().getFolkeregisterPersonstatus().add(new FolkeregisterPersonstatusDTO());
         }
         if (Identtype.NPID == getIdenttype(request.getPerson().getIdent())) {
             request.getPerson().getNavPersonIdentifikator().add(new NavPersonIdentifikatorDTO());
