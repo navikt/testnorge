@@ -34,6 +34,10 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnError(throwable -> log.error("Feil ved henting av fakedings token i fullmakt-proxy", throwable))
-                .doOnSuccess(response -> log.info("Fakedings token hentet: {}", response));
+                .doOnSuccess(response -> {
+                    if (Integer.parseInt(ident.substring(2, 3)) >= 4) {
+                        log.info("Fakedings token hentet for syntetisk ident: {}", response);
+                    }
+                });
     }
 }
