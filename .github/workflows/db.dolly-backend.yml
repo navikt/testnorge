@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/dolly-db"
-      nais-manifest: "dolly-backend.yml"
+      nais-manifest: "db.dolly-backend.yml"
       deploy-tag: "#db-dolly-db"
       force-deploy: true # TODO: To be removed.
       sonar-enabled: false

@@ -1,4 +1,4 @@
-name: db-dolly-backend
+name: db-pdl-forvalter
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/dolly-db"
-      nais-manifest: "pdl-forvalter.yml"
+      nais-manifest: "db.pdl-forvalter.yml"
       deploy-tag: "#db-dolly-db"
       force-deploy: true # TODO: To be removed.
       sonar-enabled: false
