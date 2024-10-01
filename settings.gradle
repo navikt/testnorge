@@ -79,6 +79,7 @@ includeBuild './apps/brreg-stub'
 includeBuild './apps/bruker-service'
 includeBuild './apps/budpro-service'
 includeBuild './apps/dolly-backend'
+includeBuild "./apps/dolly-db"
 includeBuild './apps/dolly-frontend'
 includeBuild './apps/dollystatus'
 includeBuild './apps/endringsmelding-frontend'

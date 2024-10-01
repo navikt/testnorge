@@ -1,0 +1,19 @@
+name: budpro-service
+
+on:
+  push:
+    paths:
+      - "plugins/**"
+      - "apps/db-dolly-backend/**"
+      - ".github/workflows/app.dolly-db.yml"
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/dolly-db"
+      deploy-tag: "#db-dolly-db"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
