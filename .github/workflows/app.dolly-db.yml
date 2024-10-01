@@ -13,6 +13,7 @@ jobs:
     with:
       working-directory: "apps/dolly-db"
       deploy-tag: "#db-dolly-db"
+      sonar-enabled: false
     permissions:
       contents: read
       id-token: write
