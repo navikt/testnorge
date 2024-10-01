@@ -24,6 +24,8 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
                         .queryParam("aud", "dev-fss:pdl:pdl-fullmakt")
                         .queryParam("idp", "https://test.idporten.no")
                         .queryParam("iss", "https://fakedings.intern.dev.nav.no/fake")
+                        .queryParam("client_id", "dev-fss:dolly:testnav-fullmakt-proxy")
+                        .queryParam("scope", "openid")
                         .queryParam("acr", "Level4")
                         .build())
                 .retrieve()
