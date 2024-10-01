@@ -1,11 +1,11 @@
-name: dolly-db
+name: db-dolly-backend
 
 on:
-  push:
-    paths:
-      - "plugins/**"
-      - "apps/db-dolly-backend/**"
-      - ".github/workflows/db.dolly-backend.yml"
+#  push:
+#    paths:
+#      - "plugins/**"
+#      - "apps/db-dolly-backend/**"
+#      - ".github/workflows/db.dolly-backend.yml"
   workflow_dispatch:
     inputs:
       deploy:
