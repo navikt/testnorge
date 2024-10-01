@@ -2,7 +2,6 @@ package no.nav.testnav.proxies.fullmaktproxy;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.proxies.fullmaktproxy.config.Consumers;
 import no.nav.testnav.proxies.fullmaktproxy.config.LocalVaultConfig;
 import no.nav.testnav.proxies.fullmaktproxy.consumer.FakedingsConsumer;
@@ -30,8 +29,8 @@ public class FullmaktProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            Consumers consumers,
-                                           FakedingsConsumer fakedingsConsumer,
-                                           TokenXService tokenXService) {
+                                           FakedingsConsumer fakedingsConsumer
+    ) {
         return builder
                 .routes()
                 .route(createRoute(
@@ -39,7 +38,7 @@ public class FullmaktProxyApplicationStarter {
                                 .getFullmakt()
                                 .getUrl(),
                         AddAuthenticationRequestGatewayFilterFactory
-                                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService, consumers.getFullmakt())))
+                                .bearerIdportenHeaderFilter(fakedingsConsumer)))
                 .build();
     }
 
