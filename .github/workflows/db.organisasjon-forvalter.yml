@@ -1,0 +1,21 @@
+name: db-organisasjon-forvalter
+
+on:
+  push:
+    paths:
+      - "apps/dolly-db/**"
+      - ".github/workflows/db.organisasjon-forvalter.yml"
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/dolly-db"
+      nais-manifest: "db.organisasjon-forvalter.yml"
+      deploy-tag: "#db-dolly-db"
+      force-deploy: true # TODO: To be removed.
+      sonar-enabled: false
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
