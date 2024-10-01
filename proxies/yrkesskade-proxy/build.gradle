@@ -1,0 +1,21 @@
+plugins {
+    id "dolly-proxies"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-yrkesskade-proxy"
+        property "sonar.projectName", "testnav-yrkesskade-proxy"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:vault"
+
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config.
+    implementation "org.springframework.cloud:spring-cloud-starter-vault-config"
+}

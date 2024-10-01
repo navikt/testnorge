@@ -45,6 +45,7 @@ includeBuild './proxies/sigrunstub-proxy'
 includeBuild './proxies/skjermingsregister-proxy'
 includeBuild './proxies/synthdata-meldekort-proxy'
 includeBuild './proxies/udistub-proxy'
+includeBuild './proxies/yrkesskade-proxy'
 
 includeBuild './libs/avro-schema'
 includeBuild './libs/commands'

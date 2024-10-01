@@ -1,0 +1,24 @@
+name: udistub-proxy
+
+on:
+  push:
+    paths:
+      - plugins/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - proxies/yrkesskade-proxy/**
+      - .github/workflows/proxy.yrkesskade-proxy.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      cluster: "dev-gcp"
+      working-directory: "proxies/yrkesskade-proxy"
+      deploy-tag: "#deploy-proxy-yrkesskade"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
