@@ -12,7 +12,7 @@ jobs:
     with:
       working-directory: "apps/dolly-db"
       nais-manifest: "db.dolly-backend.yml"
-      deploy-tag: "#db-dolly-db"
+      deploy-tag: "#db-dolly-backend"
       force-deploy: true # TODO: To be removed.
       sonar-enabled: false
     permissions:
