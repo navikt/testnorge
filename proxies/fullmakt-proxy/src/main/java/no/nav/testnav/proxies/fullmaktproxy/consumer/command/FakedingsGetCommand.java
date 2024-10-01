@@ -2,6 +2,7 @@ package no.nav.testnav.proxies.fullmaktproxy.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -19,7 +20,8 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
     public Mono<String> call() {
 
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(FAKEDINGS_URL)
+                .uri(uriBuilder -> uriBuilder
+                        .path(FAKEDINGS_URL)
                         .queryParam("pid", ident)
                         .queryParam("aud", "dev-fss:pdl:pdl-fullmakt")
                         .queryParam("sub", "123b1231-c123-1ecc-ab1e-1dc12c1a1dfa")
@@ -32,6 +34,7 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
                         .queryParam("scope", "openid")
                         .queryParam("acr", "Level4")
                         .build())
+                .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnError(throwable -> log.error("Feil ved henting av fakedings token i fullmakt-proxy", throwable))
