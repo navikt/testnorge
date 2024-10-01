@@ -1,4 +1,4 @@
-name: budpro-service
+name: dolly-db
 
 on:
   push:
