@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: "dolly-db"
+  name: "db-dolly-backend"
   namespace: "dolly"
   labels:
     "team": "dolly"
@@ -19,10 +19,6 @@ spec:
     sqlInstances:
       - type: POSTGRES_15
         tier: db-custom-2-7680
-        databases:
-          - name: dolly-test
-          - name: organisasjon-forvalter-test
-          - name: pdl-forvalter-test
   image: "{{image}}"
   ingresses:
     - "https://dolly-db.intern.dev.nav.no"

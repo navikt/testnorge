@@ -5,13 +5,14 @@ on:
     paths:
       - "plugins/**"
       - "apps/db-dolly-backend/**"
-      - ".github/workflows/app.dolly-db.yml"
+      - ".github/workflows/db.dolly-backend.yml"
 
 jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/dolly-db"
+      nais-manifest: "dolly-backend.yml"
       deploy-tag: "#db-dolly-db"
       sonar-enabled: false
     permissions:
