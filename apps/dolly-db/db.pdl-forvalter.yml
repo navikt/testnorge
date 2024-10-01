@@ -10,6 +10,8 @@ spec:
     sqlInstances:
       - type: POSTGRES_15
         tier: db-custom-1-3840
+        databases:
+          - name: db-pdl-forvalter
   image: "{{image}}"
   liveness:
     path: "/internal/health/liveness"

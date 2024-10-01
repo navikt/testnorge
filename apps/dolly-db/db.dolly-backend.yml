@@ -19,6 +19,8 @@ spec:
     sqlInstances:
       - type: POSTGRES_15
         tier: db-custom-2-7680
+        databases:
+          - name: db-dolly-backend
   image: "{{image}}"
   ingresses:
     - "https://dolly-db.intern.dev.nav.no"
