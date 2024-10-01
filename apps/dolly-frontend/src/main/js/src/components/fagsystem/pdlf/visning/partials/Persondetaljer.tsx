@@ -89,7 +89,7 @@ const PersondetaljerLes = ({
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
 			<SkjermingVisning data={skjerming} />
-			<FullmaktVisning data={fullmakt} />
+			<FullmaktVisning ident={person?.ident} data={fullmakt} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
 	)

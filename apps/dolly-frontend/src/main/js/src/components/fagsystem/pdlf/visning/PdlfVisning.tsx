@@ -3,7 +3,6 @@ import { FalskIdentitet } from '@/components/fagsystem/pdlf/visning/partials/Fal
 import { KontaktinformasjonForDoedsbo } from '@/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Loading from '@/components/ui/loading/Loading'
-import { Fullmakt } from '@/components/fagsystem/pdlf/visning/partials/Fullmakt'
 import { Telefonnummer } from '@/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import { TilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
 import { Boadresse } from '@/components/fagsystem/pdlf/visning/partials/Boadresse'
@@ -116,13 +115,6 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 				/>
 				<Vergemaal
 					data={data?.person?.vergemaal}
-					tmpPersoner={tmpPdlforvalter}
-					ident={ident}
-					relasjoner={data?.relasjoner}
-					erRedigerbar={erRedigerbar}
-				/>
-				<Fullmakt
-					data={data?.person?.fullmakt}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					relasjoner={data?.relasjoner}

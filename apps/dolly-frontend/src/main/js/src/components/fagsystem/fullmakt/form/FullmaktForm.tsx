@@ -6,7 +6,6 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
-import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { validation } from '@/components/fagsystem/skjermingsregister/form/validation'
@@ -25,7 +24,6 @@ interface FullmaktProps {
 	path?: string
 	opts?: any
 	eksisterendeNyPerson?: any
-	omraadeKodeverk: Option[]
 }
 
 const alleHandlinger = ['LES', 'SKRIV', 'KOMMUNISER']
@@ -100,15 +98,19 @@ export const Fullmakt = ({
 	path,
 	opts,
 	eksisterendeNyPerson = null,
-	omraadeKodeverk,
 }: FullmaktProps) => {
 	const legacyFullmakt = formMethods.watch('pdldata.person.fullmakt')
+	const { omraadeKodeverk, loading } = useFullmaktOmraader()
 
 	useEffect(() => {
 		if (!hasUserInput(formMethods)) {
 			mapLegacyFullmaktTilNyFullmakt(legacyFullmakt, formMethods, omraadeKodeverk)
 		}
 	}, [])
+
+	if (loading) {
+		return <Loading label={'Laster områdekodeverk...'} />
+	}
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
 	const chosenTemaValues =
@@ -151,15 +153,12 @@ export const Fullmakt = ({
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
 			<PdlPersonExpander
+				path={path}
 				nyPersonPath={`${path}.nyFullmektig`}
 				eksisterendePersonPath={`${path}.motpartsPersonident`}
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
-				isExpanded={
-					isTestnorgeIdent ||
-					!isEmpty(formMethods.watch(`${path}.nyFullmektig`), ['syntetisk']) ||
-					formMethods.watch(`${path}.motpartsPersonident`) !== null
-				}
+				isExpanded={isTestnorgeIdent || formMethods.watch(`${path}.motpartsPersonident`) !== null}
 				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
@@ -171,14 +170,10 @@ export const Fullmakt = ({
 export const FullmaktForm = () => {
 	const formMethods = useFormContext()
 	const fullmaktValues = formMethods.watch('fullmakt')
-	const { omraadeKodeverk, loading } = useFullmaktOmraader()
 	const opts: any = useContext(BestillingsveilederContext)
+	const val = formMethods.watch(fullmaktAttributter)
 
-	if (loading) {
-		return <Loading label={'Laster områdekodeverk...'} />
-	}
-
-	if (!fullmaktValues || fullmaktValues?.length === 0) {
+	if ((!fullmaktValues || fullmaktValues?.length === 0) && val.some((v) => v)) {
 		formMethods.setValue('fullmakt', [initialFullmakt])
 	}
 
@@ -196,14 +191,7 @@ export const FullmaktForm = () => {
 					newEntry={initialFullmakt}
 					canBeEmpty={false}
 				>
-					{(path: string) => (
-						<Fullmakt
-							formMethods={formMethods}
-							path={path}
-							omraadeKodeverk={omraadeKodeverk}
-							opts={opts}
-						/>
-					)}
+					{(path: string) => <Fullmakt formMethods={formMethods} path={path} opts={opts} />}
 				</FormDollyFieldArray>
 			</Panel>
 		</Vis>

@@ -356,8 +356,6 @@ export const initialFullmakt = {
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
 	fullmektig: null as unknown as string,
-	kilde: 'Dolly',
-	master: 'PDL',
 }
 
 export const initialOpphold = {
