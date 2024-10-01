@@ -3,8 +3,7 @@ name: db-dolly-backend
 on:
   push:
     paths:
-      - "plugins/**"
-      - "apps/db-dolly-backend/**"
+      - "apps/dolly-db/**"
       - ".github/workflows/db.dolly-backend.yml"
 
 jobs:

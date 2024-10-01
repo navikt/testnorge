@@ -3,9 +3,8 @@ name: db-dolly-backend
 on:
   push:
     paths:
-      - "plugins/**"
-      - "apps/db-dolly-backend/**"
-      - ".github/workflows/pdl-forvalter.yml"
+      - "apps/dolly-db/**"
+      - ".github/workflows/db.pdl-forvalter.yml"
 
 jobs:
   workflow:
