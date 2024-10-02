@@ -8,6 +8,7 @@ type PersonstatusTypes = {
 }
 
 export const PersonstatusForm = ({ path }: PersonstatusTypes) => {
+	//TODO: Info om redigering av personstatus
 	return (
 		<>
 			<FormSelect
