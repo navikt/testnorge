@@ -14,6 +14,7 @@ import {
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { useFormContext } from 'react-hook-form'
+import { hentStoersteArregdata } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -24,18 +25,19 @@ const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
 export const ArbeidsforholdToggle = (): ReactElement => {
+	let aaregdata = hentStoersteArregdata()
+
 	const formMethods = useFormContext()
 	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
-
 	const getArbeidsgiverType = () => {
-		const orgnummer = formMethods.watch('aareg[0].arbeidsgiver.orgnummer')
-		if (formMethods.watch('aareg[0].amelding[0]') || formMethods.watch('aareg[0].arbeidsforhold')) {
+		const orgnr = aaregdata?.[0].arbeidsgiver?.orgnummer
+		if (aaregdata?.[0].amelding?.[0]) {
 			return ArbeidsgiverTyper.egen
-		} else if (formMethods.watch('aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
+		} else if (aaregdata?.[0].arbeidsgiver?.aktoertype === 'PERS') {
 			return ArbeidsgiverTyper.privat
 		} else if (
-			!orgnummer ||
-			organisasjoner.map((organisasjon) => organisasjon.orgnummer).some((org) => org === orgnummer)
+			!orgnr ||
+			organisasjoner.map((organisasjon) => organisasjon.orgnummer).some((org) => org === orgnr)
 		) {
 			return ArbeidsgiverTyper.felles
 		} else {
@@ -66,6 +68,7 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
+
 		if (value === ArbeidsgiverTyper.privat) {
 			formMethods.resetField('aareg', { defaultValue: [initialAaregPers] })
 		} else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
@@ -87,17 +90,19 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 
 	return (
 		<div className="toggle--wrapper">
-			<ToggleArbeidsgiver
-				onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
-				value={typeArbeidsgiver}
-				size={'small'}
-			>
-				{toggleValues.map((type) => (
-					<ToggleGroup.Item key={type.value} value={type.value}>
-						{type.label}
-					</ToggleGroup.Item>
-				))}
-			</ToggleArbeidsgiver>
+			{!aaregdata?.[0].arbeidsgiver?.orgnummer && !aaregdata?.[0].arbeidsgiver?.ident && (
+				<ToggleArbeidsgiver
+					onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
+					value={typeArbeidsgiver}
+					size={'small'}
+				>
+					{toggleValues.map((type) => (
+						<ToggleGroup.Item key={type.value} value={type.value}>
+							{type.label}
+						</ToggleGroup.Item>
+					))}
+				</ToggleArbeidsgiver>
+			)}
 			{typeArbeidsgiver === ArbeidsgiverTyper.egen ? (
 				<>
 					{
@@ -112,8 +117,8 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 						header="Arbeidsforhold"
 						newEntry={
 							typeArbeidsgiver === ArbeidsgiverTyper.privat
-								? { ...initialArbeidsforholdPers, arbeidsforholdstype: '' }
-								: { ...initialArbeidsforholdOrg, arbeidsforholdstype: '' }
+								? { ...initialArbeidsforholdPers, arbeidsforholdstype: 'ordinaertArbeidsforhold' }
+								: { ...initialArbeidsforholdOrg, arbeidsforholdstype: 'ordinaertArbeidsforhold' }
 						}
 						canBeEmpty={false}
 					>

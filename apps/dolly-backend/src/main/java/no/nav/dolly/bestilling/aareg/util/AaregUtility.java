@@ -43,6 +43,12 @@ public class AaregUtility {
                                         .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold))
                                 && (isTrue(arbeidsforhold.getIsOppdatering()) || !isOpprettEndre))
                         .toList())
+                .ubestemmeligArbeidsforhold(request.stream()
+                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
+                                .filter(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold) &&
+                                        isNull(arbeidsforhold.getArbeidsforholdId()) && !isOpprettEndre)
+                                .count() > 1L)
+                        .toList())
                 .build();
     }
 
