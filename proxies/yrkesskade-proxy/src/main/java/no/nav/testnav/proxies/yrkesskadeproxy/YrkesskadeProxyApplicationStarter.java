@@ -29,20 +29,20 @@ public class YrkesskadeProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-                                           GatewayFilter authenticationFilter,
+                                           GatewayFilter trygdeetatenAuthenticationFilter,
                                            Consumers consumers) {
 
         return builder
                 .routes()
                 .route(spec -> spec
                         .path("/**")
-                        .filters(f -> f.filter(authenticationFilter))
+                        .filters(f -> f.filter(trygdeetatenAuthenticationFilter))
                         .uri(consumers.getYrkesskade().getUrl()))
                 .build();
     }
 
     @Bean
-    GatewayFilter getAuthenticationFilter(
+    GatewayFilter trygdeetatenAuthenticationFilter(
             TrygdeetatenAzureAdTokenService tokenService,
             Consumers consumers) {
 
