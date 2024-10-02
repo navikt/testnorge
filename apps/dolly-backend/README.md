@@ -22,34 +22,20 @@ https://dolly.ekstern.dev.nav.no/swagger-ui.html
 https://dolly-backend.intern.dev.nav.no/swagger-ui.html
 
 ## Kjør lokalt
-
-https://dolly-backend.intern.dev.nav.no/swagger-ui.html
-
-1. `naisdevice` må kjøre og være grønn.
-2. Vault token må enten hentes manuelt fra [Vault](https://vault.adeo.no/) og settes ved kjøring som VM option `-Dspring.cloud.vault.token=<TOKEN>` eller så må du være logget inn med Vault CLI slik at token kan hentes med `vault print token` før applikasjonen kjører.
-
-Så kjør `./gradlew clean build`
-
-Deretter kan DollyBackendApplicationStarter startes med disse VM options:
-
+* Applikasjonen er avhengig av Vault, se [egen dokumentasjon](../../docs/local_vault.md).
+* Applikasjonen er avhengig av en database i GCP, se [egen dokumentasjon](../../docs/gcp_db.md).
+* Applikasjonen er avhengig av Elasticsearch:
+```aiexclude
+> docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YLAgOm}rz#o6#Aq" --name opensearch -d opensearchproject/opensearch:latest
 ```
--Dspring.profiles.active=local --add-opens java.base/java.lang=ALL-UNNAMED
-```
+Legg merke til passord `YLAgOm}rz#o6#Aq` (tilfeldig [generert](https://www.strongpasswordgenerator.org/), men må være "sterkt" ellers vil ikke OpenSearch starte).
+* Applikasjonen kjøres med Spring profile `local`.
+* Applikasjonen kjøres med VM option `--add-opens java.base/java.lang=ALL-UNNAMED`.
+* Swagger tilgjengelig på https://localhost:8080/swagger.
 
-For å kjøre tester og bygge appen lokalt må Docker (Colima kan brukes på Mac) kjøre og man er nødt til å sette disse
-miljøvariablene:
-
+**Mac:** For å kjøre tester og bygge appen lokalt må Docker (Colima kan brukes) kjøre og man er nødt til å sette disse miljøvariablene:
 ```
 DOCKER_HOST=unix://${HOME}/.colima/default/docker.sock
 TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
 TESTCONTAINERS_RYUK_DISABLED=true
 ```
-
-For å kjøre lokalt med elastic search:
-
-```
-docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YLAgOm}rz#o6#Aq" --name opensearch -d opensearchproject/opensearch:latest
-```
-Legg merke til passord `YLAgOm}rz#o6#Aq` (tilfeldig [generert](https://www.strongpasswordgenerator.org/), men må være "sterkt" ellers vil ikke OpenSearch starte). 
-
-Applikasjonen er avhengig av en lokal PSQL-database. For mer informasjon se [egen dokumentasjon](../../docs/local_db.md).
