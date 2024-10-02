@@ -23,6 +23,7 @@ import {
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
 import { DollyValidation } from './steg/steg2/DollyValidation'
+import { useNavigate } from 'react-router-dom'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
@@ -31,7 +32,8 @@ export const devEnabled =
 	window.location.hostname.includes('dolly-frontend-dev')
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
-	const context = useContext(BestillingsveilederContext)
+	const context: any = useContext(BestillingsveilederContext)
+	const navigate = useNavigate()
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const [step, setStep] = useState(0)
 	const CurrentStepComponent: any = STEPS[step]
@@ -75,12 +77,14 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 		sessionStorage.clear()
 		errorContext?.setShowError(false)
-		formMethods.reset()
-
 		formMethods.handleSubmit(onSubmit(values))
+
+		formMethods.reset()
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
-		return mutate(REGEX_BACKEND_BESTILLINGER)
+		mutate(REGEX_BACKEND_BESTILLINGER).then(() => {
+			navigate(`/gruppe/${context.gruppeId}`)
+		})
 	}
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
