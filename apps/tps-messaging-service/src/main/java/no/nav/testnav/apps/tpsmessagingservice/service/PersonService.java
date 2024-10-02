@@ -90,47 +90,53 @@ public class PersonService {
 
     public List<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
-        if (miljoer.isEmpty()) {
-            miljoer = testmiljoerServiceConsumer.getMiljoer();
+            if (miljoer.isEmpty()) {
+                miljoer = testmiljoerServiceConsumer.getMiljoer();
+            }
+
+        try {
+            var tpsPersoner = readFromTps(ident, miljoer);
+
+            var relasjoner = getRelasjoner(tpsPersoner.entrySet().stream()
+                    .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
+                            nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
+                            isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
+                    .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue()
+                            .getTpsPersonData()
+                            .getTpsSvar()
+                            .getPersonDataS610()
+                            .getPerson())));
+
+            var personerMedRelasjoner = buildMiljoePersonWithRelasjon(relasjoner).entrySet().stream()
+                    .map(entry -> PersonMiljoeDTO.builder()
+                            .ident(ident)
+                            .miljoe(entry.getKey())
+                            .status("OK")
+                            .person(entry.getValue())
+                            .build())
+                    .toList();
+
+            var hentingMedFeil = tpsPersoner.entrySet().stream()
+                    .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
+                            nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
+                            !isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
+                    .map(entry -> PersonMiljoeDTO.builder()
+                            .miljoe(entry.getKey())
+                            .status("FEIL")
+                            .melding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getReturMelding())
+                            .utfyllendeMelding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getUtfyllendeMelding())
+                            .build())
+                    .toList();
+
+            return Stream.of(personerMedRelasjoner, hentingMedFeil)
+                    .flatMap(Collection::stream)
+                    .filter(entry -> isBlank(entry.getUtfyllendeMelding()) || !NOT_FOUND.equals(entry.getUtfyllendeMelding()))
+                    .toList();
+
+        } catch (Exception e) {
+            log.error("Feilet å hente data for {} i miløer {}, melding {}", ident, miljoer, e.getMessage(), e);
+            throw e;
         }
-
-        var tpsPersoner = readFromTps(ident, miljoer);
-
-        var relasjoner = getRelasjoner(tpsPersoner.entrySet().stream()
-                .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
-                        nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
-                        isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
-                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue()
-                        .getTpsPersonData()
-                        .getTpsSvar()
-                        .getPersonDataS610()
-                        .getPerson())));
-
-        var personerMedRelasjoner = buildMiljoePersonWithRelasjon(relasjoner).entrySet().stream()
-                .map(entry -> PersonMiljoeDTO.builder()
-                        .ident(ident)
-                        .miljoe(entry.getKey())
-                        .status("OK")
-                        .person(entry.getValue())
-                        .build())
-                .toList();
-
-        var hentingMedFeil = tpsPersoner.entrySet().stream()
-                .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
-                        nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
-                        !isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
-                .map(entry -> PersonMiljoeDTO.builder()
-                        .miljoe(entry.getKey())
-                        .status("FEIL")
-                        .melding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getReturMelding())
-                        .utfyllendeMelding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getUtfyllendeMelding())
-                        .build())
-                .toList();
-
-        return Stream.of(personerMedRelasjoner, hentingMedFeil)
-                .flatMap(Collection::stream)
-                .filter(entry -> isBlank(entry.getUtfyllendeMelding()) || !NOT_FOUND.equals(entry.getUtfyllendeMelding()))
-                .toList();
     }
 
     private Map<String, PersonDTO> buildMiljoePersonWithRelasjon(Map<String, PersonRelasjon> personRelasjon) {

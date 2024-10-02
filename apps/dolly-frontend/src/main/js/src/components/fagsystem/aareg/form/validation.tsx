@@ -128,7 +128,7 @@ export const validation = {
 			Yup.object({
 				ansettelsesPeriode: ifPresent('$aareg[0].arbeidsgiver.aktoertype', ansettelsesPeriode),
 				arbeidsforholdstype: requiredString,
-				arbeidsforholdID: Yup.string().nullable(),
+				arbeidsforholdId: Yup.string().nullable(),
 				arbeidsgiver: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsgiver),
 				arbeidsavtale: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsavtale),
 				fartoy: Yup.mixed().when({
@@ -187,7 +187,7 @@ export const validation = {
 							arbeidsforhold: Yup.array().of(
 								Yup.object({
 									ansettelsesPeriode: ansettelsesPeriode,
-									arbeidsforholdID: Yup.string().nullable(),
+									arbeidsforholdId: Yup.string().nullable(),
 									arbeidsgiver: arbeidsgiver,
 									arbeidsavtale: arbeidsavtale,
 									fartoy: fartoy,
