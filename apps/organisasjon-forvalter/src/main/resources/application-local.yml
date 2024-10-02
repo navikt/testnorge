@@ -1,9 +1,9 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5434/postgres
-    driver-class-name: org.postgresql.Driver
-    username: postgres
+    url: jdbc:postgresql://localhost:5432/db-organisasjon-forvalter
+    username: ${NAV_USERNAME}
+    password: ""
   cloud:
     vault:
       host: vault.adeo.no

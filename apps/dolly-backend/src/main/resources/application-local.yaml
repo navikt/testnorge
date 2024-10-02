@@ -11,9 +11,8 @@ spring:
       generic:
         enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/dolly-test
-    driver-class-name: org.postgresql.Driver
-    username: postgres
+    url: jdbc:postgresql://localhost:5432/db-dolly-backend
+    username: ${NAV_USERNAME}
 
 management:
   endpoints:
