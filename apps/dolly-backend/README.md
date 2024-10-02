@@ -23,7 +23,6 @@ https://dolly-backend.intern.dev.nav.no/swagger-ui.html
 
 ## Kjør lokalt
 * Se [generell informasjon](../../docs/local_general.md).
-* Applikasjonen er avhengig av Vault, se [egen dokumentasjon](../../docs/local_vault.md).
 * Applikasjonen er avhengig av en database i GCP, se [egen dokumentasjon](../../docs/gcp_db.md).
 * Applikasjonen er avhengig av Elasticsearch:
 ```aiexclude
