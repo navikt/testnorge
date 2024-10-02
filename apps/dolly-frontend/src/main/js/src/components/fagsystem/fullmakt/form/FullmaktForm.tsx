@@ -144,6 +144,14 @@ export const Fullmakt = ({
 							label="Handling"
 							options={Options('fullmaktHandling')}
 							size="grow"
+							onChange={(val: Option[]) => {
+								formMethods.setValue(
+									`${path}.handling`,
+									val?.some((opt) => opt.value?.includes('*'))
+										? alleHandlinger
+										: val.map((opt) => opt.value),
+								)
+							}}
 							isClearable={true}
 							isMulti={true}
 						/>
@@ -158,7 +166,7 @@ export const Fullmakt = ({
 				eksisterendePersonPath={`${path}.motpartsPersonident`}
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
-				isExpanded={isTestnorgeIdent || formMethods.watch(`${path}.motpartsPersonident`) !== null}
+				isExpanded={isTestnorgeIdent || !!formMethods.watch(`${path}.motpartsPersonident`)}
 				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>

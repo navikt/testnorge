@@ -604,6 +604,7 @@ const selectOptions = {
 	],
 
 	fullmaktHandling: [
+		{ value: '*', label: 'Alle' },
 		{ value: 'LES', label: 'Les' },
 		{ value: 'KOMMUNISER', label: 'Kommuniser' },
 		{ value: 'SKRIV', label: 'Skriv' },
