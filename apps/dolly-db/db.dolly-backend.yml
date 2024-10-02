@@ -6,15 +6,6 @@ metadata:
   labels:
     "team": "dolly"
 spec:
-  accessPolicy:
-    inbound:
-      rules:
-        - application: team-dolly-lokal-app
-  azure:
-    application:
-      allowAllUsers: true
-      enabled: true
-      tenant: nav.no
   gcp:
     sqlInstances:
       - type: POSTGRES_15
