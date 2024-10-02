@@ -13,7 +13,6 @@ jobs:
       working-directory: "apps/dolly-db"
       nais-manifest: "db.organisasjon-forvalter.yml"
       deploy-tag: "#db-organisasjon-forvalter"
-      force-deploy: true # TODO: To be removed.
       sonar-enabled: false
     permissions:
       contents: read
