@@ -9,8 +9,6 @@ Swagger finnes under [/swagger](https://testnav-organisasjon-forvalter.intern.de
 applikasjonen.
 
 ## Kjør lokalt
+* Se [generell informasjon](../../docs/local_general.md).
 * Applikasjonen er avhengig av Vault, se [egen dokumentasjon](../../docs/local_vault.md).
 * Applikasjonen er avhengig av en database i GCP, se [egen dokumentasjon](../../docs/gcp_db.md).
-* Applikasjonen kjøres med Spring profile `local`.
-* Applikasjonen kjøres med VM option `--add-opens java.base/java.lang=ALL-UNNAMED`.
-* Swagger tilgjengelig på https://localhost:8080/swagger.

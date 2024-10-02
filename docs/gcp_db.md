@@ -1,3 +1,5 @@
+# Bruk av GCP-database under lokal kjøring
+
 Enkelte applikasjoner bruker en database i GCP som "lokal" database, dvs. i Spring profile _local_. P.t. gjelder dette:
 * `dolly-backend`
 * `organisasjon-forvalter`

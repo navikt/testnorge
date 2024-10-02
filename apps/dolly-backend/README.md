@@ -22,6 +22,7 @@ https://dolly.ekstern.dev.nav.no/swagger-ui.html
 https://dolly-backend.intern.dev.nav.no/swagger-ui.html
 
 ## Kjør lokalt
+* Se [generell informasjon](../../docs/local_general.md).
 * Applikasjonen er avhengig av Vault, se [egen dokumentasjon](../../docs/local_vault.md).
 * Applikasjonen er avhengig av en database i GCP, se [egen dokumentasjon](../../docs/gcp_db.md).
 * Applikasjonen er avhengig av Elasticsearch:
@@ -29,9 +30,6 @@ https://dolly-backend.intern.dev.nav.no/swagger-ui.html
 > docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YLAgOm}rz#o6#Aq" --name opensearch -d opensearchproject/opensearch:latest
 ```
 Legg merke til passord `YLAgOm}rz#o6#Aq` (tilfeldig [generert](https://www.strongpasswordgenerator.org/), men må være "sterkt" ellers vil ikke OpenSearch starte).
-* Applikasjonen kjøres med Spring profile `local`.
-* Applikasjonen kjøres med VM option `--add-opens java.base/java.lang=ALL-UNNAMED`.
-* Swagger tilgjengelig på https://localhost:8080/swagger.
 
 **Mac:** For å kjøre tester og bygge appen lokalt må Docker (Colima kan brukes) kjøre og man er nødt til å sette disse miljøvariablene:
 ```
