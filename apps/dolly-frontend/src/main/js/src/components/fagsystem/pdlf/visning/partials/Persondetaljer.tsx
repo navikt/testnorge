@@ -36,6 +36,7 @@ type PersonTypes = {
 	redigertPerson: any
 	tpsMessaging: any
 	tpsMessagingLoading?: boolean
+	harFlerePersonstatuser?: boolean
 }
 
 const NavnVisning = ({ navn, showMaster }) => {
@@ -154,6 +155,7 @@ export const Persondetaljer = ({
 	}
 
 	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
+
 	const tmpPersonstatus = _.get(
 		tmpPersoner?.pdlforvalter,
 		`${ident}.person.folkeregisterPersonstatus`,
@@ -172,8 +174,6 @@ export const Persondetaljer = ({
 							person={data}
 							skjerming={skjermingData}
 							redigertPerson={redigertPerson}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
 							tpsMessaging={tpsMessaging}
 							tpsMessagingLoading={tpsMessagingLoading}
 							harFlerePersonstatuser={harFlerePersonstatuser}
@@ -186,8 +186,6 @@ export const Persondetaljer = ({
 										person={personValues}
 										skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
 										redigertPerson={redigertPerson}
-										tmpPersoner={tmpPersoner}
-										ident={ident}
 										tpsMessaging={tpsMessaging}
 										tpsMessagingLoading={tpsMessagingLoading}
 										harFlerePersonstatuser={harFlerePersonstatuser}
