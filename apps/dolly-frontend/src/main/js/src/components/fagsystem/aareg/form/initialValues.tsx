@@ -14,7 +14,7 @@ export const initialForenkletOppgjoersordningOrg = {
 	arbeidsavtale: {
 		yrke: '',
 	},
-	navArbeidsforholdPeriode: null,
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 }
 
 export const initialForenkletOppgjoersordningPers = {
@@ -30,11 +30,11 @@ export const initialForenkletOppgjoersordningPers = {
 	arbeidsavtale: {
 		yrke: '',
 	},
-	navArbeidsforholdPeriode: null,
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 }
 
 export const initialArbeidsforholdOrg = {
-	arbeidsforholdstype: '',
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	arbeidsgiver: {
 		aktoertype: 'ORG',
 		orgnummer: '',
@@ -53,7 +53,6 @@ export const initialArbeidsforholdOrg = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
-	navArbeidsforholdPeriode: undefined,
 	antallTimerForTimeloennet: [],
 	utenlandsopphold: [],
 	permisjon: [],
@@ -65,7 +64,7 @@ export const initialArbeidsforholdPers = {
 		aktoertype: 'PERS',
 		ident: '',
 	},
-	arbeidsforholdID: '',
+	arbeidsforholdId: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
@@ -80,7 +79,6 @@ export const initialArbeidsforholdPers = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
-	navArbeidsforholdPeriode: null,
 }
 
 export const initialPeriode = {
@@ -112,18 +110,18 @@ export const initialAmelding = [
 ]
 
 export const initialValues = {
-	arbeidsforholdstype: '',
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	genererPeriode: initialPeriode,
 	amelding: initialAmelding,
 }
 
 export const initialAaregOrg = {
-	arbeidsforholdstype: '',
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	...initialArbeidsforholdOrg,
 }
 
 export const initialAaregPers = {
-	arbeidsforholdstype: '',
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	...initialArbeidsforholdPers,
 }
 

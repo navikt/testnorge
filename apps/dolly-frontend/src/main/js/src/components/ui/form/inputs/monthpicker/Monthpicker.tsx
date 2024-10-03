@@ -14,7 +14,6 @@ interface MonthpickerProps {
 	onChange?: (date: Date) => void
 	minDate?: Date
 	maxDate?: Date
-	placeholder?: string
 }
 
 export const Monthpicker = ({
@@ -25,8 +24,6 @@ export const Monthpicker = ({
 	onChange,
 	minDate = null,
 	maxDate = null,
-	placeholder = null,
-	...props
 }: MonthpickerProps) => {
 	const formMethods = useFormContext()
 	const val = formMethods.watch(name)
@@ -71,12 +68,7 @@ export const Monthpicker = ({
 		<InputWrapper size={'small'}>
 			<Label name={name} label={label}>
 				<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate}>
-					<MonthPicker.Input
-						label={null}
-						size={'small'}
-						placeholder={placeholder || 'yyyy-mm'}
-						{...inputProps}
-					/>
+					<MonthPicker.Input label={null} size={'small'} placeholder={'yyyy-mm'} {...inputProps} />
 				</MonthPicker>
 			</Label>
 		</InputWrapper>
