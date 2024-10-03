@@ -57,27 +57,36 @@ const NavnVisning = ({ navn, showMaster }) => {
 const PersondetaljerLes = ({
 	person,
 	skjerming,
-	tmpPersoner,
-	ident,
+	redigertPerson,
 	tpsMessaging,
 	tpsMessagingLoading,
+	harFlerePersonstatuser,
 }: PersonTypes) => {
 	const navnListe = person?.navn
 	const personKjoenn = person?.kjoenn?.[0]
-	const personstatus = person?.folkeregisterPersonstatus
+	const personstatus =
+		redigertPerson?.folkeregisterPersonstatus || person?.folkeregisterPersonstatus
 
 	return (
 		<div className="person-visning_redigerbar">
 			<TitleValue title="Ident" value={person?.ident} />
 			{navnListe?.length === 1 && <NavnVisning navn={navnListe[0]} />}
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
-			{personstatus?.length > 1 ? (
-				<Personstatus data={personstatus} tmpPersoner={tmpPersoner} ident={ident} />
-			) : (
-				<TitleValue
-					title="Personstatus"
-					value={showLabel('personstatus', personstatus?.[0]?.status)}
-				/>
+			{personstatus?.length === 1 && !harFlerePersonstatuser && (
+				<>
+					<TitleValue
+						title="Personstatus"
+						value={showLabel('personstatus', personstatus?.[0]?.status)}
+					/>
+					<TitleValue
+						title="Status gyldig f.o.m."
+						value={formatDate(personstatus?.[0]?.gyldigFraOgMed)}
+					/>
+					<TitleValue
+						title="Status gyldig t.o.m."
+						value={formatDate(personstatus?.[0]?.gyldigTilOgMed)}
+					/>
+				</>
 			)}
 			<SkjermingVisning data={skjerming} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
@@ -109,7 +118,7 @@ export const Persondetaljer = ({
 	}
 
 	const getPersonstatus = () => {
-		if (data?.identtype === 'NPID') {
+		if (data?.identtype === 'NPID' || data?.folkeregisterPersonstatus?.length > 1) {
 			return undefined
 		}
 		return [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus]
@@ -126,6 +135,7 @@ export const Persondetaljer = ({
 	const redigertSkjerming = _.get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 	const personValues = redigertPersonPdlf ? redigertPersonPdlf : data
+
 	const redigertPdlfPersonValues = redigertPersonPdlf
 		? {
 				navn: [redigertPersonPdlf?.navn ? redigertPersonPdlf?.navn?.[0] : getInitialNavn()],
@@ -144,6 +154,13 @@ export const Persondetaljer = ({
 	}
 
 	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
+	const tmpPersonstatus = _.get(
+		tmpPersoner?.pdlforvalter,
+		`${ident}.person.folkeregisterPersonstatus`,
+	)
+
+	const harFlerePersonstatuser =
+		tmpPersonstatus?.length > 1 || data?.folkeregisterPersonstatus?.length > 1
 
 	return (
 		<ErrorBoundary>
@@ -159,6 +176,7 @@ export const Persondetaljer = ({
 							ident={ident}
 							tpsMessaging={tpsMessaging}
 							tpsMessagingLoading={tpsMessagingLoading}
+							harFlerePersonstatuser={harFlerePersonstatuser}
 						/>
 					) : (
 						<>
@@ -167,10 +185,12 @@ export const Persondetaljer = ({
 									<PersondetaljerLes
 										person={personValues}
 										skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
+										redigertPerson={redigertPerson}
 										tmpPersoner={tmpPersoner}
 										ident={ident}
 										tpsMessaging={tpsMessaging}
 										tpsMessagingLoading={tpsMessagingLoading}
+										harFlerePersonstatuser={harFlerePersonstatuser}
 									/>
 								}
 								initialValues={initPerson}
@@ -224,6 +244,13 @@ export const Persondetaljer = ({
 										)
 									}}
 								</DollyFieldArray>
+							)}
+							{harFlerePersonstatuser && (
+								<Personstatus
+									data={data?.folkeregisterPersonstatus}
+									tmpPersoner={tmpPersoner?.pdlforvalter}
+									ident={ident}
+								/>
 							)}
 						</>
 					)}

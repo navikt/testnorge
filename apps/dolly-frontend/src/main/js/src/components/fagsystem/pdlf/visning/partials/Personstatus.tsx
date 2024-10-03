@@ -24,7 +24,7 @@ const PersonstatusVisning = ({ personstatusData, idx, data, tmpPersoner, ident }
 
 	const redigertPersonstatusPdlf = _.get(
 		tmpPersoner,
-		`${ident}.person.folkeregisterpersonstatus`,
+		`${ident}.person.folkeregisterPersonstatus`,
 	)?.find((a) => a.id === personstatusData.id)
 
 	const slettetPersonstatusPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertPersonstatusPdlf
@@ -58,7 +58,7 @@ export const Personstatus = ({ data, tmpPersoner, ident }) => {
 		return null
 	}
 
-	const tmpData = _.get(tmpPersoner, `${ident}.person.folkeregisterpersonstatus`)
+	const tmpData = _.get(tmpPersoner, `${ident}.person.folkeregisterPersonstatus`)
 	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
 	}
