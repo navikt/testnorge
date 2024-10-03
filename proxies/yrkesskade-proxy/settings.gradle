@@ -6,6 +6,8 @@ rootProject.name = "yrkesskade-proxy"
 
 includeBuild "../../plugins/java"
 
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/reactive-proxy"
 includeBuild "../../libs/reactive-security"
 includeBuild "../../libs/security-core"
 includeBuild "../../libs/vault"
