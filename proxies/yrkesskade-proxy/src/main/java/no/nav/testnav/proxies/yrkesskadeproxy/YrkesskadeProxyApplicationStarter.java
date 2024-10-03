@@ -2,11 +2,10 @@ package no.nav.testnav.proxies.yrkesskadeproxy;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.proxies.yrkesskadeproxy.config.Consumers;
+import no.nav.testnav.proxies.yrkesskadeproxy.consumer.FakedingsConsumer;
+import no.nav.testnav.proxies.yrkesskadeproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -18,7 +17,6 @@ import org.springframework.context.annotation.Import;
 @Import({
         CoreConfig.class,
         SecurityConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
 })
 @SpringBootApplication
 public class YrkesskadeProxyApplicationStarter {
@@ -29,26 +27,25 @@ public class YrkesskadeProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-                                           GatewayFilter trygdeetatenAuthenticationFilter,
+                                           GatewayFilter tokenxAuthenticationFilter,
                                            Consumers consumers) {
 
         return builder
                 .routes()
                 .route(spec -> spec
                         .path("/**")
-                        .filters(f -> f.filter(trygdeetatenAuthenticationFilter))
+                        .filters(f -> f.filter(tokenxAuthenticationFilter))
                         .uri(consumers.getYrkesskade().getUrl()))
                 .build();
     }
 
     @Bean
-    GatewayFilter trygdeetatenAuthenticationFilter(
-            TrygdeetatenAzureAdTokenService tokenService,
+    GatewayFilter tokenxAuthenticationFilter(
+            TokenXService tokenService,
+            FakedingsConsumer fakedingsConsumer,
             Consumers consumers) {
 
         return AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService
-                        .exchange(consumers.getYrkesskade())
-                        .map(AccessToken::getTokenValue));
+                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenService, consumers.getYrkesskade());
     }
 }
