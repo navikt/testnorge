@@ -44,6 +44,7 @@ import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foed
 import DisplayFormState from '@/utils/DisplayFormState'
 import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
+import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -65,6 +66,7 @@ type VisningTypes = {
 
 enum Attributt {
 	Navn = 'navn',
+	Personstatus = 'folkeregisterpersonstatus',
 	Foedsel = 'foedsel',
 	Foedested = 'foedested',
 	Foedselsdato = 'foedselsdato',
@@ -233,6 +235,8 @@ export const VisningRedigerbar = ({
 		switch (path) {
 			case Attributt.Navn:
 				return <NavnForm formMethods={formMethods} path={path} />
+			case Attributt.Personstatus:
+				return <PersonstatusForm path={path} />
 			case Attributt.Foedsel:
 				return <FoedselForm formMethods={formMethods} path={path} />
 			case Attributt.Foedested:

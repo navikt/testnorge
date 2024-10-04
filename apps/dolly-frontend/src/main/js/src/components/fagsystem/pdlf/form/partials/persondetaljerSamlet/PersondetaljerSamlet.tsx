@@ -56,7 +56,7 @@ export const PersondetaljerSamlet = ({
 					kanVelgeMaster={identMaster === 'PDL' || identtype === 'NPID'}
 				/>
 
-				{identtype !== 'NPID' && (
+				{identtype !== 'NPID' && formMethods.watch('folkeregisterpersonstatus')?.length < 2 && (
 					<>
 						<div className="flexbox--align-center">
 							<h3>Personstatus</h3>
