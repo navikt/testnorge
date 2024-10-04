@@ -9,8 +9,9 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import _ from 'lodash'
 
 registerLocale('nb', locale_nb)
 
@@ -21,6 +22,7 @@ const StyledInput = styled(DatePicker.Input)`
 			font-weight: normal;
 			color: #ba3a26;
 			margin-top: 0.5rem;
+
 			&::before {
 				content: none;
 			}
@@ -43,7 +45,7 @@ export const Datepicker = ({
 
 	const [hasError, setHasError] = useState(false)
 
-	const { datepickerProps, inputProps } = useDatepicker({
+	const { datepickerProps, inputProps, setSelected } = useDatepicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onDateChange: onChange || onBlur,
@@ -54,11 +56,24 @@ export const Datepicker = ({
 		},
 	})
 
+	useEffect(() => {
+		const [day, month, year] =
+			inputProps.value && inputProps.value !== '' && inputProps.value?.split('.')
+		const inputDate = (year && new Date(year, month - 1, day)) || undefined
+		if (selectedDate && !_.isEqual(inputDate?.toDateString(), selectedDate?.toDateString())) {
+			setTimeout(() => setSelected(selectedDate), 200)
+		}
+	}, [inputProps.value, selectedDate])
+
 	return (
 		<DatePicker {...datepickerProps} dropdownCaption={true}>
 			<StyledInput
 				{...inputProps}
 				placeholder={placeholder}
+				onChange={(e) => {
+					setSelected(undefined)
+					inputProps.onChange(e)
+				}}
 				size={'small'}
 				disabled={disabled}
 				label={null}

@@ -40,6 +40,10 @@ export const Alder = ({ formMethods }) => {
 				name={paths.alder}
 				type="number"
 				onKeyPress={onlyNumberKeyPressHandler}
+				onBlur={(val) => {
+					const value = val.target.value
+					formMethods.setValue(paths.alder, value === '' ? null : value)
+				}}
 				label="Alder"
 				isDisabled={disableAlder}
 			/>
