@@ -7,6 +7,7 @@ import {
 } from '#/mocks/BasicMocks'
 
 const uferdigBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/2$/)
+const postBestilling = new RegExp(/dolly-backend\/api\/v1\/gruppe\/2\/bestilling/)
 const uferdigeBestillinger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/2\/ikkeferdig/)
 
 test.describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () => {
@@ -68,6 +69,12 @@ test.describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () =
 			await route.fulfill({ body: JSON.stringify(uferdigBestillingMock) })
 		})
 
+		//Send bestilling med forsinkelse
+		await page.route(postBestilling, async (route) => {
+			await new Promise((f) => setTimeout(f, 1500))
+			await route.fulfill({ status: 201, body: JSON.stringify(uferdigBestillingMock) })
+		})
+
 		await page.route(uferdigeBestillinger, async (route) => {
 			await route.fulfill({ body: JSON.stringify(uferdigeBestillingerMock) })
 		})
@@ -75,7 +82,9 @@ test.describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () =
 		await page.getByTestId(TestComponentSelectors.TITLE_SEND_KOMMENTAR).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_FULLFOER_BESTILLING).click()
 
-		await page.waitForTimeout(400)
+		await expect(page.locator('[class="loading-component"]')).toContainText(
+			'Oppretter bestilling ...',
+		)
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_AVBRYT_BESTILLING).click()
 
