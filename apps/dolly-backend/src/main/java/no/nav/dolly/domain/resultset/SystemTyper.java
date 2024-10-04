@@ -45,7 +45,7 @@ public enum SystemTyper {
     TPS_MESSAGING("Meldinger til TPS"),
     TP_FORVALTER("Tjenestepensjon (TP)"),
     UDISTUB("Utlendingsdirektoratet (UDI)"),
-    YRKESSKADE("Yrkesskade (YRKESSKADE)");
+    YRKESSKADE("Yrkesskade");
 
     private String beskrivelse;
 
