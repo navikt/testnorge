@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.testnav.libs.dto.yrkesskade.v1.InnmelderRolletype;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,12 @@ public class YrkesskadeMappingStrategy implements MappingStrategy {
                                             .orElse(null);
                                     case virksomhetsrepresentant -> destinasjon.getSkadelidtIdentifikator();
                                 });
+
+                        if (destinasjon.getInnmelderrolle() == InnmelderRolletype.denSkadelidte ||
+                                destinasjon.getInnmelderrolle() == InnmelderRolletype.vergeOgForesatt) {
+
+                            destinasjon.setPaaVegneAv(destinasjon.getSkadelidtIdentifikator());
+                        }
                     }
                 })
                 .byDefault()
