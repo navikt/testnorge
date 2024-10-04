@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
-import static no.nav.dolly.domain.resultset.SystemTyper.SKATTEKORT;
+import static no.nav.dolly.domain.resultset.SystemTyper.YRKESSKADE;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -26,8 +26,8 @@ public final class BestillingYrkesskadeStatusMapper {
         Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (isNotBlank(progress.getSkattekortStatus()) && isNotBlank(progress.getIdent())) {
-                var entries = progress.getSkattekortStatus().split(",");
+            if (isNotBlank(progress.getYrkesskadeStatus()) && isNotBlank(progress.getIdent())) {
+                var entries = progress.getYrkesskadeStatus().split(",");
                 for (var entry : entries) {
                     var orgYear = entry.split(":")[0];
                     var status = entry.split(":")[1];
@@ -49,16 +49,16 @@ public final class BestillingYrkesskadeStatusMapper {
 
         } else {
             if (errorEnvIdents.entrySet().stream()
-                    .allMatch(entry -> entry.getKey().equals("Skattekort lagret"))) {
+                    .allMatch(entry -> entry.getKey().equals("OK"))) {
 
                 return errorEnvIdents.values().stream()
                         .map(entry -> RsStatusRapport.builder()
-                                .id(SKATTEKORT)
-                                .navn(SKATTEKORT.getBeskrivelse())
+                                .id(YRKESSKADE)
+                                .navn(YRKESSKADE.getBeskrivelse())
                                 .statuser(List.of(RsStatusRapport.Status.builder()
                                         .melding("OK")
                                         .identer(entry.values().stream()
-                                                .map(orgYear -> orgYear.stream().toList())
+                                                .map(skade -> skade.stream().toList())
                                                 .flatMap(Collection::stream)
                                                 .distinct()
                                                 .toList())
@@ -69,14 +69,14 @@ public final class BestillingYrkesskadeStatusMapper {
             } else {
 
                 return errorEnvIdents.entrySet().stream()
-                        .filter(entry -> !entry.getKey().equals("Skattekort lagret"))
+                        .filter(entry -> !entry.getKey().equals("OK"))
                         .map(entry -> RsStatusRapport.builder()
-                                .id(SKATTEKORT)
-                                .navn(SKATTEKORT.getBeskrivelse())
-                                .statuser(entry.getValue().entrySet().stream()
-                                        .map(orgYear -> RsStatusRapport.Status.builder()
-                                                .melding(formatMelding(orgYear.getKey(), entry.getKey()))
-                                                .identer(orgYear.getValue().stream().toList())
+                                .id(YRKESSKADE)
+                                .navn(YRKESSKADE.getBeskrivelse())
+                                .statuser(entry.getValue().values().stream()
+                                        .map(strings -> RsStatusRapport.Status.builder()
+                                                .melding(formatMelding(entry.getKey()))
+                                                .identer(strings.stream().toList())
                                                 .build())
                                         .toList())
                                 .build())
@@ -85,11 +85,8 @@ public final class BestillingYrkesskadeStatusMapper {
         }
     }
 
-    private static String formatMelding(String orgYear, String melding) {
+    private static String formatMelding(String value) {
 
-        return "FEIL: organisasjon:%s, inntektsår:%s, melding:%s".formatted(
-                orgYear.split("\\+")[0],
-                orgYear.split("\\+")[1],
-                decodeMsg(melding));
+        return decodeMsg(value);
     }
 }

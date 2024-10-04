@@ -47,21 +47,23 @@ public class YrkesskadeClient implements ClientRegister {
 
         var index = new AtomicInteger(0);
 
-        return Flux.from(
-                personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
-                        .filter(yrkesskadeRequest -> isOpprettEndre)
-                        .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
-                                .map(yrkesskade -> {
-                                    var context = MappingContextUtils.getMappingContext();
-                                    context.setProperty("ident", dollyPerson.getIdent());
-                                    context.setProperty("personBolk", personbolk);
-                                    return mapper.map(yrkesskade, YrkesskadeRequest.class, context);
-                                })
-                                .flatMap(yrkesskade -> yrkesskadeConsumer.lagreYrkesskade(yrkesskade)
-                                        .map(status -> lagreTransaksjon(status, yrkesskade, progress.getBestilling().getId())))
-                                .map(status -> encodeStatus(status, index.incrementAndGet()))
-                                .collectList()
-                                .map(resultat -> futurePersist(progress, resultat))));
+        return Flux.just(bestilling)
+                .filter(best -> !best.getYrkesskader().isEmpty())
+                .filter(best -> isOpprettEndre)
+                .flatMap(best -> personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent())))
+                .doOnNext(resultat -> log.info("Hentet pdlPersonBolk"))
+                .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
+                        .map(yrkesskade -> {
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty("ident", dollyPerson.getIdent());
+                            context.setProperty("personBolk", personbolk);
+                            return mapper.map(yrkesskade, YrkesskadeRequest.class, context);
+                        })
+                        .flatMap(yrkesskade -> yrkesskadeConsumer.lagreYrkesskade(yrkesskade)
+                                .map(status -> lagreTransaksjon(status, yrkesskade, progress.getBestilling().getId())))
+                        .map(status -> encodeStatus(status, index.incrementAndGet()))
+                        .collectList()
+                        .map(resultat -> futurePersist(progress, resultat)));
     }
 
     @Override
@@ -83,7 +85,7 @@ public class YrkesskadeClient implements ClientRegister {
         var status = response.stream()
                 .map(entry -> "Yrkesskade#%d:%s".formatted(entry.getId(),
                         entry.getStatus() == Status.OK ? "OK" :
-                                "Feil: %s".formatted(ErrorStatusDecoder.encodeStatus(entry.getMelding()))))
+                                 ErrorStatusDecoder.encodeStatus("FEIL: %s".formatted(entry.getMelding()))))
                 .collect(Collectors.joining(","));
 
         return () -> {

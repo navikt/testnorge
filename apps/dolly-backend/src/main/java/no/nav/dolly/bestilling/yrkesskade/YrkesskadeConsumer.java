@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.yrkesskade;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.yrkesskade.command.YrkesskadePostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
+@Slf4j
 @Service
 public class YrkesskadeConsumer {
 
@@ -31,7 +33,9 @@ public class YrkesskadeConsumer {
 
     public Flux<ResponseEntity<String>> lagreYrkesskade(YrkesskadeRequest request) {
 
+        log.info("Sender yrkesskade melding: {}", request);
         return tokenExchange.exchange(serverProperties)
-                .flatMapMany(token -> new YrkesskadePostCommand(webClient, request, token.getTokenValue()).call());
+                .flatMapMany(token -> new YrkesskadePostCommand(webClient, request, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Mottatt response fra yrkesskade service {}", response));
     }
 }
