@@ -17,6 +17,7 @@ import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTy
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import { Personstatus } from '@/components/fagsystem/pdlf/visning/partials/Personstatus'
 
 type PersondetaljerTypes = {
 	data: any
@@ -35,19 +36,7 @@ type PersonTypes = {
 	redigertPerson: any
 	tpsMessaging: any
 	tpsMessagingLoading?: boolean
-}
-
-const getCurrentPersonstatus = (data: any) => {
-	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
-		const statuser = data.folkeregisterpersonstatus.filter((status: any) => {
-			return !status?.metadata?.historisk
-		})
-		return statuser.length > 0 ? statuser[0] : null
-	} else if (data?.folkeregisterPersonstatus && data?.folkeregisterPersonstatus?.[0] !== null) {
-		const statuser = data.folkeregisterPersonstatus
-		return statuser.length > 0 ? statuser[0] : null
-	}
-	return null
+	harFlerePersonstatuser?: boolean
 }
 
 const NavnVisning = ({ navn, showMaster }) => {
@@ -72,17 +61,34 @@ const PersondetaljerLes = ({
 	redigertPerson,
 	tpsMessaging,
 	tpsMessagingLoading,
+	harFlerePersonstatuser,
 }: PersonTypes) => {
 	const navnListe = person?.navn
 	const personKjoenn = person?.kjoenn?.[0]
-	const personstatus = getCurrentPersonstatus(redigertPerson || person)
+	const personstatus =
+		redigertPerson?.folkeregisterPersonstatus || person?.folkeregisterPersonstatus
 
 	return (
 		<div className="person-visning_redigerbar">
 			<TitleValue title="Ident" value={person?.ident} />
 			{navnListe?.length === 1 && <NavnVisning navn={navnListe[0]} />}
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
-			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
+			{personstatus?.length === 1 && !harFlerePersonstatuser && (
+				<>
+					<TitleValue
+						title="Personstatus"
+						value={showLabel('personstatus', personstatus?.[0]?.status)}
+					/>
+					<TitleValue
+						title="Status gyldig f.o.m."
+						value={formatDate(personstatus?.[0]?.gyldigFraOgMed)}
+					/>
+					<TitleValue
+						title="Status gyldig t.o.m."
+						value={formatDate(personstatus?.[0]?.gyldigTilOgMed)}
+					/>
+				</>
+			)}
 			<SkjermingVisning data={skjerming} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
@@ -113,7 +119,7 @@ export const Persondetaljer = ({
 	}
 
 	const getPersonstatus = () => {
-		if (data?.identtype === 'NPID') {
+		if (data?.identtype === 'NPID' || data?.folkeregisterPersonstatus?.length > 1) {
 			return undefined
 		}
 		return [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus]
@@ -130,6 +136,7 @@ export const Persondetaljer = ({
 	const redigertSkjerming = _.get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 	const personValues = redigertPersonPdlf ? redigertPersonPdlf : data
+
 	const redigertPdlfPersonValues = redigertPersonPdlf
 		? {
 				navn: [redigertPersonPdlf?.navn ? redigertPersonPdlf?.navn?.[0] : getInitialNavn()],
@@ -149,6 +156,14 @@ export const Persondetaljer = ({
 
 	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
 
+	const tmpPersonstatus = _.get(
+		tmpPersoner?.pdlforvalter,
+		`${ident}.person.folkeregisterPersonstatus`,
+	)
+
+	const harFlerePersonstatuser =
+		tmpPersonstatus?.length > 1 || data?.folkeregisterPersonstatus?.length > 1
+
 	return (
 		<ErrorBoundary>
 			<div>
@@ -161,6 +176,7 @@ export const Persondetaljer = ({
 							redigertPerson={redigertPerson}
 							tpsMessaging={tpsMessaging}
 							tpsMessagingLoading={tpsMessagingLoading}
+							harFlerePersonstatuser={harFlerePersonstatuser}
 						/>
 					) : (
 						<>
@@ -172,6 +188,7 @@ export const Persondetaljer = ({
 										redigertPerson={redigertPerson}
 										tpsMessaging={tpsMessaging}
 										tpsMessagingLoading={tpsMessagingLoading}
+										harFlerePersonstatuser={harFlerePersonstatuser}
 									/>
 								}
 								initialValues={initPerson}
@@ -225,6 +242,13 @@ export const Persondetaljer = ({
 										)
 									}}
 								</DollyFieldArray>
+							)}
+							{harFlerePersonstatuser && (
+								<Personstatus
+									data={data?.folkeregisterPersonstatus}
+									tmpPersoner={tmpPersoner?.pdlforvalter}
+									ident={ident}
+								/>
 							)}
 						</>
 					)}
