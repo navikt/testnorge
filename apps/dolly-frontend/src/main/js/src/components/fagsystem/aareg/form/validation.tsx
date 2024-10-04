@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import _ from 'lodash'
+import _, { toNumber } from 'lodash'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
@@ -88,12 +88,15 @@ const arbeidsavtale = Yup.object({
 	endringsdatoStillingsprosent: Yup.date().nullable(),
 	sisteLoennsendringsdato: Yup.date().nullable(),
 	arbeidstidsordning: fullArbeidsforholdTest(Yup.string()).nullable(),
-	avtaltArbeidstimerPerUke: fullArbeidsforholdTest(
-		Yup.number()
-			.min(1, 'Kan ikke være mindre enn ${min}')
-			.max(75, 'Kan ikke være større enn ${max}')
-			.typeError(messages.required),
-	).nullable(),
+	avtaltArbeidstimerPerUke: ifPresent(
+		'$avtaltArbeidstimerPerUke',
+		Yup.string()
+			.test('isBetween', 'Må være mellom 1 og 75', (val, context) => {
+				const value = toNumber(val)
+				return !val || isNaN(value) || (value >= 1 && value <= 75)
+			})
+			.nullable(),
+	),
 })
 
 const fartoy = Yup.array()
@@ -104,21 +107,6 @@ const fartoy = Yup.array()
 			fartsomraade: requiredString,
 		}),
 	)
-	.nullable()
-
-const requiredPeriode = Yup.mixed()
-	.when('$aareg[0].arbeidsforholdstype', {
-		is: 'frilanserOppdragstakerHonorarPersonerMm',
-		then: () => requiredDate,
-	})
-	.when('$aareg[0].arbeidsforholdstype', {
-		is: 'maritimtArbeidsforhold',
-		then: () => requiredDate,
-	})
-	.when('$aareg[0].arbeidsforholdstype', {
-		is: 'ordinaertArbeidsforhold',
-		then: () => requiredDate,
-	})
 	.nullable()
 
 export const validation = {
