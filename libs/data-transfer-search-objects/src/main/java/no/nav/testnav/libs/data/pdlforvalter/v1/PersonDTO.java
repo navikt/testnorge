@@ -20,6 +20,7 @@ import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
@@ -32,6 +33,9 @@ public class PersonDTO implements Serializable {
     private String ident;
     private Identtype identtype;
     private Boolean standalone;
+
+    @JsonIgnore
+    private Boolean isChanged;
 
     private List<AdressebeskyttelseDTO> adressebeskyttelse;
     private List<BostedadresseDTO> bostedsadresse;
@@ -304,7 +308,7 @@ public class PersonDTO implements Serializable {
     @JsonIgnore
     public boolean isNotChanged() {
 
-        return Arrays.stream(this.getClass().getMethods())
+        return isNotTrue(isChanged) && Arrays.stream(this.getClass().getMethods())
                 .filter(method -> method.getName().startsWith("get"))
                 .filter(method -> method.getReturnType().equals(List.class))
                 .map(method -> {
