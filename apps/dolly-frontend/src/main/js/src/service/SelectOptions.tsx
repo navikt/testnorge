@@ -844,6 +844,9 @@ const selectOptions = {
 		{ value: 'BANKKONTO', label: 'Bankkonto' },
 		{ value: 'BANKKONTO_NORGE', label: 'Norsk bankkonto' },
 		{ value: 'BANKKONTO_UTLAND', label: 'Utenlandsk bankkonto' },
+		// TODO: Legg inn skattekort
+		// TODO: Legg inn yrkesskade
+		// TODO: Legg inn flere register???
 	],
 }
 
