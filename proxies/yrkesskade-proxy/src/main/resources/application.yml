@@ -25,6 +25,15 @@ server:
   error:
     include-message: always
 
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: INFO
+
 consumers:
   yrkesskade:
     url: http://yrkesskade-datagenerator-service.yrkesskade.svc.cluster.local
