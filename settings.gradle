@@ -12,7 +12,7 @@ plugins {
     id "com.gradle.develocity" version "3.17.4"
 }
 
-rootProject.name = 'testnav'
+rootProject.name = "testnorge"
 
 develocity {
     buildScan {
@@ -127,19 +127,19 @@ includeBuild './apps/udi-stub'
 includeBuild './apps/varslinger-service'
 includeBuild './apps/dollystatus'
 includeBuild './apps/skattekort-service'
+def includeAllBuildsFrom(String dirPath) {
+    file(dirPath).eachDir {
+        dir ->
+            if (!dir.name.startsWith(".")) {
+                includeBuild dir.path
+            }
+    }
+}
 
-includeBuild './xsd/arbeidsforhold-xsd'
-
-includeBuild './examples/reactive-rest-example'
-
-includeBuild './mocks/tokendings-mock'
-includeBuild './mocks/maskinporten-mock'
-
-
-include(':proxies')
-include(':navikt')
-include(':apps')
-include(':libs')
-include(':examples')
-include(':xsd')
-include(':mocks')
+includeAllBuildsFrom("./apps")
+includeAllBuildsFrom("./examples")
+includeAllBuildsFrom("./libs")
+includeAllBuildsFrom("./mocks")
+includeAllBuildsFrom("./plugins")
+includeAllBuildsFrom("./proxies")
+includeAllBuildsFrom("./xsd")

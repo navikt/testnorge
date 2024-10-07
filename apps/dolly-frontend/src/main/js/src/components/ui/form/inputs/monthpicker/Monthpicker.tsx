@@ -26,16 +26,7 @@ export const Monthpicker = ({
 	maxDate = null,
 }: MonthpickerProps) => {
 	const formMethods = useFormContext()
-	const val = formMethods.watch(name)
-
-	function getEksisterendeVerdi() {
-		if (name.includes('navArbeidsforholdPeriode')) {
-			return val?.year ? new Date(val?.year, val?.monthValue) : null
-		}
-		return val
-	}
-
-	const eksisterendeVerdi = getEksisterendeVerdi()
+	const eksisterendeVerdi = formMethods.watch(name)
 
 	const formattedDate =
 		eksisterendeVerdi instanceof Date
@@ -59,10 +50,10 @@ export const Monthpicker = ({
 	})
 
 	useEffect(() => {
-		if (!val && inputProps.value) {
+		if (!eksisterendeVerdi && inputProps.value) {
 			reset()
 		}
-	}, [val])
+	}, [eksisterendeVerdi])
 
 	return (
 		<InputWrapper size={'small'}>

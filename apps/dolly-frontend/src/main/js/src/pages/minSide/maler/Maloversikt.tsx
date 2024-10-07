@@ -8,7 +8,7 @@ import {
 import { Tabs } from '@navikt/ds-react'
 import { MalPanel } from '@/pages/minSide/maler/MalPanel'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Buldings3Icon, PersonGroupIcon } from '@navikt/aksel-icons'
+import { Buildings3Icon, PersonGroupIcon } from '@navikt/aksel-icons'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export default ({ brukerId }: { brukerId: string }) => {
@@ -58,7 +58,7 @@ export default ({ brukerId }: { brukerId: string }) => {
 							data-testid={TestComponentSelectors.TOGGLE_MIN_SIDE_ORGANISASJON_MALER}
 							value={'organisasjoner'}
 							label={'Organisasjoner'}
-							icon={<Buldings3Icon />}
+							icon={<Buildings3Icon />}
 						/>
 					</Tabs.List>
 					<Tabs.Panel value={'personer'}>

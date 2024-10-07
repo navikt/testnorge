@@ -61,7 +61,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
             var status = handle(FolkeregisterPersonstatusDTO.builder()
                     .id(person.getFolkeregisterPersonstatus().size() + 1)
-                    .isNew(true)
+                    .isNew(false)
                     .kilde("Dolly")
                     .master(Master.FREG)
                     .build(), person);
@@ -80,7 +80,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         person.getFolkeregisterPersonstatus().clear();
         person.getFolkeregisterPersonstatus()
                 .add(FolkeregisterPersonstatusDTO.builder()
-                        .id(1)
+                        .id(person.getFolkeregisterPersonstatus().size() + 1)
                         .isNew(true)
                         .build());
 
