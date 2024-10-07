@@ -66,6 +66,7 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-oppdater" })
     public Mono<SkjermingDataResponse> oppdaterPerson(SkjermingDataRequest skjerming) {
 
+        log.info("Sender forespørsel om skjerming for ident {}: {}", skjerming.getPersonident(), skjerming);
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, skjerming.getPersonident(), token.getTokenValue()).call()
                         .flatMap(response -> {
