@@ -4,7 +4,7 @@ export const initialYrkesskadePeriode = {
 }
 
 export const initialYrkesskade = {
-	skadelidtIdentifikator: '',
+	// skadelidtIdentifikator: '',
 	rolletype: '',
 	innmelderIdentifikator: '',
 	innmelderrolle: 'virksomhetsrepresentant',
