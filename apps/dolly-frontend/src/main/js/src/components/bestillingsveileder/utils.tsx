@@ -73,6 +73,7 @@ export const rootPaths = [
 	'dokarkiv',
 	'medl',
 	'sykemelding',
+	'yrkesskader',
 	'organisasjon',
 	'skattekort',
 ]

@@ -5,6 +5,7 @@ import { sykdomAttributt } from '@/components/fagsystem/sykdom/form/Form'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialYrkesskade } from '@/components/fagsystem/yrkesskader/initialValues'
+import { yrkesskaderAttributt } from '@/components/fagsystem/yrkesskader/form/Form'
 
 export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)
@@ -24,7 +25,7 @@ export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 			checkAttributeArray={() => sm.batchAdd(harGyldigSykemeldingBestilling ? ['sykemelding'] : [])}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="sykdom"
-			startOpen={harValgtAttributt(formValues, [sykdomAttributt])}
+			startOpen={harValgtAttributt(formValues, [sykdomAttributt, yrkesskaderAttributt])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
 				<Attributt
@@ -58,7 +59,7 @@ SykdomPanel.initialValues = ({ set, del, has }: any) => ({
 		},
 	},
 	yrkesskader: {
-		label: 'Har yrkesskade',
+		label: 'Har yrkesskader',
 		checked: has('yrkesskader'),
 		add() {
 			set('yrkesskader', [initialYrkesskade])
