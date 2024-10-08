@@ -55,4 +55,40 @@ public interface IdentRepository extends JpaRepository<Ident, Long> {
                         @Param("identtype") Identtype identtype, @Param("kjoenn") Kjoenn kjoenn,
                         @Param("foedtFoer") LocalDate foedtFoer, @Param("foedtEtter") LocalDate foedtEtter,
                         @Param("syntetisk") boolean syntetisk, Pageable pageable);
+
+    @Query
+    int countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+            Rekvireringsstatus rekvireringsstatus,
+            Identtype identtype,
+            Boolean syntetisk,
+            LocalDate foedtEtter,
+            LocalDate foedtFoer);
+
+    @Query
+    int countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+            Rekvireringsstatus rekvireringsstatus,
+            Identtype identtype,
+            Boolean syntetisk,
+            Kjoenn kjoenn,
+            LocalDate foedtEtter,
+            LocalDate foedtFoer);
+
+    @Query
+    Page<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+            Rekvireringsstatus rekvireringsstatus,
+            Identtype identtype,
+            Boolean syntetisk,
+            LocalDate foedtEtter,
+            LocalDate foedtFoer,
+            Pageable pageable);
+
+    @Query
+    Page<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+            Rekvireringsstatus rekvireringsstatus,
+            Identtype identtype,
+            Boolean syntetisk,
+            Kjoenn kjoenn,
+            LocalDate foedtEtter,
+            LocalDate foedtFoer,
+            Pageable pageable);
 }

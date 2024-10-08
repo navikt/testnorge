@@ -8,6 +8,7 @@ import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -15,8 +16,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
@@ -62,5 +65,40 @@ public class DatabaseService {
         return identRepository.findAll(
                 rekvireringsstatus, request.getIdenttype(), request.getKjoenn(), request.getFoedtFoer(),
                 request.getFoedtEtter(), isTrue(request.getSyntetisk()), PageRequest.of(page, request.getAntall()));
+    }
+
+    private int getAntall(HentIdenterRequest request,
+                          Rekvireringsstatus rekvireringsstatus) {
+
+        return nonNull(request.getKjoenn()) ?
+
+                identRepository.countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+                        rekvireringsstatus, request.getIdenttype(),
+                        isTrue(request.getSyntetisk()), request.getKjoenn(),
+                        request.getFoedtEtter(), request.getFoedtFoer()) :
+
+                identRepository.countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+                        rekvireringsstatus, request.getIdenttype(),
+                        isTrue(request.getSyntetisk()),
+                                request.getFoedtEtter(), request.getFoedtFoer());
+    }
+
+    private Page<Ident> findPage(HentIdenterRequest request,
+                                 Rekvireringsstatus rekvireringsstatus,
+                                 Pageable page) {
+
+        return nonNull(request.getKjoenn()) ?
+
+                identRepository.findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+                        rekvireringsstatus, request.getIdenttype(),
+                        isTrue(request.getSyntetisk()), request.getKjoenn(),
+                        request.getFoedtEtter(), request.getFoedtFoer(), page
+                ) :
+
+                identRepository.findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+                        rekvireringsstatus, request.getIdenttype(),
+                        isTrue(request.getSyntetisk()),
+                        request.getFoedtEtter(), request.getFoedtFoer(), page
+                );
     }
 }
