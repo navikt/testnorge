@@ -1,6 +1,6 @@
 {
   "name": "dolly",
-  "version": "3.0.35",
+  "version": "3.0.36",
   "type": "module",
   "description": "",
   "main": "index.js",
@@ -13,7 +13,10 @@
     "test:start": "vite --port 5678",
     "test:playwright-dev": "playwright test --ui",
     "test:playwright-run": "playwright test",
-    "test:playwright-debug": "playwright test --debug"
+    "test:playwright-debug": "playwright test --debug",
+    "test:vitest-debug": "vitest --ui",
+    "test:vitest-run": "vitest",
+    "test:vitest-watch": "vitest --watch"
   },
   "author": "",
   "license": "ISC",
@@ -80,6 +83,7 @@
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/ui": "^2.1.2",
     "babel-plugin-styled-components": "^2.1.1",
     "dot-prop": "^9.0.0",
     "eslint": "^9.9.0",
@@ -87,7 +91,9 @@
     "eslint-plugin-react": "^7.31.11",
     "fetch-retry": "^6.0.0",
     "isomorphic-fetch": "^3.0.0",
+    "jsdom": "^25.0.1",
     "less": "^4.1.3",
+    "msw": "^2.4.9",
     "prettier": "^3.0.0",
     "react-dropzone": "^14.2.3",
     "react-pdf": "^9.0.0",

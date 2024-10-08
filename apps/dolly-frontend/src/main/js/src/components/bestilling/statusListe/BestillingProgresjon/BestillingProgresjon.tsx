@@ -126,8 +126,11 @@ export const BestillingProgresjon = ({
 		harBestillingFeilet(sistOppdatert)
 	}, [bestillingStatus, bestilling])
 
-	if (loading) {
+	if (!bestilling) {
 		return null
+	}
+	if (loading) {
+		return <Loading label={'Henter bestilling ...'} />
 	}
 
 	const { percentFinished, tittel, description } = calculateStatus()

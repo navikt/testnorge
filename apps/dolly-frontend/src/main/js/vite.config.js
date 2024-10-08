@@ -69,6 +69,11 @@ export default defineConfig(({ mode }) => ({
 		proxy: proxyRoutes,
 		port: 3000,
 	},
+	test: {
+		globals: true,
+		environment: 'jsdom',
+		exclude: ['**/node_modules/**', '**/playwright/**'],
+	},
 	plugins: [
 		react({
 			babel: {
