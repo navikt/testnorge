@@ -21,7 +21,21 @@ export const yrkesskaderAttributt = 'yrkesskader'
 export const YrkesskaderForm = () => {
 	const formMethods = useFormContext()
 
-	// TODO: Krav om arbeidsgiver dersom innmelderrolle === virksomhetsrepresentant
+	const handleChangeInnmelderrolle = (value, path) => {
+		formMethods.setValue(`${path}.innmelderrolle`, value?.value)
+		formMethods.setValue(`${path}.innmelderIdentifikator`, '')
+		formMethods.setValue(`${path}.paaVegneAv`, '')
+		formMethods.trigger(path)
+	}
+
+	const handleChangeTidstype = (value, path) => {
+		formMethods.setValue(`${path}.tidstype`, value?.value)
+		formMethods.setValue(`${path}.skadetidspunkt`, null)
+		formMethods.setValue(`${path}.perioder`, [initialYrkesskadePeriode])
+		formMethods.trigger(path)
+	}
+
+	// TODO: Krav om arbeidsgiver dersom innmelderrolle === virksomhetsrepresentant???
 
 	return (
 		<Vis attributt={yrkesskaderAttributt}>
@@ -40,7 +54,7 @@ export const YrkesskaderForm = () => {
 					{(path: string, idx: number) => {
 						return (
 							<React.Fragment key={idx}>
-								{/*skadelidtIdentifikator: '', //TODO: Blir satt av BE*/}
+								{/*skadelidtIdentifikator: '', // Blir satt av BE*/}
 
 								{/*rolletype: '',*/}
 								<FormSelect
@@ -73,8 +87,7 @@ export const YrkesskaderForm = () => {
 									]}
 									//TODO: Bruk kodeverk innmelderrolle
 									// kodeverk={null}
-									//TODO: onChange for å nullstille innmelderIdentifikator og paavegneAv
-									// onChange={}
+									onChange={(value) => handleChangeInnmelderrolle(value, path)}
 									size="large"
 								/>
 
@@ -121,8 +134,7 @@ export const YrkesskaderForm = () => {
 									label="Tidstype"
 									options={Options('tidstype')}
 									size="medium"
-									//TODO: onChange for å nullstille skadetidspunkt og perioder
-									// onChange={}
+									onChange={(value) => handleChangeTidstype(value, path)}
 								/>
 
 								{/*skadetidspunkt: null,*/}
