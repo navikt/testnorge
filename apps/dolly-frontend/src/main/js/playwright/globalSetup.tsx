@@ -1,6 +1,7 @@
 import { test as base } from '@playwright/test'
 import {
 	aaregMock,
+	afpOffentligMock,
 	ameldingMock,
 	arenaMock,
 	backendBestillingerMock,
@@ -11,7 +12,7 @@ import {
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
 	eksisterendeGruppeMock,
-	gjeldendeBrukerMock,
+	gjeldendeAzureBrukerMock,
 	gjeldendeProfilMock,
 	histarkMock,
 	instMock,
@@ -86,6 +87,7 @@ const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp
 const pensjonPensjonsavtale = new RegExp(
 	/testnav-pensjon-testdata-facade-proxy\/api\/v2\/pensjonsavtale\/hent/,
 )
+const afpOffentlig = new RegExp(/testnav-pensjon-testdata-facade-proxy\/q1\/api\/mock-oppsett/)
 const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
 const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
@@ -109,7 +111,7 @@ const organisasjonerForBruker = new RegExp(/dolly-backend\/api\/v1\/organisasjon
 const mockRoutes: RouteInfo[] = [
 	{ url: api, response: [] },
 	{ url: weatherApi, status: 404, response: {} },
-	{ url: current, response: gjeldendeBrukerMock },
+	{ url: current, response: gjeldendeAzureBrukerMock },
 	{ url: profil, response: gjeldendeProfilMock },
 	{ url: miljoer, response: miljoeMock },
 	{ url: pensjonMiljoer, response: miljoeMock },
@@ -147,6 +149,7 @@ const mockRoutes: RouteInfo[] = [
 	{ url: pensjon, response: pensjonMock },
 	{ url: pensjonTp, response: pensjonTpMock },
 	{ url: pensjonPensjonsavtale, response: pensjonPensjonsavtaleMock },
+	{ url: afpOffentlig, response: afpOffentligMock },
 	{ url: sigrunstub, response: sigrunstubMock },
 	{ url: udistub, response: udistubMock },
 	{ url: kodeverk, response: kodeverkMock },
@@ -159,7 +162,7 @@ const mockRoutes: RouteInfo[] = [
 ]
 
 export const test = base.extend({
-	page: async ({ baseURL, page, context }, use) => {
+	page: async ({ page, context }, use) => {
 		for (const routeInfo of mockRoutes) {
 			await context.addInitScript(() => {
 				// @ts-ignore

@@ -22,11 +22,11 @@ public class OrgFasteDataServiceConsumer {
 
     public OrgFasteDataServiceConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder
     ) {
         serverProperties = consumers.getTestnavOrganisasjonFasteDataService();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

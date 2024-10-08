@@ -17,6 +17,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
+import static no.nav.testnav.libs.reactivecore.utils.WebClientFilter.getMessage;
 
 @Slf4j
 @RequiredArgsConstructor

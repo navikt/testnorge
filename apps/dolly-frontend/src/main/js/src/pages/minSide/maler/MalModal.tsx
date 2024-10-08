@@ -1,4 +1,4 @@
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import React, { useState } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'

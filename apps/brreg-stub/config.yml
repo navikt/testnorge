@@ -12,6 +12,13 @@ spec:
     path: /isAlive
     periodSeconds: 30
     initialDelay: 30
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /isReady
     initialDelay: 30

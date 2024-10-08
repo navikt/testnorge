@@ -1,0 +1,14 @@
+plugins {
+    id "com.gradle.develocity" version "3.17.4"
+}
+
+rootProject.name = 'dolly-db'
+
+includeBuild "../../plugins/java"
+
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+    }
+}

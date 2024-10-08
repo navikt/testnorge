@@ -88,6 +88,16 @@ export const harUforetrygdBestilling = (bestillingerFagsystemer) => {
 	return uforetrygd
 }
 
+export const harAfpOffentligBestilling = (bestillingerFagsystemer) => {
+	let afpOffentlig = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i?.pensjonforvalter?.afpOffentlig) {
+			afpOffentlig = true
+		}
+	})
+	return afpOffentlig
+}
+
 export const harInstBestilling = (bestillingerFagsystemer) => {
 	let inst = false
 	bestillingerFagsystemer?.forEach((i) => {

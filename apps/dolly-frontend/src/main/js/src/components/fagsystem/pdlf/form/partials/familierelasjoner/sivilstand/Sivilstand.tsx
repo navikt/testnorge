@@ -101,6 +101,7 @@ export const SivilstandForm = ({
 			/>
 			{kanHaRelatertPerson && (
 				<PdlPersonExpander
+					path={path}
 					nyPersonPath={`${path}.nyRelatertPerson`}
 					eksisterendePersonPath={`${path}.relatertVedSivilstand`}
 					eksisterendeNyPerson={eksisterendeNyPerson}
@@ -111,7 +112,6 @@ export const SivilstandForm = ({
 						!isEmpty(formMethods.watch(`${path}.nyRelatertPerson`), ['syntetisk']) ||
 						formMethods.watch(`${path}.relatertVedSivilstand`) !== null
 					}
-					toggleExpansion={identMaster != 'PDL'}
 				/>
 			)}
 			<AvansertForm

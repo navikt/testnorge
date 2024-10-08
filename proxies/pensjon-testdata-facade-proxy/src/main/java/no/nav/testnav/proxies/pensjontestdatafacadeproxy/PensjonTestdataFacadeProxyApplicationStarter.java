@@ -1,7 +1,6 @@
 package no.nav.testnav.proxies.pensjontestdatafacadeproxy;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
@@ -22,7 +21,6 @@ import java.util.Arrays;
 
 @Import({
         CoreConfig.class,
-        DevConfig.class,
         SecurityConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
@@ -39,13 +37,23 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
         Arrays
                 .stream(MILJOER)
                 .forEach(
-                        miljoe ->
-                                routes.route(
-                                        spec -> spec
-                                                .path("/" + miljoe + "/api/samboer/**")
-                                                .filters(filterSPec -> filterSPec.filter(getAuthenticationFilter(tokenService, consumers.getSamboerTestdata(), miljoe))
-                                                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}"))
-                                                .uri(forEnvironment(consumers.getSamboerTestdata(), miljoe).getUrl())));
+                        miljoe -> {
+                            routes.route(
+                                    spec -> spec
+                                            .path("/" + miljoe + "/api/samboer/**")
+                                            .filters(filterSPec -> filterSPec.filter(getAuthenticationFilter(tokenService,
+                                                            consumers.getSamboerTestdata().getMiljoe(miljoe)))
+                                                    .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}"))
+                                            .uri(consumers.getSamboerTestdata().getMiljoe(miljoe).getUrl()));
+
+                            routes.route(
+                                    spec -> spec
+                                            .path("/" + miljoe + "/api/mock-oppsett/**")
+                                            .filters(filterSpec -> filterSpec.filter(getAuthenticationFilter(tokenService,
+                                                            consumers.getAfpOffentlig().getMiljoe(miljoe)))
+                                                    .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}"))
+                                            .uri(consumers.getAfpOffentlig().getMiljoe(miljoe).getUrl()));
+                        });
         routes
                 .route(
                         spec -> spec
@@ -53,33 +61,22 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                                 .filters(gatewayFilterSpec -> gatewayFilterSpec
                                         .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
                                 ) //Auth header er required men sjekkes ikke utover det
-                                .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
+                                .uri(consumers.getPensjonTestdataFacade().getUrl()))
                 .build();
 
         return routes.build();
     }
 
     private GatewayFilter getAuthenticationFilter(TrygdeetatenAzureAdTokenService tokenService,
-                                                  ServerProperties serverProperties,
-                                                  String miljoe) {
+                                                  ServerProperties serverProperties) {
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
                         () -> tokenService
-                                .exchange(forEnvironment(serverProperties, miljoe))
+                                .exchange(serverProperties)
                                 .map(AccessToken::getTokenValue));
-    }
-
-    private static ServerProperties forEnvironment(ServerProperties original, String env) {
-        return ServerProperties.of(
-                original.getCluster(),
-                original.getNamespace(),
-                original.getName().replace("MILJOE", env),
-                original.getUrl().replace("MILJOE", env + ("q1".equals(env) ? ".very" : ""))
-        );
     }
 
     public static void main(String[] args) {
         SpringApplication.run(PensjonTestdataFacadeProxyApplicationStarter.class, args);
     }
-
 }

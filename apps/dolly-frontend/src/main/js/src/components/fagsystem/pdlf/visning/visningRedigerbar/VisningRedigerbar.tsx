@@ -6,7 +6,7 @@ import Button from '@/components/ui/button/Button'
 import _ from 'lodash'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
@@ -39,9 +39,12 @@ import { Form, FormProvider, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
-import { boolean } from 'yup'
 import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
+import DisplayFormState from '@/utils/DisplayFormState'
+import DisplayFormErrors from '@/utils/DisplayFormErrors'
+import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
+import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -51,6 +54,7 @@ type VisningTypes = {
 	redigertAttributt?: any
 	path: string
 	ident: string
+	identMaster?: string
 	identtype?: string
 	disableSlett?: boolean
 	personFoerLeggTil?: any
@@ -62,6 +66,7 @@ type VisningTypes = {
 
 enum Attributt {
 	Navn = 'navn',
+	Personstatus = 'folkeregisterpersonstatus',
 	Foedsel = 'foedsel',
 	Foedested = 'foedested',
 	Foedselsdato = 'foedselsdato',
@@ -121,7 +126,7 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
-	identMaster = boolean,
+	identMaster = '',
 	disableSlett = false,
 	personValues = null,
 	relasjoner = null,
@@ -151,7 +156,7 @@ export const VisningRedigerbar = ({
 
 	const sendData = (data) => {
 		const id = _.get(data, `${path}.id`)
-		const itemData = _.get(data, path)
+		const itemData = formMethods.watch(path)
 		return PdlforvalterApi.putAttributt(ident, path?.toLowerCase(), id, itemData)
 			.catch((error: Error) => {
 				pdlfError(error)
@@ -230,6 +235,8 @@ export const VisningRedigerbar = ({
 		switch (path) {
 			case Attributt.Navn:
 				return <NavnForm formMethods={formMethods} path={path} />
+			case Attributt.Personstatus:
+				return <PersonstatusForm path={path} />
 			case Attributt.Foedsel:
 				return <FoedselForm formMethods={formMethods} path={path} />
 			case Attributt.Foedested:
@@ -400,8 +407,18 @@ export const VisningRedigerbar = ({
 					</>
 				)}
 				{visningModus === Modus.Skriv && (
-					<Form onSubmit={(data) => handleSubmit(data?.data)}>
+					<Form
+						onSubmit={(data) => {
+							return handleSubmit(data?.data)
+						}}
+					>
 						<>
+							{devEnabled && (
+								<>
+									<DisplayFormState />
+									<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+								</>
+							)}
 							<FieldArrayEdit>
 								<div className="flexbox--flex-wrap visning-redigerbar-form">
 									{getForm(formMethods)}

@@ -25,7 +25,13 @@ export const EnkeltinntektForm = ({
 	const filteredTekniskNavnOptions = getFilteredTekniskNavnOptions()
 
 	return (
-		<FormDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
+		<FormDollyFieldArray
+			maxEntries={1}
+			name={path}
+			header={header}
+			newEntry={initialGrunnlag}
+			nested
+		>
 			{(path, idx) => {
 				const typeInntekt = formMethods.watch(`${path}.tekniskNavn`)
 				return (

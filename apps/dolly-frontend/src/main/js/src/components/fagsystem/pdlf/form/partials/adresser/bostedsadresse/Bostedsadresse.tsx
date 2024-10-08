@@ -160,7 +160,7 @@ export const BostedsadresseForm = ({
 			{valgtAdressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
-				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." addHour />
+				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 				<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				<DollySelect
 					name={`${path}.opprettCoAdresseNavn.fornavn`}

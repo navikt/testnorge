@@ -10,7 +10,8 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:vault"
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
 }

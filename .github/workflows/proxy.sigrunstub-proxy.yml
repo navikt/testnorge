@@ -15,7 +15,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/sigrunstub-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-sigrunstub"
     permissions:
       contents: read
       id-token: write

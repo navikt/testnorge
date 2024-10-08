@@ -14,7 +14,10 @@ import lombok.Setter;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.util.TimeUtil;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -121,5 +124,45 @@ public class Arbeidsforhold {
     @Override
     public String toString() {
         return ("Arbeidsforhold: [" + navArbeidsforholdId + ", " + arbeidsforholdId + ", " + ansettelsesperiode + ", " + arbeidsavtaler);
+    }
+
+    public List<Arbeidsavtale> getArbeidsavtaler() {
+
+        if (isNull(arbeidsavtaler)) {
+            arbeidsavtaler = new ArrayList<>();
+        }
+        return arbeidsavtaler;
+    }
+
+    public List<PermisjonPermittering> getPermisjonPermitteringer() {
+
+        if (isNull(permisjonPermitteringer)) {
+            permisjonPermitteringer = new ArrayList<>();
+        }
+        return permisjonPermitteringer;
+    }
+
+    public List<AntallTimerForTimeloennet> getAntallTimerForTimeloennet() {
+
+        if (isNull(antallTimerForTimeloennet)) {
+            antallTimerForTimeloennet = new ArrayList<>();
+        }
+        return antallTimerForTimeloennet;
+    }
+
+    public List<Utenlandsopphold> getUtenlandsopphold() {
+
+        if (isNull(utenlandsopphold)) {
+            utenlandsopphold = new ArrayList<>();
+        }
+        return utenlandsopphold;
+    }
+
+    public List<Varsel> getVarsler() {
+
+        if (isNull(varsler)) {
+            varsler = new ArrayList<>();
+        }
+        return varsler;
     }
 }

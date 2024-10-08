@@ -3,6 +3,7 @@ import { DollyFieldArrayWrapper } from '@/components/ui/form/fieldArray/DollyFie
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Organisasjon } from '@/pages/brukerPage/types'
 import React from 'react'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type OrganisasjonVelgerProps = {
 	orgdata: Organisasjon[]
@@ -22,7 +23,11 @@ export default (props: OrganisasjonVelgerProps) => {
 					{props.orgdata.map((org: Organisasjon, idx: number) => {
 						return (
 							<React.Fragment key={idx}>
-								<NavButton className="org-button" onClick={() => props.onClick(org)}>
+								<NavButton
+									data-testid={TestComponentSelectors.BUTTON_VELG_ORG_BRUKER}
+									className="org-button"
+									onClick={() => props.onClick(org)}
+								>
 									{org.navn}
 								</NavButton>
 							</React.Fragment>

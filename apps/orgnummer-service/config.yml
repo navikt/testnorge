@@ -38,6 +38,13 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 4
@@ -61,7 +68,7 @@ spec:
     - "https://testnav-orgnummer-service.intern.dev.nav.no"
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: POSTGRES_15
         tier: db-custom-1-3840
         name: testnav-orgnummer-pool
         databases:

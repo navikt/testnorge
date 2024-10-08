@@ -6,12 +6,27 @@ export const gjeldendeProfilMock = {
 	type: 'Testbruker',
 }
 
-export const gjeldendeBrukerMock = {
+export const gjeldendeAzureBrukerMock = {
 	brukerId: '1234-5678-12',
 	brukernavn: 'BeASt, BugTerminator',
-	brukertype: 'BASIC',
+	brukertype: 'AZURE',
 	epost: 'BeASt@bugexterminator.no',
 }
+
+export const gjeldendeBankidBrukerMock = {
+	brukerId: '12345678912',
+	brukernavn: 'BeASt, BugTerminator',
+	brukertype: 'BANKID',
+}
+
+export const personOrgTilgangMock = [
+	{
+		navn: 'testytest',
+		organisasjonsnummer: '12345678',
+		organisasjonsfrom: 'BEDR',
+		gyldigTil: '2100-10-10T10:10:10.100Z',
+	},
+]
 
 export const personFragmentSearchMock = [
 	{
@@ -54,7 +69,7 @@ export const brukerMalerMock = {
 				id: 1,
 				malNavn: 'Teste Playwright',
 				bestilling: malBestilling,
-				bruker: gjeldendeBrukerMock,
+				bruker: gjeldendeAzureBrukerMock,
 			},
 		],
 	},
@@ -65,7 +80,7 @@ export const brukerMalerEndretMock = [
 		id: 1,
 		malNavn: 'Nytt navn på mal',
 		bestilling: malBestilling,
-		bruker: gjeldendeBrukerMock,
+		bruker: gjeldendeAzureBrukerMock,
 	},
 ]
 
@@ -75,7 +90,7 @@ export const uferdigBestillingMock = {
 	antallLevert: 0,
 	ferdig: false,
 	sistOppdatert: '2023-04-21T10:38:10.11282',
-	bruker: gjeldendeBrukerMock,
+	bruker: gjeldendeAzureBrukerMock,
 	gruppeId: 2,
 	stoppet: false,
 	bestilling: {
@@ -883,6 +898,24 @@ export const pensjonTpMock = [{ ordning: '4095' }, { ordning: '3010' }]
 
 export const pensjonPensjonsavtaleMock = [{}, {}]
 
+export const afpOffentligMock = {
+	direktekall: [],
+	mocksvar: [
+		{
+			tpId: '4099',
+			statusAfp: 'INNVILGET',
+			virkningsDato: '2024-09-01T00:00:00',
+			sistBenyttetG: 2024,
+			belopsListe: [
+				{
+					fomDato: '2024-09-02T00:00:00',
+					belop: '10000',
+				},
+			],
+		},
+	],
+}
+
 export const tagsMock = [{ tag: 'DUMMY', beskrivelse: 'Dummy' }]
 
 export const kontoregisterMock = {
@@ -1317,7 +1350,7 @@ export const backendBestillingerMock = [
 		antallLevert: 1,
 		ferdig: true,
 		sistOppdatert: '2022-01-01T11:59:25.998969',
-		bruker: gjeldendeBrukerMock,
+		bruker: gjeldendeAzureBrukerMock,
 		gruppeId: 1,
 		stoppet: false,
 		environments: ['q1'],
@@ -1474,6 +1507,21 @@ export const backendBestillingerMock = [
 			{
 				id: 'PEN_FORVALTER',
 				navn: 'Pensjon (PEN)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'PEN_AFP_OFFENTLIG',
+				navn: 'AFP offentlig (PEN)',
 				statuser: [
 					{
 						melding: 'OK',
@@ -1683,6 +1731,23 @@ export const backendBestillingerMock = [
 						],
 					},
 				],
+				afpOffentlig: {
+					direktekall: [],
+					mocksvar: [
+						{
+							tpId: '4099',
+							statusAfp: 'INNVILGET',
+							virkningsDato: '2024-09-01T00:00:00',
+							sistBenyttetG: 2024,
+							belopsListe: [
+								{
+									fomDato: '2024-09-02T00:00:00',
+									belop: '10000',
+								},
+							],
+						},
+					],
+				},
 			},
 			inntektsmelding: {
 				inntekter: [
@@ -2008,7 +2073,7 @@ export const backendBestillingerMock = [
 		antallLevert: 1,
 		ferdig: true,
 		sistOppdatert: '2022-01-01T15:45:39.696068',
-		bruker: gjeldendeBrukerMock,
+		bruker: gjeldendeAzureBrukerMock,
 		gruppeId: 1,
 		stoppet: false,
 		environments: [''],
@@ -2057,7 +2122,7 @@ export const backendBestillingerMock = [
 		antallLevert: 1,
 		ferdig: true,
 		sistOppdatert: '2022-01-01T15:45:39.696068',
-		bruker: gjeldendeBrukerMock,
+		bruker: gjeldendeAzureBrukerMock,
 		gruppeId: 1,
 		stoppet: false,
 		environments: [''],
@@ -2086,8 +2151,8 @@ export const nyGruppeMock = {
 	id: 2,
 	navn: 'Playwright testing',
 	hensikt: 'Saftig testing med Playwright..',
-	opprettetAv: gjeldendeBrukerMock,
-	sistEndretAv: gjeldendeBrukerMock,
+	opprettetAv: gjeldendeAzureBrukerMock,
+	sistEndretAv: gjeldendeAzureBrukerMock,
 	datoEndret: '1990-01-12',
 	antallIdenter: 0,
 	antallIBruk: 0,
@@ -2102,8 +2167,8 @@ export const eksisterendeGruppeMock = {
 	id: 1,
 	navn: 'Testytest',
 	hensikt: 'Testing av testytest',
-	opprettetAv: gjeldendeBrukerMock,
-	sistEndretAv: gjeldendeBrukerMock,
+	opprettetAv: gjeldendeAzureBrukerMock,
+	sistEndretAv: gjeldendeAzureBrukerMock,
 	datoEndret: '1980-01-12',
 	antallIdenter: 1,
 	antallBestillinger: 3,

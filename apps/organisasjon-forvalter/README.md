@@ -8,17 +8,6 @@ orgnr når de sendes videre mot EREG.
 Swagger finnes under [/swagger](https://testnav-organisasjon-forvalter.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
-## Lokal kjøring
-
-Ha naisdevice kjørende og kjør OrganisasjonForvalterApplicationStarter med følgende argumenter:
-
-``` 
--Dspring.profiles.active=dev
--Dspring.cloud.vault.token=[vault-token]
-```
-
-og legg til i VM options:
-
-``` 
---add-opens java.base/java.lang=ALL-UNNAMED
-``` 
+## Kjør lokalt
+* Se [generell informasjon](../../docs/local_general.md).
+* Applikasjonen er avhengig av en database i GCP, se [egen dokumentasjon](../../docs/gcp_db.md).

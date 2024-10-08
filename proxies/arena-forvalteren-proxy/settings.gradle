@@ -2,14 +2,15 @@ plugins {
     id "com.gradle.develocity" version "3.17.4"
 }
 
-rootProject.name = 'arena-forvalteren-proxy'
+rootProject.name = "arena-forvalteren-proxy"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-proxy'
-includeBuild '../../libs/security-core'
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/reactive-proxy"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/vault"
 
 develocity {
     buildScan {

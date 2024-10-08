@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
@@ -38,6 +39,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MalBestillingService {
 
@@ -89,6 +91,7 @@ public class MalBestillingService {
                 .toList());
 
         return malBestillingWrapper;
+
     }
 
     @Transactional(readOnly = true)
@@ -132,7 +135,7 @@ public class MalBestillingService {
         if (eksisterende.isEmpty()) {
             bestillingMalRepository.save(BestillingMal.builder()
 
-                    .bestKriterier(bestilling.getBestKriterier())
+                    .bestKriterier(formatBestillingKriterier(bestilling.getBestKriterier()))
                     .bruker(bruker)
                     .malNavn(malNavn)
                     .miljoer(bestilling.getMiljoer())
@@ -159,7 +162,7 @@ public class MalBestillingService {
         var maler = bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
         if (maler.isEmpty()) {
             malbestilling = bestillingMalRepository.save(BestillingMal.builder()
-                    .bestKriterier(bestilling.getBestKriterier())
+                    .bestKriterier(formatBestillingKriterier(bestilling.getBestKriterier()))
                     .bruker(bruker)
                     .malNavn(malNavn)
                     .miljoer(bestilling.getMiljoer())
@@ -268,6 +271,10 @@ public class MalBestillingService {
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
+    }
+
+    private String formatBestillingKriterier(String bestillingKriterier) {
+        return bestillingKriterier.replaceAll("fysiskDokument[^,]*+,", "");
     }
 
     private static Set<String> toSet(String miljoer) {

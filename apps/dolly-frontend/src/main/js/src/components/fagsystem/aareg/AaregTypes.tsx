@@ -48,7 +48,7 @@ export type Amelding = {
 }
 
 type Arbeidsforhold = {
-	arbeidsforholdID: string
+	arbeidsforholdId: string
 }
 
 export type KodeverkValue = {

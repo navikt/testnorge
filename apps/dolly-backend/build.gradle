@@ -20,8 +20,6 @@ dependencies {
     implementation 'no.nav.testnav.libs:data-transfer-search-objects'
     implementation 'no.nav.testnav.libs:reactive-core'
 
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
@@ -45,6 +43,8 @@ dependencies {
 
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
     implementation 'org.codehaus.jettison:jettison:1.5.4'
     implementation "org.apache.poi:poi:$versions.apachePoi"

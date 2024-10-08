@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { DollyApi } from '@/service/Api'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'

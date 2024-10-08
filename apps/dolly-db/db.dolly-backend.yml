@@ -1,0 +1,31 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "db-dolly-backend"
+  namespace: "dolly"
+  labels:
+    "team": "dolly"
+spec:
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_15
+        tier: db-custom-2-7680
+        databases:
+          - name: db-dolly-backend
+  image: "{{image}}"
+  ingresses:
+    - "https://dolly-db.intern.dev.nav.no"
+  liveness:
+    path: "/internal/health/liveness"
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  prometheus:
+    enabled: true
+    path: "/internal/prometheus"
+  readiness:
+    path: "/internal/health/readiness"
+  replicas:
+    min: 1
+    max: 1

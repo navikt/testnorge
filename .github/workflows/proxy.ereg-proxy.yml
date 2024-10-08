@@ -15,7 +15,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/ereg-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-ereg"
     permissions:
       contents: read
       id-token: write

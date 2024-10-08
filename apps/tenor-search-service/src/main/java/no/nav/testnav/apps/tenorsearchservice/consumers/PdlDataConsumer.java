@@ -18,8 +18,9 @@ public class PdlDataConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
-    public PdlDataConsumer(TokenExchange tokenExchange, Consumers serverProperties) {
-        this.webClient = WebClient.builder()
+    public PdlDataConsumer(TokenExchange tokenExchange, Consumers serverProperties,
+                           WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getPdlTestdata().getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

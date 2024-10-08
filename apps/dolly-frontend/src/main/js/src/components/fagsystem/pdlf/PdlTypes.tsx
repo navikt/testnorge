@@ -34,6 +34,7 @@ export type PersonData = {
 	utflytting?: Array<Utflytting>
 	vergemaal?: Array<VergemaalValues>
 	doedsfall?: Array<DoedsfallData>
+	folkeregisterPersonstatus?: Array<PersonstatusData>
 }
 
 export type PersonUtenIdData = {
@@ -59,6 +60,12 @@ export type NavnBestilling = {
 
 type Kjoenn = {
 	kjoenn: string
+}
+
+type PersonstatusData = {
+	status: string
+	gyldigFraOgMed: string
+	gyldigTilOgMed: string
 }
 
 export type FoedselData = {
@@ -194,7 +201,7 @@ export type VergemaalValues = {
 	sakType?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
-	nyVergeIdent?: NyIdent
+	nyVergeIdent?: NyIdent | undefined
 	vergeIdent?: string
 	id: number
 }

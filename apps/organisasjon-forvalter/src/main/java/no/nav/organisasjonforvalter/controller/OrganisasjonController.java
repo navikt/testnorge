@@ -1,23 +1,8 @@
 package no.nav.organisasjonforvalter.controller;
 
-import static java.util.Objects.nonNull;
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
 import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
 import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
@@ -32,9 +17,22 @@ import no.nav.organisasjonforvalter.service.OrdreService;
 import no.nav.organisasjonforvalter.service.OrdreStatusService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static java.util.Objects.nonNull;
 
 @RestController
-@RequestMapping("api/v2/organisasjoner")
+@RequestMapping(value = "api/v2/organisasjoner", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class OrganisasjonController {
 
@@ -46,7 +44,6 @@ public class OrganisasjonController {
     private final DrivervirksomheterService drivervirksomheterService;
     private final GetAuthenticatedId getAuthenticatedId;
 
-    @CacheEvict(value = CACHE_BEDRIFT, allEntries = true)
     @PostMapping
     @Operation(description = "Opprett organisasjon med angitte egenskaper")
     public BestillingResponse createOrganisasjon(@RequestBody BestillingRequest request) {

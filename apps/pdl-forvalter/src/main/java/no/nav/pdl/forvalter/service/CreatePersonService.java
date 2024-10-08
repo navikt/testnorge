@@ -7,19 +7,7 @@ import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavPersonIdentifikatorDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.*;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -29,7 +17,6 @@ import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
@@ -50,7 +37,6 @@ public class CreatePersonService {
     private final StatsborgerskapService statsborgerskapService;
     private final BostedAdresseService bostedAdresseService;
     private final NavnService navnService;
-    private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final NavPersonIdentifikatorService navsPersonIdentifikatorService;
 
@@ -84,11 +70,6 @@ public class CreatePersonService {
                                 .gradering(request.getGradering())
                                 .folkeregistermetadata(new FolkeregistermetadataDTO())
                                 .build()) : null)
-                .folkeregisterPersonstatus(request.getIdenttype() != NPID ?
-                        List.of(FolkeregisterPersonstatusDTO.builder()
-                                .folkeregistermetadata(new FolkeregistermetadataDTO())
-                                .build()) :
-                        emptyList())
                 .navPersonIdentifikator(request.getIdenttype() == NPID ?
                         List.of(new NavPersonIdentifikatorDTO()) : null)
                 .build();
@@ -129,7 +110,6 @@ public class CreatePersonService {
                 .kilde("Dolly")
                 .bekreftelsesdato(request.getIdenttype() != NPID ? null : now())
                 .build());
-        folkeregisterPersonstatusService.convert(mergedPerson);
 
         log.info("Oppretting av ident {} tok {} ms", mergedPerson.getIdent(), currentTimeMillis() - startTime);
 

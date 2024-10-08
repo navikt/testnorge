@@ -22,28 +22,17 @@ https://dolly.ekstern.dev.nav.no/swagger-ui.html
 https://dolly-backend.intern.dev.nav.no/swagger-ui.html
 
 ## Kjør lokalt
+* Se [generell informasjon](../../docs/local_general.md).
+* Applikasjonen er avhengig av en database i GCP, se [egen dokumentasjon](../../docs/gcp_db.md).
+* Applikasjonen er avhengig av Elasticsearch:
+```aiexclude
+> docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YLAgOm}rz#o6#Aq" --name opensearch -d opensearchproject/opensearch:latest
+```
+Legg merke til passord `YLAgOm}rz#o6#Aq` (tilfeldig [generert](https://www.strongpasswordgenerator.org/), men må være "sterkt" ellers vil ikke OpenSearch starte).
 
-https://dolly-backend.intern.dev.nav.no/swagger-ui.html
-**NB: `naisdevice` må kjøre og være grønn.**
-
-Så kjør `./gradlew clean build`
-
-Deretter kan DollyBackendApplicationStarter startes med disse VM options:
-
-`-Dspring.profiles.active=local --add-opens java.base/java.lang=ALL-UNNAMED -Dspring.cloud.vault.token=*TOKEN*`
-
-For å kjøre tester og bygge appen lokalt må Docker (Colima kan brukes på Mac) kjøre og man er nødt til å sette disse
-miljøvariablene:
-
+**Mac:** For å kjøre tester og bygge appen lokalt må Docker (Colima kan brukes) kjøre og man er nødt til å sette disse miljøvariablene:
 ```
 DOCKER_HOST=unix://${HOME}/.colima/default/docker.sock
 TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
 TESTCONTAINERS_RYUK_DISABLED=true
 ```
-
-For å kjøre lokalt med elastic search:
-
-```
-docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YLAgOm}rz#o6#Aq" --name opensearch -d opensearchproject/opensearch:latest
-```
-Legg merke til passord `YLAgOm}rz#o6#Aq` (tilfeldig [generert](https://www.strongpasswordgenerator.org/), men må være "sterkt" ellers vil ikke OpenSearch starte). 

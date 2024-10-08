@@ -2,7 +2,6 @@ package no.nav.testnav.apps.organisasjonbestillingservice.service.v2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.organisasjonbestillingservice.consumer.EregBatchStatusConsumer;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.JenkinsConsumer;
 import no.nav.testnav.apps.organisasjonbestillingservice.domain.v2.Order;
 import no.nav.testnav.apps.organisasjonbestillingservice.repository.v2.OrderRepositoryV2;
@@ -11,11 +10,13 @@ import no.nav.testnav.apps.organisasjonbestillingservice.retry.RetryConfig;
 import no.nav.testnav.apps.organisasjonbestillingservice.service.RetryService;
 import no.nav.testnav.libs.dto.organisajonbestilling.v2.Status;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -25,7 +26,6 @@ public class OrderServiceV2 {
     private final OrderRepositoryV2 repository;
     private final JenkinsConsumer jenkinsConsumer;
     private final RetryService retryService;
-    private final EregBatchStatusConsumer eregBatchStatusConsumer;
 
     public Order save(Order order) {
         OrderEntity saved = repository.save(order.toEntity());
@@ -56,17 +56,12 @@ public class OrderServiceV2 {
 
         var order = entity.get();
 
-        if (order.getBatchId() != null) {
-            try {
+        if (nonNull(order.getBatchId())) {
 
-                return getStatusFromBatchId(new Order(order));
-            } catch (WebClientResponseException.NotFound e) {
-                log.info("Fant ikke noen status for org: {}", id);
-                return null;
-            }
+            return Status.PENDING_COMPLETE;
         }
 
-        if (order.getBuildId() == null) {
+        if (isNull(order.getBuildId())) {
             return Status.ADDING_TO_QUEUE;
         }
 
@@ -94,7 +89,7 @@ public class OrderServiceV2 {
             return Status.RUNNING;
         }
         repository.save(order);
-        return getStatusFromBatchId(new Order(order));
+        return Status.PENDING_COMPLETE;
     }
 
     public List<Order> find(String uuid) {
@@ -113,10 +108,10 @@ public class OrderServiceV2 {
                 .toList();
     }
 
-    private Status getStatusFromBatchId(Order order) {
-        var statusKode = eregBatchStatusConsumer.getStatusKode(order);
-        return Status.from(statusKode);
-    }
+//    private Status getStatusFromBatchId(Order order) {
+//        var statusKode = eregBatchStatusConsumer.getStatusKode(order);
+//        return Status.from(statusKode);
+//    }
 
     private Long findIDFromLog(String value) {
         log.info("Prøver å hente ut id fra log: {}.", value);

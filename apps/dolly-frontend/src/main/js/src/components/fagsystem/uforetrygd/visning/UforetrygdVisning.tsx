@@ -57,15 +57,29 @@ const DataVisning = ({ data, miljo }) => {
 	)?.label
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+	const vedtakUT = vedtakData?.find((vedtak) => vedtak?.sakType === 'UT')
+
+	const getSisteOppdatering = (sisteOppdatering: string) => {
+		if (sisteOppdatering?.includes('opprettet')) {
+			return 'Iverksatt'
+		} else if (sisteOppdatering?.indexOf('<') > 0) {
+			return sisteOppdatering?.substring(0, sisteOppdatering?.indexOf('<'))
+		} else if (sisteOppdatering?.indexOf('{') > 0) {
+			return sisteOppdatering?.substring(0, sisteOppdatering?.indexOf('{'))
+		} else {
+			return sisteOppdatering
+		}
+	}
 
 	return (
 		<>
 			<div className="person-visning_content">
-				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue title="Vedtaksstatus" value={getSisteOppdatering(vedtakUT?.sisteOppdatering)} />
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
 				<TitleValue title="Inntekt før uførhet" value={data?.inntektForUforhet} />
+				<TitleValue title="Inntekt etter uførhet" value={data?.inntektEtterUforhet} />
 				<TitleValue
 					title="Type barnetillegg"
 					value={showLabel('barnetilleggType', data?.barnetilleggDetaljer?.barnetilleggType)}

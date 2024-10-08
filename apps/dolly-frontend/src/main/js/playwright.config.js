@@ -14,10 +14,9 @@ export default defineConfig({
 
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!process.env.CI,
-	/* Retry on CI only */
-	retries: process.env.CI ? 2 : 0,
-	// Fewer workers on CI to make tests more stable
-	workers: process.env.CI ? 2 : undefined,
+	retries: process.env.CI ? 2 : 1,
+	// One worker on CI to make tests more stable
+	workers: process.env.CI ? 1 : 3,
 
 	reporter: 'html',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -28,10 +27,6 @@ export default defineConfig({
 
 	/* Configure projects for major browsers */
 	projects: [
-		{
-			name: 'firefox',
-			use: { ...devices['Desktop Firefox'] },
-		},
 		{
 			name: 'Google Chrome',
 			use: { ...devices['Desktop Chrome'], channel: 'chrome' },

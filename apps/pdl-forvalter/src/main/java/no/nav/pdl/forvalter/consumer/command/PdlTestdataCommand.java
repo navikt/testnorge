@@ -2,11 +2,9 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import reactor.core.publisher.Flux;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 public abstract class PdlTestdataCommand implements Callable<Flux<OrdreResponseDTO.HendelseDTO>> {
@@ -14,20 +12,12 @@ public abstract class PdlTestdataCommand implements Callable<Flux<OrdreResponseD
     static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
     static final String TEMA = "Tema";
 
-    protected static String getMessage(Throwable error) {
-
-        return error instanceof WebClientResponseException webClientResponseException &&
-                StringUtils.isNotBlank(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8)) ?
-                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                error.getMessage();
-    }
-
     OrdreResponseDTO.HendelseDTO errorHandling(Throwable error, Integer id) {
 
         return OrdreResponseDTO.HendelseDTO.builder()
                 .id(id)
                 .status(PdlStatus.FEIL)
-                .error(getMessage(error))
+                .error(WebClientFilter.getMessage(error))
                 .build();
     }
 }
