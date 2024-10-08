@@ -14,7 +14,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
+import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 
 export const yrkesskaderAttributt = 'yrkesskader'
 
@@ -40,7 +40,7 @@ export const YrkesskaderForm = () => {
 					{(path: string, idx: number) => {
 						return (
 							<React.Fragment key={idx}>
-								{/*skadelidtIdentifikator: '', //TODO: Blir satt av BE?*/}
+								{/*skadelidtIdentifikator: '', //TODO: Blir satt av BE*/}
 
 								{/*rolletype: '',*/}
 								<FormSelect
@@ -58,16 +58,6 @@ export const YrkesskaderForm = () => {
 									// kodeverk={null}
 									size="xlarge"
 								/>
-
-								{/*innmelderIdentifikator: '',*/}
-								{formMethods.watch(`${path}.innmelderrolle`) === 'vergeOgForesatt' && (
-									<PdlEksisterendePerson
-										eksisterendePersonPath={`${path}.innmelderIdentifikator`}
-										label="Innmelder"
-										formMethods={formMethods}
-										idx={idx}
-									/>
-								)}
 
 								{/*innmelderrolle: '',*/}
 								<FormSelect
@@ -88,6 +78,25 @@ export const YrkesskaderForm = () => {
 									size="large"
 								/>
 
+								{/*innmelderIdentifikator: '',*/}
+								{formMethods.watch(`${path}.innmelderrolle`) === 'vergeOgForesatt' && (
+									<PdlEksisterendePerson
+										eksisterendePersonPath={`${path}.innmelderIdentifikator`}
+										label="Innmelder"
+										formMethods={formMethods}
+										idx={idx}
+									/>
+								)}
+
+								{/*paaVegneAv: '',*/}
+								{formMethods.watch(`${path}.innmelderrolle`) === 'virksomhetsrepresentant' && (
+									<OrgnrToggle
+										path={`${path}.paaVegneAv`}
+										formMethods={formMethods}
+										label="På vegne av"
+									/>
+								)}
+
 								{/*klassifisering: '',*/}
 								<FormSelect
 									name={`${path}.klassifisering`}
@@ -96,14 +105,15 @@ export const YrkesskaderForm = () => {
 									size="large"
 								/>
 
-								{/*paaVegneAv: '', //TODO: Lag denne*/}
-								{formMethods.watch(`${path}.innmelderrolle`) === 'virksomhetsrepresentant' && (
-									<OrganisasjonMedArbeidsforholdSelect
-										// afterChange={handleChange}
-										path={`${path}.paaVegneAv`}
-										label={'På vegne av'}
-									/>
-								)}
+								{/*referanse: '',*/}
+								<FormTextInput name={`${path}.referanse`} label="Referanse" size="large" />
+
+								{/*ferdigstillSak: '',*/}
+								<FormSelect
+									name={`${path}.ferdigstillSak`}
+									label="Ferdigsstill sak"
+									options={Options('ferdigstillSak')}
+								/>
 
 								{/*tidstype: '',*/}
 								<FormSelect
@@ -155,16 +165,6 @@ export const YrkesskaderForm = () => {
 										}}
 									</FormDollyFieldArray>
 								)}
-
-								{/*referanse: '',*/}
-								<FormTextInput name={`${path}.referanse`} label="Referanse" size="large" />
-
-								{/*ferdigstillSak: '',*/}
-								<FormSelect
-									name={`${path}.ferdigstillSak`}
-									label="Ferdigsstill sak"
-									options={Options('ferdigstillSak')}
-								/>
 							</React.Fragment>
 						)
 					}}
