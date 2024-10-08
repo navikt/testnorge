@@ -15,6 +15,7 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
+        wiretap: true
     vault:
       enabled: false
 
