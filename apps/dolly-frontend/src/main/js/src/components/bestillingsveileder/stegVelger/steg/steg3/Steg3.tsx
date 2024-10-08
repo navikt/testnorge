@@ -16,7 +16,7 @@ const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
 )
 
-export const Steg3 = () => {
+export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
@@ -78,11 +78,14 @@ export const Steg3 = () => {
 	}, [])
 
 	const visMiljoeVelger = formMethods.watch('environments')
+	if (loadingBestilling) {
+		return <Loading label={'Oppretter bestilling ...'} />
+	}
 	return (
 		<div>
 			{harAvhukedeAttributter(formMethods.getValues()) && (
 				<div className="oppsummering">
-					<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
+					<Suspense fallback={<Loading label={'Laster bestillingskriterier ...'} />}>
 						<Bestillingskriterier bestilling={formMethods.getValues()} />
 					</Suspense>
 				</div>

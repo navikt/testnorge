@@ -1,24 +1,7 @@
 spring:
-  application:
-    name: testnav-pdl-forvalter
-  cloud:
-    vault:
-      host: vault.adeo.no
-      port: 443
-      fail-fast: true
-      connection-timeout: 15000
-      read-timeout: 30000
   datasource:
-    url: jdbc:postgresql://localhost:5433/pdl-forvalter-test
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 1
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-  jpa:
-    properties:
-      hibernate:
-        default-schema: public
+    url: jdbc:postgresql://localhost:5432/db-pdl-forvalter
+    username: ${NAV_USERNAME}
 
 consumers:
   adresse-service:

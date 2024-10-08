@@ -50,6 +50,8 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 					offset: [0, -10],
 				}}
 				overlayStyle={{ opacity: 1 }}
+				// Data maa hentes paa nytt hver gang i tilfelle endringer gjort direkte paa person
+				destroyTooltipOnHide={{ keepParent: false }}
 			>
 				<div className="miljoe-knapp">PDL</div>
 			</DollyTooltip>
@@ -62,6 +64,8 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 						offset: [0, -10],
 					}}
 					overlayStyle={{ opacity: 1 }}
+					// Data maa hentes paa nytt hver gang i tilfelle endringer gjort direkte paa person
+					destroyTooltipOnHide={{ keepParent: false }}
 				>
 					<div className="miljoe-knapp">Q1</div>
 				</DollyTooltip>

@@ -31,7 +31,8 @@ export const devEnabled =
 	window.location.hostname.includes('dolly-frontend-dev')
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
-	const context = useContext(BestillingsveilederContext)
+	const context: any = useContext(BestillingsveilederContext)
+	const [loading, setLoading] = useState(false)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const [step, setStep] = useState(0)
 	const CurrentStepComponent: any = STEPS[step]
@@ -73,14 +74,15 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 			return
 		}
 
+		setLoading(true)
 		sessionStorage.clear()
 		errorContext?.setShowError(false)
-		formMethods.reset()
-
 		formMethods.handleSubmit(onSubmit(values))
+
+		formMethods.reset()
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
-		return mutate(REGEX_BACKEND_BESTILLINGER)
+		mutate(REGEX_BACKEND_BESTILLINGER)
 	}
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
@@ -98,29 +100,27 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 					</Stepper.Step>
 				))}
 			</Stepper>
-
 			<BestillingsveilederHeader />
-
-			<CurrentStepComponent stateModifier={stateModifier} />
-
+			<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 			{devEnabled && (
 				<>
 					<DisplayFormState />
 					<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
 				</>
 			)}
-
-			<Navigation
-				step={step}
-				onPrevious={handleBack}
-				isLastStep={isLastStep()}
-				handleSubmit={() => {
-					formMethods.trigger().catch((error) => {
-						console.warn(error)
-					})
-					return _handleSubmit(formMethods.getValues())
-				}}
-			/>
+			{!loading && (
+				<Navigation
+					step={step}
+					onPrevious={handleBack}
+					isLastStep={isLastStep()}
+					handleSubmit={() => {
+						formMethods.trigger().catch((error) => {
+							console.warn(error)
+						})
+						return _handleSubmit(formMethods.getValues())
+					}}
+				/>
+			)}
 		</FormProvider>
 	)
 }
