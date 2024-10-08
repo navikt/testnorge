@@ -24,6 +24,7 @@ public class AddAuthenticationRequestGatewayFilterFactory {
                                 exchange.mutate()
                                         .request(builder -> builder.header(HttpHeaders.AUTHORIZATION,
                                                 "Bearer " + tokenX.getTokenValue()).build());
+                                log.info("TokenX {}", tokenX.getTokenValue());
                                 return chain.filter(exchange);
                             }));
         };
