@@ -1584,16 +1584,15 @@ const mapYrkesskader = (bestillingData, data) => {
 			},
 			// obj('Skadelidt identifikator', yrkesskade.skadelidtIdentifikator),
 			obj('Rolletype', yrkesskade.rolletype), //TODO: kodeverk
+			obj('Innmelderrolle', yrkesskade.innmelderrolle), //TODO: kodeverk
 			obj('Innmelder', yrkesskade.innmelderIdentifikator),
-			obj('Innmelder rolle', yrkesskade.innmelderrolle), //TODO: kodeverk
-			obj('Klassifisering', showLabel('klassifisering', yrkesskade.klassifisering)),
 			obj('På vegne av', yrkesskade.paaVegneAv),
+			obj('Klassifisering', showLabel('klassifisering', yrkesskade.klassifisering)),
+			obj('Referanse', yrkesskade.referanse),
+			obj('Ferdigstill sak', showLabel('ferdigstillSak', yrkesskade.ferdigstillSak)),
 			obj('Tidstype', showLabel('tidstype', yrkesskade.tidstype)),
 			obj('Skadetidspunkt', formatDateTime(yrkesskade.skadetidspunkt)),
 			obj('Antall perioder', yrkesskade.perioder?.length),
-			obj('Referanse', yrkesskade.referanse),
-			obj('Ferdigstill sak', showLabel('ferdigstillSak', yrkesskade.ferdigstillSak)),
-			// 	TODO: Fix rekkefølge
 		]),
 	})
 
