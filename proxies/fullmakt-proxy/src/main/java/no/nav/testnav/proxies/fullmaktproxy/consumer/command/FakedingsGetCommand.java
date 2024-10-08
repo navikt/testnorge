@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class FakedingsGetCommand implements Callable<Mono<String>> {
 
-    private static final String FAKEDINGS_URL = "/fake/tokenx";
+    private static final String FAKEDINGS_URL = "/fake/custom";
     private final WebClient webClient;
     private final String ident;
 
@@ -24,7 +24,11 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
                         .path(FAKEDINGS_URL)
                         .queryParam("pid", ident)
                         .queryParam("aud", "dev-fss:pdl:pdl-fullmakt")
+                        .queryParam("sub", "123b1231-c123-1ecc-ab1e-1dc12c1a1dfa")
+                        .queryParam("amr", "ABC")
                         .queryParam("idp", "https://test.idporten.no")
+                        .queryParam("tid", "default")
+                        .queryParam("nbf", "1231231237")
                         .queryParam("iss", "https://fakedings.intern.dev.nav.no/fake")
                         .queryParam("client_id", "dev-fss:dolly:testnav-fullmakt-proxy")
                         .queryParam("scope", "openid")
