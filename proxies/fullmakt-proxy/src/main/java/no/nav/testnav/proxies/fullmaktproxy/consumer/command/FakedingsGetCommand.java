@@ -2,7 +2,6 @@ package no.nav.testnav.proxies.fullmaktproxy.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -12,7 +11,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class FakedingsGetCommand implements Callable<Mono<String>> {
 
-    private static final String FAKEDINGS_URL = "/fake/custom";
+    private static final String FAKEDINGS_URL = "/fake/tokenx";
     private final WebClient webClient;
     private final String ident;
 
@@ -23,25 +22,10 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
                 .uri(uriBuilder -> uriBuilder
                         .path(FAKEDINGS_URL)
                         .queryParam("pid", ident)
-                        .queryParam("aud", "dev-fss:pdl:pdl-fullmakt")
-                        .queryParam("sub", "123b1231-c123-1ecc-ab1e-1dc12c1a1dfa")
-                        .queryParam("amr", "ABC")
-                        .queryParam("idp", "https://test.idporten.no")
-                        .queryParam("tid", "default")
-                        .queryParam("nbf", "1231231237")
-                        .queryParam("iss", "https://fakedings.intern.dev.nav.no/fake")
-                        .queryParam("client_id", "dev-fss:dolly:testnav-fullmakt-proxy")
-                        .queryParam("scope", "openid")
                         .queryParam("acr", "Level4")
                         .build())
-                .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(throwable -> log.error("Feil ved henting av fakedings token i fullmakt-proxy", throwable))
-                .doOnSuccess(response -> {
-                    if (Integer.parseInt(ident.substring(2, 3)) >= 4) {
-                        log.info("Fakedings token hentet for syntetisk ident: {}", response);
-                    }
-                });
+                .doOnError(throwable -> log.error("Feil ved henting av fakedings token i fullmakt-proxy", throwable));
     }
 }

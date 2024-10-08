@@ -21,6 +21,7 @@ public class AddAuthenticationRequestGatewayFilterFactory {
             return fakedingsConsumer.getFakeToken(ident)
                     .flatMap(faketoken -> tokenXService.exchange(serverProperties, faketoken)
                             .flatMap(tokenX -> {
+                                log.info("Generert token fakedings->tokenX: {}", tokenX.getTokenValue());
                                 exchange.mutate()
                                         .request(builder -> builder.header(HttpHeaders.AUTHORIZATION,
                                                 "Bearer " + tokenX.getTokenValue()).build());
