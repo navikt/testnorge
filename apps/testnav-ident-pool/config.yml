@@ -68,7 +68,7 @@ spec:
           cluster: dev-gcp
   gcp:
     sqlInstances:
-      - type: POSTGRES_15
+      - type: POSTGRES_16
         tier: db-custom-2-7680
         name: testnav-identpool
         databases:
