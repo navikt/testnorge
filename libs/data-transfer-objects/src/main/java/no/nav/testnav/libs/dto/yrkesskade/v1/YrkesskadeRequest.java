@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class YrkesskadeRequest {
     private Tidstype tidstype;
 
     @Schema(description = "Tidspunkt da skaden oppstod. Denne blir ignorert dersom tidstype er ulik 'tidspunkt'")
-    private LocalDate skadetidspunkt;
+    private Instant skadetidspunkt;
 
     @Schema(description = "Perioder med sykdom. Disse blir ignorert dersom tidstype er ulik 'periode'")
     private List<Periode> perioder;
