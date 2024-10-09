@@ -3,7 +3,6 @@ package no.nav.testnav.identpool.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Ident;
-import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.exception.ForFaaLedigeIdenterException;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ISO_DATE;
@@ -69,7 +67,8 @@ public class PoolService {
 
         if (missingIdentCount > 0) {
 
-            var tpsStatusDTOS = identerAvailService.generateAndCheckIdenter(request, ATTEMPT_OBTAIN);
+            var tpsStatusDTOS = identerAvailService.generateAndCheckIdenter(request,
+                    isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 6 : ATTEMPT_OBTAIN);
 
             List<Ident> identerFraTps = tpsStatusDTOS.stream()
                     .map(this::buildIdent)
