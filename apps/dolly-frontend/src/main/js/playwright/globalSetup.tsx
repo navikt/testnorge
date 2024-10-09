@@ -162,7 +162,7 @@ const mockRoutes: RouteInfo[] = [
 ]
 
 export const test = base.extend({
-	page: async ({ baseURL, page, context }, use) => {
+	page: async ({ page, context }, use) => {
 		for (const routeInfo of mockRoutes) {
 			await context.addInitScript(() => {
 				// @ts-ignore

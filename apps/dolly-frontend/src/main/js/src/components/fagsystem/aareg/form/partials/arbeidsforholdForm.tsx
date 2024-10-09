@@ -123,6 +123,7 @@ export const ArbeidsforholdForm = ({
 		setValue(
 			'aareg',
 			tidligereAaregdata?.map((aaregBestilling) => {
+				//TODO: Bare legge til verdiene som er støttet i frontend (initialVales basert på type), og ikke hele objektet
 				aaregBestilling.isOppdatering = true
 				return aaregBestilling
 			}),

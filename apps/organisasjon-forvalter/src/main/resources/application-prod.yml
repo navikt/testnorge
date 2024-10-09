@@ -10,9 +10,6 @@ spring:
     properties:
       hibernate:
         default-schema: public
-  cloud:
-    vault:
-      enabled: false
   security:
     oauth2:
       resourceserver:
