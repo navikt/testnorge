@@ -38,6 +38,10 @@ spring:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
         showSql: true
+  datasource:
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 100
   security:
     oauth2:
       resourceserver:
