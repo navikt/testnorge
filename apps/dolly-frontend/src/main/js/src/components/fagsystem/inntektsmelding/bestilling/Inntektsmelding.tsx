@@ -3,20 +3,19 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { Kodeverk } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { useInntektsmeldingKodeverk } from '@/utils/hooks/useInntektsmelding'
 import { codeToNorskLabel, formatDate, oversettBoolean } from '@/utils/DataFormatter'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import {
+	AvtaltFerie,
+	BestillingVisning,
+	Naturalytelse,
+	Omsorgspenger,
+	Pleiepenger,
+	Refusjon,
+	Sykepenger,
+} from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
-const showKodeverkLabel = (kodeverkstype: string, value: string) => {
-	const { kodeverk, loading, error } = useInntektsmeldingKodeverk(kodeverkstype)
-	if (loading || error) {
-		return value
-	}
-	return kodeverk?.find((kode: any) => kode?.value === value)?.label || value
-}
-
-const AvtaltFerie = ({ ferie }) => {
+const AvtaltFerieVisning = ({ ferie }: { ferie: Array<AvtaltFerie> }) => {
 	if (!ferie || ferie?.length === 0) {
 		return null
 	}
@@ -33,9 +32,7 @@ const AvtaltFerie = ({ ferie }) => {
 	)
 }
 
-const Refusjon = ({ refusjon }) => {
-	console.log('refusjon: ', refusjon) //TODO - SLETT MEG
-	console.log('isEmpty(refusjon): ', isEmpty(refusjon)) //TODO - SLETT MEG
+const RefusjonVisning = ({ refusjon }: { refusjon: Refusjon }) => {
 	if (!refusjon || isEmpty(refusjon)) {
 		return null
 	}
@@ -56,7 +53,11 @@ const Refusjon = ({ refusjon }) => {
 				</BestillingData>
 			</div>
 			{refusjon?.endringIRefusjonListe?.length > 0 && (
-				<DollyFieldArray header="Endring i refusjon" data={refusjon?.endringIRefusjonListe} nested>
+				<DollyFieldArray
+					header="Endringer i refusjon"
+					data={refusjon?.endringIRefusjonListe}
+					nested
+				>
 					{(endring: any, idx: number) => (
 						<React.Fragment key={idx}>
 							<TitleValue title="Endringsdato" value={formatDate(endring?.endringsdato)} />
@@ -72,7 +73,11 @@ const Refusjon = ({ refusjon }) => {
 	)
 }
 
-const NaturalytelseOpphoer = ({ naturalytelseOpphoer }) => {
+const NaturalytelseOpphoer = ({
+	naturalytelseOpphoer,
+}: {
+	naturalytelseOpphoer: Array<Naturalytelse>
+}) => {
 	if (!naturalytelseOpphoer || naturalytelseOpphoer?.length === 0) {
 		return null
 	}
@@ -93,7 +98,11 @@ const NaturalytelseOpphoer = ({ naturalytelseOpphoer }) => {
 	)
 }
 
-const NaturalytelseGjenopptakelse = ({ naturalytelseGjenopptakelse }) => {
+const NaturalytelseGjenopptakelse = ({
+	naturalytelseGjenopptakelse,
+}: {
+	naturalytelseGjenopptakelse: Array<Naturalytelse>
+}) => {
 	if (!naturalytelseGjenopptakelse || naturalytelseGjenopptakelse?.length === 0) {
 		return null
 	}
@@ -118,7 +127,121 @@ const NaturalytelseGjenopptakelse = ({ naturalytelseGjenopptakelse }) => {
 	)
 }
 
-export const Inntektsmelding = ({ inntektsmelding }) => {
+const SykepengerIArbeidsgiverperioden = ({ sykepenger }: { sykepenger: Sykepenger }) => {
+	if (!sykepenger || isEmpty(sykepenger)) {
+		return null
+	}
+
+	return (
+		<div className="flexbox--full-width" style={{ margin: '15px 0 -15px 0' }}>
+			<BestillingTitle>Sykepenger</BestillingTitle>
+			<BestillingData>
+				<TitleValue title="Brutto utbetalt" value={sykepenger?.bruttoUtbetalt} />
+				<TitleValue
+					title="Begrunnelse for reduksjon eller ikke utbetalt"
+					value={codeToNorskLabel(sykepenger?.begrunnelseForReduksjonEllerIkkeUtbetalt)}
+				/>
+				{sykepenger?.arbeidsgiverperiodeListe?.length > 0 && (
+					<DollyFieldArray
+						header="Arbeidsgiverperioder"
+						data={sykepenger?.arbeidsgiverperiodeListe}
+						nested
+					>
+						{(periode: any, idx: number) => (
+							<React.Fragment key={idx}>
+								<TitleValue title="Fra og med dato" value={formatDate(periode?.fom)} />
+								<TitleValue title="Til og med dato" value={formatDate(periode?.tom)} />
+							</React.Fragment>
+						)}
+					</DollyFieldArray>
+				)}
+			</BestillingData>
+		</div>
+	)
+}
+
+const Foreldrepenger = ({
+	startdatoForeldrepengeperiode,
+}: {
+	startdatoForeldrepengeperiode: string
+}) => {
+	if (!startdatoForeldrepengeperiode) {
+		return null
+	}
+
+	return (
+		<div className="flexbox--full-width" style={{ margin: '15px 0 -15px 0' }}>
+			<BestillingTitle>Foreldrepenger</BestillingTitle>
+			<BestillingData>
+				<TitleValue
+					title="Startdato for periode"
+					value={formatDate(startdatoForeldrepengeperiode)}
+				/>
+			</BestillingData>
+		</div>
+	)
+}
+
+const Pleiepengerperiode = ({
+	pleiepengerperioder,
+}: {
+	pleiepengerperioder: Array<Pleiepenger>
+}) => {
+	if (!pleiepengerperioder || pleiepengerperioder?.length === 0) {
+		return null
+	}
+
+	return (
+		<DollyFieldArray header="Pleiepengerperioder" data={pleiepengerperioder} nested>
+			{(periode: any, idx: number) => (
+				<React.Fragment key={idx}>
+					<TitleValue title="Fra og med dato" value={formatDate(periode?.fom)} />
+					<TitleValue title="Til og med dato" value={formatDate(periode?.tom)} />
+				</React.Fragment>
+			)}
+		</DollyFieldArray>
+	)
+}
+
+const OmsorgspengerVisning = ({ omsorgspenger }: { omsorgspenger: Omsorgspenger }) => {
+	if (!omsorgspenger || isEmpty(omsorgspenger)) {
+		return null
+	}
+
+	return (
+		<div className="flexbox--full-width" style={{ margin: '15px 0 -15px 0' }}>
+			<BestillingTitle>Omsorgspenger</BestillingTitle>
+			<BestillingData>
+				<TitleValue
+					title="Har utbetalt pliktige dager"
+					value={oversettBoolean(omsorgspenger?.harUtbetaltPliktigeDager)}
+				/>
+				{omsorgspenger?.delvisFravaersListe?.length > 0 && (
+					<DollyFieldArray header="Delvis fravær" data={omsorgspenger?.delvisFravaersListe} nested>
+						{(fravaer: any, idx: number) => (
+							<React.Fragment key={idx}>
+								<TitleValue title="Dato" value={formatDate(fravaer?.dato)} />
+								<TitleValue title="Antall timer" value={fravaer?.timer} />
+							</React.Fragment>
+						)}
+					</DollyFieldArray>
+				)}
+				{omsorgspenger?.fravaersPerioder?.length > 0 && (
+					<DollyFieldArray header="Fraværsperioder" data={omsorgspenger?.fravaersPerioder} nested>
+						{(periode: any, idx: number) => (
+							<React.Fragment key={idx}>
+								<TitleValue title="Fra og med dato" value={formatDate(periode?.fom)} />
+								<TitleValue title="Til og med dato" value={formatDate(periode?.tom)} />
+							</React.Fragment>
+						)}
+					</DollyFieldArray>
+				)}
+			</BestillingData>
+		</div>
+	)
+}
+
+export const Inntektsmelding = ({ inntektsmelding }: BestillingVisning) => {
 	if (!inntektsmelding || inntektsmelding?.inntekter?.length === 0) {
 		return null
 	}
@@ -129,7 +252,7 @@ export const Inntektsmelding = ({ inntektsmelding }) => {
 				<BestillingTitle>Inntektsmelding (fra Altinn)</BestillingTitle>
 				<DollyFieldArray header="Inntekt" data={inntektsmelding.inntekter}>
 					{(inntekt: any, idx: number) => (
-						<>
+						<React.Fragment key={idx}>
 							<TitleValue
 								title="Årsak til innsending"
 								value={codeToNorskLabel(inntekt.aarsakTilInnsending)}
@@ -161,13 +284,21 @@ export const Inntektsmelding = ({ inntektsmelding }) => {
 								title="Første fraværsdag"
 								value={formatDate(inntekt?.arbeidsforhold?.foersteFravaersdag)}
 							/>
-							<AvtaltFerie ferie={inntekt?.arbeidsforhold?.avtaltFerieListe} />
-							<Refusjon refusjon={inntekt?.refusjon} />
+							<AvtaltFerieVisning ferie={inntekt?.arbeidsforhold?.avtaltFerieListe} />
+							<RefusjonVisning refusjon={inntekt?.refusjon} />
 							<NaturalytelseOpphoer naturalytelseOpphoer={inntekt?.opphoerAvNaturalytelseListe} />
 							<NaturalytelseGjenopptakelse
 								naturalytelseGjenopptakelse={inntekt?.gjenopptakelseNaturalytelseListe}
 							/>
-						</>
+							<SykepengerIArbeidsgiverperioden
+								sykepenger={inntekt?.sykepengerIArbeidsgiverperioden}
+							/>
+							<Foreldrepenger
+								startdatoForeldrepengeperiode={inntekt?.startdatoForeldrepengeperiode}
+							/>
+							<Pleiepengerperiode pleiepengerperioder={inntekt?.pleiepengerPerioder} />
+							<OmsorgspengerVisning omsorgspenger={inntekt?.omsorgspenger} />
+						</React.Fragment>
 					)}
 				</DollyFieldArray>
 			</ErrorBoundary>
