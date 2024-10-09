@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.skjermingsregister;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterGetCommand;
@@ -66,6 +67,7 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-oppdater" })
     public Mono<SkjermingDataResponse> oppdaterPerson(SkjermingDataRequest skjerming) {
 
+        log.info("Sender forespørsel om skjerming for ident {}: {}", skjerming.getPersonident(), Json.pretty(skjerming));
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, skjerming.getPersonident(), token.getTokenValue()).call()
                         .flatMap(response -> {
