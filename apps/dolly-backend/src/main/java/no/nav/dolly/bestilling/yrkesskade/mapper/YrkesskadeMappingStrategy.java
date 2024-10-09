@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class YrkesskadeMappingStrategy implements MappingStrategy {
@@ -25,22 +26,24 @@ public class YrkesskadeMappingStrategy implements MappingStrategy {
                     public void mapAtoB(YrkesskadeRequest kilde, YrkesskadeRequest destinasjon, MappingContext context) {
 
                         var ident = (String) context.getProperty("ident");
-                        var personBolk = (PdlPersonBolk) context.getProperty("personBolks");
+                        var personBolk = (PdlPersonBolk) context.getProperty("personBolk");
 
                         destinasjon.setSkadelidtIdentifikator(ident);
                         destinasjon.setInnmelderIdentifikator(
                                 switch (destinasjon.getInnmelderrolle()) {
                                     case denSkadelidte -> ident;
-                                    case vergeOgForesatt -> personBolk.getData().getHentPersonBolk().stream()
-                                            .map(PdlPersonBolk.PersonBolk::getPerson)
-                                            .map(PdlPerson.Person::getVergemaalEllerFremtidsfullmakt)
-                                            .flatMap(Collection::stream)
-                                            .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
-                                            .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                            .filter(Objects::nonNull)
-                                            .findFirst()
-                                            .orElse(null);
-                                    case virksomhetsrepresentant -> destinasjon.getSkadelidtIdentifikator();
+                                    case vergeOgForesatt ->
+                                            Optional.ofNullable(personBolk)
+                                                    .flatMap(persondata -> persondata.getData().getHentPersonBolk().stream()
+                                                            .map(PdlPersonBolk.PersonBolk::getPerson)
+                                                            .map(PdlPerson.Person::getVergemaalEllerFremtidsfullmakt)
+                                                            .flatMap(Collection::stream)
+                                                            .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                                            .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                                            .filter(Objects::nonNull)
+                                                            .findFirst()).orElse(null);
+                                    case virksomhetsrepresentant ->
+                                            destinasjon.getSkadelidtIdentifikator();
                                 });
 
                         if (destinasjon.getInnmelderrolle() == InnmelderRolletype.denSkadelidte ||
