@@ -1,6 +1,10 @@
 TOKEN_X_ISSUER: dummy
 
 spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver

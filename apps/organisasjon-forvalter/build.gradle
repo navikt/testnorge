@@ -14,6 +14,8 @@ properties {
 }
 
 dependencies {
+    implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
+
     implementation "no.nav.testnav.libs:avro-schema"
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:database"

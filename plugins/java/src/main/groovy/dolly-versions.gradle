@@ -8,6 +8,8 @@ class DollyVersionCatalog {
     String springSession = "3.3.1"
     String springCloud = "2023.0.3"
 
+    String gcpSecretManager = "5.7.0"
+
     String apacheAvro = "1.11.3"
     String apacheKafka = "3.7.0"
     String apachePoi = "5.3.0"
