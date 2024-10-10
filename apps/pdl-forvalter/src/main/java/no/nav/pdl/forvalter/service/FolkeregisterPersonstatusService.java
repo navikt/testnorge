@@ -77,13 +77,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
     public List<FolkeregisterPersonstatusDTO> update(PersonDTO person) {
 
-        person.getFolkeregisterPersonstatus().clear();
-        person.getFolkeregisterPersonstatus()
-                .add(FolkeregisterPersonstatusDTO.builder()
-                        .id(person.getFolkeregisterPersonstatus().size() + 1)
-                        .isNew(true)
-                        .build());
-
+        person.setIsChanged(true);
         return convert(person);
     }
 
@@ -195,7 +189,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                 .orElse(FoedselsdatoUtility.getFoedselsdato(person));
     }
 
-    private static void setGyldigTilOgMed(List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus) {
+    protected static void setGyldigTilOgMed(List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus) {
 
         for (var i = 0; i < folkeregisterPersonstatus.size(); i++) {
             if (i + 1 < folkeregisterPersonstatus.size() && nonNull(folkeregisterPersonstatus.get(i).getGyldigFraOgMed())) {
@@ -203,5 +197,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                         .setGyldigTilOgMed(folkeregisterPersonstatus.get(i).getGyldigFraOgMed().minusDays(1));
             }
         }
+
+        folkeregisterPersonstatus.getFirst().setGyldigTilOgMed(null);
     }
 }

@@ -352,6 +352,8 @@ public class ArtifactDeleteService {
         dbPerson.getPerson().setFolkeregisterPersonstatus(dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
+
+        FolkeregisterPersonstatusService.setGyldigTilOgMed(dbPerson.getPerson().getFolkeregisterPersonstatus());
     }
 
     public void deleteSikkerhetstiltak(String ident, Integer id) {
