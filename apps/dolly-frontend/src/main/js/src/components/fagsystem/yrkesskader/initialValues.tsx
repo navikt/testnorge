@@ -6,13 +6,13 @@ export const initialYrkesskadePeriode = {
 export const initialYrkesskade = {
 	// skadelidtIdentifikator: '',
 	rolletype: 'arbeidstaker',
-	innmelderIdentifikator: '',
+	innmelderIdentifikator: null,
 	innmelderrolle: 'virksomhetsrepresentant',
 	klassifisering: 'MANUELL',
-	paaVegneAv: '',
-	tidstype: '',
+	paaVegneAv: null,
+	tidstype: null,
 	skadetidspunkt: null,
 	perioder: [initialYrkesskadePeriode],
-	referanse: '',
-	ferdigstillSak: '',
+	referanse: null,
+	ferdigstillSak: null,
 }

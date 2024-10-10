@@ -23,8 +23,8 @@ export const YrkesskaderForm = () => {
 
 	const handleChangeInnmelderrolle = (value, path) => {
 		formMethods.setValue(`${path}.innmelderrolle`, value?.value)
-		formMethods.setValue(`${path}.innmelderIdentifikator`, '')
-		formMethods.setValue(`${path}.paaVegneAv`, '')
+		formMethods.setValue(`${path}.innmelderIdentifikator`, null)
+		formMethods.setValue(`${path}.paaVegneAv`, null)
 		formMethods.trigger(path)
 	}
 
