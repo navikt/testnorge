@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -47,19 +48,12 @@ public class ElasticBestilling implements Persistable<Long> {
 
     @Id
     private Long id;
-
-    @Override
-    @JsonIgnore
-    @Transient
-    public boolean isNew() {
-
-        return false;
-    }
-
     @Field
     private PdlPersondata pdldata;
     @Field
     private RsDigitalKontaktdata krrstub;
+    @Field
+    private RsFullmakt fullmakt;
     @Field
     private RsMedl medl;
     @Field
@@ -98,10 +92,17 @@ public class ElasticBestilling implements Persistable<Long> {
     private SkattekortRequestDTO skattekort;
     @Field
     private List<String> identer;
-
     @Transient
     @JsonIgnore
     private boolean ignore;
+
+    @Override
+    @JsonIgnore
+    @Transient
+    public boolean isNew() {
+
+        return false;
+    }
 
     public List<String> getIdenter() {
         if (isNull(identer)) {

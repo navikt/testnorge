@@ -26,7 +26,6 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSELSD
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FULLMAKT;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_INNFLYTTING;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KJOENN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTADRESSE;
@@ -433,28 +432,6 @@ public class ArtifactDeleteService {
         hendelseIdService.deletePdlHendelse(ident, PDL_TELEFONUMMER.getDescription(), id);
 
         dbPerson.getPerson().setTelefonnummer(dbPerson.getPerson().getTelefonnummer().stream()
-                .filter(type -> !id.equals(type.getId()))
-                .toList());
-    }
-
-    public void deleteFullmakt(String ident, Integer id) {
-
-        var hovedPerson = getPerson(ident);
-
-        checkExists(hovedPerson.getPerson().getFullmakt(), id, PDL_FULLMAKT.getDescription());
-        hendelseIdService.deletePdlHendelse(ident, PDL_FULLMAKT.getDescription(), id);
-
-        hovedPerson.getPerson().getFullmakt().stream()
-                .filter(type -> id.equals(type.getId()))
-                .forEach(fullmakt -> {
-                    var slettePerson = getPerson(fullmakt.getMotpartsPersonident());
-
-                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, RelasjonType.FULLMEKTIG);
-
-                    deletePerson(slettePerson, fullmakt.isEksisterendePerson());
-                });
-
-        hovedPerson.getPerson().setFullmakt(hovedPerson.getPerson().getFullmakt().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
     }

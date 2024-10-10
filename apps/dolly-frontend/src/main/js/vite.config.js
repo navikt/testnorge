@@ -48,14 +48,7 @@ export default defineConfig(({ mode }) => ({
 		sourcemap: true,
 		cssCodeSplit: false,
 		rollupOptions: {
-			external: ['react', './nais.js', 'react/jsx-runtime', 'react-dom'],
-			output: {
-				globals: {
-					react: 'react',
-					'react-dom': 'ReactDOM',
-					'react/jsx-runtime': 'react/jsx-runtime',
-				},
-			},
+			external: ['./nais.js'],
 		},
 	},
 	optimizeDeps: { exclude: ['node_modules/.cache'] },

@@ -19,7 +19,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
@@ -48,7 +47,6 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.EKTEFELLE_PA
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FALSK_IDENTITET;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FULLMEKTIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.VERGE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -73,7 +71,6 @@ public class ArtifactUpdateService {
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
     private final ForeldreansvarService foreldreansvarService;
-    private final FullmaktService fullmaktService;
     private final InnflyttingService innflyttingService;
     private final KjoennService kjoennService;
     private final KontaktAdresseService kontaktAdresseService;
@@ -518,42 +515,6 @@ public class ArtifactUpdateService {
 
         person.getPerson().setTelefonnummer(oppdaterteTelefonnumre);
         telefonnummerService.convert(person.getPerson().getTelefonnummer());
-    }
-
-    public void updateFullmakt(String ident, Integer id, FullmaktDTO oppdatertFullmakt) {
-
-        var person = getPerson(ident);
-        fullmaktService.validate(oppdatertFullmakt, person.getPerson());
-
-        var fullmaktRelasjon = person.getPerson().getFullmakt().stream()
-                .filter(fullmakt -> fullmakt.getId().equals(id))
-                .findFirst();
-
-        fullmaktRelasjon.ifPresent(fullmakt -> {
-
-            var endretRelasjon = isNotBlank(fullmakt.getMotpartsPersonident()) &&
-                    !fullmakt.getMotpartsPersonident().equals(oppdatertFullmakt.getMotpartsPersonident());
-
-            if (endretRelasjon) {
-
-                var slettePerson = getPerson(fullmakt.getMotpartsPersonident());
-
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FULLMEKTIG);
-                deletePerson(slettePerson, fullmakt.isEksisterendePerson());
-
-                oppdatertFullmakt.setId(id);
-                person.getPerson().getFullmakt().add(oppdatertFullmakt);
-                person.getPerson().getFullmakt().sort(Comparator.comparing(FullmaktDTO::getId).reversed());
-            }
-        });
-
-        person.getPerson().setFullmakt(
-                updateArtifact(person.getPerson().getFullmakt(), oppdatertFullmakt, id, "Fullmakt"));
-
-        if (id == 0 || fullmaktRelasjon.isPresent()) {
-
-            fullmaktService.convert(person.getPerson());
-        }
     }
 
     public void updateVergemaal(String ident, Integer id, VergemaalDTO oppdatertVergemaal) {

@@ -17,7 +17,6 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSELSD
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FULLMAKT;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_INNFLYTTING;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KJOENN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTADRESSE;
@@ -60,7 +59,6 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
     private static final String PDL_BESTILLING_FORELDREANSVAR_URL = PDL_BESTILLING_URL + "/foreldreansvar";
     private static final String PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL = PDL_BESTILLING_URL + "/forelderbarnrelasjon";
-    private static final String PDL_BESTILLING_FULLMAKT_URL = PDL_BESTILLING_URL + "/fullmakt";
     private static final String PDL_BESTILLING_INNFLYTTING_URL = PDL_BESTILLING_URL + "/innflytting";
     private static final String PDL_BESTILLING_KJOENN_URL = PDL_BESTILLING_URL + "/kjoenn";
     private static final String PDL_BESTILLING_KONTAKTADRESSE_URL = PDL_BESTILLING_URL + "/kontaktadresse";
@@ -92,7 +90,6 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_FOLKEREGISTER_PERSONSTATUS, PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL);
         bestillingUrl.put(PDL_FORELDREANSVAR, PDL_BESTILLING_FORELDREANSVAR_URL);
         bestillingUrl.put(PDL_FORELDRE_BARN_RELASJON, PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL);
-        bestillingUrl.put(PDL_FULLMAKT, PDL_BESTILLING_FULLMAKT_URL);
         bestillingUrl.put(PDL_INNFLYTTING, PDL_BESTILLING_INNFLYTTING_URL);
         bestillingUrl.put(PDL_KJOENN, PDL_BESTILLING_KJOENN_URL);
         bestillingUrl.put(PDL_KONTAKTADRESSE, PDL_BESTILLING_KONTAKTADRESSE_URL);
