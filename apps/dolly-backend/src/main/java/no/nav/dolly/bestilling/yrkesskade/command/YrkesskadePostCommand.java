@@ -35,7 +35,7 @@ public class YrkesskadePostCommand implements Callable<Flux<ResponseEntity<Strin
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header("ident", yrkesskadeRequest.getSkadelidtIdentifikator())
+                .header("ident", yrkesskadeRequest.getInnmelderIdentifikator())
                 .bodyValue(yrkesskadeRequest)
                 .retrieve()
                 .bodyToFlux(ResponseEntity.class)
