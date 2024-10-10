@@ -2,7 +2,6 @@ spring:
   cloud:
     gcp:
       secretmanager:
-        enabled: true
         project-id: dolly-dev-ff83
   config:
     import: "sm://"
