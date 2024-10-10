@@ -34,6 +34,7 @@ import { Sigrunstub } from '@/components/fagsystem/sigrunstub/bestilling/Sigruns
 import { SigrunstubPensjonsgivende } from '@/components/fagsystem/sigrunstubPensjonsgivende/bestilling/SigrunstubPensjonsgivende'
 import { Inntektstub } from '@/components/fagsystem/inntektstub/bestilling/Inntektstub'
 import { Inntektsmelding } from '@/components/fagsystem/inntektsmelding/bestilling/Inntektsmelding'
+import { Skattekort } from '@/components/fagsystem/skattekort/bestilling/Skattekort'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -114,6 +115,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			/>
 			<Inntektstub inntektstub={bestilling.inntektstub} />
 			<Inntektsmelding inntektsmelding={bestilling.inntektsmelding} />
+			<Skattekort skattekort={bestilling.skattekort} />
 		</>
 	)
 }
