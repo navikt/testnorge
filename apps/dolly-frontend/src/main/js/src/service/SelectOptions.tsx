@@ -818,6 +818,25 @@ const selectOptions = {
 		{ value: 'Tysk', label: 'Tysk' },
 	],
 
+	// Yrkesskader:
+	klassifisering: [
+		{ value: 'BAGATELLMESSIGE_SKADER', label: 'Bagatellmessige skader' },
+		{ value: 'MANUELL', label: 'Manuell' },
+		{ value: 'IMPORT', label: 'Import' },
+	],
+
+	tidstype: [
+		{ value: 'tidspunkt', label: 'Tidspunkt (skade)' },
+		{ value: 'periode', label: 'Periode (sykdom)' },
+		{ value: 'ukjent', label: 'Ukjent' },
+	],
+
+	ferdigstillSak: [
+		{ value: 'GODKJENT', label: 'Godkjent' },
+		{ value: 'AVSLAG', label: 'Avslag' },
+	],
+
+	// Dolly-soek:
 	registerTyper: [
 		{ value: 'AAREG', label: 'Arbeidsforhold (Aareg)' },
 		{ value: 'SIGRUN_LIGNET', label: 'Sigrun lignet inntekt' },
@@ -844,6 +863,9 @@ const selectOptions = {
 		{ value: 'BANKKONTO', label: 'Bankkonto' },
 		{ value: 'BANKKONTO_NORGE', label: 'Norsk bankkonto' },
 		{ value: 'BANKKONTO_UTLAND', label: 'Utenlandsk bankkonto' },
+		// TODO: Legg inn skattekort
+		// TODO: Legg inn yrkesskade
+		// TODO: Legg inn flere register???
 	],
 }
 
