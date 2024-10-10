@@ -6,7 +6,7 @@ spring:
   config:
     import: "sm://"
   datasource:
-    url: jdbc:postgresql://localhost:5432/local-organisasjon-forvalter
+    url: jdbc:postgresql://localhost:5432/db-organisasjon-forvalter
     username: db-organisasjon-forvalter
     password: ${sm://db-organisasjon-forvalter}
 
