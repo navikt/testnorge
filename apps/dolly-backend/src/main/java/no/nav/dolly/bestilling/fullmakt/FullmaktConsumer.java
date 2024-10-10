@@ -46,11 +46,14 @@ public class FullmaktConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_createData" })
-    public Mono<FullmaktResponse> createFullmaktData(List<RsFullmakt> fullmakt, String ident) {
+    public Flux<FullmaktResponse> createFullmaktData(List<RsFullmakt> fullmakter, String ident) {
 
-        log.info("Fullmakt opprett {}", fullmakt);
+        log.info("Fullmakt opprett {}", fullmakter);
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new PostFullmaktDataCommand(webClient, token.getTokenValue(), ident, fullmakt).call());
+                .flatMapMany(token ->
+                        Flux.range(0, fullmakter.size())
+                                .delayElements(Duration.ofMillis(100))
+                                .flatMap(idx -> new PostFullmaktDataCommand(webClient, token.getTokenValue(), ident, fullmakter.get(idx)).call()));
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
@@ -58,7 +61,7 @@ public class FullmaktConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
-                        .delayElements(Duration.ofMillis(100))
+                        .delayElements(Duration.ofMillis(50))
                         .flatMap(idx -> new GetFullmaktDataCommand(webClient, identer.get(idx),
                                 token.getTokenValue()).call()));
     }

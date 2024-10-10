@@ -25,6 +25,7 @@ public class RsFullmakt {
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime gyldigTilOgMed;
     private String fullmektig;
+    private String fullmaktsgiver;
     private List<Omraade> omraade;
 
     public List<Omraade> getOmraade() {

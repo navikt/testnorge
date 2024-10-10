@@ -54,7 +54,7 @@ public class BestilteKriterier {
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
-    private RsFullmakt fullmakt;
+    private List<RsFullmakt> fullmakt;
     private RsMedl medl;
     private RsHistark histark;
     private RsTpsMessaging tpsMessaging;

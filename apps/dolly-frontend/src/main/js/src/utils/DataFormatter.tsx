@@ -131,7 +131,7 @@ export const omraaderArrayToString = (array) => {
 		return null
 	}
 
-	return arrayToString(array).replace('*', '* (Alle)')
+	return arrayToString(array.map((item) => item.tema)).replace('*', '* (Alle)')
 }
 
 export const uppercaseAndUnderscoreToCapitalized = (value) => {

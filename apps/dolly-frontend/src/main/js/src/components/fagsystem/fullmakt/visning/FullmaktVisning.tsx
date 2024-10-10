@@ -10,20 +10,21 @@ type FullmaktProps = {
 
 export const FullmaktVisning = ({ ident, data }: FullmaktProps) => {
 	const { fullmektig } = useFullmektig(ident)
-	if (!data?.fullmaktsgiver && !fullmektig) {
+	if (!data?.fullmaktsgiver && fullmektig?.size === 0) {
 		return null
 	}
+	console.log('fullmektig: ', fullmektig) //TODO - SLETT MEG
 	return (
 		<>
-			<TitleValue title="Fullmaktsgiver" value={data.fullmaktsgiver} />
-			<TitleValue title="Gyldig fra" value={formatDate(data.gyldigFraOgMed)} />
-			<TitleValue title="Gyldig til" value={formatDate(data.gyldigTilOgMed)} />
-			{data.omraade.map((omraade, index) => (
+			<TitleValue title="Fullmaktsgiver" value={data?.fullmaktsgiver} />
+			<TitleValue title="Gyldig fra" value={formatDate(data?.gyldigFraOgMed)} />
+			<TitleValue title="Gyldig til" value={formatDate(data?.gyldigTilOgMed)} />
+			{data?.omraade?.map((omraade, index) => (
 				<TitleValue key={index} title={omraade.tema} value={omraade.handling.join(', ')} />
 			))}
-			<TitleValue title="Registrert" value={formatDate(data.registrert)} />
-			<TitleValue title="Kilde" value={data.kilde} />
-			<TitleValue title="Opphørt" value={oversettBoolean(data.opphoert)} />
+			<TitleValue title="Registrert" value={data?.registrert && formatDate(data.registrert)} />
+			<TitleValue title="Kilde" value={data?.kilde} />
+			<TitleValue title="Opphørt" value={oversettBoolean(data?.opphoert)} />
 		</>
 	)
 }

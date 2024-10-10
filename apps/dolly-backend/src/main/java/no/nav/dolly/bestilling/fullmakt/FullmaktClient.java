@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.fullmakt;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
@@ -16,10 +15,11 @@ import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static org.apache.http.util.TextUtils.isBlank;
 
@@ -38,26 +38,27 @@ public class FullmaktClient implements ClientRegister {
 
         if (nonNull(bestilling.getFullmakt()) && !bestilling.getFullmakt().isEmpty()) {
 
-            bestilling.setFullmakt(bestilling.getFullmakt().stream().map(fullmakt -> {
-
-                if (isBlank(fullmakt.getFullmektig())) {
-
-                    fullmakt.setFullmektig(pdlDataConsumer.getPersoner(Collections.singletonList(dollyPerson.getIdent()))
-                            .map(person -> person.getRelasjoner().stream()
-                                    .peek(relasjon -> log.info("Relasjon for ident: {} - {}", dollyPerson.getIdent(), Json.pretty(relasjon)))
-                                    .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG))
-                                    .findFirst()
-                                    .map(relasjon -> relasjon.getRelatertPerson().getIdent())
-                                    .orElseThrow(() -> new DollyFunctionalException("Fant ikke fullmektig som relasjon for person " + dollyPerson.getIdent())))
-                            .blockFirst());
-                }
-                return fullmakt;
-            }).toList());
-
-            return Flux.from(Flux.just(bestilling.getFullmakt())
-                    .flatMap(fullmakt -> fullmaktConsumer.createFullmaktData(fullmakt, dollyPerson.getIdent()))
+            return Flux.fromIterable(bestilling.getFullmakt())
+                    .flatMap(fullmakt -> {
+                        fullmakt.setFullmaktsgiver(dollyPerson.getIdent());
+                        if (isBlank(fullmakt.getFullmektig())) {
+                            return pdlDataConsumer.getPersoner(singletonList(dollyPerson.getIdent()))
+                                    .flatMap(person -> Flux.fromStream(person.getRelasjoner().stream()
+                                            .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG))))
+                                    .next()
+                                    .map(relasjon -> {
+                                        fullmakt.setFullmektig(relasjon.getRelatertPerson().getIdent());
+                                        return fullmakt;
+                                    })
+                                    .switchIfEmpty(Mono.error(new DollyFunctionalException("Fant ikke fullmektig som relasjon for person " + dollyPerson.getIdent())));
+                        } else {
+                            return Mono.just(fullmakt);
+                        }
+                    })
+                    .collectList()
+                    .flatMapMany(fullmakter -> fullmaktConsumer.createFullmaktData(fullmakter, dollyPerson.getIdent()))
                     .map(this::getStatus)
-                    .map(status -> futurePersist(progress, status)));
+                    .map(status -> futurePersist(progress, status));
         }
 
         return Flux.empty();

@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -81,7 +80,7 @@ public class FullmaktClientTest {
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fullPersonDTO));
 
         FullmaktResponse fullmaktResponse = FullmaktResponse.builder().status(HttpStatus.OK).build();
-        when(fullmaktConsumer.createFullmaktData(any(), any())).thenReturn(Mono.just(fullmaktResponse));
+        when(fullmaktConsumer.createFullmaktData(any(), any())).thenReturn(Flux.just(fullmaktResponse));
 
         Flux<ClientFuture> result = fullmaktClient.gjenopprett(bestilling, dollyPerson, progress, true);
 
