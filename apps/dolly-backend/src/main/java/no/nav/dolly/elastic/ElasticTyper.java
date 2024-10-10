@@ -16,6 +16,8 @@ public enum ElasticTyper {
     PEN_TP("Tjenestepensjon (TP)"),
     PEN_AP("Alderspensjon (AP)"),
     PEN_UT("Uføretrygd (UT)"),
+    PEN_AFP_OFFENTLIG("AFP offentlig (PEN"),
+    PEN_PENSJONSAVTALE("Pensjonsavtaler (PEN)"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
@@ -26,7 +28,9 @@ public enum ElasticTyper {
     BANKKONTO("Bankkontoregister"),
     BANKKONTO_NORGE("Norsk bankkonto"),
     BANKKONTO_UTLAND("Utenlandsk bankkonto"),
-    ARBEIDSPLASSENCV("Arbeidsplassen CV");
+    ARBEIDSPLASSENCV("Arbeidsplassen CV"),
+    SKATTEKORT("SOKOS"),
+    YRKESSKADE("Yrkesskade");
 
     private final String beskrivelse;
 

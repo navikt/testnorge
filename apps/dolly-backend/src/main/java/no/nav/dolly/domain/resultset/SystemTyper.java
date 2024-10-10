@@ -44,7 +44,8 @@ public enum SystemTyper {
     SYKEMELDING("NAV sykemelding"),
     TPS_MESSAGING("Meldinger til TPS"),
     TP_FORVALTER("Tjenestepensjon (TP)"),
-    UDISTUB("Utlendingsdirektoratet (UDI)");
+    UDISTUB("Utlendingsdirektoratet (UDI)"),
+    YRKESSKADE("Yrkesskade");
 
     private String beskrivelse;
 

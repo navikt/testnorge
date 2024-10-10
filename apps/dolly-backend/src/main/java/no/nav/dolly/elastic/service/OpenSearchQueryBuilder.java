@@ -49,7 +49,7 @@ import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addVergemaal
 @UtilityClass
 public class OpenSearchQueryBuilder {
 
-    private static Random seed = new SecureRandom();
+    private static final Random seed = new SecureRandom();
 
     public static BoolQueryBuilder buildSearchQuery(SearchRequest request) {
 
@@ -125,6 +125,8 @@ public class OpenSearchQueryBuilder {
             case PEN_TP -> QueryBuilders.existsQuery("pensjonforvalter.tp");
             case PEN_AP -> QueryBuilders.existsQuery("pensjonforvalter.alderspensjon");
             case PEN_UT -> QueryBuilders.existsQuery("pensjonforvalter.uforetrygd");
+            case PEN_AFP_OFFENTLIG -> QueryBuilders.existsQuery("pensjonforvalter.afpOffentlig");
+            case PEN_PENSJONSAVTALE -> QueryBuilders.existsQuery("pensjonforvalter.pensjonsavtale");
             case INNTKMELD -> QueryBuilders.existsQuery("inntektsmelding");
             case BRREGSTUB -> QueryBuilders.existsQuery("brregstub");
             case DOKARKIV -> QueryBuilders.existsQuery("dokarkiv");
@@ -136,6 +138,8 @@ public class OpenSearchQueryBuilder {
             case BANKKONTO_NORGE -> QueryBuilders.existsQuery("bankkonto.norskBankkonto");
             case BANKKONTO_UTLAND -> QueryBuilders.existsQuery("bankkonto.utenlandskBankkonto");
             case ARBEIDSPLASSENCV -> QueryBuilders.existsQuery("arbeidsplassenCV");
+            case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
+            case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskade");
         };
     }
 

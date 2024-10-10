@@ -1,0 +1,61 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-yrkesskade-proxy
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: "{{image}}"
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-backend
+        - application: dolly-backend-dev
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-idporten
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
+    outbound:
+      rules:
+        - application: yrkesskade-datagenerator-service
+          namespace: yrkesskade
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 1
+  vault:
+    enabled: true
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1025Mi
+    limits:
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-yrkesskade-proxy.intern.dev.nav.no"
