@@ -47,16 +47,6 @@ export default defineConfig(({ mode }) => ({
 		outDir: 'build',
 		sourcemap: true,
 		cssCodeSplit: false,
-		rollupOptions: {
-			external: ['react', './nais.js', 'react/jsx-runtime', 'react-dom'],
-			output: {
-				globals: {
-					react: 'react',
-					'react-dom': 'ReactDOM',
-					'react/jsx-runtime': 'react/jsx-runtime',
-				},
-			},
-		},
 	},
 	optimizeDeps: { exclude: ['node_modules/.cache'] },
 	resolve: {
@@ -68,6 +58,11 @@ export default defineConfig(({ mode }) => ({
 	server: mode === 'local-dev' && {
 		proxy: proxyRoutes,
 		port: 3000,
+	},
+	test: {
+		globals: true,
+		environment: 'jsdom',
+		exclude: ['**/node_modules/**', '**/playwright/**'],
 	},
 	plugins: [
 		react({

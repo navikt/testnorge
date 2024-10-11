@@ -69,7 +69,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_15
-        tier: db-custom-1-3840
+        tier: db-custom-2-7680
         name: testnav-identpool
         databases:
           - name: testnav-identpool
