@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.yrkesskade.dto.ResponseDTO;
 import no.nav.dolly.bestilling.yrkesskade.dto.ResponseDTO.Status;
+import no.nav.dolly.bestilling.yrkesskade.dto.YrkesskadeResponseDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -19,7 +20,6 @@ import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -47,23 +47,27 @@ public class YrkesskadeClient implements ClientRegister {
 
         var index = new AtomicInteger(0);
 
-        return Flux.just(bestilling)
-                .filter(best -> !best.getYrkesskader().isEmpty())
-                .filter(best -> isOpprettEndre)
-                .flatMap(best -> personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent())))
-                .doOnNext(resultat -> log.info("Hentet pdlPersonBolk"))
-                .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
-                        .map(yrkesskade -> {
-                            var context = MappingContextUtils.getMappingContext();
-                            context.setProperty("ident", dollyPerson.getIdent());
-                            context.setProperty("personBolk", personbolk);
-                            return mapper.map(yrkesskade, YrkesskadeRequest.class, context);
-                        })
-                        .flatMap(yrkesskade -> yrkesskadeConsumer.lagreYrkesskade(yrkesskade)
-                                .map(status -> lagreTransaksjon(status, yrkesskade, progress.getBestilling().getId())))
-                        .map(status -> encodeStatus(status, index.incrementAndGet()))
-                        .collectList()
-                        .map(resultat -> futurePersist(progress, resultat)));
+        if (!bestilling.getYrkesskader().isEmpty()) {
+
+            return Flux.from(
+                    personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
+                            .doOnNext(personBolk -> log.info("Hentet pdlPersonBolk"))
+                            .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
+                                    .map(yrkesskade -> {
+                                        var context = MappingContextUtils.getMappingContext();
+                                        context.setProperty("ident", dollyPerson.getIdent());
+                                        context.setProperty("personBolk", personbolk);
+                                        return mapper.map(yrkesskade, YrkesskadeRequest.class, context);
+                                    })
+                                    .map(yrkesskade -> yrkesskadeConsumer.lagreYrkesskade(yrkesskade)
+                                            .map(status -> lagreTransaksjon(status, yrkesskade, progress.getBestilling().getId()))))
+                            .flatMap(Flux::from)
+                            .map(status -> encodeStatus(status, index.incrementAndGet()))
+                            .collectList()
+                            .map(resultat -> futurePersist(progress, resultat)));
+        }
+
+        return Flux.empty();
     }
 
     @Override
@@ -71,12 +75,12 @@ public class YrkesskadeClient implements ClientRegister {
         // Er ikke støttet
     }
 
-    private ResponseDTO encodeStatus(ResponseEntity<String> status, int index) {
+    private ResponseDTO encodeStatus(YrkesskadeResponseDTO status, int index) {
 
         return ResponseDTO.builder()
                 .id(index)
-                .status(status.getStatusCode().is2xxSuccessful() ? Status.OK : Status.FEIL)
-                .melding(status.getBody())
+                .status(status.getStatus().is2xxSuccessful() ? Status.OK : Status.FEIL)
+                .melding(status.getMelding())
                 .build();
     }
 
@@ -85,7 +89,7 @@ public class YrkesskadeClient implements ClientRegister {
         var status = response.stream()
                 .map(entry -> "Yrkesskade#%d:%s".formatted(entry.getId(),
                         entry.getStatus() == Status.OK ? "OK" :
-                                 ErrorStatusDecoder.encodeStatus("FEIL: %s".formatted(entry.getMelding()))))
+                                ErrorStatusDecoder.encodeStatus("FEIL: %s".formatted(entry.getMelding()))))
                 .collect(Collectors.joining(","));
 
         return () -> {
@@ -94,10 +98,10 @@ public class YrkesskadeClient implements ClientRegister {
         };
     }
 
-    private ResponseEntity<String> lagreTransaksjon(ResponseEntity<String> status, YrkesskadeRequest request,
-                                                    Long bestillingId) {
+    private YrkesskadeResponseDTO lagreTransaksjon(YrkesskadeResponseDTO status, YrkesskadeRequest request,
+                                                   Long bestillingId) {
 
-        if (status.getStatusCode().is2xxSuccessful()) {
+        if (status.getStatus().is2xxSuccessful()) {
             transaksjonMappingService.save(TransaksjonMapping.builder()
                     .bestillingId(bestillingId)
                     .transaksjonId(toJson(request))

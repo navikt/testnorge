@@ -10,9 +10,13 @@ import no.nav.testnav.libs.dto.yrkesskade.v1.InnmelderRolletype;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Component
 public class YrkesskadeMappingStrategy implements MappingStrategy {
@@ -32,16 +36,7 @@ public class YrkesskadeMappingStrategy implements MappingStrategy {
                         destinasjon.setInnmelderIdentifikator(
                                 switch (destinasjon.getInnmelderrolle()) {
                                     case denSkadelidte -> ident;
-                                    case vergeOgForesatt ->
-                                            Optional.ofNullable(personBolk)
-                                                    .flatMap(persondata -> persondata.getData().getHentPersonBolk().stream()
-                                                            .map(PdlPersonBolk.PersonBolk::getPerson)
-                                                            .map(PdlPerson.Person::getVergemaalEllerFremtidsfullmakt)
-                                                            .flatMap(Collection::stream)
-                                                            .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
-                                                            .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                                            .filter(Objects::nonNull)
-                                                            .findFirst()).orElse(null);
+                                    case vergeOgForesatt ->getVergePerson(personBolk);
                                     case virksomhetsrepresentant ->
                                             destinasjon.getSkadelidtIdentifikator();
                                 });
@@ -55,5 +50,41 @@ public class YrkesskadeMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+    }
+
+    private String getVergePerson(PdlPersonBolk persondata) {
+
+        if (isNull(persondata)) {
+            return null;
+        }
+
+        var verge = persondata.getData().getHentPersonBolk().stream()
+                .map(PdlPersonBolk.PersonBolk::getPerson)
+                .map(PdlPerson.Person::getVergemaalEllerFremtidsfullmakt)
+                .flatMap(Collection::stream)
+                .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                .filter(Objects::nonNull)
+                .findFirst().orElse(null);
+
+        if (isNull(verge) && persondata.getData().getHentPersonBolk().stream()
+                .map(PdlPersonBolk.PersonBolk::getPerson)
+                .map(PdlPerson.Person::getFoedselsdato)
+                .flatMap(Collection::stream)
+                .map(foedselsdato -> nonNull(foedselsdato.getFoedselsdato()) ?
+                                ChronoUnit.YEARS.between(foedselsdato.getFoedselsdato(), LocalDate.now()) :
+                        LocalDate.now().getYear() - foedselsdato.getFoedselsaar())
+                .anyMatch(age -> age < 18)) {
+
+            verge = persondata.getData().getHentPersonBolk().stream()
+                    .map(PdlPersonBolk.PersonBolk::getPerson)
+                    .map(PdlPerson.Person::getForelderBarnRelasjon)
+                    .flatMap(Collection::stream)
+                    .filter(PdlPerson.ForelderBarnRelasjon::isForelder)
+                    .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                    .findFirst().orElse(null);
+        }
+
+        return verge;
     }
 }
