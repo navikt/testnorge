@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.domain.resultset.SystemTyper.YRKESSKADE;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -77,10 +78,20 @@ public class YrkesskadeClient implements ClientRegister {
 
     private ResponseDTO encodeStatus(YrkesskadeResponseDTO status, int index) {
 
+        String melding;
+
+        if (status.getStatus().is2xxSuccessful()) {
+            melding = null;
+        } else if (isNotBlank(status.getMelding())) {
+            melding = status.getMelding();
+        } else {
+            melding = status.getStatus().toString();
+        }
+
         return ResponseDTO.builder()
                 .id(index)
                 .status(status.getStatus().is2xxSuccessful() ? Status.OK : Status.FEIL)
-                .melding(status.getMelding())
+                .melding(melding)
                 .build();
     }
 
