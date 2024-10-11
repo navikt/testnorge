@@ -1,7 +1,9 @@
 package no.nav.dolly.bestilling.yrkesskade;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.yrkesskade.command.YrkesskadeGetCommand;
 import no.nav.dolly.bestilling.yrkesskade.command.YrkesskadePostCommand;
+import no.nav.dolly.bestilling.yrkesskade.dto.SaksoversiktDTO;
 import no.nav.dolly.bestilling.yrkesskade.dto.YrkesskadeResponseDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
@@ -38,5 +40,14 @@ public class YrkesskadeConsumer {
                 .flatMap(token -> new YrkesskadePostCommand(webClient, request, token.getTokenValue()).call())
                 .doOnNext(response ->
                         log.info("Mottatt response fra yrkesskade service {}", response));
+    }
+
+    public Mono<SaksoversiktDTO> hentSaksoversikt(String ident) {
+
+        log.info("Henter yrkeskade saksoversikt for ident {}", ident);
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new YrkesskadeGetCommand(webClient, ident, token.getTokenValue()).call())
+                .doOnNext(response ->
+                        log.info("Mottatt saksoversikt fra yrkesskade service {}", response));
     }
 }

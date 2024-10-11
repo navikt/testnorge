@@ -29,16 +29,16 @@ public final class BestillingYrkesskadeStatusMapper {
             if (isNotBlank(progress.getYrkesskadeStatus()) && isNotBlank(progress.getIdent())) {
                 var entries = progress.getYrkesskadeStatus().split(",");
                 for (var entry : entries) {
-                    var orgYear = entry.split(":")[0];
+                    var yrkesskade = entry.split(":")[0];
                     var status = entry.split(":")[1];
                     if (errorEnvIdents.containsKey(status)) {
-                        if (errorEnvIdents.get(status).containsKey(orgYear)) {
-                            errorEnvIdents.get(status).get(orgYear).add(progress.getIdent());
+                        if (errorEnvIdents.get(status).containsKey(yrkesskade)) {
+                            errorEnvIdents.get(status).get(yrkesskade).add(progress.getIdent());
                         } else {
-                            errorEnvIdents.get(status).put(orgYear, new HashSet<>(Set.of(progress.getIdent())));
+                            errorEnvIdents.get(status).put(yrkesskade, new HashSet<>(Set.of(progress.getIdent())));
                         }
                     } else {
-                        errorEnvIdents.put(status, new HashMap<>(Map.of(orgYear, new HashSet<>(Set.of(progress.getIdent())))));
+                        errorEnvIdents.put(status, new HashMap<>(Map.of(yrkesskade, new HashSet<>(Set.of(progress.getIdent())))));
                     }
                 }
             }

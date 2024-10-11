@@ -22,12 +22,14 @@ import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.TRUE;
 import static no.nav.dolly.domain.resultset.SystemTyper.YRKESSKADE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -46,26 +48,35 @@ public class YrkesskadeClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        var index = new AtomicInteger(0);
-
         if (!bestilling.getYrkesskader().isEmpty()) {
 
-            return Flux.from(
-                    personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
-                            .doOnNext(personBolk -> log.info("Hentet pdlPersonBolk"))
-                            .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
-                                    .map(yrkesskade -> {
-                                        var context = MappingContextUtils.getMappingContext();
-                                        context.setProperty("ident", dollyPerson.getIdent());
-                                        context.setProperty("personBolk", personbolk);
-                                        return mapper.map(yrkesskade, YrkesskadeRequest.class, context);
-                                    })
-                                    .map(yrkesskade -> yrkesskadeConsumer.lagreYrkesskade(yrkesskade)
-                                            .map(status -> lagreTransaksjon(status, yrkesskade, progress.getBestilling().getId()))))
-                            .flatMap(Flux::from)
-                            .map(status -> encodeStatus(status, index.incrementAndGet()))
-                            .collectList()
-                            .map(resultat -> futurePersist(progress, resultat)));
+            var index = new AtomicInteger(0);
+
+            return Flux.from(yrkesskadeConsumer.hentSaksoversikt(dollyPerson.getIdent())
+                    .map(resultat -> !resultat.getSaker().isEmpty())
+                    .map(eksisterendeSak -> !eksisterendeSak || isOpprettEndre)
+                    .flatMap(nysak -> TRUE.equals(nysak) ?
+                            personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
+                                    .doOnNext(personBolk -> log.info("Hentet pdlPersonBolk"))
+                                    .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
+                                            .map(yrkesskade -> {
+                                                var context = MappingContextUtils.getMappingContext();
+                                                context.setProperty("ident", dollyPerson.getIdent());
+                                                context.setProperty("personBolk", personbolk);
+                                                return mapper.map(yrkesskade, YrkesskadeRequest.class, context);
+                                            })
+                                            .map(yrkesskade -> yrkesskadeConsumer.lagreYrkesskade(yrkesskade)
+                                                    .map(status -> lagreTransaksjon(status, yrkesskade, progress.getBestilling().getId()))))
+                                    .flatMap(Flux::from)
+                                    .map(status -> encodeStatus(status, index.incrementAndGet()))
+                                    .collectList()
+                                    .map(resultat -> futurePersist(progress, resultat)) :
+
+                            Mono.just(futurePersist(progress, List.of(ResponseDTO.builder()
+                                    .id(index.incrementAndGet())
+                                    .status(Status.OK)
+                                    .build())))
+                    ));
         }
 
         return Flux.empty();
