@@ -39,13 +39,16 @@ public class YrkesskadeMappingStrategy implements MappingStrategy {
                                     case vergeOgForesatt ->
                                             getVergePerson(personBolk);
                                     case virksomhetsrepresentant ->
-                                            destinasjon.getInnmelderIdentifikator();
+                                            "30114500654"; // TBD
                                 });
 
                         if (destinasjon.getInnmelderrolle() == InnmelderRolletype.denSkadelidte ||
                                 destinasjon.getInnmelderrolle() == InnmelderRolletype.vergeOgForesatt) {
 
                             destinasjon.setPaaVegneAv(destinasjon.getSkadelidtIdentifikator());
+
+                        } else {
+                            destinasjon.setPaaVegneAv("911007800"); // TBD
                         }
                     }
                 })
