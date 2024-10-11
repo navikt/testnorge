@@ -95,6 +95,8 @@ export const YrkesskaderForm = () => {
 						header={'Yrkesskade'}
 						newEntry={initialYrkesskade}
 						canBeEmpty={false}
+						// maxEntries={1}
+						//TODO: Bare 1 yrkesskade per person???
 					>
 						{(path: string, idx: number) => {
 							return (

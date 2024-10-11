@@ -12,7 +12,7 @@ export const initialYrkesskade = {
 	// paaVegneAv: null,
 	tidstype: null,
 	skadetidspunkt: null,
-	perioder: [initialYrkesskadePeriode],
+	perioder: null,
 	referanse: null,
 	ferdigstillSak: null,
 }

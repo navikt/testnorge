@@ -1585,8 +1585,8 @@ const mapYrkesskader = (bestillingData, data) => {
 			// obj('Skadelidt identifikator', yrkesskade.skadelidtIdentifikator),
 			obj('Rolletype', yrkesskade.rolletype), //TODO: kodeverk
 			obj('Innmelderrolle', yrkesskade.innmelderrolle), //TODO: kodeverk
-			obj('Innmelder', yrkesskade.innmelderIdentifikator),
-			obj('På vegne av', yrkesskade.paaVegneAv),
+			// obj('Innmelder', yrkesskade.innmelderIdentifikator),
+			// obj('På vegne av', yrkesskade.paaVegneAv),
 			obj('Klassifisering', showLabel('klassifisering', yrkesskade.klassifisering)),
 			obj('Referanse', yrkesskade.referanse),
 			obj('Ferdigstill sak', showLabel('ferdigstillSak', yrkesskade.ferdigstillSak)),
