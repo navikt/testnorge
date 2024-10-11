@@ -36,9 +36,10 @@ public class YrkesskadeMappingStrategy implements MappingStrategy {
                         destinasjon.setInnmelderIdentifikator(
                                 switch (destinasjon.getInnmelderrolle()) {
                                     case denSkadelidte -> ident;
-                                    case vergeOgForesatt ->getVergePerson(personBolk);
+                                    case vergeOgForesatt ->
+                                            getVergePerson(personBolk);
                                     case virksomhetsrepresentant ->
-                                            destinasjon.getSkadelidtIdentifikator();
+                                            destinasjon.getInnmelderIdentifikator();
                                 });
 
                         if (destinasjon.getInnmelderrolle() == InnmelderRolletype.denSkadelidte ||
@@ -72,7 +73,7 @@ public class YrkesskadeMappingStrategy implements MappingStrategy {
                 .map(PdlPerson.Person::getFoedselsdato)
                 .flatMap(Collection::stream)
                 .map(foedselsdato -> nonNull(foedselsdato.getFoedselsdato()) ?
-                                ChronoUnit.YEARS.between(foedselsdato.getFoedselsdato(), LocalDate.now()) :
+                        ChronoUnit.YEARS.between(foedselsdato.getFoedselsdato(), LocalDate.now()) :
                         LocalDate.now().getYear() - foedselsdato.getFoedselsaar())
                 .anyMatch(age -> age < 18)) {
 
