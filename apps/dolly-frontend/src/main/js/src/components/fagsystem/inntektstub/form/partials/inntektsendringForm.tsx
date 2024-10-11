@@ -59,6 +59,7 @@ export default ({ formMethods, path }: InntektendringForm) => {
 							hjelpetekst={hjelpetekst}
 							header={`Inntektsendring (versjon ${idx + 1})`}
 							handleRemove={clickRemove}
+							showDeleteButton
 						>
 							<FormDateTimepicker
 								formMethods={formMethods}
