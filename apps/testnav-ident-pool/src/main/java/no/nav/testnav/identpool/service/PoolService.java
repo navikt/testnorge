@@ -10,9 +10,7 @@ import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ISO_DATE;
@@ -62,7 +60,7 @@ public class PoolService {
 
     public synchronized List<String> allocateIdenter(HentIdenterRequest request) {
 
-        Set<Ident> identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
+        var identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
         int missingIdentCount = request.getAntall() - identEntities.size();
 
         if (missingIdentCount > 0) {
@@ -72,12 +70,12 @@ public class PoolService {
 
             log.info("Generert {} identer ved mining", statusDTOS.size());
 
-            List<Ident> identerFraTps = statusDTOS.stream()
+            var identerFraMining = statusDTOS.stream()
                     .map(this::buildIdent)
                     .toList();
-            identRepository.saveAll(identerFraTps);
+            identRepository.saveAll(identerFraMining);
 
-            Iterator<Ident> ledigeIdents = identerFraTps.stream()
+            var ledigeIdents = identerFraMining.stream()
                     .filter(Ident::isLedig)
                     .toList().iterator();
 
