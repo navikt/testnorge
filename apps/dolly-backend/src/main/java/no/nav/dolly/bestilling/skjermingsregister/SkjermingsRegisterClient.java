@@ -62,20 +62,6 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
-
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setSkjermingsregisterStatus, status);
-            return progress;
-        };
-    }
-
-    private String getStatus(SkjermingDataResponse resultat) {
-
-        return isBlank(resultat.getError()) ? "OK" :
-                errorStatusDecoder.getErrorText(null, resultat.getError());
-    }
-
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {
 
         return personServiceConsumer.getPdlPersoner(List.of(ident))
@@ -96,5 +82,19 @@ public class SkjermingsRegisterClient implements ClientRegister {
                         .skjermetTil(getEgenansattDatoTom(bestilling))
                         .build(),
                 SkjermingDataRequest.class, context);
+    }
+
+    ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::setSkjermingsregisterStatus, status);
+            return progress;
+        };
+    }
+
+    String getStatus(SkjermingDataResponse resultat) {
+
+        return isBlank(resultat.getError()) ? "OK" :
+                errorStatusDecoder.getErrorText(null, resultat.getError());
     }
 }
