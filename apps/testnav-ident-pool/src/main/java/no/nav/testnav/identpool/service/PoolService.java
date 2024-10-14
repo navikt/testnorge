@@ -67,10 +67,12 @@ public class PoolService {
 
         if (missingIdentCount > 0) {
 
-            var tpsStatusDTOS = identerAvailService.generateAndCheckIdenter(request,
-                    isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 6 : ATTEMPT_OBTAIN);
+            var statusDTOS = identerAvailService.generateAndCheckIdenter(request,
+                    isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN);
 
-            List<Ident> identerFraTps = tpsStatusDTOS.stream()
+            log.info("Generert {} identer ved mining", statusDTOS.size());
+
+            List<Ident> identerFraTps = statusDTOS.stream()
                     .map(this::buildIdent)
                     .toList();
             identRepository.saveAll(identerFraTps);
