@@ -12,6 +12,7 @@ import {
 } from '@/components/bestillingsveileder/ShowErrorContext'
 import _ from 'lodash'
 import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
+import { Button } from '@navikt/ds-react'
 
 type TextInputProps = {
 	placeholder?: string
@@ -37,26 +38,38 @@ type TextInputProps = {
 	onPaste?: Function
 	className?: string
 	icon?: string
-	isDatepicker?: boolean
+	datepickerOnclick?: Function
 }
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
-	position: absolute;
-	top: 7px;
-	right: 7px;
+	position: relative;
+	float: right;
+	bottom: 30px;
+	right: 6px;
+`
+
+const StyledButton = styled(Button)`
+	&&& {
+		position: relative;
+		float: right;
+		bottom: 37px;
+		right: 1px;
+		padding: 5px 3px 0 3px;
+		margin: 0;
+	}
 `
 
 export const TextInput = React.forwardRef(
 	(
 		{
 			placeholder = 'Ikke spesifisert',
-			isDatepicker = false,
 			name,
 			fieldName,
 			className,
 			icon,
 			isDisabled,
+			datepickerOnclick,
 			...props
 		}: TextInputProps,
 		ref,
@@ -81,10 +94,17 @@ export const TextInput = React.forwardRef(
 					id={name}
 					className={css}
 					placeholder={placeholder}
-					{...(name && !isDatepicker && register?.(name))}
+					{...(name && register?.(name))}
 					{...props}
 				/>
-				{icon && <StyledIcon fontSize={'1.5rem'} kind={icon} />}
+				{icon &&
+					(datepickerOnclick ? (
+						<StyledButton variant="tertiary" onClick={datepickerOnclick}>
+							<Icon kind={icon} style={{ color: 'black' }} fontSize={'1.5rem'} />
+						</StyledButton>
+					) : (
+						<StyledIcon fontSize="1.5rem" kind={icon} />
+					))}
 			</>
 		)
 	},
