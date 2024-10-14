@@ -20,12 +20,7 @@ import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.List;
+import reactor.core.publisher.Mono;
 
 
 @Slf4j
@@ -66,6 +61,7 @@ public class IdportenSecurityConfig {
         logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(wellKnownUrl, postLogoutRedirectUri));
 
         return http
+                .cors(ServerHttpSecurity.CorsSpec::disable)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.pathMatchers(
                                 "/internal/isReady",
@@ -84,24 +80,21 @@ public class IdportenSecurityConfig {
                         ).permitAll()
                         .anyExchange().authenticated())
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
+                        .authenticationFailureHandler((webFilterExchange, exception) -> {
+                            log.error("Failed to authenticate user", exception);
+                            return Mono.error(exception);
+                        })
                         .authenticationManager(authenticationManager)
                         .authorizationRequestResolver(requestResolver)
                         .authenticationSuccessHandler(authenticationSuccessHandler))
-                .formLogin(formLoginSpec -> formLoginSpec.loginPage(LOGIN))
+                .formLogin(formLoginSpec -> formLoginSpec.loginPage(LOGIN).authenticationFailureHandler((webFilterExchange, exception) -> {
+                    log.error("Failed to authenticate user", exception);
+                    return Mono.error(exception);
+                }))
                 .logout(logoutSpec -> logoutSpec
                         .logoutUrl(LOGOUT)
                         .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGOUT))
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://nav.no", "https://www.idporten.no"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }

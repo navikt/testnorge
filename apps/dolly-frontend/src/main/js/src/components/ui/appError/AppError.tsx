@@ -19,7 +19,7 @@ export const AppError = ({ error, stackTrace, style }: Props) => {
 	]
 
 	useEffect(() => {
-		console.error(error)
+		console.error('Ukjent error i Dolly: ' + error)
 		if (errorsRequiringReload.some((e) => error?.toString()?.includes(e))) {
 			navigate(0)
 		}
