@@ -32,11 +32,12 @@ public class SyntVedtakshistorikkConsumer {
 
     public SyntVedtakshistorikkConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder) {
+
         serverProperties = consumers.getSyntVedtakshistorikk();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(ExchangeStrategies
                         .builder()
                         .codecs(configurer -> configurer

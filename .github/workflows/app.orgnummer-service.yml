@@ -3,15 +3,16 @@ name: orgnummer-service
 on:
   push:
     paths:
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/database
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/orgnummer-service/**
-      - .github/workflows/app.orgnummer-service.yml
+      - "plugins/**"
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/database/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/orgnummer-service/**"
+      - ".github/workflows/app.orgnummer-service.yml"
 
 jobs:
   workflow:

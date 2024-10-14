@@ -1,7 +1,10 @@
 package no.nav.dolly.domain.resultset.pensjon;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +19,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @Builder
@@ -27,8 +32,14 @@ public class PensjonData {
     @Schema(description = "Inntekt i pensjonsopptjeningsregister (POPP)")
     private PoppInntekt inntekt;
 
+    @Schema(description = "Generert inntekt i pensjonsopptjeningsregister (POPP)")
+    private PoppGenerertInntektWrapper generertInntekt;
+
     @Schema(description = "Data for tjenestepensjon (TP)")
     private List<TpOrdning> tp;
+
+    @Schema(description = "Data for pensjonsavtale")
+    private List<Pensjonsavtale> pensjonsavtale;
 
     @Schema(description = "Data for alderspensjon (AP)")
     private Alderspensjon alderspensjon;
@@ -36,20 +47,51 @@ public class PensjonData {
     @Schema(description = "Data for uføretrygd (UT)")
     private Uforetrygd uforetrygd;
 
+    @Schema(description = "Data for AFP offentlig")
+    private AfpOffentlig afpOffentlig;
+
+    @JsonIgnore
     public boolean hasInntekt() {
         return nonNull(inntekt);
     }
 
+    @JsonIgnore
+    public boolean hasGenerertInntekt() {
+        return nonNull(generertInntekt);
+    }
+
+    @JsonIgnore
     public boolean hasTp() {
         return !getTp().isEmpty();
     }
 
+    @JsonIgnore
     public boolean hasAlderspensjon() {
         return nonNull(alderspensjon);
     }
 
+    @JsonIgnore
     public boolean hasUforetrygd() {
         return nonNull(uforetrygd);
+    }
+
+    @JsonIgnore
+    public boolean hasPensjonsavtale() {
+
+        return !getPensjonsavtale().isEmpty();
+    }
+
+    @JsonIgnore
+    public boolean hasAfpOffentlig() {
+        return nonNull(afpOffentlig);
+    }
+
+    public List<Pensjonsavtale> getPensjonsavtale() {
+
+        if (isNull(pensjonsavtale)) {
+            pensjonsavtale = new ArrayList<>();
+        }
+        return pensjonsavtale;
     }
 
     public List<TpOrdning> getTp() {
@@ -69,6 +111,12 @@ public class PensjonData {
         UKJENT
     }
 
+    public enum UforeType {UNGUFOR, GIFT, ENSLIG}
+
+    public enum BarnetilleggType {FELLESBARN, SAERKULLSBARN}
+
+    public enum InntektType {ARBEIDSINNTEKT, NAERINGSINNTEKT, PENSJON_FRA_UTLANDET, UTENLANDS_INNTEKT, ANDRE_PENSJONER_OG_YTELSER}
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -86,6 +134,67 @@ public class PensjonData {
 
         @Schema(description = "Når true reduseres tidligere års pensjon i forhold til dagens kroneverdi")
         private Boolean redusertMedGrunnbelop;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PoppGenerertInntektWrapper {
+
+        @Schema(description = "Verdier brukt til generering av inntekt")
+        private PoppGenerer generer;
+
+        @Schema(description = "Genererte verdier for POPP inntekt")
+        private List<PoppGenerertInntekt> inntekter;
+
+        public List<PoppGenerertInntekt> getInntekter() {
+            if (inntekter == null) {
+                inntekter = new ArrayList<>();
+            }
+            return inntekter;
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PoppGenerer {
+
+        @Schema(description = "Fra og med år YYYY")
+        private Integer fomAar;
+
+        @Schema(description = "Til og med år YYYY")
+        private Integer tomAar;
+
+        @Schema(description = "Gjennomsnittlig grunnbeløp (G) per år")
+        private Float averageG;
+
+        @Schema(description = "Gjennomsnittlig grunnbeløp (G) kan genereres til verdi under 1G")
+        private Boolean tillatInntektUnder1G;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PoppGenerertInntekt {
+
+        @Schema(description = "Gjeldende år")
+        private Integer ar;
+
+        @Schema(description = "Inntekt i hele kroner for året")
+        private Integer inntekt;
+
+        @Schema(description = "Generert G-verdi for året")
+        private Float generatedG;
+
+        @Schema(description = "Grunnbeløp for året")
+        private Boolean grunnbelop;
     }
 
     @Data
@@ -135,6 +244,41 @@ public class PensjonData {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class Pensjonsavtale {
+        public enum AvtaleKategori {
+            NONE, UNKNOWN, INDIVIDUELL_ORDNING, PRIVAT_AFP,
+            PRIVAT_TJENESTEPENSJON, OFFENTLIG_TJENESTEPENSJON, FOLKETRYGD
+        }
+
+        private String produktBetegnelse;
+        private AvtaleKategori avtaleKategori;
+        private List<OpprettUtbetalingsperiodeDTO> utbetalingsperioder;
+
+        public List<OpprettUtbetalingsperiodeDTO> getUtbetalingsperioder() {
+
+            if (isNull(utbetalingsperioder)) {
+                utbetalingsperioder = new ArrayList<>();
+            }
+            return utbetalingsperioder;
+        }
+
+        @Data
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class OpprettUtbetalingsperiodeDTO {
+            private Integer startAlderAar;
+            private Integer startAlderMaaned;
+            private Integer sluttAlderAar;
+            private Integer sluttAlderMaaned;
+            private Integer aarligUtbetaling;
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Alderspensjon {
 
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
@@ -162,6 +306,17 @@ public class PensjonData {
             }
             return relasjoner;
         }
+
+        public boolean isSoknad() {
+
+            return isTrue(soknad);
+        }
+
+        @JsonIgnore
+        public boolean isVedtak() {
+
+            return isNotTrue(soknad);
+        }
     }
 
     @Data
@@ -186,6 +341,7 @@ public class PensjonData {
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate uforetidspunkt;
         private Integer inntektForUforhet;
+        private Integer inntektEtterUforhet;
         private Integer uforegrad;
         private UforeType minimumInntektForUforhetType;
         private String saksbehandler;
@@ -232,9 +388,71 @@ public class PensjonData {
         private Integer belop;
     }
 
-    public enum UforeType {UNGUFOR, GIFT, ENSLIG}
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AfpOffentlig {
 
-    public enum BarnetilleggType {FELLESBARN, SAERKULLSBARN}
+        @Schema(description = "Liste av tpId som støttes direkte for denne personen, " +
+                "mulige verdier hentes her: /api/mock-oppsett/muligedirektekall")
+        private List<String> direktekall;
 
-    public enum InntektType {ARBEIDSINNTEKT, NAERINGSINNTEKT, PENSJON_FRA_UTLANDET, UTENLANDS_INNTEKT, ANDRE_PENSJONER_OG_YTELSER}
+        @Schema(description = "AFP offentlig som denne personen har (stub)")
+        private List<AfpOffentligStub> mocksvar;
+
+        public List<String> getDirektekall() {
+
+            if (isNull(direktekall)) {
+                direktekall = new ArrayList<>();
+            }
+            return direktekall;
+        }
+
+        public List<AfpOffentligStub> getMocksvar() {
+
+            if (isNull(mocksvar)) {
+                mocksvar = new ArrayList<>();
+            }
+            return mocksvar;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AfpOffentligStub {
+
+        @Schema(description = "TpId som skal stubbes, liste kan hentes her /api/v1/tp/ordning")
+        private String tpId;
+
+        private StatusAfp statusAfp;
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate virkningsDato;
+        @Min(2024)
+        @Schema(description = "Årstall (fra dropdown?), laveste verdi er 2024")
+        private Integer sistBenyttetG;
+        private List<DatoBeloep> belopsListe;
+
+        public List<DatoBeloep> getBelopsListe() {
+            
+            if (isNull(belopsListe)) {
+                belopsListe = new ArrayList<>();
+            }
+            return belopsListe;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DatoBeloep {
+
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate fomDato;
+        @Min(1)
+        @Max(2147483647)
+        private Integer belop;
+    }
+
+    public enum StatusAfp {UKJENT, INNVILGET, SOKT, AVSLAG, IKKE_SOKT}
 }

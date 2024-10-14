@@ -353,12 +353,20 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            foedsel {
+            foedselsdato {
                 foedselsaar,
                 foedselsdato,
-                foedeland,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            foedested {
                 foedested,
                 foedekommune,
+                foedeland,
                 folkeregistermetadata {
                     ...folkeregistermetadataDetails
                 }
@@ -572,6 +580,7 @@ query($identer: [ID!]!) {
             foreldreansvar(historikk: true) {
                 ansvar,
                 ansvarlig,
+                ansvarssubjekt,
                 ansvarligUtenIdentifikator {
                     navn {
                         fornavn,

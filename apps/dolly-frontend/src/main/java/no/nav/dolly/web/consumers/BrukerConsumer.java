@@ -19,12 +19,12 @@ public class BrukerConsumer {
     private final AccessService accessService;
 
     public BrukerConsumer(TestnavBrukerServiceProperties serviceProperties,
-                          AccessService accessService) {
+                          AccessService accessService,
+                          WebClient.Builder webClientBuilder) {
 
         this.serviceProperties = serviceProperties;
         this.accessService = accessService;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .build();
     }

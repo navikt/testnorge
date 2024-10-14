@@ -9,10 +9,10 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 
 type StatsborgerskapTypes = {
 	path: string
-	identtype?: string
+	kanVelgeMaster?: boolean
 }
 
-export const StatsborgerskapForm = ({ path, identtype }: StatsborgerskapTypes) => {
+export const StatsborgerskapForm = ({ path, kanVelgeMaster }: StatsborgerskapTypes) => {
 	return (
 		<>
 			<FormSelect
@@ -28,7 +28,7 @@ export const StatsborgerskapForm = ({ path, identtype }: StatsborgerskapTypes) =
 				maxDate={new Date()}
 			/>
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
-			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
+			<AvansertForm path={path} kanVelgeMaster={kanVelgeMaster} />
 		</>
 	)
 }
@@ -41,11 +41,16 @@ export const Statsborgerskap = () => {
 			<FormDollyFieldArray
 				name={'pdldata.person.statsborgerskap'}
 				header="Statsborgerskap"
-				newEntry={getInitialStatsborgerskap(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialStatsborgerskap(
+					opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG',
+				)}
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => (
-					<StatsborgerskapForm path={path} identtype={opts?.identtype} />
+					<StatsborgerskapForm
+						path={path}
+						kanVelgeMaster={opts?.identMaster !== 'PDL' && opts?.identtype !== 'NPID'}
+					/>
 				)}
 			</FormDollyFieldArray>
 		</div>

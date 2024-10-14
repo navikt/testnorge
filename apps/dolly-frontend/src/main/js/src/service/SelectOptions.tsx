@@ -486,6 +486,15 @@ const selectOptions = {
 
 	tpOrdninger: [],
 
+	//AFP
+	statusAfp: [
+		{ value: 'UKJENT', label: 'Ukjent' },
+		{ value: 'INNVILGET', label: 'Innvilget' },
+		{ value: 'SOKT', label: 'Søkt' },
+		{ value: 'AVSLAG', label: 'Avslag' },
+		{ value: 'IKKE_SOKT', label: 'Ikke søkt' },
+	],
+
 	// PDL vergemaal:
 	pdlVergemaalType: [
 		{ value: 'ensligMindreaarigAsylsoeker', label: 'Enslig mindreårig asylsøker' },
@@ -549,6 +558,32 @@ const selectOptions = {
 		{ value: 'PENSJON_FRA_UTLANDET', label: 'Forventet pensjon fra utlandet' },
 		{ value: 'UTENLANDS_INNTEKT', label: 'Forventet utenlandsinntekt' },
 		{ value: 'ANDRE_PENSJONER_OG_YTELSER', label: 'Forventet andre pensjoner og ytelser' },
+	],
+
+	// Pensjonsavtale:
+	avtaleKategori: [
+		{ value: 'NONE', label: 'Ingenting' },
+		{ value: 'UNKNOWN', label: 'Ukjent' },
+		{ value: 'INDIVIDUELL_ORDNING', label: 'Individuell ordning' },
+		{ value: 'PRIVAT_AFP', label: 'Privat AFP' },
+		{ value: 'PRIVAT_TJENESTEPENSJON', label: 'Privat tjenestepensjon' },
+		{ value: 'OFFENTLIG_TJENESTEPENSJON', label: 'Offentlig tjenestepensjon' },
+		{ value: 'FOLKETRYGD', label: 'Folketrygden' },
+	],
+
+	maanedsvelger: [
+		{ value: 1, label: 'Januar' },
+		{ value: 2, label: 'Februar' },
+		{ value: 3, label: 'Mars' },
+		{ value: 4, label: 'April' },
+		{ value: 5, label: 'Mai' },
+		{ value: 6, label: 'Juni' },
+		{ value: 7, label: 'Juli' },
+		{ value: 8, label: 'August' },
+		{ value: 9, label: 'September' },
+		{ value: 10, label: 'Oktober' },
+		{ value: 11, label: 'November' },
+		{ value: 12, label: 'Desember' },
 	],
 
 	// Arbeidsplassen:

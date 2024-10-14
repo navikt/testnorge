@@ -1,7 +1,6 @@
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { Accordion } from '@navikt/ds-react'
-import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import React from 'react'
 import { Header } from '@/components/ui/soekForm/SoekForm'
 import DisplayFormState from '@/utils/DisplayFormState'
@@ -16,6 +15,7 @@ import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
+import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;

@@ -1,48 +1,18 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version "3.2.1"
-    id 'io.spring.dependency-management' version "1.1.4"
-}
-
-bootJar {
-    archiveFileName = "app.jar"
-}
-
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
-    }
-}
-
-test {
-    useJUnitPlatform()
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
+    id "dolly-apps"
 }
 
 dependencies {
-    implementation 'com.auth0:java-jwt:4.3.0'
+    implementation "com.auth0:java-jwt:$versions.jwt"
 
-    implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:reactive-core'
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:reactive-core"
 
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
+    implementation "org.bouncycastle:bcprov-jdk18on:$versions.bouncyCastle"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
-    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-}
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
+    compileOnly "jakarta.servlet:jakarta.servlet-api"
 }

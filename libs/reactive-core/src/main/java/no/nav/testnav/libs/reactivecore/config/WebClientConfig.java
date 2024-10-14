@@ -9,6 +9,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ClientRequestObservationConvention;
 import org.springframework.web.reactive.function.client.DefaultClientRequestObservationConvention;
@@ -23,6 +24,7 @@ import java.time.Duration;
 public class WebClientConfig {
 
     @Bean
+    @Primary
     public WebClient.Builder webClientBuilder(ApplicationContext context) {
 
         try {
@@ -43,14 +45,14 @@ public class WebClientConfig {
                                             .create(ConnectionProvider.builder("Testnorge connection pool")
                                                     .maxConnections(5)
                                                     .pendingAcquireMaxCount(10000)
-                                                    .pendingAcquireTimeout(Duration.ofMinutes(30))
+                                                    .pendingAcquireTimeout(Duration.ofSeconds(300))
                                                     .build())
                                             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
                                             .option(ChannelOption.SO_KEEPALIVE, true)
                                             .option(EpollChannelOption.TCP_KEEPIDLE, 300)
                                             .option(EpollChannelOption.TCP_KEEPINTVL, 60)
                                             .option(EpollChannelOption.TCP_KEEPCNT, 8)
-                                            .responseTimeout(Duration.ofSeconds(30))
+                                            .responseTimeout(Duration.ofSeconds(10))
                             ));
 
         } catch (NoSuchBeanDefinitionException e) {

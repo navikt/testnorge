@@ -1,9 +1,12 @@
 import * as Yup from 'yup'
 import _ from 'lodash'
-import { ifPresent, requiredNumber } from '@/utils/YupValidations'
+import { ifPresent, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
+import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
+import { getYear } from 'date-fns'
+import { AfpOffentligForm } from '@/components/fagsystem/afpOffentlig/form/Form'
 
 function calculate_age(dob) {
 	const diff_ms = Date.now() - dob.getTime()
@@ -12,12 +15,23 @@ function calculate_age(dob) {
 	return Math.abs(age_dt.getUTCFullYear() - 1970)
 }
 
-const getAlder = (values, personFoerLeggTil, importPersoner) => {
+export const getAlder = (values, personFoerLeggTil, importPersoner) => {
 	let alder = _.get(values, 'pdldata.opprettNyPerson.alder')
 	if (_.isNil(alder)) {
 		let foedselsdato = null
-		if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
+		if (values?.pdldata?.person?.foedselsdato?.[0]?.foedselsdato) {
+			foedselsdato = values.pdldata.person.foedselsdato[0].foedselsdato
+		} else if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
 			foedselsdato = values.pdldata.person.foedsel[0].foedselsdato
+		} else if (values?.pdldata?.person?.foedselsdato?.[0]?.foedselsaar) {
+			foedselsdato = new Date().setFullYear(values.pdldata.person.foedselsdato[0].foedselsaar)
+		} else if (values?.pdldata?.opprettNyPerson?.foedtFoer) {
+			foedselsdato = values.pdldata.opprettNyPerson.foedtFoer
+		} else if (personFoerLeggTil?.pdlforvalter?.person?.foedselsdato) {
+			const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedselsdato
+				.map((foedsel) => foedsel.foedselsdato)
+				.sort((a, b) => new Date(b) - new Date(a))
+			foedselsdato = foedselsdatoer?.[0]
 		} else if (personFoerLeggTil?.pdlforvalter?.person?.foedsel) {
 			const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedsel
 				.map((foedsel) => foedsel.foedselsdato)
@@ -25,10 +39,15 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 			foedselsdato = foedselsdatoer?.[0]
 		} else if (personFoerLeggTil?.pdl) {
 			const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
-			foedselsdato = pdlPerson?.foedsel?.[0]?.foedselsdato
+			foedselsdato =
+				pdlPerson?.foedselsdato?.[0]?.foedselsdato || pdlPerson?.foedsel?.[0]?.foedselsdato
 		} else if (importPersoner) {
 			const foedselsdatoer = importPersoner
-				.map((person) => person?.data?.hentPerson?.foedsel?.[0]?.foedselsdato)
+				.map(
+					(person) =>
+						person?.data?.hentPerson?.foedselsdato?.[0]?.foedselsdato ||
+						person?.data?.hentPerson?.foedsel?.[0]?.foedselsdato,
+				)
 				.sort((a, b) => new Date(b) - new Date(a))
 			foedselsdato = foedselsdatoer?.[0]
 		}
@@ -37,16 +56,14 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 	return alder
 }
 
-const invalidAlderFom = (inntektFom, values) => {
-	const personFoerLeggTil = values.personFoerLeggTil
+const invalidAlderFom = (inntektFom, values, personFoerLeggTil, minAlder) => {
 	const importPersoner = values.importPersoner
-
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
 	const foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	const foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
 
 	if (!_.isNil(alder) && alder !== '') {
-		if (new Date().getFullYear() - alder + 17 > inntektFom) {
+		if (new Date().getFullYear() - alder + minAlder > inntektFom) {
 			return true
 		}
 	} else if (!_.isNil(foedtFoer)) {
@@ -56,20 +73,19 @@ const invalidAlderFom = (inntektFom, values) => {
 		let year = foedtFoerDate.getFullYear()
 
 		year = day === 1 && month === 0 ? year - 1 : year
-		if (year + 17 > inntektFom) {
+		if (year + minAlder || 13 > inntektFom) {
 			return true
 		}
 	} else if (!_.isNil(foedtEtter) && _.isNil(foedtFoer)) {
 		const foedtEtterDate = new Date(foedtEtter)
-		if (foedtEtterDate.getFullYear() + 17 > inntektFom) {
+		if (foedtEtterDate.getFullYear() + minAlder || 13 > inntektFom) {
 			return true
 		}
 	}
 	return false
 }
 
-const invalidAlderTom = (inntektTom, values) => {
-	const personFoerLeggTil = values?.personFoerLeggTil
+const invalidAlderTom = (inntektTom, values, personFoerLeggTil) => {
 	const importPersoner = values?.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
@@ -93,8 +109,7 @@ const invalidAlderTom = (inntektTom, values) => {
 	return false
 }
 
-const invalidDoedsdato = (inntektTom, values) => {
-	const personFoerLeggTil = values.personFoerLeggTil
+const invalidDoedsdato = (inntektTom, values, personFoerLeggTil) => {
 	const importPersoner = values.importPersoner
 
 	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
@@ -126,14 +141,21 @@ const validFomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
 	return val.test('gyldig-fom-aar', 'Feil', (value, context) => {
 		if (!value) return true
 		const inntektFom = value
+		const values = context.from?.[context.from.length - 1]?.value
+		const personFoerLeggTil = context?.options?.context?.personFoerLeggTil
 
-		const values = context.parent
+		const alder = getAlder(values, personFoerLeggTil, values.importPersoner)
+		const foedselsAar = alder && getYear(new Date()) - alder
 
-		if (invalidAlderFom(inntektFom, values)) {
-			return context.createError({ message: 'F.o.m kan tidligst være året personen fyller 17 år' })
+		const minAlder = foedselsAar && foedselsAar < 1997 ? 17 : 13
+
+		if (invalidAlderFom(inntektFom, values, personFoerLeggTil, minAlder)) {
+			return context.createError({
+				message: `F.o.m kan tidligst være året personen fyller ${minAlder.toString()} år`,
+			})
 		}
 
-		let inntektTom = values?.tomAar
+		let inntektTom = context.options.parent.tomAar
 		if (!_.isNil(inntektTom) && inntektFom > inntektTom) {
 			return context.createError({ message: 'F.o.m. dato må være før t.o.m. dato' })
 		}
@@ -147,19 +169,20 @@ const validTomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
 		if (!value) return true
 		let inntektTom = value
 
-		const values = context.parent
+		const values = context.from?.[context.from.length - 1]?.value
+		const personFoerLeggTil = context?.options?.context?.personFoerLeggTil
 
-		if (invalidAlderTom(inntektTom, values)) {
+		if (invalidAlderTom(inntektTom, values, personFoerLeggTil)) {
 			return context.createError({
 				message: 'T.o.m kan ikke være etter året personen fyller 75',
 			})
 		}
 
-		if (invalidDoedsdato(inntektTom, values)) {
+		if (invalidDoedsdato(inntektTom, values, personFoerLeggTil)) {
 			return context.createError({ message: 'T.o.m kan ikke være etter at person har dødd' })
 		}
 
-		const inntektFom = values?.fomAar
+		const inntektFom = context.options.parent.fomAar
 		if (!_.isNil(inntektFom) && inntektTom < inntektFom) {
 			return context.createError({ message: 'T.o.m. dato må være etter f.o.m. dato' })
 		}
@@ -183,9 +206,26 @@ export const validation = {
 					redusertMedGrunnbelop: Yup.boolean(),
 				}),
 			),
+			generertInntekt: ifPresent(
+				'$pensjonforvalter.generertInntekt',
+				Yup.object({
+					generer: Yup.object({
+						tomAar: validTomDateTest(requiredNumber).required('Velg et gyldig år'),
+					}),
+					inntekter: Yup.array()
+						.of(
+							Yup.object({
+								inntekt: requiredString,
+							}),
+						)
+						.required('Generer minst én inntekt'),
+				}),
+			),
+			...PensjonsavtaleForm.validation,
 			...TjenestepensjonForm.validation,
 			...AlderspensjonForm.validation,
 			...UforetrygdForm.validation,
+			...AfpOffentligForm.validation,
 		}),
 	),
 }

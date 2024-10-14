@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 
@@ -29,7 +29,8 @@ export const fixTimezone = (date: Date) => {
 const getValgteAttributter = (values) => {
 	const rootPaths = [
 		'pdldata.opprettNyPerson.alder',
-		'pdldata.person.foedsel',
+		'pdldata.person.foedested',
+		'pdldata.person.foedselsdato',
 		'pdldata.person.doedsfall',
 		'pdldata.person.statsborgerskap',
 		'pdldata.person.innflytting',
@@ -67,11 +68,14 @@ const getValgteAttributter = (values) => {
 		'sigrunstubPensjonsgivende',
 		'inntektstub',
 		'inntektsmelding',
+		'skattekort',
 		'arbeidsplassenCV',
 		'pensjonforvalter.inntekt',
+		'pensjonforvalter.pensjonsavtale',
 		'pensjonforvalter.tp',
 		'pensjonforvalter.alderspensjon',
 		'pensjonforvalter.uforetrygd',
+		'pensjonforvalter.afpOffentlig',
 		'arenaforvalter',
 		'sykemelding',
 		'brregstub',
@@ -106,7 +110,7 @@ const getValgteAttributter = (values) => {
 
 export const erForsteEllerTest = (values, attributter) => {
 	const valgteAttributter = getValgteAttributter(values)
-	return runningCypressE2E() || attributter.includes(valgteAttributter[0])
+	return runningE2ETest() || attributter.includes(valgteAttributter[0])
 }
 
 export const harValgtAttributt = (values, attributter) => {

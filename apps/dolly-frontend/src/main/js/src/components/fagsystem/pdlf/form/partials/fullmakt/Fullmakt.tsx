@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useContext } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
@@ -9,6 +10,7 @@ import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
@@ -19,6 +21,9 @@ interface FullmaktProps {
 export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }: FullmaktProps) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsFormat.formatOptions('fullmaktOmraader', fullmaktOmraader)
+	const opts: any = useContext(BestillingsveilederContext)
+
+	const isTestnorgeIdent = opts?.identMaster === 'PDL'
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -35,14 +40,17 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
 			<PdlPersonExpander
+				path={path}
 				nyPersonPath={`${path}.nyFullmektig`}
 				eksisterendePersonPath={`${path}.motpartsPersonident`}
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
 				isExpanded={
+					isTestnorgeIdent ||
 					!isEmpty(formMethods.watch(`${path}.nyFullmektig`), ['syntetisk']) ||
 					formMethods.watch(`${path}.motpartsPersonident`) !== null
 				}
+				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />

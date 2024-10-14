@@ -9,7 +9,7 @@ import _ from 'lodash'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
@@ -45,7 +45,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
 						<Button
-							data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT}
+							data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT}
 							onClick={openGjenopprettModal}
 							kind="synchronize"
 							disabled={!harLevertPersoner || gjenopprettingsId}
@@ -60,7 +60,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						!harRelatertPersonBarn &&
 						!gjenopprettingsId && (
 							<Button
-								data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL}
+								data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL}
 								onClick={openMalModal}
 								kind={'maler'}
 								className="svg-icon-blue"

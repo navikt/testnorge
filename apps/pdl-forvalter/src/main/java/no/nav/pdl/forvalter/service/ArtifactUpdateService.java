@@ -12,7 +12,9 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DoedfoedtBarnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
@@ -59,26 +61,29 @@ public class ArtifactUpdateService {
     private static final String IDENT_NOT_FOUND = "Person med ident: %s ble ikke funnet";
     private static final String INFO_NOT_FOUND = "%s med id: %s ble ikke funnet";
 
-    private final PersonRepository personRepository;
-    private final PersonService personService;
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final BostedAdresseService bostedAdresseService;
     private final DeltBostedService deltBostedService;
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final DoedsfallService doedsfallService;
     private final FalskIdentitetService falskIdentitetService;
+    private final FoedestedService foedestedService;
     private final FoedselService foedselService;
+    private final FoedselsdatoService foedselsdatoService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
     private final ForeldreansvarService foreldreansvarService;
     private final FullmaktService fullmaktService;
+    private final InnflyttingService innflyttingService;
     private final KjoennService kjoennService;
     private final KontaktAdresseService kontaktAdresseService;
     private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
-    private final InnflyttingService innflyttingService;
     private final NavnService navnService;
-    private final OppholdsadresseService oppholdsadresseService;
     private final OppholdService oppholdService;
+    private final OppholdsadresseService oppholdsadresseService;
+    private final PersonRepository personRepository;
+    private final PersonService personService;
+    private final SikkerhetstiltakService sikkerhetstiltakService;
     private final SivilstandService sivilstandService;
     private final StatsborgerskapService statsborgerskapService;
     private final TelefonnummerService telefonnummerService;
@@ -86,47 +91,6 @@ public class ArtifactUpdateService {
     private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
     private final UtflyttingService utflyttingService;
     private final VergemaalService vergemaalService;
-    private final SikkerhetstiltakService sikkerhetstiltakService;
-
-    private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, Integer id, String navn) {
-
-        if (artifacter.stream().noneMatch(artifact -> artifact.getId().equals(id))) {
-            throw new NotFoundException(String.format(INFO_NOT_FOUND, navn, id));
-        }
-    }
-
-    private static <T extends DbVersjonDTO> T initOpprett(List<T> artifacter, T oppretting) {
-
-        oppretting.setId(artifacter.stream()
-                .mapToInt(DbVersjonDTO::getId)
-                .max().orElse(0) + 1);
-        return oppretting;
-    }
-
-    private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,
-                                                            Integer id, String navn) {
-
-        artifact.setIsNew(true);
-        artifact.setKilde(isNotBlank(artifact.getKilde()) ? artifact.getKilde() : "Dolly");
-        artifact.setMaster(nonNull(artifact.getMaster()) ? artifact.getMaster() : DbVersjonDTO.Master.FREG);
-
-        if (id.equals(0)) {
-            artifacter.addFirst(initOpprett(artifacter, artifact));
-            return artifacter;
-
-        } else {
-            checkExists(artifacter, id, navn);
-            return new ArrayList<>(artifacter.stream()
-                    .map(data -> {
-                        if (data.getId().equals(id)) {
-                            artifact.setId(id);
-                            return artifact;
-                        }
-                        return data;
-                    })
-                    .toList());
-        }
-    }
 
     public void updateFoedsel(String ident, Integer id, FoedselDTO oppdatertFoedsel) {
 
@@ -137,6 +101,28 @@ public class ArtifactUpdateService {
 
         foedselService.validate(oppdatertFoedsel, person.getPerson());
         foedselService.convert(person.getPerson());
+    }
+
+    public void updateFoedested(String ident, Integer id, FoedestedDTO oppdatertFoedested) {
+
+        var person = getPerson(ident);
+
+        person.getPerson().setFoedested(
+                updateArtifact(person.getPerson().getFoedested(), oppdatertFoedested, id, "Foedested"));
+
+        foedestedService.validate(oppdatertFoedested, person.getPerson());
+        foedestedService.convert(person.getPerson());
+    }
+
+    public void updateFoedselsdato(String ident, Integer id, FoedselsdatoDTO oppdatertFoedselsdato) {
+
+        var person = getPerson(ident);
+
+        person.getPerson().setFoedselsdato(
+                updateArtifact(person.getPerson().getFoedselsdato(), oppdatertFoedselsdato, id, "Foedselsdato"));
+
+        foedselsdatoService.validate(oppdatertFoedselsdato, person.getPerson());
+        foedselsdatoService.convert(person.getPerson());
     }
 
     public void updateNavn(String ident, Integer id, NavnDTO oppdatertNavn) {
@@ -238,9 +224,9 @@ public class ArtifactUpdateService {
 
     public void updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
-        forelderBarnRelasjonService.validate(oppdatertRelasjon);
-
         var person = getPerson(ident);
+        forelderBarnRelasjonService.validate(oppdatertRelasjon, person.getPerson());
+
         var foreldrebarnRelasjon = person.getPerson().getForelderBarnRelasjon().stream()
                 .filter(relasjon -> relasjon.getId().equals(id))
                 .findFirst();
@@ -273,16 +259,10 @@ public class ArtifactUpdateService {
         }
     }
 
-    private static boolean isEndretRolle(ForelderBarnRelasjonDTO relasjon, ForelderBarnRelasjonDTO oppdatertRelasjon) {
-
-        return oppdatertRelasjon.getMinRolleForPerson() != relasjon.getMinRolleForPerson() &&
-                oppdatertRelasjon.getRelatertPersonsRolle() != relasjon.getRelatertPersonsRolle();
-    }
-
     public void updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
 
         var person = getPerson(ident);
-        foreldreansvarService.validateBarn(oppdatertAnsvar, person.getPerson());
+        foreldreansvarService.validate(oppdatertAnsvar, person.getPerson());
 
         var foreldreansvar = person.getPerson().getForeldreansvar().stream()
                 .filter(relasjon -> relasjon.getId().equals(id))
@@ -320,7 +300,7 @@ public class ArtifactUpdateService {
 
         if (id == 0 || foreldreansvar.isPresent()) {
 
-            foreldreansvarService.handleBarn(oppdatertAnsvar, person.getPerson());
+            foreldreansvarService.handle(oppdatertAnsvar, person.getPerson());
         }
 
         person.getPerson().getForeldreansvar().stream()
@@ -491,9 +471,9 @@ public class ArtifactUpdateService {
 
     public void updateSivilstand(String ident, Integer id, SivilstandDTO oppdatertSivilstand) {
 
-        sivilstandService.validate(oppdatertSivilstand);
-
         var person = getPerson(ident);
+        sivilstandService.validate(oppdatertSivilstand, person.getPerson());
+
         var sivilstandRelasjon = person.getPerson().getSivilstand().stream()
                 .filter(sivilstand -> sivilstand.getId().equals(id))
                 .findFirst();
@@ -542,9 +522,9 @@ public class ArtifactUpdateService {
 
     public void updateFullmakt(String ident, Integer id, FullmaktDTO oppdatertFullmakt) {
 
-        fullmaktService.validate(oppdatertFullmakt);
-
         var person = getPerson(ident);
+        fullmaktService.validate(oppdatertFullmakt, person.getPerson());
+
         var fullmaktRelasjon = person.getPerson().getFullmakt().stream()
                 .filter(fullmakt -> fullmakt.getId().equals(id))
                 .findFirst();
@@ -599,7 +579,6 @@ public class ArtifactUpdateService {
                 deletePerson(slettePerson, vergemaal.isEksisterendePerson());
 
                 oppdatertVergemaal.setId(id);
-                oppdatertVergemaal.setVergeIdent(null);
                 person.getPerson().getVergemaal().add(oppdatertVergemaal);
                 person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
             }
@@ -636,6 +615,31 @@ public class ArtifactUpdateService {
         doedfoedtBarnService.convert(person.getPerson().getDoedfoedtBarn());
     }
 
+    private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,
+                                                            Integer id, String navn) {
+
+        artifact.setIsNew(true);
+        artifact.setKilde(isNotBlank(artifact.getKilde()) ? artifact.getKilde() : "Dolly");
+        artifact.setMaster(nonNull(artifact.getMaster()) ? artifact.getMaster() : DbVersjonDTO.Master.FREG);
+
+        if (id.equals(0)) {
+            artifacter.addFirst(initOpprett(artifacter, artifact));
+            return artifacter;
+
+        } else {
+            checkExists(artifacter, id, navn);
+            return new ArrayList<>(artifacter.stream()
+                    .map(data -> {
+                        if (data.getId().equals(id)) {
+                            artifact.setId(id);
+                            return artifact;
+                        }
+                        return data;
+                    })
+                    .toList());
+        }
+    }
+
     private DbPerson getPerson(String ident) {
 
         return personRepository.findByIdent(ident)
@@ -648,5 +652,26 @@ public class ArtifactUpdateService {
 
             personService.deletePerson(person.getIdent());
         }
+    }
+
+    private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, Integer id, String navn) {
+
+        if (artifacter.stream().noneMatch(artifact -> artifact.getId().equals(id))) {
+            throw new NotFoundException(String.format(INFO_NOT_FOUND, navn, id));
+        }
+    }
+
+    private static <T extends DbVersjonDTO> T initOpprett(List<T> artifacter, T oppretting) {
+
+        oppretting.setId(artifacter.stream()
+                .mapToInt(DbVersjonDTO::getId)
+                .max().orElse(0) + 1);
+        return oppretting;
+    }
+
+    private static boolean isEndretRolle(ForelderBarnRelasjonDTO relasjon, ForelderBarnRelasjonDTO oppdatertRelasjon) {
+
+        return oppdatertRelasjon.getMinRolleForPerson() != relasjon.getMinRolleForPerson() &&
+                oppdatertRelasjon.getRelatertPersonsRolle() != relasjon.getRelatertPersonsRolle();
     }
 }

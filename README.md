@@ -81,19 +81,19 @@ Eller kjør:
 ```
 
 ## Virtuelt miljø 
-Kjør kommandoen: 
-
+Kjør kommandoen:
+```aiexclude
+> JWK=$(cat ./mocks/jwk.json) docker compose up --build
 ```
-JWK=$(cat ./mocks/jwk.json) docker-compose up --build
+Evt. i PowerShell:
+```aiexclude
+> $env:JWK=(Get-Content -Path ./mocks/jwk.json -Raw) ; docker compose up --build
 ```
-
-Deretter kan itegrasjonstester kjøres med kommandoen: 
-
+Deretter kan itegrasjonstester kjøres med kommandoen:
 ```
-./gradlew iTest
+> ./gradlew iTest
 ```
-
-NB: Dette vil kun fungere hvis appen støtter itegrasjonstester.
+NB: Dette vil kun fungere hvis appen støtter integrasjonstester.
 
 
 ## Kode generert av GitHub Copilot

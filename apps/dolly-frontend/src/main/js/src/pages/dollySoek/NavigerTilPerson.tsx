@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useNaviger } from '@/utils/hooks/useNaviger'
 import styled from 'styled-components'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const StyledButton = styled.button`
 	background: none !important;
@@ -45,7 +45,7 @@ export const NavigerTilPerson = ({ ident, linkTekst = null }) => {
 
 	return (
 		<Button
-			data-cy={CypressSelector.BUTTON_VIS_I_GRUPPE}
+			data-testid={TestComponentSelectors.BUTTON_VIS_I_GRUPPE}
 			variant="tertiary"
 			size="xsmall"
 			icon={<ArrowRightIcon />}

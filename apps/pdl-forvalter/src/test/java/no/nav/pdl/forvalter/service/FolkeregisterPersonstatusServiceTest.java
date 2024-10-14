@@ -41,11 +41,12 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterPersonstatus(List.of(FolkeregisterPersonstatusDTO.builder()
                                 .status(FORSVUNNET)
                                 .isNew(true)
                                 .build()))
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getStatus(), is(equalTo(FORSVUNNET)));
     }
@@ -55,6 +56,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterPersonstatus(
                                 List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
@@ -63,7 +65,7 @@ class FolkeregisterPersonstatusServiceTest {
                                 DoedsfallDTO.builder()
                                         .doedsdato(LocalDateTime.now())
                                         .build()))
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getStatus(), is(equalTo(DOED)));
     }
@@ -73,6 +75,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterPersonstatus(
                                 List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
@@ -80,7 +83,7 @@ class FolkeregisterPersonstatusServiceTest {
                         .opphold(List.of(OppholdDTO.builder()
                                 .type(OppholdDTO.OppholdType.OPPLYSNING_MANGLER)
                                 .build()))
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getStatus(), is(equalTo(MIDLERTIDIG)));
     }
@@ -90,6 +93,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterPersonstatus(
                                 List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
@@ -97,7 +101,7 @@ class FolkeregisterPersonstatusServiceTest {
                         .utflytting(List.of(UtflyttingDTO.builder()
                                 .tilflyttingsland("FRA")
                                 .build()))
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getStatus(), is(equalTo(UTFLYTTET)));
     }
@@ -115,7 +119,7 @@ class FolkeregisterPersonstatusServiceTest {
                         .bostedsadresse(List.of(BostedadresseDTO.builder()
                                 .vegadresse(new VegadresseDTO())
                                 .build()))
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getStatus(), is(equalTo(BOSATT)));
     }
@@ -133,7 +137,7 @@ class FolkeregisterPersonstatusServiceTest {
                         .bostedsadresse(List.of(BostedadresseDTO.builder()
                                 .matrikkeladresse(new MatrikkeladresseDTO())
                                 .build()))
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getStatus(), is(equalTo(BOSATT)));
     }
@@ -151,7 +155,7 @@ class FolkeregisterPersonstatusServiceTest {
                         .bostedsadresse(List.of(BostedadresseDTO.builder()
                                 .utenlandskAdresse(new UtenlandskAdresseDTO())
                                 .build()))
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getStatus(), is(equalTo(IKKE_BOSATT)));
     }
@@ -166,7 +170,7 @@ class FolkeregisterPersonstatusServiceTest {
                                 List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getStatus(), is(equalTo(FOEDSELSREGISTRERT)));
     }

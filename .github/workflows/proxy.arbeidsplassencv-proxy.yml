@@ -3,19 +3,20 @@ name: arbeidsplassencv-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - libs/reactive-security
-      - libs/security-core
-      - proxies/arbeidsplassencv-proxy/**
-      - .github/workflows/proxy.arbeidsplassencv-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/arbeidsplassencv-proxy/**"
+      - ".github/workflows/proxy.arbeidsplassencv-proxy.yml"
 
 jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "proxies/arbeidsplassencv-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-arbeidsplassencv"
     permissions:
       contents: read
       id-token: write

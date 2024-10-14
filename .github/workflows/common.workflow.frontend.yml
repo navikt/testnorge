@@ -69,6 +69,7 @@ on:
 jobs:
 
   start:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: "Logging"
@@ -115,11 +116,15 @@ jobs:
           java-version: 21
       - name: "Gradle"
         id: gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
         with:
-          build-root-directory: ${{ inputs.working-directory }}
-          arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || '' }} --scan
           cache-read-only: false
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: "Build"
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || '' }} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -142,14 +147,13 @@ jobs:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
           image_suffix: ${{ inputs.image-suffix }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
   deploy:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
@@ -160,11 +164,11 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.yml"
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
@@ -175,12 +179,12 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.test.yml"
           VAR: image=${{ needs.build.outputs.image }}
 
   # Only used by dolly-frontend.
   deploy-idporten:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy-idporten == 'true'
     concurrency: ${{ inputs.image-suffix }}-idporten
     runs-on: ubuntu-latest
@@ -191,12 +195,12 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.idporten.yml"
           VAR: image=${{ needs.build.outputs.image }}
 
   # Only used by dolly-frontend.
   deploy-unstable:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy-unstable == 'true'
     concurrency: ${{ inputs.image-suffix }}-unstable
     runs-on: ubuntu-latest
@@ -207,5 +211,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.unstable.yml"
           VAR: image=${{ needs.build.outputs.image }}

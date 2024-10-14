@@ -3,10 +3,11 @@ name: histark-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - proxies/histark-proxy/**
-      - .github/workflows/proxy.histark-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "proxies/histark-proxy/**"
+      - ".github/workflows/proxy.histark-proxy.yml"
 
 jobs:
   workflow:
@@ -14,7 +15,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/histark-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-histark"
     permissions:
       contents: read
       id-token: write

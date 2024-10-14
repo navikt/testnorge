@@ -1,53 +1,16 @@
 plugins {
-    id "org.sonarqube" version "4.4.1.3373"
-    id 'java-library'
-    id 'io.spring.dependency-management' version "1.1.4"
-    id "jacoco"
+    id "dolly-libs"
 }
 
 sonarqube {
     properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnav-testing"
         property "sonar.projectName", "testnav-testing"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
-
-group = 'no.nav.testnav.libs'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.1'
-    }
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

@@ -66,10 +66,10 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		<AttributtVelger checked={checked}>
 			<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
 			<AdressePanel stateModifier={stateModifier} formValues={formValues} />
+			<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
+			<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
 			{!testnorgeIdent && (
 				<>
-					<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
-					<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
 					<KontaktDoedsboPanel stateModifier={stateModifier} formValues={formValues} />
 				</>
 			)}

@@ -1,0 +1,19 @@
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db-organisasjon-forvalter
+    username: ${NAV_USERNAME}
+
+consumers:
+  generer-navn-service:
+    url: https://generer-navn-service.intern.dev.nav.no
+  testnav-orgnummer-service:
+    url: https://testnav-orgnummer-service.intern.dev.nav.no
+  organisasjon-bestilling-service:
+    url: https://organisasjon-bestilling-service.intern.dev.nav.no
+  testnav-adresse-service:
+    url: https://testnav-adresse-service.intern.dev.nav.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.intern.dev.nav.no
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.intern.dev.nav.no

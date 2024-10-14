@@ -1,29 +1,9 @@
 spring:
   cache:
     type: none
-  cloud:
-    vault:
-      host: vault.adeo.no
-      port: 443
-      fail-fast: true
-      connection-timeout: 15000
-      read-timeout: 30000
-      generic:
-        enabled: false
-      database:
-        backend: postgresql/preprod-fss
-        enabled: true
-        role: dolly-test-admin
   datasource:
-    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/dolly-test
-    hikari:
-      maximum-pool-size: 3
-      minimum-idle: 1
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+    url: jdbc:postgresql://localhost:5432/db-dolly-backend
+    username: ${NAV_USERNAME}
 
 management:
   endpoints:
@@ -71,3 +51,5 @@ consumers:
     url: https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no
   testnav-kodeverk-service:
     url: https://testnav-kodeverk-service.intern.dev.nav.no
+  testnav-skattekort-service:
+    url: https://testnav-skattekort-service.intern.dev.nav.no

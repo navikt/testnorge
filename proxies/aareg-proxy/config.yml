@@ -48,13 +48,24 @@ spec:
           cluster: dev-gcp
         - application: testnav-arbeidsforhold-service
           cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-service
+          cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+        - application: testnav-levende-arbeidsforhold-ansettelse
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 4

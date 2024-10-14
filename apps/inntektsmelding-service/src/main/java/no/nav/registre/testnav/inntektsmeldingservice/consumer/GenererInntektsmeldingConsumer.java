@@ -7,7 +7,6 @@ import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsm
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
@@ -20,11 +19,12 @@ public class GenererInntektsmeldingConsumer {
 
     public GenererInntektsmeldingConsumer(
             Consumers consumers,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getInntektsmeldingGeneratorService();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

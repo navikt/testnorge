@@ -10,13 +10,18 @@ import {
 	getInitialSigrunstubPensjonsgivende,
 	sigrunstubPensjonsgivendeAttributt,
 } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
+import {
+	initialArbeidsgiverSkatt,
+	skattekortAttributt,
+} from '@/components/fagsystem/skattekort/form/Form'
 
 export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
-		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektstub: \nInformasjonen blir lagt i Inntekt-stub.'
+		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektstub: \nInformasjonen blir lagt i Inntekt-stub.' +
+		'\n\nSkattekort: Dataene blir lagt til i SOKOS.'
 
 	return (
 		<Panel
@@ -31,6 +36,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 				inntektstubAttributt,
 				inntektsmeldingAttributt,
 				sigrunstubPensjonsgivendeAttributt,
+				skattekortAttributt,
 			])}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
@@ -45,6 +51,9 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
+			</AttributtKategori>
+			<AttributtKategori title="Skattekort (SOKOS)" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.skattekort} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -149,5 +158,14 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		remove() {
 			del('inntektstub')
 		},
+	},
+	skattekort: {
+		label: 'Har skattekort',
+		checked: has('skattekort'),
+		add: () =>
+			set('skattekort', {
+				arbeidsgiverSkatt: [initialArbeidsgiverSkatt()],
+			}),
+		remove: () => del('skattekort'),
 	},
 })

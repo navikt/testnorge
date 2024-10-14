@@ -32,13 +32,16 @@ spec:
         - application: testnav-synt-vedtakshistorikk-service
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+        - application: testnav-levende-arbeidsforhold-ansettelse
+          cluster: dev-gcp
     outbound:
       rules:
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
+        tier: db-custom-1-3840
         databases:
           - name: testnav-organisasjon-faste-data-db
   liveness:
@@ -46,6 +49,13 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 4

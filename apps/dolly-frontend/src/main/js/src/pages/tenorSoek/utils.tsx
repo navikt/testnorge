@@ -9,18 +9,26 @@ export const manualOptions = {
 	endringIOppholdPaaSvalbard: 'Endring i opphold på Svalbard',
 }
 
-export const createOptions = (optionsList: Array<string>, hasManualOptions = false) => {
-	if (!optionsList || optionsList.length === 0) {
+export const createOptions = (
+	options: Array<string> | Map<string, string>,
+	hasManualOptions = false,
+) => {
+	if (!options || (Array.isArray(options) && options.length === 0)) {
 		return []
 	}
-	if (hasManualOptions) {
-		return optionsList.map((option) => ({
+
+	if (Array.isArray(options)) {
+		return options.map((option) => ({
 			value: option,
-			label: manualOptions[option] || codeToNorskLabel(option),
+			label:
+				hasManualOptions && manualOptions[option]
+					? manualOptions[option]
+					: codeToNorskLabel(option),
+		}))
+	} else {
+		return Object.entries(options).map(([key, value]) => ({
+			value: key,
+			label: value,
 		}))
 	}
-	return optionsList.map((option) => ({
-		value: option,
-		label: codeToNorskLabel(option),
-	}))
 }

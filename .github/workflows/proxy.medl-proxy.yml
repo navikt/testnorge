@@ -3,14 +3,15 @@ name: medl-proxy
 on:
   push:
     paths:
-      - proxies/medl-proxy/**
-      - libs/servlet-core
-      - libs/servlet-security
-      - libs/servlet-insecure-security
-      - libs/security-core
-      - libs/database
-      - libs/data-transfer-objects
-      - .github/workflows/proxy.medl-proxy.yml
+      - "plugins/**"
+      - "proxies/medl-proxy/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/servlet-insecure-security/**"
+      - "libs/security-core/**"
+      - "libs/database/**"
+      - "libs/data-transfer-objects/**"
+      - ".github/workflows/proxy.medl-proxy.yml"
 
 jobs:
   workflow:
@@ -18,7 +19,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/medl-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-medl"
     permissions:
       contents: read
       id-token: write

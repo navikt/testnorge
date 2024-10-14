@@ -6,7 +6,6 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
@@ -114,14 +113,14 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         if (nonNull(oppholdsadresse.getVegadresse())) {
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
-            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(oppholdsadresse.getMaster() == Master.FREG ?
+            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(oppholdsadresse, person.getIdent()) ?
                     vegadresse.getMatrikkelId() : null);
             mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
             var matrikkeladresse =
                     adresseServiceConsumer.getMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
-            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
+            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(isIdSupported(oppholdsadresse, person.getIdent()) ? matrikkeladresse.getMatrikkelId() : null);
             mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {

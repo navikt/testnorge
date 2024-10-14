@@ -7,8 +7,11 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { BrukerDropdown } from '@/components/layout/header/BrukerDropdown'
 import { DokumentasjonDropdown } from '@/components/layout/header/DokumentasjonDropdown'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FinnPersonDropdown } from '@/components/layout/header/FinnPersonDropdown'
+import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
+import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -18,6 +21,7 @@ export default () => {
 	}
 
 	const bankidBruker = currentBruker?.brukertype === 'BANKID'
+
 	return (
 		<header className="app-header">
 			<NavLink to="/" end className="home-nav">
@@ -29,19 +33,21 @@ export default () => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink data-cy={CypressSelector.BUTTON_HEADER_PERSONER} to="/gruppe">
+				<NavLink data-testid={TestComponentSelectors.BUTTON_HEADER_PERSONER} to="/gruppe">
 					Personer
 				</NavLink>
 				<FinnPersonDropdown />
-				<NavLink data-cy={CypressSelector.BUTTON_HEADER_ORGANISASJONER} to="/organisasjoner">
-					Organisasjoner
-				</NavLink>
+				<OrganisasjonDropdown />
 				{!bankidBruker && (
-					<NavLink data-cy={CypressSelector.BUTTON_HEADER_ENDRINGSMELDING} to="/endringsmelding">
+					<NavLink
+						data-testid={TestComponentSelectors.BUTTON_HEADER_ENDRINGSMELDING}
+						to="/endringsmelding"
+					>
 						Endringsmelding
 					</NavLink>
 				)}
 				<DokumentasjonDropdown />
+				{erDollyAdmin() && <AdminDropdown />}
 			</div>
 			<BrukerDropdown />
 		</header>

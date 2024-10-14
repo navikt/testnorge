@@ -7,7 +7,7 @@ const testMobil = (val) => {
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 		const registrert = _.get(fullForm, 'krrstub.registrert')
 		const landkode = _.get(fullForm, 'krrstub.landkode')
-		if (!registrert || !landkode) {
+		if (!registrert || !landkode || _.isEmpty(mobil)) {
 			return true
 		}
 		if (landkode === '+47') {

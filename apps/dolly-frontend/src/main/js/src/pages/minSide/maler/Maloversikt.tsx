@@ -7,8 +7,8 @@ import {
 } from '@/utils/hooks/useMaler'
 import { Tabs } from '@navikt/ds-react'
 import { MalPanel } from '@/pages/minSide/maler/MalPanel'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
-import { Buldings3Icon, PersonGroupIcon } from '@navikt/aksel-icons'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { Buildings3Icon, PersonGroupIcon } from '@navikt/aksel-icons'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export default ({ brukerId }: { brukerId: string }) => {
@@ -35,7 +35,7 @@ export default ({ brukerId }: { brukerId: string }) => {
 			<div className="flexbox--space">
 				<h2>Mine maler</h2>
 				<SearchField
-					data-cy={CypressSelector.INPUT_MINSIDE_SOEK_MAL}
+					data-testid={TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL}
 					placeholder={'Søk etter mal'}
 					setText={setSearchText}
 				/>
@@ -49,16 +49,16 @@ export default ({ brukerId }: { brukerId: string }) => {
 				<Tabs defaultValue={'personer'}>
 					<Tabs.List>
 						<Tabs.Tab
-							data-cy={CypressSelector.TOGGLE_MIN_SIDE_PERSONER_MALER}
+							data-testid={TestComponentSelectors.TOGGLE_MIN_SIDE_PERSONER_MALER}
 							value={'personer'}
 							label={'Personer'}
 							icon={<PersonGroupIcon />}
 						/>
 						<Tabs.Tab
-							data-cy={CypressSelector.TOGGLE_MIN_SIDE_ORGANISASJON_MALER}
+							data-testid={TestComponentSelectors.TOGGLE_MIN_SIDE_ORGANISASJON_MALER}
 							value={'organisasjoner'}
 							label={'Organisasjoner'}
-							icon={<Buldings3Icon />}
+							icon={<Buildings3Icon />}
 						/>
 					</Tabs.List>
 					<Tabs.Panel value={'personer'}>

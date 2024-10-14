@@ -25,11 +25,23 @@ export const formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
-export const formatDate = (date) => {
+export const formatDate = (date: any, formatString?: string) => {
 	if (!date) return date
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
-	return format(date, defaultDateFormat)
+	return format(date, formatString || defaultDateFormat)
+}
+
+// Format date to readable string format (AAAAMMDD to DD.MM.AAAA)
+export const formatTenorDate = (dateString: any, formatString?: string) => {
+	if (!dateString) return dateString
+	// Parse date from string
+	const year = dateString.substring(0, 4)
+	const month = dateString.substring(4, 6)
+	const day = dateString.substring(6, 8)
+	const date = new Date(year, month - 1, day)
+
+	return format(date, formatString || defaultDateFormat)
 }
 
 export const formatDateToYear = (date) => {
@@ -164,9 +176,9 @@ export const codeToNorskLabel = (value) => {
 export const oversettBoolean = (value) => {
 	if (_.isNil(value)) {
 		return value
-	} else if (value === true || value === 'true') {
+	} else if (value === true || value === 'true' || value === 'J') {
 		return 'Ja'
-	} else if (value === false || value === 'false') {
+	} else if (value === false || value === 'false' || value === 'N') {
 		return 'Nei'
 	} else {
 		return value
@@ -197,8 +209,10 @@ export const showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
-	const obj = Options(copyOptionsGruppe).filter(
-		(options) => options.value.toUpperCase() === value.toUpperCase(),
+	const obj = Options(copyOptionsGruppe).filter((options) =>
+		typeof value === 'string'
+			? options.value.toUpperCase() === value.toUpperCase()
+			: options.value === value,
 	)
 
 	if (_.get(obj, 'label') || _.get(obj, '[0].label')) {
@@ -228,4 +242,19 @@ export const getYearRangeOptions = (start, stop) => {
 		years.push({ value: i, label: i.toString() })
 	}
 	return years.reverse()
+}
+
+export const formatXml = (xml: string, tab = '\t') => {
+	let formatted = ''
+	let indent = ''
+	xml.split(/>\s*</).forEach(function (node) {
+		if (/^\/\w/.exec(node)) {
+			indent = indent.substring(tab.length)
+		}
+		formatted += indent + '<' + node + '>\r\n'
+		if (/^<?\w[^>]*[^/]$/.exec(node)) {
+			indent += tab
+		}
+	})
+	return formatted.substring(1, formatted.length - 3)
 }

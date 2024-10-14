@@ -3,12 +3,13 @@ name: saf-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - libs/reactive-security
-      - libs/security-core
-      - proxies/saf-proxy/**
-      - .github/workflows/proxy.saf-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/saf-proxy/**"
+      - ".github/workflows/proxy.saf-proxy.yml"
 
 jobs:
   workflow:
@@ -16,7 +17,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/saf-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-saf"
     permissions:
       contents: read
       id-token: write

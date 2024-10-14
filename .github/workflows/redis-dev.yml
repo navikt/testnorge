@@ -3,7 +3,7 @@ name: Deploy redis
 on:
   push:
     paths:
-      - '.nais/redis-dev.yml'
+      - ".nais/redis-dev.yml"
   workflow_dispatch:
 
 jobs:
@@ -18,4 +18,4 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: .nais/redis-dev.yml
+          RESOURCE: ".nais/redis-dev.yml"

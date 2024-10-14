@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { isAfter, isBefore } from 'date-fns'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'
@@ -10,8 +10,8 @@ import { VarslingerApi } from '@/service/Api'
 import { useBoolean } from 'react-use'
 import { Stepper } from '@navikt/ds-react'
 import { useDispatch } from 'react-redux'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
-import { runningCypressE2E } from '@/service/services/Request'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { runningE2ETest } from '@/service/services/Request'
 
 type Varsling = {
 	fom: string
@@ -33,7 +33,7 @@ export const VarslingerModal = () => {
 
 	useEffect(() => {
 		const runningLocal = window.location.hostname.includes('localhost')
-		if (runningLocal && !runningCypressE2E()) {
+		if (runningLocal && !runningE2ETest()) {
 			return
 		}
 		VarslingerApi.getVarslinger().then((response: { data: Varsling }) => {
@@ -64,7 +64,7 @@ export const VarslingerModal = () => {
 			(!varsling.fom && (!varsling.tom || isBefore(currentDate, new Date(varsling.tom)))) ||
 			(!varsling.tom && (!varsling.fom || isAfter(currentDate, new Date(varsling.fom)))) ||
 			(isAfter(currentDate, new Date(varsling.fom)) &&
-				isBefore(currentDate, new Date(varsling.tom)))
+				isBefore(currentDate, new Date(varsling.tom))),
 	)
 
 	const antallVarslinger = gyldigeVarslinger.length
@@ -109,7 +109,7 @@ export const VarslingerModal = () => {
 							</NavButton>
 						) : (
 							<NavButton
-								data-cy={CypressSelector.BUTTON_VARSLING_LUKK}
+								data-testid={TestComponentSelectors.BUTTON_VARSLING_LUKK}
 								variant={'primary'}
 								onClick={() => submitSettVarsling(true)}
 								style={{ float: 'right' }}

@@ -4,32 +4,25 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
-	getInitialFoedsel,
+	getInitialDoedsfall,
+	getInitialFoedested,
+	getInitialFoedselsdato,
 	getInitialKjoenn,
 	getInitialNavn,
 	getInitialStatsborgerskap,
-	initialDoedsfall,
 	initialFullmakt,
 	initialSikkerhetstiltak,
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
 } from '@/components/fagsystem/pdlf/form/initialValues'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 const ignoreKeysTestnorge = [
 	'alder',
-	'foedsel',
-	'doedsdato',
-	'statsborgerskap',
 	'innvandretFraLand',
 	'utvandretTilLand',
 	'identtype',
-	'kjonn',
-	'navn',
-	'telefonnummer',
 	'vergemaal',
-	'fullmakt',
-	'sikkerhetstiltak',
-	'tilrettelagtKommunikasjon',
 ]
 
 const utvandret = 'utvandretTilLand'
@@ -38,14 +31,35 @@ const utvandret = 'utvandretTilLand'
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
+
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil || opts.is.leggTilPaaGruppe
+
+	const testNorgePerson = opts?.identMaster === 'PDL'
+	const npidPerson = opts?.identtype === 'NPID'
+	const ukjentGruppe = !gruppeId
+	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
+	const testNorgeFlere = testNorgePerson && opts?.antall > 1
+	const tekstFlerePersoner = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
+	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
+	const tekstLeggTilPaaGruppe =
+		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	const getIgnoreKeys = () => {
-		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
+		let ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
+		if (
+			(testnorgeIdent && (ukjentGruppe || opts?.antall > 1)) ||
+			(harTestnorgeIdenter && leggTilPaaGruppe)
+		) {
+			ignoreKeys.push('fullmakt', 'vergemaal', 'innvandretFraLand', 'utvandretTilLand')
+		}
 		if (sm.attrs.utenlandskBankkonto.checked) {
 			ignoreKeys.push('norskBankkonto')
 		} else {
@@ -55,8 +69,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			ignoreKeys.push(utvandret)
 		}
 		if (!harFnr) {
-			ignoreKeys.push('innvandretFraLand')
-			ignoreKeys.push('vergemaal')
+			ignoreKeys.push('innvandretFraLand', 'vergemaal')
 		}
 		return ignoreKeys
 	}
@@ -71,7 +84,17 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				uncheckAttributeArray={sm.batchRemove}
 				iconType={'personinformasjon'}
 			>
+				<AttributtKategori title="Alder" attr={sm.attrs}>
+					<Attributt attr={sm.attrs.foedested} />
+					<Attributt attr={sm.attrs.foedselsdato} />
+					<Attributt attr={sm.attrs.doedsdato} />
+				</AttributtKategori>
+				<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
+					<Attributt attr={sm.attrs.statsborgerskap} />
+				</AttributtKategori>
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
+					<Attributt attr={sm.attrs.kjonn} />
+					<Attributt attr={sm.attrs.navn} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -82,6 +105,16 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						attr={sm.attrs.utenlandskBankkonto}
 						disabled={sm.attrs.norskBankkonto.checked}
 					/>
+					<Attributt attr={sm.attrs.telefonnummer} />
+					<Attributt
+						attr={sm.attrs.fullmakt}
+						disabled={ukjentGruppe || testNorgeFlere}
+						title={
+							(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstFlerePersoner) || ''
+						}
+					/>
+					<Attributt attr={sm.attrs.sikkerhetstiltak} />
+					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 				</AttributtKategori>
 			</Panel>
 		)
@@ -98,7 +131,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		>
 			<AttributtKategori title="Alder" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
-				<Attributt attr={sm.attrs.foedsel} />
+				<Attributt attr={sm.attrs.foedested} />
+				<Attributt attr={sm.attrs.foedselsdato} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
@@ -106,20 +140,22 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
-					disabled={!harFnr}
+					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
-						!harFnr
-							? 'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap'
-							: ''
+						(!harFnr &&
+							'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={!harFnr}
+					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
-						!harFnr
-							? 'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
-							: ''
+						(!harFnr &&
+							'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 			</AttributtKategori>
@@ -133,12 +169,22 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt
 					attr={sm.attrs.vergemaal}
-					disabled={opts?.identtype === 'NPID'}
+					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
-						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
-				<Attributt attr={sm.attrs.fullmakt} />
+				<Attributt
+					attr={sm.attrs.fullmakt}
+					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
+					title={
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
+					}
+				/>
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 			</AttributtKategori>
@@ -150,7 +196,9 @@ PersoninformasjonPanel.heading = 'Personinformasjon'
 
 // @ts-ignore
 PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
-	const { personFoerLeggTil, identtype } = opts
+	const { personFoerLeggTil, identtype, identMaster } = opts
+
+	const initMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const fjernIdFoerLeggTil = (path: string) => {
 		const pdlDataElement = _.get(personFoerLeggTil, `pdlforvalter.person.${path}`)
@@ -161,7 +209,8 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		alder: 'pdldata.opprettNyPerson.alder',
 		foedtEtter: 'pdldata.opprettNyPerson.foedtEtter',
 		foedtFoer: 'pdldata.opprettNyPerson.foedtFoer',
-		foedsel: 'pdldata.person.foedsel',
+		foedested: 'pdldata.person.foedested',
+		foedselsdato: 'pdldata.person.foedselsdato',
 		doedsfall: 'pdldata.person.doedsfall',
 		statsborgerskap: 'pdldata.person.statsborgerskap',
 		innflytting: 'pdldata.person.innflytting',
@@ -199,16 +248,22 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			add: () => setMulti([paths.alder, null], [paths.foedtEtter, null], [paths.foedtFoer, null]),
 			remove: () => del([paths.alder, paths.foedtEtter, paths.foedtFoer]),
 		},
-		foedsel: {
-			label: 'Fødsel',
-			checked: has(paths.foedsel),
-			add: () => set(paths.foedsel, [getInitialFoedsel(identtype === 'NPID' ? 'PDL' : 'FREG')]),
-			remove: () => del([paths.foedsel]),
+		foedested: {
+			label: 'Fødested',
+			checked: has(paths.foedested),
+			add: () => set(paths.foedested, [getInitialFoedested(initMaster)]),
+			remove: () => del([paths.foedested]),
+		},
+		foedselsdato: {
+			label: 'Fødselsdato',
+			checked: has(paths.foedselsdato),
+			add: () => set(paths.foedselsdato, [getInitialFoedselsdato(initMaster)]),
+			remove: () => del([paths.foedselsdato]),
 		},
 		doedsdato: {
 			label: 'Dødsdato',
 			checked: has(paths.doedsfall),
-			add: () => set(paths.doedsfall, [initialDoedsfall]),
+			add: () => set(paths.doedsfall, [getInitialDoedsfall(initMaster)]),
 			remove: () => del([paths.doedsfall]),
 		},
 		statsborgerskap: {
@@ -217,9 +272,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			add() {
 				_.has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
 					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
-					: set(paths.statsborgerskap, [
-							getInitialStatsborgerskap(identtype === 'NPID' ? 'PDL' : 'FREG'),
-						])
+					: set(paths.statsborgerskap, [getInitialStatsborgerskap(initMaster)])
 			},
 			remove() {
 				del([paths.statsborgerskap])
@@ -268,13 +321,13 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		kjonn: {
 			label: 'Kjønn',
 			checked: has(paths.kjoenn),
-			add: () => set(paths.kjoenn, [getInitialKjoenn(identtype === 'NPID' ? 'PDL' : 'FREG')]),
+			add: () => set(paths.kjoenn, [getInitialKjoenn(initMaster)]),
 			remove: () => del(paths.kjoenn),
 		},
 		navn: {
 			label: 'Navn',
 			checked: has(paths.navn),
-			add: () => set(paths.navn, [getInitialNavn(identtype === 'NPID' ? 'PDL' : 'FREG')]),
+			add: () => set(paths.navn, [getInitialNavn(initMaster)]),
 			remove: () => del(paths.navn),
 		},
 		sprakKode: {
@@ -334,37 +387,19 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			checked: has(paths.telefonnummer.pdl),
 			add() {
 				_.has(personFoerLeggTil, 'pdlforvalter.person.telefonnummer')
-					? setMulti(
-							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
-							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')],
-						)
-					: setMulti(
-							[
-								paths.telefonnummer.pdl,
-								[
-									{
-										landskode: '+47',
-										nummer: '',
-										prioritet: 1,
-										kilde: 'Dolly',
-										master: 'PDL',
-									},
-								],
-							],
-							[
-								paths.telefonnummer.tpsM,
-								[
-									{
-										telefonnummer: '',
-										landskode: '+47',
-										telefontype: 'MOBI',
-									},
-								],
-							],
-						)
+					? set(paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer'))
+					: set(paths.telefonnummer.pdl, [
+							{
+								landskode: '+47',
+								nummer: '',
+								prioritet: 1,
+								kilde: 'Dolly',
+								master: 'PDL',
+							},
+						])
 			},
 			remove() {
-				del([paths.telefonnummer.pdl, paths.telefonnummer.tpsM])
+				del(paths.telefonnummer.pdl)
 			},
 		},
 		vergemaal: {

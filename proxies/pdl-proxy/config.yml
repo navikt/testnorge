@@ -18,6 +18,9 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
 spec:
   image: "{{image}}"
   port: 8080
@@ -58,6 +61,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-tenor-search-service
           cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-ansettelse
+          cluster: dev-gcp
     outbound:
       rules:
         - application: pdl-testdata
@@ -68,6 +73,13 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 4

@@ -1,0 +1,10 @@
+plugins {
+    id "dolly-apps"
+}
+
+dependencies {
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    testImplementation "org.testcontainers:junit-jupiter"
+}

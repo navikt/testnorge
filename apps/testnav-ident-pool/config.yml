@@ -30,6 +30,13 @@ spec:
     initialDelay: 30
     periodSeconds: 30
     failureThreshold: 3
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 30
@@ -45,7 +52,7 @@ spec:
     limits:
       memory: 4096Mi
     requests:
-      cpu: 3000m
+      cpu: 600m
       memory: 2048Mi
   accessPolicy:
     inbound:
@@ -61,9 +68,9 @@ spec:
           cluster: dev-gcp
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: POSTGRES_16
+        tier: db-custom-2-7680
         name: testnav-identpool
         databases:
           - name: testnav-identpool
-        tier: db-custom-1-3840
         autoBackupHour: 2

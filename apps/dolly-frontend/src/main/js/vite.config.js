@@ -47,18 +47,22 @@ export default defineConfig(({ mode }) => ({
 		outDir: 'build',
 		sourcemap: true,
 		cssCodeSplit: false,
-		rollupOptions: {
-			external: ['./nais.js'],
-		},
 	},
+	optimizeDeps: { exclude: ['node_modules/.cache'] },
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),
+			'#': path.resolve(__dirname, './playwright'),
 		},
 	},
 	server: mode === 'local-dev' && {
 		proxy: proxyRoutes,
 		port: 3000,
+	},
+	test: {
+		globals: true,
+		environment: 'jsdom',
+		exclude: ['**/node_modules/**', '**/playwright/**'],
 	},
 	plugins: [
 		react({

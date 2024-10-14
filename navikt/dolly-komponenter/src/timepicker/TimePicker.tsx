@@ -15,7 +15,7 @@ type Props = {
   name?: string;
   value: Date;
   placeholder?: string;
-  onChange: (value: Date) => void;
+  onChange: (value: Date[] | null) => void;
   onBlur?: () => void;
   disabled?: boolean;
   excludeDates?: Date[];

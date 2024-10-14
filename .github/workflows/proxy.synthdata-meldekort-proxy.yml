@@ -3,19 +3,20 @@ name: synthdata-meldekort-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - libs/reactive-security
-      - libs/security-core
-      - proxies/synthdata-meldekort-proxy/**
-      - .github/workflows/proxy.synthdata-meldekort-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/synthdata-meldekort-proxy/**"
+      - ".github/workflows/proxy.synthdata-meldekort-proxy.yml"
 
 jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "proxies/synthdata-meldekort-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-synthdata-meldekort"
     permissions:
       contents: read
       id-token: write

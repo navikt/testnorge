@@ -90,13 +90,6 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		slettPersonOgRelatertePersoner: [
-			DollyApi.slettPersonOgRelatertePersoner,
-			(ident, relatertPersonIdenter) => ({
-				ident,
-				relatertPersonIdenter,
-			}),
-		],
 	},
 	{
 		prefix: 'fagsystem', // String used to prefix each type
@@ -190,10 +183,6 @@ export default handleActions(
 		},
 		[onSuccess(actions.slettPerson)](state, action) {
 			deleteIdentState(state, action.meta.ident)
-		},
-		[onSuccess(actions.slettPersonOgRelatertePersoner)](state, action) {
-			deleteIdentState(state, action.meta.ident)
-			deleteIdentState(state, action.meta.partnerident)
 		},
 	},
 	initialState,
@@ -366,10 +355,13 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		identNr: pdlIdent.ident,
 		bestillingId: ident?.bestillingId,
 		identtype: 'FNR',
-		kilde: 'PDL',
+		kilde: 'Dolly',
 		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
-		alder: formatAlder(pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato), getPdlDoedsdato(pdlIdent)),
+		alder: formatAlder(
+			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato || pdlIdent?.foedselsdato?.[0].foedselsdato),
+			getPdlDoedsdato(pdlIdent),
+		),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
@@ -380,7 +372,7 @@ const getPdlDoedsdato = (pdlIdent) => {
 
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	if (!pdlData || (!pdlData.person && !pdlData.hentPerson)) {
-		return getDefaultInfo(ident, bestillingStatuser, 'TEST-NORGE')
+		return getDefaultInfo(ident, bestillingStatuser, 'Test-Norge')
 	}
 	const person = pdlData.person || pdlData.hentPerson
 
@@ -409,13 +401,16 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	const navn = getNavn(person.navn)
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
-	const alder = getAlder(person.foedsel[0]?.foedselsdato, person.doedsfall[0]?.doedsdato)
+	const alder = getAlder(
+		person.foedselsdato[0]?.foedselsdato || person.foedsel[0]?.foedselsdato,
+		person.doedsfall[0]?.doedsdato,
+	)
 
 	return {
 		ident,
 		identNr: ident?.ident,
 		bestillingId: ident.bestillingId,
-		kilde: 'TEST-NORGE',
+		kilde: 'Test-Norge',
 		importFra: 'Test-Norge',
 		identtype: person?.folkeregisteridentifikator[0]?.type,
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,

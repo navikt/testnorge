@@ -3,12 +3,13 @@ name: aareg-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - libs/reactive-security
-      - libs/security-core
-      - proxies/aareg-proxy/**
-      - .github/workflows/proxy.aareg-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/aareg-proxy/**"
+      - ".github/workflows/proxy.aareg-proxy.yml"
 
 jobs:
   workflow:
@@ -16,7 +17,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/aareg-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-aareg"
     permissions:
       contents: read
       id-token: write

@@ -23,6 +23,7 @@ const UtenlandsIdLes = ({ data, idx }) => {
 				kodeverk={AdresseKodeverk.Utstederland}
 			/>
 			<TitleValue title="Opphørt" value={oversettBoolean(Boolean(data.opphoert))} />
+			<TitleValue title="Master" value={data.master || data?.metadata?.master} />
 		</div>
 	)
 }

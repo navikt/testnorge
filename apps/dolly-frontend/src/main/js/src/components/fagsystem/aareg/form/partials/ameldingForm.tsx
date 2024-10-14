@@ -26,7 +26,7 @@ interface AmeldingFormProps {
 	warningMessage?: any
 }
 
-const KjedeContainer = styled.div`
+export const KjedeContainer = styled.div`
 	display: flex;
 	flex-direction: row;
 	align-items: center;

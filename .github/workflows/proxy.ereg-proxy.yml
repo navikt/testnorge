@@ -3,10 +3,11 @@ name: ereg-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - proxies/ereg-proxy/**
-      - .github/workflows/proxy.ereg-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "proxies/ereg-proxy/**"
+      - ".github/workflows/proxy.ereg-proxy.yml"
 
 jobs:
   workflow:
@@ -14,7 +15,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/ereg-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-ereg"
     permissions:
       contents: read
       id-token: write

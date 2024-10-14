@@ -1,0 +1,7 @@
+plugins {
+    id 'dolly-libs'
+}
+
+dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+}

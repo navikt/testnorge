@@ -6,6 +6,7 @@ import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { AdresseKodeverk } from '@/config/kodeverk'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 export const FolkeregisteretAdresse = ({ handleChange }: any) => {
 	const { domain: adresseGraderingOptions } = useTenorDomain('AdresseGradering')
@@ -22,7 +23,7 @@ export const FolkeregisteretAdresse = ({ handleChange }: any) => {
 				name="adresser.kommunenummer"
 				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer2024}
-				onChange={(val: any) => handleChange(val?.value, 'adresser.kommunenummer')}
+				onChange={(val: Option) => handleChange(val?.value, 'adresser.kommunenummer')}
 				size="large"
 			/>
 			<FormSelect

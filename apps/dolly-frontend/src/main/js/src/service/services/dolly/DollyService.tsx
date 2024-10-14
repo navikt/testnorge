@@ -117,18 +117,6 @@ export default {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
-	slettPersonOgRelatertePersoner(ident, relatertPersonIdenter) {
-		return Request.delete(Endpoints.slettPerson(ident)).then(() => {
-			return Promise.all(
-				relatertPersonIdenter.map((person) => {
-					Request.delete(Endpoints.slettPerson(person.id)).catch((error) => {
-						console.error(error)
-					})
-				}),
-			)
-		})
-	},
-
 	gjenopprettPerson(ident, miljoer) {
 		return Request.post(Endpoints.gjenopprettPerson(ident, miljoer))
 	},

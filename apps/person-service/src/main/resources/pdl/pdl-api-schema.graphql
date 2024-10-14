@@ -4,6 +4,9 @@ schema {
     query: Query
 }
 
+"Indicates an Input Object is a OneOf Input Object."
+directive @oneOf on INPUT_OBJECT
+
 type AdresseCompletionResult {
     addressFound: CompletionAdresse
     suggestions: [String!]!
@@ -105,12 +108,25 @@ type FalskIdentitetIdentifiserendeInformasjon {
     statsborgerskap: [String!]!
 }
 
-type Foedested
+type Foedested {
+    foedekommune: String
+    foedeland: String
+    foedested: String
+    folkeregistermetadata: Folkeregistermetadata
+    metadata: Metadata!
+}
 
 type Foedsel {
     foedekommune: String
     foedeland: String
     foedested: String
+    foedselsaar: Int
+    foedselsdato: Date
+    folkeregistermetadata: Folkeregistermetadata
+    metadata: Metadata!
+}
+
+type Foedselsdato {
     foedselsaar: Int
     foedselsdato: Date
     folkeregistermetadata: Folkeregistermetadata
@@ -192,6 +208,13 @@ type IdentInformasjon {
     gruppe: IdentGruppe!
     historisk: Boolean!
     ident: String!
+}
+
+type IdentifiserendeInformasjon {
+    foedselsdato: Date
+    kjoenn: String
+    navn: Personnavn
+    statsborgerskap: [String!]
 }
 
 type Identitetsgrunnlag {
@@ -401,12 +424,17 @@ type Metadata {
 type Navn {
     etternavn: String!
     folkeregistermetadata: Folkeregistermetadata
-    forkortetNavn: String
+    forkortetNavn: String @deprecated(reason: "No longer supported")
     fornavn: String!
     gyldigFraOgMed: Date
     mellomnavn: String
     metadata: Metadata!
     originaltNavn: OriginaltNavn
+}
+
+type Navspersonidentifikator {
+    identifikasjonsnummer: String!
+    metadata: Metadata!
 }
 
 type Opphold {
@@ -442,7 +470,9 @@ type Person {
     doedfoedtBarn: [DoedfoedtBarn!]!
     doedsfall: [Doedsfall!]!
     falskIdentitet: FalskIdentitet
-    foedsel: [Foedsel!]!
+    foedested: [Foedested!]!
+    foedsel: [Foedsel!]! @deprecated(reason: "Erstattet av foedselsdato & foedested")
+    foedselsdato: [Foedselsdato!]!
     folkeregisteridentifikator(historikk: Boolean = false): [Folkeregisteridentifikator!]!
     folkeregisterpersonstatus(historikk: Boolean = false): [Folkeregisterpersonstatus!]!
     forelderBarnRelasjon: [ForelderBarnRelasjon!]!
@@ -454,12 +484,14 @@ type Person {
     kontaktadresse(historikk: Boolean = false): [Kontaktadresse!]!
     kontaktinformasjonForDoedsbo(historikk: Boolean = false): [KontaktinformasjonForDoedsbo!]!
     navn(historikk: Boolean = false): [Navn!]!
+    navspersonidentifikator(historikk: Boolean = false): [Navspersonidentifikator!]!
     opphold(historikk: Boolean = false): [Opphold!]!
     oppholdsadresse(historikk: Boolean = false): [Oppholdsadresse!]!
+    rettsligHandleevne(historikk: Boolean = false): [RettsligHandleevne!]!
     sikkerhetstiltak: [Sikkerhetstiltak!]!
     sivilstand(historikk: Boolean = false): [Sivilstand!]!
     statsborgerskap(historikk: Boolean = false): [Statsborgerskap!]!
-    telefonnummer: [Telefonnummer!]!
+    telefonnummer(historikk: Boolean = false): [Telefonnummer!]!
     tilrettelagtKommunikasjon: [TilrettelagtKommunikasjon!]!
     utenlandskIdentifikasjonsnummer(historikk: Boolean = false): [UtenlandskIdentifikasjonsnummer!]!
     utflyttingFraNorge: [UtflyttingFraNorge!]!
@@ -550,6 +582,12 @@ type RelatertBiPerson {
     statsborgerskap: String
 }
 
+type RettsligHandleevne {
+    folkeregistermetadata: Folkeregistermetadata
+    metadata: Metadata!
+    rettsligHandleevneomfang: String
+}
+
 type SearchMatch {
     " feltnavn med sti til feltet so ga treff."
     field: String!
@@ -601,6 +639,11 @@ type TilrettelagtKommunikasjon {
     metadata: Metadata!
     talespraaktolk: Tolk
     tegnspraaktolk: Tolk
+}
+
+type Tjenesteomraade {
+    tjenesteoppgave: String
+    tjenestevirksomhet: String
 }
 
 type Tolk {
@@ -677,10 +720,12 @@ type VegadresseResult {
 }
 
 type VergeEllerFullmektig {
+    identifiserendeInformasjon: IdentifiserendeInformasjon
     motpartsPersonident: String
-    navn: Personnavn
+    navn: Personnavn @deprecated(reason: "Erstattes av navn iidentifiserendeInformasjon")
     omfang: String
-    omfangetErInnenPersonligOmraade: Boolean!
+    omfangetErInnenPersonligOmraade: Boolean
+    tjenesteomraade: [Tjenesteomraade!]
 }
 
 type VergemaalEllerFremtidsfullmakt {
@@ -794,7 +839,7 @@ scalar Date
 "Format: YYYY-MM-DDTHH:mm:SS (ISO-8601), example: 2011-12-03T10:15:30"
 scalar DateTime
 
-"Long type"
+"A 64-bit signed integer"
 scalar Long
 
 input CompletionFieldValue {
@@ -854,7 +899,7 @@ input SearchRule {
     " Begrenser treff til kun de hvor felt har input verdi"
     equals: String
     " Sjekker om feltet finnes / at det ikke har en null verdi."
-    exists: String
+    exists: Boolean
     """
 
     Søk fra og med (se fromExcluding for bare fra men ikke med)
@@ -876,7 +921,7 @@ input SearchRule {
     " Filtrerer bort treff hvor felt inneholder input verdi"
     notEquals: String
     " Søk som gir tilfeldig poengsum til hvert treff (kun ment til generering av testdata)"
-    random: String
+    random: Float
     " Regex søk for spesielle situasjoner (Dette er en treg opprasjon og bør ikke brukes)"
     regex: String
     " Gir treff når opgitt feltstarter med opgitt verdi."

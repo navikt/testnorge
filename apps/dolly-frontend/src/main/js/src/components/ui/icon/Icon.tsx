@@ -9,16 +9,16 @@ import {
 	BagdeIcon,
 	BandageIcon,
 	BankNoteIcon,
-	Buldings2Icon,
-	Buldings3Icon,
+	Buildings2Icon,
+	Buildings3Icon,
 	CalendarIcon,
 	CandleIcon,
 	ChatElipsisIcon,
 	CheckmarkCircleIcon,
-	ChevronDownIcon,
 	ChevronDownDoubleCircleIcon,
-	ChevronUpIcon,
+	ChevronDownIcon,
 	ChevronUpDoubleCircleIcon,
+	ChevronUpIcon,
 	EarthIcon,
 	EnvelopeClosedIcon,
 	EraserIcon,
@@ -44,14 +44,18 @@ import {
 	PadlockLockedIcon,
 	PencilIcon,
 	PersonCircleIcon,
+	PersonFillIcon,
 	PersonGroupFillIcon,
 	PersonGroupIcon,
 	PersonIcon,
+	PersonPlusFillIcon,
+	PersonPlusIcon,
 	PersonTallShortIcon,
 	PhoneIcon,
-	PiggybankIcon,
 	PlusCircleIcon,
+	ReceiptIcon,
 	SackKronerIcon,
+	SackPensionIcon,
 	SilhouetteIcon,
 	StarFillIcon,
 	StarIcon,
@@ -69,7 +73,7 @@ import CheckCircle from '@/assets/icons/custom/CheckCircle.svg?raw'
 import Dolly from '@/assets/icons/custom/Dolly.svg?raw'
 import DollyPanic from '@/assets/icons/custom/DollyPanic.svg?raw'
 import TenorLogo from '@/assets/icons/custom/TenorLogo.svg?raw'
-import Cypress from '@/assets/img/cypress.png'
+import Playwright from '@/assets/img/playwright.png'
 
 import './Icon.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -81,7 +85,7 @@ export const icons = {
 	'report-problem-triangle': ProblemTriangle,
 	dolly: Dolly,
 	dollyPanic: DollyPanic,
-	cypress: Cypress,
+	playwright: Playwright,
 	tenor: TenorLogo,
 
 	trashcan: TrashIcon,
@@ -93,6 +97,7 @@ export const icons = {
 	'star-light': StarIcon,
 	'star-filled': StarFillIcon,
 	eraser: EraserIcon,
+	kvittering: ReceiptIcon,
 	user: PersonCircleIcon,
 	search: MagnifyingGlassIcon,
 	calendar: CalendarIcon,
@@ -110,12 +115,14 @@ export const icons = {
 	'thumbs-down': ThumbDownFillIcon,
 	lock: PadlockLockedIcon,
 	logout: LeaveIcon,
-
 	man: FigureInwardIcon,
 	'man-light': FigureInwardIcon,
 	'man-silhouette': SilhouetteIcon,
 	woman: FigureOutwardIcon,
 	person: PersonIcon,
+	'person-fill': PersonFillIcon,
+	'person-plus': PersonPlusIcon,
+	'person-plus-fill': PersonPlusFillIcon,
 	ukjent: SilhouetteIcon,
 	group: PersonGroupIcon,
 	'group-light': PersonGroupIcon,
@@ -138,19 +145,21 @@ export const icons = {
 	doedsbo: CandleIcon,
 	krr: EnvelopeClosedIcon,
 	arena: CheckmarkCircleIcon,
-	institusjon: Buldings3Icon,
+	institusjon: Buildings3Icon,
 	arbeid: WrenchIcon,
 	sigrun: BankNoteIcon,
 	bankkonto: BankNoteIcon,
-	inntektstub: SackKronerIcon,
+	pengesekk: SackKronerIcon,
+	inntektstub: BankNoteIcon,
 	inntektsmelding: BankNoteIcon,
+	skattekort: BankNoteIcon,
 	udi: EarthIcon,
 	kommentar: ChatElipsisIcon,
 	partner: HeartIcon,
 	barn: BabyWrappedIcon,
 	doedfoedt: FlowerPetalFallingIcon,
-	pensjon: PiggybankIcon,
-	brreg: Buldings2Icon,
+	pensjon: SackPensionIcon,
+	brreg: Buildings2Icon,
 	dokarkiv: FileTextIcon,
 	copy: FilesIcon,
 	sykdom: BandageIcon,
@@ -169,6 +178,7 @@ export const icons = {
 	'file-new': FileTextIcon,
 	'file-code': FileCodeIcon,
 	cv: FileTextIcon,
+	ansettelse: PersonPlusIcon,
 }
 
 const px = (v: number) => `${v}px`
@@ -196,7 +206,7 @@ const Icon = ({
 		'report-problem-triangle',
 		'dolly',
 		'dollyPanic',
-		'cypress',
+		'playwright',
 		'tenor',
 	]
 
@@ -214,7 +224,7 @@ const Icon = ({
 			title={kind}
 			fontSize={fontSize}
 			className={className}
-			data-cy={props['data-cy']}
+			data-testid={props['data-testid']}
 			onClick={onClick}
 			style={style}
 		/>

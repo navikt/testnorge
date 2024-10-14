@@ -10,7 +10,7 @@ import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -27,18 +27,19 @@ public class IdentPoolConsumer {
     private static final String RELEASE_IDENTS_URL = ACQUIRE_IDENTS_URL + "/frigjoer";
     private static final String IBRUK_IDENTS_URL = ACQUIRE_IDENTS_URL + "/bruk";
     private static final String REKVIRERT_AV = "rekvirertAv=";
-    private final WebClient webClient;
 
+    private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
     public IdentPoolConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getIdentPool();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
@@ -52,9 +53,10 @@ public class IdentPoolConsumer {
 
     public Mono<List<IdentDTO>> releaseIdents(Set<String> identer, Bruker bruker) {
 
-        return tokenExchange.exchange(serverProperties).flatMap(
-                token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
-                        token.getTokenValue()).call());
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
+                        token.getTokenValue()).call())
+                .doOnNext(resultat -> log.info("Slettet identer mot identpool: {}", String.join(",", identer)));
     }
 
     public Flux<IdentpoolLedigDTO> getErLedig(Set<String> identer) {

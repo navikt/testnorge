@@ -51,10 +51,9 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getOppsummeringsdokumentService(), "oppsummeringsdokument-service"))
                 .route(createRoute(consumers.getTestnavOrganisasjonForvalter()))
                 .route(createRoute(consumers.getTestnavVarslingerService(), "testnav-varslinger-service"))
-                .route(createRoute(consumers.getTestnorgeProfilApi())) // Duplicate, see below.
                 .route(createRoute(consumers.getTestnavOrganisasjonTilgangService(), "testnav-organisasjon-tilgang-service"))
                 .route(createRoute(consumers.getTestnavTpsMessagingService(), "testnav-tps-messaging-service"))
-                .route(createRoute(consumers.getTestnorgeProfilApi(), "testnorge-profil-api")) // Duplicate, see above.
+                .route(createRoute(consumers.getTestnorgeProfilApi(), "testnorge-profil-api"))
                 .route(createRoute(consumers.getTestnavBrukerService(), "testnav-bruker-service"))
                 .route(createRoute(consumers.getTestnavMiljoerService()))
                 .route(createRoute(consumers.getDollyBackend(), "dolly-backend"))
@@ -83,6 +82,9 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getGenererNavnService()))
                 .route(createRoute(consumers.getTestnavKodeverkService()))
                 .route(createRoute(consumers.getTestnavTenorSearchService()))
+                .route(createRoute(consumers.getTestnavSkattekortService()))
+                .route(createRoute(consumers.getTestnavLevendeArbeidsforholdAnsettelse(), "testnav-levende-arbeidsforhold-ansettelse"))
+                .route(createRoute(consumers.getTestnavLevendeArbeidsforholdScheduler(), "testnav-levende-arbeidsforhold-scheduler"))
                 .build();
     }
 

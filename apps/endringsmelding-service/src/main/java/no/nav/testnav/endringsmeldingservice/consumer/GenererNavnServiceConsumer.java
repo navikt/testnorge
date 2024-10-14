@@ -20,11 +20,12 @@ public class GenererNavnServiceConsumer {
 
     public GenererNavnServiceConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getGenererNavnService();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

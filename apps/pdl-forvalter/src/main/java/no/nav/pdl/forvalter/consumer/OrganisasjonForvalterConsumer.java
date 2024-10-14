@@ -4,9 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.OrganisasjonForvalterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -23,11 +22,11 @@ public class OrganisasjonForvalterConsumer {
 
     public OrganisasjonForvalterConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getOrgForvalter();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

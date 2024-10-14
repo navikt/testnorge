@@ -26,11 +26,17 @@ import { DollyValidation } from './steg/steg2/DollyValidation'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
+export const devEnabled =
+	window.location.hostname.includes('localhost') ||
+	window.location.hostname.includes('dolly-frontend-dev')
+
 export const StegVelger = ({ initialValues, onSubmit }) => {
-	const context = useContext(BestillingsveilederContext)
+	const context: any = useContext(BestillingsveilederContext)
+	const [loading, setLoading] = useState(false)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const [step, setStep] = useState(0)
 	const CurrentStepComponent: any = STEPS[step]
+	const stepMaxIndex = STEPS.length - 1
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: initialValues,
@@ -68,52 +74,53 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 			return
 		}
 
+		setLoading(true)
 		sessionStorage.clear()
 		errorContext?.setShowError(false)
-		formMethods.reset()
-
 		formMethods.handleSubmit(onSubmit(values))
+
+		formMethods.reset()
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
-		return mutate(REGEX_BACKEND_BESTILLINGER)
+		mutate(REGEX_BACKEND_BESTILLINGER)
 	}
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
-
-	const devEnabled =
-		window.location.hostname.includes('localhost') ||
-		window.location.hostname.includes('dolly-frontend-dev')
 
 	return (
 		<FormProvider {...formMethods}>
 			<Stepper orientation="horizontal" activeStep={step + 1}>
 				{labels.map((label, index) => (
-					<Stepper.Step key={index}>{label.label}</Stepper.Step>
+					<Stepper.Step
+						key={index}
+						completed={index < step}
+						onClick={() => index < stepMaxIndex && setStep(index)}
+					>
+						{label.label}
+					</Stepper.Step>
 				))}
 			</Stepper>
-
 			<BestillingsveilederHeader />
-
-			<CurrentStepComponent stateModifier={stateModifier} />
-
+			<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 			{devEnabled && (
 				<>
 					<DisplayFormState />
 					<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
 				</>
 			)}
-
-			<Navigation
-				step={step}
-				onPrevious={handleBack}
-				isLastStep={isLastStep()}
-				handleSubmit={() => {
-					formMethods.trigger().catch((error) => {
-						console.warn(error)
-					})
-					return _handleSubmit(formMethods.getValues())
-				}}
-			/>
+			{!loading && (
+				<Navigation
+					step={step}
+					onPrevious={handleBack}
+					isLastStep={isLastStep()}
+					handleSubmit={() => {
+						formMethods.trigger().catch((error) => {
+							console.warn(error)
+						})
+						return _handleSubmit(formMethods.getValues())
+					}}
+				/>
+			)}
 		</FormProvider>
 	)
 }

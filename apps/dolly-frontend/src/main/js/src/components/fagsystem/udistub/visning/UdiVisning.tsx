@@ -8,19 +8,19 @@ import { Annet } from './partials/Annet'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { hasProperty } from 'dot-prop'
 import { Alert } from '@navikt/ds-react'
-import { filtrerKeysMedKunNullVerdier } from '@/components/fagsystem/utils'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 const kunTommeObjekter = (udiData) => {
 	const { oppholdStatus, arbeidsadgang, aliaser } = udiData
-	const formatertOppholdStatus = filtrerKeysMedKunNullVerdier(oppholdStatus)
 	return (
-		(_.isEmpty(formatertOppholdStatus) || Object.keys(oppholdStatus)?.length < 1) &&
+		(isEmpty(oppholdStatus) || Object.keys(oppholdStatus)?.length < 1) &&
 		(_.isEmpty(arbeidsadgang) || Object.keys(arbeidsadgang)?.length < 1) &&
 		(_.isEmpty(aliaser) || (Array.isArray(aliaser) && aliaser.length < 1)) &&
 		!udiData?.flyktning &&
 		!hasProperty(udiData, 'soeknadOmBeskyttelseUnderBehandling')
 	)
 }
+
 export const sjekkManglerUdiData = (udiData) => {
 	return kunTommeObjekter(udiData) && !udiData?.harOppholdsTillatelse
 }

@@ -6,6 +6,7 @@ import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { showLabel } from '@/utils/DataFormatter'
 import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
+import React from 'react'
 
 type VisningProps = {
 	relasjon: ForeldreBarnRelasjon
@@ -37,6 +38,7 @@ const Visning = ({ relasjon, idx }: VisningProps) => {
 						{relasjon.relatertPersonsRolle === 'BARN' && (
 							<TitleValue title="Rolle for barn" value={relasjon.minRolleForPerson} size="medium" />
 						)}
+						<TitleValue title="Master" value={relasjon?.metadata?.master} />
 					</div>
 				</>
 			)}

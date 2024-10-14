@@ -6,9 +6,8 @@ import no.nav.pdl.forvalter.consumer.command.GenererNavnServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VerifiserNavnServiceCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
@@ -27,21 +26,22 @@ public class GenererNavnServiceConsumer {
 
     public GenererNavnServiceConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getGenererNavnService();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public Optional<NavnDTO> getNavn(Integer antall) {
 
-        return Arrays.asList(tokenExchange.exchange(serverProperties).flatMap(
-                                token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())
-                        .block())
-                .stream().findFirst();
+        return Arrays.stream(tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())
+                .block())
+                .findFirst();
     }
 
     public Boolean verifyNavn(NavnDTO navn) {

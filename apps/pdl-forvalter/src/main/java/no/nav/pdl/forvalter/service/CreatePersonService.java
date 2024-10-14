@@ -7,17 +7,7 @@ import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.*;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -27,7 +17,6 @@ import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
@@ -43,12 +32,13 @@ public class CreatePersonService {
     private final MergeService mergeService;
     private final PersonRepository personRepository;
     private final KjoennService kjoennService;
-    private final FoedselService foedselService;
+    private final FoedselsdatoService foedselsdatoService;
+    private final FoedestedService foedestedService;
     private final StatsborgerskapService statsborgerskapService;
     private final BostedAdresseService bostedAdresseService;
     private final NavnService navnService;
-    private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final AdressebeskyttelseService adressebeskyttelseService;
+    private final NavPersonIdentifikatorService navsPersonIdentifikatorService;
 
     private static PersonDTO buildPerson(PersonRequestDTO request) {
 
@@ -56,7 +46,10 @@ public class CreatePersonService {
                 .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn())
                         .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
-                .foedsel(List.of(FoedselDTO.builder()
+                .foedselsdato(List.of(FoedselsdatoDTO.builder()
+                        .folkeregistermetadata(new FolkeregistermetadataDTO())
+                        .build()))
+                .foedested(List.of(FoedestedDTO.builder()
                         .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
                 .navn(List.of(nonNull(request.getNyttNavn()) ?
@@ -77,11 +70,8 @@ public class CreatePersonService {
                                 .gradering(request.getGradering())
                                 .folkeregistermetadata(new FolkeregistermetadataDTO())
                                 .build()) : null)
-                .folkeregisterPersonstatus(request.getIdenttype() != NPID ?
-                        List.of(FolkeregisterPersonstatusDTO.builder()
-                                .folkeregistermetadata(new FolkeregistermetadataDTO())
-                                .build()) :
-                        emptyList())
+                .navPersonIdentifikator(request.getIdenttype() == NPID ?
+                        List.of(new NavPersonIdentifikatorDTO()) : null)
                 .build();
     }
 
@@ -99,12 +89,15 @@ public class CreatePersonService {
                 .getIdent());
 
         Stream.of(
-                        Flux.just(foedselService.convert(mergedPerson)),
+                        Flux.just(foedselsdatoService.convert(mergedPerson)),
                         Flux.just(navnService.convert(mergedPerson)),
                         Flux.just(bostedAdresseService.convert(mergedPerson, null)),
+                        Flux.just(foedestedService.convert(mergedPerson)),
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
-                        Flux.just(adressebeskyttelseService.convert(mergedPerson)))
+                        Flux.just(adressebeskyttelseService.convert(mergedPerson)),
+                        Flux.just(navsPersonIdentifikatorService.convert(mergedPerson))
+                )
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
                 .block();
@@ -117,7 +110,6 @@ public class CreatePersonService {
                 .kilde("Dolly")
                 .bekreftelsesdato(request.getIdenttype() != NPID ? null : now())
                 .build());
-        folkeregisterPersonstatusService.convert(mergedPerson);
 
         log.info("Oppretting av ident {} tok {} ms", mergedPerson.getIdent(), currentTimeMillis() - startTime);
 

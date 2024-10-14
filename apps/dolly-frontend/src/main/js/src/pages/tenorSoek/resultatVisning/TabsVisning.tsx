@@ -6,11 +6,13 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
+
 	&& {
 		.navds-tabs__tablist-wrapper {
 			margin-bottom: 20px;
 		}
 	}
+
 	&&& {
 		button {
 			position: static;
@@ -20,11 +22,13 @@ const TabsVisningFormatter = styled.div`
 
 const StyledCodeView = styled(SyntaxHighlighter)`
 	font-size: 0.9em;
-	max-width: 820px;
 	margin: 0;
 `
 
 export const TabsVisning = ({ children, kildedata }: any) => {
+	if (!kildedata) {
+		return <div className="person-visning_content">{children}</div>
+	}
 	const kildedataJson = JSON.parse(kildedata)
 	const kildedataPretty = JSON.stringify(kildedataJson, null, 2)
 
@@ -56,7 +60,9 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<StyledCodeView language="json">{kildedataPretty}</StyledCodeView>
+					<StyledCodeView language="json" wrapLongLines>
+						{kildedataPretty}
+					</StyledCodeView>
 				</Tabs.Panel>
 			</Tabs>
 		</TabsVisningFormatter>

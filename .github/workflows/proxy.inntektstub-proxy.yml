@@ -3,10 +3,11 @@ name: inntektstub-proxy
 on:
   push:
     paths:
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - proxies/inntektstub-proxy/**
-      - .github/workflows/proxy.inntektstub-proxy.yml
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "proxies/inntektstub-proxy/**"
+      - ".github/workflows/proxy.inntektstub-proxy.yml"
 
 jobs:
   workflow:
@@ -14,7 +15,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/inntektstub-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-proxy-inntektstub"
     permissions:
       contents: read
       id-token: write

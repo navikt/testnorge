@@ -124,12 +124,12 @@ public class PersonExcelService {
     private static String getPartnere(List<PdlPerson.Sivilstand> partnere) {
 
         return partnere.stream()
-                .filter(partner -> nonNull(partner.getRelatertVedSivilstand()))
                 .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining(",\n"));
     }
 
-    private static String getFoedselsdato(PdlPerson.Foedsel foedsel) {
+    private static String getFoedselsdato(PdlPerson.Foedselsdato foedsel) {
 
         return nonNull(foedsel) && nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato().format(NORSK_DATO) : "";
     }
@@ -228,7 +228,7 @@ public class PersonExcelService {
                         isNotBlank(vegadresse.getBruksenhetsnummer()) ?
                                 String.format("Bruksenhet: %s",
                                         vegadresse.getBruksenhetsnummer()) : null,
-                        String.format(DUAL_FMT, vegadresse.getPostnummer(),
+                        String.format("%s %s %s", vegadresse.getPostnummer(),
                                 postnummer.get(vegadresse.getPostnummer()),
                                 isNotBlank(coAdresseNavn) ? String.format(CO_ADRESSE, coAdresseNavn) : null))
                 .filter(StringUtils::isNotBlank)
@@ -243,10 +243,9 @@ public class PersonExcelService {
             return formatVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getCoAdressenavn(), postnummer);
 
         } else if (nonNull(kontaktadresse.getPostboksadresse())) {
-            return Stream.of(kontaktadresse.getPostboksadresse().getPostbokseier(),
-                            kontaktadresse.getPostboksadresse().getPostboks(),
-                            kontaktadresse.getPostboksadresse().getPostnummer())
-                    .collect(Collectors.joining(COMMA_DELIM));
+            return String.join(COMMA_DELIM, kontaktadresse.getPostboksadresse().getPostbokseier(),
+                    kontaktadresse.getPostboksadresse().getPostboks(),
+                    kontaktadresse.getPostboksadresse().getPostnummer());
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse())) {
 
@@ -420,32 +419,34 @@ public class PersonExcelService {
                                         .collectList()));
     }
 
-    private Object[] prepDataRow(PdlPersonBolk.PersonBolk person, Tuple3 kodeverk, List<Testident> identer) {
+    private Object[] prepDataRow(PdlPersonBolk.PersonBolk person,
+                                 Tuple3<Map<String, String>, Map<String, String>, Map<String, String>> kodeverk,
+                                 List<Testident> identer) {
         return new Object[]{
                 person.getIdent(),
                 IdentTypeUtil.getIdentType(person.getIdent()).name(),
                 getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
                 getEtternavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
-                getAlder(person.getIdent(), person.getPerson().getDoedsfall().isEmpty() ? null :
-                        person.getPerson().getDoedsfall().stream().findFirst().get().getDoedsdato()),
+                getAlder(person.getIdent(), person.getPerson().getDoedsfall().stream()
+                                .map(PdlPerson.Doedsfall::getDoedsdato).findFirst().orElse(null)),
                 getKjoenn(person.getPerson().getKjoenn().stream().findFirst().orElse(null)),
-                getFoedselsdato(person.getPerson().getFoedsel().stream().findFirst().orElse(null)),
+                getFoedselsdato(person.getPerson().getFoedselsdato().stream().findFirst().orElse(null)),
                 getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
                 getPersonstatus(person.getPerson().getFolkeregisterpersonstatus().stream().findFirst().orElse(null)),
                 getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null),
-                        (Map<String, String>) kodeverk.getT1()),
+                        kodeverk.getT1()),
                 getAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(null)),
                 getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO()),
-                        (Map<String, String>) kodeverk.getT3(),
-                        (Map<String, String>) kodeverk.getT2(),
-                        (Map<String, String>) kodeverk.getT1()),
+                        kodeverk.getT3(),
+                        kodeverk.getT2(),
+                        kodeverk.getT1()),
                 getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new PdlPerson.Kontaktadresse()),
-                        (Map<String, String>) kodeverk.getT3(),
-                        (Map<String, String>) kodeverk.getT1()),
+                        kodeverk.getT3(),
+                        kodeverk.getT1()),
                 getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO()),
-                        (Map<String, String>) kodeverk.getT3(),
-                        (Map<String, String>) kodeverk.getT2(),
-                        (Map<String, String>) kodeverk.getT1()),
+                        kodeverk.getT3(),
+                        kodeverk.getT2(),
+                        kodeverk.getT1()),
                 getSivilstand(person.getPerson().getSivilstand().stream().findFirst().orElse(null)),
                 getPartnere(person.getPerson().getSivilstand()),
                 getBarn(person.getPerson().getForelderBarnRelasjon()),

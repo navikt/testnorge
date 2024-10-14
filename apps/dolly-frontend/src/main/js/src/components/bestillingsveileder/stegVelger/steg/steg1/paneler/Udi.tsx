@@ -7,8 +7,7 @@ import { udiAttributt } from '@/components/fagsystem/udistub/form/Form'
 export const UdiPanel = ({ stateModifier, testnorgeIdent, formValues }) => {
 	const sm = stateModifier(UdiPanel.initialValues)
 
-	const infoTekst =
-		'All informasjon blir lagt i UDI-stub. Oppholdsstatus går i tillegg til PDL dersom miljø Q2 velges i siste steg.'
+	const infoTekst = 'All informasjon blir lagt i UDI-stub. Oppholdsstatus går i tillegg til PDL.'
 
 	return (
 		<Panel

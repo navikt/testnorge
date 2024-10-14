@@ -8,13 +8,14 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "#/*": [
+        "./playwright/*"
       ]
     },
     "types": [
       "vite/client",
-      "cypress",
       "node",
-      "cypress-react-selector",
       "./support"
     ],
     "target": "ESNext",
@@ -35,7 +36,6 @@
   },
   "include": [
     "src",
-    "node_modules/cypress",
     "**/*.ts",
     "**/*.tsx"
   ]

@@ -21,7 +21,7 @@ import { ToggleGroup } from '@navikt/ds-react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { OrganisasjonBestillingsveilederModal } from '@/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
 import OrganisasjonHeaderConnector from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useReduxSelector } from '@/utils/hooks/useRedux'
 
 enum BestillingType {
@@ -97,7 +97,7 @@ export default () => {
 
 				<div className="toolbar">
 					<NavButton
-						data-cy={CypressSelector.BUTTON_OPPRETT_ORGANISASJON}
+						data-testid={TestComponentSelectors.BUTTON_OPPRETT_ORGANISASJON}
 						variant={'primary'}
 						// onClick={() => startBestilling(BestillingType.NY)}
 						onClick={visStartBestilling}

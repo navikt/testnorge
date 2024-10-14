@@ -1,7 +1,7 @@
 import { Button } from '@navikt/ds-react'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { TrashIcon } from '@navikt/aksel-icons'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import React from 'react'
@@ -20,7 +20,7 @@ export const SlettMal = ({ id, organisasjon, mutate }) => {
 	return (
 		<>
 			<Button
-				data-cy={CypressSelector.BUTTON_MALER_SLETT}
+				data-testid={TestComponentSelectors.BUTTON_MALER_SLETT}
 				onClick={openModal}
 				variant={'tertiary'}
 				icon={<TrashIcon />}
@@ -38,7 +38,7 @@ export const SlettMal = ({ id, organisasjon, mutate }) => {
 							Nei
 						</NavButton>
 						<NavButton
-							data-cy={CypressSelector.BUTTON_MALER_SLETT_BEKREFT}
+							data-testid={TestComponentSelectors.BUTTON_MALER_SLETT_BEKREFT}
 							onClick={() => {
 								closeModal()
 								slettMal(id, organisasjon)

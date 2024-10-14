@@ -5,7 +5,7 @@ import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.KodeverkCommand;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -30,11 +30,11 @@ public class KodeverkConsumer {
 
     public KodeverkConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getKodeverkService();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
@@ -50,7 +50,9 @@ public class KodeverkConsumer {
     public String getTilfeldigLand() {
 
         return hentKodeverk(LANDKODER)
-                .map(verdier -> verdier.keySet().stream().toList())
+                .map(landkoder -> landkoder.keySet().stream()
+                        .filter(landkode -> !landkode.equals("9999") && !landkode.equals("???"))
+                        .toList())
                 .map(list -> list.get(random.nextInt(list.size())))
                 .block();
     }

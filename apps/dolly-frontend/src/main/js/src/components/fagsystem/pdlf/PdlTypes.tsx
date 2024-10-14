@@ -17,6 +17,8 @@ export type PersonData = {
 	navn?: Array<Navn>
 	kjoenn?: Array<Kjoenn>
 	foedsel?: Array<FoedselData>
+	foedselsdato?: Array<FoedselsdatoData>
+	foedested?: Array<FoedestedData>
 	statsborgerskap?: Array<StatsborgerskapData>
 	adressebeskyttelse?: Array<AdressebeskyttelseData>
 	sivilstand?: Array<SivilstandData>
@@ -26,6 +28,7 @@ export type PersonData = {
 	utflytting?: Array<Utflytting>
 	vergemaal?: Array<VergemaalValues>
 	doedsfall?: Array<DoedsfallData>
+	folkeregisterPersonstatus?: Array<PersonstatusData>
 }
 
 export type PersonUtenIdData = {
@@ -45,9 +48,30 @@ type Kjoenn = {
 	kjoenn: string
 }
 
+type PersonstatusData = {
+	status: string
+	gyldigFraOgMed: string
+	gyldigTilOgMed: string
+}
+
 export type FoedselData = {
 	foedselsdato: string
 	foedselsaar: number
+	foedested: string
+	foedekommune: string
+	foedeland: string
+	metadata: Metadata
+	id?: number
+}
+
+export type FoedselsdatoData = {
+	foedselsdato: string
+	foedselsaar: number
+	metadata: Metadata
+	id?: number
+}
+
+export type FoedestedData = {
 	foedested: string
 	foedekommune: string
 	foedeland: string
@@ -102,6 +126,7 @@ export type SivilstandData = {
 
 export type Metadata = {
 	historisk: boolean
+	master?: string
 }
 
 export enum Rolle {
@@ -156,7 +181,7 @@ export type VergemaalValues = {
 	sakType?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
-	nyVergeIdent?: NyIdent
+	nyVergeIdent?: NyIdent | undefined
 	vergeIdent?: string
 	id: number
 }

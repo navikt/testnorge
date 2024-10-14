@@ -44,4 +44,5 @@ public class Consumers {
     private ServerProperties testnavSyntSykemeldingApi;
     private ServerProperties testnavTpsMessagingService;
     private ServerProperties testnavUdistubProxy;
+    private ServerProperties testnavSkattekortService;
 }

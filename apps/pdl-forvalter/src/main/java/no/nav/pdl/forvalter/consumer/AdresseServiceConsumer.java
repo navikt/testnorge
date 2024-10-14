@@ -7,7 +7,7 @@ import no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand;
 import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -27,11 +27,12 @@ public class AdresseServiceConsumer {
 
     public AdresseServiceConsumer(
             TokenExchange tokenExchange,
-            Consumers consumers) {
+            Consumers consumers,
+            WebClient.Builder webClientBuilder) {
+
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getAdresseService();
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -1,4 +1,5 @@
 import subYears from 'date-fns/subYears'
+import { runningE2ETest } from '@/service/services/Request'
 
 export const initialForenkletOppgjoersordningOrg = {
 	arbeidsgiver: {
@@ -13,7 +14,7 @@ export const initialForenkletOppgjoersordningOrg = {
 	arbeidsavtale: {
 		yrke: '',
 	},
-	navArbeidsforholdPeriode: null,
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 }
 
 export const initialForenkletOppgjoersordningPers = {
@@ -29,11 +30,11 @@ export const initialForenkletOppgjoersordningPers = {
 	arbeidsavtale: {
 		yrke: '',
 	},
-	navArbeidsforholdPeriode: null,
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 }
 
 export const initialArbeidsforholdOrg = {
-	arbeidsforholdstype: '',
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	arbeidsgiver: {
 		aktoertype: 'ORG',
 		orgnummer: '',
@@ -52,7 +53,6 @@ export const initialArbeidsforholdOrg = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
-	navArbeidsforholdPeriode: undefined,
 	antallTimerForTimeloennet: [],
 	utenlandsopphold: [],
 	permisjon: [],
@@ -64,7 +64,7 @@ export const initialArbeidsforholdPers = {
 		aktoertype: 'PERS',
 		ident: '',
 	},
-	arbeidsforholdID: '',
+	arbeidsforholdId: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
@@ -79,13 +79,27 @@ export const initialArbeidsforholdPers = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
-	navArbeidsforholdPeriode: null,
 }
 
 export const initialPeriode = {
 	fom: null,
 	tom: null,
 	periode: [],
+}
+
+export const initialPensjonInntekt = {
+	fomAar: runningE2ETest() ? new Date().getFullYear() - 10 : null,
+	tomAar: runningE2ETest() ? new Date().getFullYear() : null,
+	belop: runningE2ETest() ? '12345' : '',
+	redusertMedGrunnbelop: true,
+}
+
+export const initialPensjonGenerertInntekt = {
+	generer: {
+		fomAar: null,
+		averageG: 1.5,
+		tillatInntektUnder1G: false,
+	},
 }
 
 export const initialAmelding = [
@@ -96,18 +110,18 @@ export const initialAmelding = [
 ]
 
 export const initialValues = {
-	arbeidsforholdstype: '',
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	genererPeriode: initialPeriode,
 	amelding: initialAmelding,
 }
 
 export const initialAaregOrg = {
-	arbeidsforholdstype: '',
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	...initialArbeidsforholdOrg,
 }
 
 export const initialAaregPers = {
-	arbeidsforholdstype: '',
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	...initialArbeidsforholdPers,
 }
 

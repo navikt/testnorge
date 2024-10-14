@@ -6,7 +6,7 @@ import Button from '@/components/ui/button/Button'
 import _ from 'lodash'
 import { DollyApi, PdlforvalterApi, SkjermingApi, TpsMessagingApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
 import {
 	folkeregisterpersonstatus,

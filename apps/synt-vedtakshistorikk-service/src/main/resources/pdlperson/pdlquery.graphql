@@ -36,12 +36,9 @@ query($ident: ID!, $historikk: Boolean!) {
         regel
     }
     hentPerson(ident: $ident) {
-        foedsel {
+        foedselsdato {
             foedselsaar,
             foedselsdato,
-            foedeland,
-            foedested,
-            foedekommune,
             metadata {
                 ...metadataDetails
             }

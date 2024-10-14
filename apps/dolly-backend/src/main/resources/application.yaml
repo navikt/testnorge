@@ -16,9 +16,9 @@ server:
     servlet:
       encoding:
         charset: UTF-8
-    max-http-header-size: 70KB
   error:
     include-message: always
+  max-http-request-header-size: 100KB
 
 spring:
   cloud:
@@ -48,6 +48,9 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  jackson:
+    parser:
+      include-source-in-location: true
 
 springdoc:
   swagger-ui:
@@ -235,5 +238,10 @@ consumers:
     name: testnav-arbeidsplassencv-proxy
     namespace: dolly
     url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnavSkattekortService:
+    name: testnav-skattekort-service
+    namespace: dolly
+    url: http://testnav-skattekort-service.dolly.svc.cluster.local
     cluster: dev-gcp
     

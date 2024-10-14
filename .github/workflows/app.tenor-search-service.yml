@@ -3,12 +3,13 @@ name: tenor-search-service
 on:
   push:
     paths:
-      - libs/integration-test
-      - libs/reactive-core
-      - libs/reactive-security
-      - libs/security-core
-      - apps/tenor-search-service/**
-      - .github/workflows/app.tenor-search-service.yml
+      - "plugins/**"
+      - "libs/integration-test/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "apps/tenor-search-service/**"
+      - ".github/workflows/app.tenor-search-service.yml"
 
 jobs:
   workflow:

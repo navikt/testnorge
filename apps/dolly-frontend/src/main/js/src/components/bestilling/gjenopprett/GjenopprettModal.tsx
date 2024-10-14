@@ -1,4 +1,4 @@
-import DollyModal from '@/components/ui/modal/DollyModal'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
 import React, { Fragment } from 'react'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
@@ -8,7 +8,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type GjenopprettModalProps = {
 	gjenopprettHeader: any
@@ -55,7 +55,7 @@ export const GjenopprettModal = ({
 								Avbryt
 							</NavButton>
 							<NavButton
-								data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
+								data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
 								variant={'primary'}
 								onClick={formMethods.handleSubmit(submitForm)}
 							>

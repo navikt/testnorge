@@ -3,11 +3,11 @@ import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { top } from '@popperjs/core'
 import React from 'react'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const brukerveiledning = (
 	<a
-		href="https://navikt.github.io/testnorge/applications/dolly/brukerveiledning.html#feil-ved-innlogging"
+		href="https://navikt.github.io/testnorge/docs/applications/dolly/brukerveiledning.html#feil-ved-innlogging"
 		target="_blank"
 	>
 		brukerveiledningen
@@ -84,17 +84,18 @@ export default () => {
 					</Alert>
 				)}
 				<NavButton
-					data-cy={CypressSelector.BUTTON_LOGIN_NAV}
+					data-testid={TestComponentSelectors.BUTTON_LOGIN_NAV}
 					className="login-modal_button-nav"
 					variant={'primary'}
 					onClick={redirectOnClick(
 						runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login',
-						false
+						false,
 					)}
 				>
 					Logg inn med NAV epost
 				</NavButton>
 				<NavButton
+					data-testid={TestComponentSelectors.BUTTON_LOGIN_BANKID}
 					className="login-modal_button-bankid"
 					variant={'primary'}
 					onClick={redirectOnClick('/oauth2/authorization/idporten', true)}

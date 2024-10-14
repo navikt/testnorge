@@ -27,12 +27,12 @@ public class AzureAdProfileConsumer {
     public AzureAdProfileConsumer(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${api.azuread.url}") String url,
-            AzureAdTokenService azureAdTokenService) {
+            AzureAdTokenService azureAdTokenService,
+            WebClient.Builder webClientBuilder) {
 
         this.url = url;
         this.azureAdTokenService = azureAdTokenService;
-        WebClient.Builder builder = WebClient
-                .builder()
+        WebClient.Builder builder = webClientBuilder
                 .baseUrl(url)
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer

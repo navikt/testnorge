@@ -14,7 +14,7 @@ const getSkatteordningOptions = (skatteordning) => {
 	return skatteordning?.map((item) => ({ value: item, label: _.capitalize(item) }))
 }
 
-const createInntektForm = (kodeverk, skatteordning, path) => {
+const createInntektForm = (kodeverk, skatteordning, path, formMethods) => {
 	if (!kodeverk) {
 		return null
 	}
@@ -30,6 +30,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 					name={`${path}.${key}`}
 					key={`${path}.${key}`}
 					label={label}
+					afterChange={() => formMethods.trigger('sigrunstubPensjonsgivende')}
 					options={skatteordningOptions}
 					isClearable={false}
 					size={size}
@@ -49,12 +50,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 		}
 		if (value === 'Date') {
 			return (
-				<FormDatepicker
-					name={`${path}.${key}`}
-					key={`${path}.${key}`}
-					label={label}
-					size={size}
-				/>
+				<FormDatepicker name={`${path}.${key}`} key={`${path}.${key}`} label={label} size={size} />
 			)
 		}
 		return (
@@ -74,12 +70,13 @@ export const PensjonsgivendeInntektForm = ({ path, formMethods, kodeverk, skatte
 			newEntry={newEntry}
 			canBeEmpty={false}
 			errorText={inntektError}
+			maxEntries={2}
 			nested
 		>
 			{(path, idx) => {
 				return (
 					<div className="flexbox--flex-wrap sigrun-form" key={idx}>
-						{createInntektForm(kodeverk, skatteordning, path)}
+						{createInntektForm(kodeverk, skatteordning, path, formMethods)}
 					</div>
 				)
 			}}

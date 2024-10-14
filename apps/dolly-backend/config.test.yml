@@ -37,6 +37,7 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-service
+        - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
         - application: testnav-tps-messaging-service
@@ -63,6 +64,10 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
+      claims:
+        groups:
+          - id: '2d7f1c0d-5784-4f81-8bb2-8f3a79f8f949' #everyone else
+          - id: '9c7efec1-1599-4216-a67e-6fd53a6a951c' #admins
   image: "{{image}}"
   openSearch:
     instance: bestillinger
@@ -83,6 +88,13 @@ spec:
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   readiness:
     path: /internal/isReady
     initialDelay: 20
@@ -93,13 +105,14 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 1000m
+      cpu: 200m
       memory: 1024Mi
     limits:
       memory: 2048Mi
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: POSTGRES_15
+        tier: db-custom-1-3840
         name: testnav-dolly-backend-dev
         databases:
           - name: testnav-dolly-backend-dev
