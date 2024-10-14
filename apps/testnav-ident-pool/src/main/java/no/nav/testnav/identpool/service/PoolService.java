@@ -3,7 +3,6 @@ package no.nav.testnav.identpool.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Ident;
-import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.exception.ForFaaLedigeIdenterException;
@@ -11,10 +10,7 @@ import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ISO_DATE;
@@ -64,19 +60,22 @@ public class PoolService {
 
     public synchronized List<String> allocateIdenter(HentIdenterRequest request) {
 
-        Set<Ident> identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
+        var identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
         int missingIdentCount = request.getAntall() - identEntities.size();
 
         if (missingIdentCount > 0) {
 
-            var tpsStatusDTOS = identerAvailService.generateAndCheckIdenter(request, ATTEMPT_OBTAIN);
+            var statusDTOS = identerAvailService.generateAndCheckIdenter(request,
+                    isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN);
 
-            List<Ident> identerFraTps = tpsStatusDTOS.stream()
+            log.info("Generert {} identer ved mining", statusDTOS.size());
+
+            var identerFraMining = statusDTOS.stream()
                     .map(this::buildIdent)
                     .toList();
-            identRepository.saveAll(identerFraTps);
+            identRepository.saveAll(identerFraMining);
 
-            Iterator<Ident> ledigeIdents = identerFraTps.stream()
+            var ledigeIdents = identerFraMining.stream()
                     .filter(Ident::isLedig)
                     .toList().iterator();
 
