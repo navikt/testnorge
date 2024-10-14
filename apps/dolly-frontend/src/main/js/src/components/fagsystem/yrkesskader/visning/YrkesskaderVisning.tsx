@@ -5,6 +5,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDateTime, showLabel, formatDate } from '@/utils/DataFormatter'
+import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
 
 export const sjekkManglerYrkesskadeData = (yrkesskadeData) => {
 	return !yrkesskadeData || yrkesskadeData?.length < 1
@@ -20,6 +21,9 @@ export const YrkesskaderVisning = ({ data, loading }) => {
 	}
 
 	const manglerFagsystemData = sjekkManglerYrkesskadeData(data)
+
+	const { kodeverkData, loading: yrkesskadeLoading, error } = useYrkesskadeKodeverk('ROLLETYPE')
+	console.log('kodeverkData: ', kodeverkData) //TODO - SLETT MEG
 
 	return (
 		<div>
