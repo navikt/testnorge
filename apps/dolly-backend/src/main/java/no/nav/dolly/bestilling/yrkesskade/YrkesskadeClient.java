@@ -51,6 +51,9 @@ public class YrkesskadeClient implements ClientRegister {
         if (!bestilling.getYrkesskader().isEmpty()) {
 
             var index = new AtomicInteger(0);
+            transactionHelperService.persister(progress, BestillingProgress::getYrkesskadeStatus,
+                    BestillingProgress::setYrkesskadeStatus, ErrorStatusDecoder.getInfoVenter(
+                            YRKESSKADE.getBeskrivelse()));
 
             return Flux.from(yrkesskadeConsumer.hentSaksoversikt(dollyPerson.getIdent())
                     .map(resultat -> !resultat.getSaker().isEmpty())
@@ -106,18 +109,21 @@ public class YrkesskadeClient implements ClientRegister {
                 .build();
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, List<ResponseDTO> response) {
-
-        var status = response.stream()
-                .map(entry -> "Yrkesskade#%d:%s".formatted(entry.getId(),
-                        entry.getStatus() == Status.OK ? "OK" :
-                                ErrorStatusDecoder.encodeStatus("FEIL: %s".formatted(entry.getMelding()))))
-                .collect(Collectors.joining(","));
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
             transactionHelperService.persister(progress, BestillingProgress::setYrkesskadeStatus, status);
             return progress;
         };
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, List<ResponseDTO> response) {
+
+        return futurePersist(progress, response.stream()
+                .map(entry -> "Yrkesskade#%d:%s".formatted(entry.getId(),
+                        entry.getStatus() == Status.OK ? "OK" :
+                                ErrorStatusDecoder.encodeStatus("FEIL: %s".formatted(entry.getMelding()))))
+                .collect(Collectors.joining(",")));
     }
 
     private YrkesskadeResponseDTO lagreTransaksjon(YrkesskadeResponseDTO status, YrkesskadeRequest request,
