@@ -52,8 +52,8 @@ public class YrkesskadeClient implements ClientRegister {
 
             var index = new AtomicInteger(0);
             transactionHelperService.persister(progress, BestillingProgress::getYrkesskadeStatus,
-                    BestillingProgress::setYrkesskadeStatus, ErrorStatusDecoder.getInfoVenter(
-                            YRKESSKADE.getBeskrivelse()));
+                    BestillingProgress::setYrkesskadeStatus, "Yrkesskade#1:%s".formatted(ErrorStatusDecoder.getInfoVenter(
+                            YRKESSKADE.getBeskrivelse())));
 
             return Flux.from(yrkesskadeConsumer.hentSaksoversikt(dollyPerson.getIdent())
                     .map(resultat -> !resultat.getSaker().isEmpty())
