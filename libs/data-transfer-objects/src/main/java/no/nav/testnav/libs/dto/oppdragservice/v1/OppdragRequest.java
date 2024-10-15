@@ -28,7 +28,7 @@ public class OppdragRequest {
     private Ompostering ompostering;
     private List<Oppdragslinje> oppdragslinje;
     @NotBlank
-    private String kodeEndring;
+    private KodeEndring kodeEndring;
     private KodeStatus kodeStatus;
     private String datoStatusFom;
     @NotBlank
@@ -334,6 +334,12 @@ public class OppdragRequest {
         REAK,
         KORR,
         FEIL;
+    }
+
+    public enum KodeEndring {
+        NY,
+        ENDR,
+        UEND
     }
 
     @Data
