@@ -1,7 +1,5 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers;
 
-import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.EpollChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.testnav.levendearbeidsforholdansettelse.config.Consumers;
@@ -49,7 +47,7 @@ public class PdlConsumer {
                         new ReactorClientHttpConnector(
                                 HttpClient
                                         .create(ConnectionProvider.builder("PDL connections")
-                                                .maxConnections(10)
+                                                .maxConnections(1)
                                                 .pendingAcquireMaxCount(10000)
                                                 .pendingAcquireTimeout(Duration.ofSeconds(30))
                                                 .build())))

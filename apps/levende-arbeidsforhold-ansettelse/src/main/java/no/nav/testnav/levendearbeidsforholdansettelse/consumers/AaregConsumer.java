@@ -1,5 +1,7 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers;
 
+import io.netty.channel.ChannelOption;
+import io.netty.channel.epoll.EpollChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.aareg.HentArbeidsforholdCommand;
@@ -9,9 +11,14 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
+
+import java.time.Duration;
 
 @Slf4j
 @Component
@@ -31,6 +38,21 @@ public class AaregConsumer {
 
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
+                .clientConnector(
+                        new ReactorClientHttpConnector(
+                                HttpClient
+                                        .create(ConnectionProvider.builder("AaregConsumer")
+                                                .maxConnections(1)
+                                                .pendingAcquireMaxCount(10000)
+                                                .pendingAcquireTimeout(Duration.ofSeconds(300))
+                                                .build())
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+                                        .option(ChannelOption.SO_KEEPALIVE, true)
+                                        .option(EpollChannelOption.TCP_KEEPIDLE, 300)
+                                        .option(EpollChannelOption.TCP_KEEPINTVL, 60)
+                                        .option(EpollChannelOption.TCP_KEEPCNT, 8)
+                                        .responseTimeout(Duration.ofSeconds(10))
+                        ))
                 .build();
     }
 

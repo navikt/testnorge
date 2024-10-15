@@ -43,6 +43,7 @@ import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.build
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
+import static no.nav.dolly.mapper.BestillingYrkesskadeStatusMapper.buildYrkesskadeStatusMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -105,6 +106,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildArbeidsplassenCVStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildYrkesskadeStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                     }
                 })
