@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.fullmakt;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
@@ -44,13 +45,11 @@ public class FullmaktClient implements ClientRegister {
                         fullmakt.setFullmaktsgiver(dollyPerson.getIdent());
                         if (isBlank(fullmakt.getFullmektig())) {
                             return pdlDataConsumer.getPersoner(singletonList(dollyPerson.getIdent()))
-                                    .flatMap(person -> {
-                                        fullmakt.setFullmektigsNavn(getFullName(person.getPerson()));
-                                        return Flux.fromStream(person.getRelasjoner().stream()
-                                                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG)));
-                                    })
+                                    .flatMap(person -> Flux.fromStream(person.getRelasjoner().stream()
+                                            .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG))))
                                     .next()
                                     .map(relasjon -> {
+                                        fullmakt.setFullmektigsNavn(getFullName(relasjon.getRelatertPerson()));
                                         fullmakt.setFullmektig(relasjon.getRelatertPerson().getIdent());
                                         return fullmakt;
                                     })
@@ -87,6 +86,7 @@ public class FullmaktClient implements ClientRegister {
 
     private String getStatus(FullmaktResponse response) {
 
+        log.info("Fullmakt opprett response: {}", Json.pretty(response));
         return response.getStatus().is2xxSuccessful() ? "OK" :
                 errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());
     }

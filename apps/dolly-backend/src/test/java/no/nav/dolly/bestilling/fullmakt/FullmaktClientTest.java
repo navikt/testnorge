@@ -34,7 +34,8 @@ import static org.mockito.Mockito.when;
 public class FullmaktClientTest {
 
     private static final String NAVN = "Fornavn Etternavn";
-    private static final String IDENT = "12345678902";
+    private static final String IDENT = "12345611111";
+    private static final String RELASJON_IDENT = "12345622222";
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
 
@@ -73,16 +74,17 @@ public class FullmaktClientTest {
         BestillingProgress progress = new BestillingProgress();
 
         FullPersonDTO fullPersonDTO = FullPersonDTO.builder()
-                .person(PersonDTO.builder().ident(IDENT)
-                        .navn(singletonList(NavnDTO.builder()
-                                .fornavn("Fornavn")
-                                .etternavn("Etternavn")
-                                .build()))
+                .person(PersonDTO.builder().ident(RELASJON_IDENT)
                         .build())
                 .relasjoner(List.of(
                         FullPersonDTO.RelasjonDTO.builder()
                                 .relasjonType(RelasjonType.FULLMEKTIG)
-                                .relatertPerson(PersonDTO.builder().ident(IDENT).build())
+                                .relatertPerson(PersonDTO.builder()
+                                        .navn(singletonList(NavnDTO.builder()
+                                                .fornavn("Fornavn")
+                                                .etternavn("Etternavn")
+                                                .build()))
+                                        .ident(RELASJON_IDENT).build())
                                 .build()
                 ))
                 .build();
@@ -101,7 +103,7 @@ public class FullmaktClientTest {
         verify(fullmaktConsumer).createFullmaktData(fullmaktCaptor.capture(), any());
 
         List<RsFullmakt> capturedFullmaktList = fullmaktCaptor.getValue();
-        assertEquals(IDENT, capturedFullmaktList.getFirst().getFullmektig());
+        assertEquals(RELASJON_IDENT, capturedFullmaktList.getFirst().getFullmektig());
         assertEquals(NAVN, capturedFullmaktList.getFirst().getFullmektigsNavn());
     }
 }
