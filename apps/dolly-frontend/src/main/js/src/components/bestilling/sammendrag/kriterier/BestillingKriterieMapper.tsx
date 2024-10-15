@@ -1576,27 +1576,28 @@ const mapSykemelding = (bestillingData, data) => {
 const mapYrkesskader = (bestillingData, data) => {
 	const yrkesskadeKriterier = bestillingData.yrkesskader
 
-	const mapYrkesskadeKriterier = () => ({
-		header: 'Yrkesskader',
-		itemRows: yrkesskadeKriterier.map((yrkesskade, i) => [
-			{
-				numberHeader: `Yrkesskade ${i + 1}`,
-			},
-			// obj('Skadelidt identifikator', yrkesskade.skadelidtIdentifikator),
-			obj('Rolletype', yrkesskade.rolletype), //TODO: kodeverk
-			obj('Innmelderrolle', yrkesskade.innmelderrolle), //TODO: kodeverk
-			// obj('Innmelder', yrkesskade.innmelderIdentifikator),
-			// obj('På vegne av', yrkesskade.paaVegneAv),
-			obj('Klassifisering', showLabel('klassifisering', yrkesskade.klassifisering)),
-			obj('Referanse', yrkesskade.referanse),
-			obj('Ferdigstill sak', showLabel('ferdigstillSak', yrkesskade.ferdigstillSak)),
-			obj('Tidstype', showLabel('tidstype', yrkesskade.tidstype)),
-			obj('Skadetidspunkt', formatDateTime(yrkesskade.skadetidspunkt)),
-			obj('Antall perioder', yrkesskade.perioder?.length),
-		]),
-	})
-
-	data.push(mapYrkesskadeKriterier())
+	if (yrkesskadeKriterier) {
+		const mapYrkesskadeKriterier = () => ({
+			header: 'Yrkesskader',
+			itemRows: yrkesskadeKriterier.map((yrkesskade, i) => [
+				{
+					numberHeader: `Yrkesskade ${i + 1}`,
+				},
+				// obj('Skadelidt identifikator', yrkesskade.skadelidtIdentifikator),
+				obj('Rolletype', yrkesskade.rolletype), //TODO: kodeverk
+				obj('Innmelderrolle', yrkesskade.innmelderrolle), //TODO: kodeverk
+				// obj('Innmelder', yrkesskade.innmelderIdentifikator),
+				// obj('På vegne av', yrkesskade.paaVegneAv),
+				obj('Klassifisering', showLabel('klassifisering', yrkesskade.klassifisering)),
+				obj('Referanse', yrkesskade.referanse),
+				obj('Ferdigstill sak', showLabel('ferdigstillSak', yrkesskade.ferdigstillSak)),
+				obj('Tidstype', showLabel('tidstype', yrkesskade.tidstype)),
+				obj('Skadetidspunkt', formatDateTime(yrkesskade.skadetidspunkt)),
+				obj('Antall perioder', yrkesskade.perioder?.length),
+			]),
+		})
+		data.push(mapYrkesskadeKriterier())
+	}
 }
 
 const mapBrregstub = (bestillingData, data) => {

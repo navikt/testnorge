@@ -64,14 +64,16 @@ export const YrkesskaderVisning = ({ data, loading }) => {
 										title="Skadetidspunkt"
 										value={formatDateTime(yrkesskade?.data?.skadetidspunkt)}
 									/>
-									<DollyFieldArray header="Perioder" data={yrkesskade?.data?.perioder} nested>
-										{(periode, periodeIdx) => (
-											<React.Fragment key={periodeIdx}>
-												<TitleValue title="Fra dato" value={formatDate(periode?.fra)} />
-												<TitleValue title="Til dato" value={formatDate(periode?.til)} />
-											</React.Fragment>
-										)}
-									</DollyFieldArray>
+									{yrkesskade?.data?.perioder?.length > 0 && (
+										<DollyFieldArray header="Perioder" data={yrkesskade?.data?.perioder} nested>
+											{(periode, periodeIdx) => (
+												<React.Fragment key={periodeIdx}>
+													<TitleValue title="Fra dato" value={formatDate(periode?.fra)} />
+													<TitleValue title="Til dato" value={formatDate(periode?.til)} />
+												</React.Fragment>
+											)}
+										</DollyFieldArray>
+									)}
 								</React.Fragment>
 							)
 						}}

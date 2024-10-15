@@ -16,6 +16,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { validation } from '@/components/fagsystem/yrkesskader/form/validation'
 
 export const yrkesskaderAttributt = 'yrkesskader'
 
@@ -136,6 +137,7 @@ export const YrkesskaderForm = () => {
 										// kodeverk={null}
 										// onChange={(value) => handleChangeInnmelderrolle(value, path)}
 										size="large"
+										isClearable={false}
 									/>
 
 									{/*innmelderIdentifikator: '',*/}
@@ -234,4 +236,4 @@ export const YrkesskaderForm = () => {
 	)
 }
 
-YrkesskaderForm.validation = {}
+YrkesskaderForm.validation = validation
