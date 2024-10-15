@@ -12,8 +12,19 @@ export const validation = {
 				referanse: Yup.string().nullable(),
 				ferdigstillSak: Yup.string().nullable(),
 				tidstype: Yup.string().nullable(),
-				// skadetidspunkt: null,
-				// perioder: null,
+				skadetidspunkt: Yup.mixed().when('tidstype', {
+					is: (tidstype: string) => tidstype === 'tidspunkt',
+					then: () => requiredString,
+					otherwise: () => Yup.mixed().notRequired(),
+				}),
+				perioder: Yup.array()
+					.of(
+						Yup.object({
+							fra: ifPresent('$fra', requiredString),
+							til: ifPresent('$til', requiredString),
+						}),
+					)
+					.nullable(),
 			}),
 		),
 	),

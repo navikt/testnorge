@@ -23,9 +23,13 @@ export const YrkesskaderForm = () => {
 	const formMethods = useFormContext()
 
 	const handleChangeTidstype = (value, path) => {
-		formMethods.setValue(`${path}.tidstype`, value?.value)
+		formMethods.setValue(`${path}.tidstype`, value?.value || null)
 		formMethods.setValue(`${path}.skadetidspunkt`, null)
-		formMethods.setValue(`${path}.perioder`, [initialYrkesskadePeriode])
+		if (value?.value === 'periode') {
+			formMethods.setValue(`${path}.perioder`, [initialYrkesskadePeriode])
+		} else {
+			formMethods.setValue(`${path}.perioder`, null)
+		}
 		formMethods.trigger(path)
 	}
 
