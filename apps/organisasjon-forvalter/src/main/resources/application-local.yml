@@ -6,9 +6,9 @@ spring:
   config:
     import: "sm://"
   datasource:
-    url: jdbc:postgresql://localhost:5432/db-organisasjon-forvalter
-    username: db-organisasjon-forvalter
-    password: ${sm://db-organisasjon-forvalter}
+    url: jdbc:postgresql://localhost:5432/testnav-organisasjon-forvalter-local
+    username: testnav-organisasjon-forvalter-local
+    password: ${sm://testnav-organisasjon-forvalter-local}
 
 consumers:
   generer-navn-service:

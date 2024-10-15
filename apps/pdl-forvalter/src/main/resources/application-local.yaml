@@ -6,9 +6,9 @@ spring:
   config:
     import: "sm://"
   datasource:
-    url: jdbc:postgresql://localhost:5432/db-pdl-forvalter
-    username: db-pdl-forvalter
-    password: ${sm://db-pdl-forvalter}
+    url: jdbc:postgresql://localhost:5432/testnav-pdl-forvalter-local
+    username: testnav-pdl-forvalter-local
+    password: ${sm://testnav-pdl-forvalter-local}
 
 consumers:
   adresse-service:

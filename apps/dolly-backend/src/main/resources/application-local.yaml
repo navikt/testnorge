@@ -8,9 +8,9 @@ spring:
   config:
     import: "sm://"
   datasource:
-    url: jdbc:postgresql://localhost:5432/db-dolly-backend
-    username: db-dolly-backend
-    password: ${sm://db-dolly-backend}
+    url: jdbc:postgresql://localhost:5432/testnav-dolly-backend-local
+    username: testnav-dolly-backend-local
+    password: ${sm://testnav-dolly-backend-local}
 
 management:
   endpoints:
