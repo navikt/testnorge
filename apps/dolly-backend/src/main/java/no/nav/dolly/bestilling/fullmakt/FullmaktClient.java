@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.fullmakt;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
@@ -22,6 +21,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.http.util.TextUtils.isBlank;
 
@@ -86,8 +86,7 @@ public class FullmaktClient implements ClientRegister {
 
     private String getStatus(FullmaktResponse response) {
 
-        log.info("Fullmakt opprett response: {}", Json.pretty(response));
-        return response.getStatus().is2xxSuccessful() ? "OK" :
+        return isNull(response.getStatus()) ? "OK" :
                 errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());
     }
 
