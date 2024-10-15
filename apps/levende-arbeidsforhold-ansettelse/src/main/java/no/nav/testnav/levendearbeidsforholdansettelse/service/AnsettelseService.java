@@ -45,23 +45,9 @@ public class AnsettelseService {
     private final AnsettelseLoggService ansettelseLoggService;
 
     @Async
+    @Transactional
     public void runAnsettelseService() {
 
-        Thread thread = new Thread(this::ansettelseService);
-        thread.start();
-        try {
-            thread.join(3_500_000); //Timeout etter 3000 sekunder
-            if (thread.isAlive()) {
-                thread.interrupt();
-                log.info("Timeout occurred");
-            }
-        } catch (InterruptedException e) {
-            log.info("Timet ut");
-        }
-    }
-
-    @Transactional
-    public void ansettelseService() {
 
         var startTime = System.currentTimeMillis();
 
@@ -84,6 +70,7 @@ public class AnsettelseService {
                 .flatMap(count -> tenorConsumer.hentOrganisasjon())
                 .flatMap(organisasjon -> sjekkOgSendinnArbeidsforhold(organisasjon, parametere, yrkeskoder, datoIntervaller))
                 .collectList()
+                .doOnError(e -> log.error("AnsettelseService feilet", e))
                 .subscribe(status -> log.info("Oppretting ferdig, antall ansettelser {}, medgått tid {} sekunder", status.size(),
                         (System.currentTimeMillis() - startTime) / 1000));
     }
