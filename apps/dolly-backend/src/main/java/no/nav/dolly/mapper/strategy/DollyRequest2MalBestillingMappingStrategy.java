@@ -18,6 +18,7 @@ import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Component
 public class DollyRequest2MalBestillingMappingStrategy implements MappingStrategy {
@@ -56,9 +57,8 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getInstdata().addAll(request.getInstdata());
                         akkumulert.getSigrunstub().addAll(request.getSigrunstub());
                         akkumulert.getSigrunstubPensjonsgivende().addAll(request.getSigrunstubPensjonsgivende());
-                        if (isNull(akkumulert.getSkattekort())) {
-                            akkumulert.setSkattekort(request.getSkattekort());
-                        } else {
+                        akkumulert.getYrkesskader().addAll(request.getYrkesskader());
+                        if (nonNull(akkumulert.getSkattekort())) {
                             akkumulert.getSkattekort().getArbeidsgiverSkatt()
                                     .addAll(request.getSkattekort().getArbeidsgiverSkatt());
                         }
@@ -148,6 +148,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("alderspensjon", "alderspensjon")
                 .field("inntekt", "inntekt")
                 .field("uforetrygd", "uforetrygd")
+                .field("afpOffentlig", "afpOffentlig")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(PensjonData pensjonData, PensjonData akkumulert, MappingContext context) {

@@ -2,6 +2,9 @@ package no.nav.dolly.web.provider.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.web.domain.LogEvent;
+import no.nav.dolly.web.provider.web.dto.LogEventDTO;
+import no.nav.dolly.web.service.LogService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,10 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import no.nav.dolly.web.domain.LogEvent;
-import no.nav.dolly.web.provider.web.dto.LogEventDTO;
-import no.nav.dolly.web.service.LogService;
 
 
 @Slf4j
@@ -34,6 +33,6 @@ public class LogController {
     ) {
         return logService
                 .log(new LogEvent(dto, userAgent, host), exchange)
-                .map(response -> ResponseEntity.noContent().build());
+                .then(Mono.fromCallable(() -> ResponseEntity.noContent().build()));
     }
 }

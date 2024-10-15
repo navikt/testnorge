@@ -32,7 +32,7 @@ class IdentGeneratorServiceTest {
     private static final int START_1900 = 0;
     private static final int GENERATE_SIZE = 100;
 
-    private final LocalDate LOCAL_DATE = LocalDate.now();
+    private final LocalDate timeNow = LocalDate.now();
 
     private final IdentGeneratorService identGeneratorService = new IdentGeneratorService();
 
@@ -41,7 +41,7 @@ class IdentGeneratorServiceTest {
     void shouldThrowToDateAfterFromDate() {
 
         var request = createRequest(Identtype.FNR, Kjoenn.MANN)
-                .foedtFoer(LOCAL_DATE.minusDays(2))
+                .foedtFoer(timeNow.minusDays(2))
                 .build();
 
         Set<String> result = new HashSet<>();
@@ -51,24 +51,24 @@ class IdentGeneratorServiceTest {
     }
 
     @Test
-    @DisplayName("Skal feile når ønsket antall ikke kan genereres")
-    void shouldThrowToFewIdents() {
+    @DisplayName("Skal ikke feile når ønsket antall ikke kan genereres")
+    void shouldNotThrowTooFewIdents() {
 
+        var requestedAmount = 500;
         var request = createRequest(Identtype.FNR, Kjoenn.MANN)
-                .antall(500)
+                .antall(requestedAmount)
                 .build();
 
-        Set<String> result = new HashSet<>();
+        var result = identGeneratorService.genererIdenter(request, new HashSet<>());
 
-        assertThrows(IllegalArgumentException.class,
-                () -> identGeneratorService.genererIdenter(request, result));
+        assertThat(result.size(), is(lessThan(requestedAmount)));
     }
 
     @Test
     @DisplayName("Skal ikke generere identer i sortert rekkefølge")
     void fnrGenererDescendingTest() {
         // This test will stop working 1. Jan 2040 :(
-        LocalDate localDate = LocalDate.now();
+        var localDate = LocalDate.now();
         Map<LocalDate, List<String>> pinMap =
                 identGeneratorService.genererIdenterMap(localDate, localDate.plusDays(1), Identtype.FNR, false);
         assertThat(pinMap.size(), is(equalTo(1)));
@@ -82,9 +82,9 @@ class IdentGeneratorServiceTest {
         Set<String> kvinner = generateIdents(Identtype.FNR, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
-        menn.forEach(fnr -> assertFnrValues(fnr, Kjoenn.MANN, LOCAL_DATE));
+        menn.forEach(fnr -> assertFnrValues(fnr, Kjoenn.MANN, timeNow));
         assertThat(kvinner.size(), is(equalTo(GENERATE_SIZE)));
-        kvinner.forEach(fnr -> assertFnrValues(fnr, Kjoenn.KVINNE, LOCAL_DATE));
+        kvinner.forEach(fnr -> assertFnrValues(fnr, Kjoenn.KVINNE, timeNow));
     }
 
     @Test
@@ -94,9 +94,9 @@ class IdentGeneratorServiceTest {
         Set<String> kvinner = generateIdents(Identtype.DNR, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
-        menn.forEach(dnr -> assertDnrValues(dnr, Kjoenn.MANN, LOCAL_DATE));
+        menn.forEach(dnr -> assertDnrValues(dnr, Kjoenn.MANN, timeNow));
         assertThat(kvinner.size(), is(equalTo(GENERATE_SIZE)));
-        kvinner.forEach(dnr -> assertDnrValues(dnr, Kjoenn.KVINNE, LOCAL_DATE));
+        kvinner.forEach(dnr -> assertDnrValues(dnr, Kjoenn.KVINNE, timeNow));
     }
 
     @Test
@@ -106,22 +106,22 @@ class IdentGeneratorServiceTest {
         Set<String> kvinner = generateIdents(Identtype.BOST, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
-        menn.forEach(bnr -> assertBnrValues(bnr, Kjoenn.MANN, LOCAL_DATE));
+        menn.forEach(bnr -> assertBnrValues(bnr, Kjoenn.MANN, timeNow));
         assertThat(kvinner.size(), is(equalTo(GENERATE_SIZE)));
-        kvinner.forEach(bnr -> assertBnrValues(bnr, Kjoenn.KVINNE, LOCAL_DATE));
+        kvinner.forEach(bnr -> assertBnrValues(bnr, Kjoenn.KVINNE, timeNow));
     }
 
     private Set<String> generateIdents(Identtype identtype, Kjoenn kjoenn) {
         return identGeneratorService.genererIdenter(
-                createRequest(identtype, kjoenn).build(), new HashSet<String>());
+                createRequest(identtype, kjoenn).build(), new HashSet<>());
     }
 
     private HentIdenterRequest.HentIdenterRequestBuilder createRequest(Identtype identtype, Kjoenn kjoenn) {
         return HentIdenterRequest.builder()
                 .identtype(identtype)
                 .antall(GENERATE_SIZE)
-                .foedtEtter(LOCAL_DATE)
-                .foedtFoer(LOCAL_DATE)
+                .foedtEtter(timeNow)
+                .foedtFoer(timeNow)
                 .kjoenn(kjoenn);
     }
 
