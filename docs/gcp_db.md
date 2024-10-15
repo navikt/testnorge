@@ -18,15 +18,15 @@ Applikasjonene har en noe annen konfigurasjon for kjøring lokalt, og bruker [gc
 ```
 > gcloud auth login --update-adc
 ```
-* Du må starte `cloud_sql_proxy` med rett `APP_NAME` (se over). **Legg merke til bruken av `local-` her.**
+* Du må starte `cloud_sql_proxy` med rett `APP_NAME` (se over).
 ```
-> cloud_sql_proxy -instances=dolly-dev-ff83:europe-north1:local-APP_NAME=tcp:5432
+> cloud_sql_proxy -instances=dolly-dev-ff83:europe-north1:testnav-APP_NAME-local=tcp:5432
 ```
 
 Etter at proxy'en er startet kan du da kjøre den aktuelle applikasjonen lokalt. Applikasjonen henter selv passord vha. [Spring Cloud GCP](https://spring.io/projects/spring-cloud-gcp) ved oppstart.
 
 Hvis du ønsker tilgang direkte til databasen gjennom en annen klient som IntelliJ så må du hente ut passordet vha.
 ```
-> gcloud secrets versions access latest --secret=db-APP_NAME
+> gcloud secrets versions access latest --secret=testnav-APP_NAME-local
 ```
-JDBC connect URL vil være `jdbc:postgresql://localhost:5432/db-APP_NAME?user=db-APPNAME`.
+JDBC connect URL vil være `jdbc:postgresql://localhost:5432/testnav-APP_NAME-local?user=testnav-APP_NAME-local`.
