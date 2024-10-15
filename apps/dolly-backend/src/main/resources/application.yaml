@@ -244,4 +244,9 @@ consumers:
     namespace: dolly
     url: http://testnav-skattekort-service.dolly.svc.cluster.local
     cluster: dev-gcp
+  yrkesskade-proxy:
+    name: testnav-yrkesskade-proxy
+    namespace: dolly
+    url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
     

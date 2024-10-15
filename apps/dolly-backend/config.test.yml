@@ -41,6 +41,7 @@ spec:
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
         - application: testnav-tps-messaging-service
+        - application: testnav-yrkesskade-proxy
         - application: testnorge-profil-api-dev
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io

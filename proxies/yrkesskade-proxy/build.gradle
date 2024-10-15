@@ -1,0 +1,16 @@
+plugins {
+    id "dolly-proxies"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-yrkesskade-proxy"
+        property "sonar.projectName", "testnav-yrkesskade-proxy"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:vault"
+}
