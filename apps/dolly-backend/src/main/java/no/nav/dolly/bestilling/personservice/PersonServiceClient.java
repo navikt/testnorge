@@ -139,7 +139,11 @@ public class PersonServiceClient {
                                                     .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
                                                     .filter(Objects::nonNull),
                                             person.getPerson().getFullmakt().stream()
-                                                    .map(FullmaktDTO::getMotpartsPersonident))
+                                                    .map(FullmaktDTO::getMotpartsPersonident),
+                                            person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
+                                                    .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                                    .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                                    .filter(Objects::nonNull))
                                     .flatMap(Function.identity())))
                             .map(ident -> Map.entry(ident, new HashSet<>())));
         }
