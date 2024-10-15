@@ -11,6 +11,16 @@ export const sjekkManglerYrkesskadeData = (yrkesskadeData) => {
 	return !yrkesskadeData || yrkesskadeData?.length < 1
 }
 
+const showKodeverkLabel = (kodeverkData, value) => {
+	if (!kodeverkData) {
+		return value
+	}
+	if (!value) {
+		return null
+	}
+	return kodeverkData[value]?.verdi
+}
+
 export const YrkesskaderVisning = ({ data, loading }) => {
 	if (loading) {
 		return <Loading label="Laster yrkesskade-data" />
@@ -22,8 +32,9 @@ export const YrkesskaderVisning = ({ data, loading }) => {
 
 	const manglerFagsystemData = sjekkManglerYrkesskadeData(data)
 
-	const { kodeverkData, loading: yrkesskadeLoading, error } = useYrkesskadeKodeverk('ROLLETYPE')
-	console.log('kodeverkData: ', kodeverkData) //TODO - SLETT MEG
+	const { kodeverkData: kodeverkDataRolletype } = useYrkesskadeKodeverk('ROLLETYPE')
+	const { kodeverkData: kodeverkDataInnmelderrolletype } =
+		useYrkesskadeKodeverk('INNMELDERROLLETYPE')
 
 	return (
 		<div>
@@ -38,10 +49,17 @@ export const YrkesskaderVisning = ({ data, loading }) => {
 						{(yrkesskade, idx) => {
 							return (
 								<React.Fragment key={idx}>
-									<TitleValue title="Rolletype" value={yrkesskade?.data?.rolletype} />
-									{/*//TODO: kodeverk*/}
-									<TitleValue title="Innmelderrolle" value={yrkesskade?.data?.innmelderrolle} />
-									{/*//TODO: kodeverk*/}
+									<TitleValue
+										title="Rolletype"
+										value={showKodeverkLabel(kodeverkDataRolletype, yrkesskade?.data?.rolletype)}
+									/>
+									<TitleValue
+										title="Innmelderrolle"
+										value={showKodeverkLabel(
+											kodeverkDataInnmelderrolletype,
+											yrkesskade?.data?.innmelderrolle,
+										)}
+									/>
 									<TitleValue
 										title="Innmelder identifikator"
 										value={yrkesskade?.data?.innmelderIdentifikator}

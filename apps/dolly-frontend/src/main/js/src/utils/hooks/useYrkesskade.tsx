@@ -6,10 +6,9 @@ const getKodeverkUrl = (kodeverktype) => `${baseUrl}/api/v1/kodeverk/${kodeverkt
 
 export const useYrkesskadeKodeverk = (kodeverktype) => {
 	const { data, isLoading, error } = useSWR<any, Error>(getKodeverkUrl(kodeverktype), fetcher)
-	console.log('data: ', data) //TODO - SLETT MEG
 
 	return {
-		kodeverkData: data,
+		kodeverkData: data?.kodeverk,
 		loading: isLoading,
 		error: error,
 	}

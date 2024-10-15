@@ -9,26 +9,18 @@ import {
 } from '@/components/fagsystem/yrkesskader/initialValues'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { validation } from '@/components/fagsystem/yrkesskader/form/validation'
+import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
 
 export const yrkesskaderAttributt = 'yrkesskader'
 
 export const YrkesskaderForm = () => {
 	const formMethods = useFormContext()
-
-	// const handleChangeInnmelderrolle = (value, path) => {
-	// 	formMethods.setValue(`${path}.innmelderrolle`, value?.value)
-	// 	formMethods.setValue(`${path}.innmelderIdentifikator`, null)
-	// 	formMethods.setValue(`${path}.paaVegneAv`, null)
-	// 	formMethods.trigger(path)
-	// }
 
 	const handleChangeTidstype = (value, path) => {
 		formMethods.setValue(`${path}.tidstype`, value?.value)
@@ -52,6 +44,23 @@ export const YrkesskaderForm = () => {
 			(!forelder || forelder?.length < 1)
 		)
 	}
+
+	const { kodeverkData: kodeverkRolletype } = useYrkesskadeKodeverk('ROLLETYPE')
+	const { kodeverkData: kodeverkInnmelderrolletype } = useYrkesskadeKodeverk('INNMELDERROLLETYPE')
+
+	const rolletypeOptions =
+		kodeverkRolletype &&
+		Object.values(kodeverkRolletype)?.map((option) => ({
+			value: option?.kode,
+			label: option?.verdi,
+		}))
+
+	const innmelderrolletypeOptions =
+		kodeverkInnmelderrolletype &&
+		Object.values(kodeverkInnmelderrolletype)?.map((option) => ({
+			value: option?.kode,
+			label: option?.verdi,
+		}))
 
 	const hjelpetekst = (
 		<>
@@ -96,88 +105,35 @@ export const YrkesskaderForm = () => {
 						header={'Yrkesskade'}
 						newEntry={initialYrkesskade}
 						canBeEmpty={false}
-						// maxEntries={1}
-						//TODO: Bare 1 yrkesskade per person???
 					>
 						{(path: string, idx: number) => {
 							return (
 								<React.Fragment key={idx}>
-									{/*skadelidtIdentifikator: '', // Blir satt av BE*/}
-
-									{/*rolletype: '',*/}
 									<FormSelect
 										name={`${path}.rolletype`}
 										label="Rolletype"
-										options={[
-											{ value: 'arbeidstaker', label: 'Arbeidstaker' },
-											{ value: 'laerling', label: 'Lærling' },
-											{
-												value: 'arbeidstakerIPetroleum',
-												label: 'Arbeidstaker i petroleumsvirksomhet',
-											},
-										]}
-										//TODO: Bruk kodeverk rolletype
-										// kodeverk={null}
+										options={rolletypeOptions}
 										size="xlarge"
 									/>
-
-									{/*innmelderrolle: '',*/}
 									<FormSelect
 										name={`${path}.innmelderrolle`}
 										label="Innmelderrolle"
-										options={[
-											{ value: 'denSkadelidte', label: 'Den skadelidte selv' },
-											{ value: 'vergeOgForesatt', label: 'Verge/Foresatt' },
-											{
-												value: 'virksomhetsrepresentant',
-												label: 'Virksomhetsrepresentant',
-											},
-										]}
-										//TODO: Bruk kodeverk innmelderrolle
-										// kodeverk={null}
-										// onChange={(value) => handleChangeInnmelderrolle(value, path)}
+										options={innmelderrolletypeOptions}
 										size="large"
 										isClearable={false}
 									/>
-
-									{/*innmelderIdentifikator: '',*/}
-									{/*{formMethods.watch(`${path}.innmelderrolle`) === 'vergeOgForesatt' && (*/}
-									{/*	<PdlEksisterendePerson*/}
-									{/*		eksisterendePersonPath={`${path}.innmelderIdentifikator`}*/}
-									{/*		label="Innmelder"*/}
-									{/*		formMethods={formMethods}*/}
-									{/*		idx={idx}*/}
-									{/*	/>*/}
-									{/*)}*/}
-
-									{/*paaVegneAv: '',*/}
-									{/*{formMethods.watch(`${path}.innmelderrolle`) === 'virksomhetsrepresentant' && (*/}
-									{/*	<OrgnrToggle*/}
-									{/*		path={`${path}.paaVegneAv`}*/}
-									{/*		formMethods={formMethods}*/}
-									{/*		label="På vegne av"*/}
-									{/*	/>*/}
-									{/*)}*/}
-
-									{/*klassifisering: '',*/}
 									<FormSelect
 										name={`${path}.klassifisering`}
 										label="Klassifisering"
 										options={Options('klassifisering')}
 										size="large"
 									/>
-
-									{/*referanse: '',*/}
 									<FormTextInput name={`${path}.referanse`} label="Referanse" size="large" />
-
-									{/*ferdigstillSak: '',*/}
 									<FormSelect
 										name={`${path}.ferdigstillSak`}
 										label="Ferdigsstill sak"
 										options={Options('ferdigstillSak')}
 									/>
-
-									{/*tidstype: '',*/}
 									<FormSelect
 										name={`${path}.tidstype`}
 										label="Tidstype"
@@ -185,8 +141,6 @@ export const YrkesskaderForm = () => {
 										size="medium"
 										onChange={(value) => handleChangeTidstype(value, path)}
 									/>
-
-									{/*skadetidspunkt: null,*/}
 									{formMethods.watch(`${path}.tidstype`) === 'tidspunkt' && (
 										<FormDateTimepicker
 											formMethods={formMethods}
@@ -196,8 +150,6 @@ export const YrkesskaderForm = () => {
 											// onChange={}
 										/>
 									)}
-
-									{/*perioder: [initialYrkesskadePeriode],*/}
 									{formMethods.watch(`${path}.tidstype`) === 'periode' && (
 										<FormDollyFieldArray
 											name={`${path}.perioder`}
