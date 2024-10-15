@@ -410,6 +410,7 @@ public class BestillingService {
                 .sykemelding(request.getSykemelding())
                 .arbeidsplassenCV(request.getArbeidsplassenCV())
                 .skattekort(request.getSkattekort())
+                .yrkesskader(request.getYrkesskader())
                 .build());
     }
 

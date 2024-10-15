@@ -124,6 +124,9 @@ public class BestillingProgress implements Serializable {
     @Column(name = "SKATTEKORT_STATUS")
     private String skattekortStatus;
 
+    @Column(name = "YRKESSKADE_STATUS")
+    private String yrkesskadeStatus;
+
     @Column(name = "master")
     @Enumerated(EnumType.STRING)
     private Master master;

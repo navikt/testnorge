@@ -27,6 +27,7 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
+import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -90,6 +91,8 @@ public class ElasticBestilling implements Persistable<Long> {
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     @Field
     private SkattekortRequestDTO skattekort;
+    @Field
+    private List<YrkesskadeRequest> yrkesskader;
     @Field
     private List<String> identer;
     @Transient
