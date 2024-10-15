@@ -30,14 +30,14 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 	const formMethods = useFormContext()
 	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 	const getArbeidsgiverType = () => {
-		const orgnr = aaregdata?.[0].arbeidsgiver?.orgnummer
-		if (aaregdata?.[0].amelding?.[0]) {
+		const orgnr = aaregdata?.[0]?.arbeidsgiver?.orgnummer
+		if (aaregdata?.[0]?.amelding?.[0]) {
 			return ArbeidsgiverTyper.egen
-		} else if (aaregdata?.[0].arbeidsgiver?.aktoertype === 'PERS') {
+		} else if (aaregdata?.[0]?.arbeidsgiver?.aktoertype === 'PERS') {
 			return ArbeidsgiverTyper.privat
 		} else if (
 			!orgnr ||
-			organisasjoner.map((organisasjon) => organisasjon.orgnummer).some((org) => org === orgnr)
+			organisasjoner?.map((organisasjon) => organisasjon?.orgnummer)?.some((org) => org === orgnr)
 		) {
 			return ArbeidsgiverTyper.felles
 		} else {
@@ -90,7 +90,7 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 
 	return (
 		<div className="toggle--wrapper">
-			{!aaregdata?.[0].arbeidsgiver?.orgnummer && !aaregdata?.[0].arbeidsgiver?.ident && (
+			{!aaregdata?.[0]?.arbeidsgiver?.orgnummer && !aaregdata?.[0]?.arbeidsgiver?.ident && (
 				<ToggleArbeidsgiver
 					onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
 					value={typeArbeidsgiver}
