@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,8 @@ import static org.mockito.Mockito.when;
 
 public class FullmaktClientTest {
 
+    private static final String NAVN = "Fornavn Etternavn";
+    private static final String IDENT = "12345678902";
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
 
@@ -61,18 +64,25 @@ public class FullmaktClientTest {
                         .tema("AAP")
                         .handling(singletonList("LES"))
                         .build()))
+                .fullmektigsNavn(NAVN)
                 .gyldigFraOgMed(LocalDateTime.of(2021, 1, 1, 0, 0))
                 .gyldigTilOgMed(LocalDateTime.of(2022, 1, 1, 0, 0))
                 .build()));
 
-        DollyPerson dollyPerson = DollyPerson.builder().ident("12345678901").build();
+        DollyPerson dollyPerson = DollyPerson.builder().ident(IDENT).build();
         BestillingProgress progress = new BestillingProgress();
 
         FullPersonDTO fullPersonDTO = FullPersonDTO.builder()
+                .person(PersonDTO.builder().ident(IDENT)
+                        .navn(singletonList(NavnDTO.builder()
+                                .fornavn("Fornavn")
+                                .etternavn("Etternavn")
+                                .build()))
+                        .build())
                 .relasjoner(List.of(
                         FullPersonDTO.RelasjonDTO.builder()
                                 .relasjonType(RelasjonType.FULLMEKTIG)
-                                .relatertPerson(PersonDTO.builder().ident("12345678902").build())
+                                .relatertPerson(PersonDTO.builder().ident(IDENT).build())
                                 .build()
                 ))
                 .build();
@@ -91,6 +101,7 @@ public class FullmaktClientTest {
         verify(fullmaktConsumer).createFullmaktData(fullmaktCaptor.capture(), any());
 
         List<RsFullmakt> capturedFullmaktList = fullmaktCaptor.getValue();
-        assertEquals("12345678902", capturedFullmaktList.get(0).getFullmektig());
+        assertEquals(IDENT, capturedFullmaktList.getFirst().getFullmektig());
+        assertEquals(NAVN, capturedFullmaktList.getFirst().getFullmektigsNavn());
     }
 }

@@ -12,6 +12,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -43,8 +44,11 @@ public class FullmaktClient implements ClientRegister {
                         fullmakt.setFullmaktsgiver(dollyPerson.getIdent());
                         if (isBlank(fullmakt.getFullmektig())) {
                             return pdlDataConsumer.getPersoner(singletonList(dollyPerson.getIdent()))
-                                    .flatMap(person -> Flux.fromStream(person.getRelasjoner().stream()
-                                            .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG))))
+                                    .flatMap(person -> {
+                                        fullmakt.setFullmektigsNavn(getFullName(person.getPerson()));
+                                        return Flux.fromStream(person.getRelasjoner().stream()
+                                                .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG)));
+                                    })
                                     .next()
                                     .map(relasjon -> {
                                         fullmakt.setFullmektig(relasjon.getRelatertPerson().getIdent());
@@ -85,5 +89,12 @@ public class FullmaktClient implements ClientRegister {
 
         return response.getStatus().is2xxSuccessful() ? "OK" :
                 errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());
+    }
+
+    private String getFullName(PersonDTO person) {
+        var navn = person.getNavn().getFirst();
+        return (isBlank(navn.getMellomnavn()))
+                ? "%s %s".formatted(navn.getFornavn(), navn.getEtternavn())
+                : "%s %s %s".formatted(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
     }
 }
