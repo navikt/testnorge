@@ -1,7 +1,14 @@
 spring:
+  cloud:
+    gcp:
+      secretmanager:
+        project-id: dolly-dev-ff83
+  config:
+    import: "sm://"
   datasource:
-    url: jdbc:postgresql://localhost:5432/db-pdl-forvalter
-    username: ${NAV_USERNAME}
+    url: jdbc:postgresql://localhost:5432/testnav-pdl-forvalter-local
+    username: testnav-pdl-forvalter-local
+    password: ${sm://testnav-pdl-forvalter-local}
 
 consumers:
   adresse-service:
