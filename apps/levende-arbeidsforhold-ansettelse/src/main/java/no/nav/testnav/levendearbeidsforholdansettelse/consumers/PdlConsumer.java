@@ -49,7 +49,7 @@ public class PdlConsumer {
                                         .create(ConnectionProvider.builder("PDL connections")
                                                 .maxConnections(1)
                                                 .pendingAcquireMaxCount(10000)
-                                                .pendingAcquireTimeout(Duration.ofSeconds(30))
+                                                .pendingAcquireTimeout(Duration.ofSeconds(3000))
                                                 .build())))
                 .build();
     }

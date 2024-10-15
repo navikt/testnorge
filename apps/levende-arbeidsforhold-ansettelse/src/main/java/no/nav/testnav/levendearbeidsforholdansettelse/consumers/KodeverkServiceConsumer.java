@@ -29,7 +29,7 @@ public class KodeverkServiceConsumer {
 
         serverProperties = consumers.getTestnavKodeverkService();
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(8 * 1024 * 1024))
                 .build();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
