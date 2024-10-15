@@ -53,7 +53,7 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 600m
+      cpu: 200m
       memory: 1024Mi
     limits:
       memory: 2048Mi
