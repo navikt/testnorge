@@ -1,4 +1,4 @@
-package no.nav.testnav.oppdrag.service;
+package no.nav.testnav.oppdragservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

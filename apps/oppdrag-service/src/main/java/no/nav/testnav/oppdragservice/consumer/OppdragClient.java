@@ -1,4 +1,4 @@
-package no.nav.testnav.oppdrag.service.consumer;
+package no.nav.testnav.oppdragservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;

@@ -1,4 +1,4 @@
-package no.nav.testnav.oppdrag.service.config;
+package no.nav.testnav.oppdragservice.config;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;

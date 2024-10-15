@@ -1,6 +1,6 @@
-package no.nav.testnav.oppdrag.service.config;
+package no.nav.testnav.oppdragservice.config;
 
-import no.nav.testnav.oppdrag.service.consumer.OppdragClient;
+import no.nav.testnav.oppdragservice.consumer.OppdragClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;

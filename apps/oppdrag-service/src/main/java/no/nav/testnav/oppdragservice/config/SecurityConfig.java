@@ -1,4 +1,4 @@
-package no.nav.testnav.oppdrag.service.config;
+package no.nav.testnav.oppdragservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

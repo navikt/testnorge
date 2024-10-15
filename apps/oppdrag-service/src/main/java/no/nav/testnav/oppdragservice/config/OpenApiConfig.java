@@ -1,4 +1,4 @@
-package no.nav.testnav.oppdrag.service.config;
+package no.nav.testnav.oppdragservice.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

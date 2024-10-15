@@ -1,4 +1,4 @@
-package no.nav.testnav.oppdrag.service.provider;
+package no.nav.testnav.oppdragservice.provider;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class OppdragRequest {
 }

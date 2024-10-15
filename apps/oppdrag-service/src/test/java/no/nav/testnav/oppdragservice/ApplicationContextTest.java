@@ -1,4 +1,4 @@
-package no.nav.testnav.oppdrag.service;
+package no.nav.testnav.oppdragservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

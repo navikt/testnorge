@@ -1,4 +1,4 @@
-package no.nav.testnav.oppdrag.service.consumer;
+package no.nav.testnav.oppdragservice.consumer;
 
 import org.springframework.stereotype.Service;
 
