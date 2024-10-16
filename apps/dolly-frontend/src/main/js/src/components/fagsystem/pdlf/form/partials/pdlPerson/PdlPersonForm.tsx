@@ -17,6 +17,7 @@ interface PdlPersonValues {
 	path: string
 	nyPersonPath: string
 	eksisterendePersonPath: string
+	fullmektigsNavnPath?: string
 	label: string
 	formMethods: UseFormReturn
 	nyIdentValg?: NyIdent
@@ -46,6 +47,7 @@ export const PdlPersonForm = ({
 	path,
 	nyPersonPath,
 	eksisterendePersonPath,
+	fullmektigsNavnPath,
 	label,
 	formMethods,
 	nyIdentValg = null,
@@ -131,6 +133,7 @@ export const PdlPersonForm = ({
 								formMethods={formMethods}
 								nyIdentValg={nyIdentValg}
 								eksisterendeNyPerson={eksisterendeNyPerson}
+								fullmektigsNavnPath={fullmektigsNavnPath}
 								disabled={opts?.antall > 1}
 							/>
 						)}

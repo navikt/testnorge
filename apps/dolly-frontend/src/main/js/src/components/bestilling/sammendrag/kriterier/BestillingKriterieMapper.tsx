@@ -330,7 +330,6 @@ const mapFullmakt = (bestillingData, data) => {
 		const fullmaktData = {
 			header: 'Fullmakt',
 			itemRows: bestillingData.fullmakt.map((item, idx) => {
-				console.log('item: ', item) //TODO - SLETT MEG
 				return [
 					{ numberHeader: `Fullmakt ${idx + 1}` },
 					obj('Områder', omraaderArrayToString(item.omraade)),

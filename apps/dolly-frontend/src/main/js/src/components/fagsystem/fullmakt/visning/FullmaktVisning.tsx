@@ -1,30 +1,39 @@
-import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
-import { FullmaktTypes } from '@/components/fagsystem/fullmakt/FullmaktTypes'
+import { FullmaktType } from '@/components/fagsystem/fullmakt/FullmaktType'
 import { useFullmektig } from '@/utils/hooks/useFullmakt'
+import React, { useEffect, useState } from 'react'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Fullmakt } from '@/components/fagsystem/fullmakt/visning/Fullmakt'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 
 type FullmaktProps = {
 	ident: string
-	data: FullmaktTypes
 }
 
-export const FullmaktVisning = ({ ident, data }: FullmaktProps) => {
+export const FullmaktVisning = ({ ident }: FullmaktProps) => {
 	const { fullmektig } = useFullmektig(ident)
-	if (!data?.fullmaktsgiver && fullmektig?.size === 0) {
+	const [fullmaktData, setFullmaktData] = useState([])
+
+	useEffect(() => {
+		if (fullmektig?.length > 0) {
+			setFullmaktData(fullmektig)
+		}
+	}, [fullmektig])
+
+	if (!fullmektig || fullmektig.length === 0) {
 		return null
 	}
-	console.log('fullmektig: ', fullmektig) //TODO - SLETT MEG
+
 	return (
-		<>
-			<TitleValue title="Fullmaktsgiver" value={data?.fullmaktsgiver} />
-			<TitleValue title="Gyldig fra" value={formatDate(data?.gyldigFraOgMed)} />
-			<TitleValue title="Gyldig til" value={formatDate(data?.gyldigTilOgMed)} />
-			{data?.omraade?.map((omraade, index) => (
-				<TitleValue key={index} title={omraade.tema} value={omraade.handling.join(', ')} />
-			))}
-			<TitleValue title="Registrert" value={data?.registrert && formatDate(data.registrert)} />
-			<TitleValue title="Kilde" value={data?.kilde} />
-			<TitleValue title="Opphørt" value={oversettBoolean(data?.opphoert)} />
-		</>
+		<ErrorBoundary>
+			<div>
+				<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
+				<div className="person-visning_content">
+					<DollyFieldArray data={fullmaktData} header="" nested>
+						{(item: FullmaktType, idx: number) => <Fullmakt fullmakt={item} idx={idx} />}
+					</DollyFieldArray>
+				</div>
+			</div>
+		</ErrorBoundary>
 	)
 }

@@ -1,4 +1,4 @@
-export type FullmaktTypes = {
+export type FullmaktType = {
 	gyldigFraOgMed: string
 	gyldigTilOgMed?: string
 	fullmaktsgiver: string

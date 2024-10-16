@@ -15,9 +15,10 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
 import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
-import { Omraade } from '@/components/fagsystem/fullmakt/FullmaktTypes'
+import { Omraade } from '@/components/fagsystem/fullmakt/FullmaktType'
 import { Option } from '@/service/SelectOptionsOppslag'
 import Loading from '@/components/ui/loading/Loading'
+import { ErrorMessage } from '@hookform/error-message'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
@@ -120,7 +121,7 @@ export const Fullmakt = ({
 		<div className="flexbox--flex-wrap">
 			<FormDollyFieldArray
 				name={`${path}.omraade`}
-				header="Områder"
+				header="Område"
 				newEntry={{ tema: '', handling: [] }}
 			>
 				{(path: string) => (
@@ -135,7 +136,7 @@ export const Fullmakt = ({
 							options={omraadeKodeverk.filter(
 								(option: Option) => !chosenTemaValues.includes(option.value),
 							)}
-							size="xlarge"
+							size="grow"
 							isClearable={false}
 							normalFontPlaceholder={true}
 						/>
@@ -143,7 +144,7 @@ export const Fullmakt = ({
 							name={`${path}.handling`}
 							label="Handling"
 							options={Options('fullmaktHandling')}
-							size="grow"
+							size="xlarge"
 							onChange={(val: Option[]) => {
 								formMethods.setValue(
 									`${path}.handling`,
@@ -151,6 +152,7 @@ export const Fullmakt = ({
 										? alleHandlinger
 										: val.map((opt) => opt.value),
 								)
+								formMethods.trigger(path)
 							}}
 							isClearable={true}
 							isMulti={true}
@@ -163,14 +165,24 @@ export const Fullmakt = ({
 			<PdlPersonExpander
 				path={path}
 				nyPersonPath={`${path}.nyFullmektig`}
-				eksisterendePersonPath={`${path}.motpartsPersonident`}
+				eksisterendePersonPath={`${path}.fullmektig`}
+				fullmektigsNavnPath={`${path}.fullmektigsNavn`}
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
-				isExpanded={isTestnorgeIdent || !!formMethods.watch(`${path}.motpartsPersonident`)}
+				isExpanded={isTestnorgeIdent || !!formMethods.watch(`${path}.fullmektig`)}
 				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />
+			{formMethods.formState.errors && (
+				<ErrorMessage
+					name={`${path}.omraade`}
+					errors={formMethods.formState.errors}
+					render={({ message }) => (
+						<p style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</p>
+					)}
+				/>
+			)}
 		</div>
 	)
 }

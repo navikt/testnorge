@@ -353,7 +353,7 @@ export const getInitialNyIdent = (master = 'FREG') => ({
 
 export const initialFullmakt = {
 	omraade: [{ tema: '', handling: [] }] as any,
-	gyldigFraOgMed: null as unknown as string,
+	gyldigFraOgMed: new Date(),
 	gyldigTilOgMed: null as unknown as string,
 	fullmektig: null as unknown as string,
 }

@@ -22,6 +22,7 @@ import { Persondetaljer } from '@/components/fagsystem/pdlf/visning/partials/Per
 import { PdlSikkerhetstiltak } from '@/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMBankkonto } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { ForeldreansvarVisning } from '@/components/fagsystem/pdlf/visning/partials/Foreldreansvar'
+import { FullmaktVisning } from '@/components/fagsystem'
 
 export const getBankkontoData = (data) => {
 	if (data?.kontoregister) {
@@ -89,6 +90,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					skjermingData={skjermingData}
 					erRedigerbar={erRedigerbar}
 				/>
+				<FullmaktVisning ident={ident} />
 				<Foedsel
 					data={data?.person}
 					tmpPersoner={tmpPdlforvalter}
