@@ -67,9 +67,9 @@ const ErrorView = () => {
 }
 
 export const RootComponent = () => (
-	<Provider store={store}>
-		<Router history={history}>
-			<ErrorBoundary>
+	<ErrorBoundary>
+		<Provider store={store}>
+			<Router history={history}>
 				<SWRConfig
 					value={{
 						dedupingInterval: 5000,
@@ -82,7 +82,7 @@ export const RootComponent = () => (
 						<Route errorElement={<ErrorView />} path="*" element={<App />} />
 					</FaroRoutes>
 				</SWRConfig>
-			</ErrorBoundary>
-		</Router>
-	</Provider>
+			</Router>
+		</Provider>
+	</ErrorBoundary>
 )

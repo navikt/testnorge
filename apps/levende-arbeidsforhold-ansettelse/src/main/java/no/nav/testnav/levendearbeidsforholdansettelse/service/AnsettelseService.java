@@ -111,6 +111,7 @@ public class AnsettelseService {
                         .flatMap(Flux::fromIterable)
                         .filter(arbeidsavtale -> nonNull(arbeidsavtale.getBruksperiode()) &&
                                 isNull(arbeidsavtale.getBruksperiode().getTom()))
+                        .filter(arbeidsavtale -> nonNull(arbeidsavtale.getStillingsprosent()))
                         .map(Arbeidsavtale::getStillingsprosent)
                         .reduce(0, (a, b) -> (int) (a + b))
                         .map(sum -> sum + stillingsprosent <= 100)
