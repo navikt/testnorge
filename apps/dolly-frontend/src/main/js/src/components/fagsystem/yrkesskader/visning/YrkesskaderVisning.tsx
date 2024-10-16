@@ -6,12 +6,22 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDateTime, showLabel, formatDate } from '@/utils/DataFormatter'
 import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
+import {
+	YrkesskadePeriodeTypes,
+	YrkesskaderTypes,
+	YrkesskadeTypes,
+} from '@/components/fagsystem/yrkesskader/YrkesskaderTypes'
 
-export const sjekkManglerYrkesskadeData = (yrkesskadeData) => {
+type YrkesskaderVisningProps = {
+	data: YrkesskaderTypes
+	loading: boolean
+}
+
+export const sjekkManglerYrkesskadeData = (yrkesskadeData: any) => {
 	return !yrkesskadeData || yrkesskadeData?.length < 1
 }
 
-const showKodeverkLabel = (kodeverkData, value) => {
+const showKodeverkLabel = (kodeverkData: any, value: string) => {
 	if (!kodeverkData) {
 		return value
 	}
@@ -21,7 +31,7 @@ const showKodeverkLabel = (kodeverkData, value) => {
 	return kodeverkData[value]?.verdi
 }
 
-export const YrkesskaderVisning = ({ data, loading }) => {
+export const YrkesskaderVisning = ({ data, loading }: YrkesskaderVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster yrkesskade-data" />
 	}
@@ -46,7 +56,7 @@ export const YrkesskaderVisning = ({ data, loading }) => {
 			) : (
 				<div className="person-visning_content">
 					<DollyFieldArray header={'Yrkesskade'} data={data}>
-						{(yrkesskade, idx) => {
+						{(yrkesskade: { data: YrkesskadeTypes }, idx: number) => {
 							return (
 								<React.Fragment key={idx}>
 									<TitleValue
@@ -84,7 +94,7 @@ export const YrkesskaderVisning = ({ data, loading }) => {
 									/>
 									{yrkesskade?.data?.perioder?.length > 0 && (
 										<DollyFieldArray header="Perioder" data={yrkesskade?.data?.perioder} nested>
-											{(periode, periodeIdx) => (
+											{(periode: YrkesskadePeriodeTypes, periodeIdx: number) => (
 												<React.Fragment key={periodeIdx}>
 													<TitleValue title="Fra dato" value={formatDate(periode?.fra)} />
 													<TitleValue title="Til dato" value={formatDate(periode?.til)} />

@@ -17,14 +17,15 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { validation } from '@/components/fagsystem/yrkesskader/form/validation'
 import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { YrkesskadeTypes } from '@/components/fagsystem/yrkesskader/YrkesskaderTypes'
 
 export const yrkesskaderAttributt = 'yrkesskader'
 
 export const YrkesskaderForm = () => {
 	const formMethods = useFormContext()
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext)
 
-	const handleChangeTidstype = (value, path) => {
+	const handleChangeTidstype = (value: any, path: string) => {
 		formMethods.setValue(`${path}.tidstype`, value?.value || null)
 		formMethods.setValue(`${path}.skadetidspunkt`, null)
 		if (value?.value === 'periode') {
@@ -38,7 +39,7 @@ export const YrkesskaderForm = () => {
 	const getVergemaal = () => {
 		const vergemaalForm = formMethods.watch('pdldata.person.vergemaal')
 		const vergemaalImport = opts?.importPersoner?.flatMap(
-			(person) => person?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt,
+			(person: any) => person?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt,
 		)
 		const vergemaalLeggTil =
 			opts?.personFoerLeggTil?.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt ||
@@ -50,14 +51,14 @@ export const YrkesskaderForm = () => {
 	const getForelder = () => {
 		const forelderForm = formMethods
 			.watch('pdldata.person.forelderBarnRelasjon')
-			?.filter((relasjon) => relasjon?.relatertPersonsRolle === 'FORELDER')
+			?.filter((relasjon: any) => relasjon?.relatertPersonsRolle === 'FORELDER')
 		const forelderImport = opts?.importPersoner
-			?.flatMap((person) => person?.data?.hentPerson?.forelderBarnRelasjon)
-			?.filter((relasjon) => relasjon?.minRolleForPerson === 'BARN')
+			?.flatMap((person: any) => person?.data?.hentPerson?.forelderBarnRelasjon)
+			?.filter((relasjon: any) => relasjon?.minRolleForPerson === 'BARN')
 		const forelderLeggTil = (
 			opts?.personFoerLeggTil?.pdl?.hentPerson?.forelderBarnRelasjon ||
 			opts?.personFoerLeggTil?.pdlforvalter?.person?.forelderBarnRelasjon
-		)?.filter((relasjon) => relasjon?.minRolleForPerson === 'BARN')
+		)?.filter((relasjon: any) => relasjon?.minRolleForPerson === 'BARN')
 
 		return forelderForm || forelderImport || forelderLeggTil
 	}
@@ -67,7 +68,7 @@ export const YrkesskaderForm = () => {
 		const forelder = getForelder()
 		const harInnmelderrolleVergeOgForesatt = formMethods
 			.watch('yrkesskader')
-			?.some((yrkesskade) => yrkesskade?.innmelderrolle === 'vergeOgForesatt')
+			?.some((yrkesskade: YrkesskadeTypes) => yrkesskade?.innmelderrolle === 'vergeOgForesatt')
 
 		return (
 			harInnmelderrolleVergeOgForesatt &&
@@ -81,14 +82,14 @@ export const YrkesskaderForm = () => {
 
 	const rolletypeOptions =
 		kodeverkRolletype &&
-		Object.values(kodeverkRolletype)?.map((option) => ({
+		Object.values(kodeverkRolletype)?.map((option: any) => ({
 			value: option?.kode,
 			label: option?.verdi,
 		}))
 
 	const innmelderrolletypeOptions =
 		kodeverkInnmelderrolletype &&
-		Object.values(kodeverkInnmelderrolletype)?.map((option) => ({
+		Object.values(kodeverkInnmelderrolletype)?.map((option: any) => ({
 			value: option?.kode,
 			label: option?.verdi,
 		}))
@@ -120,8 +121,10 @@ export const YrkesskaderForm = () => {
 			<Panel
 				heading="Yrkesskader"
 				hasErrors={panelError(yrkesskaderAttributt)}
+				// @ts-ignore
 				iconType="sykdom"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [yrkesskaderAttributt])}
+				// @ts-ignore
 				informasjonstekst={hjelpetekst}
 			>
 				<>
@@ -170,15 +173,13 @@ export const YrkesskaderForm = () => {
 										label="Tidstype"
 										options={Options('tidstype')}
 										size="medium"
-										onChange={(value) => handleChangeTidstype(value, path)}
+										onChange={(value: any) => handleChangeTidstype(value, path)}
 									/>
 									{formMethods.watch(`${path}.tidstype`) === 'tidspunkt' && (
 										<FormDateTimepicker
 											formMethods={formMethods}
 											name={`${path}.skadetidspunkt`}
 											label="Skadetidspunkt"
-											// date={}
-											// onChange={}
 										/>
 									)}
 									{formMethods.watch(`${path}.tidstype`) === 'periode' && (
