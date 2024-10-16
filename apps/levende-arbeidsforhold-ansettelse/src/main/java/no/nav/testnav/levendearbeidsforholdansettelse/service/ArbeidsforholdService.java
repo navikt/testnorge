@@ -13,10 +13,10 @@ import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Person;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -55,14 +55,7 @@ public class ArbeidsforholdService {
                                                       String arbeidsforholdstype, Integer stillingsprosent) {
 
         return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(kanAnsettes, yrke, arbeidsforholdstype, stillingsprosent))
-                .publishOn(Schedulers.boundedElastic())
-                .doOnNext(status -> {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                .delayElements(Duration.ofSeconds(1));
     }
 
     /**
