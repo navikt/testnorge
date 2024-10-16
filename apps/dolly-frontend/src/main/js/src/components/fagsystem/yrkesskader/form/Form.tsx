@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
@@ -16,11 +16,13 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { validation } from '@/components/fagsystem/yrkesskader/form/validation'
 import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const yrkesskaderAttributt = 'yrkesskader'
 
 export const YrkesskaderForm = () => {
 	const formMethods = useFormContext()
+	const opts = useContext(BestillingsveilederContext)
 
 	const handleChangeTidstype = (value, path) => {
 		formMethods.setValue(`${path}.tidstype`, value?.value || null)
@@ -33,15 +35,40 @@ export const YrkesskaderForm = () => {
 		formMethods.trigger(path)
 	}
 
-	const manglerVergeEllerForelder = () => {
-		// TODO: Sjekk personFoerLeggTil og importPersoner (og ander??)
-		const vergemaal = formMethods.watch('pdldata.person.vergemaal')
-		const forelder = formMethods
+	const getVergemaal = () => {
+		const vergemaalForm = formMethods.watch('pdldata.person.vergemaal')
+		const vergemaalImport = opts?.importPersoner?.flatMap(
+			(person) => person?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt,
+		)
+		const vergemaalLeggTil =
+			opts?.personFoerLeggTil?.pdl?.hentPerson?.vergemaalEllerFremtidsfullmakt ||
+			opts?.personFoerLeggTil?.pdlforvalter?.person?.vergemaal
+
+		return vergemaalForm || vergemaalImport || vergemaalLeggTil
+	}
+
+	const getForelder = () => {
+		const forelderForm = formMethods
 			.watch('pdldata.person.forelderBarnRelasjon')
 			?.filter((relasjon) => relasjon?.relatertPersonsRolle === 'FORELDER')
+		const forelderImport = opts?.importPersoner
+			?.flatMap((person) => person?.data?.hentPerson?.forelderBarnRelasjon)
+			?.filter((relasjon) => relasjon?.minRolleForPerson === 'BARN')
+		const forelderLeggTil = (
+			opts?.personFoerLeggTil?.pdl?.hentPerson?.forelderBarnRelasjon ||
+			opts?.personFoerLeggTil?.pdlforvalter?.person?.forelderBarnRelasjon
+		)?.filter((relasjon) => relasjon?.minRolleForPerson === 'BARN')
+
+		return forelderForm || forelderImport || forelderLeggTil
+	}
+
+	const manglerVergeEllerForelder = () => {
+		const vergemaal = getVergemaal()
+		const forelder = getForelder()
 		const harInnmelderrolleVergeOgForesatt = formMethods
 			.watch('yrkesskader')
 			?.some((yrkesskade) => yrkesskade?.innmelderrolle === 'vergeOgForesatt')
+
 		return (
 			harInnmelderrolleVergeOgForesatt &&
 			(!vergemaal || vergemaal?.length < 1) &&
@@ -165,18 +192,8 @@ export const YrkesskaderForm = () => {
 											{(periodePath: string, periodeIdx: number) => {
 												return (
 													<React.Fragment key={periodeIdx}>
-														<FormDatepicker
-															name={`${periodePath}.fra`}
-															label="Fra dato"
-															// disabled={}
-															// maxDate={}
-														/>
-														<FormDatepicker
-															name={`${periodePath}.til`}
-															label="Til dato"
-															// disabled={}
-															// maxDate={}
-														/>
+														<FormDatepicker name={`${periodePath}.fra`} label="Fra dato" />
+														<FormDatepicker name={`${periodePath}.til`} label="Til dato" />
 													</React.Fragment>
 												)
 											}}
