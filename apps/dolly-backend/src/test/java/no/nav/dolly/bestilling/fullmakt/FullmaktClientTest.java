@@ -19,12 +19,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,7 +74,7 @@ public class FullmaktClientTest {
         BestillingProgress progress = new BestillingProgress();
 
         FullPersonDTO fullPersonDTO = FullPersonDTO.builder()
-                .person(PersonDTO.builder().ident(RELASJON_IDENT)
+                .person(PersonDTO.builder().ident(IDENT)
                         .build())
                 .relasjoner(List.of(
                         FullPersonDTO.RelasjonDTO.builder()
@@ -91,7 +91,7 @@ public class FullmaktClientTest {
 
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fullPersonDTO));
 
-        FullmaktResponse fullmaktResponse = FullmaktResponse.builder().status(HttpStatus.OK).build();
+        FullmaktResponse fullmaktResponse = FullmaktResponse.builder().fullmakt(emptyList()).build();
         when(fullmaktConsumer.createFullmaktData(any(), any())).thenReturn(Flux.just(fullmaktResponse));
 
         Flux<ClientFuture> result = fullmaktClient.gjenopprett(bestilling, dollyPerson, progress, true);
