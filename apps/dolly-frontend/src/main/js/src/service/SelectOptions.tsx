@@ -843,15 +843,19 @@ const selectOptions = {
 		{ value: 'SIGRUN_PENSJONSGIVENDE', label: 'Sigrun pensjonsgivende inntekt' },
 		{ value: 'INNTK', label: 'A-ordningen (Inntektstub)' },
 		{ value: 'INNTKMELD', label: 'Inntektsmelding (fra Altinn)' },
+		{ value: 'SKATTEKORT', label: 'Skattekort (SOKOS)' },
 		{ value: 'ARBEIDSPLASSENCV', label: 'Arbeidsplassen (CV)' },
 		{ value: 'PEN_INNTEKT', label: 'Pensjonsgivende inntekt (POPP)' },
 		{ value: 'PEN_TP', label: 'Tjenestepensjon (TP)' },
 		{ value: 'PEN_AP', label: 'Alderspensjon' },
 		{ value: 'PEN_UT', label: 'Uføretrygd' },
+		{ value: 'PEN_AFP_OFFENTLIG', label: 'AFP offentlig' },
+		{ value: 'PEN_PENSJONSAVTALE', label: 'Pensjonsavtale' },
 		{ value: 'ARENA_AAP', label: 'Arena AAP-vedtak' },
 		{ value: 'ARENA_AAP115', label: 'Arena 11.5-vedtak' },
 		{ value: 'ARENA_DAGP', label: 'Arena dagpengevedtak' },
 		{ value: 'SYKEMELDING', label: 'Sykemelding' },
+		{ value: 'YRKESSKADE', label: 'Yrkesskade' },
 		{ value: 'BRREGSTUB', label: 'Brønnøysundregistrene' },
 		{ value: 'INST', label: 'Institusjonsopphold' },
 		{ value: 'KRRSTUB', label: 'Kontakt- og reservasjonsregisteret' },
@@ -863,9 +867,6 @@ const selectOptions = {
 		{ value: 'BANKKONTO', label: 'Bankkonto' },
 		{ value: 'BANKKONTO_NORGE', label: 'Norsk bankkonto' },
 		{ value: 'BANKKONTO_UTLAND', label: 'Utenlandsk bankkonto' },
-		// TODO: Legg inn skattekort
-		// TODO: Legg inn yrkesskade
-		// TODO: Legg inn flere register???
 	],
 }
 
