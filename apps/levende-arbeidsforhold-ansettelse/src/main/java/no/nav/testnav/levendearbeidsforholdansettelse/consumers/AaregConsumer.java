@@ -44,7 +44,7 @@ public class AaregConsumer {
                                         .create(ConnectionProvider.builder("AaregConsumer")
                                                 .maxConnections(1)
                                                 .pendingAcquireMaxCount(10000)
-                                                .pendingAcquireTimeout(Duration.ofSeconds(300))
+                                                .pendingAcquireTimeout(Duration.ofSeconds(3000))
                                                 .build())
                         ))
                 .build();
