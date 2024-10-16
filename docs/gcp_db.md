@@ -9,11 +9,10 @@ Disse er refert til under som `APP_NAME`.
 
 Applikasjonene har en noe annen konfigurasjon for kjøring lokalt, og bruker [gcloud CLI](https://doc.nais.io/operate/cli/reference/postgres/) og [cloud_sql_proxy](https://cloud.google.com/sql/docs/postgres/connect-auth-proxy).
 
-`cloud_sql_proxy` installeres med
+* `cloud_sql_proxy` installeres med
 ```
 > gcloud components install cloud-sql-proxy
 ```
-
 * Du må være logget på med gcloud CLI.
 ```
 > gcloud auth login --update-adc

@@ -12,7 +12,7 @@ plugins {
     id "com.gradle.develocity" version "3.17.4"
 }
 
-rootProject.name = "testnorge"
+rootProject.name = "testnav"
 
 develocity {
     buildScan {
