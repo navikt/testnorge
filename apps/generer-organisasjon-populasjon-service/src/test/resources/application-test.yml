@@ -1,3 +1,6 @@
+TOKEN_X_ISSUER: dummy
+KAFKA_KEYSTORE_PATH: ""
+
 spring:
   cloud:
     gcp:
