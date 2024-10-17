@@ -1,7 +1,6 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.pdl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.testnav.levendearbeidsforholdansettelse.provider.PdlMiljoer;
@@ -25,7 +24,6 @@ import static no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.CommonKe
 import static no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Slf4j
 @RequiredArgsConstructor
 public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
 
