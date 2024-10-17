@@ -70,32 +70,32 @@ public class VergemaalService implements Validation<VergemaalDTO> {
         }
     }
 
-    private void handle(VergemaalDTO fullmakt, String ident) {
+    private void handle(VergemaalDTO vergemaal, String ident) {
 
-        fullmakt.setEksisterendePerson(isNotBlank(fullmakt.getVergeIdent()));
+        vergemaal.setEksisterendePerson(isNotBlank(vergemaal.getVergeIdent()));
 
-        if (isBlank(fullmakt.getVergeIdent())) {
+        if (isBlank(vergemaal.getVergeIdent())) {
 
-            if (isNull(fullmakt.getNyVergeIdent())) {
-                fullmakt.setNyVergeIdent(new PersonRequestDTO());
+            if (isNull(vergemaal.getNyVergeIdent())) {
+                vergemaal.setNyVergeIdent(new PersonRequestDTO());
             }
 
-            if (isNull(fullmakt.getNyVergeIdent().getAlder()) &&
-                    isNull(fullmakt.getNyVergeIdent().getFoedtEtter()) &&
-                    isNull(fullmakt.getNyVergeIdent().getFoedtFoer())) {
+            if (isNull(vergemaal.getNyVergeIdent().getAlder()) &&
+                    isNull(vergemaal.getNyVergeIdent().getFoedtEtter()) &&
+                    isNull(vergemaal.getNyVergeIdent().getFoedtFoer())) {
 
-                fullmakt.getNyVergeIdent().setFoedtFoer(LocalDateTime.now().minusYears(18));
-                fullmakt.getNyVergeIdent().setFoedtEtter(LocalDateTime.now().minusYears(75));
+                vergemaal.getNyVergeIdent().setFoedtFoer(LocalDateTime.now().minusYears(18));
+                vergemaal.getNyVergeIdent().setFoedtEtter(LocalDateTime.now().minusYears(75));
             }
 
-            if (isNull(fullmakt.getNyVergeIdent().getSyntetisk())) {
-                fullmakt.getNyVergeIdent().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
+            if (isNull(vergemaal.getNyVergeIdent().getSyntetisk())) {
+                vergemaal.getNyVergeIdent().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
             }
 
-            fullmakt.setVergeIdent(createPersonService.execute(fullmakt.getNyVergeIdent()).getIdent());
+            vergemaal.setVergeIdent(createPersonService.execute(vergemaal.getNyVergeIdent()).getIdent());
         }
 
         relasjonService.setRelasjoner(ident, RelasjonType.VERGE_MOTTAKER,
-                fullmakt.getVergeIdent(), RelasjonType.VERGE);
+                vergemaal.getVergeIdent(), RelasjonType.VERGE);
     }
 }
