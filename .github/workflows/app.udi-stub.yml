@@ -1,4 +1,4 @@
-name: testnav-udi-stub
+name: udi-stub
 
 on:
   push:
