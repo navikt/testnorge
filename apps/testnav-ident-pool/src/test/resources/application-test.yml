@@ -1,0 +1,17 @@
+TOKEN_X_ISSUER: dummy
+
+### DATABASE ###
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=Postgresql;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
+
+tps-forvalteren:
+  rest:
+    api:
+      url: dummy
+

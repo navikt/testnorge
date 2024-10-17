@@ -1,10 +1,6 @@
 spring:
   cache:
     type: none
-  cloud:
-    gcp:
-      secretmanager:
-        project-id: dolly-dev-ff83
   config:
     import: "sm://"
   datasource:

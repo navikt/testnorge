@@ -8,6 +8,9 @@ azure:
      
 spring:
   cloud:
+    gcp:
+      secretmanager:
+        enabled: false
     vault:
       token: test
       enabled: false

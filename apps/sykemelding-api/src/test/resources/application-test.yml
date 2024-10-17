@@ -21,6 +21,9 @@ azure:
       secret: dummy
 spring:
   cloud:
+    gcp:
+      secretmanager:
+        enabled: false
     vault:
       enabled: false
 ibm:
