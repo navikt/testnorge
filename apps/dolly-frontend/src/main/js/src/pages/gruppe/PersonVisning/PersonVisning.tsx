@@ -67,6 +67,7 @@ import {
 	harTpBestilling,
 	harUdistubBestilling,
 	harUforetrygdBestilling,
+	harYrkesskaderBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 import {
 	AlderspensjonVisning,
@@ -99,6 +100,10 @@ import { SkattekortVisning } from '@/components/fagsystem/skattekort/visning/Vis
 import { PensjonsavtaleVisning } from '@/components/fagsystem/pensjonsavtale/visning/PensjonsavtaleVisning'
 import { useMockOppsett } from '@/utils/hooks/usePensjon'
 import { AfpOffentligVisning } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
+import {
+	sjekkManglerYrkesskadeData,
+	YrkesskaderVisning,
+} from '@/components/fagsystem/yrkesskader/visning/YrkesskaderVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -246,6 +251,12 @@ export default ({
 
 	const sykemeldingBestilling = SykemeldingVisning.filterValues(bestillingListe, ident.ident)
 
+	const { loading: loadingYrkesskadeData, data: yrkesskadeData } = useTransaksjonIdData(
+		ident.ident,
+		'YRKESSKADE',
+		harYrkesskaderBestilling(bestillingerFagsystemer),
+	)
+
 	const { loading: loadingInntektsmeldingData, data: inntektsmeldingData } = useTransaksjonIdData(
 		ident.ident,
 		'INNTKMELD',
@@ -310,6 +321,9 @@ export default ({
 			harSykemeldingBestilling(bestillingerFagsystemer) &&
 			sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
 		) {
+			return true
+		}
+		if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) {
 			return true
 		}
 		return false
@@ -539,6 +553,7 @@ export default ({
 						harSykemeldingBestilling(bestillingerFagsystemer) ? sykemeldingBestilling : null
 					}
 				/>
+				<YrkesskaderVisning data={yrkesskadeData} loading={loadingYrkesskadeData} />
 				<BrregVisning data={brregstub} loading={loading.brregstub} />
 				<InstVisning
 					data={instData}

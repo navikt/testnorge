@@ -158,6 +158,16 @@ export const harSykemeldingBestilling = (bestillingerFagsystemer) => {
 	return sykemelding
 }
 
+export const harYrkesskaderBestilling = (bestillingerFagsystemer) => {
+	let yrkesskader = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i?.yrkesskader) {
+			yrkesskader = true
+		}
+	})
+	return yrkesskader
+}
+
 export const harInntektsmeldingBestilling = (bestillingerFagsystemer) => {
 	let inntektsmelding = false
 	bestillingerFagsystemer?.forEach((i) => {

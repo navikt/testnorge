@@ -82,3 +82,5 @@ consumers:
     url: https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no
   testnav-levende-arbeidsforhold-scheduler:
     url: https://testnav-levende-arbeidsforhold-scheduler.intern.dev.nav.no
+  testnav-yrkesskade-proxy:
+    url: https://testnav-yrkesskade-proxy.intern.dev.nav.no
