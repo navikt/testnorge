@@ -1,11 +1,7 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.repository;
 
 import no.nav.testnav.levendearbeidsforholdansettelse.entity.JobbParameter;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
-import java.util.List;
-
-public interface ParameterRepository extends CrudRepository<JobbParameter, String> {
-
-    List<JobbParameter> findAll();
+public interface ParameterRepository extends ReactiveCrudRepository<JobbParameter, String> {
 }

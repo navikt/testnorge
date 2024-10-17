@@ -17,11 +17,9 @@ import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.security.SecureRandom;
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -50,31 +48,29 @@ public class AnsettelseService {
     private final AnsettelseLoggService ansettelseLoggService;
 
     @Async
-    @Transactional
     public void runAnsettelseService() {
 
         var startTime = System.currentTimeMillis();
 
         //Henter parametere fra db
-        var parametere = parameterService.hentParametere();
-        log.info("Startet oppretting av {} personer i {} organisasjoner", parametere.get("antallPersoner"),
-                parametere.get("antallOrganisasjoner"));
+        var parametere = parameterService.hentParametere()
+                .doOnNext(param ->
+                        log.info("Startet oppretting av {} personer i {} organisasjoner",
+                                param.get("antallPersoner"),
+                                param.get("antallOrganisasjoner")));
 
         //Henter yrkeskoder for å gi tilfeldige yrker
         var yrkeskoder = kodeverkService.hentKodeverkValues(KodeverkNavn.YRKER.value);
-        if (yrkeskoder.isEmpty()) {
-            return;
-        }
 
         //Initialiserer liste over alderspenn og liste med tidligste og seneste gyldig dato for ansttelse
         var datoIntervaller = SannsynlighetVelger.getDatointervaller();
-
+        /**/
         //Kjører ansettelse per org
-        Flux.range(0, (int) getParameterValue(parametere, ANTALL_ORGANISASJONER))
-                .flatMap(count -> tenorConsumer.hentOrganisasjon())
-                .flatMap(organisasjon -> sjekkOgSendinnArbeidsforhold(organisasjon, parametere, yrkeskoder, datoIntervaller))
+        Flux.zip(parametere, yrkeskoder)
+                .flatMap(tuple -> Flux.range(0, (int) getParameterValue(tuple.getT1(), ANTALL_ORGANISASJONER))
+                        .flatMap(count -> tenorConsumer.hentOrganisasjon())
+                        .flatMap(organisasjon -> sjekkOgSendinnArbeidsforhold(organisasjon, tuple.getT1(), tuple.getT2(), datoIntervaller)))
                 .collectList()
-                .doOnError(e -> log.error("AnsettelseService feilet", e))
                 .subscribe(status -> log.info("Oppretting ferdig, antall ansettelser {}, medgått tid {} sekunder", status.size(),
                         (System.currentTimeMillis() - startTime) / 1000));
     }
@@ -89,16 +85,15 @@ public class AnsettelseService {
                                 .flatMap(kanAnsettes -> ansettPerson(kanAnsettes, hentTilfeldigYrkeskode(yrkeskoder), parametere)
                                         .doOnNext(status -> log.info("Opprettet arbeidsforhold orgnummer {}, ident {}, status {}",
                                                 kanAnsettes.getOrgnummer(), kanAnsettes.getIdent(), status))
-                                        .map(status ->
-                                                ansettelseLoggService.lagreAnsettelse(kanAnsettes, parametere))))
-                        .delayElements(Duration.ofMinutes(1)));
+                                        .flatMap(status ->
+                                                ansettelseLoggService.lagreAnsettelse(kanAnsettes, parametere)))));
     }
 
     private Flux<KanAnsettesDTO> getPersonSomKanAnsettes(Integer stillingsprosent, DatoIntervall intervall,
                                                          OrganisasjonResponseDTO organisasjon) {
 
         return getArbeidsforhold(intervall, organisasjon.getPostnummer())
-                .map(arbeidsforhold1 -> Flux.fromIterable(arbeidsforhold1.getArbeidsforhold())
+                .flatMap(arbeidsforhold1 -> Flux.fromIterable(arbeidsforhold1.getArbeidsforhold())
                         .map(Arbeidsforhold::getArbeidsavtaler)
                         .flatMap(Flux::fromIterable)
                         .filter(arbeidsavtale -> nonNull(arbeidsavtale.getBruksperiode()) &&
@@ -119,13 +114,17 @@ public class AnsettelseService {
                                 return getPersonSomKanAnsettes(stillingsprosent, intervall, organisasjon);
                             }
                         }))
-                .flatMap(Flux::from)
                 .flatMap(Flux::from);
     }
 
     private Flux<ArbeidsforholdDTO> getArbeidsforhold(DatoIntervall datoIntervall, String postnummer) {
 
         return pdlService.getPerson(datoIntervall, postnummer)
+                .doOnNext(person -> log.info("Hentet person fra PDL med ident {}",
+                        person.getFolkeregisteridentifikator().stream()
+                                .filter(PdlPersonDTO.Person.Folkeregisteridentifikator::isIBRUK)
+                                .map(PdlPersonDTO.Person.Folkeregisteridentifikator::getIdentifikasjonsnummer)
+                                .findFirst().orElse(null)))
                 .flatMap(person -> Flux.fromIterable(person.getFolkeregisteridentifikator())
                         .filter(PdlPersonDTO.Person.Folkeregisteridentifikator::isIBRUK)
                         .map(PdlPersonDTO.Person.Folkeregisteridentifikator::getIdentifikasjonsnummer))

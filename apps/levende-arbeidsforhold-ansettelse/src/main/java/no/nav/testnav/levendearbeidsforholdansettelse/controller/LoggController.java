@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api/v1/logg")
@@ -22,21 +21,21 @@ public class LoggController {
 
     @GetMapping
     @Operation(description = "Henter logger i hht forespørsel")
-    public Page<AnsettelseLogg> getAnsettelser(Pageable pageable) {
+    public Flux<Page<AnsettelseLogg>> getAnsettelser(Pageable pageable) {
 
         return loggService.getAnsettelseLogg(pageable);
     }
 
     @GetMapping("/ident/{ident}")
     @Operation(description = "Henter logg i hht forespørsel")
-    public List<AnsettelseLogg> getIdent(@PathVariable String ident) {
+    public Flux<AnsettelseLogg> getIdent(@PathVariable String ident) {
 
         return loggService.getIdent(ident);
     }
 
     @GetMapping("/organisasjon/{orgnummer}")
     @Operation(description = "Henter logg i hht forespørsel")
-    public List<AnsettelseLogg> getOrganisasjon(@PathVariable String orgnummer) {
+    public Flux<AnsettelseLogg> getOrganisasjon(@PathVariable String orgnummer) {
 
         return loggService.getOrgnummer(orgnummer);
     }

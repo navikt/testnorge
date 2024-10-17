@@ -1,35 +1,38 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-@Entity
 @Table(name = "jobb_parameter")
-public class JobbParameter {
+public class JobbParameter implements Persistable<String> {
+
+    @Transient
+    private boolean isNew;
 
     @Id
     @Size(max = 255)
-    @Column(name = "navn", nullable = false)
+    @Column("navn")
     private String navn;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "tekst", nullable = false)
+    @Column("tekst")
     private String tekst;
 
     @Size(max = 255)
-    @Column(name = "verdi")
+    @Column("verdi")
     private String verdi;
 
-    @Column(name = "verdier")
+    @Column("verdier")
     private String verdier;
 
     @Override
@@ -44,5 +47,15 @@ public class JobbParameter {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(getNavn()).append(getTekst()).append(getVerdi()).append(getVerdier()).toHashCode();
+    }
+
+    @Override
+    public String getId() {
+        return navn;
+    }
+
+    @Override
+    public boolean isNew() {
+        return isNew;
     }
 }

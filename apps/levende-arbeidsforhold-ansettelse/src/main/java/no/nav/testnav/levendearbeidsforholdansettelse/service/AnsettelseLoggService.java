@@ -6,6 +6,7 @@ import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.KanAnsettesDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.entity.AnsettelseLogg;
 import no.nav.testnav.levendearbeidsforholdansettelse.repository.AnsettelseLoggRepository;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -29,9 +30,10 @@ public class AnsettelseLoggService {
      * @param kanAnsette inneholder ident og orgnummer
      * @param parametere Stillingsprosent og arbeidsavtalarbeidsforholdType til personen.
      */
-    public AnsettelseLogg lagreAnsettelse(KanAnsettesDTO kanAnsette, Map<String, String> parametere){
+    public Mono<AnsettelseLogg> lagreAnsettelse(KanAnsettesDTO kanAnsette, Map<String, String> parametere){
 
         return ansettelseLoggRepository.save(AnsettelseLogg.builder()
+                        .isNew(true)
                 .folkeregisterident(kanAnsette.getIdent())
                 .organisasjonsnummer(kanAnsette.getOrgnummer())
                 .timestamp(OffsetDateTime.now())
