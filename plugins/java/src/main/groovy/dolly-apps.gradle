@@ -21,12 +21,14 @@ dependencies {
 
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
+    implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager" // [1] TODO: Replaces [2] once complete.
+
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
     implementation "org.hibernate.validator:hibernate-validator"
     implementation "org.projectlombok:lombok"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-webflux"
-    implementation "org.springframework.cloud:spring-cloud-starter-vault-config"
+    implementation "org.springframework.cloud:spring-cloud-starter-vault-config" // [2] TODO: To be replaced by [1].
 
     runtimeOnly "io.micrometer:micrometer-registry-prometheus"
 
