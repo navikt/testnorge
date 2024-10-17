@@ -19,13 +19,16 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingFullmaktStatusMapper {
 
+    private static final String OK_STATUS = "Synkronisering mot fullmakt (Representasjon) tok";
+
     public static List<RsStatusRapport> buildFullmaktStatusMap(List<BestillingProgress> progressList) {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getFullmaktStatus())) {
-                if (statusMap.containsKey(progress.getFullmaktStatus())) {
+                var status = progress.getFullmaktStatus().contains(OK_STATUS) ? "OK" : progress.getFullmaktStatus();
+                if (statusMap.containsKey(status)) {
                     statusMap.get(progress.getFullmaktStatus()).add(progress.getIdent());
                 } else {
                     statusMap.put(progress.getFullmaktStatus(), listOf(progress.getIdent()));

@@ -23,7 +23,7 @@ public enum SystemTyper {
     INST2("Institusjonsopphold (INST2)"),
     KONTOREGISTER("Bankkontoregister"),
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
-    FULLMAKT("Fullmakt"),
+    FULLMAKT("Fullmakt (Representasjon)"),
     MEDL("Medlemskap (MEDL)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDLIMPORT("Import av personer (TESTNORGE)"),
