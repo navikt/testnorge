@@ -1,13 +1,11 @@
 spring:
-  cloud:
-    vault:
-      host: vault.adeo.no
-      port: 443
+  config:
+    import: "sm://"
   security:
     oauth2:
       resourceserver:
         aad:
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          accepted-audience: ${sm://azureAppClientId}, api://${sm://azureAppClientId}
 
 management:
   endpoints:
