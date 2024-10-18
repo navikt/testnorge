@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -53,8 +54,8 @@ public class ArbeidsforholdService {
     public Flux<HttpStatusCode> opprettArbeidsforhold(KanAnsettesDTO kanAnsettes, String yrke,
                                                       String arbeidsforholdstype, Integer stillingsprosent) {
 
-        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(kanAnsettes, yrke, arbeidsforholdstype, stillingsprosent));
-
+        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(kanAnsettes, yrke, arbeidsforholdstype, stillingsprosent))
+                .delayElements(Duration.ofSeconds(1));
     }
 
     /**

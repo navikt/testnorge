@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static no.nav.testnav.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ARBEIDSFORHOLD_TYPE;
@@ -36,7 +36,7 @@ public class AnsettelseLoggService {
                         .isNew(true)
                 .folkeregisterident(kanAnsette.getIdent())
                 .organisasjonsnummer(kanAnsette.getOrgnummer())
-                .timestamp(OffsetDateTime.now())
+                .timestamp(LocalDateTime.now())
                 .arbeidsforholdType(parametere.get(ARBEIDSFORHOLD_TYPE.value))
                 .stillingsprosent(Integer.parseInt(parametere.get(STILLINGSPROSENT.value)))
                 .ansattfra(LocalDate.now())

@@ -64,7 +64,7 @@ public class AnsettelseService {
 
         //Initialiserer liste over alderspenn og liste med tidligste og seneste gyldig dato for ansttelse
         var datoIntervaller = SannsynlighetVelger.getDatointervaller();
-        /**/
+
         //Kjører ansettelse per org
         Flux.zip(parametere, yrkeskoder)
                 .flatMap(tuple -> Flux.range(0, (int) getParameterValue(tuple.getT1(), ANTALL_ORGANISASJONER))

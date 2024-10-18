@@ -1,5 +1,6 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -28,6 +29,8 @@ public class AnsettelseLogg implements Persistable<Integer> {
     private boolean isNew;
 
     @Id
+    @NotNull
+    @Column("id")
     private Integer id;
 
     @Size(max = 255)
@@ -42,7 +45,7 @@ public class AnsettelseLogg implements Persistable<Integer> {
 
     @NotNull
     @Column("timestamp")
-    private OffsetDateTime timestamp;
+    private LocalDateTime timestamp;
 
     @NotNull
     @Column("ansattfra")
@@ -70,6 +73,7 @@ public class AnsettelseLogg implements Persistable<Integer> {
     }
 
     @Override
+    @JsonIgnore
     public boolean isNew() {
         return isNew;
     }
