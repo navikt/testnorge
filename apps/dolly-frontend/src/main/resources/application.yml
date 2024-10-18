@@ -237,7 +237,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-yrkesskade-proxy
-    url: https://testnav-yrkesskade-proxy.dolly.svc.cluster.local
+    url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
 
 management:
   endpoints:
