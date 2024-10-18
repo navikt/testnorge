@@ -4,7 +4,6 @@ import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.proxies.fullmaktproxy.config.Consumers;
-import no.nav.testnav.proxies.fullmaktproxy.config.LocalVaultConfig;
 import no.nav.testnav.proxies.fullmaktproxy.consumer.FakedingsConsumer;
 import no.nav.testnav.proxies.fullmaktproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import org.springframework.boot.SpringApplication;
@@ -22,7 +21,6 @@ import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
-        LocalVaultConfig.class,
         SecurityConfig.class,
 })
 @SpringBootApplication
