@@ -21,7 +21,7 @@ export default function Panel({
 	checkAttributeArray = null,
 	uncheckAttributeArray = null,
 	informasjonstekst = null,
-	iconType = null,
+	iconType = null as unknown as string,
 	forceOpen = false,
 	setPanelOpen = null,
 }) {

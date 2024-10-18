@@ -13,6 +13,7 @@ import { usePdlOptions } from '@/utils/hooks/useSelectOptions'
 interface PdlEksisterendePersonValues {
 	nyPersonPath?: string
 	eksisterendePersonPath: string
+	fullmektigsNavnPath?: string
 	label: string
 	formMethods: UseFormReturn
 	idx: number
@@ -29,11 +30,12 @@ export const PdlEksisterendePerson = ({
 	formMethods,
 	idx,
 	disabled = false,
-	nyIdentValg = null,
-	eksisterendeNyPerson = null,
+	nyIdentValg = null as unknown as NyIdent,
+	eksisterendeNyPerson = null as unknown as Option,
+	fullmektigsNavnPath = null as unknown as string,
 	ident,
 }: PdlEksisterendePersonValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext)
 
 	const antall = opts?.antall || 1
 	const gruppeId = opts?.gruppeId || opts?.gruppe?.id || window.location.pathname.split('/')?.[2]
@@ -169,7 +171,11 @@ export const PdlEksisterendePerson = ({
 				<FormSelect
 					name={eksisterendePersonPath}
 					onChange={(person) => {
+						const navn = person?.label?.match(/-\s(.*?)\s\(/)
 						formMethods.setValue(eksisterendePersonPath, person?.value || null)
+						if (fullmektigsNavnPath) {
+							formMethods.setValue(fullmektigsNavnPath, navn?.[1] || person?.label || null)
+						}
 						formMethods.trigger('pdldata.person')
 					}}
 					label={label}

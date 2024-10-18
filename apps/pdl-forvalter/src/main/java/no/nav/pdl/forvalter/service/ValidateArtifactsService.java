@@ -25,7 +25,6 @@ public class ValidateArtifactsService {
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
     private final ForeldreansvarService foreldreansvarService;
-    private final FullmaktService fullmaktService;
     private final KjoennService kjoennService;
     private final KontaktAdresseService kontaktAdresseService;
     private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
@@ -61,7 +60,6 @@ public class ValidateArtifactsService {
                         validate(tilrettelagtKommunikasjonService, person.getTilrettelagtKommunikasjon()),
                         validate(doedsfallService, person.getDoedsfall()),
                         validate(folkeregisterPersonstatusService, person.getFolkeregisterPersonstatus(), person),
-                        validate(fullmaktService, person.getFullmakt(), person),
                         validate(kontaktAdresseService, person.getKontaktadresse(), person),
                         validate(utenlandsidentifikasjonsnummerService, person.getUtenlandskIdentifikasjonsnummer()),
                         validate(vergemaalService, person.getVergemaal()),
