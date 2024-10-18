@@ -79,6 +79,7 @@ const getValgteAttributter = (values) => {
 		'pensjonforvalter.afpOffentlig',
 		'arenaforvalter',
 		'sykemelding',
+		'yrkesskader',
 		'brregstub',
 		'instdata',
 		'krrstub',

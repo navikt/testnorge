@@ -23,6 +23,7 @@ import { MalForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { SkattekortForm } from '@/components/fagsystem/skattekort/form/Form'
 import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
+import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 
 export const DollyValidation = Yup.object({
 	...PdlfForm.validation,
@@ -34,6 +35,7 @@ export const DollyValidation = Yup.object({
 	...InntektsmeldingForm.validation,
 	...SkattekortForm.validation,
 	...SykdomForm.validation,
+	...YrkesskaderForm.validation,
 	...BrregstubForm.validation,
 	...InstForm.validation,
 	...KrrstubForm.validation,

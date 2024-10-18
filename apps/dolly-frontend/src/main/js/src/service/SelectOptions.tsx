@@ -825,21 +825,44 @@ const selectOptions = {
 		{ value: 'Tysk', label: 'Tysk' },
 	],
 
+	// Yrkesskader:
+	klassifisering: [
+		{ value: 'BAGATELLMESSIGE_SKADER', label: 'Bagatellmessige skader' },
+		{ value: 'MANUELL', label: 'Manuell' },
+		{ value: 'IMPORT', label: 'Import' },
+	],
+
+	tidstype: [
+		{ value: 'tidspunkt', label: 'Tidspunkt (skade)' },
+		{ value: 'periode', label: 'Periode (sykdom)' },
+		{ value: 'ukjent', label: 'Ukjent' },
+	],
+
+	ferdigstillSak: [
+		{ value: 'GODKJENT', label: 'Godkjent' },
+		{ value: 'AVSLAG', label: 'Avslag' },
+	],
+
+	// Dolly-soek:
 	registerTyper: [
 		{ value: 'AAREG', label: 'Arbeidsforhold (Aareg)' },
 		{ value: 'SIGRUN_LIGNET', label: 'Sigrun lignet inntekt' },
 		{ value: 'SIGRUN_PENSJONSGIVENDE', label: 'Sigrun pensjonsgivende inntekt' },
 		{ value: 'INNTK', label: 'A-ordningen (Inntektstub)' },
 		{ value: 'INNTKMELD', label: 'Inntektsmelding (fra Altinn)' },
+		{ value: 'SKATTEKORT', label: 'Skattekort (SOKOS)' },
 		{ value: 'ARBEIDSPLASSENCV', label: 'Arbeidsplassen (CV)' },
 		{ value: 'PEN_INNTEKT', label: 'Pensjonsgivende inntekt (POPP)' },
 		{ value: 'PEN_TP', label: 'Tjenestepensjon (TP)' },
 		{ value: 'PEN_AP', label: 'Alderspensjon' },
 		{ value: 'PEN_UT', label: 'Uføretrygd' },
+		{ value: 'PEN_AFP_OFFENTLIG', label: 'AFP offentlig' },
+		{ value: 'PEN_PENSJONSAVTALE', label: 'Pensjonsavtale' },
 		{ value: 'ARENA_AAP', label: 'Arena AAP-vedtak' },
 		{ value: 'ARENA_AAP115', label: 'Arena 11.5-vedtak' },
 		{ value: 'ARENA_DAGP', label: 'Arena dagpengevedtak' },
 		{ value: 'SYKEMELDING', label: 'Sykemelding' },
+		{ value: 'YRKESSKADE', label: 'Yrkesskade' },
 		{ value: 'BRREGSTUB', label: 'Brønnøysundregistrene' },
 		{ value: 'INST', label: 'Institusjonsopphold' },
 		{ value: 'KRRSTUB', label: 'Kontakt- og reservasjonsregisteret' },
