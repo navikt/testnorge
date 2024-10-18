@@ -4,6 +4,7 @@ import {
 	arrayToString,
 	codeToNorskLabel,
 	formatDate,
+	formatDateTime,
 	formatDateTimeWithSeconds,
 	formatDateToYear,
 	omraaderArrayToString,
@@ -1270,7 +1271,7 @@ const mapInntektStub = (bestillingData, data) => {
 				inntektStub.itemRows.push([
 					{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 					obj('År/måned', inntektsinfo.sisteAarMaaned),
-					obj('Rapporteringstidspunkt', inntektsinfo.rapporteringsdato),
+					obj('Rapporteringstidspunkt', formatDateTime(inntektsinfo.rapporteringsdato)),
 					obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 					obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 					obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
@@ -1569,6 +1570,30 @@ const mapSykemelding = (bestillingData, data) => {
 			]
 		}
 		data.push(sykemelding)
+	}
+}
+
+const mapYrkesskader = (bestillingData, data) => {
+	const yrkesskadeKriterier = bestillingData.yrkesskader
+
+	if (yrkesskadeKriterier) {
+		const mapYrkesskadeKriterier = () => ({
+			header: 'Yrkesskader',
+			itemRows: yrkesskadeKriterier.map((yrkesskade, i) => [
+				{
+					numberHeader: `Yrkesskade ${i + 1}`,
+				},
+				obj('Rolletype', codeToNorskLabel(yrkesskade.rolletype)),
+				obj('Innmelderrolle', codeToNorskLabel(yrkesskade.innmelderrolle)),
+				obj('Klassifisering', showLabel('klassifisering', yrkesskade.klassifisering)),
+				obj('Referanse', yrkesskade.referanse),
+				obj('Ferdigstill sak', showLabel('ferdigstillSak', yrkesskade.ferdigstillSak)),
+				obj('Tidstype', showLabel('tidstype', yrkesskade.tidstype)),
+				obj('Skadetidspunkt', formatDateTime(yrkesskade.skadetidspunkt)),
+				obj('Antall perioder', yrkesskade.perioder?.length),
+			]),
+		})
+		data.push(mapYrkesskadeKriterier())
 	}
 }
 
@@ -2431,6 +2456,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapPensjon(bestillingData, data, navEnheter)
 	mapArena(bestillingData, data)
 	mapSykemelding(bestillingData, data)
+	mapYrkesskader(bestillingData, data)
 	mapBrregstub(bestillingData, data)
 	mapInst(bestillingData, data)
 	mapKrr(bestillingData, data)

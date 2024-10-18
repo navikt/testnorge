@@ -243,5 +243,10 @@
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false
+  },
+  "/testnav-yrkesskade-proxy": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
   }
 }
