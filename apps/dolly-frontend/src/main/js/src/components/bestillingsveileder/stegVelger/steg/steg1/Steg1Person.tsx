@@ -18,7 +18,6 @@ import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/s
 import { ArbeidsplassenPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidsplassen'
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
-import { FullmaktPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Fullmakt'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -36,7 +35,6 @@ export const Steg1Person = ({ stateModifier }: any) => {
 
 	const checked = [
 		PersoninformasjonPanel,
-		FullmaktPanel,
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
@@ -67,7 +65,6 @@ export const Steg1Person = ({ stateModifier }: any) => {
 	return (
 		<AttributtVelger checked={checked}>
 			<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
-			<FullmaktPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
 			<AdressePanel stateModifier={stateModifier} formValues={formValues} />
 			<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
 			<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />

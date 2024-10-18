@@ -16,7 +16,13 @@ export const Fullmakt = ({ fullmakt, idx }: FullmaktProps) => {
 			<TitleValue title="Gyldig fra" value={formatDate(fullmakt?.gyldigFraOgMed)} />
 			<TitleValue title="Gyldig til" value={formatDate(fullmakt?.gyldigTilOgMed)} />
 			{fullmakt?.omraade?.map((omraade, index) => (
-				<TitleValue key={index} title={omraade?.tema} value={omraade?.handling.join(', ')} />
+				<TitleValue
+					key={index}
+					title={'Tema'}
+					value={`${omraade?.tema} - ${omraade?.handling?.reduce((acc, curr) => {
+						return acc + (acc ? ', ' : '') + curr.charAt(0) //Kommaseparert liste med første bokstav i tilganger
+					}, '')}`}
+				/>
 			))}
 			<TitleValue
 				title="Registrert"

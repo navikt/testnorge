@@ -20,6 +20,7 @@ import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bank
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
+import { Fullmakt } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -55,6 +56,7 @@ const foedselsdatoPath = ['pdldata.person.foedselsdato']
 const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['pdldata.person.vergemaal']
 const sikkerhetstiltakPath = ['pdldata.person.sikkerhetstiltak']
+const fullmaktPath = ['pdldata.person.fullmakt', 'fullmakt']
 
 const panelPaths = [
 	alderPaths,
@@ -146,6 +148,10 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Vergemål" vis={vergemaalPath}>
 					<Vergemaal formMethods={formMethods} />
+				</Kategori>
+
+				<Kategori title="Fullmakt" vis={fullmaktPath}>
+					<Fullmakt formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPath}>

@@ -77,6 +77,10 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 	const valgtMal = malOptions.find((mal) => mal.value === formMethods.watch('mal'))
 	const valgtMalTpsfValues = _.get(valgtMal, 'data.bestilling.tpsf')
 	const erTpsfMal = tpsfAttributter.some((a) => _.has(valgtMalTpsfValues, a))
+	const erGammelFullmaktMal = _.has(
+		valgtMal,
+		'data.bestilling.pdldata.person.fullmakt.[0].omraader.[0]',
+	)
 
 	return (
 		<FormProvider {...formMethods}>
@@ -128,6 +132,13 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 								isDisabled={!malAktiv}
 							/>
 						</InputDiv>
+						{erGammelFullmaktMal && (
+							<Alert variant={'warning'} style={{ width: '97%' }}>
+								Denne malen er utdatert, og vil muligens ikke fungere som den skal. Dette fordi
+								master for fullmakt er endret til Representasjon. Vi anbefaler at du oppretter en ny
+								mal og sletter denne malen.
+							</Alert>
+						)}
 						{erTpsfMal && (
 							<Alert variant={'warning'} style={{ width: '97%' }}>
 								Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi

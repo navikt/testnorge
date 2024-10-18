@@ -43,7 +43,6 @@ import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foed
 import DisplayFormState from '@/utils/DisplayFormState'
 import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
-import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 
 type VisningTypes = {
@@ -75,7 +74,6 @@ enum Attributt {
 	Innvandring = 'innflytting',
 	Utvandring = 'utflytting',
 	Vergemaal = 'vergemaal',
-	Fullmakt = 'fullmakt',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
@@ -259,14 +257,6 @@ export const VisningRedigerbar = ({
 			case Attributt.Vergemaal:
 				return (
 					<VergemaalForm
-						formMethods={formMethods}
-						path={path}
-						eksisterendeNyPerson={eksisterendeNyPerson}
-					/>
-				)
-			case Attributt.Fullmakt:
-				return (
-					<FullmaktForm
 						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}

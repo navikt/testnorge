@@ -3,22 +3,21 @@ import { useContext, useEffect } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { validation } from '@/components/fagsystem/skjermingsregister/form/validation'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
-import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
-import { Omraade } from '@/components/fagsystem/fullmakt/FullmaktType'
+import { useFullmaktOmraader, useFullmektig } from '@/utils/hooks/useFullmakt'
+import { FullmaktType, Omraade } from '@/components/fagsystem/fullmakt/FullmaktType'
 import { Option } from '@/service/SelectOptionsOppslag'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorMessage } from '@hookform/error-message'
+import { validation } from '@/components/fagsystem/fullmakt/form/validation'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
@@ -102,15 +101,38 @@ export const Fullmakt = ({
 }: FullmaktProps) => {
 	const legacyFullmakt = formMethods.watch('pdldata.person.fullmakt')
 	const { omraadeKodeverk, loading } = useFullmaktOmraader()
+	const { fullmektig: eksisterendeFullmakter, loading: loadingEksisterende } = useFullmektig(
+		opts?.personFoerLeggTil?.pdl?.ident,
+	)
 
 	useEffect(() => {
-		if (!hasUserInput(formMethods)) {
+		if (!loadingEksisterende && !hasUserInput(formMethods)) {
 			mapLegacyFullmaktTilNyFullmakt(legacyFullmakt, formMethods, omraadeKodeverk)
 		}
 	}, [])
 
-	if (loading) {
-		return <Loading label={'Laster områdekodeverk...'} />
+	useEffect(() => {
+		if (
+			eksisterendeFullmakter &&
+			eksisterendeFullmakter.length > 0 &&
+			formMethods.watch('fullmakt')?.[0]?.omraade?.[0]?.tema === ''
+		) {
+			formMethods.setValue(
+				'fullmakt',
+				eksisterendeFullmakter.map((fullmakt: FullmaktType) => {
+					return {
+						...initialFullmakt,
+						omraade: fullmakt.omraade,
+						gyldigFraOgMed: fullmakt.gyldigFraOgMed,
+						gyldigTilOgMed: fullmakt.gyldigTilOgMed,
+					}
+				}),
+			)
+		}
+	}, [eksisterendeFullmakter])
+
+	if (loading || loadingEksisterende) {
+		return <Loading label={'Henter fullmakter og kodeverk...'} />
 	}
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
@@ -122,7 +144,9 @@ export const Fullmakt = ({
 			<FormDollyFieldArray
 				name={`${path}.omraade`}
 				header="Område"
+				canBeEmpty={false}
 				newEntry={{ tema: '', handling: [] }}
+				nested
 			>
 				{(path: string) => (
 					<>
@@ -173,7 +197,6 @@ export const Fullmakt = ({
 				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
-			<AvansertForm path={path} kanVelgeMaster={false} />
 			{formMethods.formState.errors && (
 				<ErrorMessage
 					name={`${path}.omraade`}

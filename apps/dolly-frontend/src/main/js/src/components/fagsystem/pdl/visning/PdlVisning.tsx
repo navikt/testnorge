@@ -84,7 +84,6 @@ export const PdlVisning = ({
 					tpsMessagingData={fagsystemData?.tpsMessaging}
 					tpsMessagingLoading={loading?.tpsMessaging}
 				/>
-				<FullmaktVisning ident={gjeldendeIdent?.ident} />
 				<IdentInfo pdlResponse={hentIdenter} />
 				<Foedsel data={hentPerson} erPdlVisning />
 				<Doedsfall data={doedsfall} erPdlVisning />
@@ -92,6 +91,7 @@ export const PdlVisning = ({
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />
+				<FullmaktVisning ident={gjeldendeIdent?.ident} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<TpsMBankkonto

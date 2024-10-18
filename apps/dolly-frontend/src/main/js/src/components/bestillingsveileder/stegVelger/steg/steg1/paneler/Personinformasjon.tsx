@@ -10,6 +10,8 @@ import {
 	getInitialKjoenn,
 	getInitialNavn,
 	getInitialStatsborgerskap,
+	initialFullmakt,
+	initialPdlPerson,
 	initialSikkerhetstiltak,
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
@@ -28,8 +30,8 @@ const utvandret = 'utvandretTilLand'
 
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
-	const sm = stateModifier(PersoninformasjonPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
+	const sm: any = stateModifier(PersoninformasjonPanel.initialValues)
+	const opts: any = useContext(BestillingsveilederContext)
 
 	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
@@ -43,6 +45,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
+	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
 
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
@@ -103,6 +106,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					<Attributt attr={sm.attrs.telefonnummer} />
 					<Attributt attr={sm.attrs.sikkerhetstiltak} />
 					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
+					<Attributt
+						attr={sm.attrs.fullmakt}
+						disabled={ukjentGruppe}
+						title={(ukjentGruppe && tekstUkjentGruppe) || ''}
+					/>
 				</AttributtKategori>
 			</Panel>
 		)
@@ -164,6 +172,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						''
 					}
 				/>
+				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 			</AttributtKategori>
@@ -214,6 +223,8 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			pdl: 'pdldata.person.telefonnummer',
 			tpsM: 'tpsMessaging.telefonnummer',
 		},
+		fullmakt: 'fullmakt',
+		fullmaktPDL: 'pdldata.person.fullmakt',
 		vergemaal: 'pdldata.person.vergemaal',
 		sikkerhetstiltak: 'pdldata.person.sikkerhetstiltak',
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
@@ -385,6 +396,23 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			checked: has(paths.vergemaal),
 			add: () => set(paths.vergemaal, [initialVergemaal]),
 			remove: () => del(paths.vergemaal),
+		},
+		fullmakt: {
+			label: 'Har fullmektig',
+			checked: has(paths.fullmakt) || has(paths.fullmaktPDL),
+			add: () => {
+				set('fullmakt', [
+					{
+						...initialFullmakt,
+						master: identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG',
+					},
+				])
+				set('pdldata.person.fullmakt', [{ nyfullMektig: initialPdlPerson }])
+			},
+			remove: () => {
+				del('fullmakt')
+				del('pdldata.person.fullmakt')
+			},
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
