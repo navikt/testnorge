@@ -17,6 +17,8 @@ configurations {
 }
 
 dependencies {
+    implementation "io.grpc:grpc-netty:$versions.grpc"
+
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-frontend"
