@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ParameterDTO;
+import no.nav.testnav.levendearbeidsforholdansettelse.entity.JobbParameter;
 import no.nav.testnav.levendearbeidsforholdansettelse.service.ParameterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -24,7 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ParameterController {
 
-    @Autowired
     private final ParameterService parameterService;
 
     /**
@@ -33,7 +32,7 @@ public class ParameterController {
      */
     @GetMapping
     @Operation(description = "Henter alle parametre for oppretting av arbeidsforhold")
-    public List<ParameterDTO> hentAlleParametere() {
+    public Flux<ParameterDTO> hentAlleParametere() {
 
             return parameterService.hentAlleParametere();
     }
@@ -46,8 +45,8 @@ public class ParameterController {
     @PutMapping("/{parameternavn}")
     @Operation(description = "Legg inn ny verdi på en parameter")
     @ResponseStatus(HttpStatus.OK)
-    public void oppdatereVerdier(@PathVariable("parameternavn") String parameternavn, @RequestBody String verdi){
+    public Mono<JobbParameter> oppdatereVerdier(@PathVariable("parameternavn") String parameternavn, @RequestBody String verdi){
 
-            parameterService.updateVerdi(parameternavn, verdi);
+            return parameterService.updateVerdi(parameternavn, verdi);
     }
 }
