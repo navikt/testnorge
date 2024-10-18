@@ -1,8 +1,14 @@
+TOKEN_X_ISSUER: dummy
+
 wiremock:
   server:
     port: 0
 
-TOKEN_X_ISSUER: dummy
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
 
 consumers:
   synt-sykemelding:
