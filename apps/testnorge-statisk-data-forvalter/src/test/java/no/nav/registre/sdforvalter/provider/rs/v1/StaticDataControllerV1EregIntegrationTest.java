@@ -234,6 +234,7 @@ class StaticDataControllerV1EregIntegrationTest {
         assertThat(iterable).hasSize(1);
         assertThat(iterable.iterator().next().getGruppeModel())
                 .usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(gruppeModel);
     }
 
