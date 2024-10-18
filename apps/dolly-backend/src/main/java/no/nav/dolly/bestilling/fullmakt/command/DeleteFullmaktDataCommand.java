@@ -44,6 +44,7 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<ResponseEntity<V
                 .retrieve()
                 .toBodilessEntity()
                 .doOnError(WebClientFilter::logErrorMessage)
+                .doOnSuccess(response -> log.info("Fullmakt with id {} deleted for person with ident {}", fullmaktId, ident))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .doOnError(WebClientFilter::logErrorMessage);

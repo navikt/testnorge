@@ -10,7 +10,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
@@ -20,9 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
@@ -38,22 +35,21 @@ public class FullmaktClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getFullmakt()) && !bestilling.getFullmakt().isEmpty()) {
+        if (!bestilling.getFullmakt().isEmpty()) {
 
             return Flux.fromIterable(bestilling.getFullmakt())
                     .flatMap(fullmakt -> {
                         fullmakt.setFullmaktsgiver(dollyPerson.getIdent());
                         if (isBlank(fullmakt.getFullmektig())) {
-                            return pdlDataConsumer.getPersoner(singletonList(dollyPerson.getIdent()))
-                                    .flatMap(person -> Flux.fromStream(person.getRelasjoner().stream()
-                                            .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG))))
+                            return pdlDataConsumer.getPersoner(List.of(dollyPerson.getIdent()))
+                                    .flatMap(person -> Flux.fromIterable(person.getRelasjoner())
+                                            .filter(relasjon -> relasjon.getRelasjonType().equals(RelasjonType.FULLMEKTIG)))
                                     .next()
                                     .map(relasjon -> {
                                         fullmakt.setFullmektigsNavn(getFullName(relasjon.getRelatertPerson()));
                                         fullmakt.setFullmektig(relasjon.getRelatertPerson().getIdent());
                                         return fullmakt;
-                                    })
-                                    .switchIfEmpty(Mono.error(new DollyFunctionalException("Fant ikke fullmektig som relasjon for person " + dollyPerson.getIdent())));
+                                    });
                         } else {
                             return Mono.just(fullmakt);
                         }
@@ -70,10 +66,10 @@ public class FullmaktClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(ident -> {
-            var fullmaktResponse = fullmaktConsumer.getFullmaktData(List.of(ident)).blockFirst();
-            fullmaktResponse.getFullmakt().forEach(fullmakt -> fullmaktConsumer.deleteFullmaktData(ident, fullmakt.getFullmaktId()).block());
-        });
+        identer.forEach(ident -> fullmaktConsumer.getFullmaktData(List.of(ident)).subscribe(
+                fullmakter -> fullmakter.getFullmakt()
+                        .forEach(fullmakt -> fullmaktConsumer
+                                .deleteFullmaktData(ident, fullmakt.getFullmaktId()).subscribe())));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

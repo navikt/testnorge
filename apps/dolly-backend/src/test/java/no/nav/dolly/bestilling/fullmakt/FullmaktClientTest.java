@@ -1,14 +1,11 @@
 package no.nav.dolly.bestilling.fullmakt;
 
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -36,11 +33,6 @@ public class FullmaktClientTest {
     private static final String NAVN = "Fornavn Etternavn";
     private static final String IDENT = "12345611111";
     private static final String RELASJON_IDENT = "12345622222";
-    @Mock
-    private ErrorStatusDecoder errorStatusDecoder;
-
-    @Mock
-    private TransactionHelperService transactionHelperService;
 
     @Mock
     private FullmaktConsumer fullmaktConsumer;
@@ -58,7 +50,7 @@ public class FullmaktClientTest {
 
     @Test
     public void shouldSetMissingFullmektigFromPdlRelasjon() {
-        RsDollyUtvidetBestilling bestilling = new RsDollyUtvidetBestilling();
+        var bestilling = new RsDollyUtvidetBestilling();
 
         bestilling.setFullmakt(List.of(RsFullmakt.builder()
                 .omraade(singletonList(RsFullmakt.Omraade.builder()
@@ -70,10 +62,10 @@ public class FullmaktClientTest {
                 .gyldigTilOgMed(LocalDateTime.of(2022, 1, 1, 0, 0))
                 .build()));
 
-        DollyPerson dollyPerson = DollyPerson.builder().ident(IDENT).build();
-        BestillingProgress progress = new BestillingProgress();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        var progress = new BestillingProgress();
 
-        FullPersonDTO fullPersonDTO = FullPersonDTO.builder()
+        var fullPersonDTO = FullPersonDTO.builder()
                 .person(PersonDTO.builder().ident(IDENT)
                         .build())
                 .relasjoner(List.of(
@@ -91,15 +83,15 @@ public class FullmaktClientTest {
 
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fullPersonDTO));
 
-        FullmaktResponse fullmaktResponse = FullmaktResponse.builder().fullmakt(emptyList()).build();
+        var fullmaktResponse = FullmaktResponse.builder().fullmakt(emptyList()).build();
         when(fullmaktConsumer.createFullmaktData(any(), any())).thenReturn(Flux.just(fullmaktResponse));
 
-        Flux<ClientFuture> result = fullmaktClient.gjenopprett(bestilling, dollyPerson, progress, true);
+        var result = fullmaktClient.gjenopprett(bestilling, dollyPerson, progress, true);
 
-        List<ClientFuture> clientFutures = result.collectList().block();
+        var clientFutures = result.collectList().block();
         assertEquals(1, clientFutures.size());
 
-        ArgumentCaptor<List<RsFullmakt>> fullmaktCaptor = ArgumentCaptor.forClass(List.class);
+        var fullmaktCaptor = ArgumentCaptor.forClass(List.class);
         verify(fullmaktConsumer).createFullmaktData(fullmaktCaptor.capture(), any());
 
         List<RsFullmakt> capturedFullmaktList = fullmaktCaptor.getValue();

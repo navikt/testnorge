@@ -22,6 +22,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +36,14 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
     private final RsFullmakt request;
 
     public Mono<FullmaktResponse> call() {
+
+        if (isBlank(request.getFullmektig())) {
+            log.error("Klarte ikke å hente fullmektig relasjon for ident: {} fra PDL forvalter ", ident);
+            return Mono.just(FullmaktResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .melding("Fullmakt mangler fullmektig for ident: " + ident)
+                    .build());
+        }
 
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder

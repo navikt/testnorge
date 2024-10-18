@@ -54,7 +54,7 @@ public class ElasticBestilling implements Persistable<Long> {
     @Field
     private RsDigitalKontaktdata krrstub;
     @Field
-    private RsFullmakt fullmakt;
+    private List<RsFullmakt> fullmakt;
     @Field
     private RsMedl medl;
     @Field
