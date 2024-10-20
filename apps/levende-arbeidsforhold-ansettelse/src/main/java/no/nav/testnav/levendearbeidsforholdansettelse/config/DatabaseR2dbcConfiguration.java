@@ -31,9 +31,9 @@ class DatabaseR2dbcConfiguration extends AbstractR2dbcConfiguration {
         return new Flyway(Flyway.configure()
                 .baselineOnMigrate(true)
                 .dataSource(
-                        env.getRequiredProperty("spring.datasource.url"),
-                        env.getRequiredProperty("spring.datasource.username"),
-                        env.getRequiredProperty("spring.datasource.password"))
+                        env.getRequiredProperty("spring.flyway.url"),
+                        env.getRequiredProperty("spring.flyway.username"),
+                        env.getRequiredProperty("spring.flyway.password"))
         );
     }
 }
