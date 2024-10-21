@@ -15,9 +15,6 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER} 
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-  cloud:
-    vault:
-      enabled: false
 
 springdoc:
   swagger-ui:
