@@ -7,7 +7,6 @@ Swagger finnes under [/swagger](https://testnav-arbeidsforhold-service.intern.de
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ArbeidsforholdApiApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=dev
 ```
 
