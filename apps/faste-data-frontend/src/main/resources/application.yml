@@ -11,11 +11,11 @@ spring:
       client:
         registration:
           aad:
-            client-id: ${azure.app.client.id}
-            client-secret: ${azure.app.client.secret}
+            client-id:  ${AZURE_APP_CLIENT_ID}
+            client-secret:  ${AZURE_APP_CLIENT_SECRET}
             authorization-grant-type: authorization_code
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope: openid, ${azure.app.client.id}/.default
+            scope: openid,  ${AZURE_APP_CLIENT_ID}/.default
         provider:
           aad:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
