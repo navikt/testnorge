@@ -15,7 +15,6 @@ Swagger finnes under [/swagger](https://organisasjon-bestilling-service.intern.d
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=dev
 ```
 
