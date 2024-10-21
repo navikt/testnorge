@@ -13,7 +13,6 @@ Swagger finnes under [/swagger](https://testnav-varslinger-service.intern.dev.na
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør deretter VarslingerServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=dev
 ```
 
