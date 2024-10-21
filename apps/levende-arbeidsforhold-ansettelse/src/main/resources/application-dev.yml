@@ -11,6 +11,18 @@ spring:
       mode: always
       data-locations: classpath:/db/dev/h2-default-config.sql
 
+  main:
+    allow-bean-definition-overriding: true
+
+config:
+  r2dbc:
+    driver: h2
+    host: localhost
+    port: 5432
+    database: testdb
+    username: sa
+    password:
+
 consumers:
   testnav-kodeverk-service:
     url: https://testnav-kodeverk-service.intern.dev.nav.no

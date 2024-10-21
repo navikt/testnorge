@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
@@ -19,7 +20,7 @@ class DatabaseR2dbcConfiguration extends AbstractR2dbcConfiguration
     private final Environment env;
 
     @Bean
-
+    @Primary
     public ConnectionFactory connectionFactory() {
         return H2ConnectionFactory.inMemory("testdb");
     }
