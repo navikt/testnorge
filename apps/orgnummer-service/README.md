@@ -15,7 +15,6 @@ Swagger finnes under [/swagger](https://testnav-orgnummer-service.intern.dev.nav
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør OrgnummerServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[vault-token]
 -Dspring.profiles.active=dev
 ```
 
