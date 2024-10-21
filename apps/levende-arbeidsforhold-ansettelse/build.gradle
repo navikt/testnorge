@@ -12,7 +12,6 @@ sonarqube {
 dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:data-transfer-search-objects"
-    implementation "no.nav.testnav.libs:database"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:reactive-security"
@@ -20,6 +19,7 @@ dependencies {
     implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
 
     implementation "io.r2dbc:r2dbc-h2"
@@ -33,7 +33,5 @@ dependencies {
     implementation "io.micrometer:micrometer-registry-prometheus"
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
-
-    implementation "com.zaxxer:HikariCP"
 }
 
