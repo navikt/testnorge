@@ -7,7 +7,6 @@ Swagger finnes under [/swagger](https://jenkins-batch-status-service.intern.dev.
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør JenkinsBatchStatusServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=dev
 ```
 
