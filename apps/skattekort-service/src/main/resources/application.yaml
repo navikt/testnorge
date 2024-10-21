@@ -5,9 +5,6 @@ spring:
     name: Testnav-Skattekort-Service
     version: 1.0
     description: Service for å sende inn skattekort
-  cloud:
-    vault:
-      enabled: false
   security:
     oauth2:
       resourceserver:

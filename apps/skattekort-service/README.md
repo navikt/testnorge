@@ -16,10 +16,8 @@ Applikasjonen omformer JSON-request til XML-request og sender inn på overnevnte
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør SkattekortServiceApplicationStarter med følgende argumenter:
-
 ```
 --add-opens java.base/java.lang=ALL-UNNAMED
 -Dspring.profiles.active=dev
--Dspring.cloud.vault.token=[vault-token]
 ```
 
