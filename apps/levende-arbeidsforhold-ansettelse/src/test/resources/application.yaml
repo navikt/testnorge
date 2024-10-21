@@ -1,6 +1,9 @@
 
-spring:
-  flyway:
-    url: jdbc:h2:mem:testdb
+config:
+  r2dbc:
+    driver: h2
+    protocol: mem
+    port: 5432
+    database: testdb
     username: sa
     password:

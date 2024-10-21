@@ -17,7 +17,7 @@ spring:
 config:
   r2dbc:
     driver: h2
-    host: localhost
+    protocol: mem
     port: 5432
     database: testdb
     username: sa
