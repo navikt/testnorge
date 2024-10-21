@@ -7,7 +7,6 @@ Swagger finnes under [/swagger](https://miljoer-service.intern.dev.nav.no/swagge
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør MiljoerServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[vault-token]
 -Dspring.profiles.active=dev
 ```
 
