@@ -1,16 +1,7 @@
 TOKEN_X_ISSUER: dummy
-
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy
      
 spring:
   cloud:
     gcp:
       secretmanager:
         enabled: false
-    vault:
-      token: test
-      enabled: false
