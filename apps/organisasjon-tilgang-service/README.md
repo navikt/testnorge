@@ -10,8 +10,6 @@ Swagger finnes under [/swagger-ui.html](https://testnav-organisasjon-tilgang-ser
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør OrganisasjonTilgangServiceApplicationStarter med følgende argumenter:
-
 ``` 
 -Dspring.profiles.active=local
--Dspring.cloud.vault.token=[vault-token]
 ```
