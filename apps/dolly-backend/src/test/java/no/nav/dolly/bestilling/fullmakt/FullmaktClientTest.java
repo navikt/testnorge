@@ -6,6 +6,8 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -33,6 +35,12 @@ public class FullmaktClientTest {
     private static final String NAVN = "Fornavn Etternavn";
     private static final String IDENT = "12345611111";
     private static final String RELASJON_IDENT = "12345622222";
+
+    @Mock
+    private ErrorStatusDecoder errorStatusDecoder;
+
+    @Mock
+    private TransactionHelperService transactionHelperService;
 
     @Mock
     private FullmaktConsumer fullmaktConsumer;

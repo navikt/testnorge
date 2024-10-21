@@ -20,12 +20,15 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FullmaktClient implements ClientRegister {
+
+    private static final String FULLMAKT_REPRESENTASJON = "FULLMAKT_REPR#";
 
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
@@ -38,6 +41,9 @@ public class FullmaktClient implements ClientRegister {
         if (!bestilling.getFullmakt().isEmpty()) {
 
             return Flux.fromIterable(bestilling.getFullmakt())
+                    .doOnNext(ordre ->
+                            transactionHelperService.persister(progress, BestillingProgress::setFullmaktStatus,
+                                    getInfoVenter("Fullmakt (Representasjon)")))
                     .flatMap(fullmakt -> {
                         fullmakt.setFullmaktsgiver(dollyPerson.getIdent());
                         if (isBlank(fullmakt.getFullmektig())) {
