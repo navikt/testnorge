@@ -11,17 +11,17 @@ spring:
       mode: always
       data-locations: classpath:/db/dev/h2-default-config.sql
 
-  main:
-    allow-bean-definition-overriding: true
-
-config:
-  r2dbc:
-    driver: h2
-    protocol: mem
-    port: 5432
-    database: testdb
-    username: sa
-    password:
+#  main:
+#    allow-bean-definition-overriding: true
+#
+#config:
+#  r2dbc:
+#    driver: h2
+#    protocol: mem
+#    port: 5432
+#    database: testdb
+#    username: sa
+#    password:
 
 consumers:
   testnav-kodeverk-service:
