@@ -9,15 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
-import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
-import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 @Configuration
 @Profile("dev")
-@EnableR2dbcAuditing
-@EnableR2dbcRepositories
 @RequiredArgsConstructor
-class DatabaseR2dbcConfiguration extends AbstractR2dbcConfiguration {
+class DatabaseR2dbcConfiguration extends AbstractR2dbcConfiguration
+{
 
     private final Environment env;
 

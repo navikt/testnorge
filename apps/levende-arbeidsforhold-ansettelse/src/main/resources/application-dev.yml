@@ -18,11 +18,5 @@ spring:
 consumers:
   testnav-kodeverk-service:
     url: https://testnav-kodeverk-service.intern.dev.nav.no
-    name: testnav-kodeverk-service
-    cluster: dev-gcp
-    namespace: dolly
   testnav-tenor-search-service:
     url: https://testnav-tenor-search-service.intern.dev.nav.no
-    name: testnav-tenor-search-service
-    cluster: dev-gcp
-    namespace: dolly
