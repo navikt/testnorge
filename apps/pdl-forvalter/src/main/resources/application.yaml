@@ -38,9 +38,6 @@ consumers:
     name: testnav-person-service
 
 spring:
-  cloud:
-    vault:
-      enabled: false
   security:
     oauth2:
       resourceserver:
