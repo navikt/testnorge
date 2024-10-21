@@ -1,12 +1,6 @@
 AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 TOKEN_X_ISSUER: dummy
 
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy
-
 spring:
   cloud:
     gcp:

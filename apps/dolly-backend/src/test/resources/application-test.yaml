@@ -8,12 +8,6 @@ jira:
   username: dummy
   password: dummy
 
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy
-
 open:
   search:
     uri: dummy

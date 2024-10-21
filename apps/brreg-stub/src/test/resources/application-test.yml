@@ -15,9 +15,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy
