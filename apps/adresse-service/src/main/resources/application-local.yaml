@@ -7,4 +7,4 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          accepted-audience: ${sm://azureAppClientId}, api://${sm://azureAppClientId}
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
