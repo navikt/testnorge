@@ -11,9 +11,7 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER} 
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
-  cloud:
-    vault:
-      enabled: false
+
 consumers:
   testnorge-profil-api:
     cluster: dev-gcp

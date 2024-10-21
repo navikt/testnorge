@@ -1,6 +1,15 @@
 server:
   port: 8080
 
+spring:
+  config:
+    import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
+
 consumers:
   testnorge-profil-api:
     url: https://testnorge-profil-api-dev.intern.dev.nav.no/api
