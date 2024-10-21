@@ -2,7 +2,7 @@ spring:
   application:
     version: application.version.todo
     name: testnav-bruker-service
-    desciption: Tjeneste for brukere
+    description: Tjeneste for brukere
   security:
     oauth2:
       resourceserver:
