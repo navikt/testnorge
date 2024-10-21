@@ -6,6 +6,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerTo
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.reactive.config.EnableWebFlux;
 
 @Configuration
 @Import({
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
         InsecureJwtServerToServerConfiguration.class
 })
 @EnableAsync
+@EnableWebFlux
 public class ApplicationConfig {
 
 }
