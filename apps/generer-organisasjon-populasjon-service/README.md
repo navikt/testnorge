@@ -10,8 +10,6 @@ Swagger finnes under [/swagger](https://testnav-generer-organisasjon-populasjon-
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør GenererOrganisasjonPopulasjonServiceApplicationStarter med følgende argumenter:
-
 ```
--Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
 ```
