@@ -5,6 +5,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/testnav-organisasjon-forvalter-local
     username: testnav-organisasjon-forvalter-local
     password: ${sm://testnav-organisasjon-forvalter-local}
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
 
 consumers:
   generer-navn-service:
