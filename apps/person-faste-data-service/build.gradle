@@ -13,7 +13,6 @@ dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
-    implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
