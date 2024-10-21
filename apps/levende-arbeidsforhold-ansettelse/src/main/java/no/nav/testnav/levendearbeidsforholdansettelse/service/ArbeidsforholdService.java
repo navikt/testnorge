@@ -25,10 +25,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArbeidsforholdService {
 
-    private static final String arbeidstakerType = "Person";
-    private static final String arbeidsgiverType = "Organisasjon";
-    private static final String arbeidstidsordning = "ikkeSkift";
-    private static final String ansettelsesform = "fast";
+    private static final String ARBEIDSTAKER_TYPE = "Person";
+    private static final String ARBEIDSGIVER_TYPE = "Organisasjon";
+    private static final String ARBEIDSTIDSORDNING = "ikkeSkift";
+    private static final String ANSETTELSESFORM = "fast";
     private static final double TIMER_HUNDRE_PROSENT = 37.5;
     private static final int HUNDRE_PROSENT = 100;
 
@@ -75,11 +75,11 @@ public class ArbeidsforholdService {
                 .arbeidsforholdId(Integer.toString(kanAnsettes.getAntallEksisterendeArbeidsforhold() + 1))
                 .arbeidstaker(Person.builder()
                         .offentligIdent(kanAnsettes.getIdent())
-                        .type(arbeidstakerType)
+                        .type(ARBEIDSTAKER_TYPE)
                         .build())
                 .arbeidsgiver(Organisasjon.builder()
                         .organisasjonsnummer(kanAnsettes.getOrgnummer())
-                        .type(arbeidsgiverType)
+                        .type(ARBEIDSGIVER_TYPE)
                         .build())
                 .type(arbeidsforholdType)
                 .ansettelsesperiode(Ansettelsesperiode.builder()
@@ -89,10 +89,10 @@ public class ArbeidsforholdService {
                         .build())
                 .arbeidsavtaler(List.of(OrdinaerArbeidsavtale.builder()
                         .antallTimerPrUke(antallTimerPrUke)
-                        .arbeidstidsordning(arbeidstidsordning)
+                        .arbeidstidsordning(ARBEIDSTIDSORDNING)
                         .stillingsprosent(stillingsprosent)
                         .yrke(yrke)
-                        .ansettelsesform(ansettelsesform)
+                        .ansettelsesform(ANSETTELSESFORM)
                         .sistStillingsendring(LocalDate.now())
                         .build()))
                 .build();

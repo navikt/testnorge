@@ -1,12 +1,11 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.repository;
 
 import no.nav.testnav.levendearbeidsforholdansettelse.entity.AnsettelseLogg;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
 
-import java.util.List;
+public interface AnsettelseLoggRepository extends ReactiveCrudRepository<AnsettelseLogg, Long> {
 
-public interface AnsettelseLoggRepository extends CrudRepository<AnsettelseLogg, Long> {
-
-    List<AnsettelseLogg> findByFolkeregisterident(String ident);
-    List<AnsettelseLogg> findByOrganisasjonsnummer(String orgnummer);
+    Flux<AnsettelseLogg> findByFolkeregisterident(String ident);
+    Flux<AnsettelseLogg> findByOrganisasjonsnummer(String orgnummer);
 }

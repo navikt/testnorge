@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.KodeverkServiceConsumer;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class KodeverkService {
      * @param kodeverk String som er navnet på kodeverket.
      * @return En liste av String som er kodene.
      */
-    public List<String> hentKodeverkValues(String kodeverk){
+    public Mono<List<String>> hentKodeverkValues(String kodeverk){
+
         return kodeverkServiceConsumer.hentKodeverk(kodeverk);
     }
-
 }

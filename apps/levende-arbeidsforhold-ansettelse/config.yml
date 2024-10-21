@@ -28,11 +28,6 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-  liveness:
-    path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
   observability:
     logging:
       destinations:
@@ -40,11 +35,12 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
+  liveness:
+    initialDelay: 45
+    path: /internal/health/liveness
   readiness:
-    path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 45
+    path: /internal/health/readiness
   prometheus:
     enabled: true
     path: /internal/metrics

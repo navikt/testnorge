@@ -1,7 +1,5 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers;
 
-import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.EpollChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.aareg.HentArbeidsforholdCommand;
@@ -44,7 +42,7 @@ public class AaregConsumer {
                                         .create(ConnectionProvider.builder("AaregConsumer")
                                                 .maxConnections(1)
                                                 .pendingAcquireMaxCount(10000)
-                                                .pendingAcquireTimeout(Duration.ofSeconds(300))
+                                                .pendingAcquireTimeout(Duration.ofSeconds(3000))
                                                 .build())
                         ))
                 .build();
