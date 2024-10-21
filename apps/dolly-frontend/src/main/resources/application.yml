@@ -3,9 +3,6 @@ POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.intern.dev.nav.no/login
 REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
-  cloud:
-    vault:
-      enabled: false
   application:
     name: dolly-frontend
   main:
@@ -21,7 +18,7 @@ spring:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           jwk-set-uri: ${TOKEN_X_JWKS_URI}

@@ -1,5 +1,10 @@
+TOKEN_X_ISSUER: dummy
+
 spring:
   cloud:
+    gcp:
+      secretmanager:
+        enabled: false
     vault:
       database:
         enabled: false
@@ -14,5 +19,3 @@ spring:
       ddl-auto: create
   flyway:
     enabled: false
-
-TOKEN_X_ISSUER: dummy

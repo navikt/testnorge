@@ -8,7 +8,7 @@ spring:
         trygdeetaten:
           issuer-uri: ${azure.openid.config.issuer}
           jwk-set-uri: ${azure.openid.config.jwks.uri}
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
   codec:
     max-in-memory-size: 15MB
   cloud:

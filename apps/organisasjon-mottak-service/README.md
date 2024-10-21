@@ -10,8 +10,6 @@ applikasjonen.
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør OMSApplicationStarter med følgende argumenter:
-
 ``` 
 -Dspring.profiles.active=dev
--Dspring.cloud.vault.token=[vault-token]
 ```

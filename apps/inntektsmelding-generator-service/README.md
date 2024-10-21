@@ -19,12 +19,8 @@ Swagger finnes under [/swagger](https://testnav-inntektsmelding-generator-servic
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør InntektsmeldingGeneratorApplicationStarter med følgende argumenter:
-
 ```
-
--Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
-
 ```
 
 ### Utviklerimage

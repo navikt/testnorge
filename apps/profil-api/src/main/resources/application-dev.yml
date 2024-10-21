@@ -1,3 +1,11 @@
+spring:
+  config:
+    import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
 
 consumers:
   testnav-person-organisasjon-tilgang-service:

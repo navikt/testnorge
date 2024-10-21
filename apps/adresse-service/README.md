@@ -9,7 +9,6 @@ applikasjonen.
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør AdresseServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=local
 --add-opens java.base/java.lang=ALL-UNNAMED
 ```

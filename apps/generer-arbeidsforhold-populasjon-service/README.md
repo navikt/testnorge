@@ -10,9 +10,7 @@ Swagger finnes under [/swagger](https://testnav-generer-arbeidsforhold-populasjo
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør GenererArbeidsforholdPopulasjonServiceApplicationStarter med følgende argumenter:
-
 ```
--Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
 ```
 

@@ -15,7 +15,6 @@ Ha naisdevice kjørende og kjør IdentPoolApplicationStarter med følgende argum
 ```
 --add-opens java.base/java.lang=ALL-UNNAMED 
 -Dspring.profiles.active=local
--Dspring.cloud.vault.token=[Kopier token fra vault]
 ```
  
 ### Utviklerimage 

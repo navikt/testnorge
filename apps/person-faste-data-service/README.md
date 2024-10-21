@@ -10,8 +10,6 @@ Swagger finnes under [/swagger-ui.html](https://testnav-person-faste-data-servic
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør PersonFasteDataServiceApplicationStarter med følgende argumenter:
-
 ``` 
 -Dspring.profiles.active=dev
--Dspring.cloud.vault.token=[vault-token]
 ```

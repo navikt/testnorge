@@ -28,17 +28,13 @@ generate new token (må ha read:packages og repo tilgang)
 
 ### Java
 
-For å kjøre lokalt (DollyFrontendApplicationStarter) må active profile settes til `local`. I tillegg, må cloud vault
-token
-hentes fra Vault. Vault token hentes ved at man logger inn i Vault, trykker på nedtrekksmenyen oppe til høyre, og
-trykker på "Copy token".
+For å kjøre lokalt (DollyFrontendApplicationStarter) må active profile settes til `local`.
 
 Disse verdiene fylles deretter inn i VM Options på IDE:
 
 Run -> Edit Configurations -> VM Options
 
 ```
--Dspring.cloud.vault.token=(Copy token fra Vault)
 -Dspring.profiles.active=local
 ```
 

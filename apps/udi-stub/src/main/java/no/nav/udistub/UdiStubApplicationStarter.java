@@ -1,6 +1,6 @@
 package no.nav.udistub;
 
-import no.nav.testnav.libs.servletcore.util.VaultUtil;
+import no.nav.testnav.libs.vault.VaultUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

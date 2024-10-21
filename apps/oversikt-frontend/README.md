@@ -14,7 +14,6 @@ Lenke https://testnav-oversikt.dev.adeo.no/
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør OversiktFrontendApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=dev
 ```
 
