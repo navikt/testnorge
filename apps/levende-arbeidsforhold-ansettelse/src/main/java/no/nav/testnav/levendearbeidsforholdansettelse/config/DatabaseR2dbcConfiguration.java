@@ -13,6 +13,7 @@ import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 @Configuration
+@Profile("dev")
 @EnableR2dbcAuditing
 @EnableR2dbcRepositories
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ class DatabaseR2dbcConfiguration extends AbstractR2dbcConfiguration {
     private final Environment env;
 
     @Bean
-    @Profile("dev")
+
     public ConnectionFactory connectionFactory() {
         return H2ConnectionFactory.inMemory("testdb");
     }
