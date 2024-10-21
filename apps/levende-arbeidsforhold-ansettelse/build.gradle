@@ -29,7 +29,6 @@ dependencies {
     runtimeOnly "org.postgresql:postgresql"
 
     implementation "io.r2dbc:r2dbc-h2"
-    runtimeOnly "io.h2database:h2"
 
     implementation "io.micrometer:micrometer-registry-prometheus"
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
