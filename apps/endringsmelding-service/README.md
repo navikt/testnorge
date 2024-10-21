@@ -12,9 +12,7 @@ applikasjonen `dev-gcp:dolly:endringsmelding-frontend`.
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør EndringsmeldingServiceApplicationStarter med følgende argumenter:
-
 ```
--Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
 ```
 
