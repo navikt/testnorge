@@ -10,9 +10,6 @@ spring:
   application:
     name: testnav-inntektsmelding-service
     description: Tjeneste for sende inntektsmelding til dokarkiv.
-  cloud:
-    vault:
-      enabled: false
   security:
     oauth2:
       resourceserver:
