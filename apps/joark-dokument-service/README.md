@@ -9,9 +9,7 @@ Swagger finnes under [/swagger](https://testnav-joark-dokument-service.intern.de
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør JoarkDokuemntServiceApplicationStarter med følgende argumenter:
-
 ```
--Dspring.cloud.vault.token=[vault-token]
 -Dspring.profiles.active=dev
 ```
 
