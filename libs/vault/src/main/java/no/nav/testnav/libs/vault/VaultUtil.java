@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.servletcore.util;
+package no.nav.testnav.libs.vault;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.servletcore.util;
+package no.nav.testnav.libs.vault;
 
 public class VaultException extends RuntimeException {
 
