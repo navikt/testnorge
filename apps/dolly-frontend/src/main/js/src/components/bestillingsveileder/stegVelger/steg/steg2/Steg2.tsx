@@ -26,6 +26,7 @@ import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { useFormContext } from 'react-hook-form'
 import { SkattekortForm } from '@/components/fagsystem/skattekort/form/Form'
 import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
+import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { AfpOffentligForm } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 
@@ -67,6 +68,7 @@ export const Steg2 = () => {
 	return (
 		<div>
 			<PdlfForm />
+			<FullmaktForm />
 			<AaregForm />
 			<SigrunstubForm />
 			<SigrunstubPensjonsgivendeForm />

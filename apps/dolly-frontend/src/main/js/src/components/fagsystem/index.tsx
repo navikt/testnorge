@@ -14,11 +14,13 @@ import { TpsfVisning } from '@/components/fagsystem/tpsf/visning/Visning'
 import { DokarkivVisning } from '@/components/fagsystem/dokarkiv/visning'
 import { HistarkVisning } from '@/components/fagsystem/histark/visning'
 import { SykemeldingVisning } from '@/components/fagsystem/sykdom/visning/Visning'
+import { FullmaktVisning } from './fullmakt/visning/FullmaktVisning'
 
 export {
 	TpsfVisning,
 	KrrVisning,
 	PdlfVisning,
+	FullmaktVisning,
 	ArenaVisning,
 	AaregVisning,
 	UdiVisning,

@@ -51,6 +51,13 @@ export default defineConfig(({ mode }) => ({
 			external: ['./nais.js'],
 		},
 	},
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler',
+			},
+		},
+	},
 	optimizeDeps: { exclude: ['node_modules/.cache'] },
 	resolve: {
 		alias: {

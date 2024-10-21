@@ -61,7 +61,9 @@ export const Datepicker = ({
 			inputProps.value && inputProps.value !== '' && inputProps.value?.split('.')
 		const inputDate = (year && new Date(year, month - 1, day)) || undefined
 		if (selectedDate && !_.isEqual(inputDate?.toDateString(), selectedDate?.toDateString())) {
-			setTimeout(() => setSelected(selectedDate), 200)
+			setTimeout(() => {
+				setSelected(selectedDate)
+			}, 200)
 		}
 	}, [inputProps.value, selectedDate])
 
@@ -73,6 +75,7 @@ export const Datepicker = ({
 				onChange={(e) => {
 					setSelected(undefined)
 					inputProps.onChange(e)
+					formMethods.trigger(name)
 				}}
 				size={'small'}
 				disabled={disabled}
@@ -100,12 +103,12 @@ const P_FormDatepicker = ({ ...props }) => {
 		}
 		let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
 		formMethods.setValue(props.name, val, { shouldTouch: true })
-		formMethods.trigger()
+		formMethods.trigger(props.name)
 	}
 	const handleBlur = () => {
 		props?.onBlur?.(SyntEvent(props.name, value))
 		formMethods.setValue(props.name, value, { shouldTouch: true })
-		formMethods.trigger()
+		formMethods.trigger(props.name)
 	}
 	return <DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 }

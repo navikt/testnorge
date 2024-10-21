@@ -99,6 +99,11 @@
     "changeOrigin": true,
     "secure": false
   },
+  "/testnav-fullmakt-proxy/api": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
   "/testnav-inst-proxy/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,

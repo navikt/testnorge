@@ -23,7 +23,7 @@ type PersondetaljerTypes = {
 	data: any
 	tmpPersoner: any
 	ident: string
-	erPdlVisning: boolean
+	erPdlVisning?: boolean
 	tpsMessaging: any
 	tpsMessagingLoading?: boolean
 	skjermingData: Skjerming

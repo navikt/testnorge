@@ -24,7 +24,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
@@ -160,9 +159,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/foedested/{id}")
     @Operation(description = "Slett angitt foedested for person")
     public void deleteFoedested(@Parameter(description = "Ident for testperson")
-                              @PathVariable String ident,
-                              @Parameter(description = "id som identifiserer foedested")
-                              @PathVariable Integer id) {
+                                @PathVariable String ident,
+                                @Parameter(description = "id som identifiserer foedested")
+                                @PathVariable Integer id) {
 
         artifactDeleteService.deleteFoedested(ident, id);
     }
@@ -170,9 +169,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/foedselsdato/{id}")
     @Operation(description = "Slett angitt foedselsdato for person")
     public void deleteFoedselsdato(@Parameter(description = "Ident for testperson")
-                              @PathVariable String ident,
-                              @Parameter(description = "id som identifiserer foedselsdato")
-                              @PathVariable Integer id) {
+                                   @PathVariable String ident,
+                                   @Parameter(description = "id som identifiserer foedselsdato")
+                                   @PathVariable Integer id) {
 
         artifactDeleteService.deleteFoedselsdato(ident, id);
     }
@@ -648,27 +647,6 @@ public class PersonController {
                                    @RequestBody List<TelefonnummerDTO> telefonnumre) {
 
         artifactUpdateService.updateTelefonnummer(ident, telefonnumre);
-    }
-
-    @DeleteMapping(value = "/{ident}/fullmakt/{id}")
-    @Operation(description = "Slett angitt fullmakt for person")
-    public void deleteFullmakt(@Parameter(description = "Ident for testperson")
-                               @PathVariable String ident,
-                               @Parameter(description = "id som identifiserer fullmakt")
-                               @PathVariable Integer id) {
-
-        artifactDeleteService.deleteFullmakt(ident, id);
-    }
-
-    @PutMapping(value = "/{ident}/fullmakt/{id}")
-    @Operation(description = "Oppdater angitt fullmakt for person")
-    public void updateFullmakt(@Parameter(description = "Ident for testperson")
-                               @PathVariable String ident,
-                               @Parameter(description = "id som identifiserer fullmakt")
-                               @PathVariable Integer id,
-                               @RequestBody FullmaktDTO fullmakt) {
-
-        artifactUpdateService.updateFullmakt(ident, id, fullmakt);
     }
 
     @DeleteMapping(value = "/{ident}/vergemaal/{id}")

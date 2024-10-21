@@ -326,14 +326,14 @@ const mapVergemaal = (vergemaal, data) => {
 	}
 }
 
-const mapFullmakt = (fullmakt, data) => {
-	if (fullmakt) {
+const mapFullmakt = (bestillingData, data) => {
+	if (bestillingData?.fullmakt) {
 		const fullmaktData = {
 			header: 'Fullmakt',
-			itemRows: fullmakt.map((item, idx) => {
+			itemRows: bestillingData.fullmakt.map((item, idx) => {
 				return [
 					{ numberHeader: `Fullmakt ${idx + 1}` },
-					obj('Områder', omraaderArrayToString(item.omraader)),
+					obj('Områder', omraaderArrayToString(item.omraade)),
 					obj('Gyldig fra og med', formatDate(item.gyldigFraOgMed)),
 					obj('Gyldig til og med', formatDate(item.gyldigTilOgMed)),
 					obj('Fullmektig', item.motpartsPersonident),
@@ -2395,7 +2395,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 			kjoenn,
 			navn,
 			telefonnummer,
-			fullmakt,
 			bostedsadresse,
 			oppholdsadresse,
 			kontaktadresse,
@@ -2426,7 +2425,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 		mapNavn(navn, data)
 		mapTelefonnummer(telefonnummer, data)
 		mapVergemaal(vergemaal, data)
-		mapFullmakt(fullmakt, data)
 		mapTilrettelagtKommunikasjon(tilrettelagtKommunikasjon, data)
 		mapStatsborgerskap(statsborgerskap, data)
 		mapDoedsfall(doedsfall, data)
@@ -2445,6 +2443,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 		mapKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsbo, data)
 	}
 
+	mapFullmakt(bestillingData, data)
 	mapTpsMessaging(bestillingData, data)
 	mapAareg(bestillingData, data)
 	mapSigrunStub(bestillingData, data)

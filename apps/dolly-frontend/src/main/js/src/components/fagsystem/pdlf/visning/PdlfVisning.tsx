@@ -3,7 +3,6 @@ import { FalskIdentitet } from '@/components/fagsystem/pdlf/visning/partials/Fal
 import { KontaktinformasjonForDoedsbo } from '@/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Loading from '@/components/ui/loading/Loading'
-import { Fullmakt } from '@/components/fagsystem/pdlf/visning/partials/Fullmakt'
 import { Telefonnummer } from '@/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import { TilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
 import { Boadresse } from '@/components/fagsystem/pdlf/visning/partials/Boadresse'
@@ -23,6 +22,7 @@ import { Persondetaljer } from '@/components/fagsystem/pdlf/visning/partials/Per
 import { PdlSikkerhetstiltak } from '@/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMBankkonto } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { ForeldreansvarVisning } from '@/components/fagsystem/pdlf/visning/partials/Foreldreansvar'
+import { FullmaktVisning } from '@/components/fagsystem'
 
 export const getBankkontoData = (data) => {
 	if (data?.kontoregister) {
@@ -121,13 +121,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					relasjoner={data?.relasjoner}
 					erRedigerbar={erRedigerbar}
 				/>
-				<Fullmakt
-					data={data?.person?.fullmakt}
-					tmpPersoner={tmpPdlforvalter}
-					ident={ident}
-					relasjoner={data?.relasjoner}
-					erRedigerbar={erRedigerbar}
-				/>
+				<FullmaktVisning ident={ident} />
 				<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />
 				<TpsMBankkonto

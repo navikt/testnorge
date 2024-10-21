@@ -1,4 +1,3 @@
-import { Fullmakt } from '@/components/fagsystem/pdlf/visning/partials/Fullmakt'
 import { TpsfPersoninfo } from '@/components/fagsystem/tpsf/visning/partials/Personinfo'
 import { TpsfNasjonalitet } from '@/components/fagsystem/tpsf/visning/partials/Nasjonalitet'
 import { TpsfBoadresse } from '@/components/fagsystem/tpsf/visning/partials/Boadresse'
@@ -17,5 +16,4 @@ export {
 	TpsfIdenthistorikk,
 	Relasjoner,
 	TpsfVergemaal,
-	Fullmakt,
 }
