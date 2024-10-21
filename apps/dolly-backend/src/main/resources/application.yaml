@@ -21,9 +21,6 @@ server:
   max-http-request-header-size: 100KB
 
 spring:
-  cloud:
-    vault:
-      enabled: false
   main:
     allow-bean-definition-overriding: true
   flyway:

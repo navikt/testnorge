@@ -90,8 +90,6 @@ spring:
     gcp:
       secretmanager:
         enabled: false
-    vault:
-      enabled: false
   datasource:
     type: org.springframework.jdbc.datasource.SimpleDriverDataSource
     url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true
