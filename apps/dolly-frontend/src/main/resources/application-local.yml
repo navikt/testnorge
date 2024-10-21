@@ -6,16 +6,18 @@ server:
   port: 8020
 
 spring:
+  config:
+    import: "sm://"
   security:
     oauth2:
       client:
         registration:
           aad:
-            client-id:  ${AZURE_APP_CLIENT_ID}
-            client-secret:  ${AZURE_APP_CLIENT_SECRET}
+            client-id: ${sm://azure-app-client-id}
+            client-secret: ${sm://azure-app-client-secret}
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
-            scope: openid, offline_access,  ${AZURE_APP_CLIENT_ID}/.default
+            scope: openid, offline_access,  ${sm://azure-app-client-id}/.default
         provider:
           aad:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
