@@ -32,6 +32,8 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:security-core"
 
+    implementation "org.apache.httpcomponents.core5:httpcore5:5.3"
+
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
 
