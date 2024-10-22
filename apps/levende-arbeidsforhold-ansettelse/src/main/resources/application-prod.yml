@@ -1,5 +1,9 @@
 
 spring:
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
   r2dbc:
     pool:
       enabled: false
