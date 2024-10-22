@@ -352,13 +352,10 @@ export const getInitialNyIdent = (master = 'FREG') => ({
 })
 
 export const initialFullmakt = {
-	omraader: [] as any,
-	gyldigFraOgMed: null as unknown as string,
+	omraade: [{ tema: '', handling: [] }] as any,
+	gyldigFraOgMed: new Date(),
 	gyldigTilOgMed: null as unknown as string,
-	motpartsPersonident: null as unknown as string,
-	nyFullmektig: initialPdlPerson,
-	kilde: 'Dolly',
-	master: 'PDL',
+	fullmektig: null as unknown as string,
 }
 
 export const initialOpphold = {

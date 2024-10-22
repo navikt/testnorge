@@ -21,6 +21,7 @@ public enum ElasticTyper {
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
+    FULLMAKT("Fullmakt (Representasjon)"),
     MEDL("Medlemskap (MEDL)"),
     HISTARK("Saksmappearkiv (HISTARK)"),
     SYKEMELDING("NAV sykemelding"),

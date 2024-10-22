@@ -66,7 +66,6 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSELSD
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FULLMAKT;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_INNFLYTTING;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KJOENN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTADRESSE;
@@ -102,56 +101,6 @@ public class PdlOrdreService {
     private final AliasRepository aliasRepository;
     private final MapperFacade mapperFacade;
     private final HendelseIdService hendelseIdService;
-
-    private Set<String> getEksternePersoner(DbPerson dbPerson) {
-
-        return Stream.of(
-                        dbPerson.getPerson().getSivilstand().stream()
-                                .filter(SivilstandDTO::isEksisterendePerson)
-                                .map(SivilstandDTO::getRelatertVedSivilstand),
-                        dbPerson.getPerson().getForelderBarnRelasjon().stream()
-                                .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
-                                .map(ForelderBarnRelasjonDTO::getRelatertPerson),
-                        dbPerson.getPerson().getForeldreansvar().stream()
-                                .filter(ForeldreansvarDTO::isEksisterendePerson)
-                                .map(ForeldreansvarDTO::getAnsvarlig),
-                        dbPerson.getPerson().getVergemaal().stream()
-                                .filter(VergemaalDTO::isEksisterendePerson)
-                                .map(VergemaalDTO::getVergeIdent),
-                        dbPerson.getPerson().getFullmakt().stream()
-                                .filter(FullmaktDTO::isEksisterendePerson)
-                                .map(FullmaktDTO::getMotpartsPersonident),
-                        dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                                .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
-                                .filter(Objects::nonNull)
-                                .filter(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::isEksisterendePerson)
-                                .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer),
-                        dbPerson.getPerson().getForelderBarnRelasjon().stream()
-                                .filter(ForelderBarnRelasjonDTO::hasBarn)
-                                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                                .map(personRepository::findByIdent)
-                                .flatMap(Optional::stream)
-                                .map(DbPerson::getPerson)
-                                .map(PersonDTO::getForeldreansvar)
-                                .flatMap(Collection::stream)
-                                .filter(ForeldreansvarDTO::isEksisterendePerson)
-                                .map(ForeldreansvarDTO::getAnsvarlig))
-                .flatMap(Function.identity())
-                .collect(Collectors.toSet());
-    }
-
-    private static List<OrdreResponseDTO.PdlStatusDTO> getPersonHendelser(String ident, List<OrdreResponseDTO.PdlStatusDTO> hendelser) {
-
-        return nonNull(hendelser) ?
-                hendelser.stream()
-                        .filter(hendelse -> ident.equals(hendelse.getIdent()))
-                        .map(hendelse -> OrdreResponseDTO.PdlStatusDTO.builder()
-                                .infoElement(hendelse.getInfoElement())
-                                .hendelser(hendelse.getHendelser())
-                                .build())
-                        .toList() :
-                emptyList();
-    }
 
     public OrdreResponseDTO send(String ident, Boolean ekskluderEksterenePersoner) {
 
@@ -224,6 +173,43 @@ public class PdlOrdreService {
         hendelseIdService.oppdaterPerson(response);
 
         return response;
+    }
+
+    private Set<String> getEksternePersoner(DbPerson dbPerson) {
+
+        return Stream.of(
+                        dbPerson.getPerson().getSivilstand().stream()
+                                .filter(SivilstandDTO::isEksisterendePerson)
+                                .map(SivilstandDTO::getRelatertVedSivilstand),
+                        dbPerson.getPerson().getForelderBarnRelasjon().stream()
+                                .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
+                                .map(ForelderBarnRelasjonDTO::getRelatertPerson),
+                        dbPerson.getPerson().getForeldreansvar().stream()
+                                .filter(ForeldreansvarDTO::isEksisterendePerson)
+                                .map(ForeldreansvarDTO::getAnsvarlig),
+                        dbPerson.getPerson().getVergemaal().stream()
+                                .filter(VergemaalDTO::isEksisterendePerson)
+                                .map(VergemaalDTO::getVergeIdent),
+                        dbPerson.getPerson().getFullmakt().stream()
+                                .filter(FullmaktDTO::isEksisterendePerson)
+                                .map(FullmaktDTO::getMotpartsPersonident),
+                        dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                .filter(Objects::nonNull)
+                                .filter(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::isEksisterendePerson)
+                                .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer),
+                        dbPerson.getPerson().getForelderBarnRelasjon().stream()
+                                .filter(ForelderBarnRelasjonDTO::hasBarn)
+                                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                                .map(personRepository::findByIdent)
+                                .flatMap(Optional::stream)
+                                .map(DbPerson::getPerson)
+                                .map(PersonDTO::getForeldreansvar)
+                                .flatMap(Collection::stream)
+                                .filter(ForeldreansvarDTO::isEksisterendePerson)
+                                .map(ForeldreansvarDTO::getAnsvarlig))
+                .flatMap(Function.identity())
+                .collect(Collectors.toSet());
     }
 
     private void checkAlias(String ident) {
@@ -317,17 +303,6 @@ public class PdlOrdreService {
         }
     }
 
-    private static void checkAndUpdate(Stack<MergeElement> stack, String oppretting) {
-
-        if (!stack.isEmpty()) {
-            var eksisterende = stack.pop();
-            if (isBlank(eksisterende.getIdent())) {
-                eksisterende.setIdent(oppretting);
-            }
-            stack.push(eksisterende);
-        }
-    }
-
     private List<Ordre> getOrdrer(OpprettRequest oppretting) {
         return Stream.of(
                         deployService.createOrdre(PDL_FOLKEREGISTER_PERSONSTATUS, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getFolkeregisterPersonstatus(), FolkeregisterPersonstatus.class)),
@@ -354,7 +329,6 @@ public class PdlOrdreService {
                                 .filter(SivilstandDTO::isNotSamboer)
                                 .toList()),
                         deployService.createOrdre(PDL_VERGEMAAL, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getVergemaal(), PdlVergemaal.class)),
-                        deployService.createOrdre(PDL_FULLMAKT, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getFullmakt()),
                         deployService.createOrdre(PDL_TELEFONUMMER, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getTelefonnummer()),
                         deployService.createOrdre(PDL_OPPHOLD, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getOpphold()),
                         deployService.createOrdre(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getKontaktinformasjonForDoedsbo()),
@@ -398,5 +372,29 @@ public class PdlOrdreService {
         return !person.getFoedselsdato().isEmpty() ?
                 person.getFoedselsdato() :
                 mapperFacade.mapAsList(person.getFoedsel(), FoedselDTO.class);
+    }
+
+    private static List<OrdreResponseDTO.PdlStatusDTO> getPersonHendelser(String ident, List<OrdreResponseDTO.PdlStatusDTO> hendelser) {
+
+        return nonNull(hendelser) ?
+                hendelser.stream()
+                        .filter(hendelse -> ident.equals(hendelse.getIdent()))
+                        .map(hendelse -> OrdreResponseDTO.PdlStatusDTO.builder()
+                                .infoElement(hendelse.getInfoElement())
+                                .hendelser(hendelse.getHendelser())
+                                .build())
+                        .toList() :
+                emptyList();
+    }
+
+    private static void checkAndUpdate(Stack<MergeElement> stack, String oppretting) {
+
+        if (!stack.isEmpty()) {
+            var eksisterende = stack.pop();
+            if (isBlank(eksisterende.getIdent())) {
+                eksisterende.setIdent(oppretting);
+            }
+            stack.push(eksisterende);
+        }
     }
 }

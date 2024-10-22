@@ -410,12 +410,6 @@ public class PensjonforvalterClient implements ClientRegister {
                 .flatMap(Flux::from);
     }
 
-    private static boolean hasVedtak(List<PensjonVedtakResponse> pensjonsvedtak, SakType type) {
-
-        return pensjonsvedtak.stream().anyMatch(entry -> entry.getSakType() == type &&
-                entry.getSisteOppdatering().contains("opprettet"));
-    }
-
     private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata, String navEnhetNr,
                                                            String ident, Set<String> miljoer, Long bestillingId) {
 
@@ -582,6 +576,12 @@ public class PensjonforvalterClient implements ClientRegister {
             log.error("Feilet å konvertere transaksjonsId for pensjonForvalter", e);
         }
         return null;
+    }
+
+    private static boolean hasVedtak(List<PensjonVedtakResponse> pensjonsvedtak, SakType type) {
+
+        return pensjonsvedtak.stream().anyMatch(entry -> entry.getSakType() == type &&
+                entry.getSisteOppdatering().contains("opprettet"));
     }
 
     private static Mono<List<PdlPersonBolk.PersonBolk>> getPdlPerson(Flux<PdlPersonBolk.Data> persondata) {

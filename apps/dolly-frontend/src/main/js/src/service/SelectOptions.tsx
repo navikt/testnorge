@@ -603,6 +603,13 @@ const selectOptions = {
 		{ value: 'ETTER_AVTALE', label: 'Kan begynne etter nærmere avtale' },
 	],
 
+	fullmaktHandling: [
+		{ value: '*', label: 'Alle' },
+		{ value: 'LES', label: 'Les' },
+		{ value: 'KOMMUNISER', label: 'Kommuniser' },
+		{ value: 'SKRIV', label: 'Skriv' },
+	],
+
 	arbeidsmengde: [
 		{ value: 'HELTID', label: 'Heltid' },
 		{ value: 'DELTID', label: 'Deltid' },
@@ -862,6 +869,7 @@ const selectOptions = {
 		{ value: 'MEDL', label: 'Medlemskap i folketrygden' },
 		{ value: 'UDISTUB', label: 'UDI' },
 		{ value: 'DOKARKIV', label: 'Dokumenter' },
+		{ value: 'FULLMAKT', label: 'Fullmakt (Representasjon)' },
 		{ value: 'HISTARK', label: 'Histark' },
 		{ value: 'SKJERMING', label: 'Skjerming' },
 		{ value: 'BANKKONTO', label: 'Bankkonto' },
