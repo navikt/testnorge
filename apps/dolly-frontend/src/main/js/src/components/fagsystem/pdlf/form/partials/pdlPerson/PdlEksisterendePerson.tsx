@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import Loading from '@/components/ui/loading/Loading'
-import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { ForeldreBarnRelasjon, NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -11,26 +10,22 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 import { usePdlOptions } from '@/utils/hooks/useSelectOptions'
 
 interface PdlEksisterendePersonValues {
-	nyPersonPath?: string
 	eksisterendePersonPath: string
 	fullmektigsNavnPath?: string
 	label: string
 	formMethods: UseFormReturn
-	idx: number
+	idx?: number
 	disabled?: boolean
-	nyIdentValg?: NyIdent
 	eksisterendeNyPerson?: Option
 	ident?: string
 }
 
 export const PdlEksisterendePerson = ({
-	nyPersonPath,
 	eksisterendePersonPath,
 	label,
 	formMethods,
 	idx,
 	disabled = false,
-	nyIdentValg = null as unknown as NyIdent,
 	eksisterendeNyPerson = null as unknown as Option,
 	fullmektigsNavnPath = null as unknown as string,
 	ident,
@@ -156,10 +151,6 @@ export const PdlEksisterendePerson = ({
 		return tmpOptions
 	}
 
-	const hasNyPersonValues = nyIdentValg
-		? !isEmpty(nyIdentValg, ['syntetisk'])
-		: nyPersonPath && !isEmpty(formMethods.watch(nyPersonPath), ['syntetisk'])
-
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 
 	const filteredOptions = getFilteredOptionList()
@@ -181,7 +172,7 @@ export const PdlEksisterendePerson = ({
 					label={label}
 					options={filteredOptions}
 					size={'xxlarge'}
-					isDisabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
+					isDisabled={bestillingFlerePersoner || disabled}
 				/>
 			) : pdlError || gruppeError ? (
 				<Alert variant="error" size="small" style={{ marginBottom: '15px' }}>

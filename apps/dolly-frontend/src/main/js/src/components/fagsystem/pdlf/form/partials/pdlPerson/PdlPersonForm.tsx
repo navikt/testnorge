@@ -127,11 +127,9 @@ export const PdlPersonForm = ({
 					>
 						{(type === PersonType.EKSISTERENDE_PERSON || isTestnorgeIdent) && (
 							<PdlEksisterendePerson
-								nyPersonPath={nyPersonPath}
 								eksisterendePersonPath={eksisterendePersonPath}
 								label={label}
 								formMethods={formMethods}
-								nyIdentValg={nyIdentValg}
 								eksisterendeNyPerson={eksisterendeNyPerson}
 								fullmektigsNavnPath={fullmektigsNavnPath}
 								disabled={opts?.antall > 1}
