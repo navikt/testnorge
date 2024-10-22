@@ -12,6 +12,5 @@ Appen har ikke noen swagger, men søkene kan utføres på [Faste data](https://f
 Ha naisdevice kjørende og kjør FasteDataFrontendApplicationStarter med følgende argumenter:
 
 ```
--Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
 ```

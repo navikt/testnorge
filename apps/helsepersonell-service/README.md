@@ -7,6 +7,5 @@ Swagger finnes under [/swagger](https://testnav-helsepersonell-service.intern.de
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør HelsepersonellApiApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
 ```

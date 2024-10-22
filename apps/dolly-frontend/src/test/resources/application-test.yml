@@ -2,3 +2,9 @@ TOKEN_X_ISSUER: dummy
 
 IDPORTEN_CLIENT_ID: dummy
 IDPORTEN_CLIENT_JWK: "{}"
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false

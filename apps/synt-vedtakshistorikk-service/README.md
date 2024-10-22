@@ -4,8 +4,6 @@ Applikasjon for å registrere Testnorge identer som brukere i Arena forvalteren 
 ## Lokal kjøring
 
 Start `SyntVedtakshistorikkServiceApplicationStarter` med følgenede props:
-
 ```
 -Dspring.profiles.active=dev 
--Dspring.cloud.vault.token=<<VAULT_TOKEN>>
 ```

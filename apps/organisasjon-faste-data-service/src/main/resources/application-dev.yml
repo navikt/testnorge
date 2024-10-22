@@ -1,5 +1,7 @@
 
 spring:
+  config:
+    import: "sm://"
   h2:
     console:
       enabled: true
@@ -15,3 +17,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}

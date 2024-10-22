@@ -10,9 +10,7 @@ applikasjonen.
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør GenererNavnServiceApplicationStarter med følgende argumenter:
-
 ```
--Dspring.cloud.vault.token=[vault-token]
 -Dspring.profiles.active=dev
 ```
 

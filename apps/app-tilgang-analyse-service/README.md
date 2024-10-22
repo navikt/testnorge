@@ -14,7 +14,6 @@ applikasjonen.
 ### In Memmory DB
 Ha naisdevice kjørende og kjør AppTilgangAnalyseServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=local
 ```
 
@@ -27,7 +26,6 @@ Kjør opp `cloud_sql_proxy`
 
 Ha naisdevice kjørende og kjør AppTilgangAnalyseServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=localdb
 -DDB_PASSWORD=[passord for testnav-app-tilgang-analyse-service-db]
 ```

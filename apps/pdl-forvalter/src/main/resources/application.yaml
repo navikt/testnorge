@@ -38,16 +38,13 @@ consumers:
     name: testnav-person-service
 
 spring:
-  cloud:
-    vault:
-      enabled: false
   security:
     oauth2:
       resourceserver:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
 springdoc:
   swagger-ui:

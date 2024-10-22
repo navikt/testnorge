@@ -11,7 +11,6 @@ includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/data-transfer-search-objects'
 includeBuild '../../libs/database'
-includeBuild '../../libs/vault'
 
 develocity {
     buildScan {

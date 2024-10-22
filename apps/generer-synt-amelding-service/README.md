@@ -7,7 +7,6 @@ Swagger finnes under [/swagger](https://testnav-generer-synt-amelding-service.in
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør GenererSyntAMeldingApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[vault-token]
 -Dspring.profiles.active=dev
 ```
 

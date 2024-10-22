@@ -1,5 +1,13 @@
 spring:
+  config:
+    import: "sm://"
   flyway:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
+

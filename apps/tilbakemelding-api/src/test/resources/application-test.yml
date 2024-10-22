@@ -1,0 +1,9 @@
+SLACK_TOKEN: dummy
+SLACK_CHANNEL: dummy
+TOKEN_X_ISSUER: dummy
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false

@@ -8,8 +8,7 @@ Alle på teamet er ansvarlig for at vi sammen er enig om en standard.
 
 ## lokal kjøring
 
-Start `ReactiveRestExampleApplicationStarter` med følgenede props:
-
+Start `ReactiveRestExampleApplicationStarter` med:
 ```
--Dspring.profiles.active=local -Dspring.cloud.vault.token=<<VAULT_TOKEN>>
+-Dspring.profiles.active=local
 ```

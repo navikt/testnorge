@@ -13,7 +13,6 @@ Swagger finnes under [/swagger-ui.html](https://testnav-person-service.intern.de
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør PersonServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
 ```
 
