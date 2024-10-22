@@ -12,8 +12,8 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
-import { useFullmaktOmraader, useFullmektig } from '@/utils/hooks/useFullmakt'
-import { FullmaktType, Omraade } from '@/components/fagsystem/fullmakt/FullmaktType'
+import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
+import { Omraade } from '@/components/fagsystem/fullmakt/FullmaktType'
 import { Option } from '@/service/SelectOptionsOppslag'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorMessage } from '@hookform/error-message'
@@ -101,37 +101,14 @@ export const Fullmakt = ({
 }: FullmaktProps) => {
 	const legacyFullmakt = formMethods.watch('pdldata.person.fullmakt')
 	const { omraadeKodeverk, loading } = useFullmaktOmraader()
-	const { fullmektig: eksisterendeFullmakter, loading: loadingEksisterende } = useFullmektig(
-		opts?.personFoerLeggTil?.pdl?.ident,
-	)
 
 	useEffect(() => {
-		if (!loadingEksisterende && !hasUserInput(formMethods)) {
+		if (!hasUserInput(formMethods)) {
 			mapLegacyFullmaktTilNyFullmakt(legacyFullmakt, formMethods, omraadeKodeverk)
 		}
 	}, [])
 
-	useEffect(() => {
-		if (
-			eksisterendeFullmakter &&
-			eksisterendeFullmakter.length > 0 &&
-			formMethods.watch('fullmakt')?.[0]?.omraade?.[0]?.tema === ''
-		) {
-			formMethods.setValue(
-				'fullmakt',
-				eksisterendeFullmakter.map((fullmakt: FullmaktType) => {
-					return {
-						...initialFullmakt,
-						omraade: fullmakt.omraade,
-						gyldigFraOgMed: fullmakt.gyldigFraOgMed,
-						gyldigTilOgMed: fullmakt.gyldigTilOgMed,
-					}
-				}),
-			)
-		}
-	}, [eksisterendeFullmakter])
-
-	if (loading || loadingEksisterende) {
+	if (loading) {
 		return <Loading label={'Henter fullmakter og kodeverk...'} />
 	}
 
