@@ -44,7 +44,7 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
                 for (StackTraceElement element : exception.getThrowable().getStackTrace()) {
                     pw.println("\tat " + element);
                 }
-                var stackTrace = sw.toString().substring(0, 480); //Limit the stack trace to 480 characters
+                var stackTrace = sw.toString()/*.substring(0, 480)*/; //Limit the stack trace to 480 characters
                 generator.writeStringField("stack_trace", stackTrace);
             }
         }
