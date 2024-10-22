@@ -3,6 +3,7 @@ package no.nav.testnav.libs.reactivecore.logging;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import com.fasterxml.jackson.core.JsonFactory;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.LogstashEncoder;
@@ -14,45 +15,50 @@ import java.util.regex.Pattern;
 
 import static java.util.Objects.nonNull;
 
+/**
+ * Config:
+ *  <li>{@code maxStackTraceLength}: Default 480, set to a negative number to disable truncation of stack trace altogether.</li>
+ */
 @Slf4j
 public class TestnavLogbackEncoder extends LogstashEncoder {
 
     // matches exactly 11 digits (\\d{11}) that are not immediately preceded ((?<!\\d)) or followed ((?!\\d)) by another digit.
     private final Pattern pattern = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
 
+    @Setter
+    private int maxStackTraceLength = 480;
+
     @SneakyThrows
     @Override
     public byte[] encode(ILoggingEvent event) {
+
         var outputStream = new ByteArrayOutputStream();
+        try (var generator = new JsonFactory().createGenerator(outputStream)) {
 
-        var generator = new JsonFactory().createGenerator(outputStream);
-
-        generator.writeStartObject();
-
-        generator.writeStringField("@timestamp", new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
-                .format(new java.util.Date(event.getTimeStamp())));
-        generator.writeStringField("message", formatMessage(event.getFormattedMessage()));
-        generator.writeStringField("logger_name", event.getLoggerName());
-        generator.writeStringField("thread_name", event.getThreadName());
-        generator.writeStringField("level", event.getLevel().toString());
-
-        if (nonNull(event.getThrowableProxy())) {
-            var exception = (ThrowableProxy) event.getThrowableProxy();
-            if (nonNull(exception.getThrowable())) {
-                var sw = new StringWriter();
-                var pw = new PrintWriter(sw);
-                for (StackTraceElement element : exception.getThrowable().getStackTrace()) {
-                    pw.println("\tat " + element);
+            generator.writeStartObject();
+            generator.writeStringField("@timestamp", new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+                    .format(new java.util.Date(event.getTimeStamp())));
+            generator.writeStringField("message", formatMessage(event.getFormattedMessage()));
+            generator.writeStringField("logger_name", event.getLoggerName());
+            generator.writeStringField("thread_name", event.getThreadName());
+            generator.writeStringField("level", event.getLevel().toString());
+            if (nonNull(event.getThrowableProxy())) {
+                var exception = (ThrowableProxy) event.getThrowableProxy();
+                if (nonNull(exception.getThrowable())) {
+                    var sw = new StringWriter();
+                    var pw = new PrintWriter(sw);
+                    for (StackTraceElement element : exception.getThrowable().getStackTrace()) {
+                        pw.println("\tat " + element);
+                    }
+                    var stackTrace = maxStackTraceLength < 0 ? sw.toString() : sw.toString().substring(0, maxStackTraceLength);
+                    generator.writeStringField("stack_trace", stackTrace);
                 }
-                var stackTrace = sw.toString()/*.substring(0, 480)*/; //Limit the stack trace to 480 characters
-                generator.writeStringField("stack_trace", stackTrace);
             }
+            generator.writeEndObject();
+
+            generator.flush();
+            outputStream.write('\n');
         }
-
-        generator.writeEndObject();
-
-        generator.flush();
-        outputStream.write('\n');
 
         return outputStream.toByteArray();
     }
