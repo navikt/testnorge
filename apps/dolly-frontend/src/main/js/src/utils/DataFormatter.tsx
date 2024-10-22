@@ -151,6 +151,9 @@ export const allCapsToCapitalized = (value) => {
 }
 
 export const toTitleCase = (value) => {
+	if (!value) {
+		return ''
+	}
 	return value
 		.split(' ')
 		.map(_.capitalize)

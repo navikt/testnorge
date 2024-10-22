@@ -29,7 +29,12 @@ export const FullmaktVisning = ({ ident }: FullmaktProps) => {
 			<div>
 				<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
 				<div className="person-visning_content">
-					<DollyFieldArray data={fullmaktData} header="" nested>
+					<DollyFieldArray
+						data={fullmaktData}
+						getHeader={(fullmakt: FullmaktType) =>
+							`Fullmektig: ${fullmakt?.fullmektigsNavn} (${fullmakt?.fullmektig})`
+						}
+					>
 						{(item: FullmaktType, idx: number) => <Fullmakt fullmakt={item} idx={idx} />}
 					</DollyFieldArray>
 				</div>

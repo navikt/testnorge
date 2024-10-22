@@ -91,7 +91,6 @@ export const PdlVisning = ({
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />
-				<FullmaktVisning ident={gjeldendeIdent?.ident} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
@@ -130,6 +129,7 @@ export const PdlVisning = ({
 					erPdlVisning={miljoeVisning}
 				/>
 				<PdlRelasjoner data={hentPerson} />
+				<FullmaktVisning ident={gjeldendeIdent?.ident} />
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<KontaktinformasjonForDoedsbo

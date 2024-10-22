@@ -121,7 +121,6 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					relasjoner={data?.relasjoner}
 					erRedigerbar={erRedigerbar}
 				/>
-				<FullmaktVisning ident={ident} />
 				<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
@@ -197,6 +196,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					ident={ident}
 					erRedigerbar={erRedigerbar}
 				/>
+				<FullmaktVisning ident={ident} />
 				<FalskIdentitet data={data?.person?.falskIdentitet} />
 				<UtenlandsId
 					data={data?.person?.utenlandskIdentifikasjonsnummer}
