@@ -6,7 +6,6 @@ rootProject.name = 'testnav-ident-pool'
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/database'
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-insecure-security'
