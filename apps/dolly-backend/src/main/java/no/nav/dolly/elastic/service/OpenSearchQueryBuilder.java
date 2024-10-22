@@ -139,7 +139,7 @@ public class OpenSearchQueryBuilder {
             case BANKKONTO_UTLAND -> QueryBuilders.existsQuery("bankkonto.utenlandskBankkonto");
             case ARBEIDSPLASSENCV -> QueryBuilders.existsQuery("arbeidsplassenCV");
             case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
-            case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskade");
+            case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskader");
         };
     }
 
