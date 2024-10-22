@@ -869,6 +869,7 @@ const selectOptions = {
 		{ value: 'MEDL', label: 'Medlemskap i folketrygden' },
 		{ value: 'UDISTUB', label: 'UDI' },
 		{ value: 'DOKARKIV', label: 'Dokumenter' },
+		{ value: 'FULLMAKT', label: 'Fullmakt (Representasjon)' },
 		{ value: 'HISTARK', label: 'Histark' },
 		{ value: 'SKJERMING', label: 'Skjerming' },
 		{ value: 'BANKKONTO', label: 'Bankkonto' },
