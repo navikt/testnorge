@@ -1,11 +1,16 @@
 import subYears from 'date-fns/subYears'
-import { runningE2ETest } from '@/service/services/Request'
 
-export const initialForenkletOppgjoersordningOrg = {
-	arbeidsgiver: {
-		aktoertype: 'ORG',
-		orgnummer: '',
-	},
+export const initialArbeidsgiverOrg = {
+	aktoertype: 'ORG',
+	orgnummer: '',
+}
+
+export const initialArbeidsgiverPers = {
+	aktoertype: 'PERS',
+	ident: '',
+}
+
+const initialForenkletOppgjoersordning = {
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
@@ -14,31 +19,22 @@ export const initialForenkletOppgjoersordningOrg = {
 	arbeidsavtale: {
 		yrke: '',
 	},
-	arbeidsforholdstype: 'ordinaertArbeidsforhold',
+	arbeidsforholdstype: 'forenkletOppgjoersordning',
+}
+
+export const initialForenkletOppgjoersordningOrg = {
+	...initialForenkletOppgjoersordning,
+	arbeidsgiver: initialArbeidsgiverOrg,
 }
 
 export const initialForenkletOppgjoersordningPers = {
-	arbeidsgiver: {
-		aktoertype: 'PERS',
-		ident: '',
-	},
-	ansettelsesPeriode: {
-		fom: subYears(new Date(), 20),
-		tom: null,
-		sluttaarsak: null,
-	},
-	arbeidsavtale: {
-		yrke: '',
-	},
-	arbeidsforholdstype: 'ordinaertArbeidsforhold',
+	...initialForenkletOppgjoersordning,
+	arbeidsgiver: initialArbeidsgiverPers,
 }
 
-export const initialArbeidsforholdOrg = {
+const initialArbeidsforhold = {
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
-	arbeidsgiver: {
-		aktoertype: 'ORG',
-		orgnummer: '',
-	},
+	arbeidsforholdId: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
@@ -59,47 +55,20 @@ export const initialArbeidsforholdOrg = {
 	permittering: [],
 }
 
+export const initialArbeidsforholdOrg = {
+	...initialArbeidsforhold,
+	arbeidsgiver: initialArbeidsgiverOrg,
+}
+
 export const initialArbeidsforholdPers = {
-	arbeidsgiver: {
-		aktoertype: 'PERS',
-		ident: '',
-	},
-	arbeidsforholdId: '',
-	ansettelsesPeriode: {
-		fom: subYears(new Date(), 20),
-		tom: null,
-		sluttaarsak: null,
-	},
-	arbeidsavtale: {
-		yrke: '',
-		ansettelsesform: 'fast',
-		stillingsprosent: 100,
-		endringsdatoStillingsprosent: null,
-		sisteLoennsendringsdato: null,
-		arbeidstidsordning: 'ikkeSkift',
-		avtaltArbeidstimerPerUke: 37.5,
-	},
+	...initialArbeidsforhold,
+	arbeidsgiver: initialArbeidsgiverPers,
 }
 
 export const initialPeriode = {
 	fom: null,
 	tom: null,
 	periode: [],
-}
-
-export const initialPensjonInntekt = {
-	fomAar: runningE2ETest() ? new Date().getFullYear() - 10 : null,
-	tomAar: runningE2ETest() ? new Date().getFullYear() : null,
-	belop: runningE2ETest() ? '12345' : '',
-	redusertMedGrunnbelop: true,
-}
-
-export const initialPensjonGenerertInntekt = {
-	generer: {
-		fomAar: null,
-		averageG: 1.5,
-		tillatInntektUnder1G: false,
-	},
 }
 
 export const initialAmelding = [
@@ -113,16 +82,6 @@ export const initialValues = {
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	genererPeriode: initialPeriode,
 	amelding: initialAmelding,
-}
-
-export const initialAaregOrg = {
-	arbeidsforholdstype: 'ordinaertArbeidsforhold',
-	...initialArbeidsforholdOrg,
-}
-
-export const initialAaregPers = {
-	arbeidsforholdstype: 'ordinaertArbeidsforhold',
-	...initialArbeidsforholdPers,
 }
 
 export const initialFartoy = [

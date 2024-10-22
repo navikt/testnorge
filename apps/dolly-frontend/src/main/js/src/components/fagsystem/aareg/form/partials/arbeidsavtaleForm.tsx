@@ -39,6 +39,7 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => (
 				onChange={onChangeLenket('arbeidsavtale.endringsdatoStillingsprosent')}
 				{...props}
 			/>
+			{/*//TODO: vises kun naar vi legger til paa person??*/}
 			<FormDatepicker
 				name={`${path}.sisteLoennsendringsdato`}
 				label="Endringsdato lønn"

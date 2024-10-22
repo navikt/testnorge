@@ -25,9 +25,11 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import _ from 'lodash'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
+import subYears from 'date-fns/subYears'
 
-export const hentStoersteArregdata = () => {
+export const hentStoersteAaregdata = () => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+
 	if (_.isEmpty(personFoerLeggTil?.aareg)) {
 		return null
 	}
@@ -38,58 +40,92 @@ export const hentStoersteArregdata = () => {
 			stoersteAaregdata = aareg?.data
 		}
 	})
-
 	stoersteAaregdata.sort((a: any, b: any) => a.arbeidsforholdId.localeCompare(b.arbeidsforholdId))
 
-	let copy = structuredClone(stoersteAaregdata)
+	const aaregdataClean: any = []
 
-	copy.forEach((aareg: any) => {
-		aareg.arbeidsgiver['orgnummer'] = aareg?.arbeidsgiver?.organisasjonsnummer
-		aareg.arbeidsgiver['aktoertype'] = aareg.arbeidsgiver?.type === 'Organisasjon' ? 'ORG' : 'PERS'
-		aareg.arbeidsgiver['ident'] = aareg?.arbeidsgiver?.offentligIdent
-		aareg['arbeidsforholdstype'] = aareg.type
-		aareg['arbeidsavtale'] = aareg.arbeidsavtaler?.[0]
-		aareg.arbeidsavtale['avtaltArbeidstimerPerUke'] = Number(
-			aareg.arbeidsavtaler?.[0]?.antallTimerPrUke,
-		)
-		aareg['arbeidsavtaler'] = undefined
-		aareg['ansettelsesPeriode'] = {}
-		aareg.ansettelsesPeriode['fom'] = aareg.ansettelsesperiode?.periode?.fom
-		aareg.ansettelsesPeriode['tom'] = aareg.ansettelsesperiode?.periode?.tom
-		aareg.ansettelsesPeriode['sluttaarsak'] = aareg.ansettelsesperiode?.sluttaarsak
-		aareg.ansettelsesperiode = undefined
-		if (aareg.utenlandsopphold) {
-			aareg.utenlandsopphold.forEach((opphold: any) => (opphold['land'] = opphold.landkode))
+	stoersteAaregdata.forEach((aareg: any) => {
+		const arbeidsforhold = {
+			arbeidsforholdstype: aareg.type || 'ordinaertArbeidsforhold',
+			arbeidsgiver: {
+				aktoertype: aareg.arbeidsgiver?.type === 'Person' ? 'PERS' : 'ORG',
+				orgnummer: aareg.arbeidsgiver?.organisasjonsnummer || undefined,
+				ident: aareg.arbeidsgiver?.offentligIdent || undefined,
+			},
+			arbeidsforholdId: aareg.arbeidsforholdId || '',
+			ansettelsesPeriode: {
+				fom: aareg.ansettelsesperiode?.periode?.fom || subYears(new Date(), 20),
+				tom: aareg.ansettelsesperiode?.periode?.tom || null,
+				sluttaarsak: aareg.ansettelsesperiode?.sluttaarsak || null,
+			},
+			arbeidsavtale: {
+				yrke: aareg.arbeidsavtaler?.[0]?.yrke || '',
+				ansettelsesform: aareg.arbeidsavtaler?.[0]?.ansettelsesform || 'fast',
+				stillingsprosent: aareg.arbeidsavtaler?.[0]?.stillingsprosent || 100,
+				endringsdatoStillingsprosent: aareg.arbeidsavtaler?.[0]?.sistStillingsendring || null,
+				sisteLoennsendringsdato: aareg.arbeidsavtaler?.[0]?.sistLoennsendring || null,
+				arbeidstidsordning: aareg.arbeidsavtaler?.[0]?.arbeidstidsordning || 'ikkeSkift',
+				avtaltArbeidstimerPerUke: aareg.arbeidsavtaler?.[0]?.antallTimerPrUke || 37.5,
+			},
+			antallTimerForTimeloennet:
+				aareg.antallTimerForTimeloennet?.map((timeloennet) => {
+					return {
+						periode: {
+							fom: timeloennet.periode?.fom || null,
+							tom: timeloennet.periode?.tom || null,
+						},
+						antallTimer: timeloennet.antallTimer || 0,
+					}
+				}) || [],
+			utenlandsopphold:
+				aareg.utenlandsopphold?.map((opphold) => {
+					return {
+						periode: {
+							fom: opphold.periode?.fom || null,
+							tom: opphold.periode?.tom || null,
+						},
+						land: opphold.landkode || '',
+					}
+				}) || [],
+			permisjon:
+				aareg.permisjonPermitteringer
+					?.filter((item) => item.type !== 'permittering')
+					?.map((permisjon) => {
+						return {
+							permisjonsPeriode: {
+								fom: permisjon.periode?.fom || null,
+								tom: permisjon.periode?.tom || null,
+							},
+							permisjonsprosent: permisjon.prosent || 100,
+							permisjon: permisjon.type || '',
+						}
+					}) || [],
+			permittering:
+				aareg.permisjonPermitteringer
+					?.filter((item) => item.type === 'permittering')
+					?.map((permittering) => {
+						return {
+							permitteringsPeriode: {
+								fom: permittering.periode?.fom || null,
+								tom: permittering.periode?.tom || null,
+							},
+							permitteringsprosent: permittering.prosent || 100,
+						}
+					}) || [],
+			fartoy:
+				aareg.type === 'maritimtArbeidsforhold'
+					? [
+							{
+								skipsregister: aareg.arbeidsavtaler?.[0]?.skipsregister || '',
+								skipstype: aareg.arbeidsavtaler?.[0]?.skipstype || '',
+								fartsomraade: aareg.arbeidsavtaler?.[0]?.fartsomraade || '',
+							},
+						]
+					: undefined,
 		}
-		if (aareg.type === 'maritimtArbeidsforhold') {
-			aareg['fartoy'] = []
-			aareg.fartoy.push({
-				fartsomraade: aareg.arbeidsavtale?.fartsomraade,
-				skipsregister: aareg.arbeidsavtale.skipsregister,
-				skipstype: aareg.arbeidsavtale?.skipstype,
-			})
-		}
-		aareg['permisjon'] = []
-		aareg['permittering'] = []
-		if (aareg.permisjonPermitteringer) {
-			aareg.permisjonPermitteringer.forEach((permisjonPermittering: any) => {
-				if (permisjonPermittering.type === 'permittering') {
-					aareg.permittering.push({
-						permitteringsPeriode: permisjonPermittering.periode,
-						permitteringsprosent: permisjonPermittering.prosent,
-					})
-				} else {
-					aareg.permisjon.push({
-						permisjonsPeriode: permisjonPermittering.periode,
-						permisjonsprosent: permisjonPermittering.prosent,
-						permisjon: permisjonPermittering.type,
-					})
-				}
-			})
-		}
+		aaregdataClean.push(arbeidsforhold)
 	})
-
-	return copy
+	return aaregdataClean
 }
 
 export const ArbeidsforholdForm = ({
@@ -112,7 +148,7 @@ export const ArbeidsforholdForm = ({
 
 	const { setError, watch, getValues, setValue, trigger } = useFormContext()
 
-	const tidligereAaregdata = hentStoersteArregdata()
+	const tidligereAaregdata = hentStoersteAaregdata()
 
 	const erLaastArbeidsforhold = arbeidsforholdIndex < tidligereAaregdata?.length
 
@@ -123,7 +159,6 @@ export const ArbeidsforholdForm = ({
 		setValue(
 			'aareg',
 			tidligereAaregdata?.map((aaregBestilling) => {
-				//TODO: Bare legge til verdiene som er støttet i frontend (initialVales basert på type), og ikke hele objektet
 				aaregBestilling.isOppdatering = true
 				return aaregBestilling
 			}),

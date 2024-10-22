@@ -1,20 +1,12 @@
-import React, { ReactElement, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
-import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import {
-	initialAaregOrg,
-	initialAaregPers,
-	initialArbeidsforholdOrg,
-	initialArbeidsforholdPers,
-	initialValues,
-} from '../initialValues'
+import { initialArbeidsgiverOrg, initialArbeidsgiverPers } from '../initialValues'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { useFormContext } from 'react-hook-form'
-import { hentStoersteArregdata } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
+import { hentStoersteAaregdata } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -24,11 +16,14 @@ const ToggleArbeidsgiver = styled(ToggleGroup)`
 const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
-export const ArbeidsforholdToggle = (): ReactElement => {
-	let aaregdata = hentStoersteArregdata()
+export const ArbeidsforholdToggle = ({ path, idx }) => {
+	let aaregdata = hentStoersteAaregdata()
 
 	const formMethods = useFormContext()
+
 	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
+
+	//TODO: Maa skrives kraftig om
 	const getArbeidsgiverType = () => {
 		const orgnr = aaregdata?.[0]?.arbeidsgiver?.orgnummer
 		if (aaregdata?.[0]?.amelding?.[0]) {
@@ -66,17 +61,23 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 		},
 	]
 
+	//TODO: Ikke toggle naar legg til paa person???
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 
 		if (value === ArbeidsgiverTyper.privat) {
-			formMethods.resetField('aareg', { defaultValue: [initialAaregPers] })
-		} else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
-			formMethods.resetField('aareg', { defaultValue: [initialAaregOrg] })
-		} else if (value === ArbeidsgiverTyper.egen) {
-			formMethods.resetField('aareg', { defaultValue: [initialValues] })
+			// formMethods.resetField('aareg', { defaultValue: [initialAaregPers] })
+			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverPers })
+		} else {
+			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverOrg })
 		}
-		formMethods.clearErrors('aareg')
+
+		// else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
+		// 	formMethods.resetField('aareg', { defaultValue: [initialAaregOrg] })
+		// } else if (value === ArbeidsgiverTyper.egen) {
+		// 	formMethods.resetField('aareg', { defaultValue: [initialValues] })
+		// }
+		// formMethods.clearErrors('aareg')
 	}
 
 	const warningMessage = (
@@ -90,52 +91,26 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 
 	return (
 		<div className="toggle--wrapper">
-			{!aaregdata?.[0]?.arbeidsgiver?.orgnummer && !aaregdata?.[0]?.arbeidsgiver?.ident && (
-				<ToggleArbeidsgiver
-					onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
-					value={typeArbeidsgiver}
-					size={'small'}
-				>
-					{toggleValues.map((type) => (
-						<ToggleGroup.Item key={type.value} value={type.value}>
-							{type.label}
-						</ToggleGroup.Item>
-					))}
-				</ToggleArbeidsgiver>
-			)}
-			{typeArbeidsgiver === ArbeidsgiverTyper.egen ? (
-				<>
-					{
-						// @ts-ignore
-						<AmeldingForm warningMessage={warningMessage} />
-					}
-				</>
-			) : (
-				<>
-					<FormDollyFieldArray
-						name="aareg"
-						header="Arbeidsforhold"
-						newEntry={
-							typeArbeidsgiver === ArbeidsgiverTyper.privat
-								? { ...initialArbeidsforholdPers, arbeidsforholdstype: 'ordinaertArbeidsforhold' }
-								: { ...initialArbeidsforholdOrg, arbeidsforholdstype: 'ordinaertArbeidsforhold' }
-						}
-						canBeEmpty={false}
-					>
-						{(path: string, idx: number) => (
-							<ArbeidsforholdForm
-								path={path}
-								key={idx}
-								arbeidsforholdIndex={idx}
-								erLenket={null}
-								arbeidsgiverType={typeArbeidsgiver}
-								ameldingIndex={undefined}
-								warningMessage={undefined}
-							/>
-						)}
-					</FormDollyFieldArray>
-				</>
-			)}
+			<ToggleArbeidsgiver
+				onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
+				value={typeArbeidsgiver}
+				size={'small'}
+			>
+				{toggleValues.map((type) => (
+					<ToggleGroup.Item key={type.value} value={type.value}>
+						{type.label}
+					</ToggleGroup.Item>
+				))}
+			</ToggleArbeidsgiver>
+			<ArbeidsforholdForm
+				path={path}
+				key={idx}
+				arbeidsforholdIndex={idx}
+				erLenket={null}
+				arbeidsgiverType={typeArbeidsgiver}
+				ameldingIndex={undefined}
+				warningMessage={warningMessage}
+			/>
 		</div>
 	)
 }
