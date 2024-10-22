@@ -1,7 +1,7 @@
 FROM ghcr.io/navikt/baseimages/temurin:21
 LABEL maintainer="Team Dolly"
 
-ENV JAVA_OPTS="-Dspring.profiles.active=prod"
+ENV JAVA_OPTS="-Dspring.profiles.active=prod -Djavax.net.debug=ssl"
 
 ADD /build/libs/app.jar /app/app.jar
 
