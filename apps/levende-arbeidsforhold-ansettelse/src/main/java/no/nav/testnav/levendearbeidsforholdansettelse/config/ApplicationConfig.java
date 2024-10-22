@@ -29,8 +29,8 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableR2dbcRepositories
 public class ApplicationConfig {
 
-    @Bean
-    R2dbcEntityTemplate r2dbcEntityTemplate(ConnectionFactory connectionFactory) {
+    @Bean("r2dbcEntityTemplate")
+    public R2dbcEntityTemplate r2dbcEntityTemplate(ConnectionFactory connectionFactory) {
         return new R2dbcEntityTemplate(connectionFactory);
     }
 
