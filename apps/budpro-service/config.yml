@@ -41,3 +41,9 @@ spec:
   replicas:
     min: 1
     max: 1
+  gcp:
+    permissions:
+      - resource:
+          apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+          kind: Project
+        role: roles/cloudprofiler.agent
