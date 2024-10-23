@@ -9,6 +9,7 @@ import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.consumer.ElasticParamsConsumer;
 import no.nav.dolly.elastic.dto.SearchRequest;
 import no.nav.dolly.elastic.dto.SearchResponse;
+import no.nav.dolly.elastic.dto.Type;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.index.query.BoolQueryBuilder;
@@ -23,7 +24,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 
@@ -59,6 +63,17 @@ public class OpenSearchService {
     public Mono<JsonNode> deleteIndex() {
 
         return elasticParamsConsumer.deleteIndex();
+    }
+
+    public List<Type> getTyper() {
+
+        return Stream.of(ElasticTyper.values())
+                .map(entry -> Type.builder()
+                        .type(entry.name())
+                        .beskrivelse(entry.getBeskrivelse())
+                        .build())
+                .sorted(Comparator.comparing(Type::getType))
+                .toList();
     }
 
     private SearchResponse execQuery(BoolQueryBuilder query) {
