@@ -5,9 +5,6 @@ import lombok.Getter;
 @Getter
 public enum ElasticTyper {
 
-    // Forklaring i parantes er det som vises i frontend
-    // For at alfabetisk rekkefølge skal beholdes setter dette føring på forkalringen
-
     AAREG("Arbeidsgiver/arbeidstaker-register (AAREG)"),
     ARBEIDSPLASSENCV("Arbeidsplassen CV"),
     ARENA_AAP("Arena AAP ytelse"),
