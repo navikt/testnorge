@@ -1,6 +1,7 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.config;
 
 import io.r2dbc.spi.ConnectionFactory;
+import io.r2dbc.spi.ConnectionFactoryOptions;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
@@ -16,6 +17,8 @@ import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
+import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
+
 @Slf4j
 @Configuration
 @Import({
@@ -28,11 +31,6 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableR2dbcAuditing
 @EnableR2dbcRepositories
 public class ApplicationConfig {
-
-    @Bean("r2dbcEntityTemplate")
-    public R2dbcEntityTemplate r2dbcEntityTemplate(ConnectionFactory connectionFactory) {
-        return new R2dbcEntityTemplate(connectionFactory);
-    }
 
 //    @Value("${config.r2dbc.driver}")
 //    private String driver;
