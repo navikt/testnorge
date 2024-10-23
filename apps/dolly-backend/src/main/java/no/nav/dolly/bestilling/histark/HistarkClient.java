@@ -56,7 +56,6 @@ public class HistarkClient implements ClientRegister {
 
                             histarkConsumer.postHistark(request)
                                     .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status)) :
-
                             Mono.just("OK")
                     )
                     .map(status -> futurePersist(progress, status));
