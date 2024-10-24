@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
@@ -85,9 +86,11 @@ public final class BestillingPdlOrdreStatusMapper {
 
     private static List<PdlInternalStatus> collectErrors(OrdreResponseDTO response) {
 
-        return response.getHovedperson().getOrdrer().stream()
-                .filter(ordre -> !PdlArtifact.PDL_SLETTING.equals(ordre.getInfoElement()))
-                .filter(ordre -> ordre.getHendelser().stream().anyMatch(hendelse -> PdlStatus.FEIL == hendelse.getStatus()))
+        return Stream.of(List.of(response.getHovedperson()),
+                        response.getRelasjoner())
+                .flatMap(Collection::stream)
+                .map(OrdreResponseDTO.PersonHendelserDTO::getOrdrer)
+                .flatMap(Collection::stream)
                 .map(ordre -> ordre.getHendelser().stream()
                         .filter(hendelse -> PdlStatus.FEIL == hendelse.getStatus())
                         .map(hendelse -> PdlInternalStatus.builder()
