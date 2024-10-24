@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.lang.NonNull;
 
 @Configuration
@@ -23,6 +24,16 @@ class R2dbcConfiguration extends AbstractR2dbcConfiguration {
             return ConnectionFactories.get(url);
         } finally {
             log.info("Created connection factory for URL {}", url);
+        }
+    }
+
+    @Bean
+    @NonNull
+    public R2dbcEntityTemplate r2dbcEntityTemplate(ConnectionFactory factory) {
+        try {
+            return new R2dbcEntityTemplate(factory);
+        } finally {
+            log.info("Created entity template using factory {}", factory.getMetadata().getName());
         }
     }
 
