@@ -4,7 +4,7 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
 import _ from 'lodash'
-import { DollyApi, PdlforvalterApi, SkjermingApi, TpsMessagingApi } from '@/service/Api'
+import { DollyApi, PdlforvalterApi, SkjermingApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
@@ -23,6 +23,11 @@ import {
 import { Alert } from '@navikt/ds-react'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_GRUPPER,
+	useMatchMutate,
+} from '@/utils/hooks/useMutate'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -32,6 +37,7 @@ type VisningTypes = {
 	redigertAttributt?: any
 	path: string
 	ident: string
+	identtype?: string
 	tpsMessagingData?: any
 }
 
@@ -113,6 +119,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	tpsMessagingData,
 	identtype,
 }: VisningTypes) => {
+	const mutate = useMatchMutate()
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
@@ -202,20 +209,22 @@ export const VisningRedigerbarPersondetaljer = ({
 				for (const attr of Object.keys(slettAttr)) {
 					if (slettAttr[attr]) {
 						if (attr === 'skjerming') {
+							const fornavn = dataVisning?.props?.person?.navn?.[0]?.fornavn
+							const etternavn = dataVisning?.props?.person?.navn?.[0]?.etternavn
 							skjerming.oppdatert = true
 							setVisningModus(Modus.LoadingSkjerming)
-							await SkjermingApi.deleteSkjerming(ident)
+							await SkjermingApi.deleteSkjerming(ident, fornavn, etternavn)
 								.catch((error) => {
 									skjermingError(error)
 									skjerming.feil = true
 								})
 								.then(() => {
-									if (!skjerming.feil) {
-										TpsMessagingApi.deleteSkjerming(ident).catch((error) => {
-											skjermingError(error)
-											skjerming.feil = true
-										})
-									}
+									console.log('Skjerming slettet')
+									skjerming.oppdatert = false
+									setVisningModus(Modus.Les)
+									mutate(REGEX_BACKEND_GRUPPER)
+									mutate(REGEX_BACKEND_BESTILLINGER)
+									window.location.reload()
 								})
 						} else {
 							pdlf.oppdatert = true
@@ -249,11 +258,16 @@ export const VisningRedigerbarPersondetaljer = ({
 				.then(() => {
 					if (skjerming.oppdatert && !skjerming.feil) {
 						setVisningModus(Modus.LoadingSkjerming)
-						getSkjermingsregister().then(() => {
-							if (mountedRef.current) {
-								setVisningModus(Modus.Les)
-							}
-						})
+						getSkjermingsregister()
+							.then(() => {
+								if (mountedRef.current) {
+									setVisningModus(Modus.Les)
+								}
+							})
+							.catch((error) => {
+								console.log('error: ', error) //TODO - SLETT MEG
+								skjermingError(error)
+							})
 					}
 				})
 		}
