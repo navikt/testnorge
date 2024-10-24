@@ -24,7 +24,7 @@ https://dolly-backend.intern.dev.nav.no/swagger-ui.html
 ## Kjør lokalt
 * Se [generell informasjon](../../docs/local_general.md).
 * Applikasjonen er avhengig av en database i GCP, se [egen dokumentasjon](../../docs/gcp_db.md).
-* Applikasjonen er avhengig av Elasticsearch:
+* Applikasjonen er avhengig av OpenSearch:
 ```aiexclude
 > docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YLAgOm}rz#o6#Aq" --name opensearch -d opensearchproject/opensearch:latest
 ```

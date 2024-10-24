@@ -25,15 +25,11 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
 
     private final WebClient webClient;
     private final AfpOffentligRequest afpOffentligRequest;
+    private final String ident;
     private final String miljoe;
     private final String token;
 
     public Mono<PensjonforvalterResponse> call() {
-
-        var ident = afpOffentligRequest
-                .getMocksvar().stream()
-                .map(AfpOffentligRequest.AfpOffentligStub::getFnr)
-                .findFirst().orElse(null);
 
         var callId = generateCallId();
         log.info("Pensjon afp-offentlig {} {}, callId: {}", miljoe, afpOffentligRequest, callId);
