@@ -6,8 +6,8 @@ import { Bruker, Organisasjon, OrgResponse } from '@/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '@/service/Api'
 import { NotFoundError } from '@/error'
 import { Navigate } from 'react-router-dom'
-import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { Logger } from '@/logger/Logger'
+import logoutBruker from '@/components/utlogging/logoutBruker'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -28,7 +28,7 @@ export default () => {
 						message: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
 						uuid: window.uuid,
 					})
-					navigateToLogin(UNKNOWN_ERROR)
+					logoutBruker(UNKNOWN_ERROR)
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
@@ -40,7 +40,7 @@ export default () => {
 					message: 'Fant ingen organisasjoner for bankid bruker',
 					uuid: window.uuid,
 				})
-				navigateToLogin(ORG_ERROR)
+				logoutBruker(ORG_ERROR)
 			})
 			.catch((e: Error) => {
 				Logger.error({
@@ -48,7 +48,7 @@ export default () => {
 					message: e.message,
 					uuid: window.uuid,
 				})
-				navigateToLogin(UNKNOWN_ERROR)
+				logoutBruker(UNKNOWN_ERROR)
 			})
 	}, [])
 
@@ -66,7 +66,7 @@ export default () => {
 						message: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
 						uuid: window.uuid,
 					})
-					navigateToLogin(UNKNOWN_ERROR)
+					logoutBruker(UNKNOWN_ERROR)
 				}
 			})
 			.catch((_e: NotFoundError) => {
@@ -78,7 +78,7 @@ export default () => {
 					message: e.message,
 					uuid: window.uuid,
 				})
-				navigateToLogin(UNKNOWN_ERROR)
+				logoutBruker(UNKNOWN_ERROR)
 			})
 	}
 
