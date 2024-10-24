@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -45,6 +46,10 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                     .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
                     .retrieve()
+                    .onStatus(HttpStatusCode::is2xxSuccessful, response -> {
+                        log.info("Histark response OK: {}", response);
+                        return Mono.empty();
+                    })
                     .bodyToMono(Object.class)
                     .doOnEach(response -> log.info("Histark response: {}", response))
                     .map(response -> HistarkResponse.builder()
