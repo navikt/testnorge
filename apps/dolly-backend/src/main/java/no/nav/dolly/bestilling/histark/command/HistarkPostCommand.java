@@ -46,7 +46,7 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
                     .retrieve()
                     .bodyToMono(JsonNode.class)
-                    .doOnSuccess(response -> log.info("Response mottatt fra Histark service: {}", response))
+                    .doOnSuccess(response -> response.fieldNames().forEachRemaining(fieldname -> log.info("Fieldname from histark: {}", fieldname)))
                     .map(response -> HistarkResponse.builder()
                             .histarkId(response.get("saksmappeId").asText().replaceAll("[^\\d-]|-(?=\\D)", ""))
                             .build())
