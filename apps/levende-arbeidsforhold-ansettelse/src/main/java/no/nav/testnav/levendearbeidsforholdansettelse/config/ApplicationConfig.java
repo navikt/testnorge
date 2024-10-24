@@ -28,8 +28,6 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 })
 @EnableAsync
 @EnableWebFlux
-@EnableR2dbcAuditing
-@EnableR2dbcRepositories
 public class ApplicationConfig {
 
 //    @Value("${config.r2dbc.driver}")

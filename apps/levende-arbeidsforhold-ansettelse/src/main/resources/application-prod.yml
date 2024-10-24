@@ -1,6 +1,6 @@
 spring:
   r2dbc:
-    url: r2dbc:pool:postgres://100.71.1.10:5432/testnav-levende-arbeidsforhold
+    url: r2dbc:postgresql://100.71.1.10:5432/testnav-levende-arbeidsforhold
     username: ${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_TESTNAV_LEVENDE_ARBEIDSFORHOLD_USERNAME}
     password: ${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_TESTNAV_LEVENDE_ARBEIDSFORHOLD_PASSWORD}
     properties:
