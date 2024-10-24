@@ -1,5 +1,6 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.domain.dto;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,8 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PdlPersonDTO {
+
+    private JsonNode errors;
 
     private Data data;
 

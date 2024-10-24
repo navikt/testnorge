@@ -23,6 +23,7 @@ import static java.util.Objects.nonNull;
 public class PdlService {
 
     private static final Random RANDOM = new SecureRandom();
+    private static final String CONTAINS = "contains";
 
     private final PdlConsumer pdlConsumer;
 
@@ -38,6 +39,7 @@ public class PdlService {
         return pdlConsumer.getSokPerson(lagSokPersonPaging(1),
                         lagSokPersonCriteria(datoIntervall, postnummer),
                         PdlMiljoer.Q2)
+                .filter(data -> nonNull(data.getData()))
                 .map(PdlPersonDTO::getData)
                 .filter(data -> nonNull(data.getSokPerson()))
                 .map(PdlPersonDTO.Data::getSokPerson)
@@ -71,17 +73,17 @@ public class PdlService {
 
         GraphqlVariables.Filter testnorge = GraphqlVariables.Filter.builder()
                 .fieldName("tags")
-                .searchRule(Map.of("contains", "TESTNORGE"))
+                .searchRule(Map.of(CONTAINS, "TESTNORGE"))
                 .build();
 
         GraphqlVariables.Filter dolly = GraphqlVariables.Filter.builder()
                 .fieldName("tags")
-                .searchRule(Map.of("contains", "DOLLY"))
+                .searchRule(Map.of(CONTAINS, "DOLLY"))
                 .build();
 
         GraphqlVariables.Filter arenasynt = GraphqlVariables.Filter.builder()
                 .fieldName("tags")
-                .searchRule(Map.of("contains", "ARENASYNT"))
+                .searchRule(Map.of(CONTAINS, "ARENASYNT"))
                 .build();
 
         var or = Map.of("or", List.of(filterBostedPostnr, filterOppholdPostnr));

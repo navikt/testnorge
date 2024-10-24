@@ -9,6 +9,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +40,11 @@ public class KodeverkServiceConsumer {
         objectMapper = new ObjectMapper();
     }
 
-    public List<String> hentKodeverk(String kodeverk) {
+    public Mono<List<String>> hentKodeverk(String kodeverk) {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new KodeverkServiceCommand(webClient, token.getTokenValue(), kodeverk, objectMapper).call())
                 .map(Map::keySet)
-                .map(ArrayList::new)
-                .block();
+                .map(ArrayList::new);
     }
 }

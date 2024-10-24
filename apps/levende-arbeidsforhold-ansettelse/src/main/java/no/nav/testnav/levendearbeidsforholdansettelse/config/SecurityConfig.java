@@ -1,26 +1,28 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.config;
 
+import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @Bean
     @SuppressWarnings("java:S4502")
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-
-        httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
+        return httpSecurity
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(authorizeConfig -> authorizeConfig.pathMatchers(
                                 "/internal/**",
                                 "/webjars/**",
                                 "/swagger-resources/**",
@@ -31,13 +33,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/h2/**",
                                 "/member/**")
-                        .permitAll()
-                        .requestMatchers("/api/**")
-                        .fullyAuthenticated())
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
-
-        return httpSecurity.build();
+                .permitAll().anyExchange().authenticated())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
+                .build();
     }
 }
-
