@@ -32,6 +32,6 @@ dependencies {
 
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
     testRuntimeOnly "io.r2dbc:r2dbc-h2"
-    runtimeOnly "io.r2dbc:r2dbc-postgresql:0.8.13.RELEASE"
+    runtimeOnly "org.postgresql:r2dbc-postgresql"
 }
 
