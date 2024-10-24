@@ -17,6 +17,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { useFormContext } from 'react-hook-form'
+import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 
 const DokumentInfoListe = React.lazy(
 	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'),
@@ -168,6 +169,7 @@ export const HistarkForm = () => {
 											/>
 										)}
 									</Kategori>
+									<DisplayFormError path={`${path}.tittel`} errorMessage={'Vedlegg er påkrevd'} />
 								</div>
 							</div>
 						)}

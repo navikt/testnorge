@@ -218,7 +218,7 @@ export const initialHistark = {
 			tittel: '',
 			antallSider: -1,
 			skanner: '',
-			skannested: '',
+			skannested: 'FREDRIKSTAD',
 			skanningsTidspunkt: new Date(),
 			temakoder: [],
 			enhetsnavn: '',

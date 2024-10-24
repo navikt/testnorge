@@ -16,12 +16,12 @@ import { useFullmaktOmraader } from '@/utils/hooks/useFullmakt'
 import { Omraade } from '@/components/fagsystem/fullmakt/FullmaktType'
 import { Option } from '@/service/SelectOptionsOppslag'
 import Loading from '@/components/ui/loading/Loading'
-import { ErrorMessage } from '@hookform/error-message'
 import { validation } from '@/components/fagsystem/fullmakt/form/validation'
+import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
-	path?: string
+	path: string
 	opts?: any
 	eksisterendeNyPerson?: any
 }
@@ -174,15 +174,7 @@ export const Fullmakt = ({
 				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
-			{formMethods.formState.errors && (
-				<ErrorMessage
-					name={`${path}.omraade`}
-					errors={formMethods.formState.errors}
-					render={({ message }) => (
-						<p style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</p>
-					)}
-				/>
-			)}
+			<DisplayFormError path={`${path}.omraade`} />
 		</div>
 	)
 }
