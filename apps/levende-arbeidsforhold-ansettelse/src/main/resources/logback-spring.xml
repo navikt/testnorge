@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProfile name="prod">
-<!--        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--            <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">-->
+        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
+                    <maxStackTraceLength>-1</maxStackTraceLength>
 <!--                <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">-->
 <!--                    <rootCauseFirst>true</rootCauseFirst>-->
 <!--                    -->
@@ -15,8 +16,8 @@
 <!--                    <exclude>org\.apache\.coyote\..*</exclude>-->
 <!--                    <exclude>org\.apache\.tomcat\..*</exclude>-->
 <!--                </throwableConverter>-->
-<!--            </encoder>-->
-<!--        </appender>-->
+            </encoder>
+        </appender>
         <root level="INFO">
             <appender-ref ref="stdout_json"/>
         </root>
