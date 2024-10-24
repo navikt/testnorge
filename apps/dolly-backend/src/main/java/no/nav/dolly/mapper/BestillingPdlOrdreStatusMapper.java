@@ -58,15 +58,18 @@ public final class BestillingPdlOrdreStatusMapper {
             var response = objectMapper.readValue(progress.getPdlOrdreStatus(), OrdreResponseDTO.class);
             var errors = collectErrors(response);
 
-            if (errors.isEmpty()) {
-                addElement(meldingIdents, "OK", progress.getIdent());
+            if (errors.isEmpty() || response.getHovedperson().getOrdrer().stream()
+                    .noneMatch(ordre -> ordre.getHendelser().stream()
+                            .anyMatch(hendelse -> ordre.getIdent().equals(progress.getIdent()) &&
+                                    PdlStatus.FEIL == hendelse.getStatus()))) {
 
-            } else {
-                errors.forEach(error ->
-                        addElement(meldingIdents, format(ELEMENT_ERROR_FMT,
-                                error.getArtifact(), error.getId(), error.getError()), progress.getIdent())
-                );
+                addElement(meldingIdents, "OK", progress.getIdent());
             }
+
+            errors.forEach(error ->
+                    addElement(meldingIdents, format(ELEMENT_ERROR_FMT,
+                            error.getArtifact(), error.getId(), error.getError()), error.getIdent())
+            );
 
         } catch (JsonProcessingException e) {
             addElement(meldingIdents, JSON_PARSE_ERROR, progress.getIdent());
@@ -95,6 +98,7 @@ public final class BestillingPdlOrdreStatusMapper {
                         .filter(hendelse -> PdlStatus.FEIL == hendelse.getStatus())
                         .map(hendelse -> PdlInternalStatus.builder()
                                 .artifact(ordre.getInfoElement())
+                                .ident(ordre.getIdent())
                                 .id(hendelse.getId())
                                 .error(hendelse.getError())
                                 .build())
@@ -124,5 +128,6 @@ public final class BestillingPdlOrdreStatusMapper {
         private PdlArtifact artifact;
         private Integer id;
         private String error;
+        private String ident;
     }
 }
