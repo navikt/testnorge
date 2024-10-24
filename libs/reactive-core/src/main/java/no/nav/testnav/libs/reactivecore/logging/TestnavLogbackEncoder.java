@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.reactivecore.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import com.fasterxml.jackson.core.JsonFactory;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import static java.util.Objects.nonNull;
 /**
  * Config:
  *  <li>{@code maxStackTraceLength}: Default 480, set to a negative number to disable truncation of stack trace altogether.</li>
+ *  <li>@{code addCauses}: If {@code true}, adds the cause(s) to the stack trace (without stack traces for each cause) Truncated according to above.</li>
  */
 @Slf4j
 public class TestnavLogbackEncoder extends LogstashEncoder {
@@ -27,6 +29,9 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
 
     @Setter
     private int maxStackTraceLength = 480;
+
+    @Setter
+    private boolean addCauses = false;
 
     @SneakyThrows
     @Override
@@ -50,6 +55,9 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
                     for (StackTraceElement element : exception.getThrowable().getStackTrace()) {
                         pw.println("\tat " + element);
                     }
+                    if (addCauses) {
+                        recursivelyAddCauses(exception, pw);
+                    }
                     var stackTrace = maxStackTraceLength < 0 ? sw.toString() : sw.toString().substring(0, maxStackTraceLength);
                     generator.writeStringField("stack_trace", stackTrace);
                 }
@@ -61,6 +69,19 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
         }
 
         return outputStream.toByteArray();
+    }
+
+    private static void recursivelyAddCauses(IThrowableProxy exception, PrintWriter pw) {
+        var cause = exception.getCause();
+        if (cause != null) {
+            pw
+                    .append("caused by ")
+                    .append(cause.getClassName())
+                    .append(": ")
+                    .append(cause.getMessage())
+                    .append("\n");
+            recursivelyAddCauses(cause, pw);
+        }
     }
 
     private String formatMessage(String message) {

@@ -4,6 +4,7 @@
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
                     <maxStackTraceLength>-1</maxStackTraceLength>
+                    <addCauses>true</addCauses>
 <!--                <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">-->
 <!--                    <rootCauseFirst>true</rootCauseFirst>-->
 <!--                    -->
