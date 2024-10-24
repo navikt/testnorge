@@ -58,20 +58,40 @@ public final class BestillingPdlOrdreStatusMapper {
             var response = objectMapper.readValue(progress.getPdlOrdreStatus(), OrdreResponseDTO.class);
             var errors = collectErrors(response);
 
-            if (errors.isEmpty()) {
-                addElement(meldingIdents, "OK", progress.getIdent());
+            if (errors.isEmpty() || response.getHovedperson().getOrdrer().stream()
+                    .noneMatch(ordre -> ordre.getHendelser().stream()
+                            .anyMatch(hendelse -> PdlStatus.FEIL == hendelse.getStatus()))) {
 
-            } else {
-                errors.forEach(error ->
-                        addElement(meldingIdents, format(ELEMENT_ERROR_FMT,
-                                error.getArtifact(), error.getId(), error.getError()), progress.getIdent())
-                );
+                addElement(meldingIdents, "OK", progress.getIdent());
             }
+
+            errors.forEach(error ->
+                    addElement(meldingIdents, format(ELEMENT_ERROR_FMT,
+                            error.getArtifact(), error.getId(), error.getError()),
+                            markRelation(error.getIdent(), progress.getIdent()))
+            );
 
         } catch (JsonProcessingException e) {
             addElement(meldingIdents, JSON_PARSE_ERROR, progress.getIdent());
             log.error("Json parsing feilet: {}", e.getMessage(), e);
         }
+    }
+
+    private static String markRelation(String ident, String hovedperson) {
+
+        var person = new StringBuilder();
+
+        if (!hovedperson.equals(ident)) {
+            person.append('(');
+        }
+
+        person.append(ident);
+
+        if (!hovedperson.equals(ident)) {
+            person.append(')');
+        }
+
+        return person.toString();
     }
 
     private static void addElement(Map<String, List<String>> rapport, String melding, String ident) {
@@ -89,15 +109,17 @@ public final class BestillingPdlOrdreStatusMapper {
         return Stream.of(List.of(response.getHovedperson()),
                         response.getRelasjoner())
                 .flatMap(Collection::stream)
-                .map(OrdreResponseDTO.PersonHendelserDTO::getOrdrer)
-                .flatMap(Collection::stream)
-                .map(ordre -> ordre.getHendelser().stream()
-                        .filter(hendelse -> PdlStatus.FEIL == hendelse.getStatus())
-                        .map(hendelse -> PdlInternalStatus.builder()
-                                .artifact(ordre.getInfoElement())
-                                .id(hendelse.getId())
-                                .error(hendelse.getError())
-                                .build())
+                .map(personHendelse -> personHendelse.getOrdrer().stream()
+                        .map(ordre -> ordre.getHendelser().stream()
+                                .filter(hendelse -> PdlStatus.FEIL == hendelse.getStatus())
+                                .map(hendelse -> PdlInternalStatus.builder()
+                                        .artifact(ordre.getInfoElement())
+                                        .ident(personHendelse.getIdent())
+                                        .id(hendelse.getId())
+                                        .error(hendelse.getError())
+                                        .build())
+                                .toList())
+                        .flatMap(Collection::stream)
                         .toList())
                 .flatMap(Collection::stream)
                 .toList();
@@ -124,5 +146,6 @@ public final class BestillingPdlOrdreStatusMapper {
         private PdlArtifact artifact;
         private Integer id;
         private String error;
+        private String ident;
     }
 }
