@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Type {
+public class Kategori {
 
     private String type;
     private String beskrivelse;

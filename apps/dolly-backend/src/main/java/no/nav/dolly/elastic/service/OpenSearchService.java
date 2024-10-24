@@ -9,7 +9,7 @@ import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.consumer.ElasticParamsConsumer;
 import no.nav.dolly.elastic.dto.SearchRequest;
 import no.nav.dolly.elastic.dto.SearchResponse;
-import no.nav.dolly.elastic.dto.Type;
+import no.nav.dolly.elastic.dto.Kategori;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.index.query.BoolQueryBuilder;
@@ -63,14 +63,14 @@ public class OpenSearchService {
         return elasticParamsConsumer.deleteIndex();
     }
 
-    public List<Type> getTyper() {
+    public List<Kategori> getTyper() {
 
         return Stream.of(ElasticTyper.values())
-                .map(entry -> Type.builder()
+                .map(entry -> Kategori.builder()
                         .type(entry.name())
                         .beskrivelse(entry.getBeskrivelse())
                         .build())
-                .sorted(Comparator.comparing(Type::getBeskrivelse))
+                .sorted(Comparator.comparing(Kategori::getBeskrivelse))
                 .toList();
     }
 
