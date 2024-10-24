@@ -46,7 +46,7 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
                     .retrieve()
                     .bodyToMono(Object.class)
-                    .doOnSuccess(response -> log.info("Histark response: {}", response))
+                    .doOnEach(response -> log.info("Histark response: {}", response))
                     .map(response -> HistarkResponse.builder()
                             .histarkId(Json.pretty(response))
                             .build())
