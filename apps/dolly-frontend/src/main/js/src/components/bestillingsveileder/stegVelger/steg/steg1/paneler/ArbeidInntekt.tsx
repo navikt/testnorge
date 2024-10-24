@@ -14,6 +14,10 @@ import {
 	initialArbeidsgiverSkatt,
 	skattekortAttributt,
 } from '@/components/fagsystem/skattekort/form/Form'
+import { hentStoersteAaregdata } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
 
 export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -63,109 +67,117 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 
 ArbeidInntektPanel.heading = 'Arbeid og inntekt'
 
-ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
-	aareg: {
-		label: 'Har arbeidsforhold',
-		checked: has('aareg'),
-		add: () => set('aareg', [initialArbeidsforholdOrg]),
-		remove() {
-			del('aareg')
+ArbeidInntektPanel.initialValues = ({ set, opts, del, has }) => {
+	console.log('opts: ', opts) //TODO - SLETT MEG
+	// const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	// console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
+
+	const eksisterendeAaregData = hentAaregEksisterendeData(opts?.personFoerLeggTil)
+	console.log('eksisterendeAaregData: ', eksisterendeAaregData) //TODO - SLETT MEG
+	return {
+		aareg: {
+			label: 'Har arbeidsforhold',
+			checked: has('aareg'),
+			add: () => set('aareg', eksisterendeAaregData || [initialArbeidsforholdOrg]),
+			remove() {
+				del('aareg')
+			},
 		},
-	},
-	sigrunstub: {
-		label: 'Har lignet inntekt',
-		checked: has('sigrunstub'),
-		add: () =>
-			set('sigrunstub', [
-				{
-					inntektsaar: new Date().getFullYear(),
-					tjeneste: '',
-					grunnlag: [],
-					svalbardGrunnlag: [],
-				},
-			]),
-		remove: () => del('sigrunstub'),
-	},
-	sigrunstubPensjonsgivende: {
-		label: 'Har pensjonsgivende inntekt',
-		checked: has('sigrunstubPensjonsgivende'),
-		add: () => set('sigrunstubPensjonsgivende', [getInitialSigrunstubPensjonsgivende()]),
-		remove: () => del('sigrunstubPensjonsgivende'),
-	},
-	inntektsmelding: {
-		label: 'Har inntektsmelding',
-		checked: has('inntektsmelding'),
-		add: () =>
-			set('inntektsmelding', {
-				inntekter: [
+		sigrunstub: {
+			label: 'Har lignet inntekt',
+			checked: has('sigrunstub'),
+			add: () =>
+				set('sigrunstub', [
 					{
-						aarsakTilInnsending: 'NY',
-						arbeidsgiver: {
-							virksomhetsnummer: '',
-						},
-						arbeidsgiverPrivat: undefined,
-						arbeidsforhold: {
-							arbeidsforholdId: '',
-							beregnetInntekt: {
-								beloep: '',
-							},
-							foersteFravaersdag: '',
-						},
-						avsendersystem: {
-							innsendingstidspunkt: new Date(),
-						},
-						refusjon: {
-							refusjonsbeloepPrMnd: '',
-							refusjonsopphoersdato: '',
-						},
-						naerRelasjon: false,
-						ytelse: '',
+						inntektsaar: new Date().getFullYear(),
+						tjeneste: '',
+						grunnlag: [],
+						svalbardGrunnlag: [],
 					},
-				],
-				joarkMetadata: {
-					tema: '',
-				},
-			}),
-		remove: () => del('inntektsmelding'),
-	},
-	inntektstub: {
-		label: 'Har inntekt',
-		checked: has('inntektstub'),
-		add: () =>
-			set('inntektstub', {
-				inntektsinformasjon: [
-					{
-						sisteAarMaaned: '',
-						rapporteringsdato: null,
-						antallMaaneder: '',
-						virksomhet: '',
-						opplysningspliktig: '',
-						versjon: null,
-						inntektsliste: [
-							{
-								beloep: '',
-								startOpptjeningsperiode: '',
-								sluttOpptjeningsperiode: '',
-								inntektstype: '',
-							},
-						],
-						fradragsliste: [],
-						forskuddstrekksliste: [],
-						arbeidsforholdsliste: [],
-					},
-				],
-			}),
-		remove() {
-			del('inntektstub')
+				]),
+			remove: () => del('sigrunstub'),
 		},
-	},
-	skattekort: {
-		label: 'Har skattekort',
-		checked: has('skattekort'),
-		add: () =>
-			set('skattekort', {
-				arbeidsgiverSkatt: [initialArbeidsgiverSkatt()],
-			}),
-		remove: () => del('skattekort'),
-	},
-})
+		sigrunstubPensjonsgivende: {
+			label: 'Har pensjonsgivende inntekt',
+			checked: has('sigrunstubPensjonsgivende'),
+			add: () => set('sigrunstubPensjonsgivende', [getInitialSigrunstubPensjonsgivende()]),
+			remove: () => del('sigrunstubPensjonsgivende'),
+		},
+		inntektsmelding: {
+			label: 'Har inntektsmelding',
+			checked: has('inntektsmelding'),
+			add: () =>
+				set('inntektsmelding', {
+					inntekter: [
+						{
+							aarsakTilInnsending: 'NY',
+							arbeidsgiver: {
+								virksomhetsnummer: '',
+							},
+							arbeidsgiverPrivat: undefined,
+							arbeidsforhold: {
+								arbeidsforholdId: '',
+								beregnetInntekt: {
+									beloep: '',
+								},
+								foersteFravaersdag: '',
+							},
+							avsendersystem: {
+								innsendingstidspunkt: new Date(),
+							},
+							refusjon: {
+								refusjonsbeloepPrMnd: '',
+								refusjonsopphoersdato: '',
+							},
+							naerRelasjon: false,
+							ytelse: '',
+						},
+					],
+					joarkMetadata: {
+						tema: '',
+					},
+				}),
+			remove: () => del('inntektsmelding'),
+		},
+		inntektstub: {
+			label: 'Har inntekt',
+			checked: has('inntektstub'),
+			add: () =>
+				set('inntektstub', {
+					inntektsinformasjon: [
+						{
+							sisteAarMaaned: '',
+							rapporteringsdato: null,
+							antallMaaneder: '',
+							virksomhet: '',
+							opplysningspliktig: '',
+							versjon: null,
+							inntektsliste: [
+								{
+									beloep: '',
+									startOpptjeningsperiode: '',
+									sluttOpptjeningsperiode: '',
+									inntektstype: '',
+								},
+							],
+							fradragsliste: [],
+							forskuddstrekksliste: [],
+							arbeidsforholdsliste: [],
+						},
+					],
+				}),
+			remove() {
+				del('inntektstub')
+			},
+		},
+		skattekort: {
+			label: 'Har skattekort',
+			checked: has('skattekort'),
+			add: () =>
+				set('skattekort', {
+					arbeidsgiverSkatt: [initialArbeidsgiverSkatt()],
+				}),
+			remove: () => del('skattekort'),
+		},
+	}
+}

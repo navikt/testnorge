@@ -98,7 +98,7 @@ export type Bestillingsstatus = {
 	stoppet: boolean
 }
 
-export const useOrganisasjoner = (brukerId: string) => {
+export const useOrganisasjoner = (brukerId?: string) => {
 	if (!brukerId) {
 		return {
 			loading: false,

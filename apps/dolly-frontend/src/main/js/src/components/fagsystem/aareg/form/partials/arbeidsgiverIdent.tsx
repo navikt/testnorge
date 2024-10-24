@@ -47,6 +47,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				label={'Arbeidsgiver ident'}
 				onChange={handleChange}
 				isDisabled={loadingNaviger || isDisabled}
+				size="xlarge"
 			/>
 			{success && (
 				<div className="flexbox" style={{ marginTop: '-5px' }}>

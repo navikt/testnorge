@@ -29,7 +29,7 @@ import subYears from 'date-fns/subYears'
 
 export const hentStoersteAaregdata = () => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
-
+	console.log('personFoerLeggTil?.aareg: ', personFoerLeggTil?.aareg) //TODO - SLETT MEG
 	if (_.isEmpty(personFoerLeggTil?.aareg)) {
 		return null
 	}
@@ -136,15 +136,15 @@ export const ArbeidsforholdForm = ({
 	arbeidsgiverType,
 	warningMessage,
 }) => {
-	const harGjortFormEndringer = () => {
-		if (watch('aareg').length > 1) {
-			return true
-		}
-		return !_.isEqual(
-			_.omit(watch('aareg')?.[0], ['ansettelsesPeriode']),
-			_.omit(initialArbeidsforholdOrg, ['ansettelsesPeriode']),
-		)
-	}
+	// const harGjortFormEndringer = () => {
+	// 	if (watch('aareg').length > 1) {
+	// 		return true
+	// 	}
+	// 	return !_.isEqual(
+	// 		_.omit(watch('aareg')?.[0], ['ansettelsesPeriode']),
+	// 		_.omit(initialArbeidsforholdOrg, ['ansettelsesPeriode']),
+	// 	)
+	// }
 
 	const { setError, watch, getValues, setValue, trigger } = useFormContext()
 
@@ -152,19 +152,19 @@ export const ArbeidsforholdForm = ({
 
 	const erLaastArbeidsforhold = arbeidsforholdIndex < tidligereAaregdata?.length
 
-	useEffect(() => {
-		if (_.isEmpty(tidligereAaregdata) || harGjortFormEndringer()) {
-			return
-		}
-		setValue(
-			'aareg',
-			tidligereAaregdata?.map((aaregBestilling) => {
-				aaregBestilling.isOppdatering = true
-				return aaregBestilling
-			}),
-		)
-		trigger('aareg')
-	}, [watch('aareg')])
+	// useEffect(() => {
+	// 	if (_.isEmpty(tidligereAaregdata) || harGjortFormEndringer()) {
+	// 		return
+	// 	}
+	// 	setValue(
+	// 		'aareg',
+	// 		tidligereAaregdata?.map((aaregBestilling) => {
+	// 			aaregBestilling.isOppdatering = true
+	// 			return aaregBestilling
+	// 		}),
+	// 	)
+	// 	trigger('aareg')
+	// }, [watch('aareg')])
 
 	const gjeldendeArbeidsgiver = watch(`${path}.arbeidsgiver`)
 
@@ -172,36 +172,37 @@ export const ArbeidsforholdForm = ({
 		typeof ameldingIndex !== 'undefined'
 			? _.get(getValues(), 'aareg[0].arbeidsforholdstype')
 			: _.get(getValues(), `${path}.arbeidsforholdstype`)
+
 	const onChangeLenket = (fieldPath: string) => {
-		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
-			return (field) => {
-				const value = isDate(field)
-					? fixTimezone(field)
-					: field?.value || field?.target?.value || null
-				setValue(`${path}.${fieldPath}`, value)
-				trigger()
-			}
-		} else {
-			return (field) => {
-				const value = isDate(field)
-					? fixTimezone(field)
-					: field?.value || field?.target?.value || null
-				const amelding = watch('aareg[0].amelding') || []
-				amelding.forEach((_maaned, idx) => {
-					if (!erLenket && idx < ameldingIndex) {
-						return null
-					} else {
-						const arbeidsforholdClone = _.cloneDeep(
-							amelding[idx].arbeidsforhold[arbeidsforholdIndex],
-						)
-						_.set(arbeidsforholdClone, fieldPath, value)
-						_.set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
-					}
-				})
-				setValue('aareg[0].amelding', amelding)
-				trigger('aareg[0].amelding')
-			}
+		// if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
+		return (field) => {
+			const value = isDate(field)
+				? fixTimezone(field)
+				: field?.value || field?.target?.value || null
+			setValue(`${path}.${fieldPath}`, value)
+			trigger()
 		}
+		// } else {
+		// 	return (field) => {
+		// 		const value = isDate(field)
+		// 			? fixTimezone(field)
+		// 			: field?.value || field?.target?.value || null
+		// 		const amelding = watch('aareg[0].amelding') || []
+		// 		amelding.forEach((_maaned, idx) => {
+		// 			if (!erLenket && idx < ameldingIndex) {
+		// 				return null
+		// 			} else {
+		// 				const arbeidsforholdClone = _.cloneDeep(
+		// 					amelding[idx].arbeidsforhold[arbeidsforholdIndex],
+		// 				)
+		// 				_.set(arbeidsforholdClone, fieldPath, value)
+		// 				_.set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
+		// 			}
+		// 		})
+		// 		setValue('aareg[0].amelding', amelding)
+		// 		trigger('aareg[0].amelding')
+		// 	}
+		// }
 	}
 
 	const handleArbeidsforholdstypeChange = (event) => {
@@ -286,6 +287,9 @@ export const ArbeidsforholdForm = ({
 						<EgneOrganisasjoner
 							path={`${path}.arbeidsgiver.orgnummer`}
 							handleChange={onChangeLenket('arbeidsgiver.orgnummer')}
+							// handleChange={(selected) =>
+							// 	setValue(`${path}.arbeidsgiver.orgnummer`, selected.value)
+							// }
 							warningMessage={warningMessage}
 							filterValidEnhetstyper={true}
 						/>
@@ -309,23 +313,21 @@ export const ArbeidsforholdForm = ({
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
-				{arbeidsgiverType !== ArbeidsgiverTyper.egen && (
-					<FormSelect
-						name={`${path}.arbeidsforholdstype`}
-						label="Type arbeidsforhold"
-						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-						size="xlarge"
-						isClearable={false}
-						onChange={handleArbeidsforholdstypeChange}
-						isDisabled={erLaastArbeidsforhold}
-					/>
-				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.privat && (
 					<ArbeidsgiverIdent
 						path={`${path}.arbeidsgiver.ident`}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
+				<FormSelect
+					name={`${path}.arbeidsforholdstype`}
+					label="Type arbeidsforhold"
+					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+					size="xlarge"
+					isClearable={false}
+					onChange={handleArbeidsforholdstypeChange}
+					isDisabled={erLaastArbeidsforhold}
+				/>
 				<FormTextInput
 					label="Arbeidsforhold ID"
 					name={`${path}.arbeidsforholdId`}

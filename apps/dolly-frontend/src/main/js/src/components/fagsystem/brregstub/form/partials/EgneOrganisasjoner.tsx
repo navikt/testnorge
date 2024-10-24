@@ -82,7 +82,7 @@ const getOversteJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	return oversteJuridiskEnhet
 }
 
-const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
+export const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
 	if (!organisasjoner) {
 		return []
 	}

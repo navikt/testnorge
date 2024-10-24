@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { initialArbeidsgiverOrg, initialArbeidsgiverPers } from '../initialValues'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
-import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { useFormContext } from 'react-hook-form'
 import { hentStoersteAaregdata } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { getEgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import Loading from '@/components/ui/loading/Loading'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -16,31 +19,51 @@ const ToggleArbeidsgiver = styled(ToggleGroup)`
 const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
+
 export const ArbeidsforholdToggle = ({ path, idx }) => {
-	let aaregdata = hentStoersteAaregdata()
-
 	const formMethods = useFormContext()
+	const { currentBruker } = useCurrentBruker()
 
-	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
+	const aaregData = formMethods.getValues(path)
+	console.log('idx: ', idx) //TODO - SLETT MEG
+	console.log('aaregData: ', aaregData) //TODO - SLETT MEG
+
+	//TODO: Hent organisasjoner ett nivaa opp kanskje?
+	const { organisasjoner: fasteOrganisasjoner, loading: fasteOrganisasjonerLoading } =
+		useDollyFasteDataOrganisasjoner(true)
+
+	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
+		useOrganisasjoner(currentBruker?.brukerId)
+	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	//TODO: Maa skrives kraftig om
 	const getArbeidsgiverType = () => {
-		const orgnr = aaregdata?.[0]?.arbeidsgiver?.orgnummer
-		if (aaregdata?.[0]?.amelding?.[0]) {
-			return ArbeidsgiverTyper.egen
-		} else if (aaregdata?.[0]?.arbeidsgiver?.aktoertype === 'PERS') {
+		const orgnr = aaregData?.arbeidsgiver?.orgnummer
+		// console.log('orgnr: ', orgnr) //TODO - SLETT MEG
+		if (aaregData?.arbeidsgiver?.aktoertype === 'PERS') {
 			return ArbeidsgiverTyper.privat
 		} else if (
 			!orgnr ||
-			organisasjoner?.map((organisasjon) => organisasjon?.orgnummer)?.some((org) => org === orgnr)
+			fasteOrganisasjoner
+				?.map((organisasjon) => organisasjon?.orgnummer)
+				?.some((org) => org === orgnr)
 		) {
 			return ArbeidsgiverTyper.felles
+		} else if (
+			egneOrganisasjoner?.map((organisasjon) => organisasjon?.orgnr)?.some((org) => org === orgnr)
+		) {
+			return ArbeidsgiverTyper.egen
+			//TODO Fortsett med egen. Test med 05528718630 (Denne viser 3 ameldinger, men har bare 2?)
 		} else {
 			return ArbeidsgiverTyper.fritekst
 		}
 	}
 
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType())
+
+	useEffect(() => {
+		setTypeArbeidsgiver(getArbeidsgiverType())
+	}, [fasteOrganisasjoner, brukerOrganisasjoner])
 
 	const toggleValues = [
 		{
@@ -61,7 +84,7 @@ export const ArbeidsforholdToggle = ({ path, idx }) => {
 		},
 	]
 
-	//TODO: Ikke toggle naar legg til paa person???
+	//TODO: Ikke toggle naar legg til paa person??? Mulig aa disable den?
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 
@@ -89,6 +112,10 @@ export const ArbeidsforholdToggle = ({ path, idx }) => {
 		</StyledAlert>
 	)
 
+	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {
+		return <Loading label="Laster organisasjoner ..." />
+	}
+
 	return (
 		<div className="toggle--wrapper">
 			<ToggleArbeidsgiver
@@ -102,6 +129,7 @@ export const ArbeidsforholdToggle = ({ path, idx }) => {
 					</ToggleGroup.Item>
 				))}
 			</ToggleArbeidsgiver>
+			{/*TODO: Splitte opp arbeidsgiver og form. Dvs sette inn arbeidsgiverfelter her, og sette resten av form utenfor, kanskje i Form.tsx?*/}
 			<ArbeidsforholdForm
 				path={path}
 				key={idx}
