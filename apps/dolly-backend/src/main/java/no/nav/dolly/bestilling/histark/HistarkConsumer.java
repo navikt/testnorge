@@ -40,7 +40,7 @@ public class HistarkConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
+    @Timed(name = "providers", tags = { "operation", "histark-opprett" })
     public Flux<HistarkResponse> postHistark(HistarkRequest histarkRequest) {
 
         var callId = getNavCallId();
