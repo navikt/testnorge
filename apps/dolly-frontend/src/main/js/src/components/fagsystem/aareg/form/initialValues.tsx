@@ -10,7 +10,7 @@ export const initialArbeidsgiverPers = {
 	ident: '',
 }
 
-const initialForenkletOppgjoersordning = {
+export const initialForenkletOppgjoersordning = {
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
@@ -32,7 +32,7 @@ export const initialForenkletOppgjoersordningPers = {
 	arbeidsgiver: initialArbeidsgiverPers,
 }
 
-const initialArbeidsforhold = {
+export const initialArbeidsforhold = {
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	arbeidsforholdId: '',
 	ansettelsesPeriode: {

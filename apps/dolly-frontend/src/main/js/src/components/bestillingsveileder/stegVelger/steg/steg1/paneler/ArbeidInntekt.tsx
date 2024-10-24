@@ -14,9 +14,6 @@ import {
 	initialArbeidsgiverSkatt,
 	skattekortAttributt,
 } from '@/components/fagsystem/skattekort/form/Form'
-import { hentStoersteAaregdata } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
 
 export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
@@ -63,17 +60,11 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 	)
 }
 
-// TODO: Sett initialValue på virksomhet og opplysningspliktig til en random organisasjon, har ikke fått det til å fungere foreløpig
-
 ArbeidInntektPanel.heading = 'Arbeid og inntekt'
 
 ArbeidInntektPanel.initialValues = ({ set, opts, del, has }) => {
-	console.log('opts: ', opts) //TODO - SLETT MEG
-	// const { personFoerLeggTil } = useContext(BestillingsveilederContext)
-	// console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
-
 	const eksisterendeAaregData = hentAaregEksisterendeData(opts?.personFoerLeggTil)
-	console.log('eksisterendeAaregData: ', eksisterendeAaregData) //TODO - SLETT MEG
+
 	return {
 		aareg: {
 			label: 'Har arbeidsforhold',

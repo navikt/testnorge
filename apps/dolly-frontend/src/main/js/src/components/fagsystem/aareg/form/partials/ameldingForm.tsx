@@ -41,6 +41,7 @@ const Slettknapp = styled(Button)`
 	margin: 10px 0;
 `
 
+// TODO: Slettes! + slett andre steder
 export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element => {
 	const formMethods = useFormContext()
 	const paths = {

@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
-import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { initialArbeidsgiverOrg, initialArbeidsgiverPers } from '../initialValues'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
-import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { useFormContext } from 'react-hook-form'
-import { hentStoersteAaregdata } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
-import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { getEgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import Loading from '@/components/ui/loading/Loading'
+import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
+import _ from 'lodash'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -20,26 +22,23 @@ const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
 
-export const ArbeidsforholdToggle = ({ path, idx }) => {
+export const ArbeidsforholdToggle = ({
+	path,
+	idx,
+	fasteOrganisasjoner,
+	brukerOrganisasjoner,
+	egneOrganisasjoner,
+	loadingOrganisasjoner,
+}) => {
 	const formMethods = useFormContext()
-	const { currentBruker } = useCurrentBruker()
-
 	const aaregData = formMethods.getValues(path)
-	console.log('idx: ', idx) //TODO - SLETT MEG
-	console.log('aaregData: ', aaregData) //TODO - SLETT MEG
 
-	//TODO: Hent organisasjoner ett nivaa opp kanskje?
-	const { organisasjoner: fasteOrganisasjoner, loading: fasteOrganisasjonerLoading } =
-		useDollyFasteDataOrganisasjoner(true)
+	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const tidligereAaregdata = hentAaregEksisterendeData(personFoerLeggTil)
+	const erLaastArbeidsforhold = idx < tidligereAaregdata?.length
 
-	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
-		useOrganisasjoner(currentBruker?.brukerId)
-	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
-
-	//TODO: Maa skrives kraftig om
 	const getArbeidsgiverType = () => {
 		const orgnr = aaregData?.arbeidsgiver?.orgnummer
-		// console.log('orgnr: ', orgnr) //TODO - SLETT MEG
 		if (aaregData?.arbeidsgiver?.aktoertype === 'PERS') {
 			return ArbeidsgiverTyper.privat
 		} else if (
@@ -53,7 +52,6 @@ export const ArbeidsforholdToggle = ({ path, idx }) => {
 			egneOrganisasjoner?.map((organisasjon) => organisasjon?.orgnr)?.some((org) => org === orgnr)
 		) {
 			return ArbeidsgiverTyper.egen
-			//TODO Fortsett med egen. Test med 05528718630 (Denne viser 3 ameldinger, men har bare 2?)
 		} else {
 			return ArbeidsgiverTyper.fritekst
 		}
@@ -87,20 +85,31 @@ export const ArbeidsforholdToggle = ({ path, idx }) => {
 	//TODO: Ikke toggle naar legg til paa person??? Mulig aa disable den?
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
-
 		if (value === ArbeidsgiverTyper.privat) {
-			// formMethods.resetField('aareg', { defaultValue: [initialAaregPers] })
 			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverPers })
 		} else {
 			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverOrg })
 		}
+	}
 
-		// else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
-		// 	formMethods.resetField('aareg', { defaultValue: [initialAaregOrg] })
-		// } else if (value === ArbeidsgiverTyper.egen) {
-		// 	formMethods.resetField('aareg', { defaultValue: [initialValues] })
-		// }
-		// formMethods.clearErrors('aareg')
+	//TODO: sjekk om denne kan gjoeres lettere. Naa blir fritekstfelt rendret for hvert tegn.
+	//TODO: Brukes paa alle arbeidsgiver-felter???
+	const checkAktiveArbeidsforhold = () => {
+		const aaregValues = formMethods.getValues('aareg')
+		const aktiveArbeidsforhold = aaregValues?.map((arbeidsforhold) => {
+			const orgnummer = arbeidsforhold?.arbeidsgiver?.orgnummer
+			if (!arbeidsforhold?.ansettelsesPeriode?.sluttaarsak) {
+				return orgnummer
+			}
+		})
+		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
+			.filter((arbeidsforhold, index) => index !== aktiveArbeidsforhold.indexOf(arbeidsforhold))
+			.filter((arbeidsforhold) => !_.isEmpty(arbeidsforhold))
+		if (!_.isEmpty(dupliserteAktiveArbeidsforhold)) {
+			formMethods.setError(`${path}.arbeidsgiver.orgnummer`, {
+				message: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
+			})
+		}
 	}
 
 	const warningMessage = (
@@ -112,7 +121,7 @@ export const ArbeidsforholdToggle = ({ path, idx }) => {
 		</StyledAlert>
 	)
 
-	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {
+	if (loadingOrganisasjoner) {
 		return <Loading label="Laster organisasjoner ..." />
 	}
 
@@ -129,16 +138,44 @@ export const ArbeidsforholdToggle = ({ path, idx }) => {
 					</ToggleGroup.Item>
 				))}
 			</ToggleArbeidsgiver>
-			{/*TODO: Splitte opp arbeidsgiver og form. Dvs sette inn arbeidsgiverfelter her, og sette resten av form utenfor, kanskje i Form.tsx?*/}
-			<ArbeidsforholdForm
-				path={path}
-				key={idx}
-				arbeidsforholdIndex={idx}
-				erLenket={null}
-				arbeidsgiverType={typeArbeidsgiver}
-				ameldingIndex={undefined}
-				warningMessage={warningMessage}
-			/>
+			<div className="flexbox--full-width">
+				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
+					<div className="flex-box">
+						<EgneOrganisasjoner
+							path={`${path}.arbeidsgiver.orgnummer`}
+							handleChange={(selected) =>
+								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
+							}
+							warningMessage={warningMessage}
+							filterValidEnhetstyper={true}
+						/>
+					</div>
+				)}
+				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
+					<OrganisasjonMedArbeidsforholdSelect
+						path={`${path}.arbeidsgiver.orgnummer`}
+						label={'Organisasjonsnummer'}
+						afterChange={() => checkAktiveArbeidsforhold()}
+						isDisabled={erLaastArbeidsforhold}
+					/>
+				)}
+				{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
+					<FormTextInput
+						name={`${path}.arbeidsgiver.orgnummer`}
+						label={'Organisasjonsnummer'}
+						size="xlarge"
+						onKeyPress={() => checkAktiveArbeidsforhold()}
+						defaultValue={formMethods.watch(`${path}.arbeidsgiver.orgnummer`)}
+						isDisabled={erLaastArbeidsforhold}
+					/>
+				)}
+				{typeArbeidsgiver === ArbeidsgiverTyper.privat && (
+					<ArbeidsgiverIdent
+						path={`${path}.arbeidsgiver.ident`}
+						isDisabled={erLaastArbeidsforhold}
+					/>
+				)}
+			</div>
 		</div>
 	)
 }

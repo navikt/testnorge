@@ -6,11 +6,24 @@ import { ArbeidsforholdToggle } from './partials/arbeidsforholdToggle'
 import { useFormContext } from 'react-hook-form'
 import { initialArbeidsforholdOrg } from '@/components/fagsystem/aareg/form/initialValues'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { ArbeidsforholdForm } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
+import React from 'react'
+import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { getEgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 
 export const aaregAttributt = 'aareg'
 
 export const AaregForm = () => {
 	const formMethods = useFormContext()
+	const { currentBruker } = useCurrentBruker()
+
+	const { organisasjoner: fasteOrganisasjoner, loading: fasteOrganisasjonerLoading } =
+		useDollyFasteDataOrganisasjoner(true)
+
+	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
+		useOrganisasjoner(currentBruker?.brukerId)
+	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	return (
 		<Vis attributt={aaregAttributt}>
@@ -26,7 +39,19 @@ export const AaregForm = () => {
 					newEntry={initialArbeidsforholdOrg}
 					canBeEmpty={false}
 				>
-					{(path: string, idx: number) => <ArbeidsforholdToggle path={path} idx={idx} />}
+					{(path: string, idx: number) => (
+						<>
+							<ArbeidsforholdToggle
+								path={path}
+								idx={idx}
+								fasteOrganisasjoner={fasteOrganisasjoner}
+								brukerOrganisasjoner={brukerOrganisasjoner}
+								egneOrganisasjoner={egneOrganisasjoner}
+								loadingOrganisasjoner={fasteOrganisasjonerLoading || brukerOrganisasjonerLoading}
+							/>
+							<ArbeidsforholdForm path={path} arbeidsforholdIndex={idx} />
+						</>
+					)}
 				</FormDollyFieldArray>
 			</Panel>
 		</Vis>
