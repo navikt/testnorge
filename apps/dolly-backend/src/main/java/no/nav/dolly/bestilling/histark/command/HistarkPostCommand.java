@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.histark.command;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
@@ -45,10 +45,10 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                     .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
                     .retrieve()
-                    .bodyToMono(JsonNode.class)
-                    .doOnSuccess(response -> response.fieldNames().forEachRemaining(fieldname -> log.info("Fieldname from histark: {}", fieldname)))
+                    .bodyToMono(Object.class)
+                    .doOnSuccess(response -> log.info("Histark response: {}", response))
                     .map(response -> HistarkResponse.builder()
-                            .histarkId(response.get("saksmappeId").asText().replaceAll("[^\\d-]|-(?=\\D)", ""))
+                            .histarkId(Json.pretty(response))
                             .build())
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
