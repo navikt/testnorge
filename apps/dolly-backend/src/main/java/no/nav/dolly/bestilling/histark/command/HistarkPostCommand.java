@@ -37,13 +37,15 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     var bodyBuilder = new MultipartBodyBuilder();
                     bodyBuilder.part("file", histarkDokument.getFile().getBytes(StandardCharsets.UTF_8));
                     bodyBuilder.part("metadata", histarkDokument.getMetadata().toString());
+                    var body = bodyBuilder.build();
+                    log.info("Sending histark body: {}", body);
                     return webClient.post()
                             .uri(builder ->
                                     builder.path("/api/saksmapper/import").build())
                             .header(AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.MULTIPART_FORM_DATA)
                             .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-                            .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                            .body(BodyInserters.fromMultipartData(body))
                             .retrieve()
                             .bodyToMono(String.class)
                             .doOnNext(response -> log.info("Histark post response: {}", response))

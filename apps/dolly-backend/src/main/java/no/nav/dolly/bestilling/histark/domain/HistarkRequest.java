@@ -43,7 +43,7 @@ public class HistarkRequest {
 
         @Override
         public String toString() {
-            return "HistarkDokument{file='%s...', metadata=%s}".formatted(file.substring(0, 10), metadata);
+            return "HistarkDokument{file='%s...', metadata=%s}".formatted(file.substring(file.length() - 21, file.length() - 1), metadata);
         }
 
         @Data
