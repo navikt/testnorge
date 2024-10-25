@@ -1,5 +1,6 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.config;
 
+import io.netty.handler.ssl.SslContextBuilder;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import jakarta.annotation.PostConstruct;
@@ -22,7 +23,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
@@ -38,14 +41,37 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    @Value("${test.sslkey}")
-    private String sslKey;
+    @Value("${test.pem}")
+    private String pem;
+
+    @Value("${test.pk8}")
+    private String pk8;
 
     @PostConstruct
     void postConstruct() {
-        log.info("SSL Key File: {}", sslKey);
-        var file = new File(sslKey);
-        log.info("File {} exists: {}", file.getAbsolutePath(), file.exists());
+        log.info("PEM file: {}", pem);
+        var pemFile = new File(pem);
+        log.info("PEM file {} exists: {}", pemFile.getAbsolutePath(), pemFile.exists());
+        try {
+            io.netty.handler.ssl.SslContextBuilder
+                    .forClient()
+                    .keyManager(null, new FileInputStream(pemFile), null)
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to load {} manually", pem, e);
+        }
+
+        log.info("PK8 file: {}", pk8);
+        var pk8File = new File(pk8);
+        log.info("PK8 file {} exists: {}", pk8File.getAbsolutePath(), pk8File.exists());
+        try {
+            io.netty.handler.ssl.SslContextBuilder
+                    .forClient()
+                    .keyManager(null, new FileInputStream(pk8File), null)
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to load {} manually", pk8, e);
+        }
     }
 
 //    @Value("${config.r2dbc.driver}")
