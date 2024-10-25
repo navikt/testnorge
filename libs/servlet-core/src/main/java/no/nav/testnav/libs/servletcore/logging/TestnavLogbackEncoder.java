@@ -25,6 +25,7 @@ import static org.springframework.util.StringUtils.truncate;
  * <li>{@code stackTraceIncludePrefix}: If set, only include stack trace elements that starts with the given prefix, e.g. "no.nav.testnav".</li>
  * </ul>
  * Copy of {@code no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder}.
+ *
  * @see StringUtils#truncate(CharSequence, int)
  */
 @Slf4j
