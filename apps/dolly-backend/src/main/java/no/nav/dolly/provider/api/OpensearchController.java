@@ -8,6 +8,7 @@ import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.dto.SearchRequest;
 import no.nav.dolly.elastic.dto.SearchResponse;
+import no.nav.dolly.elastic.dto.Kategori;
 import no.nav.dolly.elastic.service.OpenSearchService;
 import no.nav.dolly.exceptions.NotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,6 +38,13 @@ public class OpensearchController {
     public List<ElasticBestilling> getAll(@PathVariable String ident) {
 
         return openSearchService.search(ident);
+    }
+
+    @GetMapping("/typer")
+    @Operation(description = "Henter alle typer som kan søkes på")
+    public List<Kategori> getKategorier() {
+
+        return openSearchService.getTyper();
     }
 
     @GetMapping("/identer")
