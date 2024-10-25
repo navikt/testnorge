@@ -114,6 +114,7 @@ export const EgneOrganisasjoner = ({
 	handleChange,
 	warningMessage,
 	filterValidEnhetstyper,
+	isDisabled = false,
 }: OrgProps) => {
 	const [orgnr, setOrgnr] = useState(null)
 	const [miljoer, setMiljoer] = useState([])
@@ -232,6 +233,7 @@ export const EgneOrganisasjoner = ({
 					value={formMethods.watch(path)}
 					feil={sjekkOrganisasjoner()}
 					isClearable={false}
+					isDisabled={isDisabled}
 				/>
 			)}
 			{orgnr && (

@@ -125,10 +125,7 @@ const AmeldingUnderenhet = ({ data, ident }: any) => {
 					(person) => person.ident === ident.toString(),
 				)
 				if (!gjeldendePerson) return null
-				console.log('underenhet: ', underenhet) //TODO - SLETT MEG
-				console.log('gjeldendePerson: ', gjeldendePerson) //TODO - SLETT MEG
 				const arbeidsforhold = gjeldendePerson?.arbeidsforhold?.[0]
-				console.log('arbeidsforhold: ', arbeidsforhold) //TODO - SLETT MEG
 				return (
 					<React.Fragment>
 						<div className="person-visning_content" key={idx}>

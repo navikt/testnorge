@@ -11,7 +11,7 @@ type ArbeidsgiverIdentProps = {
 	isDisabled?: boolean
 }
 
-export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
+export const ArbeidsgiverIdent = ({ path, isDisabled, title = null }: ArbeidsgiverIdentProps) => {
 	const formMethods = useFormContext()
 	const [personnummer, setPersonnummer] = useState(formMethods.watch(path))
 	const [success, setSuccess] = useBoolean(false)
@@ -48,6 +48,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				onChange={handleChange}
 				isDisabled={loadingNaviger || isDisabled}
 				size="xlarge"
+				title={title}
 			/>
 			{success && (
 				<div className="flexbox" style={{ marginTop: '-5px' }}>

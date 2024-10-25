@@ -18,6 +18,28 @@ const ToggleArbeidsgiver = styled(ToggleGroup)`
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 `
 
+const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	:hover {
+		background-color: white;
+		cursor: default;
+	}
+	&&& {
+		button {
+			color: #aab0ba;
+		}
+		.navds-toggle-group__button[aria-checked='true'] {
+			background-color: #aab0ba;
+			color: white;
+			:hover {
+				background-color: #aab0ba;
+				cursor: default;
+			}
+		}
+	}
+`
+
 const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
@@ -82,7 +104,6 @@ export const ArbeidsforholdToggle = ({
 		},
 	]
 
-	//TODO: Ikke toggle naar legg til paa person??? Mulig aa disable den?
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 		if (value === ArbeidsgiverTyper.privat) {
@@ -125,22 +146,41 @@ export const ArbeidsforholdToggle = ({
 		return <Loading label="Laster organisasjoner ..." />
 	}
 
+	const title = erLaastArbeidsforhold
+		? 'Kan ikke endre arbeidsgiver på eksisterende arbeidsforhold'
+		: ''
+
 	return (
 		<div className="toggle--wrapper">
-			<ToggleArbeidsgiver
-				onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
-				value={typeArbeidsgiver}
-				size={'small'}
-			>
-				{toggleValues.map((type) => (
-					<ToggleGroup.Item key={type.value} value={type.value}>
-						{type.label}
-					</ToggleGroup.Item>
-				))}
-			</ToggleArbeidsgiver>
+			{erLaastArbeidsforhold ? (
+				<DisabledToggleArbeidsgiver
+					onChange={null}
+					value={typeArbeidsgiver}
+					size={'small'}
+					title={'Kan ikke endre arbeidsgivertype på eksisterende arbeidsforhold'}
+				>
+					{toggleValues.map((type) => (
+						<ToggleGroup.Item key={type.value} value={type.value}>
+							{type.label}
+						</ToggleGroup.Item>
+					))}
+				</DisabledToggleArbeidsgiver>
+			) : (
+				<ToggleArbeidsgiver
+					onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
+					value={typeArbeidsgiver}
+					size={'small'}
+				>
+					{toggleValues.map((type) => (
+						<ToggleGroup.Item key={type.value} value={type.value}>
+							{type.label}
+						</ToggleGroup.Item>
+					))}
+				</ToggleArbeidsgiver>
+			)}
 			<div className="flexbox--full-width">
 				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
-					<div className="flex-box">
+					<div className="flex-box" title={title}>
 						<EgneOrganisasjoner
 							path={`${path}.arbeidsgiver.orgnummer`}
 							handleChange={(selected) =>
@@ -148,16 +188,19 @@ export const ArbeidsforholdToggle = ({
 							}
 							warningMessage={warningMessage}
 							filterValidEnhetstyper={true}
+							isDisabled={erLaastArbeidsforhold}
 						/>
 					</div>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
-					<OrganisasjonMedArbeidsforholdSelect
-						path={`${path}.arbeidsgiver.orgnummer`}
-						label={'Organisasjonsnummer'}
-						afterChange={() => checkAktiveArbeidsforhold()}
-						isDisabled={erLaastArbeidsforhold}
-					/>
+					<div title={title}>
+						<OrganisasjonMedArbeidsforholdSelect
+							path={`${path}.arbeidsgiver.orgnummer`}
+							label={'Organisasjonsnummer'}
+							afterChange={() => checkAktiveArbeidsforhold()}
+							isDisabled={erLaastArbeidsforhold}
+						/>
+					</div>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
 					<FormTextInput
@@ -167,12 +210,14 @@ export const ArbeidsforholdToggle = ({
 						onKeyPress={() => checkAktiveArbeidsforhold()}
 						defaultValue={formMethods.watch(`${path}.arbeidsgiver.orgnummer`)}
 						isDisabled={erLaastArbeidsforhold}
+						title={title}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.privat && (
 					<ArbeidsgiverIdent
 						path={`${path}.arbeidsgiver.ident`}
 						isDisabled={erLaastArbeidsforhold}
+						title={title}
 					/>
 				)}
 			</div>

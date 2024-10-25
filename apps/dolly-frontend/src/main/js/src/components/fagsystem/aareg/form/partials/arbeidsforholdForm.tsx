@@ -79,19 +79,25 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
 	return (
 		<React.Fragment>
 			<div className="flexbox--flex-wrap">
-				<FormSelect
-					name={`${path}.arbeidsforholdstype`}
-					label="Type arbeidsforhold"
-					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-					size="xlarge"
-					isClearable={false}
-					onChange={handleArbeidsforholdstypeChange}
-					isDisabled={erLaastArbeidsforhold}
-				/>
+				<div
+					title={erLaastArbeidsforhold ? 'Kan ikke endre type på eksisterende arbeidsforhold' : ''}
+				>
+					<FormSelect
+						name={`${path}.arbeidsforholdstype`}
+						label="Type arbeidsforhold"
+						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+						size="xlarge"
+						isClearable={false}
+						onChange={handleArbeidsforholdstypeChange}
+						isDisabled={erLaastArbeidsforhold}
+					/>
+				</div>
+				{/*//TODO: Bare vises ved legg til?*/}
 				<FormTextInput
-					label="Arbeidsforhold ID"
+					label="Arbeidsforhold-ID"
 					name={`${path}.arbeidsforholdId`}
 					isDisabled={true}
+					title="Kan ikke endre arbeidsforhold-ID på eksisterende arbeidsforhold"
 				/>
 				<FormDatepicker
 					name={`${path}.ansettelsesPeriode.fom`}

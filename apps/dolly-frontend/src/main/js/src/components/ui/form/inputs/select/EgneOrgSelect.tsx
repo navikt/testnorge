@@ -116,6 +116,7 @@ export const EgneOrgSelect = (props: any) => {
 					isClearable={props.isClearable}
 					styles={{ menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
 					menuPortalTarget={document.getElementById('react-select-root')}
+					isDisabled={props.isDisabled}
 				/>
 			</Label>
 		</InputWrapper>
