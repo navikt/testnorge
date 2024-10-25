@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 import java.util.UUID;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -68,7 +69,7 @@ public class HistarkConsumer {
                             .forEach(value -> buffer.append('\t')
                                     .append(name)
                                     .append('=')
-                                    .append(value.contains("Bearer ") ? "Bearer token" : value)
+                                    .append(nonNull(value) && value.contains("Bearer ") ? "Bearer token" : value)
                                     .append(System.lineSeparator())));
             log.trace(buffer.substring(0, buffer.length() - 1));
             return next.exchange(clientRequest);
