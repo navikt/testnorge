@@ -2,10 +2,13 @@ package no.nav.testnav.levendearbeidsforholdansettelse.config;
 
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
+import org.springframework.boot.autoconfigure.r2dbc.R2dbcProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -16,6 +19,8 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.reactive.config.EnableWebFlux;
+
+import java.io.File;
 
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
@@ -28,7 +33,19 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 })
 @EnableAsync
 @EnableWebFlux
+@RequiredArgsConstructor
 public class ApplicationConfig {
+
+    private final R2dbcProperties config;
+
+    @PostConstruct
+    void postConstruct() {
+        log.info("R2DBC config: {}", config);
+        if (config.getProperties().containsKey("sslKey")) {
+            var file = new File(config.getProperties().get("sslCert"));
+            log.info("File {} exists: {}", file.getAbsolutePath(), file.exists());
+        }
+    }
 
 //    @Value("${config.r2dbc.driver}")
 //    private String driver;
