@@ -1,27 +1,35 @@
 package no.nav.testnav.libs.reactivecore.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import com.fasterxml.jackson.core.JsonFactory;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.LogstashEncoder;
+import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.springframework.util.StringUtils.truncate;
 
 /**
  * Config:
- *  <li>{@code maxStackTraceLength}: Default 480, set to a negative number to disable truncation of stack trace altogether.</li>
- *  <li>@{code addCauses}: If {@code true}, adds the cause(s) to the stack trace (without stack traces for each cause) Truncated according to above.</li>
+ * <ul>
+ * <li>{@code maxStackTraceLength}: Default 480, set to <1 to disable truncation of stack trace altogether.</li>
+ * <li>{@code addCauses}: If enabled, adds the cause(s) to the stack trace (with stack traces for each cause) Truncated according to above, filtered according to below.</li>
+ * <li>{@code stackTraceIncludePrefix}: If set, only include stack trace elements that starts with the given prefix, e.g. "no.nav.testnav".</li>
+ * </ul>
+ * Copy of {@code no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder}.
+ *
+ * @see StringUtils#truncate(CharSequence, int)
  */
 @Slf4j
+@SuppressWarnings("java:S110")
 public class TestnavLogbackEncoder extends LogstashEncoder {
 
     // matches exactly 11 digits (\\d{11}) that are not immediately preceded ((?<!\\d)) or followed ((?!\\d)) by another digit.
@@ -32,6 +40,9 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
 
     @Setter
     private boolean addCauses = false;
+
+    @Setter
+    private String stackTraceIncludePrefix = null;
 
     @SneakyThrows
     @Override
@@ -47,21 +58,7 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
             generator.writeStringField("logger_name", event.getLoggerName());
             generator.writeStringField("thread_name", event.getThreadName());
             generator.writeStringField("level", event.getLevel().toString());
-            if (nonNull(event.getThrowableProxy())) {
-                var exception = (ThrowableProxy) event.getThrowableProxy();
-                if (nonNull(exception.getThrowable())) {
-                    var sw = new StringWriter();
-                    var pw = new PrintWriter(sw);
-                    for (StackTraceElement element : exception.getThrowable().getStackTrace()) {
-                        pw.println("\tat " + element);
-                    }
-                    if (addCauses) {
-                        recursivelyAddCauses(exception, pw);
-                    }
-                    var stackTrace = maxStackTraceLength < 0 ? sw.toString() : sw.toString().substring(0, maxStackTraceLength);
-                    generator.writeStringField("stack_trace", stackTrace);
-                }
-            }
+            generator.writeStringField("stack_trace", getStackTrace(event));
             generator.writeEndObject();
 
             generator.flush();
@@ -71,16 +68,47 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
         return outputStream.toByteArray();
     }
 
-    private static void recursivelyAddCauses(IThrowableProxy exception, PrintWriter pw) {
-        var cause = exception.getCause();
-        if (cause != null) {
-            pw
-                    .append("caused by ")
-                    .append(cause.getClassName())
-                    .append(": ")
-                    .append(cause.getMessage())
-                    .append("\n");
-            recursivelyAddCauses(cause, pw);
+    private String getStackTrace(ILoggingEvent event) {
+        if (nonNull(event.getThrowableProxy())) {
+            var exception = (ThrowableProxy) event.getThrowableProxy();
+            if (nonNull(exception.getThrowable())) {
+                var writer = new StringWriter();
+                appendStackTraceElements(exception.getThrowable().getStackTrace(), writer);
+                appendStackTraceCauses(exception, writer);
+                return maxStackTraceLength > 0 ?
+                        truncate(writer.toString(), maxStackTraceLength) :
+                        writer.toString();
+            }
+        }
+        return null;
+    }
+
+    private void appendStackTraceElements(StackTraceElement[] elements, StringWriter writer) {
+        for (StackTraceElement element : elements) {
+            if (isNull(stackTraceIncludePrefix) || stackTraceIncludePrefix.isEmpty() || element.toString().startsWith(stackTraceIncludePrefix)) {
+                writer
+                        .append("\tat ")
+                        .append(element.toString())
+                        .append("\n");
+            }
+        }
+    }
+
+    private void appendStackTraceCauses(ThrowableProxy exception, StringWriter writer) {
+        if (addCauses) {
+            var cause = exception;
+            while (!isNull(cause.getCause())) {
+                cause = (ThrowableProxy) cause.getCause();
+                writer
+                        .append("caused by ")
+                        .append(cause.getClassName())
+                        .append(": ")
+                        .append(cause.getMessage())
+                        .append("\n");
+                if (!isNull(cause.getThrowable())) {
+                    appendStackTraceElements(cause.getThrowable().getStackTrace(), writer);
+                }
+            }
         }
     }
 
