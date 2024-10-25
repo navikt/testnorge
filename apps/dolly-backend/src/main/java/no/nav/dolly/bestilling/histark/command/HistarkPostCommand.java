@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.histark.command;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
@@ -47,13 +46,10 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                             .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
                             .retrieve()
                             .bodyToMono(String.class)
-                            .doOnNext(response -> log.info("Histark response: {}", response))
-                            .map(response -> {
-                                log.info("Histark response: {}", response);
-                                return HistarkResponse.builder()
-                                        .histarkId(Json.pretty(response))
-                                        .build();
-                            })
+                            .doOnNext(response -> log.info("Histark post response: {}", response))
+                            .map(response -> HistarkResponse.builder()
+                                    .histarkId(response)
+                                    .build())
                             .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                                     .filter(WebClientFilter::is5xxException))
                             .doOnError(WebClientFilter::logErrorMessage)
