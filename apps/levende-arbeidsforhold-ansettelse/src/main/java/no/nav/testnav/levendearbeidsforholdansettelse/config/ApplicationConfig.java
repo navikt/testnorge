@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.r2dbc.R2dbcProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 import java.io.File;
+import java.io.IOException;
 
 import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 
@@ -36,15 +38,14 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.DRIVER;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final R2dbcProperties config;
+    @Value("${test.sslkey}")
+    private String sslKey;
 
     @PostConstruct
     void postConstruct() {
-        log.info("R2DBC config: {}", config);
-        if (config.getProperties().containsKey("sslKey")) {
-            var file = new File(config.getProperties().get("sslCert"));
-            log.info("File {} exists: {}", file.getAbsolutePath(), file.exists());
-        }
+        log.info("SSL Key File: {}", sslKey);
+        var file = new File(sslKey);
+        log.info("File {} exists: {}", file.getAbsolutePath(), file.exists());
     }
 
 //    @Value("${config.r2dbc.driver}")
