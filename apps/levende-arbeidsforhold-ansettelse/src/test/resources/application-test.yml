@@ -3,3 +3,6 @@ spring:
     url: r2dbc:h2:mem:///~/db/testdb
     username: sa
     password:
+
+test:
+  sslKey: ./Dockerfile
