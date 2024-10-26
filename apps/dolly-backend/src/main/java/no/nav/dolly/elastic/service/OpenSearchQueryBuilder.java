@@ -24,7 +24,6 @@ import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addBostedUkj
 import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addBostedUtlandQuery;
 import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
 import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addForeldreQuery;
-import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addFullmaktQuery;
 import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addHarBostedBydelsnrQuery;
 import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addHarDeltBostedQuery;
 import static no.nav.dolly.elastic.utils.OpenSearchPersonQueryUtils.addHarDoedfoedtbarnQuery;
@@ -54,7 +53,7 @@ public class OpenSearchQueryBuilder {
     public static BoolQueryBuilder buildSearchQuery(SearchRequest request) {
 
         var queryBuilder = buildTyperQuery(request.getTyper().toArray(ElasticTyper[]::new));
-       setPersonQuery(queryBuilder, request);
+        setPersonQuery(queryBuilder, request);
 
         return queryBuilder;
     }
@@ -81,7 +80,6 @@ public class OpenSearchQueryBuilder {
                     addHarDoedfoedtbarnQuery(queryBuilder, request);
                     addHarForeldreansvarQuery(queryBuilder, request);
                     addVergemaalQuery(queryBuilder, request);
-                    addFullmaktQuery(queryBuilder, request);
                     addDoedsfallQuery(queryBuilder, request);
                     addHarInnflyttingQuery(queryBuilder, request);
                     addHarUtflyttingQuery(queryBuilder, request);
@@ -108,6 +106,7 @@ public class OpenSearchQueryBuilder {
                     addIdenttypeQuery(queryBuilder, request);
                 });
     }
+
     private QueryBuilder getFagsystemQuery(ElasticTyper type) {
 
         return switch (type) {
@@ -130,6 +129,7 @@ public class OpenSearchQueryBuilder {
             case INNTKMELD -> QueryBuilders.existsQuery("inntektsmelding");
             case BRREGSTUB -> QueryBuilders.existsQuery("brregstub");
             case DOKARKIV -> QueryBuilders.existsQuery("dokarkiv");
+            case FULLMAKT -> QueryBuilders.existsQuery("fullmakt");
             case MEDL -> QueryBuilders.existsQuery("medl");
             case HISTARK -> QueryBuilders.existsQuery("histark");
             case SYKEMELDING -> QueryBuilders.existsQuery("sykemelding");
@@ -139,7 +139,7 @@ public class OpenSearchQueryBuilder {
             case BANKKONTO_UTLAND -> QueryBuilders.existsQuery("bankkonto.utenlandskBankkonto");
             case ARBEIDSPLASSENCV -> QueryBuilders.existsQuery("arbeidsplassenCV");
             case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
-            case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskade");
+            case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskader");
         };
     }
 

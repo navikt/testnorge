@@ -65,13 +65,6 @@ public class OpenSearchPersonQueryUtils {
         }
     }
 
-    public static void addFullmaktQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
-
-        if (isTrue(request.getPersonRequest().getHarFullmakt())) {
-            queryBuilder.must(existQuery("pdldata.person.fullmakt"));
-        }
-    }
-
     public static void addHarInnflyttingQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         if (isTrue(request.getPersonRequest().getHarInnflytting())) {

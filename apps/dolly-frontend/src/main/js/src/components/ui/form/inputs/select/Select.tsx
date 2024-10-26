@@ -40,6 +40,7 @@ type SelectProps = {
 	feil?: any
 	size?: string
 	info?: any
+	normalFontPlaceholder?: boolean
 	visHvisAvhuket?: any
 	afterChange?: any
 	isInDialog?: boolean
@@ -61,6 +62,7 @@ export const Select = ({
 	styles,
 	onChange,
 	isInDialog = false,
+	normalFontPlaceholder = false,
 	...rest
 }: SelectProps) => {
 	const formMethods = useFormContext()
@@ -104,6 +106,13 @@ export const Select = ({
 				isLoading={isLoading}
 				isClearable={isClearable}
 				isMulti={isMulti}
+				theme={(theme) => ({
+					...theme,
+					colors: {
+						...theme.colors,
+						neutral50: normalFontPlaceholder ? 'unset' : '',
+					},
+				})}
 				onChange={onChange}
 				styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
 				// Naar vi bruker modal fra Aksel maa vi referere til modalens className for at dropdowns ikke skal forsvinne bak modalen

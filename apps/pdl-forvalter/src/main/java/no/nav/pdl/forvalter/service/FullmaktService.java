@@ -3,7 +3,6 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
@@ -16,11 +15,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -28,12 +25,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
-
-    private static final String VALIDATION_GYLDIG_FOM_ERROR = "Fullmakt med gyldigFom må angis";
-    private static final String VALIDATION_GYLDIG_TOM_ERROR = "Fullmakt med gyldigTom må angis";
-    private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
-    private static final String VALIDATION_OMRAADER_ERROR = "Områder for fullmakt må angis";
-    private static final String VALIDATION_FULLMEKTIG_ERROR = "Fullmektig: person %s ikke funnet i database";
 
     private final PersonRepository personRepository;
     private final CreatePersonService createPersonService;
@@ -56,24 +47,6 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
     @Override
     public void validate(FullmaktDTO fullmakt, PersonDTO person) {
 
-        if (isNull(fullmakt.getOmraader())) {
-            throw new InvalidRequestException(VALIDATION_OMRAADER_ERROR);
-        }
-
-        if (isNull(fullmakt.getGyldigFraOgMed())) {
-            throw new InvalidRequestException(VALIDATION_GYLDIG_FOM_ERROR);
-
-        } else if (isNull(fullmakt.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_GYLDIG_TOM_ERROR);
-
-        } else if (!fullmakt.getGyldigFraOgMed().isBefore(fullmakt.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
-        }
-
-        if (!isTestnorgeIdent(person.getIdent()) && isNotBlank(fullmakt.getMotpartsPersonident()) &&
-                !personRepository.existsByIdent(fullmakt.getMotpartsPersonident())) {
-            throw new InvalidRequestException(format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getMotpartsPersonident()));
-        }
     }
 
     private void handle(FullmaktDTO fullmakt, String ident) {
@@ -106,11 +79,11 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             personRepository.findByIdent(fullmakt.getMotpartsPersonident())
                     .ifPresentOrElse(motpartPerson::set,
                             () -> motpartPerson.set(personRepository.save(DbPerson.builder()
+                                    .ident(fullmakt.getMotpartsPersonident())
+                                    .person(PersonDTO.builder()
                                             .ident(fullmakt.getMotpartsPersonident())
-                                            .person(PersonDTO.builder()
-                                                    .ident(fullmakt.getMotpartsPersonident())
-                                                    .build())
-                                            .sistOppdatert(LocalDateTime.now())
+                                            .build())
+                                    .sistOppdatert(LocalDateTime.now())
                                     .build())));
         }
 

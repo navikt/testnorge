@@ -8,7 +8,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.Token;
 import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
 import no.nav.testnav.libs.securitycore.domain.tokenx.WellKnown;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -31,7 +30,6 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
 
     @Override
     public Mono<AccessToken> call() {
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
         return webClient
                 .get()
                 .uri(tokenX.getWellKnownUrl())
@@ -60,6 +58,7 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
                                         throwable -> !(throwable instanceof WebClientResponseException),
                                         throwable -> log.error("Feil ved henting av access token.", throwable)
                                 )
+                                .doOnSuccess(accessToken -> log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope))
                 );
     }
 

@@ -58,6 +58,9 @@ public class BestillingProgress implements Serializable {
     @Column(name = "KRRSTUB_STATUS")
     private String krrstubStatus;
 
+    @Column(name = "FULLMAKT_STATUS")
+    private String fullmaktStatus;
+
     @Column(name = "MEDL_STATUS")
     private String medlStatus;
 
@@ -173,6 +176,7 @@ public class BestillingProgress implements Serializable {
                 .append(getBestilling(), that.getBestilling())
                 .append(getIdent(), that.getIdent())
                 .append(getSigrunstubStatus(), that.getSigrunstubStatus())
+                .append(getFullmaktStatus(), that.getFullmaktStatus())
                 .append(getKrrstubStatus(), that.getKrrstubStatus())
                 .append(getMedlStatus(), that.getMedlStatus())
                 .append(getUdistubStatus(), that.getUdistubStatus())
@@ -208,6 +212,7 @@ public class BestillingProgress implements Serializable {
                 .append(getIdent())
                 .append(getSigrunstubStatus())
                 .append(getKrrstubStatus())
+                .append(getFullmaktStatus())
                 .append(getMedlStatus())
                 .append(getUdistubStatus())
                 .append(getAaregStatus())
@@ -242,6 +247,7 @@ public class BestillingProgress implements Serializable {
                 ", ident='" + ident + '\'' +
                 ", sigrunstubStatus='" + sigrunstubStatus + '\'' +
                 ", krrstubStatus='" + krrstubStatus + '\'' +
+                ", fullmaktStatus='" + fullmaktStatus + '\'' +
                 ", medlStatus='" + medlStatus + '\'' +
                 ", udistubStatus='" + udistubStatus + '\'' +
                 ", aaregStatus='" + aaregStatus + '\'' +

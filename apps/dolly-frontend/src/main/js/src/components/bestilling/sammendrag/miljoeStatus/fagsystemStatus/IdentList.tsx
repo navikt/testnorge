@@ -22,23 +22,25 @@ const NavigerTilIdentButton = styled(Button)`
 function IdentList({ identer }: { identer: string[] }) {
 	const dispatch = useDispatch()
 	const [loading, setLoading] = useState(false)
+
 	return (
 		<ul>
-			{identer.map((ident, idx) =>
-				loading ? (
+			{identer.map((ident, idx) => {
+				const cleanIdent = ident?.replace(/[()]/g, '')
+				return loading ? (
 					<Loading label={'Navigerer...'} key={idx} />
 				) : (
 					<NavigerTilIdentButton
 						onClick={() => {
 							setLoading(true)
-							return dispatch(navigerTilPerson(ident))
+							return dispatch(navigerTilPerson(cleanIdent))
 						}}
 						key={idx}
 					>
 						{ident}
 					</NavigerTilIdentButton>
-				),
-			)}
+				)
+			})}
 		</ul>
 	)
 }
