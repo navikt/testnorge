@@ -3,7 +3,3 @@ spring:
     url: r2dbc:h2:mem:///~/db/testdb
     username: sa
     password:
-
-test:
-  pem: n/a
-  pk8: n/a
