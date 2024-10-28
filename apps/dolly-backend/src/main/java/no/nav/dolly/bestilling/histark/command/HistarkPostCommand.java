@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -49,11 +47,12 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                                 log.info("Status fra histark: {}", clientResponse.statusCode());
                                 log.info("Responseheaders fra histark: {}", clientResponse.headers().asHttpHeaders());
                                 if (clientResponse.statusCode().isError()) {
-                                    return Mono.error(new DollyFunctionalException("Feil ved opprettelse av saksmapper i histark"));
+                                    return Mono.just(HistarkResponse.builder()
+                                            .feilmelding("Feil ved opprettelse av saksmappe, status: " + clientResponse.statusCode())
+                                            .build());
                                 }
-                                return clientResponse.toEntity(HistarkResponse.class);
+                                return clientResponse.bodyToMono(HistarkResponse.class);
                             })
-                            .mapNotNull(ResponseEntity::getBody)
                             .doOnNext(response -> log.info("Responsebody fra histark: {}", response))
                             .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                                     .filter(WebClientFilter::is5xxException))
