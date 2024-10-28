@@ -48,10 +48,11 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                             .body(BodyInserters.fromMultipartData(body))
                             .exchangeToMono(clientResponse -> {
                                 log.info("Status fra histark: {}", clientResponse.statusCode());
+                                log.info("Responseheaders fra histark: {}", clientResponse.headers().asHttpHeaders());
                                 return clientResponse.toEntity(HistarkResponse.class);
                             })
                             .mapNotNull(ResponseEntity::getBody)
-                            .doOnNext(response -> log.info("Response fraa histark: {}", response))
+                            .doOnNext(response -> log.info("Responsebody fra histark: {}", response))
                             .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                                     .filter(WebClientFilter::is5xxException))
                             .doOnError(WebClientFilter::logErrorMessage)
