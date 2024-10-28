@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,9 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                             .exchangeToMono(clientResponse -> {
                                 log.info("Status fra histark: {}", clientResponse.statusCode());
                                 log.info("Responseheaders fra histark: {}", clientResponse.headers().asHttpHeaders());
+                                if (clientResponse.statusCode().isError()) {
+                                    return Mono.error(new DollyFunctionalException("Feil ved opprettelse av saksmapper i histark"));
+                                }
                                 return clientResponse.toEntity(HistarkResponse.class);
                             })
                             .mapNotNull(ResponseEntity::getBody)
