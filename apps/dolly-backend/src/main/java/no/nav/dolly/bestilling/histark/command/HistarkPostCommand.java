@@ -7,8 +7,6 @@ import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,9 +14,11 @@ import reactor.util.retry.Retry;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,11 +34,7 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
 
         return Flux.fromIterable(histarkRequest.getHistarkDokumenter())
                 .flatMap(histarkDokument -> {
-                    var bodyBuilder = new MultipartBodyBuilder();
-                    bodyBuilder.part("file", histarkDokument.getFile().getBytes(StandardCharsets.UTF_8));
-                    bodyBuilder.part("metadata", histarkDokument.getMetadata());
-                    var body = bodyBuilder.build();
-                    log.info("Poster body til histark: {}", body);
+                    log.info("Sender metadata: {}", histarkDokument.getMetadata().toString());
                     return webClient.post()
                             .uri(builder ->
                                     builder.path("/api/saksmapper/import")
@@ -46,7 +42,8 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                                             .build())
                             .header(AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.MULTIPART_FORM_DATA)
-                            .body(BodyInserters.fromMultipartData(body))
+                            .body(fromFormData("metadata", histarkDokument.getMetadata().toString())
+                                    .with("file", Arrays.toString(histarkDokument.getFile().getBytes(StandardCharsets.UTF_8))))
                             .exchangeToMono(clientResponse -> {
                                 log.info("Status fra histark: {}", clientResponse.statusCode());
                                 log.info("Responseheaders fra histark: {}", clientResponse.headers().asHttpHeaders());
