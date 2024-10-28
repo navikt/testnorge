@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -42,10 +41,11 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     log.info("Poster body til histark: {}", body);
                     return webClient.post()
                             .uri(builder ->
-                                    builder.path("/api/saksmapper/import").build())
+                                    builder.path("/api/saksmapper/import")
+                                            .queryParam("metadata", histarkDokument.getMetadata())
+                                            .build())
                             .header(AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.MULTIPART_FORM_DATA)
-                            .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                             .body(BodyInserters.fromMultipartData(body))
                             .exchangeToMono(clientResponse -> {
                                 log.info("Status fra histark: {}", clientResponse.statusCode());
