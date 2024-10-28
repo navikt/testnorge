@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.TenorConsumer;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.DatoIntervall;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdDTO;
+import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdResponseDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.KanAnsettesDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.OrganisasjonResponseDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
@@ -14,10 +15,10 @@ import no.nav.testnav.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import no.nav.testnav.levendearbeidsforholdansettelse.utility.SannsynlighetVelger;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsavtale;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -79,14 +80,22 @@ public class AnsettelseService {
                                                               List<String> yrkeskoder, List<DatoIntervall> datointervaller) {
 
         return Flux.fromIterable(getFordeling(parametere).entrySet())
+                .limitRate(1)
                 .flatMap(intervall -> Flux.range(0, intervall.getValue())
                         .flatMap(index -> getPersonSomKanAnsettes((int) getParameterValue(parametere, STILLINGSPROSENT),
                                 datointervaller.get(intervall.getKey()), organisasjon)
                                 .flatMap(kanAnsettes -> ansettPerson(kanAnsettes, hentTilfeldigYrkeskode(yrkeskoder), parametere)
-                                        .doOnNext(status -> log.info("Opprettet arbeidsforhold orgnummer {}, ident {}, status {}",
-                                                kanAnsettes.getOrgnummer(), kanAnsettes.getIdent(), status))
-                                        .flatMap(status ->
-                                                ansettelseLoggService.lagreAnsettelse(kanAnsettes, parametere)))));
+                                        .flatMap(response -> {
+                                            if (response.getStatusCode().is2xxSuccessful()) {
+                                                log.info("Opprettet arbeidsforhold orgnummer {}, ident {}, status {}",
+                                                        kanAnsettes.getOrgnummer(), kanAnsettes.getIdent(), response.getStatusCode());
+                                                return ansettelseLoggService.lagreAnsettelse(kanAnsettes, parametere);
+                                            } else {
+                                                log.error("Oppretting mot AAREG feilet {} ", response.getFeilmelding());
+                                                return Mono.empty();
+                                            }
+                                        }))));
+
     }
 
     private Flux<KanAnsettesDTO> getPersonSomKanAnsettes(Integer stillingsprosent, DatoIntervall intervall,
@@ -136,8 +145,8 @@ public class AnsettelseService {
                                 .build()));
     }
 
-    private Flux<HttpStatusCode> ansettPerson(KanAnsettesDTO arbeidsforhold, String yrke,
-                                              Map<String, String> parametere) {
+    private Flux<ArbeidsforholdResponseDTO> ansettPerson(KanAnsettesDTO arbeidsforhold, String yrke,
+                                                         Map<String, String> parametere) {
 
         return arbeidsforholdService.opprettArbeidsforhold(arbeidsforhold, yrke,
                 (String) getParameterValue(parametere, ARBEIDSFORHOLD_TYPE),

@@ -27,13 +27,14 @@ public class AnsettelseLoggService {
 
     /**
      * Funksjonen som lagrer ansettelsen i db
+     *
      * @param kanAnsette inneholder ident og orgnummer
      * @param parametere Stillingsprosent og arbeidsavtalarbeidsforholdType til personen.
      */
-    public Mono<AnsettelseLogg> lagreAnsettelse(KanAnsettesDTO kanAnsette, Map<String, String> parametere){
+    public Mono<AnsettelseLogg> lagreAnsettelse(KanAnsettesDTO kanAnsette, Map<String, String> parametere) {
 
         return ansettelseLoggRepository.save(AnsettelseLogg.builder()
-                        .isNew(true)
+                .isNew(true)
                 .folkeregisterident(kanAnsette.getIdent())
                 .organisasjonsnummer(kanAnsette.getOrgnummer())
                 .timestamp(LocalDateTime.now())

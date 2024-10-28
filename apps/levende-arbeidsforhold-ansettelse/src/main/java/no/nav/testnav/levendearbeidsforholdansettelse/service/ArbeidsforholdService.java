@@ -3,6 +3,7 @@ package no.nav.testnav.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.AaregConsumer;
+import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdResponseDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.KanAnsettesDTO;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Ansettelsesperiode;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
@@ -10,13 +11,11 @@ import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Organisasjon;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Periode;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Person;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -51,11 +50,11 @@ public class ArbeidsforholdService {
      * @param stillingsprosent Stillinsprosenten arbeidsforholdet skal ha
      * @return HttpStatusCode basert på resultatet av spørringen
      */
-    public Flux<HttpStatusCode> opprettArbeidsforhold(KanAnsettesDTO kanAnsettes, String yrke,
-                                                      String arbeidsforholdstype, Integer stillingsprosent) {
+    public Flux<ArbeidsforholdResponseDTO> opprettArbeidsforhold(KanAnsettesDTO kanAnsettes, String yrke,
+                                                                 String arbeidsforholdstype, Integer stillingsprosent) {
 
-        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(kanAnsettes, yrke, arbeidsforholdstype, stillingsprosent))
-                .delayElements(Duration.ofSeconds(1));
+        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(kanAnsettes,
+                yrke, arbeidsforholdstype, stillingsprosent));
     }
 
     /**

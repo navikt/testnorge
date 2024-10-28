@@ -3,12 +3,11 @@ spring:
   flyway:
     # InMemmory database
     url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
-    user: postgres
-    username: ${spring.flyway.user}
+    user: ${NAV_USERNAME}
     password:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
-    username: postgres
+    username: ${NAV_USERNAME}
     password:
 #  sql:
 #    init:

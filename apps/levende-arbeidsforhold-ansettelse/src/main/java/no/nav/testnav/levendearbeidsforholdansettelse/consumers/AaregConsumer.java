@@ -4,11 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.aareg.HentArbeidsforholdCommand;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.aareg.OpprettArbeidsforholdCommand;
+import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdResponseDTO;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -54,10 +53,10 @@ public class AaregConsumer {
                 .flatMapMany(token -> new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call()));
     }
 
-    public Flux<HttpStatusCode> opprettArbeidsforhold(Arbeidsforhold requests) {
+    public Flux<ArbeidsforholdResponseDTO> opprettArbeidsforhold(Arbeidsforhold requests) {
 
         return Flux.from(tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new OpprettArbeidsforholdCommand(webClient, requests, token.getTokenValue()).call())
-                .map(ResponseEntity::getStatusCode));
+                .flatMap(token -> new OpprettArbeidsforholdCommand(webClient,
+                        requests, token.getTokenValue()).call()));
     }
 }
