@@ -50,6 +50,14 @@ export const App = () => {
 		}
 	}, [criticalError])
 
+	useEffect(() => {
+		let arr = new Uint8Array(1100)
+		crypto.getRandomValues(arr)
+		for (let i = 0; i < 2; i++) {
+			document.cookie = 'testinggg' + i + '=' + arr.join('-') //SLETT MEG!
+		}
+	}, [])
+
 	if (loading || criticalError) {
 		return <Loading label="Laster Dolly" fullpage />
 	}
