@@ -193,10 +193,10 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreAfpOffentlig"})
-    public Flux<PensjonforvalterResponse> lagreAfpOffentlig(AfpOffentligRequest afpOffentligRequest, String miljoe) {
+    public Flux<PensjonforvalterResponse> lagreAfpOffentlig(AfpOffentligRequest afpOffentligRequest, String ident, String miljoe) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new LagreAfpOffentligCommand(webClient, afpOffentligRequest, miljoe, token.getTokenValue()).call());
+                .flatMapMany(token -> new LagreAfpOffentligCommand(webClient, afpOffentligRequest, ident, miljoe, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_sletteAfpOffentlig"})

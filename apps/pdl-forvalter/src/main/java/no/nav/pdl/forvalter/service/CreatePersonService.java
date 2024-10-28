@@ -39,6 +39,7 @@ public class CreatePersonService {
     private final NavnService navnService;
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final NavPersonIdentifikatorService navsPersonIdentifikatorService;
+    private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
 
     private static PersonDTO buildPerson(PersonRequestDTO request) {
 
@@ -96,7 +97,8 @@ public class CreatePersonService {
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
                         Flux.just(adressebeskyttelseService.convert(mergedPerson)),
-                        Flux.just(navsPersonIdentifikatorService.convert(mergedPerson))
+                        Flux.just(navsPersonIdentifikatorService.convert(mergedPerson)),
+                        Flux.just(folkeregisterPersonstatusService.convert(mergedPerson))
                 )
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()

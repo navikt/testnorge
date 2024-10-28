@@ -553,7 +553,7 @@ public class PensjonforvalterClient implements ClientRegister {
                             var context = MappingContextUtils.getMappingContext();
                             context.setProperty(IDENT, ident);
                             var request = mapperFacade.map(pensjon, AfpOffentligRequest.class, context);
-                            return pensjonforvalterConsumer.lagreAfpOffentlig(request, miljoe);
+                            return pensjonforvalterConsumer.lagreAfpOffentlig(request, ident, miljoe);
                         }));
     }
 
