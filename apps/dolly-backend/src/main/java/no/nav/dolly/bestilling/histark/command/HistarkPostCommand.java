@@ -39,6 +39,7 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     bodyBuilder.part("file", histarkDokument.getFile().getBytes(StandardCharsets.UTF_8));
                     bodyBuilder.part("metadata", histarkDokument.getMetadata());
                     var body = bodyBuilder.build();
+                    log.info("Poster body til histark: {}", body);
                     return webClient.post()
                             .uri(builder ->
                                     builder.path("/api/saksmapper/import").build())
