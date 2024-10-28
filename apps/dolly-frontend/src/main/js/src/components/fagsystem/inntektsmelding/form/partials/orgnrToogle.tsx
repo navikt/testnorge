@@ -12,9 +12,14 @@ import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/for
 interface OrgnrToggleProps {
 	path: string
 	formMethods: UseFormReturn
+	label?: string
 }
 
-export const OrgnrToggle = ({ path, formMethods }: OrgnrToggleProps) => {
+export const OrgnrToggle = ({
+	path,
+	formMethods,
+	label = 'Arbeidsgiver (orgnr)',
+}: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(
 		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
 	)
@@ -40,7 +45,7 @@ export const OrgnrToggle = ({ path, formMethods }: OrgnrToggleProps) => {
 			{inputType === inputValg.fraFellesListe && (
 				<OrganisasjonMedArbeidsforholdSelect
 					path={path}
-					label="Arbeidsgiver (orgnr)"
+					label={label}
 					//@ts-ignore
 					isClearable={false}
 				/>
@@ -48,7 +53,7 @@ export const OrgnrToggle = ({ path, formMethods }: OrgnrToggleProps) => {
 			{inputType === inputValg.fraEgenListe && (
 				<EgneOrganisasjoner
 					path={path}
-					label="Arbeidsgiver (orgnr)"
+					label={label}
 					formMethods={formMethods}
 					filterValidEnhetstyper={true}
 					// @ts-ignore
@@ -56,7 +61,7 @@ export const OrgnrToggle = ({ path, formMethods }: OrgnrToggleProps) => {
 				/>
 			)}
 			{inputType === inputValg.skrivSelv && (
-				<FormTextInput type="number" name={path} label="Arbeidsgiver (orgnr)" size="xlarge" />
+				<FormTextInput type="number" name={path} label={label} size="xlarge" />
 			)}
 		</div>
 	)

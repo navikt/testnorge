@@ -24,7 +24,7 @@ public class AaregUtility {
 
         return (isArbeidsgiverOrganisasjonAlike(response, request) ||
                 isArbeidsgiverPersonAlike(response, request)) &&
-                response.getType().equals(request.getType());
+                response.getArbeidsforholdId().equals(request.getArbeidsforholdId());
     }
 
     public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,

@@ -17,7 +17,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Component
@@ -32,6 +31,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("bankkonto", "bankkonto")
                 .field("brregstub", "brregstub")
                 .field("dokarkiv", "dokarkiv")
+                .field("fullmakt", "fullmakt")
                 .field("environments", "environments")
                 .field("histark", "histark")
                 .field("inntektsmelding", "inntektsmelding")

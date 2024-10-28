@@ -131,7 +131,7 @@ export const omraaderArrayToString = (array) => {
 		return null
 	}
 
-	return arrayToString(array).replace('*', '* (Alle)')
+	return arrayToString(array.map((item) => item.tema)).replace('*', '* (Alle)')
 }
 
 export const uppercaseAndUnderscoreToCapitalized = (value) => {
@@ -151,6 +151,9 @@ export const allCapsToCapitalized = (value) => {
 }
 
 export const toTitleCase = (value) => {
+	if (!value) {
+		return ''
+	}
 	return value
 		.split(' ')
 		.map(_.capitalize)

@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import {
-	Fullmakt,
 	MidlertidigAdresse,
 	Postadresse,
 	Relasjoner,
@@ -22,7 +21,6 @@ export const TpsfVisning = ({ data }) => {
 			<TpsfPersoninfo data={data} />
 			<TpsfNasjonalitet data={data} />
 			<TpsfVergemaal data={data?.vergemaal} />
-			<Fullmakt data={data?.fullmakt} relasjoner={data?.relasjoner} />
 			<TpsfBoadresse boadresse={data?.boadresse} />
 			<Postadresse postadresse={data?.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data?.midlertidigAdresse} />

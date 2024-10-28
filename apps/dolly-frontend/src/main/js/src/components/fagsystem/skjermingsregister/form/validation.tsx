@@ -9,8 +9,8 @@ export const validation = {
 			egenAnsattDatoFom: ifPresent('$skjerming.egenAnsattDatoFom', requiredDate),
 			egenAnsattDatoTom: ifPresent(
 				'$skjerming.egenAnsattDatoTom',
-				testDatoTom(Yup.string(), 'egenAnsattDatoFom')
+				testDatoTom(Yup.string(), 'egenAnsattDatoFom'),
 			),
-		})
+		}),
 	),
 }

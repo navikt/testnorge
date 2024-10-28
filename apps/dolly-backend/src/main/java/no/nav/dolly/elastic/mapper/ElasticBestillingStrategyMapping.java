@@ -14,6 +14,7 @@ import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
@@ -26,6 +27,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
+        // Denne brukes ved initiell indexering av eksisterende bestillinger
         factory.classMap(Bestilling.class, ElasticBestilling.class)
                 .customize(new CustomMapper<>() {
                                @Override
@@ -59,6 +61,28 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                }
                            }
                 )
+                .register();
+
+        // Denne brukes ved fortløpende nyoppretting av bestillinger
+        factory.classMap(RsDollyBestilling.class, ElasticBestilling.class)
+                .customize(new CustomMapper<>() {
+                               @Override
+                               public void mapAtoB(RsDollyBestilling bestilling, ElasticBestilling elasticBestilling, MappingContext context) {
+
+                                   if (nonNull(elasticBestilling.getDokarkiv())) {
+                                        elasticBestilling.getDokarkiv().getDokumenter()
+                                                .forEach(dokument -> dokument.getDokumentvarianter()
+                                                        .forEach(dokumentVariant -> dokumentVariant.setFysiskDokument(null)));
+                                   }
+
+                                   if (nonNull(elasticBestilling.getHistark())) {
+                                       elasticBestilling.getHistark().getDokumenter()
+                                               .forEach(dokument -> dokument.setFysiskDokument(null));
+                                   }
+                               }
+                           }
+                )
+                .byDefault()
                 .register();
     }
 }
