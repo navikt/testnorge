@@ -25,6 +25,7 @@ import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMa
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
 import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
+import static no.nav.dolly.mapper.BestillingFullmaktStatusMapper.buildFullmaktStatusMap;
 import static no.nav.dolly.mapper.BestillingHistarkStatusMapper.buildHistarkStatusMap;
 import static no.nav.dolly.mapper.BestillingImportFraPdlStatusMapper.buildImportFraPdlStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
@@ -43,6 +44,7 @@ import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.build
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
+import static no.nav.dolly.mapper.BestillingYrkesskadeStatusMapper.buildYrkesskadeStatusMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -92,6 +94,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildFullmaktStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildMedlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildArenaStatusMap(progresser));
@@ -105,6 +108,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildArbeidsplassenCVStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildYrkesskadeStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                     }
                 })

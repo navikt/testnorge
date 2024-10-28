@@ -23,6 +23,7 @@ public enum SystemTyper {
     INST2("Institusjonsopphold (INST2)"),
     KONTOREGISTER("Bankkontoregister"),
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
+    FULLMAKT("Fullmakt (Representasjon)"),
     MEDL("Medlemskap (MEDL)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDLIMPORT("Import av personer (TESTNORGE)"),
@@ -44,7 +45,8 @@ public enum SystemTyper {
     SYKEMELDING("NAV sykemelding"),
     TPS_MESSAGING("Meldinger til TPS"),
     TP_FORVALTER("Tjenestepensjon (TP)"),
-    UDISTUB("Utlendingsdirektoratet (UDI)");
+    UDISTUB("Utlendingsdirektoratet (UDI)"),
+    YRKESSKADE("Yrkesskade");
 
     private String beskrivelse;
 

@@ -5,7 +5,6 @@ import { PdlPersonInfo } from '@/components/fagsystem/pdl/visning/partials/PdlPe
 import { IdentInfo } from '@/components/fagsystem/pdlf/visning/partials/Identinfo'
 import { GeografiskTilknytning } from '@/components/fagsystem/pdlf/visning/partials/GeografiskTilknytning'
 import { PdlNasjonalitet } from '@/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlNasjonalitet'
-import { PdlFullmakt } from '@/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 import { PdlSikkerhetstiltak } from '@/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { TilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
@@ -24,6 +23,8 @@ import { PdlDeltBosted } from '@/components/fagsystem/pdl/visning/partials/adres
 import { Doedsfall } from '@/components/fagsystem/pdlf/visning/partials/Doedsfall'
 import { PdlVergemaal } from '@/components/fagsystem/pdl/visning/partials/vergemaal/PdlVergemaal'
 import { getBankkontoData } from '@/components/fagsystem/pdlf/visning/PdlfVisning'
+import { FullmaktVisning } from '@/components/fagsystem'
+import React from 'react'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -58,7 +59,6 @@ export const PdlVisning = ({
 		opphold,
 		kontaktadresse,
 		adressebeskyttelse,
-		fullmakt,
 		utenlandskIdentifikasjonsnummer,
 		falskIdentitet,
 		sikkerhetstiltak,
@@ -71,6 +71,10 @@ export const PdlVisning = ({
 	const pdlfPerson = fagsystemData?.pdlforvalter?.person
 	const identtype = pdlfPerson?.identtype
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
+
+	const gjeldendeIdent = hentIdenter?.identer?.find(
+		(id) => !id.historisk && id.gruppe === 'FOLKEREGISTERIDENT',
+	)
 
 	return (
 		<ErrorBoundary>
@@ -87,7 +91,6 @@ export const PdlVisning = ({
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />
-				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
@@ -126,6 +129,7 @@ export const PdlVisning = ({
 					erPdlVisning={miljoeVisning}
 				/>
 				<PdlRelasjoner data={hentPerson} />
+				<FullmaktVisning ident={gjeldendeIdent?.ident} />
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<KontaktinformasjonForDoedsbo

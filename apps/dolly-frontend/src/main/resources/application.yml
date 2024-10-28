@@ -88,6 +88,11 @@ consumers:
     namespace: dolly
     name: testnav-krrstub-proxy
     url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
+  testnav-fullmakt-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-fullmakt-proxy
+    url: https://testnav-fullmakt-proxy.dev-fss-pub.nais.io
   testnav-sigrunstub-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -233,6 +238,11 @@ consumers:
     namespace: dolly
     name: testnav-levende-arbeidsforhold-scheduler
     url: http://testnav-levende-arbeidsforhold-scheduler.dolly.svc.cluster.local
+  testnav-yrkesskade-proxy:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-yrkesskade-proxy
+    url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
 
 management:
   endpoints:
@@ -255,6 +265,7 @@ server:
       charset: UTF-8
   error:
     include-message: always
+  max-http-request-header-size: 128KB
 
 logging:
   pattern:

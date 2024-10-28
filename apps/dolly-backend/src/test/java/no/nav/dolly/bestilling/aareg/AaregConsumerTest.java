@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.aareg;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -58,12 +56,6 @@ class AaregConsumerTest {
 
     @MockBean
     private TokenExchange tokenService;
-
-    @MockBean
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockBean
-    private ElasticsearchOperations elasticsearchOperations;
 
     private Arbeidsforhold opprettRequest;
 
@@ -106,8 +98,8 @@ class AaregConsumerTest {
                 .collectList()
                 .block();
 
-        assertThat(response.get(0).getArbeidsforholdId(), is(equalTo("1")));
-        assertThat(response.get(0).getMiljo(), is(equalTo(MILJOE)));
+        assertThat(response.getFirst().getArbeidsforholdId(), is(equalTo("1")));
+        assertThat(response.getFirst().getMiljo(), is(equalTo(MILJOE)));
     }
 
     @Test
@@ -119,8 +111,8 @@ class AaregConsumerTest {
                 .collectList()
                 .block();
 
-        assertThat(response.get(0).getArbeidsforholdId(), is(equalTo("1")));
-        assertThat(response.get(0).getMiljo(), is(equalTo(MILJOE)));
+        assertThat(response.getFirst().getArbeidsforholdId(), is(equalTo("1")));
+        assertThat(response.getFirst().getMiljo(), is(equalTo(MILJOE)));
     }
 
     @Test
