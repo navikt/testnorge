@@ -22,7 +22,14 @@ export const fixTimezone = (date: Date) => {
 	if (!isDate(date) || date.getUTCHours() === 0) {
 		return date
 	}
-	const tzoffset = new Date().getTimezoneOffset() * 60000 //offset in milliseconds
+
+	const erSommertid = date?.toString().includes('sommertid')
+
+	// Denne funker naar dagens dato er vintertid, mulig vi maa ha en ekstra sjekk naar vi er paa sommertid
+	const tzoffset = erSommertid
+		? new Date().getTimezoneOffset() * 60000 * 2
+		: new Date().getTimezoneOffset() * 60000
+
 	return new Date(date.getTime() - tzoffset)
 }
 
