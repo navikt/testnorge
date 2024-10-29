@@ -20,11 +20,6 @@ export const SkjermingForm = ({ formMethods }) => {
 		}
 	}
 
-	const settFormDate = (value, path) => {
-		formMethods.setValue(`skjerming.${path}`, value)
-		formMethods.trigger(`skjerming.${path}`)
-	}
-
 	const harSkjerming = HarAktivSkjerming()
 
 	return (
@@ -33,21 +28,11 @@ export const SkjermingForm = ({ formMethods }) => {
 				name="skjerming.egenAnsattDatoFom"
 				label="Skjerming fra"
 				disabled={harSkjerming}
-				onChange={(date) => {
-					settFormDate(date, 'egenAnsattDatoFom')
-				}}
 				maxDate={new Date()}
 				visHvisAvhuket
 			/>
 			{harSkjerming && (
-				<FormDatepicker
-					name="skjerming.egenAnsattDatoTom"
-					label="Skjerming til"
-					onChange={(date) => {
-						settFormDate(date, 'egenAnsattDatoTom')
-					}}
-					visHvisAvhuket
-				/>
+				<FormDatepicker name="skjerming.egenAnsattDatoTom" label="Skjerming til" visHvisAvhuket />
 			)}
 		</div>
 	)
