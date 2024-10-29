@@ -16,11 +16,6 @@ export type Aareg = {
 		tom: string
 		peiode: Array<string>
 	}
-	amelding: Amelding
-}
-
-export type AmeldingListe = {
-	amelding: Array<Amelding>
 }
 
 export type Amelding = {

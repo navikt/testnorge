@@ -35,7 +35,7 @@ import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/Gjenoppre
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
-import { useAmeldinger, useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
+import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
 	useArbeidsplassencvData,
 	useArenaData,
@@ -157,11 +157,6 @@ export default ({
 
 	const visArbeidsforhold =
 		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
-
-	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
-		ident.ident,
-		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
-	)
 
 	const { loading: loadingSkattekort, skattekortData } = useSkattekort(
 		ident.ident,
@@ -469,11 +464,8 @@ export default ({
 				)}
 				{visArbeidsforhold && (
 					<AaregVisning
-						ident={ident.ident}
-						master={ident.master}
 						liste={arbeidsforhold}
-						ameldinger={ameldinger}
-						loading={loadingAareg || loadingAmelding}
+						loading={loadingAareg}
 						bestillingIdListe={bestillingIdListe}
 						bestillinger={ident.bestillinger}
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
