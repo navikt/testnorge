@@ -18,12 +18,12 @@ import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -40,6 +40,7 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 public class AnsettelseService {
 
     private static final Random RANDOM = new SecureRandom();
+    private static final Integer ANTALL_RETRIES = 3;
 
     private final PdlService pdlService;
     private final TenorConsumer tenorConsumer;
@@ -79,23 +80,38 @@ public class AnsettelseService {
     private Flux<AnsettelseLogg> sjekkOgSendinnArbeidsforhold(OrganisasjonResponseDTO organisasjon, Map<String, String> parametere,
                                                               List<String> yrkeskoder, List<DatoIntervall> datointervaller) {
 
-        return Flux.fromIterable(getFordeling(parametere).entrySet())
+        return  Flux.fromIterable(getFordeling(parametere).entrySet())
                 .limitRate(1)
                 .flatMap(intervall -> Flux.range(0, intervall.getValue())
-                        .flatMap(index -> getPersonSomKanAnsettes((int) getParameterValue(parametere, STILLINGSPROSENT),
-                                datointervaller.get(intervall.getKey()), organisasjon)
-                                .flatMap(kanAnsettes -> ansettPerson(kanAnsettes, hentTilfeldigYrkeskode(yrkeskoder), parametere)
-                                        .flatMap(response -> {
-                                            if (response.getStatusCode().is2xxSuccessful()) {
-                                                log.info("Opprettet arbeidsforhold orgnummer {}, ident {}, status {}",
-                                                        kanAnsettes.getOrgnummer(), kanAnsettes.getIdent(), response.getStatusCode());
-                                                return ansettelseLoggService.lagreAnsettelse(kanAnsettes, parametere);
-                                            } else {
-                                                log.error("Oppretting mot AAREG feilet {} ", response.getFeilmelding());
-                                                return Mono.empty();
-                                            }
-                                        }))));
+                        .flatMap(index -> hentOgAnsett(organisasjon, parametere,
+                                hentTilfeldigYrkeskode(yrkeskoder),
+                                datointervaller.get(intervall.getKey()), new AtomicInteger(ANTALL_RETRIES))));
+    }
 
+    private Flux<AnsettelseLogg> hentOgAnsett(OrganisasjonResponseDTO organisasjon,
+                                              Map<String, String> parametere,
+                                              String yrkeskode, DatoIntervall datointervall, AtomicInteger retries) {
+
+        if (retries.get() == 0) {
+            return Flux.empty();
+        }
+
+        return getPersonSomKanAnsettes((int) getParameterValue(parametere, STILLINGSPROSENT),
+                datointervall, organisasjon)
+                .flatMap(kanAnsettes -> ansettPerson(kanAnsettes, yrkeskode, parametere)
+                        .flatMap(response -> {
+                            if (response.getStatusCode().is2xxSuccessful()) {
+                                log.info("Opprettet arbeidsforhold orgnummer {}, ident {}, status {}",
+                                        kanAnsettes.getOrgnummer(), kanAnsettes.getIdent(), response.getStatusCode());
+                                return ansettelseLoggService.lagreAnsettelse(kanAnsettes, parametere);
+                            } else {
+                                log.error("Oppretting mot AAREG feilet, orgnummer {}, ident {} med feilmelding {} ",
+                                        kanAnsettes.getOrgnummer(), kanAnsettes.getIdent(), response.getFeilmelding());
+                                return hentOgAnsett(organisasjon, parametere,
+                                        yrkeskode,
+                                        datointervall, new AtomicInteger(retries.decrementAndGet()));
+                            }
+                        }));
     }
 
     private Flux<KanAnsettesDTO> getPersonSomKanAnsettes(Integer stillingsprosent, DatoIntervall intervall,
