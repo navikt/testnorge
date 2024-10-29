@@ -10,6 +10,7 @@ import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
 import { MaritimtArbeidsforholdForm } from './maritimtArbeidsforholdForm'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import {
+	initialArbeidsavtale,
 	initialArbeidsforhold,
 	initialFartoy,
 	initialForenkletOppgjoersordning,
@@ -29,6 +30,7 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
 	const erLaastArbeidsforhold = arbeidsforholdIndex < tidligereAaregdata?.length
 
 	const gjeldendeArbeidsgiver = watch(`${path}.arbeidsgiver`)
+	const gjeldendeArbeidsavtale = watch(`${path}.arbeidsavtale`)
 
 	const arbeidsforholdstype = watch(`${path}.arbeidsforholdstype`)
 
@@ -49,8 +51,8 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
 					...initialForenkletOppgjoersordning,
 					arbeidsforholdstype: event.value,
 					arbeidsgiver: gjeldendeArbeidsgiver,
+					arbeidsavtale: { yrke: gjeldendeArbeidsavtale?.yrke || '' },
 				})
-				// TODO: Behold arbeidsavtale.yrke?
 				trigger()
 			}
 		} else {
@@ -59,8 +61,8 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
 					...initialArbeidsforhold,
 					arbeidsforholdstype: event.value,
 					arbeidsgiver: gjeldendeArbeidsgiver,
+					arbeidsavtale: { ...initialArbeidsavtale, yrke: gjeldendeArbeidsavtale?.yrke || '' },
 				})
-				// TODO: Behold arbeidsavtale.yrke?
 				trigger()
 			} else {
 				setValue(`${path}.arbeidsforholdstype`, event.value)
@@ -92,13 +94,14 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				</div>
-				{/*//TODO: Bare vises ved legg til?*/}
-				<FormTextInput
-					label="Arbeidsforhold-ID"
-					name={`${path}.arbeidsforholdId`}
-					isDisabled={true}
-					title="Kan ikke endre arbeidsforhold-ID på eksisterende arbeidsforhold"
-				/>
+				{getValues(`${path}.isOppdatering`) && (
+					<FormTextInput
+						label="Arbeidsforhold-ID"
+						name={`${path}.arbeidsforholdId`}
+						isDisabled={true}
+						title="Kan ikke endre arbeidsforhold-ID på eksisterende arbeidsforhold"
+					/>
+				)}
 				<FormDatepicker
 					name={`${path}.ansettelsesPeriode.fom`}
 					label="Ansatt fra"
@@ -132,7 +135,11 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
 			</div>
 
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
-				<ArbeidsavtaleForm path={`${path}.arbeidsavtale`} onChangeLenket={handleChange} />
+				<ArbeidsavtaleForm
+					path={`${path}.arbeidsavtale`}
+					onChangeLenket={handleChange}
+					values={getValues(path)}
+				/>
 			)}
 			{arbeidsforholdstype === 'maritimtArbeidsforhold' && (
 				<MaritimtArbeidsforholdForm path={`${path}.fartoy[0]`} onChangeLenket={handleChange} />

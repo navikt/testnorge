@@ -113,8 +113,6 @@ export const ArbeidsforholdToggle = ({
 		}
 	}
 
-	//TODO: sjekk om denne kan gjoeres lettere. Naa blir fritekstfelt rendret for hvert tegn.
-	//TODO: Brukes paa alle arbeidsgiver-felter???
 	const checkAktiveArbeidsforhold = () => {
 		const aaregValues = formMethods.getValues('aareg')
 		const aktiveArbeidsforhold = aaregValues?.map((arbeidsforhold) => {
@@ -207,7 +205,7 @@ export const ArbeidsforholdToggle = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						onKeyPress={() => checkAktiveArbeidsforhold()}
+						onBlur={() => checkAktiveArbeidsforhold()}
 						defaultValue={formMethods.watch(`${path}.arbeidsgiver.orgnummer`)}
 						isDisabled={erLaastArbeidsforhold}
 						title={title}

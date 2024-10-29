@@ -32,6 +32,16 @@ export const initialForenkletOppgjoersordningPers = {
 	arbeidsgiver: initialArbeidsgiverPers,
 }
 
+export const initialArbeidsavtale = {
+	yrke: '',
+	ansettelsesform: 'fast',
+	stillingsprosent: 100,
+	endringsdatoStillingsprosent: null,
+	sisteLoennsendringsdato: null,
+	arbeidstidsordning: 'ikkeSkift',
+	avtaltArbeidstimerPerUke: 37.5,
+}
+
 export const initialArbeidsforhold = {
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	arbeidsforholdId: '',
@@ -40,15 +50,7 @@ export const initialArbeidsforhold = {
 		tom: null,
 		sluttaarsak: null,
 	},
-	arbeidsavtale: {
-		yrke: '',
-		ansettelsesform: 'fast',
-		stillingsprosent: 100,
-		endringsdatoStillingsprosent: null,
-		sisteLoennsendringsdato: null,
-		arbeidstidsordning: 'ikkeSkift',
-		avtaltArbeidstimerPerUke: 37.5,
-	},
+	arbeidsavtale: initialArbeidsavtale,
 	antallTimerForTimeloennet: [],
 	utenlandsopphold: [],
 	permisjon: [],
