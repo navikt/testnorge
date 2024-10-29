@@ -57,7 +57,7 @@
     "reselect": "^5.1.0",
     "styled-components": "^6.0.1",
     "use-react-router-breadcrumbs": "^4.0.0",
-    "uuid": "^10.0.0",
+    "uuid": "^11.0.2",
     "yup": "^1.3.2"
   },
   "devDependencies": {

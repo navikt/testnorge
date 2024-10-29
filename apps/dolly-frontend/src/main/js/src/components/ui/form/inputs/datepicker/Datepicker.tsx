@@ -45,12 +45,17 @@ export const Datepicker = ({
 	const selectedDate = formMethods.watch(name) ? new Date(formMethods.watch(name)) : undefined
 
 	const [hasError, setHasError] = useState(false)
+	const [open, setOpen] = useState(true)
+	const handleDateChange = (date) => {
+		setOpen(false)
+		onChange ? onChange(date) : onBlur(date)
+	}
 
 	const datepickerConfig = useMemo(
 		() => ({
 			fromDate: minDate || subYears(new Date(), 125),
 			toDate: maxDate || addYears(new Date(), 5),
-			onDateChange: onChange || onBlur,
+			onDateChange: handleDateChange,
 			disabled: excludeDates,
 			defaultSelected: selectedDate,
 			onValidate: (date) => {
@@ -78,12 +83,17 @@ export const Datepicker = ({
 			setSelected(undefined)
 			inputProps.onChange(e)
 			formMethods.trigger(name)
+			setOpen(false)
 		},
 		[inputProps, setSelected],
 	)
 
+	useEffect(() => {
+		formMethods.trigger(name)
+	}, [open])
+
 	return (
-		<DatePicker {...datepickerProps} dropdownCaption={true}>
+		<DatePicker {...datepickerProps} open={open || undefined} dropdownCaption={true}>
 			<StyledInput
 				{...inputProps}
 				placeholder={placeholder}
@@ -99,6 +109,7 @@ export const Datepicker = ({
 
 export const DollyDatepicker = (props) => {
 	const [showDatepicker, setShowDatepicker] = useState(false)
+	const formMethods = useFormContext()
 
 	const toggleDatepicker = useCallback(() => {
 		setShowDatepicker((prev) => !prev)
@@ -109,7 +120,12 @@ export const DollyDatepicker = (props) => {
 			<Label name={props.name} label={props.label}>
 				{!showDatepicker && (
 					<>
-						<TextInput {...props} icon={'calendar'} datepickerOnclick={toggleDatepicker} />
+						<TextInput
+							{...props}
+							// defaultValue={formatDate(formMethods.watch(props.name))}
+							icon={'calendar'}
+							datepickerOnclick={toggleDatepicker}
+						/>
 					</>
 				)}
 				{showDatepicker && <Datepicker {...props} />}
@@ -122,11 +138,13 @@ const P_FormDatepicker = ({ ...props }) => {
 	const formMethods = useFormContext()
 	const value = formMethods.watch(props.name)
 	const handleChange = useCallback(
-		(date) => {
+		(date: any) => {
+			const chosenDate = typeof date === 'SyntheticBaseEvent' ? date.target.value : date
 			if (props.afterChange) {
 				props.afterChange(date)
 			}
-			let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
+			console.log('date: ', date) //TODO - SLETT MEG
+			let val = (date && fixTimezone(date)?.toISOString().substring(0, 19)) || null
 			formMethods.setValue(props.name, val, { shouldTouch: true })
 			formMethods.trigger(props.name)
 		},
