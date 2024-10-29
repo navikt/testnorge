@@ -192,13 +192,6 @@ export const SoekForm = () => {
 														}
 													/>
 													<FormCheckbox
-														name={`${personPath}.harFullmakt`}
-														label="Har fullmakt"
-														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harFullmakt`)
-														}
-													/>
-													<FormCheckbox
 														name={`${personPath}.harDoedsfall`}
 														label="Har dødsfall"
 														onChange={(val: SyntheticEvent) =>

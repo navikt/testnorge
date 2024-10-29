@@ -13,6 +13,7 @@ interface ExpandableBlokkProps<T> {
 	children: React.ReactNode
 	data: T
 	getHeader: (data: T) => string
+	whiteBackground?: boolean
 }
 
 const Numbering = ({ idx }: NumberingProps) => <span className="dfa-blokk-number">{idx + 1}</span>

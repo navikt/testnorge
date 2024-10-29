@@ -17,6 +17,7 @@ interface PdlPersonValues {
 	path: string
 	nyPersonPath: string
 	eksisterendePersonPath: string
+	fullmektigsNavnPath?: string
 	label: string
 	formMethods: UseFormReturn
 	nyIdentValg?: NyIdent
@@ -46,6 +47,7 @@ export const PdlPersonForm = ({
 	path,
 	nyPersonPath,
 	eksisterendePersonPath,
+	fullmektigsNavnPath,
 	label,
 	formMethods,
 	nyIdentValg = null,
@@ -73,7 +75,9 @@ export const PdlPersonForm = ({
 			eksisterendePersonPath,
 			type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
 		)
-		formMethods.setValue(`${path}.eksisterendePerson`, type === PersonType.EKSISTERENDE_PERSON)
+		if (path) {
+			formMethods.setValue(`${path}.eksisterendePerson`, type === PersonType.EKSISTERENDE_PERSON)
+		}
 		formMethods.trigger()
 	}, [type])
 
@@ -123,12 +127,11 @@ export const PdlPersonForm = ({
 					>
 						{(type === PersonType.EKSISTERENDE_PERSON || isTestnorgeIdent) && (
 							<PdlEksisterendePerson
-								nyPersonPath={nyPersonPath}
 								eksisterendePersonPath={eksisterendePersonPath}
 								label={label}
 								formMethods={formMethods}
-								nyIdentValg={nyIdentValg}
 								eksisterendeNyPerson={eksisterendeNyPerson}
+								fullmektigsNavnPath={fullmektigsNavnPath}
 								disabled={opts?.antall > 1}
 							/>
 						)}

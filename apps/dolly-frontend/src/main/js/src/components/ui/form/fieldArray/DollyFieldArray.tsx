@@ -156,7 +156,7 @@ export const DollyFieldArray = ({
 	nested = false,
 	children,
 	expandable = false,
-	getHeader = null,
+	getHeader = null as unknown as Function,
 	whiteBackground = false,
 }) => {
 	if (ignoreOnSingleElement && data.length === 1) {

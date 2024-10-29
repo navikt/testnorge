@@ -39,7 +39,7 @@ class AaaregUtilityTest {
     @CsvSource({ "1, false, 1, 0, 1",
             "1, true, 1, 1, 0",
             "2, false, 1, 0, 1",
-            "2, true, 1, 1, 0" })
+            "2, true, 1, 0, 1" })
     void arbeidsforholdEksistens_eksisterIkke(String reqArbForholdId, Boolean isOppdatering, String respArbForholdId,
                                               int antallEksisterende, int antallNye) {
 

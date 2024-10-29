@@ -16,7 +16,6 @@ import { BostedsadresseForm } from '@/components/fagsystem/pdlf/form/partials/ad
 import { OppholdsadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
-import { FullmaktForm } from '@/components/fagsystem/pdlf/form/partials/fullmakt/Fullmakt'
 import { SivilstandForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import {
 	AdressebeskyttelseForm,
@@ -75,7 +74,6 @@ enum Attributt {
 	Innvandring = 'innflytting',
 	Utvandring = 'utflytting',
 	Vergemaal = 'vergemaal',
-	Fullmakt = 'fullmakt',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
@@ -259,14 +257,6 @@ export const VisningRedigerbar = ({
 			case Attributt.Vergemaal:
 				return (
 					<VergemaalForm
-						formMethods={formMethods}
-						path={path}
-						eksisterendeNyPerson={eksisterendeNyPerson}
-					/>
-				)
-			case Attributt.Fullmakt:
-				return (
-					<FullmaktForm
 						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}

@@ -9,7 +9,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 
 export default () => {
-	const { loggData, loading, error } = useLevendeArbeidsforholdLogg(0, 1000, 'id,DESC')
+	const { loggData, loading, error } = useLevendeArbeidsforholdLogg(0, 1000, 'id')
 
 	const [identSoekData, setIdentSoekData] = useState(null)
 	const [orgnummerSoekData, setOrgnummerSoekData] = useState(null)
