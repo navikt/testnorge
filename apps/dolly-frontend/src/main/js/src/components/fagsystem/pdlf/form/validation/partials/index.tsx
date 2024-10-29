@@ -19,7 +19,6 @@ import { sikkerhetstiltak } from './sikkerhetstiltak'
 import { telefonnummer } from './telefonnummer'
 import { utenlandskId, falskIdentitet } from './identifikasjon'
 import { utflytting } from './utflytting'
-import { fullmakt } from './fullmakt'
 import { statsborgerskap } from './statborgerskap'
 import { vergemaal } from './vergemaal'
 import { tilrettelagtKommunikasjon } from './tilrettelagtKommunikasjon'
@@ -43,7 +42,6 @@ export {
 	utenlandskId,
 	falskIdentitet,
 	utflytting,
-	fullmakt,
 	statsborgerskap,
 	vergemaal,
 	tilrettelagtKommunikasjon,

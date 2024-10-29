@@ -3,7 +3,6 @@ import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { Fullmakt } from '../fullmakt/Fullmakt'
 import { Sikkerhetstiltak } from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { TpsMessagingDiverse } from '@/components/fagsystem/tpsmessaging/form/TpsMessagingDiverse'
@@ -21,6 +20,7 @@ import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bank
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
+import { Fullmakt } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -55,8 +55,8 @@ const foedestedPath = ['pdldata.person.foedested']
 const foedselsdatoPath = ['pdldata.person.foedselsdato']
 const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['pdldata.person.vergemaal']
-const fullmaktPath = ['pdldata.person.fullmakt']
 const sikkerhetstiltakPath = ['pdldata.person.sikkerhetstiltak']
+const fullmaktPath = ['pdldata.person.fullmakt', 'fullmakt']
 
 const panelPaths = [
 	alderPaths,
@@ -71,7 +71,6 @@ const panelPaths = [
 	foedselPaths,
 	doedsfallPath,
 	vergemaalPath,
-	fullmaktPath,
 	sikkerhetstiltakPath,
 	statsborgerskapPath,
 	utenlandskBankkontoPath,
@@ -149,10 +148,6 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Vergemål" vis={vergemaalPath}>
 					<Vergemaal formMethods={formMethods} />
-				</Kategori>
-
-				<Kategori title="Fullmakt" vis={fullmaktPath}>
-					<Fullmakt formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPath}>

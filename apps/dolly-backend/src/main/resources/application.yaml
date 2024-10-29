@@ -18,7 +18,7 @@ server:
         charset: UTF-8
   error:
     include-message: always
-  max-http-request-header-size: 100KB
+  max-http-request-header-size: 128KB
 
 spring:
   cloud:
@@ -144,6 +144,11 @@ consumers:
     namespace: dolly
     url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-fullmakt-proxy:
+    name: testnav-fullmakt-proxy
+    namespace: dolly
+    url: https://testnav-fullmakt-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-krrstub-proxy:
     name: testnav-krrstub-proxy
     namespace: dolly
@@ -243,5 +248,10 @@ consumers:
     name: testnav-skattekort-service
     namespace: dolly
     url: http://testnav-skattekort-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  yrkesskade-proxy:
+    name: testnav-yrkesskade-proxy
+    namespace: dolly
+    url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
     

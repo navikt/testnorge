@@ -1,3 +1,4 @@
+@use "sass:math";
 //Hentet fra https://codepen.io/alvaromontoro/pen/GRNmdzB
 
 .rain {
@@ -19,11 +20,11 @@
 
 @for $i from 1 through 500 {
   .rain:nth-child(#{$i}) {
-    --width: #{2 + random(2)}px;
-    --height: #{6 + random(3)}px;
+    --width: #{2 + math.random(2)}px;
+    --height: #{6 + math.random(3)}px;
     top: -2vh;
-    left: #{random(96)}vw;
-    animation: rainfall #{random(50)*0.03 + random(40) * 0.03}s linear infinite;
-    animation-delay: #{random(40)*0.01 + random(60)*0.07}s;
+    left: #{math.random(96)}vw;
+    animation: rainfall #{math.random(50)*0.03 + math.random(40) * 0.03}s linear infinite;
+    animation-delay: #{math.random(40)*0.01 + math.random(60)*0.07}s;
   }
 }

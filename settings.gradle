@@ -12,7 +12,7 @@ plugins {
     id "com.gradle.develocity" version "3.17.4"
 }
 
-rootProject.name = "testnorge"
+rootProject.name = "testnav"
 
 develocity {
     buildScan {
@@ -21,10 +21,10 @@ develocity {
     }
 }
 
-def includeAllBuildsFrom(String dirPath) {
-    file(dirPath).eachDir {
+def includeAllBuildsFrom(String subdir) {
+    file(subdir).eachDir {
         dir ->
-            if (!dir.name.startsWith(".")) {
+            if (!dir.name.startsWith(".") && new File(dir, "build.gradle").exists()) {
                 includeBuild dir.path
             }
     }

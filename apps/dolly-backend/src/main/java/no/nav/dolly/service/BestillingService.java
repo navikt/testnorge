@@ -395,6 +395,7 @@ public class BestillingService {
                 .sigrunstubPensjonsgivende(request.getSigrunstubPensjonsgivende())
                 .arenaforvalter(request.getArenaforvalter())
                 .pdldata(request.getPdldata())
+                .fullmakt(request.getFullmakt())
                 .instdata(request.getInstdata())
                 .inntektstub(request.getInntektstub())
                 .pensjonforvalter(request.getPensjonforvalter())
@@ -409,6 +410,7 @@ public class BestillingService {
                 .sykemelding(request.getSykemelding())
                 .arbeidsplassenCV(request.getArbeidsplassenCV())
                 .skattekort(request.getSkattekort())
+                .yrkesskader(request.getYrkesskader())
                 .build());
     }
 

@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -28,6 +29,7 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ public class RsDollyBestilling {
     private String malBestillingNavn;
     private PdlPersondata pdldata;
     private RsDigitalKontaktdata krrstub;
+    private List<RsFullmakt> fullmakt;
     private RsMedl medl;
     private List<RsInstdata> instdata;
     private List<RsAareg> aareg;
@@ -77,6 +80,7 @@ public class RsDollyBestilling {
     private RsSkjerming skjerming;
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     private SkattekortRequestDTO skattekort;
+    private List<YrkesskadeRequest> yrkesskader;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {
@@ -111,6 +115,20 @@ public class RsDollyBestilling {
             instdata = new ArrayList<>();
         }
         return instdata;
+    }
+
+    public List<RsFullmakt> getFullmakt() {
+        if (isNull(fullmakt)) {
+            fullmakt = new ArrayList<>();
+        }
+        return fullmakt;
+    }
+
+    public List<YrkesskadeRequest> getYrkesskader() {
+        if (isNull(yrkesskader)) {
+            yrkesskader = new ArrayList<>();
+        }
+        return yrkesskader;
     }
 
     @JsonIgnore

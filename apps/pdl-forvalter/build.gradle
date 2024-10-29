@@ -14,6 +14,8 @@ properties {
 }
 
 dependencies {
+    implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
+
     implementation "no.nav.testnav.libs:database"
     implementation "no.nav.testnav.libs:vault"
     implementation "no.nav.testnav.libs:data-transfer-objects"

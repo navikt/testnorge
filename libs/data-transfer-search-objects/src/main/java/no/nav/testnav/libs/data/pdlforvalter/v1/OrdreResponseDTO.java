@@ -22,6 +22,15 @@ public class OrdreResponseDTO {
     private PersonHendelserDTO hovedperson;
     private List<PersonHendelserDTO> relasjoner;
 
+    public List<PersonHendelserDTO> getRelasjoner() {
+
+        if (isNull(relasjoner)) {
+            relasjoner = new ArrayList<>();
+        }
+        return relasjoner;
+    }
+
+
     @Data
     @Builder
     @NoArgsConstructor

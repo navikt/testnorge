@@ -26,7 +26,6 @@ public class PersonRequest {
     private Boolean harDoedfoedtBarn;
     private Boolean harForeldreAnsvar;
     private Boolean harVerge;
-    private Boolean harFullmakt;
     private Boolean harDoedsfall;
     private Boolean harInnflytting;
     private Boolean harUtflytting;

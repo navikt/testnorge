@@ -11,6 +11,7 @@ import {
 	getInitialNavn,
 	getInitialStatsborgerskap,
 	initialFullmakt,
+	initialPdlPerson,
 	initialSikkerhetstiltak,
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
@@ -29,8 +30,8 @@ const utvandret = 'utvandretTilLand'
 
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
-	const sm = stateModifier(PersoninformasjonPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
+	const sm: any = stateModifier(PersoninformasjonPanel.initialValues)
+	const opts: any = useContext(BestillingsveilederContext)
 
 	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
@@ -39,15 +40,12 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil || opts.is.leggTilPaaGruppe
 
-	const testNorgePerson = opts?.identMaster === 'PDL'
 	const npidPerson = opts?.identtype === 'NPID'
 	const ukjentGruppe = !gruppeId
-	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
-	const testNorgeFlere = testNorgePerson && opts?.antall > 1
-	const tekstFlerePersoner = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
+	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
 
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
@@ -58,7 +56,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			(testnorgeIdent && (ukjentGruppe || opts?.antall > 1)) ||
 			(harTestnorgeIdenter && leggTilPaaGruppe)
 		) {
-			ignoreKeys.push('fullmakt', 'vergemaal', 'innvandretFraLand', 'utvandretTilLand')
+			ignoreKeys.push('vergemaal', 'innvandretFraLand', 'utvandretTilLand')
 		}
 		if (sm.attrs.utenlandskBankkonto.checked) {
 			ignoreKeys.push('norskBankkonto')
@@ -106,15 +104,13 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						disabled={sm.attrs.norskBankkonto.checked}
 					/>
 					<Attributt attr={sm.attrs.telefonnummer} />
-					<Attributt
-						attr={sm.attrs.fullmakt}
-						disabled={ukjentGruppe || testNorgeFlere}
-						title={
-							(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstFlerePersoner) || ''
-						}
-					/>
 					<Attributt attr={sm.attrs.sikkerhetstiltak} />
 					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
+					<Attributt
+						attr={sm.attrs.fullmakt}
+						disabled={ukjentGruppe}
+						title={(ukjentGruppe && tekstUkjentGruppe) || ''}
+					/>
 				</AttributtKategori>
 			</Panel>
 		)
@@ -176,15 +172,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						''
 					}
 				/>
-				<Attributt
-					attr={sm.attrs.fullmakt}
-					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
-					title={
-						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
-						''
-					}
-				/>
+				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 			</AttributtKategori>
@@ -235,8 +223,9 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			pdl: 'pdldata.person.telefonnummer',
 			tpsM: 'tpsMessaging.telefonnummer',
 		},
+		fullmakt: 'fullmakt',
+		fullmaktPDL: 'pdldata.person.fullmakt',
 		vergemaal: 'pdldata.person.vergemaal',
-		fullmakt: 'pdldata.person.fullmakt',
 		sikkerhetstiltak: 'pdldata.person.sikkerhetstiltak',
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
 	}
@@ -409,10 +398,21 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			remove: () => del(paths.vergemaal),
 		},
 		fullmakt: {
-			label: 'Fullmakt',
-			checked: has(paths.fullmakt),
-			add: () => set(paths.fullmakt, [initialFullmakt]),
-			remove: () => del(paths.fullmakt),
+			label: 'Har fullmektig',
+			checked: has(paths.fullmakt) || has(paths.fullmaktPDL),
+			add: () => {
+				set('fullmakt', [
+					{
+						...initialFullmakt,
+						master: identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG',
+					},
+				])
+				set('pdldata.person.fullmakt', [{ nyfullMektig: initialPdlPerson }])
+			},
+			remove: () => {
+				del('fullmakt')
+				del('pdldata.person.fullmakt')
+			},
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',

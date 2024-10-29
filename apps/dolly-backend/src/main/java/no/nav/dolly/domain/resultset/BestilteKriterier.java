@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -27,6 +28,7 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class BestilteKriterier {
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
+    private List<RsFullmakt> fullmakt;
     private RsMedl medl;
     private RsHistark histark;
     private RsTpsMessaging tpsMessaging;
@@ -61,4 +64,5 @@ public class BestilteKriterier {
     private RsSykemelding sykemelding;
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     private SkattekortRequestDTO skattekort;
+    private List<YrkesskadeRequest> yrkesskader;
 }

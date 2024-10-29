@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -26,6 +27,7 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
+import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -47,19 +49,12 @@ public class ElasticBestilling implements Persistable<Long> {
 
     @Id
     private Long id;
-
-    @Override
-    @JsonIgnore
-    @Transient
-    public boolean isNew() {
-
-        return false;
-    }
-
     @Field
     private PdlPersondata pdldata;
     @Field
     private RsDigitalKontaktdata krrstub;
+    @Field
+    private List<RsFullmakt> fullmakt;
     @Field
     private RsMedl medl;
     @Field
@@ -97,11 +92,20 @@ public class ElasticBestilling implements Persistable<Long> {
     @Field
     private SkattekortRequestDTO skattekort;
     @Field
+    private List<YrkesskadeRequest> yrkesskader;
+    @Field
     private List<String> identer;
-
     @Transient
     @JsonIgnore
     private boolean ignore;
+
+    @Override
+    @JsonIgnore
+    @Transient
+    public boolean isNew() {
+
+        return false;
+    }
 
     public List<String> getIdenter() {
         if (isNull(identer)) {
