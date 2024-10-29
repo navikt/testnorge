@@ -62,26 +62,6 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	return ''
 }
 
-const getOversteJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
-	if (!enheter) return ''
-	let oversteJuridiskEnhet = ''
-	enheter.forEach((enhet) => {
-		const getUnderenheter = (underenheter: Organisasjon[]) => {
-			underenheter.forEach((underenhet) => {
-				if (underenhet.organisasjonsnummer === orgnr) {
-					oversteJuridiskEnhet = enhet.organisasjonsnummer
-				} else if (underenhet.underenheter) {
-					getUnderenheter(underenhet.underenheter)
-				}
-			})
-		}
-		if (enhet.underenheter) {
-			getUnderenheter(enhet.underenheter)
-		}
-	})
-	return oversteJuridiskEnhet
-}
-
 export const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
 	if (!organisasjoner) {
 		return []
@@ -169,30 +149,6 @@ export const EgneOrganisasjoner = ({
 				formMethods.setError(path, { message: 'Feltet er påkrevd' })
 			}
 			return { feilmelding: 'Feltet er påkrevd' }
-		} else if (path.includes('amelding')) {
-			//@ts-ignore
-			const valgtOrgnr = formMethods
-				.getValues()
-				?.aareg?.[0]?.amelding?.flatMap((a) =>
-					a.arbeidsforhold?.flatMap((f) => f.arbeidsgiver?.orgnummer),
-				)
-			const valgtJuridiskEnhet = valgtOrgnr?.map((org) =>
-				getOversteJuridiskEnhet(org, organisasjoner),
-			)
-			const valgtJuridiskEnhetFiltrert = valgtJuridiskEnhet?.filter((org) => org !== '')
-			const juridiskEnhetErLik = valgtJuridiskEnhetFiltrert?.every((org) => {
-				if (org === valgtJuridiskEnhetFiltrert[0]) {
-					return true
-				}
-			})
-			if (!juridiskEnhetErLik && !_.has(formMethods.formState.errors, path)) {
-				formMethods.setError(path, {
-					message: 'Alle organisasjoner må tilhøre samme overordnet enhet',
-				})
-			}
-			return juridiskEnhetErLik
-				? null
-				: { feilmelding: 'Alle organisasjoner må tilhøre samme overordnet enhet' }
 		}
 		return null
 	}

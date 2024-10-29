@@ -1,5 +1,3 @@
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import _ from 'lodash'
 import subYears from 'date-fns/subYears'
 

@@ -73,17 +73,9 @@ export const initialPeriode = {
 	periode: [],
 }
 
-export const initialAmelding = [
-	{
-		maaned: null,
-		arbeidsforhold: [],
-	},
-]
-
 export const initialValues = {
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	genererPeriode: initialPeriode,
-	amelding: initialAmelding,
 }
 
 export const initialFartoy = [

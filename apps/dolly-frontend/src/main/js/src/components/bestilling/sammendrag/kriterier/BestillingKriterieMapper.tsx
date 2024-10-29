@@ -1046,14 +1046,13 @@ const mapTpsMessaging = (bestillingData, data) => {
 	}
 }
 
-export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKriterier) => [
+export const arbeidsforholdVisning = (arbeidsforhold, i, aaregKriterier) => [
 	{
 		numberHeader: `Arbeidsforhold ${i + 1}`,
 	},
 	{
 		label: 'Type arbeidsforhold',
-		value:
-			arbeidsforhold.arbeidsforholdstype || (!harAmelding && aaregKriterier?.arbeidsforholdstype),
+		value: arbeidsforhold.arbeidsforholdstype || aaregKriterier?.arbeidsforholdstype,
 		apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
 	},
 	obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
@@ -1113,6 +1112,7 @@ export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKrite
 	obj('Perioder med permisjon', arbeidsforhold.permisjon?.length),
 	obj('Perioder med permittering', arbeidsforhold.permittering?.length),
 ]
+
 const mapAareg = (bestillingData, data) => {
 	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {
@@ -1124,33 +1124,9 @@ const mapAareg = (bestillingData, data) => {
 			pagineringPages: [],
 		}
 
-		const harAmelding = aaregKriterier[0]?.amelding?.length > 0
-
-		if (harAmelding) {
-			aareg.items.push(
-				{
-					label: 'Type arbeidsforhold',
-					value: aaregKriterier[0]?.arbeidsforholdstype,
-					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
-				},
-				obj('F.o.m. kalendermåned', formatDate(aaregKriterier[0]?.genererPeriode?.fom)),
-				obj('T.o.m. kalendermåned', formatDate(aaregKriterier[0]?.genererPeriode?.tom)),
-			)
-			aaregKriterier[0]?.amelding?.forEach((maaned) => {
-				const maanedData = {
-					itemRows: [],
-				}
-				maaned.arbeidsforhold?.forEach((arbeidsforhold, i) => {
-					maanedData.itemRows.push(
-						arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier),
-					)
-				})
-				aareg.pagineringPages.push(maaned.maaned)
-				aareg.paginering.push(maanedData)
-			})
-		} else if (aaregKriterier[0]?.arbeidsgiver) {
+		if (aaregKriterier[0]?.arbeidsgiver) {
 			aaregKriterier?.forEach((arbeidsforhold, i) => {
-				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier))
+				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, aaregKriterier))
 			})
 		}
 
