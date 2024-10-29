@@ -1,63 +1,61 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "ansettelse_logg")
-public class AnsettelseLogg {
+public class AnsettelseLogg implements Persistable<Integer> {
+
+    @Transient
+    private boolean isNew;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @SequenceGenerator(name = "seq", sequenceName = "ansettelse_logg_id_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column("id")
     private Integer id;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "organisasjonsnummer", nullable = false)
+    @Column("organisasjonsnummer")
     private String organisasjonsnummer;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "folkeregisterident", nullable = false)
+    @Column("folkeregisterident")
     private String folkeregisterident;
 
     @NotNull
-    @Column(name = "timestamp", nullable = false)
-    private OffsetDateTime timestamp;
+    @Column("timestamp")
+    private LocalDateTime timestamp;
 
     @NotNull
-    @Column(name = "ansattfra", nullable = false)
+    @Column("ansattfra")
     private LocalDate ansattfra;
 
     @Size(max = 255)
-    @Column(name = "arbeidsforhold_type")
+    @Column("arbeidsforhold_type")
     private String arbeidsforholdType;
 
-    @Column(name = "stillingsprosent")
+    @Column("stillingsprosent")
     private Integer stillingsprosent;
 
     @Override
@@ -72,5 +70,11 @@ public class AnsettelseLogg {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(getId()).append(getOrganisasjonsnummer()).append(getFolkeregisterident()).append(getTimestamp()).append(getAnsattfra()).append(getArbeidsforholdType()).append(getStillingsprosent()).toHashCode();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isNew() {
+        return isNew;
     }
 }
