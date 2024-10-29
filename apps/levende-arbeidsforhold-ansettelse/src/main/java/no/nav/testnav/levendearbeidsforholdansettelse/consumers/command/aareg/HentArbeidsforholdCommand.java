@@ -2,9 +2,9 @@ package no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.aareg;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.levendearbeidsforholdansettelse.domain.NavHeaders;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import no.nav.testnav.libs.servletcore.headers.NavHeaders;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -23,7 +23,7 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>> {
 
-    private static final String miljoe = "q2";
+    private static final String MILJOE = "q2";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String CONSUMER = "Dolly";
 
@@ -45,7 +45,7 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
                         .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning",
                                 "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold",
                                 "ordinaertArbeidsforhold")
-                        .build(miljoe))
+                        .build(MILJOE))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(NAV_PERSON_IDENT, ident)
                 .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
