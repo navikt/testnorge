@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -215,10 +214,10 @@ public class OppdragRequest {
         private String refDelytelseId;
         @Schema(maxLength = 5)
         private Integer refLinjeId;
+
         private RefusjonsInfo refusjonsInfo;
         private List<Tekst> tekst;
-        @Schema(description = "Fra XSD: Referanse ID 120 dersom enhet på nivå oppdrag og " +
-                "Referanse ID 160 dersom enhet på nivå oppdragslinje")
+
         private List<Enhet> enhet;
         private List<Grad> grad;
         private List<Attestant> attestant;
@@ -269,8 +268,10 @@ public class OppdragRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(description = "Entitet for refusjon til et orgnr og/eller maksdato for utbetaling av ytelse, Referanse ID 156")
     public static class RefusjonsInfo {
 
+        @Schema(description = "Angir fødselsnummer eller organisasjonsnummer på kravhaver", minLength = 9, maxLength = 11)
         private String refunderesId;
         private LocalDate maksDato;
         private LocalDate datoFom;
@@ -280,14 +281,21 @@ public class OppdragRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(description = "Entitet Tekst, Referanse ID 140 dersom tekst er tilhørende oppdrag, " +
+            "Referanse ID 158 dersom tekst er tilhørende oppdragslinje")
     public static class Tekst {
 
-        private BigInteger tekstLnr;
+        @NotBlank
+        @Schema(minLength = 1, maxLength = 2)
+        private Integer tekstLnr;
+        @Schema(maxLength = 4)
         private String tekstKode;
+        @Schema
         private String tekst;
         @NotBlank
         private LocalDate datoTekstFom;
         private LocalDate datoTekstTom;
+        @Schema(description = "Kode for beskrivelse av feil", minLength = 0, maxLength = 1)
         private String feilreg;
     }
 
@@ -295,6 +303,8 @@ public class OppdragRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(description = "Entitet enhet, Referanse ID 120 dersom enhet er på nivå oppdrag, " +
+            "Referanse ID 160 dersom enhet er på nivå oppdragslinje")
     public static class Enhet {
 
         @NotBlank
@@ -311,21 +321,26 @@ public class OppdragRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(description = "Entitet Grad, Referanse ID 170")
     public static class Grad {
 
         @NotBlank
+        @Schema(minLength = 1, maxLength = 4)
         protected String typeGrad;
         @NotBlank
-        protected BigInteger grad;
+        @Schema(description = "Prosentgrad, maks 100")
+        protected Integer grad;
     }
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(description = "Entitet Attestasjon, Referanse ID 180")
     public static class Attestant {
 
         @NotBlank
+        @Schema(minLength = 1, maxLength = 8)
         protected String attestantId;
         protected LocalDate datoUgyldigFom;
     }
@@ -334,38 +349,41 @@ public class OppdragRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(description = "Entitet Valuta, Referanse ID 190")
     public static class Valuta {
 
         @NotBlank
-        protected String typeValuta;
+        protected ValuteType typeValuta;
         @NotBlank
+        @Schema(minLength = 1, maxLength = 3)
         protected String valuta;
         @NotBlank
         protected LocalDate datoValutaFom;
+        @Schema(description = "Kode for beskrivelse av feil", minLength = 0, maxLength = 1)
         protected String feilreg;
     }
 
     public enum JaNei {
         J,
-        N;
+        N
     }
 
     public enum KodeStatusLinje {
         OPPH,
         HVIL,
         SPER,
-        REAK;
+        REAK
     }
 
     public enum FradragTillegg {
         F,
-        T;
+        T
     }
 
     public enum KodeArbeidsgiver {
         A,
         S,
-        P;
+        P
     }
 
     public enum KodeStatus {
@@ -380,7 +398,7 @@ public class OppdragRequest {
         FBER,
         REAK,
         KORR,
-        FEIL;
+        FEIL
     }
 
     public enum KodeEndring {
@@ -414,19 +432,30 @@ public class OppdragRequest {
         ENG
     }
 
+    public enum ValuteType {
+
+        FAKT,
+        FRAM,
+        UTB
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(description = "Entitet Beløpsgrense, Referanse ID 130")
     public static class Belopsgrense {
 
         @NotBlank
+        @Schema(minLength = 1, maxLength = 4)
         private String typeGrense;
         @NotBlank
+        @Schema(description = "Typen beskriver formatet og begrensningene til beløp, maks totalt antall sifre=11, desimaler=2")
         private BigDecimal belopGrense;
         @NotBlank
         private LocalDate datoGrenseFom;
         private LocalDate datoGrenseTom;
+        @Schema(description = "Kode for beskrivelse av feil", minLength = 0, maxLength = 1)
         private String feilreg;
     }
 }
