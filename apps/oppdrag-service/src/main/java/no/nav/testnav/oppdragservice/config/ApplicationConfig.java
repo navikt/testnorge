@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({
-        ApplicationCoreConfig.class,
+@Import({ApplicationCoreConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
 public class ApplicationConfig {

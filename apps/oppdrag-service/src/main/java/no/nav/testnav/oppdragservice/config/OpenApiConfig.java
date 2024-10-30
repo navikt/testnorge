@@ -10,16 +10,15 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
-import reactor.core.publisher.Mono;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
 @Configuration
-public class OpenApiConfig implements WebFilter {
+@Import(ApplicationProperties.class)
+public class OpenApiConfig implements WebMvcConfigurer {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -29,7 +28,7 @@ public class OpenApiConfig implements WebFilter {
                         .scheme("bearer")
                         .bearerFormat("JWT")
                         .in(SecurityScheme.In.HEADER)
-                        .name(HttpHeaders.AUTHORIZATION)
+                        .name("Authorization")
                 ))
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
@@ -46,20 +45,11 @@ public class OpenApiConfig implements WebFilter {
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")
-                        )
-                );
+                        ));
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        if (exchange.getRequest().getURI().getPath().equals("/swagger")) {
-            return chain
-                    .filter(exchange.mutate()
-                            .request(exchange.getRequest()
-                                    .mutate().path("/swagger-ui.html").build())
-                            .build());
-        }
-
-        return chain.filter(exchange);
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
     }
 }

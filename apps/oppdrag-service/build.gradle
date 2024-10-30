@@ -68,28 +68,18 @@ dependencies {
             'jakarta.activation:jakarta.activation-api:2.0.0',
             'com.sun.xml.ws:jaxws-rt:3.0.0'
 
-    implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:servlet-security'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:vault"
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-web-services"
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-web-services'
-    implementation 'org.springframework.ws:spring-ws-security'
-
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 }

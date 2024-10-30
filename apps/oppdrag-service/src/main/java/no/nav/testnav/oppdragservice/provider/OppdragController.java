@@ -1,10 +1,12 @@
 package no.nav.testnav.oppdragservice.provider;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.oppdragservice.v1.OppdragRequest;
 import no.nav.testnav.oppdragservice.service.OppdragService;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +18,8 @@ public class OppdragController {
     private final OppdragService oppdragService;
 
     @PostMapping
-    public SendInnOppdragResponse sendInnOppdrag(OppdragRequest oppdragRequest) {
+    @Operation(summary = "Send inn oppdrag")
+    public SendInnOppdragResponse sendInnOppdrag(@RequestBody OppdragRequest oppdragRequest) {
 
         return oppdragService.sendInnOppdrag(oppdragRequest);
     }
