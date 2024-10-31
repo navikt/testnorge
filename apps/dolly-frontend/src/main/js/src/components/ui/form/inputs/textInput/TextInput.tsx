@@ -43,18 +43,19 @@ type TextInputProps = {
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
-	position: relative;
-	float: right;
-	bottom: 30px;
-	right: 6px;
+	position: fixed;
+	translate: 160px -30px;
 `
 
 const StyledButton = styled(Button)`
 	&&& {
-		position: relative;
-		float: right;
-		bottom: 37px;
-		right: 1px;
+		svg {
+			translate: -1px 1px;
+		}
+
+		position: fixed;
+		height: 37px;
+		translate: -31px 1px;
 		padding: 5px 3px 0 3px;
 		margin: 0;
 	}
@@ -103,7 +104,9 @@ export const TextInput = React.forwardRef(
 							<Icon kind={icon} style={{ color: 'black' }} fontSize={'1.5rem'} />
 						</StyledButton>
 					) : (
-						<StyledIcon fontSize="1.5rem" kind={icon} />
+						<div style={{ height: '0' }}>
+							<StyledIcon fontSize="1.5rem" kind={icon} />
+						</div>
 					))}
 			</>
 		)

@@ -1,18 +1,19 @@
 import { registerLocale } from 'react-datepicker'
 import { addYears, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
-import { Label } from '@/components/ui/form/inputs/label/Label'
-import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { BaseSyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import _ from 'lodash'
 import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { Label } from '@/components/ui/form/inputs/label/Label'
+import { formatDate } from '@/utils/DataFormatter'
 
 registerLocale('nb', locale_nb)
 
@@ -93,7 +94,14 @@ export const Datepicker = ({
 	}, [open])
 
 	return (
-		<DatePicker {...datepickerProps} open={open || undefined} dropdownCaption={true}>
+		<DatePicker
+			{...datepickerProps}
+			open={open || undefined}
+			onAbort={() => {
+				setOpen(false)
+			}}
+			dropdownCaption={true}
+		>
 			<StyledInput
 				{...inputProps}
 				placeholder={placeholder}
@@ -108,27 +116,40 @@ export const Datepicker = ({
 }
 
 export const DollyDatepicker = (props) => {
-	const [showDatepicker, setShowDatepicker] = useState(false)
 	const formMethods = useFormContext()
+	const existingValue = formMethods.watch(props.name) && new Date(formMethods.watch(props.name))
+	const [showDatepicker, setShowDatepicker] = useState(false)
+	const [input, setInput] = useState(
+		existingValue && _.isDate(existingValue) ? formatDate(existingValue) : existingValue,
+	)
 
 	const toggleDatepicker = useCallback(() => {
 		setShowDatepicker((prev) => !prev)
 	}, [])
 
+	const handleInputBlur = (e: any) => {
+		const inputValue = e.target.value
+		console.log('inputValue: ', inputValue) //TODO - SLETT MEG
+		const [day, month, year] = inputValue && inputValue !== '' ? inputValue.split('.') : []
+		const inputDate = (year && new Date(year, month - 1, day)) || inputValue
+		formMethods.setValue(props.name, inputDate)
+		setInput(_.isDate(inputDate) ? formatDate(inputDate) : inputValue)
+		_.isDate(inputDate) && props.onChange(inputDate)
+	}
+
 	return (
 		<InputWrapper {...props}>
 			<Label name={props.name} label={props.label}>
-				{!showDatepicker && (
-					<>
-						<TextInput
-							{...props}
-							// defaultValue={formatDate(formMethods.watch(props.name))}
-							icon={'calendar'}
-							datepickerOnclick={toggleDatepicker}
-						/>
-					</>
-				)}
-				{showDatepicker && <Datepicker {...props} />}
+				{(!showDatepicker && (
+					<TextInput
+						{...props}
+						onChange={(e: BaseSyntheticEvent) => setInput(e.target.value)}
+						onBlur={handleInputBlur}
+						value={input}
+						icon={'calendar'}
+						datepickerOnclick={toggleDatepicker}
+					/>
+				)) || <Datepicker {...props} />}
 			</Label>
 		</InputWrapper>
 	)
@@ -137,25 +158,21 @@ export const DollyDatepicker = (props) => {
 const P_FormDatepicker = ({ ...props }) => {
 	const formMethods = useFormContext()
 	const value = formMethods.watch(props.name)
-	const handleChange = useCallback(
-		(date: any) => {
-			const chosenDate = typeof date === 'SyntheticBaseEvent' ? date.target.value : date
-			if (props.afterChange) {
-				props.afterChange(date)
-			}
-			console.log('date: ', date) //TODO - SLETT MEG
-			let val = (date && fixTimezone(date)?.toISOString().substring(0, 19)) || null
-			formMethods.setValue(props.name, val, { shouldTouch: true })
-			formMethods.trigger(props.name)
-		},
-		[formMethods, props],
-	)
 
-	const handleBlur = useCallback(() => {
+	const handleChange = (date: any) => {
+		let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
+
+		formMethods.setValue(props.name, val, { shouldTouch: true })
+		if (props.afterChange) {
+			props.afterChange(date)
+		}
+		formMethods.trigger(props.name)
+	}
+	const handleBlur = () => {
 		props?.onBlur?.(SyntEvent(props.name, value))
 		formMethods.setValue(props.name, value, { shouldTouch: true })
 		formMethods.trigger(props.name)
-	}, [formMethods, props, value])
+	}
 	return <DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 }
 
