@@ -1,12 +1,14 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.repository;
 
 import no.nav.testnav.levendearbeidsforholdansettelse.entity.AnsettelseLogg;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 
-import java.util.List;
+@Repository
+public interface AnsettelseLoggRepository extends R2dbcRepository<AnsettelseLogg, Long> {
 
-public interface AnsettelseLoggRepository extends CrudRepository<AnsettelseLogg, Long> {
+    Flux<AnsettelseLogg> findByFolkeregisterident(String ident);
+    Flux<AnsettelseLogg> findByOrganisasjonsnummer(String orgnummer);
 
-    List<AnsettelseLogg> findByFolkeregisterident(String ident);
-    List<AnsettelseLogg> findByOrganisasjonsnummer(String orgnummer);
 }

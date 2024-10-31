@@ -110,18 +110,9 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									<FormDatepicker
 										name={`${path}.gyldigFraOgMed`}
 										label="Sikkerhetstiltak starter"
-										onChange={(date: Date) => {
-											handleValueChange(date, 'gyldigFraOgMed', idx)
-										}}
 									/>
 								</InputWarning>
-								<FormDatepicker
-									name={`${path}.gyldigTilOgMed`}
-									label="Sikkerhetstiltak opphører"
-									onChange={(date: Date) => {
-										handleValueChange(date, 'gyldigTilOgMed', idx)
-									}}
-								/>
+								<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Sikkerhetstiltak opphører" />
 								<AvansertForm path={path} kanVelgeMaster={false} />
 							</>
 						)
