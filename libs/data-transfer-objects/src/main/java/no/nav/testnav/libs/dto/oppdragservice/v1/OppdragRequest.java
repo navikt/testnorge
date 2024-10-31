@@ -31,7 +31,7 @@ public class OppdragRequest {
     @NotBlank
     private KodeEndring kodeEndring;
     private KodeStatus kodeStatus;
-    private String datoStatusFom;
+    private LocalDate datoStatusFom;
     @NotBlank
     @Schema(minLength = 1, maxLength = 8)
     private String kodeFagomraade;

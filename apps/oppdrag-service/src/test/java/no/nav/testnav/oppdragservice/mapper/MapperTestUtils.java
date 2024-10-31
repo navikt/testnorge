@@ -4,6 +4,8 @@ import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
+import java.util.List;
+
 import static java.util.Objects.nonNull;
 
 public class MapperTestUtils {
@@ -12,15 +14,16 @@ public class MapperTestUtils {
         return createMapperFacadeForMappingStrategy(null, strategies);
     }
 
-    public static MapperFacade createMapperFacadeForMappingStrategy(CustomConverter<Object, Object> converter, MappingStrategy... strategies) {
+    public static MapperFacade createMapperFacadeForMappingStrategy(List<CustomConverter> converters, MappingStrategy... strategies) {
         DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
         for (MappingStrategy strategy : strategies) {
             strategy.register(mapperFactory);
         }
 
-        if (nonNull(converter)) {
-            mapperFactory.getConverterFactory().registerConverter(converter);
+        if (nonNull(converters)) {
+            converters
+                    .forEach(converter -> mapperFactory.getConverterFactory().registerConverter(converter));
         }
         return mapperFactory.getMapperFacade();
     }
