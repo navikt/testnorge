@@ -37,7 +37,7 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     return webClient.post()
                             .uri(builder ->
                                     builder.path("/api/saksmapper/import")
-                                            .queryParam("metadata", histarkDokument.getMetadata())
+                                            .queryParam("metadata", histarkDokument.getMetadata().toString())
                                             .build())
                             .header(AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.MULTIPART_FORM_DATA)
