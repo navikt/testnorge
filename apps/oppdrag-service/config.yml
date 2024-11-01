@@ -19,11 +19,7 @@ spec:
         - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
-        - application: testnav-faste-data-frontend
-        - application: testnav-organisasjon-forvalter
-        - application: testnav-orgnummer-service
         - application: testnav-oversikt-frontend
-        - application: testnav-tps-messaging-service
   tokenx:
     enabled: true
   azure:
@@ -31,9 +27,6 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - "https://testnav-miljoer-service.intern.dev.nav.no/login/oauth2/code/aad"
-        - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
     initialDelay: 30
