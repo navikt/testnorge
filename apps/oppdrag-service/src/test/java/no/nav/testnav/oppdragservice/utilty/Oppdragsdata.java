@@ -47,7 +47,8 @@ public class Oppdragsdata {
                         .avstemmingsnokkel(List.of(Oppdrag.Avstemmingsnokkel
                                 .builder().kodeKomponent(TEXT_VALUE)
                                 .avstemmingsNokkel(TEXT_VALUE)
-                                .tidspktReg(LOCAL_DATE_TIME).build()))
+                                .tidspktReg(LOCAL_DATE_TIME)
+                                .build()))
                         .ompostering(Oppdrag.Ompostering.builder()
                                 .datoOmposterFom(LOCAL_DATE)
                                 .tidspktReg(LOCAL_DATE_TIME)

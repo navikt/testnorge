@@ -1,7 +1,7 @@
 FROM ghcr.io/navikt/baseimages/temurin:21
 LABEL maintainer="Team Dolly"
 
-ENV JAVA_OPTS="-Dspring.profiles.active=prod"
+ENV JAVA_OPTS="-Dspring.profiles.active=prod --add-opens java.base/java.lang=ALL-UNNAMED"
 
 ADD /build/libs/app.jar /app/app.jar
 
