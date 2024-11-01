@@ -142,7 +142,10 @@ class OppdragResponseMappingStrategyTest {
                 hasProperty("tekst", contains(allOf(
                         hasProperty("tekst", is(equalTo(TEXT_VALUE))),
                         hasProperty("tekstLnr", is(equalTo(NUMBER_VALUE))),
-                        hasProperty("datoTekstFom", is(equalTo(LOCAL_DATE)))))),
+                        hasProperty("datoTekstFom", is(equalTo(LOCAL_DATE))),
+                        hasProperty("datoTekstTom", is(equalTo(LOCAL_DATE))),
+                        hasProperty("tekstKode", is(equalTo(TEXT_VALUE))),
+                        hasProperty("feilreg", is(equalTo(TEXT_VALUE)))))),
                 hasProperty("enhet", contains(allOf(
                         hasProperty("typeEnhet", is(equalTo(TEXT_VALUE))),
                         hasProperty("enhet", is(equalTo(TEXT_VALUE))),

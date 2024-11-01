@@ -125,6 +125,9 @@ public class Oppdragsdata {
                                         .tekst(TEXT_VALUE)
                                         .tekstLnr(NUMBER_VALUE)
                                         .datoTekstFom(LOCAL_DATE)
+                                        .datoTekstTom(LOCAL_DATE)
+                                        .tekstKode(TEXT_VALUE)
+                                        .feilreg(TEXT_VALUE)
                                         .build()))
                                 .enhet(List.of(Oppdrag.Enhet.builder()
                                         .typeEnhet(TEXT_VALUE)
@@ -276,6 +279,9 @@ public class Oppdragsdata {
         tekst.setTekst(TEXT_VALUE);
         tekst.setTekstLnr(TARGET_NUMBER_VALUE);
         tekst.setDatoTekstFom(TARGET_DATE_FORMAT);
+        tekst.setDatoTekstTom(TARGET_DATE_FORMAT);
+        tekst.setTekstKode(TEXT_VALUE);
+        tekst.setFeilreg(TEXT_VALUE);
         oppdragslinje.getTekst().add(tekst);
 
         var enhet = new no.nav.testnav.oppdragservice.wsdl.Enhet();
