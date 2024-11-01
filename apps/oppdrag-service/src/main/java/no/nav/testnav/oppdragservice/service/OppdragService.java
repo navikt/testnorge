@@ -30,7 +30,7 @@ public class OppdragService {
         var request  = mapperFacade.map(oppdragRequest, SendInnOppdragRequest.class);
         var xmlRequest = marshallToXml(request);
 
-        oppdragConsumer.sendOppdrag(xmlRequest);
+        var response = oppdragConsumer.sendOppdrag(request);
         return null;
     }
 
