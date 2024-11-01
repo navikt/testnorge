@@ -61,7 +61,8 @@ class OppdragRequestMappingStrategyTest {
                 hasProperty("datoOmposterFom", is(equalTo(TARGET_DATE_FORMAT))),
                 hasProperty("tidspktReg", is(equalTo(DB2_DATE_TIME_FORMAT))),
                 hasProperty("omPostering", is(equalTo("J"))),
-                hasProperty("saksbehId", is(equalTo(TEXT_VALUE)))));
+                hasProperty("saksbehId", is(equalTo(TEXT_VALUE))),
+                hasProperty("feilreg", is(equalTo(TEXT_VALUE)))));
         assertThat(target.getKodeEndring(), is(equalTo(Oppdrag.KodeEndring.NY.toString())));
         assertThat(target.getKodeStatus(), is(equalTo(KodeStatus.ATTE)));
         assertThat(target.getDatoStatusFom(), is(equalTo(TARGET_DATE_FORMAT)));

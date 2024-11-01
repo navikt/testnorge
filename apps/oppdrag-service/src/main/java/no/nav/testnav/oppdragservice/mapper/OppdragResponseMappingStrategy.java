@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.libs.dto.oppdragservice.v1.Oppdrag;
 import no.nav.testnav.libs.dto.oppdragservice.v1.OppdragResponse;
+import no.nav.testnav.libs.dto.oppdragservice.v1.OppdragResponse.Infomelding;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,7 @@ public class OppdragResponseMappingStrategy implements MappingStrategy{
                                                         .replace("14DB","_14DB")));
 
                         destination.setOppdrag(mapperFacade.map(oppdrag, Oppdrag.class, context));
+                        destination.setInfomelding(mapperFacade.map(source.getResponse().getInfomelding(), Infomelding.class));
                     }
                 })
                 .register();

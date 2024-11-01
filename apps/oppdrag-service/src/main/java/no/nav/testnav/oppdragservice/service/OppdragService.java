@@ -5,9 +5,9 @@ import jakarta.xml.bind.JAXBException;
 import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.libs.dto.oppdragservice.v1.OppdragRequest;
+import no.nav.testnav.libs.dto.oppdragservice.v1.OppdragResponse;
 import no.nav.testnav.oppdragservice.consumer.OppdragConsumer;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragRequest;
-import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.StringWriter;
@@ -25,13 +25,13 @@ public class OppdragService {
         this.jaxbContext = JAXBContext.newInstance(SendInnOppdragRequest.class);
     }
 
-    public SendInnOppdragResponse sendInnOppdrag(OppdragRequest oppdragRequest) {
+    public OppdragResponse sendInnOppdrag(OppdragRequest oppdragRequest) {
 
         var request  = mapperFacade.map(oppdragRequest, SendInnOppdragRequest.class);
-        var xmlRequest = marshallToXml(request);
 
-        var response = oppdragConsumer.sendOppdrag(request);
-        return null;
+        var oppdragResponse = oppdragConsumer.sendOppdrag(request);
+
+        return mapperFacade.map(oppdragResponse, OppdragResponse.class);
     }
 
     @SneakyThrows

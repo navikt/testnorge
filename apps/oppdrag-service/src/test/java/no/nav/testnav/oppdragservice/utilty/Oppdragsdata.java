@@ -5,6 +5,7 @@ import no.nav.testnav.libs.dto.oppdragservice.v1.Oppdrag;
 import no.nav.testnav.libs.dto.oppdragservice.v1.OppdragRequest;
 import no.nav.testnav.oppdragservice.wsdl.Bilagstype;
 import no.nav.testnav.oppdragservice.wsdl.FradragTillegg;
+import no.nav.testnav.oppdragservice.wsdl.Infomelding;
 import no.nav.testnav.oppdragservice.wsdl.KodeArbeidsgiver;
 import no.nav.testnav.oppdragservice.wsdl.KodeStatus;
 import no.nav.testnav.oppdragservice.wsdl.KodeStatusLinje;
@@ -51,7 +52,9 @@ public class Oppdragsdata {
                                 .datoOmposterFom(LOCAL_DATE)
                                 .tidspktReg(LOCAL_DATE_TIME)
                                 .omPostering(Oppdrag.JaNei.J)
-                                .saksbehId(TEXT_VALUE).build())
+                                .saksbehId(TEXT_VALUE)
+                                .feilreg(TEXT_VALUE)
+                                .build())
                         .kodeEndring(Oppdrag.KodeEndring.NY)
                         .kodeStatus(Oppdrag.KodeStatus.ATTE)
                         .datoStatusFom(LOCAL_DATE)
@@ -152,6 +155,10 @@ public class Oppdragsdata {
         var response = new SendInnOppdragResponse();
         response.setResponse(new SendInnOppdragResponse2());
 
+        var infomelding = new Infomelding();
+        infomelding.setBeskrMelding(TEXT_VALUE);
+        response.getResponse().setInfomelding(infomelding);
+
         var oppdrag = new no.nav.testnav.oppdragservice.wsdl.Oppdrag();
         oppdrag.setOppdragsId(LONG_VALUE);
         response.getResponse().setOppdrag(oppdrag);
@@ -171,6 +178,7 @@ public class Oppdragsdata {
         ompostering.setTidspktReg(DB2_DATE_TIME_FORMAT);
         ompostering.setOmPostering(Oppdrag.JaNei.J.toString());
         ompostering.setSaksbehId(TEXT_VALUE);
+        ompostering.setFeilreg(TEXT_VALUE);
         oppdrag.setOmpostering(ompostering);
 
         oppdrag.setKodeEndring(Oppdrag.KodeEndring.NY.toString());
@@ -216,6 +224,10 @@ public class Oppdragsdata {
 
         var response = new SendInnOppdragResponse();
         response.setResponse(new SendInnOppdragResponse2());
+
+        var infomelding = new Infomelding();
+        infomelding.setBeskrMelding(TEXT_VALUE);
+        response.getResponse().setInfomelding(infomelding);
 
         var oppdrag = new no.nav.testnav.oppdragservice.wsdl.Oppdrag();
         response.getResponse().setOppdrag(oppdrag);

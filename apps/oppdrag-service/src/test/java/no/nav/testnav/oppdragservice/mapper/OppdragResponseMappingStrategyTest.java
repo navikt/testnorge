@@ -45,6 +45,9 @@ class OppdragResponseMappingStrategyTest {
         var oppdragResponse = Oppdragsdata.buildOppdragResponse();
 
         var response = mapperFacade.map(oppdragResponse, OppdragResponse.class);
+
+        assertThat(response.getInfomelding().getBeskrMelding(), is(equalTo(TEXT_VALUE)));
+
         var target = response.getOppdrag();
 
         assertThat(target.getOppdragsId(), is(equalTo(LONG_VALUE)));
@@ -57,7 +60,8 @@ class OppdragResponseMappingStrategyTest {
                 hasProperty("datoOmposterFom", is(equalTo(LOCAL_DATE))),
                 hasProperty("tidspktReg", is(equalTo(LOCAL_DATE_TIME))),
                 hasProperty("omPostering", is(equalTo(JaNei.J))),
-                hasProperty("saksbehId", is(equalTo(TEXT_VALUE)))));
+                hasProperty("saksbehId", is(equalTo(TEXT_VALUE))),
+                hasProperty("feilreg", is(equalTo(TEXT_VALUE)))));
         assertThat(target.getKodeEndring(), is(equalTo(Oppdrag.KodeEndring.NY)));
         assertThat(target.getKodeStatus(), is(equalTo(Oppdrag.KodeStatus.ATTE)));
         assertThat(target.getDatoStatusFom(), is(equalTo(LOCAL_DATE)));
@@ -95,6 +99,9 @@ class OppdragResponseMappingStrategyTest {
         var oppdragResponse = Oppdragsdata.buildOppdragslinjeResponse();
 
         var response = mapperFacade.map(oppdragResponse, OppdragResponse.class);
+
+        assertThat(response.getInfomelding().getBeskrMelding(), is(equalTo(TEXT_VALUE)));
+
         var target = response.getOppdrag();
 
         assertThat(target.getOppdragslinje(), contains(allOf(
