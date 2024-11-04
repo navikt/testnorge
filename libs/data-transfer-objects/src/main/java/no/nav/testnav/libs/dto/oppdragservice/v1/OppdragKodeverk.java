@@ -1,8 +1,10 @@
 package no.nav.testnav.libs.dto.oppdragservice.v1;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum OppdragKodeverk {
 
         JA_NEI (Oppdrag.JaNei.class),
@@ -16,10 +18,6 @@ public enum OppdragKodeverk {
         UTBETALING_FREKVENS_TYPE(Oppdrag.UtbetalingFrekvensType.class),
         VALUTA_TYPE(Oppdrag.ValutaType.class);
 
-    private Class implementasjon;
+    private final Class implementasjon;
 
-        private OppdragKodeverk(Class implementasjon) {
-            this.implementasjon = implementasjon;
-        }
     }
-
