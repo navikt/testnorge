@@ -157,7 +157,7 @@ class OppdragResponseMappingStrategyTest {
                         hasProperty("attestantId", is(equalTo(TEXT_VALUE))),
                         hasProperty("datoUgyldigFom", is(equalTo(LOCAL_DATE)))))),
                 hasProperty("valuta", contains(allOf(
-                        hasProperty("typeValuta", is(equalTo(Oppdrag.ValuteType.FAKT))),
+                        hasProperty("typeValuta", is(equalTo(Oppdrag.ValutaType.FAKT))),
                         hasProperty("valuta", is(equalTo(TEXT_VALUE))),
                         hasProperty("datoValutaFom", is(equalTo(LOCAL_DATE))),
                         hasProperty("feilreg", is(equalTo(TEXT_VALUE))))))

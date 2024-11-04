@@ -2,7 +2,7 @@ package no.nav.testnav.oppdragservice.mapper;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.libs.dto.oppdragservice.v1.Oppdrag;
-import no.nav.testnav.libs.dto.oppdragservice.v1.Oppdrag.ValuteType;
+import no.nav.testnav.libs.dto.oppdragservice.v1.Oppdrag.ValutaType;
 import no.nav.testnav.oppdragservice.utilty.Oppdragsdata;
 import no.nav.testnav.oppdragservice.wsdl.FradragTillegg;
 import no.nav.testnav.oppdragservice.wsdl.KodeArbeidsgiver;
@@ -152,7 +152,7 @@ class OppdragRequestMappingStrategyTest {
                         hasProperty("attestantId", is(equalTo(TEXT_VALUE))),
                         hasProperty("datoUgyldigFom", is(equalTo(TARGET_DATE_FORMAT)))))),
                 hasProperty("valuta", contains(allOf(
-                        hasProperty("typeValuta", is(equalTo(ValuteType.FAKT.toString()))),
+                        hasProperty("typeValuta", is(equalTo(ValutaType.FAKT.toString()))),
                         hasProperty("valuta", is(equalTo(TEXT_VALUE))),
                         hasProperty("datoValutaFom", is(equalTo(TARGET_DATE_FORMAT))),
                         hasProperty("feilreg", is(equalTo(TEXT_VALUE))))))

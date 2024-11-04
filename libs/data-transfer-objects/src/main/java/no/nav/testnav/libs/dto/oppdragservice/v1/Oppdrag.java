@@ -352,7 +352,7 @@ public class Oppdrag {
     public static class Valuta {
 
         @NotBlank
-        protected ValuteType typeValuta;
+        protected Oppdrag.ValutaType typeValuta;
         @NotBlank
         @Schema(minLength = 1, maxLength = 3)
         protected String valuta;
@@ -431,7 +431,7 @@ public class Oppdrag {
         ENG
     }
 
-    public enum ValuteType {
+    public enum ValutaType {
 
         FAKT,
         FRAM,

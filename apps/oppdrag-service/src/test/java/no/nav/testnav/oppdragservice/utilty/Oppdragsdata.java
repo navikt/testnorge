@@ -144,7 +144,7 @@ public class Oppdragsdata {
                                         .datoUgyldigFom(LOCAL_DATE)
                                         .build()))
                                 .valuta(List.of(Oppdrag.Valuta.builder()
-                                        .typeValuta(Oppdrag.ValuteType.FAKT)
+                                        .typeValuta(Oppdrag.ValutaType.FAKT)
                                         .valuta(TEXT_VALUE)
                                         .datoValutaFom(LOCAL_DATE)
                                         .feilreg(TEXT_VALUE)
@@ -302,7 +302,7 @@ public class Oppdragsdata {
         oppdragslinje.getAttestant().add(attestant);
 
         var valuta = new no.nav.testnav.oppdragservice.wsdl.Valuta();
-        valuta.setTypeValuta(Oppdrag.ValuteType.FAKT.toString());
+        valuta.setTypeValuta(Oppdrag.ValutaType.FAKT.toString());
         valuta.setValuta(TEXT_VALUE);
         valuta.setDatoValutaFom(TARGET_DATE_FORMAT);
         valuta.setFeilreg(TEXT_VALUE);
