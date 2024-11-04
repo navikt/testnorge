@@ -151,9 +151,9 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 						)}
 						{erGammelAmeldingMal && (
 							<Alert variant={'warning'} size={'small'} style={{ width: '97%' }}>
-								Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi den
+								Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den
 								inneholder arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at
-								du oppretter en ny mal og sletter denne malen.
+								du sletter denne malen og oppretter en ny.
 							</Alert>
 						)}
 						<div className="mal-admin">
