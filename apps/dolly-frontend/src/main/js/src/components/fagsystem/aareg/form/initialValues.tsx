@@ -22,16 +22,6 @@ export const initialForenkletOppgjoersordning = {
 	arbeidsforholdstype: 'forenkletOppgjoersordning',
 }
 
-export const initialForenkletOppgjoersordningOrg = {
-	...initialForenkletOppgjoersordning,
-	arbeidsgiver: initialArbeidsgiverOrg,
-}
-
-export const initialForenkletOppgjoersordningPers = {
-	...initialForenkletOppgjoersordning,
-	arbeidsgiver: initialArbeidsgiverPers,
-}
-
 export const initialArbeidsavtale = {
 	yrke: '',
 	ansettelsesform: 'fast',
@@ -60,22 +50,6 @@ export const initialArbeidsforhold = {
 export const initialArbeidsforholdOrg = {
 	...initialArbeidsforhold,
 	arbeidsgiver: initialArbeidsgiverOrg,
-}
-
-export const initialArbeidsforholdPers = {
-	...initialArbeidsforhold,
-	arbeidsgiver: initialArbeidsgiverPers,
-}
-
-export const initialPeriode = {
-	fom: null,
-	tom: null,
-	periode: [],
-}
-
-export const initialValues = {
-	arbeidsforholdstype: 'ordinaertArbeidsforhold',
-	genererPeriode: initialPeriode,
 }
 
 export const initialFartoy = [

@@ -15,6 +15,12 @@ import {
 	VergemaalValues,
 } from '@/components/fagsystem/pdlf/PdlTypes'
 import { addMonths, isAfter, setDate } from 'date-fns'
+import subYears from 'date-fns/subYears'
+import {
+	initialArbeidsavtale,
+	initialArbeidsgiverOrg,
+	initialFartoy,
+} from '@/components/fagsystem/aareg/form/initialValues'
 
 export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	const initialValuesMal = Object.assign({}, mal.bestilling)
@@ -142,10 +148,26 @@ const getUpdatedInntektstubData = (inntektstubData: any) => {
 const getUpdatedAaregData = (aaregData: any) => {
 	return aaregData.map((data: any) => {
 		data = updateData(data, initialValues.aareg[0])
-		if (data.amelding && data.amelding.length > 0) {
-			data.ansettelsesPeriode = undefined
-			data.arbeidsgiver = undefined
-			data.arbeidsavtale = undefined
+		data.amelding = undefined
+		data.genererPeriode = undefined
+		data.navArbeidsforholdPeriode = undefined
+		if (!data.ansettelsesPeriode) {
+			data.ansettelsesPeriode = {
+				fom: subYears(new Date(), 20),
+				tom: null,
+				sluttaarsak: null,
+			}
+		}
+		if (!data.arbeidsavtale) {
+			data.arbeidsavtale = initialArbeidsavtale
+		}
+		if (!data.arbeidsgiver) {
+			data.arbeidsgiver = initialArbeidsgiverOrg
+		}
+		if (data.fartoy?.length < 1) {
+			if (data.arbeidsforholdstype === 'maritimtArbeidsforhold') {
+				data.fartoy = initialFartoy
+			} else data.fartoy = undefined
 		}
 		data.permisjon = data.permisjon?.map((permisjon: any) =>
 			updateData(permisjon, initialValues.permisjon),
