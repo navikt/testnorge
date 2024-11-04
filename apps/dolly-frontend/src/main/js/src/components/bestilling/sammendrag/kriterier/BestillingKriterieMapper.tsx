@@ -1046,10 +1046,11 @@ const mapTpsMessaging = (bestillingData, data) => {
 	}
 }
 
-export const arbeidsforholdVisning = (arbeidsforhold, i, aaregKriterier) => [
+export const arbeidsforholdVisning = (arbeidsforhold, i, aaregKriterier, amelding) => [
 	{
 		numberHeader: `Arbeidsforhold ${i + 1}`,
 	},
+	obj('A-melding', amelding),
 	{
 		label: 'Type arbeidsforhold',
 		value: arbeidsforhold.arbeidsforholdstype || aaregKriterier?.arbeidsforholdstype,
@@ -1124,11 +1125,10 @@ const mapAareg = (bestillingData, data) => {
 			pagineringPages: [],
 		}
 
-		if (aaregKriterier[0]?.arbeidsgiver) {
-			aaregKriterier?.forEach((arbeidsforhold, i) => {
-				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, aaregKriterier))
-			})
-		}
+		aaregKriterier?.forEach((arbeidsforhold, i) => {
+			const amelding = arbeidsforhold.amelding?.length > 0 ? 'Ikke lenger støttet' : null
+			aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, aaregKriterier, amelding))
+		})
 
 		data.push(aareg)
 	}
