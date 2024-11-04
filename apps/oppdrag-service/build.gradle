@@ -25,7 +25,7 @@ sonarqube {
 
 bootJar {
     archiveFileName = "app.jar"
-    mainClass = 'no.nav.testnav.oppdrag.service.OppdragServiceApplicationStarter'
+    mainClass = 'no.nav.testnav.oppdragservice.OppdragServiceApplicationStarter'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
