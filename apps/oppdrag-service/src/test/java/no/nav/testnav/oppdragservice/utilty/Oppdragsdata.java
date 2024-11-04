@@ -22,13 +22,13 @@ import java.util.List;
 @UtilityClass
 public class Oppdragsdata {
 
-    public static final LocalDate LOCAL_DATE = LocalDate.now();
-    public static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
-
+    public static final LocalDate LOCAL_DATE = LocalDate.of(2024,11,4);
     public static final String TARGET_DATE_FORMAT = DateTimeFormatter
             .ofPattern("dd-MM-yyyy").format(LOCAL_DATE);
-    public static final String DB2_DATE_TIME_FORMAT = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd-HH.mm.ss.SSSSSS").format(LOCAL_DATE_TIME);
+
+    public static final String DB2_DATE_TIME_FORMAT = "2024-11-04-07.17.34.123456";
+    public static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.from(DateTimeFormatter
+            .ofPattern("yyyy-MM-dd-HH.mm.ss.SSSSSS").parse(DB2_DATE_TIME_FORMAT));
 
     public static final String TEXT_VALUE = "tekst";
     public static final Integer NUMBER_VALUE = 123;
