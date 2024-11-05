@@ -23,7 +23,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class DeleteFullmaktDataCommand implements Callable<Mono<ResponseEntity<Void>>> {
 
-    private static final String DELETE_FULLMAKT_URL = "/api/fullmakt/{fullmaktId}";
+    private static final String DELETE_FULLMAKT_URL = "/api/eksternbruker/fullmakt/fullmakt/{fullmaktId}";
 
     private final WebClient webClient;
     private final String ident;

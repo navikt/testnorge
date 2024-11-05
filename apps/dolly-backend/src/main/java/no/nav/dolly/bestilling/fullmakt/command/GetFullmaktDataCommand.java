@@ -23,7 +23,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class GetFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> {
 
-    private static final String HENT_FULLMAKT_URL = "/api/fullmektig";
+    private static final String HENT_FULLMAKT_URL = "/api/eksternbruker/fullmakt/fullmektig";
 
     private final WebClient webClient;
     private final String ident;
