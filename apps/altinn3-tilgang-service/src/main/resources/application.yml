@@ -3,8 +3,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     version: application.version.todo
-    name: testnav-organisasjon-tilgang-service
-    desciption: Tjeneste for hente og sette tilganger for orgnisasjoner
+    name: testnav-altinn3-tilgang-service
+    desciption: Tjeneste for å hente og sette tilganger for orgnisasjoner
   security:
     oauth2:
       resourceserver:

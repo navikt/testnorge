@@ -1,4 +1,4 @@
-name: organisasjon-tilgang-service
+name: altinn3-tilgang-service
 
 on:
   push:
