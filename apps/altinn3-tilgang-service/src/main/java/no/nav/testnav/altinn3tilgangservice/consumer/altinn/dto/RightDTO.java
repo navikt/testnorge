@@ -1,4 +1,4 @@
-package no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.dto;
+package no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 
 public record RightDTO(
 
-        "urn:altinn:organization:identifier-no:123456789",
         @JsonProperty("Id")
         Integer id,
         @JsonProperty("Reportee")

@@ -2,7 +2,7 @@ package no.nav.testnav.altinn3tilgangservice.service;
 
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.AltinnConsumer;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer;
 import no.nav.testnav.altinn3tilgangservice.database.entity.OrganisasjonTilgang;
 import no.nav.testnav.altinn3tilgangservice.database.repository.OrganisasjonTilgangRepository;
 import org.springframework.stereotype.Service;

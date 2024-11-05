@@ -57,10 +57,6 @@ spec:
   prometheus:
     enabled: true
     path: /internal/metrics
-  envFrom:
-    - secret: altinn-prod
-    - secret: google-sql-testnav-organisasjon-tilgang-service
-    - secret: maskinporten-dolly-prod
   replicas:
     min: 1
     max: 1
@@ -79,7 +75,7 @@ spec:
     sqlInstances:
       - type: POSTGRES_16
         tier: db-custom-1-3840
-        name: testnav-altinn3-tilganger
+        name: testnav-altinn3-tilgang
         databases:
-          - name: testnav-altinn3-tilganger
+          - name: testnav-altinn3-tilgang
         autoBackupHour: 2

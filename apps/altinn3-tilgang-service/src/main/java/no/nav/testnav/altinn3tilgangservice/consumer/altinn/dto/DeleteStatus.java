@@ -1,4 +1,4 @@
-package no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.dto;
+package no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

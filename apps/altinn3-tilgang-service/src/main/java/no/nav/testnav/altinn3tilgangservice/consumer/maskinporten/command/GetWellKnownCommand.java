@@ -1,9 +1,9 @@
-package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.command;
+package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.MaskinportenConfig;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.dto.WellKnown;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.WellKnown;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;

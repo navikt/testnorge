@@ -1,8 +1,9 @@
 FROM ghcr.io/navikt/baseimages/temurin:21
 LABEL maintainer="Team Dolly"
 
-ADD build/libs/app.jar /app/app.jar
+ENV JAVA_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED -Dspring.profiles.active=prod"
 
-ENV JAVA_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"
+COPY 99-dolly-convert-to-pk8.sh /init-scripts/
+COPY /build/libs/app.jar /app/
 
 EXPOSE 8080

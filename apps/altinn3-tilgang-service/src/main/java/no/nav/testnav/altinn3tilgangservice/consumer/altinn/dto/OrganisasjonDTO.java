@@ -1,4 +1,4 @@
-package no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.dto;
+package no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto;
 
 public record OrganisasjonDTO(
         String Name,

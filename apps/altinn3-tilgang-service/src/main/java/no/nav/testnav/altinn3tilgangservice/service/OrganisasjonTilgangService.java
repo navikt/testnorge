@@ -3,7 +3,7 @@ package no.nav.testnav.altinn3tilgangservice.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.AltinnConsumer;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer;
 import no.nav.testnav.altinn3tilgangservice.database.entity.OrganisasjonTilgang;
 import no.nav.testnav.altinn3tilgangservice.database.repository.OrganisasjonTilgangRepository;
 import no.nav.testnav.altinn3tilgangservice.domain.OrganisasjonResponse;

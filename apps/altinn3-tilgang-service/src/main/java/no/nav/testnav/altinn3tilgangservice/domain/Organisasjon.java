@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.dto.OrganisasjonDTO;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.dto.RightDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.RightDTO;
 
 import java.time.LocalDateTime;
 

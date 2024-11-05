@@ -1,4 +1,4 @@
-package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1;
+package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
@@ -12,9 +12,9 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.MaskinportenConfig;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.command.GetAccessTokenCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.command.GetWellKnownCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.dto.AccessToken;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command.GetAccessTokenCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command.GetWellKnownCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.AccessToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

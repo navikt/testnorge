@@ -1,15 +1,15 @@
-package no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1;
+package no.nav.testnav.altinn3tilgangservice.consumer.altinn;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.command.CreateOrganisasjonAccessCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.command.DeleteOrganisasjonAccessCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.command.GetOrganisasjonCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.command.GetRightsCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.dto.DeleteStatus;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.v1.dto.RightDTO;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.MaskinportenConsumer;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.CreateOrganisasjonAccessCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.DeleteOrganisasjonAccessCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetOrganisasjonCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetRightsCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.DeleteStatus;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.RightDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;

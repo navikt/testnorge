@@ -1,4 +1,4 @@
-package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.dto;
+package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

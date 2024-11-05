@@ -1,9 +1,9 @@
-package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.command;
+package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.dto.AccessToken;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.v1.dto.WellKnown;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.AccessToken;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.WellKnown;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -23,7 +23,7 @@ public class GetAccessTokenCommand implements Callable<Mono<AccessToken>> {
         return webClient.post()
                 .uri(wellKnown.tokenEndpoint())
                 .body(BodyInserters
-                        .fromFormData("grant_type", wellKnown.grantTypesSupported().get(0))
+                        .fromFormData("grant_type", wellKnown.grantTypesSupported().getFirst())
                         .with("assertion", assertion)
                 )
                 .retrieve()
