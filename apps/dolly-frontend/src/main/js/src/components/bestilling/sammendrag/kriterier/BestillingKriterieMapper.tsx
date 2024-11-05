@@ -4,6 +4,7 @@ import {
 	arrayToString,
 	codeToNorskLabel,
 	formatDate,
+	formatDateTime,
 	formatDateTimeWithSeconds,
 	formatDateToYear,
 	omraaderArrayToString,
@@ -325,14 +326,14 @@ const mapVergemaal = (vergemaal, data) => {
 	}
 }
 
-const mapFullmakt = (fullmakt, data) => {
-	if (fullmakt) {
+const mapFullmakt = (bestillingData, data) => {
+	if (bestillingData?.fullmakt) {
 		const fullmaktData = {
 			header: 'Fullmakt',
-			itemRows: fullmakt.map((item, idx) => {
+			itemRows: bestillingData.fullmakt.map((item, idx) => {
 				return [
 					{ numberHeader: `Fullmakt ${idx + 1}` },
-					obj('Områder', omraaderArrayToString(item.omraader)),
+					obj('Områder', omraaderArrayToString(item.omraade)),
 					obj('Gyldig fra og med', formatDate(item.gyldigFraOgMed)),
 					obj('Gyldig til og med', formatDate(item.gyldigTilOgMed)),
 					obj('Fullmektig', item.motpartsPersonident),
@@ -1271,7 +1272,7 @@ const mapInntektStub = (bestillingData, data) => {
 				inntektStub.itemRows.push([
 					{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 					obj('År/måned', inntektsinfo.sisteAarMaaned),
-					obj('Rapporteringstidspunkt', inntektsinfo.rapporteringsdato),
+					obj('Rapporteringstidspunkt', formatDateTime(inntektsinfo.rapporteringsdato)),
 					obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 					obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 					obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
@@ -1570,6 +1571,30 @@ const mapSykemelding = (bestillingData, data) => {
 			]
 		}
 		data.push(sykemelding)
+	}
+}
+
+const mapYrkesskader = (bestillingData, data) => {
+	const yrkesskadeKriterier = bestillingData.yrkesskader
+
+	if (yrkesskadeKriterier) {
+		const mapYrkesskadeKriterier = () => ({
+			header: 'Yrkesskader',
+			itemRows: yrkesskadeKriterier.map((yrkesskade, i) => [
+				{
+					numberHeader: `Yrkesskade ${i + 1}`,
+				},
+				obj('Rolletype', codeToNorskLabel(yrkesskade.rolletype)),
+				obj('Innmelderrolle', codeToNorskLabel(yrkesskade.innmelderrolle)),
+				obj('Klassifisering', showLabel('klassifisering', yrkesskade.klassifisering)),
+				obj('Referanse', yrkesskade.referanse),
+				obj('Ferdigstill sak', showLabel('ferdigstillSak', yrkesskade.ferdigstillSak)),
+				obj('Tidstype', showLabel('tidstype', yrkesskade.tidstype)),
+				obj('Skadetidspunkt', formatDateTime(yrkesskade.skadetidspunkt)),
+				obj('Antall perioder', yrkesskade.perioder?.length),
+			]),
+		})
+		data.push(mapYrkesskadeKriterier())
 	}
 }
 
@@ -2371,7 +2396,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 			kjoenn,
 			navn,
 			telefonnummer,
-			fullmakt,
 			bostedsadresse,
 			oppholdsadresse,
 			kontaktadresse,
@@ -2402,7 +2426,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 		mapNavn(navn, data)
 		mapTelefonnummer(telefonnummer, data)
 		mapVergemaal(vergemaal, data)
-		mapFullmakt(fullmakt, data)
 		mapTilrettelagtKommunikasjon(tilrettelagtKommunikasjon, data)
 		mapStatsborgerskap(statsborgerskap, data)
 		mapDoedsfall(doedsfall, data)
@@ -2421,6 +2444,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 		mapKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsbo, data)
 	}
 
+	mapFullmakt(bestillingData, data)
 	mapTpsMessaging(bestillingData, data)
 	mapAareg(bestillingData, data)
 	mapSigrunStub(bestillingData, data)
@@ -2432,6 +2456,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapPensjon(bestillingData, data, navEnheter)
 	mapArena(bestillingData, data)
 	mapSykemelding(bestillingData, data)
+	mapYrkesskader(bestillingData, data)
 	mapBrregstub(bestillingData, data)
 	mapInst(bestillingData, data)
 	mapKrr(bestillingData, data)

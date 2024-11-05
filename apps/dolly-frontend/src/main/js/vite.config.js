@@ -48,13 +48,13 @@ export default defineConfig(({ mode }) => ({
 		sourcemap: true,
 		cssCodeSplit: false,
 		rollupOptions: {
-			external: ['react', './nais.js', 'react/jsx-runtime', 'react-dom'],
-			output: {
-				globals: {
-					react: 'react',
-					'react-dom': 'ReactDOM',
-					'react/jsx-runtime': 'react/jsx-runtime',
-				},
+			external: ['./nais.js'],
+		},
+	},
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler',
 			},
 		},
 	},
@@ -68,6 +68,11 @@ export default defineConfig(({ mode }) => ({
 	server: mode === 'local-dev' && {
 		proxy: proxyRoutes,
 		port: 3000,
+	},
+	test: {
+		globals: true,
+		environment: 'jsdom',
+		exclude: ['**/node_modules/**', '**/playwright/**'],
 	},
 	plugins: [
 		react({

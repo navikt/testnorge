@@ -5,25 +5,27 @@ Enkelte applikasjoner bruker en database i GCP som "lokal" database, dvs. i Spri
 * `organisasjon-forvalter`
 * `pdl-forvalter`
 
-På grunn av begrensninger i NAIS må disse databasene tilhøre en applikasjon. Det finnes en [../apps/dolly-db](../apps/dolly-db) som deployes flere ganger for å opprette og "eie" disse databasene.
+Disse er refert til under som `APP_NAME`.
 
-Disse har derfor en noe annen konfigurasjon for kjøring lokalt, og bruker [NAIS CLI](https://doc.nais.io/operate/cli/reference/postgres/).
+Applikasjonene har en noe annen konfigurasjon for kjøring lokalt, og bruker [gcloud CLI](https://doc.nais.io/operate/cli/reference/postgres/) og [cloud_sql_proxy](https://cloud.google.com/sql/docs/postgres/connect-auth-proxy).
 
+* `cloud_sql_proxy` installeres med
+```
+> gcloud components install cloud-sql-proxy
+```
 * Du må være logget på med gcloud CLI.
-* ~~Databasene må forberedes for tilgang.~~ **En gang, dette er allerede gjort.**
 ```
-> nais postgres prepare --all-privs <db-app-navn>
+> gcloud auth login --update-adc
 ```
-* Du må gi din personlige bruker tilgang til databasen. **En gang.**
+* Du må starte `cloud_sql_proxy` med rett `APP_NAME` (se over).
 ```
-> nais postgres grant <db-app-navn>
+> cloud_sql_proxy -instances=dolly-dev-ff83:europe-north1:testnav-APP_NAME-local=tcp:5432
 ```
-* Tilgang til DB gis gjennom NAIS CLI.
-```
-> nais postgres proxy <db-app-navn>
-```
-* Brukernavnet må være din NAV-ident. Du må enten:
-   * Sette en miljøvariabel `NAV_USERNAME` til din NAV-ident. **En gang.**
-   * Endre brukernavnet i den aktuelle application-local.yml fra `${NAV_USERNAME}` til ditt navn. **Hver gang. Og ikke commit'e den endringen.**
 
-Etter at proxy'en er startet kan du da kjøre den aktuelle applikasjonen lokalt.
+Etter at proxy'en er startet kan du da kjøre den aktuelle applikasjonen lokalt. Applikasjonen henter selv passord vha. [Spring Cloud GCP](https://spring.io/projects/spring-cloud-gcp) ved oppstart.
+
+Hvis du ønsker tilgang direkte til databasen gjennom en annen klient som IntelliJ så må du hente ut passordet vha.
+```
+> gcloud secrets versions access latest --secret=testnav-APP_NAME-local
+```
+JDBC connect URL vil være `jdbc:postgresql://localhost:5432/testnav-APP_NAME-local?user=testnav-APP_NAME-local`.

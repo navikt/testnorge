@@ -9,6 +9,8 @@ import { Logger } from '@/logger/Logger'
 
 const fetchRetry = fetch_retry(originalFetch)
 
+const allowForbidden = ['testnav-arbeidsplassencv', 'testnav-fullmakt', 'infostripe', 'norg2']
+
 export const multiFetcherAll = (urlListe, headers = null) => {
 	return Promise.all(
 		urlListe.map((url) =>
@@ -128,8 +130,20 @@ export const cvFetcher = (url, headers) =>
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
 
-export const fetcher = (url, headers) =>
-	axios
+const clearLargeCookies = () => {
+	const cookies = document.cookie.split(';')
+	cookies.forEach((cookie) => {
+		const [name, value] = cookie.split('=')
+		if (value && value.length > 1000) {
+			// Fjerner cookies som er over 1000 tegn
+			document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+		}
+	})
+}
+
+export const fetcher = (url, headers) => {
+	clearLargeCookies()
+	return axios
 		.get(url, { headers: headers })
 		.then((res) => {
 			return res.data
@@ -137,9 +151,7 @@ export const fetcher = (url, headers) =>
 		.catch((reason) => {
 			if (
 				(reason?.response?.status === 401 || reason?.response?.status === 403) &&
-				!url.includes('testnav-arbeidsplassencv') &&
-				!url.includes('infostripe') &&
-				!url.includes('norg2')
+				!allowForbidden.some((value) => url.includes(value))
 			) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
@@ -152,11 +164,14 @@ export const fetcher = (url, headers) =>
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
+}
 
-export const imageFetcher = (...args: Argument[]) =>
-	originalFetch(...args).then((res: Response) =>
+export const imageFetcher = (...args: Argument[]) => {
+	clearLargeCookies()
+	return originalFetch(...args).then((res: Response) =>
 		res.ok ? res.blob().then((blob: Blob) => URL.createObjectURL(blob)) : null,
 	)
+}
 
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
 
@@ -166,16 +181,12 @@ type Config = {
 	redirect?: 'follow' | 'manual'
 }
 
-const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
-	fetchRetry(url, {
+const _fetch = (url: string, config: Config, body?: object): Promise<Response> => {
+	clearLargeCookies()
+	return fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
-			if (!response.ok && !runningE2ETest()) {
-				if (
-					response?.status === 401 &&
-					!url.includes('testnav-arbeidsplassencv') &&
-					!url.includes('infostripe') &&
-					!url.includes('norg2')
-				) {
+			if (!response.ok && response?.status !== 404 && !runningE2ETest()) {
+				if (response?.status === 401 && !allowForbidden.some((value) => url.includes(value))) {
 					console.error('Auth feilet, navigerer til login')
 					navigateToLogin()
 				}
@@ -205,12 +216,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			window.location.href = response.url
 		}
 		if (!response.ok && !runningE2ETest()) {
-			if (
-				response?.status === 401 &&
-				!url.includes('testnav-arbeidsplassencv') &&
-				!url.includes('infostripe') &&
-				!url.includes('norg2')
-			) {
+			if (response?.status === 401 && !allowForbidden.some((value) => url.includes(value))) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}
@@ -226,6 +232,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		}
 		return response
 	})
+}
 
 const fetchJson = (url: string, config: Config, body?: object): Promise =>
 	_fetch(

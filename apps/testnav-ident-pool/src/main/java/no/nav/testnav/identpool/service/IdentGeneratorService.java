@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -31,7 +32,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class IdentGeneratorService {
 
     private static final int SYNTETISK = 4;
-    private static final SecureRandom random = new SecureRandom();
+    private static final Random random = new SecureRandom();
 
     private static String addSyntetiskIdentifier(String format) {
         return String.format("%s%1d%s", format.substring(0, 2), Integer.parseInt(format.substring(2, 3)) + SYNTETISK, format.substring(3));
@@ -67,15 +68,14 @@ public class IdentGeneratorService {
             request.setFoedtFoer(request.getFoedtEtter().plusDays(1));
         }
 
-        var identer = identerIIdentPool;
-        var antall = request.getAntall() + identer.size();
+        var antall = request.getAntall() + identerIIdentPool.size();
         var iteratorRange = (request.getKjoenn() == null) ? 1 : 2;
         var numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
 
         Function<LocalDate, String> numberFormat =
                 numberFormatter.getOrDefault(request.getIdenttype(), IdentGeneratorUtil::randomFormat);
 
-        while (identer.size() < antall) {
+        while (identerIIdentPool.size() < antall) {
             var birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
             var format = numberFormat.apply(birthdate);
             if (isTrue(request.getSyntetisk())) {
@@ -83,29 +83,32 @@ public class IdentGeneratorService {
             }
 
             var yearRange = getYearRange(birthdate);
-            var originalSize = identer.size();
+            var originalSize = identerIIdentPool.size();
             var genderNumber = getGenderNumber(yearRange, request.getKjoenn());
             var startIndex = getStartIndex(yearRange.get(0), request.getKjoenn());
 
             for (int i = startIndex; identerIIdentPool.size() == originalSize && i < genderNumber; i += iteratorRange) {
                 String fnr = generateFnr(String.format(format, i));
                 if (fnr != null) {
-                    identer.add(fnr);
+                    identerIIdentPool.add(fnr);
                 }
             }
 
-            for (int i = genderNumber; identer.size() == originalSize && i < yearRange.get(1); i += iteratorRange) {
-                String fnr = generateFnr(String.format(format, i));
+            for (int i = genderNumber; identerIIdentPool.size() == originalSize && i < yearRange.get(1); i += iteratorRange) {
+                var fnr = generateFnr(String.format(format, i));
                 if (fnr != null) {
-                    identer.add(fnr);
+                    identerIIdentPool.add(fnr);
                 }
             }
 
             if (identerIIdentPool.size() == originalSize) {
-                throw new IllegalArgumentException("Kan ikke finne ønsket antall fødselsnummer med angitte kriterier");
+                break;
             }
         }
-        return identer;
+        if (identerIIdentPool.isEmpty()) {
+            throw new IllegalArgumentException("Finner ingen fødselsnummer med angitte kriterier");
+        }
+        return identerIIdentPool;
     }
 
     private void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {

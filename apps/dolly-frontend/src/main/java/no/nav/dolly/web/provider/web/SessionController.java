@@ -46,6 +46,7 @@ public class SessionController {
     public Mono<ResponseEntity<?>> addUserToSession(@RequestParam String organisasjonsnummer, ServerWebExchange exchange) {
         return personOrganisasjonTilgangConsumer
                 .hasAccess(organisasjonsnummer, exchange)
+                .doOnError(e -> log.error("Feil ved sjekk av tilgang til org {}", organisasjonsnummer, e))
                 .flatMap(hasAccess -> {
                     if (Boolean.FALSE.equals(hasAccess)) {
                         log.error("Bruker mangler tilgang til org {}", organisasjonsnummer);
@@ -55,6 +56,7 @@ public class SessionController {
                     }
                     return brukerService.getId(organisasjonsnummer, exchange).flatMap(id -> exchange
                             .getSession()
+                            .doOnError(e -> log.error("Feil ved lagring av bruker i session", e))
                             .doOnSuccess(session -> session.getAttributes().put(UserSessionConstant.SESSION_USER_ID_KEY, id))
                             .map(value -> ResponseEntity.ok().build())
                     ).switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));

@@ -3,6 +3,7 @@ package no.nav.testnav.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.consumers.AaregConsumer;
+import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdResponseDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.KanAnsettesDTO;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Ansettelsesperiode;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
@@ -10,7 +11,6 @@ import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Organisasjon;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Periode;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Person;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -24,10 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArbeidsforholdService {
 
-    private static final String arbeidstakerType = "Person";
-    private static final String arbeidsgiverType = "Organisasjon";
-    private static final String arbeidstidsordning = "ikkeSkift";
-    private static final String ansettelsesform = "fast";
+    private static final String ARBEIDSTAKER_TYPE = "Person";
+    private static final String ARBEIDSGIVER_TYPE = "Organisasjon";
+    private static final String ARBEIDSTIDSORDNING = "ikkeSkift";
+    private static final String ANSETTELSESFORM = "fast";
     private static final double TIMER_HUNDRE_PROSENT = 37.5;
     private static final int HUNDRE_PROSENT = 100;
 
@@ -50,10 +50,11 @@ public class ArbeidsforholdService {
      * @param stillingsprosent Stillinsprosenten arbeidsforholdet skal ha
      * @return HttpStatusCode basert på resultatet av spørringen
      */
-    public Flux<HttpStatusCode> opprettArbeidsforhold(KanAnsettesDTO kanAnsettes, String yrke,
-                                                      String arbeidsforholdstype, Integer stillingsprosent) {
+    public Flux<ArbeidsforholdResponseDTO> opprettArbeidsforhold(KanAnsettesDTO kanAnsettes, String yrke,
+                                                                 String arbeidsforholdstype, Integer stillingsprosent) {
 
-        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(kanAnsettes, yrke, arbeidsforholdstype, stillingsprosent));
+        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(kanAnsettes,
+                yrke, arbeidsforholdstype, stillingsprosent));
     }
 
     /**
@@ -73,11 +74,11 @@ public class ArbeidsforholdService {
                 .arbeidsforholdId(Integer.toString(kanAnsettes.getAntallEksisterendeArbeidsforhold() + 1))
                 .arbeidstaker(Person.builder()
                         .offentligIdent(kanAnsettes.getIdent())
-                        .type(arbeidstakerType)
+                        .type(ARBEIDSTAKER_TYPE)
                         .build())
                 .arbeidsgiver(Organisasjon.builder()
                         .organisasjonsnummer(kanAnsettes.getOrgnummer())
-                        .type(arbeidsgiverType)
+                        .type(ARBEIDSGIVER_TYPE)
                         .build())
                 .type(arbeidsforholdType)
                 .ansettelsesperiode(Ansettelsesperiode.builder()
@@ -87,10 +88,10 @@ public class ArbeidsforholdService {
                         .build())
                 .arbeidsavtaler(List.of(OrdinaerArbeidsavtale.builder()
                         .antallTimerPrUke(antallTimerPrUke)
-                        .arbeidstidsordning(arbeidstidsordning)
+                        .arbeidstidsordning(ARBEIDSTIDSORDNING)
                         .stillingsprosent(stillingsprosent)
                         .yrke(yrke)
-                        .ansettelsesform(ansettelsesform)
+                        .ansettelsesform(ANSETTELSESFORM)
                         .sistStillingsendring(LocalDate.now())
                         .build()))
                 .build();
