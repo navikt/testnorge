@@ -132,12 +132,14 @@ public class AltinnConsumer {
                         ).call())
                         .map(value -> new Organisasjon(value, right))
                 ).collectList()
-                .flatMapMany(Flux::concat);
+                .flatMapMany(Flux::concat)
+                .doOnNext(organisasjon -> log.info("getOrganisasjoner: {}", organisasjon.toString()));
     }
 
     private Flux<RightDTO> getRights() {
         return maskinportenConsumer
                 .getAccessToken()
+                .doOnNext(token -> log.info("getAccessToken: {}", token.value()))
                 .flatMapMany(accessToken -> new GetRightsCommand(
                                 webClient,
                                 accessToken.value(),
@@ -145,7 +147,8 @@ public class AltinnConsumer {
                                 altinnConfig.getEdition(),
                                 altinnConfig.getApiKey()
                         ).call()
-                );
+                )
+                .doOnNext(right -> log.info("getRights: {}", right.toString()));
     }
 
 }
