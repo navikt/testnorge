@@ -85,6 +85,10 @@ export const Datepicker = ({
 				setOpen(false)
 				toggleDatepicker?.()
 			}}
+			onOpenToggle={() => {
+				setOpen(false)
+				toggleDatepicker?.()
+			}}
 			dropdownCaption={true}
 		>
 			<StyledInput
