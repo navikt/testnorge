@@ -16,7 +16,7 @@ type FullmaktKodeverkType = {
 export const useFullmektig = (ident: string) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		[
-			ident && '/testnav-fullmakt-proxy/api/fullmaktsgiver',
+			ident && '/testnav-fullmakt-proxy/api/eksternbruker/fullmakt/fullmaktsgiver',
 			{ accept: 'application/json', 'Content-Type': 'application/json', fnr: ident },
 		],
 		([url, headers]) => fetcher(url, headers),
@@ -32,7 +32,7 @@ export const useFullmektig = (ident: string) => {
 export const useFullmaktOmraader = () => {
 	const { data, isLoading, error } = useSWR<FullmaktKodeverkType, Error>(
 		[
-			'/testnav-fullmakt-proxy/api/omraade',
+			'testnav-fullmakt-proxy/api/eksternbruker/fullmakt/omraade',
 			{ accept: 'application/json', 'Content-Type': 'application/json', fnr: '12808012345' },
 		],
 		([url, headers]) => fetcher(url, headers),

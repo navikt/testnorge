@@ -35,8 +35,9 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: pdl-fullmakt
-          namespace: pdl
+        - application: repr-api
+          namespace: repr
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
