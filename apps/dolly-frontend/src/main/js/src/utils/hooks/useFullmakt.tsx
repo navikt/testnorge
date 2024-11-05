@@ -32,7 +32,7 @@ export const useFullmektig = (ident: string) => {
 export const useFullmaktOmraader = () => {
 	const { data, isLoading, error } = useSWR<FullmaktKodeverkType, Error>(
 		[
-			'testnav-fullmakt-proxy/api/eksternbruker/fullmakt/omraade',
+			'testnav-fullmakt-proxy/api/internbruker/fullmakt/omraade',
 			{ accept: 'application/json', 'Content-Type': 'application/json', fnr: '12808012345' },
 		],
 		([url, headers]) => fetcher(url, headers),
