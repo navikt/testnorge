@@ -8,15 +8,14 @@ import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { OrgforvalterApi } from '@/service/Api'
 import { OrgMiljoeInfoVisning } from '@/components/fagsystem/brregstub/form/partials/OrgMiljoeInfoVisning'
 import { useFormContext } from 'react-hook-form'
-import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OrgProps {
-	formMethods: UseFormReturn
 	path: string
 	label?: string
 	handleChange: (event: React.ChangeEvent<any>) => void
-	warningMessage?: string
+	warningMessage?: React.ReactElement
 	filterValidEnhetstyper?: boolean
+	isDisabled?: boolean
 }
 
 const getAdresseWithAdressetype = (adresser: Adresse[], adressetype: string) => {
@@ -62,7 +61,7 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	return ''
 }
 
-export const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
+export const getEgneOrganisasjoner = (organisasjoner: Organisasjon[] | undefined) => {
 	if (!organisasjoner) {
 		return []
 	}

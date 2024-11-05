@@ -9,9 +9,14 @@ import { useNaviger } from '@/utils/hooks/useNaviger'
 type ArbeidsgiverIdentProps = {
 	path: string
 	isDisabled?: boolean
+	title?: string | undefined
 }
 
-export const ArbeidsgiverIdent = ({ path, isDisabled, title = null }: ArbeidsgiverIdentProps) => {
+export const ArbeidsgiverIdent = ({
+	path,
+	isDisabled,
+	title = undefined,
+}: ArbeidsgiverIdentProps) => {
 	const formMethods = useFormContext()
 	const [personnummer, setPersonnummer] = useState(formMethods.watch(path))
 	const [success, setSuccess] = useBoolean(false)

@@ -40,7 +40,7 @@ export const hentAaregEksisterendeData = (personFoerLeggTil: any) => {
 				avtaltArbeidstimerPerUke: aareg.arbeidsavtaler?.[0]?.antallTimerPrUke || 37.5,
 			},
 			antallTimerForTimeloennet:
-				aareg.antallTimerForTimeloennet?.map((timeloennet) => {
+				aareg.antallTimerForTimeloennet?.map((timeloennet: any) => {
 					return {
 						periode: {
 							fom: timeloennet.periode?.fom || null,
@@ -50,7 +50,7 @@ export const hentAaregEksisterendeData = (personFoerLeggTil: any) => {
 					}
 				}) || [],
 			utenlandsopphold:
-				aareg.utenlandsopphold?.map((opphold) => {
+				aareg.utenlandsopphold?.map((opphold: any) => {
 					return {
 						periode: {
 							fom: opphold.periode?.fom || null,
@@ -61,8 +61,8 @@ export const hentAaregEksisterendeData = (personFoerLeggTil: any) => {
 				}) || [],
 			permisjon:
 				aareg.permisjonPermitteringer
-					?.filter((item) => item.type !== 'permittering')
-					?.map((permisjon) => {
+					?.filter((item: any) => item.type !== 'permittering')
+					?.map((permisjon: any) => {
 						return {
 							permisjonsPeriode: {
 								fom: permisjon.periode?.fom || null,
@@ -74,8 +74,8 @@ export const hentAaregEksisterendeData = (personFoerLeggTil: any) => {
 					}) || [],
 			permittering:
 				aareg.permisjonPermitteringer
-					?.filter((item) => item.type === 'permittering')
-					?.map((permittering) => {
+					?.filter((item: any) => item.type === 'permittering')
+					?.map((permittering: any) => {
 						return {
 							permitteringsPeriode: {
 								fom: permittering.periode?.fom || null,

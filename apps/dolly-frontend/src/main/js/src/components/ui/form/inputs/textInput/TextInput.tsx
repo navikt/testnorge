@@ -38,6 +38,7 @@ type TextInputProps = {
 	className?: string
 	icon?: string
 	isDatepicker?: boolean
+	title?: string
 }
 
 const StyledIcon = styled(Icon)`

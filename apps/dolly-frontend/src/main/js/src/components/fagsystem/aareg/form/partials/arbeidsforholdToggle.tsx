@@ -44,6 +44,15 @@ const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
 
+type ArbeidsforholdToggleProps = {
+	path: string
+	idx: number
+	fasteOrganisasjoner: any
+	brukerOrganisasjoner: any
+	egneOrganisasjoner: any
+	loadingOrganisasjoner: boolean
+}
+
 export const ArbeidsforholdToggle = ({
 	path,
 	idx,
@@ -51,10 +60,11 @@ export const ArbeidsforholdToggle = ({
 	brukerOrganisasjoner,
 	egneOrganisasjoner,
 	loadingOrganisasjoner,
-}) => {
+}: ArbeidsforholdToggleProps) => {
 	const formMethods = useFormContext()
 	const aaregData = formMethods.getValues(path)
 
+	//@ts-ignore
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 	const tidligereAaregdata = hentAaregEksisterendeData(personFoerLeggTil)
 	const erLaastArbeidsforhold = idx < tidligereAaregdata?.length
@@ -66,12 +76,14 @@ export const ArbeidsforholdToggle = ({
 		} else if (
 			!orgnr ||
 			fasteOrganisasjoner
-				?.map((organisasjon) => organisasjon?.orgnummer)
-				?.some((org) => org === orgnr)
+				?.map((organisasjon: any) => organisasjon?.orgnummer)
+				?.some((org: string) => org === orgnr)
 		) {
 			return ArbeidsgiverTyper.felles
 		} else if (
-			egneOrganisasjoner?.map((organisasjon) => organisasjon?.orgnr)?.some((org) => org === orgnr)
+			egneOrganisasjoner
+				?.map((organisasjon: any) => organisasjon?.orgnr)
+				?.some((org: string) => org === orgnr)
 		) {
 			return ArbeidsgiverTyper.egen
 		} else {
@@ -115,15 +127,18 @@ export const ArbeidsforholdToggle = ({
 
 	const checkAktiveArbeidsforhold = () => {
 		const aaregValues = formMethods.getValues('aareg')
-		const aktiveArbeidsforhold = aaregValues?.map((arbeidsforhold) => {
+		const aktiveArbeidsforhold = aaregValues?.map((arbeidsforhold: any) => {
 			const orgnummer = arbeidsforhold?.arbeidsgiver?.orgnummer
 			if (!arbeidsforhold?.ansettelsesPeriode?.sluttaarsak) {
 				return orgnummer
 			}
 		})
 		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
-			.filter((arbeidsforhold, index) => index !== aktiveArbeidsforhold.indexOf(arbeidsforhold))
-			.filter((arbeidsforhold) => !_.isEmpty(arbeidsforhold))
+			.filter(
+				(arbeidsforhold: any, index: number) =>
+					index !== aktiveArbeidsforhold.indexOf(arbeidsforhold),
+			)
+			.filter((arbeidsforhold: any) => !_.isEmpty(arbeidsforhold))
 		if (!_.isEmpty(dupliserteAktiveArbeidsforhold)) {
 			formMethods.setError(`${path}.arbeidsgiver.orgnummer`, {
 				message: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
@@ -152,7 +167,7 @@ export const ArbeidsforholdToggle = ({
 		<div className="toggle--wrapper">
 			{erLaastArbeidsforhold ? (
 				<DisabledToggleArbeidsgiver
-					onChange={null}
+					onChange={() => null}
 					value={typeArbeidsgiver}
 					size={'small'}
 					title={'Kan ikke endre arbeidsgivertype på eksisterende arbeidsforhold'}
@@ -165,6 +180,7 @@ export const ArbeidsforholdToggle = ({
 				</DisabledToggleArbeidsgiver>
 			) : (
 				<ToggleArbeidsgiver
+					// @ts-ignore
 					onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
 					value={typeArbeidsgiver}
 					size={'small'}
@@ -181,7 +197,7 @@ export const ArbeidsforholdToggle = ({
 					<div className="flex-box" title={title}>
 						<EgneOrganisasjoner
 							path={`${path}.arbeidsgiver.orgnummer`}
-							handleChange={(selected) =>
+							handleChange={(selected: any) =>
 								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
 							}
 							warningMessage={warningMessage}

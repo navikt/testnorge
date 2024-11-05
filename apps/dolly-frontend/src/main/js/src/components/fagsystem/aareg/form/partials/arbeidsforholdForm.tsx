@@ -22,9 +22,15 @@ import { fixTimezone } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
 
-export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
+type ArbeidsforholdProps = {
+	path: string
+	arbeidsforholdIndex: number
+}
+
+export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }: ArbeidsforholdProps) => {
 	const { watch, getValues, setValue, trigger } = useFormContext()
 
+	//@ts-ignore
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 	const tidligereAaregdata = hentAaregEksisterendeData(personFoerLeggTil)
 	const erLaastArbeidsforhold = arbeidsforholdIndex < tidligereAaregdata?.length
@@ -35,7 +41,7 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
 	const arbeidsforholdstype = watch(`${path}.arbeidsforholdstype`)
 
 	const handleChange = (fieldPath: string) => {
-		return (field) => {
+		return (field: any) => {
 			const value = isDate(field)
 				? fixTimezone(field)
 				: field?.value || field?.target?.value || null
@@ -44,7 +50,7 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }) => {
 		}
 	}
 
-	const handleArbeidsforholdstypeChange = (event) => {
+	const handleArbeidsforholdstypeChange = (event: any) => {
 		if (event.value === 'forenkletOppgjoersordning') {
 			if (arbeidsforholdstype !== 'forenkletOppgjoersordning') {
 				setValue(path, {

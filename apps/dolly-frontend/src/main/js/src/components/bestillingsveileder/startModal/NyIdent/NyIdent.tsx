@@ -82,8 +82,9 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 		'data.bestilling.pdldata.person.fullmakt.[0].omraader.[0]',
 	)
 	const erGammelAmeldingMal =
-		_.get(valgtMal, 'data.bestilling.aareg')?.find((arbforh) => arbforh?.amelding?.length > 0) !==
-		undefined
+		_.get(valgtMal, 'data.bestilling.aareg')?.find(
+			(arbforh: any) => arbforh?.amelding?.length > 0,
+		) !== undefined
 
 	return (
 		<FormProvider {...formMethods}>

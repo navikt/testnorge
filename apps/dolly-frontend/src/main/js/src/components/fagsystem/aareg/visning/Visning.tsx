@@ -44,7 +44,7 @@ type Arbeidsforhold = {
 	fartoy?: any
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
-	arbeidsforholdId?: string
+	arbeidsforholdId: string
 	sporingsinformasjon?: { opprettetAv?: string }
 	varsler?: any[]
 }
@@ -65,7 +65,7 @@ type Periode = {
 	tom?: string
 }
 
-export const sjekkManglerAaregData = (aaregData) => {
+export const sjekkManglerAaregData = (aaregData: Array<MiljoDataListe>) => {
 	return (
 		aaregData?.length < 1 ||
 		aaregData?.every((miljoData) => !miljoData?.data || miljoData?.data?.length < 1)
@@ -151,6 +151,7 @@ export const AaregVisning = ({
 	tilgjengeligMiljoe,
 }: AaregVisningProps) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'AAREG')
+
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}
@@ -165,12 +166,12 @@ export const AaregVisning = ({
 	const forsteMiljo =
 		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
-	const aaregBestillinger = []
+	const aaregBestillinger: any = []
 	bestillinger?.forEach((best) => {
-		best?.bestilling?.aareg?.forEach((arbforh) => aaregBestillinger.push(arbforh))
+		best?.bestilling?.aareg?.forEach((arbforh: Arbeidsforhold) => aaregBestillinger.push(arbforh))
 	})
 
-	const harArbeidsforholdBestilling = aaregBestillinger?.some((best) => best?.arbeidsgiver)
+	const harArbeidsforholdBestilling = aaregBestillinger?.some((best: any) => best?.arbeidsgiver)
 
 	const arbeidsforhold = liste?.map((item) => {
 		return {

@@ -3,7 +3,18 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 
-export const ArbeidsavtaleForm = ({ path, onChangeLenket, values, ...props }) => (
+type ArbeidsavtaleProps = {
+	path: string
+	onChangeLenket: Function
+	values: any
+}
+
+export const ArbeidsavtaleForm = ({
+	path,
+	onChangeLenket,
+	values,
+	...props
+}: ArbeidsavtaleProps) => (
 	<div>
 		<h3>Ansettelsesdetaljer</h3>
 		<div className="flexbox--flex-wrap">

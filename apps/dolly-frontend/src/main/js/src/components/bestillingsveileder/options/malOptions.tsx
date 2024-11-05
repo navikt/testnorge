@@ -147,7 +147,7 @@ const getUpdatedInntektstubData = (inntektstubData: any) => {
 
 const getUpdatedAaregData = (aaregData: any) => {
 	return aaregData.map((data: any) => {
-		data = updateData(data, initialValues.aareg[0])
+		data = updateData(data, initialValues.aareg)
 		data.amelding = undefined
 		data.genererPeriode = undefined
 		data.navArbeidsforholdPeriode = undefined
@@ -178,6 +178,7 @@ const getUpdatedAaregData = (aaregData: any) => {
 		return data
 	})
 }
+
 const getUpdatedInntektsmeldingData = (inntektsmeldingData: any) =>
 	inntektsmeldingData.map((inntekt: any) => updateData(inntekt, initialValues.inntektsmelding))
 
