@@ -1,27 +1,33 @@
 
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
+  flyway:
+    # InMemmory database
+    url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    user: ${NAV_USERNAME}
     password:
-    driverClassName: org.h2.Driver
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:/db/dev/h2-default-config.sql
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    username: ${NAV_USERNAME}
+    password:
+#  sql:
+#    init:
+#      mode: always
+#      data-locations: classpath:/db/dev/h2-default-config.sql
+
+#  main:
+#    allow-bean-definition-overriding: true
+#
+#config:
+#  r2dbc:
+#    driver: h2
+#    protocol: mem
+#    port: 5432
+#    database: testdb
+#    username: sa
+#    password:
 
 consumers:
   testnav-kodeverk-service:
     url: https://testnav-kodeverk-service.intern.dev.nav.no
-    name: testnav-kodeverk-service
-    cluster: dev-gcp
-    namespace: dolly
   testnav-tenor-search-service:
     url: https://testnav-tenor-search-service.intern.dev.nav.no
-    name: testnav-tenor-search-service
-    cluster: dev-gcp
-    namespace: dolly

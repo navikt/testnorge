@@ -3,6 +3,7 @@ LABEL maintainer="Team Dolly"
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 
-ADD /build/libs/app.jar /app/app.jar
+COPY 99-dolly-convert-to-pk8.sh /init-scripts/
+COPY /build/libs/app.jar /app/
 
 EXPOSE 8080
