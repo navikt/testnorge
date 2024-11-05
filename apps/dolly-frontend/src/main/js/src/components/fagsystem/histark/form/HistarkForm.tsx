@@ -144,7 +144,6 @@ export const HistarkForm = () => {
 										name={`${path}.skanningsTidspunkt`}
 										label="Skanningstidspunkt"
 										visHvisAvhuket={false}
-										size="medium"
 									/>
 									<FormTextInput
 										name={`${path}.skanner`}

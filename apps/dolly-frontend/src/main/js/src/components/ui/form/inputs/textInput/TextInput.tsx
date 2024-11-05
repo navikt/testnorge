@@ -43,7 +43,7 @@ type TextInputProps = {
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
-	position: fixed;
+	position: absolute;
 	translate: 160px -30px;
 `
 
@@ -53,7 +53,7 @@ const StyledButton = styled(Button)`
 			translate: -1px 1px;
 		}
 
-		position: fixed;
+		position: absolute;
 		height: 37px;
 		translate: -31px 1px;
 		padding: 5px 3px 0 3px;

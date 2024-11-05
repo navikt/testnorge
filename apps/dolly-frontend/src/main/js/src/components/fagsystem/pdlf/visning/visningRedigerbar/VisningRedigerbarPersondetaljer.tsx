@@ -265,7 +265,6 @@ export const VisningRedigerbarPersondetaljer = ({
 								}
 							})
 							.catch((error) => {
-								console.log('error: ', error) //TODO - SLETT MEG
 								skjermingError(error)
 							})
 					}
