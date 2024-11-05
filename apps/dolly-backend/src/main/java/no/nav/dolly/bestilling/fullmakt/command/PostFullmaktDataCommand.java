@@ -28,7 +28,7 @@ import static org.apache.http.util.TextUtils.isBlank;
 @RequiredArgsConstructor
 public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> {
 
-    private static final String POST_FULLMAKT_URL = "/api/eksternbruker/fullmakt/fullmektig";
+    private static final String POST_FULLMAKT_URL = "/api/eksternbruker/fullmakt/fullmakt";
 
     private final WebClient webClient;
     private final String token;
