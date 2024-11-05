@@ -3,11 +3,13 @@ package no.nav.testnav.altinn3tilgangservice.consumer.altinn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.CreateOrganisasjonAccessCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.DeleteOrganisasjonAccessCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetOrganisasjonCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetRightsCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.CreateAccessListeMemberCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.DeleteAccessListMemberCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetResourceCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetAccessListMembersCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.DeleteStatus;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDataDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.RightDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
@@ -77,14 +79,16 @@ public class AltinnConsumer {
 
     public Flux<DeleteStatus> delete(String organiasjonsnummer) {
         return getRights()
-                .filter(value -> value.reportee().equals(organiasjonsnummer))
+                .filter(value -> value.getData().stream()
+                        .anyMatch(member -> member.getIdentifiers().contains(organiasjonsnummer)))
                 .flatMap(value -> maskinportenConsumer
                         .getAccessToken()
-                        .flatMap(accessToken -> new DeleteOrganisasjonAccessCommand(
+                        .flatMap(accessToken -> new DeleteAccessListMemberCommand(
                                 webClient,
                                 accessToken.value(),
-                                altinnConfig.getApiKey(),
-                                value.id()
+                                new OrganisasjonDataDTO(organiasjonsnummer),
+                                "", //TBD
+                                "" //TBD
                         ).call())
                 );
     }
@@ -101,15 +105,16 @@ public class AltinnConsumer {
         );
         return maskinportenConsumer
                 .getAccessToken()
-                .flatMap(accessToken -> new CreateOrganisasjonAccessCommand(
+                .flatMap(accessToken -> new CreateAccessListeMemberCommand(
                                 webClient,
                                 accessToken.value(),
-                                altinnConfig.getApiKey(),
-                                readRight
+                                new OrganisasjonDataDTO(organiasjonsnummer),
+                                "", //TBD
+                                "" //TBD
                         ).call()
                 ).flatMap(right -> maskinportenConsumer
                         .getAccessToken()
-                        .flatMap(accessToken -> new GetOrganisasjonCommand(
+                        .flatMap(accessToken -> new GetResourceCommand(
                                 webClient,
                                 accessToken.value(),
                                 right.reportee(),
@@ -124,7 +129,7 @@ public class AltinnConsumer {
         return getRights()
                 .map(right -> maskinportenConsumer
                         .getAccessToken()
-                        .flatMap(accessToken -> new GetOrganisasjonCommand(
+                        .flatMap(accessToken -> new GetResourceCommand(
                                 webClient,
                                 accessToken.value(),
                                 right.reportee(),
@@ -135,17 +140,15 @@ public class AltinnConsumer {
                 .flatMapMany(Flux::concat);
     }
 
-    private Flux<RightDTO> getRights() {
+    private Flux<AltinnResponseDTO> getRights() {
         return maskinportenConsumer
                 .getAccessToken()
-                .flatMapMany(accessToken -> new GetRightsCommand(
+                .flatMapMany(accessToken -> new GetAccessListMembersCommand(
                                 webClient,
                                 accessToken.value(),
-                                altinnConfig.getCode(),
-                                altinnConfig.getEdition(),
-                                altinnConfig.getApiKey()
+                                "", //TBD
+                        "" //TBD
                         ).call()
                 );
     }
-
 }

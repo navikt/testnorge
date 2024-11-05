@@ -2,9 +2,9 @@ package no.nav.testnav.altinn3tilgangservice.consumer.altinn.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.DeleteStatus;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.ServiceResourceDTO;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -13,30 +13,25 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DeleteOrganisasjonAccessCommand implements Callable<Mono<DeleteStatus>> {
+public class GetResourceCommand implements Callable<Mono<ServiceResourceDTO>> {
+
+    private static final String ALTINN_RESOURCE_URL = "/resource/{id}";
     private final WebClient webClient;
     private final String token;
-    private final String apiKey;
-    private final Integer id;
-
+    private final String id;
 
     @Override
-    public Mono<DeleteStatus> call() {
+    public Mono<ServiceResourceDTO> call() {
 
         return webClient
-                .delete()
-                .uri(builder -> builder.path("/api/serviceowner/Srr/{id}")
+                .get()
+                .uri(builder -> builder.path(ALTINN_RESOURCE_URL)
                         .build(id)
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header("ApiKey", apiKey)
-                .header(HttpHeaders.CONTENT_TYPE, "application/hal+json")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .toBodilessEntity()
-                .map(resultat -> DeleteStatus.builder()
-                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
-                        .build())
-                .doOnSuccess(value -> log.info("Organiasjon tilgang {} slettet.", id))
+                .bodyToMono(ServiceResourceDTO.class)
                 .doOnError(
                         WebClientResponseException.class::isInstance,
                         throwable -> log.error(

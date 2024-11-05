@@ -2,8 +2,6 @@ TOKEN_X_ISSUER: dummy
 
 ALTINN_URL: https://tt02.altinn.no
 
-altinn.api.key: dummy
-
 MASKINPORTEN_CLIENT_ID: dummy
 MASKINPORTEN_CLIENT_JWK: dummy
 MASKINPORTEN_SCOPES: dummy

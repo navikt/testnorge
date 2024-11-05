@@ -68,9 +68,6 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-altinn3-tilgang-service.intern.dev.nav.no"
-  env:
-    - name: SPRING_PROFILES_ACTIVE
-      value: prod
   gcp:
     sqlInstances:
       - type: POSTGRES_16

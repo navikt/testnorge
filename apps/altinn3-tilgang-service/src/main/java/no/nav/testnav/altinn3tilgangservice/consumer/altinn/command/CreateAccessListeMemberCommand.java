@@ -2,9 +2,10 @@ package no.nav.testnav.altinn3tilgangservice.consumer.altinn.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDataDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.RightDTO;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -13,12 +14,15 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class CreateOrganisasjonAccessCommand implements Callable<Mono<RightDTO>> {
+public class CreateAccessListeMemberCommand implements Callable<Mono<RightDTO>> {
+
+    private static final String ALTINN_URL = "/access-lists/{owner}/{identifier}/members";
 
     private final WebClient webClient;
     private final String token;
-    private final String apiKey;
-    private final RightDTO dto;
+    private final OrganisasjonDataDTO body;
+    private final String owner;
+    private final String identifier;
 
 
     @Override
@@ -26,13 +30,12 @@ public class CreateOrganisasjonAccessCommand implements Callable<Mono<RightDTO>>
 
         return webClient
                 .post()
-                .uri(builder -> builder.path("/api/serviceowner/Srr")
-                        .build()
+                .uri(builder -> builder.path(ALTINN_URL)
+                        .build(owner, identifier)
                 )
-                .body(BodyInserters.fromPublisher(Mono.just(new RightDTO[]{dto}), RightDTO[].class))
+                .bodyValue(body)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header("ApiKey", apiKey)
-                .header(HttpHeaders.CONTENT_TYPE, "application/hal+json")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(RightDTO[].class)
                 .map(list -> list[0])
@@ -44,5 +47,4 @@ public class CreateOrganisasjonAccessCommand implements Callable<Mono<RightDTO>>
                         )
                 );
     }
-
 }

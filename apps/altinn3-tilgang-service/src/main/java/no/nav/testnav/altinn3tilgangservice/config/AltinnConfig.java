@@ -13,9 +13,6 @@ public class AltinnConfig {
     @Value("${altinn.api.url}")
     private String url;
 
-    @Value("${altinn.api.key}")
-    private String apiKey;
-
     @Value("${altinn.service.code}")
     private String code;
 
