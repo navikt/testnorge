@@ -33,5 +33,5 @@ consumers:
   fullmakt:
     name: repr-fullmakt
     namespace: repr
-    url: https://repr-fullmakt.intern.dev.nav.no
-    cluster: dev-gcp
+    url: http://repr-fullmakt.repr.svc.nais.local
+    cluster: dev-fss
