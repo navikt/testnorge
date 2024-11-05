@@ -35,7 +35,7 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: repr-api
+        - application: repr-fullmakt
           namespace: repr
           cluster: dev-gcp
   liveness:

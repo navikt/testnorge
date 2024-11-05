@@ -31,7 +31,7 @@ server:
 
 consumers:
   fullmakt:
-    name: repr-api
+    name: repr-fullmakt
     namespace: repr
-    url: https://repr-api.intern.dev.nav.no
+    url: https://repr-fullmakt.intern.dev.nav.no
     cluster: dev-gcp
