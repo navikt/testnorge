@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => ({
 			},
 		},
 	},
-	optimizeDeps: { exclude: ['node_modules/.cache'] },
+	optimizeDeps: { exclude: ['node_modules/.cache', 'node_modules/.vite'] },
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),
