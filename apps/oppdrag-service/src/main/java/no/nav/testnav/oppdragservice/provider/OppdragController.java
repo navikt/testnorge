@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -24,11 +25,12 @@ public class OppdragController {
     private final OppdragService oppdragService;
     private final KodeverkService kodeverkService;
 
-    @PostMapping
+    @PostMapping("/{miljoe}")
     @Operation(summary = "Send inn oppdrag")
-    public OppdragResponse sendInnOppdrag(@RequestBody OppdragRequest oppdragRequest) {
+    public Mono<OppdragResponse> sendInnOppdrag(@PathVariable String miljoe,
+                                                @RequestBody OppdragRequest oppdragRequest) {
 
-        return oppdragService.sendInnOppdrag(oppdragRequest);
+        return oppdragService.sendInnOppdrag(miljoe, oppdragRequest);
     }
 
     @GetMapping("/kodeverk/{kodeverk}")

@@ -1,19 +1,33 @@
 package no.nav.testnav.oppdragservice.consumer;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragRequest;
-import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.oppdragservice.config.Consumers;
+import no.nav.testnav.oppdragservice.consumer.command.OppdragPostComand;
 import org.springframework.stereotype.Service;
-import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
-import org.springframework.ws.soap.client.core.SoapActionCallback;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
-@Slf4j
-@Service
-public class OppdragConsumer extends WebServiceGatewaySupport {
+//@Service
+public class OppdragConsumer {
 
-    public SendInnOppdragResponse sendOppdrag(SendInnOppdragRequest melding) {
+    private final ServerProperties serverProperties;
+    private final WebClient webClient;
+    private final TokenExchange tokenExchange;
 
-        return (SendInnOppdragResponse) getWebServiceTemplate().marshalSendAndReceive("", melding,
-                new SoapActionCallback("no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse"));
+    public OppdragConsumer(Consumers consumers,
+                           WebClient.Builder webClientBuilder,
+                           TokenExchange tokenExchange) {
+
+        this.serverProperties = consumers.getOppdragProxy();
+        this.webClient = webClientBuilder.baseUrl(serverProperties.getUrl()).build();
+        this.tokenExchange = tokenExchange;
+    }
+
+    public Mono<String> sendOppdrag(String miljoe, String melding) {
+
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new OppdragPostComand(webClient,
+                        token.getTokenValue(), miljoe, melding).call());
     }
 }

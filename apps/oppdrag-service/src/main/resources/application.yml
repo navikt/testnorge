@@ -43,3 +43,17 @@ server:
       charset: UTF-8
   error:
     include-message: always
+
+consumers:
+  oppdrag-proxy:
+    name: testnav-oppdrag-proxy
+    namespace: dolly
+    url: https://testnav-oppdrag-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+
+oppdrag-service:
+  host: http://ztest.test.local
+  ports:
+    q1: 9210
+    q2: 9234
+    q4: 9236

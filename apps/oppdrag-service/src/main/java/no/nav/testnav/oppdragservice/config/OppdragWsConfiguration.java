@@ -1,6 +1,8 @@
 package no.nav.testnav.oppdragservice.config;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.oppdragservice.consumer.OppdragClient;
+import no.nav.testnav.oppdragservice.consumer.OppdragWSConsumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -9,7 +11,10 @@ import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 
 @EnableWs
 @Configuration
+@RequiredArgsConstructor
 public class OppdragWsConfiguration extends WsConfigurerAdapter {
+
+    private final ServerProperties serverProperties;
 
     @Bean
     public Jaxb2Marshaller marshaller() {
@@ -21,9 +26,9 @@ public class OppdragWsConfiguration extends WsConfigurerAdapter {
     }
 
     @Bean
-    public OppdragClient oppdragClient(Jaxb2Marshaller marshaller) {
+    public OppdragWSConsumer oppdragWSConsumer(Jaxb2Marshaller marshaller) {
 
-        var client = new OppdragClient();
+        var client = new OppdragWSConsumer(serverProperties);
         client.setDefaultUri("http://localhost:8080/ws");
         client.setMarshaller(marshaller);
         client.setUnmarshaller(marshaller);

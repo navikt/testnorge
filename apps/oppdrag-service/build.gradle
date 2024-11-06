@@ -23,12 +23,6 @@ sonarqube {
     }
 }
 
-bootJar {
-    archiveFileName = "app.jar"
-    mainClass = 'no.nav.testnav.oppdragservice.OppdragServiceApplicationStarter'
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
 wsimport {
     wsdlSourceRoot = "src/main/resources/schema/eksponering"
     generatedSourceRoot = "/generated/src/wsdl/main"
@@ -40,18 +34,6 @@ wsimport {
     verbose = true
     debug = true
     target = "3.0"
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
-        }
-    }
 }
 
 configurations {
@@ -69,6 +51,7 @@ dependencies {
             'com.sun.xml.ws:jaxws-rt:3.0.0'
 
     implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:vault"
