@@ -37,7 +37,6 @@ spec:
       rules:
         - application: repr-fullmakt
           namespace: repr
-          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
