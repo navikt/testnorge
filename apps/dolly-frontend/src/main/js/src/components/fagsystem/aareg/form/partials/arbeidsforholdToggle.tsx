@@ -164,12 +164,14 @@ export const ArbeidsforholdToggle = ({
 		: ''
 
 	return (
-		<div className="toggle--wrapper">
+		<div className="toggle--wrapper" key={idx}>
 			{erLaastArbeidsforhold ? (
 				<DisabledToggleArbeidsgiver
 					onChange={() => null}
 					value={typeArbeidsgiver}
 					size={'small'}
+					fill
+					key={idx}
 					title={'Kan ikke endre arbeidsgivertype på eksisterende arbeidsforhold'}
 				>
 					{toggleValues.map((type) => (
@@ -184,6 +186,8 @@ export const ArbeidsforholdToggle = ({
 					onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
 					value={typeArbeidsgiver}
 					size={'small'}
+					fill
+					key={idx}
 				>
 					{toggleValues.map((type) => (
 						<ToggleGroup.Item key={type.value} value={type.value}>
