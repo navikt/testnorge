@@ -1,4 +1,4 @@
-name: oppsummeringsdokument-service
+name: oppdrag-service
 
 on:
   push:
