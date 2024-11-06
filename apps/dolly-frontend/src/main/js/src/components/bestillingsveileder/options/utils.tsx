@@ -1,8 +1,8 @@
 import { initialValues as initialValuesInntektstub } from '@/components/fagsystem/inntektstub/form/Form'
 import {
+	initialArbeidsforhold,
 	initialPermisjon,
 	initialUtenlandsopphold,
-	initialValues as initialValuesAareg,
 } from '@/components/fagsystem/aareg/form/initialValues'
 import { initialValues as initialValuesInntektsmelding } from '@/components/fagsystem/inntektsmelding/form/Form'
 import { initialValues as initialValuesInst } from '@/components/fagsystem/inst/form/Form'
@@ -10,7 +10,7 @@ import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialVa
 
 export const initialValues = {
 	inntektstub: initialValuesInntektstub,
-	aareg: initialValuesAareg,
+	aareg: initialArbeidsforhold,
 	permisjon: initialPermisjon,
 	utenlandsopphold: initialUtenlandsopphold,
 	inntektsmelding: initialValuesInntektsmelding,

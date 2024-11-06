@@ -1,6 +1,6 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Box, Button, Table } from '@navikt/ds-react'
+import { Alert, Box, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -38,6 +38,13 @@ export const MalPanel = ({
 		setUnderRedigering((erUnderRedigering: any[]) =>
 			erUnderRedigering.filter((number) => number !== id),
 		)
+	}
+
+	const harUtdaterteVerdier = (bestilling: any) => {
+		if (bestilling?.aareg?.find((arbforh: any) => arbforh?.amelding?.length > 0)) {
+			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
+		}
+		return null
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
@@ -99,6 +106,7 @@ export const MalPanel = ({
 							</Table.Header>
 							<Table.Body>
 								{maler.map(({ malNavn, id, bestilling }) => {
+									const alert = harUtdaterteVerdier(bestilling)
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
 										{
 											bestilling: bestilling,
@@ -109,7 +117,18 @@ export const MalPanel = ({
 										<Table.ExpandableRow
 											key={id}
 											content={
-												<Bestillingskriterier bestilling={bestillingBasedOnMal} erMalVisning />
+												<>
+													{alert && (
+														<Alert
+															variant={'warning'}
+															size={'small'}
+															style={{ marginBottom: '20px' }}
+														>
+															{alert}
+														</Alert>
+													)}
+													<Bestillingskriterier bestilling={bestillingBasedOnMal} erMalVisning />
+												</>
 											}
 										>
 											<DataCells id={id} bestilling={bestillingBasedOnMal} malNavn={malNavn} />

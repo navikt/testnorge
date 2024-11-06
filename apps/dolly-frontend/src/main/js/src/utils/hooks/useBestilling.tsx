@@ -151,7 +151,10 @@ export const useBestillingById = (
 	}
 }
 
-export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: string) => {
+export const useBestilteMiljoer = (
+	bestillingIdListe: Array<string> | undefined,
+	fagsystem: string,
+) => {
 	if (!bestillingIdListe || bestillingIdListe?.length < 1) {
 		return {
 			loading: false,
