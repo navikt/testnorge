@@ -7,6 +7,7 @@ import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragFeilUnderBehandling;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragRequest;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.SoapFaultClientException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,13 +29,19 @@ public class OppdragWSConsumer extends WebServiceGatewaySupport {
         } catch (Exception e) {
 
             if (e instanceof SendInnOppdragFeilUnderBehandling sendInnOppdragFeilUnderBehandling) {
+
                 log.error("SendInnOppdragFeilUnderBehandling message: {}, rootCause: {}, errorSource; {}",
                         sendInnOppdragFeilUnderBehandling.getMessage(),
                         sendInnOppdragFeilUnderBehandling.getFaultInfo().getRootCause(),
                 sendInnOppdragFeilUnderBehandling.getFaultInfo().getErrorSource(), e);
 
-            } else {
-                log.error(e.getMessage(), e);
+            } else if (e instanceof SoapFaultClientException soapFaultClientException){
+
+                log.error("SoapFaultClientException message: {}, faultCode: {}, soapfault: {}, faultStringOrReason: {}",
+                        soapFaultClientException.getMessage(),
+                        soapFaultClientException.getFaultCode(),
+                        soapFaultClientException.getSoapFault(),
+                        soapFaultClientException.getFaultStringOrReason(), e);
             }
 
             throw e;
