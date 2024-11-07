@@ -6,7 +6,13 @@ import no.nav.testnav.oppdragservice.config.ServerProperties;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragRequest;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.SoapFaultDetailElement;
 import org.springframework.ws.soap.client.SoapFaultClientException;
+
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +38,13 @@ public class OppdragWSConsumer extends WebServiceGatewaySupport {
                 log.error("SoapFaultClientException message: {}, faultCode: {}, faultDetail: {}, faultActorOrRole: {}, faultStringOrReason: {}",
                         soapFaultClientException.getMessage(),
                         soapFaultClientException.getSoapFault().getFaultCode(),
-                        soapFaultClientException.getSoapFault().getFaultDetail(),
+                        StreamSupport.stream(
+                                        Spliterators.spliteratorUnknownSize(
+                                                soapFaultClientException.getSoapFault().getFaultDetail().getDetailEntries(),
+                                                Spliterator.ORDERED), false)
+                                .map(SoapFaultDetailElement::getResult)
+                                .map(Object::toString)
+                                .collect(Collectors.joining(", ")),
                         soapFaultClientException.getSoapFault().getFaultActorOrRole(),
                         soapFaultClientException.getSoapFault().getFaultStringOrReason(), e);
             }
