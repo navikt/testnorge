@@ -3,7 +3,6 @@ package no.nav.testnav.oppdragservice.consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.oppdragservice.config.ServerProperties;
-import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragFeilUnderBehandling;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragRequest;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
@@ -28,20 +27,14 @@ public class OppdragWSConsumer extends WebServiceGatewaySupport {
 
         } catch (Exception e) {
 
-            if (e instanceof SendInnOppdragFeilUnderBehandling sendInnOppdragFeilUnderBehandling) {
+            if (e instanceof SoapFaultClientException soapFaultClientException) {
 
-                log.error("SendInnOppdragFeilUnderBehandling message: {}, rootCause: {}, errorSource; {}",
-                        sendInnOppdragFeilUnderBehandling.getMessage(),
-                        sendInnOppdragFeilUnderBehandling.getFaultInfo().getRootCause(),
-                sendInnOppdragFeilUnderBehandling.getFaultInfo().getErrorSource(), e);
-
-            } else if (e instanceof SoapFaultClientException soapFaultClientException){
-
-                log.error("SoapFaultClientException message: {}, faultCode: {}, soapfault: {}, faultStringOrReason: {}",
+                log.error("SoapFaultClientException message: {}, faultCode: {}, faultDetail: {}, faultActorOrRole: {}, faultStringOrReason: {}",
                         soapFaultClientException.getMessage(),
-                        soapFaultClientException.getFaultCode(),
-                        soapFaultClientException.getSoapFault(),
-                        soapFaultClientException.getFaultStringOrReason(), e);
+                        soapFaultClientException.getSoapFault().getFaultCode(),
+                        soapFaultClientException.getSoapFault().getFaultDetail(),
+                        soapFaultClientException.getSoapFault().getFaultActorOrRole(),
+                        soapFaultClientException.getSoapFault().getFaultStringOrReason(), e);
             }
 
             throw e;
