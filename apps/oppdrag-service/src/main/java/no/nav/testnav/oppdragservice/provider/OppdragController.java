@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class OppdragController {
 
     @PostMapping("/{miljoe}")
     @Operation(summary = "Send inn oppdrag")
-    public Mono<OppdragResponse> sendInnOppdrag(@PathVariable String miljoe,
+    public OppdragResponse sendInnOppdrag(@PathVariable String miljoe,
                                                 @RequestBody OppdragRequest oppdragRequest) {
 
         return oppdragService.sendInnOppdrag(miljoe, oppdragRequest);

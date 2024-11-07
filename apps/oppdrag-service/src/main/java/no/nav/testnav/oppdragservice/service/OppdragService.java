@@ -10,7 +10,6 @@ import no.nav.testnav.oppdragservice.consumer.OppdragWSConsumer;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragRequest;
 import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -30,7 +29,7 @@ public class OppdragService {
         this.jaxbResponseContext = JAXBContext.newInstance(SendInnOppdragResponse.class);
     }
 
-    public Mono<OppdragResponse> sendInnOppdrag(String miljoe, OppdragRequest oppdragRequest) {
+    public OppdragResponse sendInnOppdrag(String miljoe, OppdragRequest oppdragRequest) {
 
         var request  = mapperFacade.map(oppdragRequest, SendInnOppdragRequest.class);
         var xmlRequest = marshall(request);
@@ -41,7 +40,7 @@ public class OppdragService {
 
         var response = mapperFacade.map(oppdragResponse, OppdragResponse.class);
 
-        return Mono.just(response);
+        return response;
     }
 
     @SneakyThrows

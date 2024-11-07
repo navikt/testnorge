@@ -29,6 +29,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OppdragServiceTest {
 
+    private static final String MILJOE = "q2";
+
     @Mock
     private OppdragWSConsumer oppdragWSConsumer;
 
@@ -40,27 +42,27 @@ class OppdragServiceTest {
     @InjectMocks
     private OppdragService oppdragService;
 
-//    @Test
-//    void execOppdragServiceNominal_OK() {
-//
-//        when(oppdragWSConsumer.sendOppdrag(anyString(), any(String.class)))
-//                .thenReturn(Oppdragsdata.buildOppdragResponse());
-//
-//        var request = Oppdragsdata.buildOppdragRequest();
-//        var target = oppdragService.sendInnOppdrag(request);
-//
-//        assertThat(target.getInfomelding().getBeskrMelding(), is(equalTo(TEXT_VALUE)));
-//    }
-//
-//    @Test
-//    void execOppdragServiceOppdragslinje_OK() {
-//
-//        when(oppdragWSConsumer.sendOppdrag(any(SendInnOppdragRequest.class)))
-//                .thenReturn(Oppdragsdata.buildOppdragslinjeResponse());
-//
-//        var request = Oppdragsdata.buildOppdragsLinjeRequest();
-//        var target = oppdragService.sendInnOppdrag(request);
-//
-//        assertThat(target.getInfomelding().getBeskrMelding(), is(equalTo(TEXT_VALUE)));
-//    }
+    @Test
+    void execOppdragServiceNominal_OK() {
+
+        when(oppdragWSConsumer.sendOppdrag(anyString(), any(SendInnOppdragRequest.class)))
+                .thenReturn(Oppdragsdata.buildOppdragResponse());
+
+        var request = Oppdragsdata.buildOppdragRequest();
+        var target = oppdragService.sendInnOppdrag(MILJOE, request);
+
+        assertThat(target.getInfomelding().getBeskrMelding(), is(equalTo(TEXT_VALUE)));
+    }
+
+    @Test
+    void execOppdragServiceOppdragslinje_OK() {
+
+        when(oppdragWSConsumer.sendOppdrag(anyString(), any(SendInnOppdragRequest.class)))
+                .thenReturn(Oppdragsdata.buildOppdragslinjeResponse());
+
+        var request = Oppdragsdata.buildOppdragsLinjeRequest();
+        var target = oppdragService.sendInnOppdrag(MILJOE, request);
+
+        assertThat(target.getInfomelding().getBeskrMelding(), is(equalTo(TEXT_VALUE)));
+    }
  }
