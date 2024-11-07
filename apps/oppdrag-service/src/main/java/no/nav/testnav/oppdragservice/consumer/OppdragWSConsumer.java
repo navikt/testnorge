@@ -8,12 +8,15 @@ import no.nav.testnav.oppdragservice.wsdl.SendInnOppdragResponse;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.SoapFaultDetailElement;
 import org.springframework.ws.soap.client.SoapFaultClientException;
+import org.w3c.dom.Node;
 
 import javax.xml.transform.dom.DOMResult;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,10 +49,7 @@ public class OppdragWSConsumer extends WebServiceGatewaySupport {
                                 .map(SoapFaultDetailElement::getResult)
                                 .map(DOMResult.class::cast)
                                 .map(result -> "systemId: " + result.getSystemId() +
-                                        ", nodeName: " + result.getNode().getNodeName() +
-                                        ", nodeValue: " + result.getNode().getNodeValue() +
-                                        ", nodeType: " + result.getNode().getNodeType() +
-                                        ", nextSibling: " + result.getNextSibling())
+                                        getNodeInfo(result.getNode(), new StringBuilder()))
                                 .collect(Collectors.joining(", ")),
                         soapFaultClientException.getSoapFault().getFaultActorOrRole(),
                         soapFaultClientException.getSoapFault().getFaultStringOrReason(), e);
@@ -57,5 +57,20 @@ public class OppdragWSConsumer extends WebServiceGatewaySupport {
 
             throw e;
         }
+    }
+
+    private static String getNodeInfo(Node node, StringBuilder tekst) {
+
+        if (isNull(node)) {
+            return tekst.toString();
+        }
+
+        return getNodeInfo(node.getNextSibling(), tekst
+                .append(", nodeName: ")
+                .append(node.getNodeName())
+                .append(", nodeValue: ")
+                .append(node.getNodeValue())
+                .append(", nodeType: ")
+                .append(node.getNodeType()));
     }
 }
