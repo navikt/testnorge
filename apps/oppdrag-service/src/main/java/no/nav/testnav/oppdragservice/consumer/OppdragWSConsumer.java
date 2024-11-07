@@ -9,6 +9,7 @@ import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.SoapFaultDetailElement;
 import org.springframework.ws.soap.client.SoapFaultClientException;
 
+import javax.xml.transform.dom.DOMResult;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
@@ -43,7 +44,12 @@ public class OppdragWSConsumer extends WebServiceGatewaySupport {
                                                 soapFaultClientException.getSoapFault().getFaultDetail().getDetailEntries(),
                                                 Spliterator.ORDERED), false)
                                 .map(SoapFaultDetailElement::getResult)
-                                .map(Object::toString)
+                                .map(DOMResult.class::cast)
+                                .map(result -> "systemId: " + result.getSystemId() +
+                                        ", nodeName: " + result.getNode().getNodeName() +
+                                        ", nodeValue: " + result.getNode().getNodeValue() +
+                                        ", nodeType: " + result.getNode().getNodeType() +
+                                        ", nextSibling: " + result.getNextSibling())
                                 .collect(Collectors.joining(", ")),
                         soapFaultClientException.getSoapFault().getFaultActorOrRole(),
                         soapFaultClientException.getSoapFault().getFaultStringOrReason(), e);
