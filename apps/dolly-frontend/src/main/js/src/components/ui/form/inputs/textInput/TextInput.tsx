@@ -34,6 +34,7 @@ type TextInputProps = {
 	readOnly?: boolean
 	onKeyDown?: any
 	onSubmit?: Function
+	customValidation?: Function
 	onChange?: Function
 	onPaste?: Function
 	className?: string
@@ -80,6 +81,7 @@ export const TextInput = React.forwardRef(
 			formState: { touchedFields },
 			getFieldState,
 		} = useFormContext()
+		const { onChange, onBlur } = register(name)
 		const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 		const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 		const feil = getFieldState(fieldName)?.error || getFieldState(name)?.error
@@ -95,8 +97,16 @@ export const TextInput = React.forwardRef(
 					id={name}
 					className={css}
 					placeholder={placeholder}
-					{...(name && register?.(name))}
 					{...props}
+					ref={ref}
+					onBlur={(e) => {
+						onBlur(e)
+						props.onBlur?.(e)
+					}}
+					onChange={(e) => {
+						onChange(e)
+						props.onChange?.(e)
+					}}
 				/>
 				{icon &&
 					(datepickerOnclick ? (

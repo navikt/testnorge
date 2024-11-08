@@ -2,6 +2,7 @@ import { format, isDate } from 'date-fns'
 import _ from 'lodash'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
+import moment from 'moment/moment'
 
 export const yearFormat = 'yyyy'
 export const defaultDateFormat = 'dd.MM.yyyy'
@@ -27,8 +28,13 @@ export const formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 // Date ---> String
 export const formatDate = (date: any, formatString?: string) => {
 	if (!date) return date
-	// Parse date if not date
-	if (!isDate(date)) date = new Date(date)
+	const valid = moment(date, ['DD-MM-YYYY', moment.ISO_8601], true).isValid()
+	// Parse date if valid date
+	if (valid) {
+		date = new Date(date)
+	} else {
+		return date
+	}
 	return format(date, formatString || defaultDateFormat)
 }
 

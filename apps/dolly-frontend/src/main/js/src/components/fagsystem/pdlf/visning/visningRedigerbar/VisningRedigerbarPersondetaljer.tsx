@@ -66,7 +66,7 @@ const FieldArrayEdit = styled.div`
 			margin-right: 0;
 		}
 
-		button {
+		.navds-button--secondary {
 			position: relative;
 			top: 0;
 			right: 0;
