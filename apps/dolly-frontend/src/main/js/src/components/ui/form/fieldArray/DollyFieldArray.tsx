@@ -6,6 +6,7 @@ import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import styled from 'styled-components'
 import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useEffect } from 'react'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -224,10 +225,21 @@ export const FormDollyFieldArray = ({
 	errorText = null,
 }) => {
 	const formMethods = useFormContext()
+	// const { append, update, fields, remove } = useFieldArray({
 	const { append, remove } = useFieldArray({
 		control: formMethods.control,
 		name: name,
 	})
+
+	// useEffect(() => {
+	// 	// Noen ganger blir formet oppdatert utenfra via setValue,
+	// 	// da vil denne sjekken sørge for at vi oppdaterer fields også
+	// 	if (formMethods.watch(name).length !== fields.length) {
+	// 		formMethods.watch(name).forEach((entry, idx) => {
+	// 			update(idx, entry)
+	// 		})
+	// 	}
+	// }, [fields])
 
 	const values = formMethods.watch(name) || []
 
@@ -239,12 +251,26 @@ export const FormDollyFieldArray = ({
 	return (
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
+				{/*{fields.map((curr, idx) => {*/}
+				{/*	const showDeleteButton = canBeEmpty ? true : fields.length >= 2*/}
 				{values.map((curr, idx) => {
 					const showDeleteButton = canBeEmpty ? true : values.length >= 2
 					const path = `${name}.${idx}`
 					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
+					// const handleRemove = () => {
+					// 	handleRemoveEntry ? handleRemoveEntry(idx) : remove(idx)
+					// 	formMethods.trigger(name)
+					// }
+
+					//TODO: Vurder om vi skal ha denne her eller bare i enkelte form der den trengs
+					const removeEntry = (idx: number) => {
+						const filterValues = values.filter((_, index) => index !== idx)
+						formMethods.setValue(name, filterValues)
+						formMethods.trigger(name)
+					}
+
 					const handleRemove = () => {
-						handleRemoveEntry ? handleRemoveEntry(idx) : remove(idx)
+						handleRemoveEntry ? handleRemoveEntry(idx) : removeEntry(idx)
 						formMethods.trigger(name)
 					}
 
@@ -291,9 +317,11 @@ export const FormDollyFieldArray = ({
 				})}
 				{errorText && <FaError>{errorText}</FaError>}
 				<FieldArrayAddButton
+					// hoverText={title || (maxEntries === fields.length && maxReachedDescription)}
 					hoverText={title || (maxEntries === values.length && maxReachedDescription)}
 					addEntryButtonText={buttonText || header}
 					onClick={addNewEntry}
+					// disabled={disabled || maxEntries === fields.length}
 					disabled={disabled || maxEntries === values.length}
 				/>
 			</DollyFieldArrayWrapper>

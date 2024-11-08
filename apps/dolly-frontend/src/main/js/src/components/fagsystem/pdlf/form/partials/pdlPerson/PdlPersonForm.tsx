@@ -57,49 +57,78 @@ export const PdlPersonForm = ({
 	const gruppe = useAsync(async () => {
 		return await DollyApi.getGruppeById(gruppeId)
 	}, [])
+
+	const getType = () => {
+		const eksisterende = formMethods.watch(eksisterendePersonPath)
+		return eksisterende ? PersonType.EKSISTERENDE_PERSON : PersonType.NY_PERSON
+	}
+
 	//@ts-ignore
 	const opts: any = useContext(BestillingsveilederContext)
-	const [type, setType] = useState(
-		formMethods.watch(eksisterendePersonPath)
-			? PersonType.EKSISTERENDE_PERSON
-			: PersonType.NY_PERSON,
-	)
+	const [type, setType] = useState(getType())
 
 	const gruppeIdenter = gruppe?.value?.data?.identer?.map((person) => person.ident)
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
 
 	useEffect(() => {
-		formMethods.setValue(nyPersonPath, type === PersonType.NY_PERSON ? initialPdlPerson : undefined)
+		setType(getType())
+	}, [formMethods.watch('pdldata.person.sivilstand')?.length])
+
+	// useEffect(() => {
+	// 	formMethods.setValue(nyPersonPath, type === PersonType.NY_PERSON ? initialPdlPerson : undefined)
+	// 	formMethods.setValue(
+	// 		eksisterendePersonPath,
+	// 		type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
+	// 	)
+	// 	if (path) {
+	// 		formMethods.setValue(`${path}.eksisterendePerson`, type === PersonType.EKSISTERENDE_PERSON)
+	// 	}
+	// 	formMethods.trigger()
+	// }, [type, path])
+
+	const handleTypeChange = (value: string) => {
+		setType(value)
+		formMethods.setValue(
+			nyPersonPath,
+			value === PersonType.NY_PERSON ? initialPdlPerson : undefined,
+		)
 		formMethods.setValue(
 			eksisterendePersonPath,
-			type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
+			value === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
 		)
 		if (path) {
-			formMethods.setValue(`${path}.eksisterendePerson`, type === PersonType.EKSISTERENDE_PERSON)
+			formMethods.setValue(`${path}.eksisterendePerson`, value === PersonType.EKSISTERENDE_PERSON)
 		}
 		formMethods.trigger()
-	}, [type])
+	}
 
 	return (
 		<>
 			{!isTestnorgeIdent && (
 				<>
-					<StyledToggleGroup size={'small'} value={type} onChange={setType} label={'Personvalg'}>
-						<ToggleGroup.Item key={PersonType.NY_PERSON} value={PersonType.NY_PERSON}>
+					<StyledToggleGroup
+						size={'small'}
+						value={type}
+						// onChange={setType}
+						onChange={(type) => handleTypeChange(type)}
+						label={'Personvalg'}
+						key={'toggle-' + path}
+					>
+						<ToggleGroup.Item key={path + PersonType.NY_PERSON} value={PersonType.NY_PERSON}>
 							<Icon
-								key={PersonType.NY_PERSON}
+								key={path + PersonType.NY_PERSON}
 								size={13}
 								kind={type === PersonType.NY_PERSON ? 'person-plus' : 'person-plus-fill'}
 							/>
 							{'Opprett ny person'}
 						</ToggleGroup.Item>
 						<ToggleGroup.Item
-							key={PersonType.EKSISTERENDE_PERSON}
+							key={path + PersonType.EKSISTERENDE_PERSON}
 							value={PersonType.EKSISTERENDE_PERSON}
 						>
 							<Icon
-								key={PersonType.EKSISTERENDE_PERSON}
+								key={path + PersonType.EKSISTERENDE_PERSON}
 								size={13}
 								kind={type === PersonType.EKSISTERENDE_PERSON ? 'person' : 'person-fill'}
 							/>
@@ -114,6 +143,7 @@ export const PdlPersonForm = ({
 							erNyIdent={nyIdentValg !== null}
 							gruppeIdenter={gruppeIdenter}
 							eksisterendeNyPerson={eksisterendeNyPerson}
+							key={'person-' + path}
 						/>
 					)}
 				</>
@@ -133,6 +163,7 @@ export const PdlPersonForm = ({
 								eksisterendeNyPerson={eksisterendeNyPerson}
 								fullmektigsNavnPath={fullmektigsNavnPath}
 								disabled={opts?.antall > 1}
+								key={'eksisterendePerson-' + path}
 							/>
 						)}
 					</div>
