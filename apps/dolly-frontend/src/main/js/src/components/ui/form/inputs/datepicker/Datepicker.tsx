@@ -123,8 +123,8 @@ export const DollyDatepicker = (props) => {
 									formMethods.trigger(props.name)
 									setShowDatepicker(false)
 								}}
-								// onClose={() => setShowDatepicker(false)}
-								// open={true}
+								onClose={() => setShowDatepicker(false)}
+								open={true}
 								dropdownCaption
 							>
 								{DateInput}
