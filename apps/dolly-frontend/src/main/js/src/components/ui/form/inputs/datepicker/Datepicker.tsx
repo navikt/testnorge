@@ -110,27 +110,23 @@ export const DollyDatepicker = (props) => {
 		<InputWrapper {...props}>
 			<Label name={props.name} label={props.label}>
 				{(showDatepicker && (
-					<div className="navds-date__wrapper">
-						<div className="navds-popover navds-date__popover">
-							<DatePicker
-								fromDate={props.minDate || subYears(new Date(), 125)}
-								toDate={props.maxDate || addYears(new Date(), 5)}
-								disabled={props.excludeDates}
-								onSelect={(val) => {
-									const fixedDate = fixTimezone(val)
-									formMethods.setValue(props.name, fixedDate)
-									setInput(formatDate(fixedDate))
-									formMethods.trigger(props.name)
-									setShowDatepicker(false)
-								}}
-								onClose={() => setShowDatepicker(false)}
-								open={true}
-								dropdownCaption
-							>
-								{DateInput}
-							</DatePicker>
-						</div>
-					</div>
+					<DatePicker
+						fromDate={props.minDate || subYears(new Date(), 125)}
+						toDate={props.maxDate || addYears(new Date(), 5)}
+						disabled={props.excludeDates}
+						onSelect={(val) => {
+							const fixedDate = fixTimezone(val)
+							formMethods.setValue(props.name, fixedDate)
+							setInput(formatDate(fixedDate))
+							formMethods.trigger(props.name)
+							setShowDatepicker(false)
+						}}
+						onClose={() => setShowDatepicker(false)}
+						open={true}
+						dropdownCaption
+					>
+						{DateInput}
+					</DatePicker>
 				)) ||
 					DateInput}
 			</Label>
