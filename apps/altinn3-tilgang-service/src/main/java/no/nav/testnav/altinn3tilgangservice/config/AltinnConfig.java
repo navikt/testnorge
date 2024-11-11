@@ -16,6 +16,6 @@ public class AltinnConfig {
     @Value("${altinn.resource.owner}")
     private String owner;
 
-    @Value("$altinn.resource.identifier}")
+    @Value("${altinn.resource.identifier}")
     private String identifier;
 }
