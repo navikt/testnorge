@@ -10,6 +10,8 @@ sonarqube {
 }
 
 dependencies {
+    implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
+
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:vault"
@@ -30,7 +32,9 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
-    testRuntimeOnly "io.r2dbc:r2dbc-h2"
+    implementation "io.r2dbc:r2dbc-h2"
+    testRuntimeOnly "com.h2database:h2"
+
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }
 

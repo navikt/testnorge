@@ -1,4 +1,4 @@
-ALTINN_URL: https://altinn.no
+ALTINN_URL: https://tt02.altinn.no
 
 spring:
   flyway:

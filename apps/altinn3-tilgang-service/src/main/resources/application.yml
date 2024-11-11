@@ -31,10 +31,9 @@ springdoc:
 altinn:
   api:
     url: ${ALTINN_URL}
-    key: ${ALTINN_API_KEY}
-  service:
-    code: 5748
-    edition: 1
+  resource:
+    owner: nav
+    identifier: godkjente-dolly-tilganger
 
 management:
   endpoints:

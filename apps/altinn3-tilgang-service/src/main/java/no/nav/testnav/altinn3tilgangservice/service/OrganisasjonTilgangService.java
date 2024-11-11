@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
@@ -39,7 +37,7 @@ public class OrganisasjonTilgangService {
                         }));
     }
 
-    public Mono<OrganisasjonResponse> create(String organisasjonsnummer, LocalDateTime gyldigTil, String miljoe) {
+    public Mono<OrganisasjonResponse> create(String organisasjonsnummer, String miljoe) {
 
         return organisasjonTilgangRepository.existsByOrganisasjonNummer(organisasjonsnummer)
                 .flatMap(exists -> isTrue(exists) ?
@@ -51,7 +49,7 @@ public class OrganisasjonTilgangService {
                     organisasjon.setMiljoe(miljoe);
                     return organisasjonTilgangRepository.save(organisasjon);
                 })
-                .flatMap(organisasjonTilgang -> altinnConsumer.create(organisasjonsnummer, gyldigTil)
+                .flatMap(organisasjonTilgang -> altinnConsumer.create(organisasjonsnummer)
                         .flatMap(organisasjon -> organisasjonTilgangRepository
                                 .findByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
                                 .map(tilgang -> {

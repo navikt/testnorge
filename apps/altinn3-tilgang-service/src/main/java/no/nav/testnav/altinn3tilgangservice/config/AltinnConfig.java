@@ -13,9 +13,9 @@ public class AltinnConfig {
     @Value("${altinn.api.url}")
     private String url;
 
-    @Value("${altinn.service.code}")
-    private String code;
+    @Value("${altinn.resource.owner}")
+    private String owner;
 
-    @Value("${altinn.service.edition}")
-    private String edition;
+    @Value("$altinn.resource.identifier}")
+    private String identifier;
 }

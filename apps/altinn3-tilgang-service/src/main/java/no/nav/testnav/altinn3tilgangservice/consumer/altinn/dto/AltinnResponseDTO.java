@@ -26,6 +26,8 @@ public class AltinnResponseDTO {
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AccessListMembershipDTO {
 
         private String id;

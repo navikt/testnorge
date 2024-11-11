@@ -5,10 +5,25 @@ ALTINN_URL: https://tt02.altinn.no
 MASKINPORTEN_CLIENT_ID: dummy
 MASKINPORTEN_CLIENT_JWK: dummy
 MASKINPORTEN_SCOPES: dummy
-MASKINPORTEN_WELL_KNOWN_URL: dummy
+MASKINPORTEN_WELL_KNOWN_URL: https://test.maskinporten.no/.well-known/oauth-authorization-server
 
 spring:
+  cache:
+    type: none
+  cloud:
+    gcp:
+      secretmanager:
+        project-id: dolly-dev-ff83
+  config:
+    import: "sm://"
   flyway:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/testnav-altinn3-tilgang-local
+    user: testnav-altinn3-tilgang-local
+    password: ${sm://testnav-altinn3-tilgang-local}
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-altinn3-tilgang-local
+    username: testnav-altinn3-tilgang-local
+    password: ${sm://testnav-altinn3-tilgang-local}

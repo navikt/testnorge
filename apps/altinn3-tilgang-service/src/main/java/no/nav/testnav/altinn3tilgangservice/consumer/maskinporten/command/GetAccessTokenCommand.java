@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.AccessToken;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.WellKnown;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -20,6 +21,7 @@ public class GetAccessTokenCommand implements Callable<Mono<AccessToken>> {
 
     @Override
     public Mono<AccessToken> call() {
+
         return webClient.post()
                 .uri(wellKnown.tokenEndpoint())
                 .body(BodyInserters
@@ -29,12 +31,7 @@ public class GetAccessTokenCommand implements Callable<Mono<AccessToken>> {
                 .retrieve()
                 .bodyToMono(AccessToken.class)
                 .doOnSuccess(value -> log.info("AccessToken hentet fra maskinporten."))
-                .doOnError(
-                        WebClientResponseException.class::isInstance,
-                        throwable -> log.error(
-                                "Feil ved henting av AccessToken for maskinporten. \n{}",
-                                ((WebClientResponseException) throwable).getResponseBodyAsString()
-                        )
-                );
+                .doOnError(WebClientFilter::logErrorMessage)
+                .cache(Duration.ofSeconds(10L));
     }
 }
