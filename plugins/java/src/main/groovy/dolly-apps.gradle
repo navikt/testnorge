@@ -22,7 +22,6 @@ dependencies {
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
-
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
     implementation "org.hibernate.validator:hibernate-validator"
     implementation "org.projectlombok:lombok"
