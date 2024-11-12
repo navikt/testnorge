@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.MaskinportenConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command.GetAccessTokenCommand;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command.GetWellKnownCommand;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.AccessToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -39,7 +40,7 @@ public class MaskinportenConsumer {
                 .doOnNext(wellKnown -> log.info("Maskinporten wellKnown {}", wellKnown))
                 .flatMap(wellKnown -> new GetAccessTokenCommand(webClient, wellKnown,
                         createJwtClaims(wellKnown.issuer())).call())
-                .doOnNext(response -> log.info("Hentet fra maskinporten {}", response));
+                .map(AccessToken::accessToken);
     }
 
     @SneakyThrows

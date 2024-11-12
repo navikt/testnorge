@@ -2,6 +2,7 @@ package no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.AccessToken;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.WellKnown;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -13,13 +14,13 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetAccessTokenCommand implements Callable<Mono<String>> {
+public class GetAccessTokenCommand implements Callable<Mono<AccessToken>> {
     private final WebClient webClient;
     private final WellKnown wellKnown;
     private final String assertion;
 
     @Override
-    public Mono<String> call() {
+    public Mono<AccessToken> call() {
 
         return webClient.post()
                 .uri(wellKnown.tokenEndpoint())
@@ -28,7 +29,7 @@ public class GetAccessTokenCommand implements Callable<Mono<String>> {
                         .with("assertion", assertion)
                 )
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(AccessToken.class)
                 .doOnSuccess(value -> log.info("AccessToken hentet fra maskinporten."))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .cache(Duration.ofSeconds(10L));
