@@ -85,7 +85,8 @@ public class AltinnConsumer {
 
     public Mono<String> exchangeToken(String token) {
 
-        return new GetExchangeTokenCommand(webClient, token).call();
+        return new GetExchangeTokenCommand(webClient, token).call()
+                .doOnNext(response -> log.info("Exchange token {}", response));
     }
 
 
@@ -140,6 +141,7 @@ public class AltinnConsumer {
                                 exchangeToken,
                                 altinnConfig
                         ).call()
+                        .doOnNext(response -> log.info("Hentet organisasjontilgang for {}", response))
                 );
     }
 

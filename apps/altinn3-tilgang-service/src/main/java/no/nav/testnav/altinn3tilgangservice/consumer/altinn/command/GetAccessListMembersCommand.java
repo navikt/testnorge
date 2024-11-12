@@ -34,6 +34,6 @@ public class GetAccessListMembersCommand implements Callable<Mono<AltinnResponse
                 .retrieve()
                 .bodyToMono(AltinnResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .doOnSuccess(value -> log.info("Organiasjontilgang hentet {}", value));
+                .doOnSuccess(value -> log.info("Organisasjontilgang hentet {}", value));
     }
 }

@@ -41,7 +41,7 @@ public class DeleteAccessListMemberCommand implements Callable<Mono<DeleteStatus
                 .map(resultat -> DeleteStatus.builder()
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
-                .doOnSuccess(value -> log.info("Organiasjontilgang slettet for {}", identifiers))
+                .doOnSuccess(value -> log.info("Organisasjontilgang slettet for {}", identifiers))
                 .doOnError(WebClientFilter::logErrorMessage);
     }
 }

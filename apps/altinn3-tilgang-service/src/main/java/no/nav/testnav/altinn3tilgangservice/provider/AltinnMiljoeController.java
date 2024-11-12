@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/v1/miljoer")
 @RequiredArgsConstructor
-public class OrganisasjonMiljoeConsumer {
+public class AltinnMiljoeController {
 
     private final MiljoerOversiktService miljoerOversiktService;
 

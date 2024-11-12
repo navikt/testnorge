@@ -38,6 +38,6 @@ public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnRespo
                 .retrieve()
                 .bodyToMono(AltinnResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .doOnSuccess(value -> log.info("Organiasjontilgang opprettet for {}", organisasjon));
+                .doOnSuccess(value -> log.info("Organisasjontilgang opprettet for {}", organisasjon));
     }
 }

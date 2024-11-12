@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
-public class OrganisasjonTilgangService {
+public class AltinnTilgangService {
 
     private final AltinnConsumer altinnConsumer;
     private final OrganisasjonTilgangRepository organisasjonTilgangRepository;
