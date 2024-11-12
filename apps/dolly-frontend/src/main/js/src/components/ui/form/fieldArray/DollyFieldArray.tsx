@@ -257,22 +257,23 @@ export const FormDollyFieldArray = ({
 					const showDeleteButton = canBeEmpty ? true : values.length >= 2
 					const path = `${name}.${idx}`
 					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
-					// const handleRemove = () => {
-					// 	handleRemoveEntry ? handleRemoveEntry(idx) : remove(idx)
+					const handleRemove = () => {
+						handleRemoveEntry ? handleRemoveEntry(idx) : remove(idx)
+						formMethods.trigger(name)
+					}
+					// console.log('handleRemoveEntry: ', handleRemoveEntry) //TODO - SLETT MEG
+
+					// TODO: Vurder om vi skal ha denne her eller bare i enkelte form der den trengs
+					// const removeEntry = (idx: number) => {
+					// 	const filterValues = values.filter((_, index) => index !== idx)
+					// 	formMethods.setValue(name, filterValues)
 					// 	formMethods.trigger(name)
 					// }
-
-					//TODO: Vurder om vi skal ha denne her eller bare i enkelte form der den trengs
-					const removeEntry = (idx: number) => {
-						const filterValues = values.filter((_, index) => index !== idx)
-						formMethods.setValue(name, filterValues)
-						formMethods.trigger(name)
-					}
-
-					const handleRemove = () => {
-						handleRemoveEntry ? handleRemoveEntry(idx) : removeEntry(idx)
-						formMethods.trigger(name)
-					}
+					//
+					// const handleRemove = () => {
+					// 	handleRemoveEntry ? handleRemoveEntry(idx) : removeEntry(idx)
+					// 	formMethods.trigger(name)
+					// }
 
 					if (nested) {
 						return (

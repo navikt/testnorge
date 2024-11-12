@@ -127,18 +127,12 @@ export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	const { identtype, identMaster } = useContext(BestillingsveilederContext)
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
-	// const handleRemoveEntry = (idx: number) => {
-	// 	console.log('idx: ', idx) //TODO - SLETT MEG
-	// 	const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')
-	// 	const filterSivilstandListe = sivilstandListe?.filter((_, index) => index !== idx)
-	// 	// delete sivilstandListe[idx]
-	// 	// sivilstandListe.splice(idx, 1)
-	// 	// formMethods.setValue(`pdldata.person.sivilstand[${idx}]`, undefined)
-	// 	console.log('filterSivilstandListe: ', filterSivilstandListe) //TODO - SLETT MEG
-	// 	// console.log('sivilstandListe: ', sivilstandListe) //TODO - SLETT MEG
-	// 	formMethods.setValue('pdldata.person.sivilstand', filterSivilstandListe)
-	// 	formMethods.trigger()
-	// }
+	const handleRemoveEntry = (idx: number) => {
+		const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')
+		const filterSivilstandListe = sivilstandListe?.filter((_, index) => index !== idx)
+		formMethods.setValue('pdldata.person.sivilstand', filterSivilstandListe)
+		formMethods.trigger()
+	}
 
 	return (
 		<FormDollyFieldArray
@@ -146,7 +140,7 @@ export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 			header="Sivilstand"
 			newEntry={getInitialSivilstand(initiellMaster)}
 			canBeEmpty={false}
-			// handleRemoveEntry={handleRemoveEntry}
+			handleRemoveEntry={handleRemoveEntry}
 		>
 			{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
 		</FormDollyFieldArray>

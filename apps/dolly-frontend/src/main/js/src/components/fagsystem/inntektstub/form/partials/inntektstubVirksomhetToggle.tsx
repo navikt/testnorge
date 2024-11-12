@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { OrgnummerToggle } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 import { ToggleGroup } from '@navikt/ds-react'
@@ -22,12 +22,13 @@ export const InntektstubVirksomhetToggle = ({
 	const opplysningspliktigPath = `${path}.opplysningspliktig`
 	const orgnummerLength = 9
 
-	const [inputType, setInputType] = useState(
+	const getInputType = () =>
 		!formMethods.watch(virksomhetPath) ||
-			formMethods.watch(virksomhetPath).length === orgnummerLength
+		formMethods.watch(virksomhetPath).length === orgnummerLength
 			? ToggleValg.ORGANISASJON
-			: ToggleValg.PRIVAT,
-	)
+			: ToggleValg.PRIVAT
+
+	const [inputType, setInputType] = useState(getInputType())
 
 	const handleToggleChange = (value: ToggleValg) => {
 		setInputType(value)
@@ -35,12 +36,29 @@ export const InntektstubVirksomhetToggle = ({
 		formMethods.setValue(opplysningspliktigPath, '')
 	}
 
+	// console.log(
+	// 	"formMethods.watch('inntektstub.inntektsinformasjon'): ",
+	// 	formMethods.watch('inntektstub.inntektsinformasjon'),
+	// ) //TODO - SLETT MEG
+
+	useEffect(() => {
+		// console.log('Setter input type... ): ', getInputType()) //TODO - SLETT MEG
+		// setTimeout(() => setInputType(getInputType()), 1000)
+		setInputType(getInputType())
+		// formMethods.trigger(path)
+	}, [formMethods.watch('inntektstub.inntektsinformasjon')?.length])
+	// console.log('inputType: ', inputType) //TODO - SLETT MEG
+
+	// TODO: Ingen toggles funker som de skal når man sletter inntektsinformasjon.
+	// TODO: Men alle under-arrayer ser ut til å fungere som de skal.
+
 	return (
 		<div className="toggle--wrapper">
 			<ToggleGroup
 				size={'small'}
 				onChange={handleToggleChange}
-				defaultValue={ToggleValg.ORGANISASJON}
+				// defaultValue={ToggleValg.ORGANISASJON}
+				value={inputType}
 				style={{ backgroundColor: '#ffffff' }}
 			>
 				<ToggleGroup.Item key={ToggleValg.ORGANISASJON} value={ToggleValg.ORGANISASJON}>

@@ -95,7 +95,7 @@ export const ArbeidsforholdToggle = ({
 
 	useEffect(() => {
 		setTypeArbeidsgiver(getArbeidsgiverType())
-	}, [fasteOrganisasjoner, brukerOrganisasjoner])
+	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('aareg')?.length])
 
 	const toggleValues = [
 		{
