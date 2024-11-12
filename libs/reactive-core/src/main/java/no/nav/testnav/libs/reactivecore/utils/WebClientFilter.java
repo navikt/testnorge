@@ -60,7 +60,10 @@ public class WebClientFilter {
 
     public static void logErrorMessage(Throwable throwable) {
 
-        if (!(throwable instanceof WebClientResponseException)) {
+        if ((throwable instanceof WebClientResponseException webClientResponseException)) {
+            log.error("%s, %s".formatted(throwable.getMessage(),
+                    webClientResponseException.getResponseBodyAsString()), throwable);
+        } else {
             log.error(throwable.getMessage(), throwable);
         }
     }

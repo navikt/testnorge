@@ -22,7 +22,7 @@ public class GetWellKnownCommand implements Callable<Mono<WellKnown>> {
     public Mono<WellKnown> call() {
 
         return webClient.get()
-                .uri(maskinportenConfig.getWellKnownUrl())
+                .uri(maskinportenConfig.getMaskinportenWellKnownUrl())
                 .retrieve()
                 .bodyToMono(WellKnown.class)
                 .doOnSuccess(value -> log.info("WellKnown hentet for maskinporten."))

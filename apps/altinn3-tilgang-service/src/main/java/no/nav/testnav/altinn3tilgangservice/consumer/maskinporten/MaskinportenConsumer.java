@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.MaskinportenConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command.GetAccessTokenCommand;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.command.GetWellKnownCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.AccessToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -36,23 +35,23 @@ public class MaskinportenConsumer {
 
     public Mono<String> getAccessToken() {
 
-         return new GetWellKnownCommand(webClient, maskinportenConfig).call()
+        return new GetWellKnownCommand(webClient, maskinportenConfig).call()
                 .doOnNext(wellKnown -> log.info("Maskinporten wellKnown {}", wellKnown))
                 .flatMap(wellKnown -> new GetAccessTokenCommand(webClient, wellKnown,
                         createJwtClaims(wellKnown.issuer())).call())
-                .map(AccessToken::accessToken);
+                .doOnNext(response -> log.info("Hentet fra maskinporten {}", response));
     }
 
     @SneakyThrows
     private String createJwtClaims(String audience) {
 
         var now = Instant.now();
-        var rsaKey = RSAKey.parse(maskinportenConfig.getJwkPrivate());
+        var rsaKey = RSAKey.parse(maskinportenConfig.getMaskinportenClientJwk());
         return createSignedJWT(rsaKey,
                 new JWTClaimsSet.Builder()
                         .audience(audience)
-                        .claim("scope", maskinportenConfig.getScope())
-                        .issuer(maskinportenConfig.getClientId())
+                        .claim("scope", maskinportenConfig.getMaskinportenScopes())
+                        .issuer(maskinportenConfig.getMaskinportenClientId())
                         .issueTime(Date.from(now))
                         .expirationTime(Date.from(now.plusSeconds(120)))
                         .jwtID(UUID.randomUUID().toString())
@@ -63,13 +62,13 @@ public class MaskinportenConsumer {
     @SneakyThrows
     private SignedJWT createSignedJWT(RSAKey rsaJwk, JWTClaimsSet claimsSet) {
 
-            var header = new JWSHeader.Builder(JWSAlgorithm.RS256)
-                    .keyID(rsaJwk.getKeyID())
-                    .type(JOSEObjectType.JWT);
-            var signedJWT = new SignedJWT(header.build(), claimsSet);
-            var signer = new RSASSASigner(rsaJwk.toPrivateKey());
-            signedJWT.sign(signer);
+        var header = new JWSHeader.Builder(JWSAlgorithm.RS256)
+                .keyID(rsaJwk.getKeyID())
+                .type(JOSEObjectType.JWT);
+        var signedJWT = new SignedJWT(header.build(), claimsSet);
+        var signer = new RSASSASigner(rsaJwk.toPrivateKey());
+        signedJWT.sign(signer);
 
-            return signedJWT;
+        return signedJWT;
     }
 }
