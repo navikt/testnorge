@@ -26,7 +26,7 @@ public class GetBrregEnheterCommand implements Callable<Mono<BrregResponseDTO>> 
         return webClient
                 .get()
                 .uri(builder -> builder.path(BRREG_ENHETER_URL)
-                        .queryParam("enheter", organisasjonsnummer)
+                        .queryParam("organisasjonsnummer", organisasjonsnummer)
                         .build()
                 )
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

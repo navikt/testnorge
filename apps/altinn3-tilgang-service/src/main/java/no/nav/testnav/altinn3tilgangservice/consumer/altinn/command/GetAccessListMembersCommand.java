@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class GetAccessListMembersCommand implements Callable<Mono<AltinnResponseDTO>> {
 
-    private static final String ALTINN_URL = "/access-lists/{owner}/{identifier}/members";
+    private static final String ALTINN_URL = "/resourceregistry/api/v1/access-lists/{owner}/{identifier}/members";
 
     private final WebClient webClient;
     private final String token;
@@ -34,6 +34,6 @@ public class GetAccessListMembersCommand implements Callable<Mono<AltinnResponse
                 .retrieve()
                 .bodyToMono(AltinnResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .doOnSuccess(value -> log.info("Organisasjontilgang hentet {}", value));
+                .doOnSuccess(value -> log.info("Altinn-tilgang hentet"));
     }
 }

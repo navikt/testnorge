@@ -1,5 +1,6 @@
 package no.nav.testnav.altinn3tilgangservice.consumer.altinn.command;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
@@ -18,10 +19,11 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class DeleteAccessListMemberCommand implements Callable<Mono<DeleteStatus>> {
 
-    private static final String ALTINN_URL = "/access-lists/{owner}/{identifier}/members";
+    private static final String ALTINN_URL = "/resourceregistry/api/v1/access-lists/{owner}/{identifier}/members";
+
     private final WebClient webClient;
     private final String token;
-    private final String identifiers;
+    private final JsonNode identifiers;
     private final AltinnConfig altinnConfig;
 
 

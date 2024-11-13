@@ -18,10 +18,11 @@ import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDTO.ORGANISASJON_ID;
 
 @Slf4j
 @Component
@@ -29,7 +30,6 @@ public class AltinnConsumer {
 
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
-    private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade;
     private final MaskinportenConsumer maskinportenConsumer;
     private final BrregConsumer brregConsumer;
@@ -53,49 +53,22 @@ public class AltinnConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
                 })
-                .filters(exchangeFilterFunctions ->
-                        exchangeFilterFunctions.add(logRequest()))
                 .build();
         this.brregConsumer = brregConsumer;
-        this.objectMapper = objectMapper;
         this.mapperFacade = mapperFacade;
-    }
-
-    private ExchangeFilterFunction logRequest() {
-
-        return (clientRequest, next) -> {
-            var buffer = new StringBuilder(250)
-                    .append("Request: ")
-                    .append(clientRequest.method())
-                    .append(' ')
-                    .append(clientRequest.url())
-                    .append(System.lineSeparator());
-
-            clientRequest.headers()
-                    .forEach((name, values) -> values
-                            .forEach(value -> buffer.append('\t')
-                                    .append(name)
-                                    .append('=')
-                                    .append(value.contains("Bearer ") ? "Bearer token" : value)
-                                    .append(System.lineSeparator())));
-            log.trace(buffer.substring(0, buffer.length() - 1));
-            return next.exchange(clientRequest);
-        };
     }
 
     public Mono<String> exchangeToken(String token) {
 
-        return new GetExchangeTokenCommand(webClient, token).call()
-                .doOnNext(response -> log.info("Exchange token {}", response));
+        return new GetExchangeTokenCommand(webClient, token).call();
     }
-
 
     public Flux<DeleteStatus> delete(String organiasjonsnummer) {
 
         return getAccessListMembers()
                 .flatMapMany(value -> Flux.fromIterable(value.getData()))
                 .map(AltinnResponseDTO.AccessListMembershipDTO::getIdentifiers)
-                .filter(identifier -> identifier.contains(organiasjonsnummer))
+                .filter(identifier -> organiasjonsnummer.equals(identifier.get(ORGANISASJON_ID).asText()))
                 .flatMap(identifier -> maskinportenConsumer.getAccessToken()
                         .flatMap(this::exchangeToken)
                         .flatMap(exchangeToken -> new DeleteAccessListMemberCommand(
@@ -116,7 +89,6 @@ public class AltinnConsumer {
                         new OrganisasjonCreateDTO(organisasjonsnummer),
                         altinnConfig).call())
                 .map(altinnResponse -> altinnResponse.getData().getFirst())
-                .map(AltinnResponseDTO.AccessListMembershipDTO::getIdentifiers)
                 .map(this::getOrgnummer)
                 .flatMap(brregConsumer::getEnheter)
                 .map(response -> mapperFacade.map(response, Organisasjon.class));
@@ -126,7 +98,6 @@ public class AltinnConsumer {
 
         return getAccessListMembers()
                 .flatMapMany(accessList -> Flux.fromIterable(accessList.getData())
-                        .map(AltinnResponseDTO.AccessListMembershipDTO::getIdentifiers)
                         .map(this::getOrgnummer)
                         .flatMap(brregConsumer::getEnheter)
                         .map(response -> mapperFacade.map(response, Organisasjon.class)));
@@ -139,17 +110,14 @@ public class AltinnConsumer {
                 .flatMap(exchangeToken -> new GetAccessListMembersCommand(
                                 webClient,
                                 exchangeToken,
-                                altinnConfig
-                        ).call()
-                        .doOnNext(response -> log.info("Hentet organisasjontilgang for {}", response))
-                );
+                                altinnConfig).call());
     }
 
     @SneakyThrows
-    private String getOrgnummer(String identifiers) {
+    private String getOrgnummer(AltinnResponseDTO.AccessListMembershipDTO data) {
 
-        return objectMapper.readTree(identifiers)
-                .path("urn:altinn:organization:identifier-no")
+        return data.getIdentifiers()
+                .get(ORGANISASJON_ID)
                 .asText();
     }
 }
