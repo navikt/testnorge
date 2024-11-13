@@ -135,7 +135,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		}
 		formMethods.setValue(paths.amelding, ameldingClone)
 		formMethods.setValue(paths.arbeidsforholdstype, event.value)
-		formMethods.trigger()
+		formMethods.trigger('aareg')
 	}
 
 	const handleNewEntry = () => {
@@ -158,7 +158,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 				nyttArbeidsforhold,
 			])
 		})
-		formMethods.trigger()
+		formMethods.trigger(paths.amelding)
 	}
 
 	const handleRemoveEntry = (idArbeidsforhold: number) => {
@@ -172,7 +172,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 			)
 			currArbeidsforhold?.splice(idArbeidsforhold, 1)
 			formMethods.setValue(`${paths.amelding}[${idMaaned}].arbeidsforhold`, currArbeidsforhold)
-			formMethods.trigger()
+			formMethods.trigger(paths.amelding)
 		})
 	}
 
@@ -192,7 +192,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		} else {
 			setSelectedIndex(selectedIndex)
 		}
-		formMethods.trigger()
+		formMethods.trigger(paths.amelding)
 	}
 
 	return (

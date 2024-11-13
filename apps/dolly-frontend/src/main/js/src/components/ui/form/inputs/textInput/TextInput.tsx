@@ -4,7 +4,7 @@ import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import {
 	ShowErrorContext,
@@ -23,6 +23,8 @@ type TextInputProps = {
 	type?: string
 	useOnChange?: boolean
 	onBlur?: (val: any) => void
+	onClick?: (val: any) => void
+	onFocus?: (val: any) => void
 	useControlled?: boolean
 	defaultValue?: string
 	isDisabled?: boolean
@@ -34,8 +36,7 @@ type TextInputProps = {
 	readOnly?: boolean
 	onKeyDown?: any
 	onSubmit?: Function
-	customValidation?: Function
-	onChange?: Function
+	onChange?: (val: any) => void
 	onPaste?: Function
 	className?: string
 	icon?: string
@@ -74,17 +75,20 @@ export const TextInput = React.forwardRef(
 			datepickerOnclick,
 			...props
 		}: TextInputProps,
-		ref,
+		forwardRef,
 	) => {
 		const {
 			register,
 			formState: { touchedFields },
+			setValue,
+			watch,
 			getFieldState,
 		} = useFormContext()
-		const { onChange, onBlur } = register(name)
 		const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+		const { onChange, onBlur, ref } = register(name)
+		const [fieldValue, setFieldValue] = useState(watch(name) || props.value || '')
 		const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
-		const feil = getFieldState(fieldName)?.error || getFieldState(name)?.error
+		const feil = getFieldState(name)?.error || getFieldState(fieldName)?.error
 		const visFeil = feil && (errorContext?.showError || isTouched)
 		const css = cn('skjemaelement__input', className, {
 			'skjemaelement__input--harFeil': visFeil,
@@ -93,20 +97,26 @@ export const TextInput = React.forwardRef(
 		return (
 			<>
 				<input
+					ref={ref}
+					value={fieldValue}
 					disabled={isDisabled}
 					id={name}
+					name={name}
 					className={css}
 					placeholder={placeholder}
-					{...props}
-					ref={ref}
 					onBlur={(e) => {
-						onBlur(e)
+						onBlur?.(e)
 						props.onBlur?.(e)
 					}}
 					onChange={(e) => {
-						onChange(e)
+						setValue(name, e.target.value)
+						setFieldValue(e.target.value)
+						onChange?.(e)
 						props.onChange?.(e)
 					}}
+					onClick={props.onClick}
+					onFocus={props.onFocus}
+					onKeyDown={props.onKeyDown}
 				/>
 				{icon &&
 					(datepickerOnclick ? (

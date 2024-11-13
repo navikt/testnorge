@@ -227,7 +227,7 @@ export const EgneOrganisasjoner = ({
 					onChange={(event) => {
 						setOrgnr(event.value)
 						handleChange(event)
-						formMethods.trigger()
+						formMethods.trigger(path)
 					}}
 					value={formMethods.watch(path)}
 					feil={sjekkOrganisasjoner()}

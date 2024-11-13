@@ -144,7 +144,7 @@ export const ArbeidsforholdForm = ({
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
 				setValue(`${path}.${fieldPath}`, value)
-				trigger()
+				trigger(path)
 			}
 		} else {
 			return (field) => {
@@ -181,14 +181,14 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
-					trigger()
+					trigger(path)
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					setValue(path, {
 						...initialForenkletOppgjoersordningPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
-					trigger()
+					trigger(path)
 				}
 			}
 		} else {
@@ -202,25 +202,25 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
-					trigger()
+					trigger(path)
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					setValue(path, {
 						...initialArbeidsforholdPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
-					trigger()
+					trigger(path)
 				}
 			} else {
 				setValue(`${path}.arbeidsforholdstype`, event.value)
-				trigger()
+				trigger(path)
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
 				setValue(`${path}.fartoy`, initialFartoy)
-				trigger()
+				trigger(path)
 			} else {
 				setValue(`${path}.fartoy`, undefined)
-				trigger()
+				trigger(path)
 			}
 		}
 	}

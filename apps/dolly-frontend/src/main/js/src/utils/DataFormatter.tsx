@@ -2,8 +2,12 @@ import { format, isDate } from 'date-fns'
 import _ from 'lodash'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
-import moment from 'moment/moment'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { convertInputToDate } from '@/components/ui/form/formUtils'
 
+dayjs.locale('nb')
+dayjs.extend(customParseFormat)
 export const yearFormat = 'yyyy'
 export const defaultDateFormat = 'dd.MM.yyyy'
 export const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm'
@@ -28,14 +32,13 @@ export const formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 // Date ---> String
 export const formatDate = (date: any, formatString?: string) => {
 	if (!date) return date
-	const valid = moment(date, ['DD-MM-YYYY', moment.ISO_8601], true).isValid()
+	const dayjsDate = convertInputToDate(date)
+	const valid = dayjsDate.isValid()
 	// Parse date if valid date
-	if (valid) {
-		date = new Date(date)
-	} else {
+	if (!valid) {
 		return date
 	}
-	return format(date, formatString || defaultDateFormat)
+	return dayjsDate.format(formatString || 'DD.MM.YYYY')
 }
 
 // Format date to readable string format (AAAAMMDD to DD.MM.AAAA)

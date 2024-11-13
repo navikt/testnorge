@@ -49,18 +49,16 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => {
-		formMethods.trigger().then((valid) => {
-			const errorFelter = Object.keys(formMethods.formState.errors)
-			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
-			const kunGruppeIdError = errorFelter.length === 1 && errorFelter[0] === 'gruppeId'
-			if (!valid && step === 1 && !kunEnvironmentError && !kunGruppeIdError) {
-				console.warn('Feil i form, stopper navigering videre')
-				console.error(formMethods.formState.errors)
-				errorContext?.setShowError(true)
-				return
-			}
-			setStep(step + 1)
-		})
+		const errorFelter = Object.keys(formMethods.formState.errors)
+		const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
+		const kunGruppeIdError = errorFelter.length === 1 && errorFelter[0] === 'gruppeId'
+		if (errorFelter.length > 0 && step === 1 && !kunEnvironmentError && !kunGruppeIdError) {
+			console.warn('Feil i form, stopper navigering videre')
+			console.error(formMethods.formState.errors)
+			errorContext?.setShowError(true)
+			return
+		}
+		setStep(step + 1)
 	}
 
 	const handleBack = () => {
@@ -114,9 +112,6 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 					onPrevious={handleBack}
 					isLastStep={isLastStep()}
 					handleSubmit={() => {
-						formMethods.trigger().catch((error) => {
-							console.warn(error)
-						})
 						return _handleSubmit(formMethods.getValues())
 					}}
 				/>

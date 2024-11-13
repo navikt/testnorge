@@ -24,7 +24,7 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 		if (selected?.value !== 'NOR') {
 			formMethods.setValue(`${foedselPath}.foedekommune`, null)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const foedselsaar = formMethods.watch(`${path}.foedselsaar`)
@@ -46,7 +46,7 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 			<FormDatepicker
 				name={`${path}.foedselsdato`}
 				label="Fødselsdato"
-				disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
+				disabled={foedselsaar !== null || harAlder()}
 				maxDate={new Date()}
 				minDate={minDateFoedsel}
 			/>
@@ -57,12 +57,11 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 				date={foedselsaar ? new Date(foedselsaar, 0) : null}
 				handleDateChange={(val) => {
 					formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
-					formMethods.trigger()
+					formMethods.trigger(path)
 				}}
 				maxDate={new Date()}
 				minDate={minDateFoedsel}
-				// @ts-ignore
-				disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
+				disabled={(foedselsdato !== null && foedselsdato !== '') || harAlder()}
 			/>
 			<FormTextInput name={`${path}.foedested`} label="Fødested" size="large" />
 			<FormSelect

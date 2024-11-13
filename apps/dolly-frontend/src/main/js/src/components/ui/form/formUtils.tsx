@@ -2,6 +2,8 @@ import _ from 'lodash'
 import { runningE2ETest } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
+import dayjs from 'dayjs'
+import { VALID_DATE_FORMATS } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 export const panelError = (attributtPath) => {
 	const {
@@ -31,6 +33,27 @@ export const fixTimezone = (date: Date) => {
 		: new Date().getTimezoneOffset() * 60000
 
 	return new Date(date.getTime() - tzoffset)
+}
+
+export const convertInputToDate = (date: any, name?: string) => {
+	const formMethods = useFormContext()
+	const dateString = isDate(date) ? date.toLocaleDateString() : date
+	console.log('dateString: ', dateString) //TODO - SLETT MEG
+	const dateLocalTime = dayjs(dateString, VALID_DATE_FORMATS, true)
+	console.log('date: ', date) //TODO - SLETT MEG
+	console.log('dateLocalTime: ', dateLocalTime) //TODO - SLETT MEG
+	const dateJS = dateLocalTime.add(dateLocalTime.utcOffset(), 'minute')
+	if (name) {
+		if (!date || dateJS.isValid()) {
+			formMethods.clearErrors(name)
+		} else {
+			formMethods.setError(name, {
+				type: 'invalid-date-format',
+				message: 'Ugyldig dato-format',
+			})
+		}
+	}
+	return dateJS
 }
 
 const getValgteAttributter = (values) => {

@@ -35,13 +35,21 @@ export const Yearpicker = ({
 		<InputWrapper>
 			<Label name={name} label={label} feil={getFeilmelding(formMethods, name)}>
 				<ReactDatepicker
+					name={name}
 					className={'skjemaelement__input'}
 					dateFormat="yyyy"
 					selected={date}
 					onChange={handleDateChange}
 					placeholderText={'Ikke spesifisert'}
 					showYearPicker
-					customInput={<TextInput icon="calendar" feil={getFeilmelding(formMethods, name)} />}
+					customInput={
+						<TextInput
+							isDisabled={disabled}
+							name={name}
+							icon="calendar"
+							feil={getFeilmelding(formMethods, name)}
+						/>
+					}
 					maxDate={maxDate}
 					minDate={minDate}
 					disabled={disabled}

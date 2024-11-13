@@ -25,7 +25,7 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 		} else if (!deltBosted) {
 			formMethods.setValue(`${path}.deltBosted`, null)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}, [deltBosted])
 
 	const testnorgePerson = opts?.identMaster === 'PDL'
