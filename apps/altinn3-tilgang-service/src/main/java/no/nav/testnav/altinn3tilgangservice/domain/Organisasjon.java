@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Data
 @Builder
@@ -14,5 +15,8 @@ public class Organisasjon {
     private String navn;
     private String organisasjonsnummer;
     private String organisasjonsform;
-    private String webUrl;
+    private String url;
+
+    private String feilmelding;
+    private HttpStatus status;
 }

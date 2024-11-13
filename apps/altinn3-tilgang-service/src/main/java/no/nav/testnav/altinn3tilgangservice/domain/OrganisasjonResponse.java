@@ -15,4 +15,7 @@ public class OrganisasjonResponse {
     private String organisasjonsnummer;
     private String organisasjonsform;
     private String miljoe;
+    private String url;
+
+    private String feilmelding;
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,9 +19,9 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class AltinnResponseDTO {
 
-    public static final String ORGANISASJON_ID = "urn:altinn:organization:identifier-no";
-
     private List<AccessListMembershipDTO> data;
+    private String feilmelding;
+    private HttpStatus status;
 
     public List<AccessListMembershipDTO> getData() {
 

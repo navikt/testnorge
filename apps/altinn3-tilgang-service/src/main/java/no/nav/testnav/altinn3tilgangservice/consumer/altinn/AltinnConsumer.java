@@ -10,6 +10,7 @@ import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.DeleteAccess
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetAccessListMembersCommand;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetExchangeTokenCommand;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.BrregResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.DeleteStatus;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.brreg.BrregConsumer;
@@ -22,7 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDTO.ORGANISASJON_ID;
+import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
 
 @Slf4j
 @Component
@@ -88,9 +89,14 @@ public class AltinnConsumer {
                         exchangeToken,
                         new OrganisasjonCreateDTO(organisasjonsnummer),
                         altinnConfig).call())
-                .map(altinnResponse -> altinnResponse.getData().getFirst())
-                .map(this::getOrgnummer)
-                .flatMap(brregConsumer::getEnheter)
+                .flatMap(response -> !response.getData().isEmpty() ?
+                        Mono.just(response.getData().getFirst())
+                                .map(this::getOrgnummer)
+                                .flatMap(brregConsumer::getEnheter) :
+                        Mono.just(BrregResponseDTO.builder()
+                                .feilmelding(response.getFeilmelding())
+                                .status(response.getStatus())
+                                .build()))
                 .map(response -> mapperFacade.map(response, Organisasjon.class));
     }
 
@@ -108,9 +114,9 @@ public class AltinnConsumer {
         return maskinportenConsumer.getAccessToken()
                 .flatMap(this::exchangeToken)
                 .flatMap(exchangeToken -> new GetAccessListMembersCommand(
-                                webClient,
-                                exchangeToken,
-                                altinnConfig).call());
+                        webClient,
+                        exchangeToken,
+                        altinnConfig).call());
     }
 
     @SneakyThrows
