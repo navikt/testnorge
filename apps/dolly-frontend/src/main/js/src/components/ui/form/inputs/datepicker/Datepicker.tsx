@@ -41,13 +41,25 @@ export const DollyDatepicker = (props) => {
 	const [input, setInput] = useState(existingValue && formatDate(existingValue))
 
 	useEffect(() => {
-		const date = convertInputToDate(existingValue, props.name)
+		const date = convertInputToDate(existingValue)
+		validateDate(date)
 		setInput(date ? formatDate(date) : existingValue)
 	}, [])
 
+	const validateDate = (date) => {
+		if (!date || date?.isValid()) {
+			formMethods.clearErrors(props.name)
+		} else {
+			formMethods.setError(props.name, {
+				type: 'invalid-date-format',
+				message: 'Ugyldig dato-format',
+			})
+		}
+	}
 	const handleInputBlur = (e: BaseSyntheticEvent) => {
 		const value = e.target.value
-		const date = convertInputToDate(value, props.name)
+		const date = convertInputToDate(value)
+		validateDate(date)
 
 		formMethods.setValue(props.name, date, { shouldTouch: true })
 		setInput(date ? formatDate(date) : value)
@@ -66,7 +78,8 @@ export const DollyDatepicker = (props) => {
 			{...props}
 			onChange={(e: BaseSyntheticEvent) => {
 				const value = e.target.value
-				const date = convertInputToDate(value, props.name)
+				const date = convertInputToDate(value)
+				validateDate(date)
 				formMethods.setValue(props.name, date, { shouldTouch: true })
 				setInput(value)
 			}}
@@ -91,7 +104,8 @@ export const DollyDatepicker = (props) => {
 						toDate={props.maxDate || addYears(new Date(), 5)}
 						disabled={props.excludeDates}
 						onSelect={(val) => {
-							const date = convertInputToDate(val, props.name)
+							const date = convertInputToDate(val)
+							validateDate(date)
 							props.onChange?.(date)
 							setInput(formatDate(date))
 							setShowDatepicker(false)

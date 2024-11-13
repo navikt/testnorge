@@ -4,7 +4,7 @@ import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import {
 	ShowErrorContext,
@@ -93,6 +93,12 @@ export const TextInput = React.forwardRef(
 		const css = cn('skjemaelement__input', className, {
 			'skjemaelement__input--harFeil': visFeil,
 		})
+
+		useEffect(() => {
+			if (props.value !== fieldValue) {
+				setFieldValue(props.value)
+			}
+		}, [props.value])
 
 		return (
 			<>

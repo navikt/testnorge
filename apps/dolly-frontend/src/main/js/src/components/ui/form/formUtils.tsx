@@ -35,25 +35,13 @@ export const fixTimezone = (date: Date) => {
 	return new Date(date.getTime() - tzoffset)
 }
 
-export const convertInputToDate = (date: any, name?: string) => {
-	const formMethods = useFormContext()
+export const convertInputToDate = (date: any) => {
 	const dateString = isDate(date) ? date.toLocaleDateString() : date
 	console.log('dateString: ', dateString) //TODO - SLETT MEG
-	const dateLocalTime = dayjs(dateString, VALID_DATE_FORMATS, true)
+	const dateLocalTime = dayjs(dateString, VALID_DATE_FORMATS)
 	console.log('date: ', date) //TODO - SLETT MEG
 	console.log('dateLocalTime: ', dateLocalTime) //TODO - SLETT MEG
-	const dateJS = dateLocalTime.add(dateLocalTime.utcOffset(), 'minute')
-	if (name) {
-		if (!date || dateJS.isValid()) {
-			formMethods.clearErrors(name)
-		} else {
-			formMethods.setError(name, {
-				type: 'invalid-date-format',
-				message: 'Ugyldig dato-format',
-			})
-		}
-	}
-	return dateJS
+	return dateLocalTime.add(dateLocalTime.utcOffset(), 'minute')
 }
 
 const getValgteAttributter = (values) => {
