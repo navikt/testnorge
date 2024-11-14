@@ -95,7 +95,7 @@ export const TextInput = React.forwardRef(
 		})
 
 		useEffect(() => {
-			if (props.value !== fieldValue) {
+			if (props.value && props.value !== fieldValue) {
 				setFieldValue(props.value)
 			}
 		}, [props.value])

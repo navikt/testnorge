@@ -4,7 +4,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { convertInputToDate } from '@/components/ui/form/formUtils'
+import { convertInputToDate } from '@/components/ui/form/DateFormatUtils'
 
 dayjs.locale('nb')
 dayjs.extend(customParseFormat)
@@ -31,9 +31,11 @@ export const formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
 export const formatDate = (date: any, formatString?: string) => {
-	if (!date) return date
+	if (!date) {
+		return date
+	}
 	const dayjsDate = convertInputToDate(date)
-	const valid = dayjsDate.isValid()
+	const valid = dayjsDate.isValid?.()
 	// Parse date if valid date
 	if (!valid) {
 		return date

@@ -2,7 +2,7 @@ import { registerLocale } from 'react-datepicker'
 import { addYears, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { convertInputToDate, fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
+import { fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
@@ -14,42 +14,46 @@ import { Label } from '@/components/ui/form/inputs/label/Label'
 import { formatDate } from '@/utils/DataFormatter'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { convertInputToDate } from '@/components/ui/form/DateFormatUtils'
 
 registerLocale('nb', locale_nb)
 dayjs.extend(customParseFormat)
-
-export const VALID_DATE_FORMATS = [
-	'DDMMYYYY',
-	'DDMMYY',
-	'DD-MM-YYYY',
-	'DD-MM-YY',
-	'DD.MM.YYYY',
-	'DD.MM.YY',
-	'DD/MM/YYYY',
-	'DD/MM/YY',
-	'YYYY.MM.DD',
-	'YYYY-MM-DD',
-	'YYYY/MM/DD',
-	'YYYY-MM-DDTHH:mm:ss.SSSZ',
-	'YYYY-MM-DDTHH:mm:ss',
-]
 
 export const DollyDatepicker = (props) => {
 	const formMethods = useFormContext()
 	const existingValue = formMethods.watch(props.name)
 	const [showDatepicker, setShowDatepicker] = useState(false)
-	const [input, setInput] = useState(existingValue && formatDate(existingValue))
+	const [input, setInput] = useState(existingValue ? formatDate(existingValue) : '')
+	const [error, setError] = useState(existingValue ? formatDate(existingValue) : '')
 
 	useEffect(() => {
 		const date = convertInputToDate(existingValue)
+		setInput(date?.isValid?.() ? formatDate(date) : existingValue)
 		validateDate(date)
-		setInput(date ? formatDate(date) : existingValue)
 	}, [])
 
-	const validateDate = (date) => {
-		if (!date || date?.isValid()) {
-			formMethods.clearErrors(props.name)
+	useEffect(() => {
+		if (error) {
+			formMethods.setError(props.name, {
+				type: 'invalid-date-format',
+				message: 'Ugyldig dato-format',
+			})
 		} else {
+			formMethods.clearErrors(props.name)
+		}
+	}, [error])
+
+	const validateDate = (date) => {
+		if (!date || date.isValid?.()) {
+			setError(null)
+			formMethods.clearErrors(props.name)
+		} else if (date.isAfter?.(props.maxDate) || date.isBefore?.(props.minDate)) {
+			formMethods.setError(props.name, {
+				type: 'invalid-date',
+				message: 'Dato utenfor gyldig periode',
+			})
+		} else {
+			setError('Ugyldig dato-format')
 			formMethods.setError(props.name, {
 				type: 'invalid-date-format',
 				message: 'Ugyldig dato-format',
@@ -58,19 +62,16 @@ export const DollyDatepicker = (props) => {
 	}
 	const handleInputBlur = (e: BaseSyntheticEvent) => {
 		const value = e.target.value
-		const date = convertInputToDate(value)
-		validateDate(date)
+		let date = convertInputToDate(value)
+		if (!date.isValid?.()) {
+			date = value
+		}
 
 		formMethods.setValue(props.name, date, { shouldTouch: true })
-		setInput(date ? formatDate(date) : value)
-		if (!date || (date.isValid() && date.isAfter(props.minDate) && date.isBefore(props.maxDate))) {
-			formMethods.clearErrors(props.name)
-		} else {
-			formMethods.setError(props.name, {
-				type: 'invalid-date',
-				message: 'Ugyldig dato',
-			})
-		}
+		setInput(formatDate(date))
+		formMethods.trigger(props.name).then(() => {
+			validateDate(date)
+		})
 	}
 
 	const DateInput = (
@@ -79,9 +80,11 @@ export const DollyDatepicker = (props) => {
 			onChange={(e: BaseSyntheticEvent) => {
 				const value = e.target.value
 				const date = convertInputToDate(value)
-				validateDate(date)
 				formMethods.setValue(props.name, date, { shouldTouch: true })
 				setInput(value)
+				formMethods.trigger(props.name).then(() => {
+					validateDate(date)
+				})
 			}}
 			onBlur={handleInputBlur}
 			isDisabled={props.disabled}

@@ -49,6 +49,9 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => {
+		if (step === 0) {
+			formMethods.trigger()
+		}
 		const errorFelter = Object.keys(formMethods.formState.errors)
 		const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
 		const kunGruppeIdError = errorFelter.length === 1 && errorFelter[0] === 'gruppeId'

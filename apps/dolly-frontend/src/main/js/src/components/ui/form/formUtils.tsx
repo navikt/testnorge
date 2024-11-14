@@ -2,8 +2,6 @@ import _ from 'lodash'
 import { runningE2ETest } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
-import dayjs from 'dayjs'
-import { VALID_DATE_FORMATS } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 export const panelError = (attributtPath) => {
 	const {
@@ -20,6 +18,14 @@ export const panelError = (attributtPath) => {
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
 
+export const isObjectEmptyDeep = (obj: any): boolean =>
+	_.every(obj, (val) => {
+		if (typeof val === 'object') {
+			return isObjectEmptyDeep(val)
+		}
+		return val === '' || _.isNil(val)
+	})
+
 export const fixTimezone = (date: Date) => {
 	if (!isDate(date) || date.getUTCHours() === 0) {
 		return date
@@ -33,15 +39,6 @@ export const fixTimezone = (date: Date) => {
 		: new Date().getTimezoneOffset() * 60000
 
 	return new Date(date.getTime() - tzoffset)
-}
-
-export const convertInputToDate = (date: any) => {
-	const dateString = isDate(date) ? date.toLocaleDateString() : date
-	console.log('dateString: ', dateString) //TODO - SLETT MEG
-	const dateLocalTime = dayjs(dateString, VALID_DATE_FORMATS)
-	console.log('date: ', date) //TODO - SLETT MEG
-	console.log('dateLocalTime: ', dateLocalTime) //TODO - SLETT MEG
-	return dateLocalTime.add(dateLocalTime.utcOffset(), 'minute')
 }
 
 const getValgteAttributter = (values) => {
