@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer;
 import no.nav.testnav.altinn3tilgangservice.database.entity.OrganisasjonTilgang;
 import no.nav.testnav.altinn3tilgangservice.database.repository.OrganisasjonTilgangRepository;
+import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
 import no.nav.testnav.altinn3tilgangservice.domain.OrganisasjonResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -26,17 +27,7 @@ public class AltinnTilgangService {
     public Flux<OrganisasjonResponse> getAll() {
 
         return altinnConsumer.getOrganisasjoner()
-                .flatMap(organisasjon -> organisasjonTilgangRepository
-                        .existsByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
-                        .flatMap(exists -> isTrue(exists) ?
-                                organisasjonTilgangRepository
-                                        .findByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer()) :
-                                Mono.just(new OrganisasjonTilgang()))
-                        .map(organisasjonTilgang -> {
-                            var context = new MappingContext.Factory().getContext();
-                            context.setProperty(ORGANISASJON_TILGANG, organisasjonTilgang);
-                            return mapperFacade.map(organisasjon, OrganisasjonResponse.class, context);
-                        }));
+                .flatMap(this::convertResponse);
     }
 
     public Mono<OrganisasjonResponse> create(String orgnummer, String miljoe) {
@@ -61,10 +52,26 @@ public class AltinnTilgangService {
                 });
     }
 
-    public Flux<Void> delete(String organisasjonsnummer) {
+    public Flux<OrganisasjonResponse> delete(String organisasjonsnummer) {
 
-        return altinnConsumer.delete(organisasjonsnummer)
-                .flatMap(status -> organisasjonTilgangRepository.deleteByOrganisasjonNummer(organisasjonsnummer));
+        return organisasjonTilgangRepository.deleteByOrganisasjonNummer(organisasjonsnummer)
+                .flatMapMany(result -> altinnConsumer.delete(organisasjonsnummer))
+                .flatMap(this::convertResponse);
+    }
+
+    private Mono<OrganisasjonResponse> convertResponse(Organisasjon organisasjon) {
+
+        return organisasjonTilgangRepository
+                .existsByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
+                .flatMap(exists -> isTrue(exists) ?
+                        organisasjonTilgangRepository
+                                .findByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer()) :
+                        Mono.just(new OrganisasjonTilgang()))
+                .map(organisasjonTilgang -> {
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty(ORGANISASJON_TILGANG, organisasjonTilgang);
+                    return mapperFacade.map(organisasjon, OrganisasjonResponse.class, context);
+                });
     }
 
     private Mono<OrganisasjonTilgang> saveOrganisasjon(String orgnummer, String miljoe) {

@@ -1,6 +1,5 @@
 package no.nav.testnav.altinn3tilgangservice.service;
 
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer;
 import no.nav.testnav.altinn3tilgangservice.database.entity.OrganisasjonTilgang;
@@ -27,16 +26,38 @@ public class MiljoerOversiktService {
                             orgnummer.equals(bedrift.getOrganisasjonsnummer()))) {
 
                         return organisasjonTilgangRepository.existsByOrganisasjonNummer(orgnummer)
-                                .flatMap(miljoe -> isTrue(miljoe) ?
+                                .flatMap(exists -> isTrue(exists) ?
                                         organisasjonTilgangRepository.findByOrganisasjonNummer(orgnummer) :
                                         Mono.just(OrganisasjonTilgang.builder()
                                                 .organisasjonNummer(orgnummer)
                                                 .miljoe("q1")
                                                 .build()));
                     } else {
-                        return Mono.error(new NotFoundException(
-                                String.format("Organisasjonsnummer %s ble ikke funnet", orgnummer)));
+                        return throwError(orgnummer);
                     }
                 });
+    }
+
+    public Mono<OrganisasjonTilgang> updateMiljoe(String orgnummer, String miljoe) {
+
+        return organisasjonTilgangRepository.existsByOrganisasjonNummer(orgnummer)
+                .flatMap(exists -> isTrue(exists) ?
+                        organisasjonTilgangRepository.findByOrganisasjonNummer(orgnummer)
+                                .flatMap(organisasjon -> {
+                                    organisasjon.setMiljoe(miljoe);
+                                    return organisasjonTilgangRepository.save(organisasjon);
+                                }) :
+                        organisasjonTilgangRepository.save(OrganisasjonTilgang.builder()
+                                .organisasjonNummer(orgnummer)
+                                .miljoe(miljoe)
+                                .build()));
+    }
+
+    private static Mono<OrganisasjonTilgang> throwError(String orgnummer) {
+
+        return Mono.just(OrganisasjonTilgang.builder()
+                .organisasjonNummer(orgnummer)
+                .feilmelding("404 Not found: Organisasjonsnummer %s ble ikke funnet".formatted(orgnummer))
+                .build());
     }
 }

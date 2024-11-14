@@ -3,12 +3,11 @@ package no.nav.testnav.altinn3tilgangservice.consumer.altinn.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.DeleteStatus;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDeleteDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -20,7 +19,7 @@ import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.Organisas
 
 @Slf4j
 @RequiredArgsConstructor
-public class DeleteAccessListMemberCommand implements Callable<Mono<DeleteStatus>> {
+public class DeleteAccessListMemberCommand implements Callable<Mono<AltinnResponseDTO>> {
 
     private static final String ALTINN_URL = "/resourceregistry/api/v1/access-lists/{owner}/{identifier}/members";
 
@@ -31,7 +30,7 @@ public class DeleteAccessListMemberCommand implements Callable<Mono<DeleteStatus
 
 
     @Override
-    public Mono<DeleteStatus> call() {
+    public Mono<AltinnResponseDTO> call() {
 
         return webClient
                 .method(HttpMethod.DELETE)
@@ -42,15 +41,12 @@ public class DeleteAccessListMemberCommand implements Callable<Mono<DeleteStatus
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(identifiers)
                 .retrieve()
-                .toBodilessEntity()
-                .map(resultat -> DeleteStatus.builder()
-                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
-                        .build())
+                .bodyToMono(AltinnResponseDTO.class)
                 .doOnSuccess(value -> log.info("Altinn organisasjontilgang slettet for {}",
                         identifiers.getData().stream()
                                 .filter(data -> data.contains(ORGANISASJON_ID))
                                 .map(data -> data.split(":"))
-                                .map(data -> data[data.length-1])
+                                .map(data -> data[data.length - 1])
                                 .collect(Collectors.joining())))
                 .doOnError(WebClientFilter::logErrorMessage);
     }

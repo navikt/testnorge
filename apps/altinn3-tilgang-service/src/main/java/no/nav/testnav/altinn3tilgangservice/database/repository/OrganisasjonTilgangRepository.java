@@ -12,5 +12,5 @@ public interface OrganisasjonTilgangRepository extends ReactiveCrudRepository<Or
 
     Mono<OrganisasjonTilgang> save(OrganisasjonTilgang organisasjonTilgang);
 
-    Mono<Void> deleteByOrganisasjonNummer(String orgnummer);
+    Mono<Integer> deleteByOrganisasjonNummer(String orgnummer);
 }

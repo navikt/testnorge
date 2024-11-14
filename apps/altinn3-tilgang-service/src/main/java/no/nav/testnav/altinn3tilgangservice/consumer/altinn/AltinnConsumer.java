@@ -1,6 +1,7 @@
 package no.nav.testnav.altinn3tilgangservice.consumer.altinn;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetAccessLis
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetExchangeTokenCommand;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.BrregResponseDTO;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.DeleteStatus;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDeleteDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.brreg.BrregConsumer;
@@ -25,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
 
 import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
@@ -71,23 +72,28 @@ public class AltinnConsumer {
         return new GetExchangeTokenCommand(webClient, token).call();
     }
 
-    public Flux<DeleteStatus> delete(String organisasjonsnummer) {
+    public Flux<Organisasjon> delete(String organisasjonsnummer) {
 
-        return getAccessListMembers()
-                .flatMapMany(value -> Flux.fromIterable(value.getData()))
-                .map(AltinnResponseDTO.AccessListMembershipDTO::getIdentifiers)
-                .filter(identifier -> organisasjonsnummer.equals(identifier.get(ORGANISASJON_ID).asText()))
-                .map(identifier -> objectMapper.convertValue(identifier,
-                        new TypeReference<Map<String, String>>() {}))
-                .map(OrganisasjonDeleteDTO::new)
-                .flatMap(identifier -> maskinportenConsumer.getAccessToken()
-                        .flatMap(this::exchangeToken)
-                        .flatMap(exchangeToken -> new DeleteAccessListMemberCommand(
-                                webClient,
-                                exchangeToken,
-                                identifier,
-                                altinnConfig).call())
-                );
+        return Flux.from(getAccessListMembers()
+                        .flatMapMany(value -> Flux.fromIterable(value.getData()))
+                        .map(AltinnResponseDTO.AccessListMembershipDTO::getIdentifiers)
+                        .collectList()
+                        .map(data -> getIdentifier(data, organisasjonsnummer))
+                        .map(identifier ->
+                                !identifier.getData().isEmpty() ?
+                                        maskinportenConsumer.getAccessToken()
+                                                .flatMap(this::exchangeToken)
+                                                .flatMap(exchangeToken -> new DeleteAccessListMemberCommand(
+                                                        webClient,
+                                                        exchangeToken,
+                                                        identifier,
+                                                        altinnConfig).call())
+                                                .flatMapMany(this::convertToOrganisasjon) :
+                                        Flux.just(Organisasjon.builder()
+                                                .organisasjonsnummer(organisasjonsnummer)
+                                                .feilmelding("404 Not found: Organisasjon %s ble ikke funnet".formatted(organisasjonsnummer))
+                                                .build())))
+                .flatMap(Flux::from);
     }
 
     public Mono<Organisasjon> create(String organisasjonsnummer) {
@@ -114,10 +120,7 @@ public class AltinnConsumer {
     public Flux<Organisasjon> getOrganisasjoner() {
 
         return getAccessListMembers()
-                .flatMapMany(accessList -> Flux.fromIterable(accessList.getData())
-                        .map(this::getOrgnummer)
-                        .flatMap(brregConsumer::getEnheter)
-                        .map(response -> mapperFacade.map(response, Organisasjon.class)));
+                .flatMapMany(this::convertToOrganisasjon);
     }
 
     private Mono<AltinnResponseDTO> getAccessListMembers() {
@@ -128,6 +131,25 @@ public class AltinnConsumer {
                         webClient,
                         exchangeToken,
                         altinnConfig).call());
+    }
+
+    private Flux<Organisasjon> convertToOrganisasjon(AltinnResponseDTO altInnResponse) {
+
+        return Flux.fromIterable(altInnResponse.getData())
+                .map(this::getOrgnummer)
+                .flatMap(brregConsumer::getEnheter)
+                .map(response -> mapperFacade.map(response, Organisasjon.class));
+    }
+
+    private OrganisasjonDeleteDTO getIdentifier(List<JsonNode> data, String organisasjonsnummer) {
+
+        return data.stream()
+                .filter(identifier -> organisasjonsnummer.equals(identifier.get(ORGANISASJON_ID).asText()))
+                .map(identifier -> objectMapper.convertValue(identifier,
+                        new TypeReference<Map<String, String>>() {
+                        }))
+                .map(OrganisasjonDeleteDTO::new)
+                .findFirst().orElse(new OrganisasjonDeleteDTO());
     }
 
     @SneakyThrows

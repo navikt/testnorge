@@ -3,14 +3,13 @@ package no.nav.testnav.altinn3tilgangservice.provider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.domain.OrganisasjonResponse;
-import no.nav.testnav.altinn3tilgangservice.provider.request.OrganisasjonAccessRequest;
 import no.nav.testnav.altinn3tilgangservice.service.AltinnTilgangService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,15 +28,16 @@ public class AltinnTilgangController {
         return altinnTilgangService.getAll();
     }
 
-    @PostMapping
-    public Mono<OrganisasjonResponse> create(@RequestBody OrganisasjonAccessRequest request) {
+    @PostMapping("/{organisasjonsnummer}")
+    public Mono<OrganisasjonResponse> create(@PathVariable String organisasjonsnummer,
+                                             @RequestParam String miljoe) {
 
         return altinnTilgangService
-                .create(request.organisasjonsnummer(), request.miljoe());
+                .create(organisasjonsnummer, miljoe);
     }
 
     @DeleteMapping("/{organisasjonsnummer}")
-    public Flux<Void> delete(@PathVariable String organisasjonsnummer) {
+    public Flux<OrganisasjonResponse> delete(@PathVariable String organisasjonsnummer) {
 
         return altinnTilgangService.delete(organisasjonsnummer);
     }
