@@ -2,22 +2,24 @@ package no.nav.testnav.altinn3tilgangservice.config;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import static lombok.AccessLevel.PACKAGE;
 
-
-@Configuration
-@ConfigurationProperties
-@NoArgsConstructor(access = PACKAGE)
 @Getter
-@Setter(PACKAGE)
+@Configuration
+@NoArgsConstructor
 public class MaskinportenConfig {
 
+    @Value("${MASKINPORTEN_CLIENT_ID}")
     private String maskinportenClientId;
+
+    @Value("${MASKINPORTEN_CLIENT_JWK}")
     private String maskinportenClientJwk;
+
+    @Value("${MASKINPORTEN_SCOPES}")
     private String maskinportenScopes;
+
+    @Value("${MASKINPORTEN_WELL_KNOWN_URL}")
     private String maskinportenWellKnownUrl;
 }

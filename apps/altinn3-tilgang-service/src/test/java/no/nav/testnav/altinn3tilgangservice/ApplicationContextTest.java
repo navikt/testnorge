@@ -1,7 +1,5 @@
 package no.nav.testnav.altinn3tilgangservice;
 
-import ma.glasnost.orika.MapperFacade;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,12 +14,6 @@ class ApplicationContextTest {
 
     @MockBean
     public ReactiveJwtDecoder jwtDecoder;
-
-    @MockBean
-    public MapperFacade mapperFacade;
-
-    @MockBean
-    public Flyway flyway;
 
     @Test
     @SuppressWarnings("java:S2699")
