@@ -36,6 +36,7 @@ spec:
       external:
         - host: altinn.no
         - host: maskinporten.no
+        - host: brreg.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10

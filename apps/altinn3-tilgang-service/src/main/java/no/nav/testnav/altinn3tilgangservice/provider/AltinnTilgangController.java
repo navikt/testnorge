@@ -1,5 +1,6 @@
 package no.nav.testnav.altinn3tilgangservice.provider;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.domain.OrganisasjonResponse;
@@ -23,12 +24,14 @@ public class AltinnTilgangController {
     private final AltinnTilgangService altinnTilgangService;
 
     @GetMapping
+    @Operation(description = "Henter alle organisasjoner med Altinn-tilgang")
     public Flux<OrganisasjonResponse> getAll() {
 
         return altinnTilgangService.getAll();
     }
 
     @PostMapping("/{organisasjonsnummer}")
+    @Operation(description = "Oppretter Altinn-tilgang for organisasjon")
     public Mono<OrganisasjonResponse> create(@PathVariable String organisasjonsnummer,
                                              @RequestParam String miljoe) {
 
@@ -37,6 +40,7 @@ public class AltinnTilgangController {
     }
 
     @DeleteMapping("/{organisasjonsnummer}")
+    @Operation(description = "Sletter Altinn-tilgang for organisasjon")
     public Flux<OrganisasjonResponse> delete(@PathVariable String organisasjonsnummer) {
 
         return altinnTilgangService.delete(organisasjonsnummer);
