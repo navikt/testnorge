@@ -34,7 +34,7 @@ spec:
         - application: testnav-oversikt-frontend
     outbound:
       external:
-        - host: altinn.no
+        - host: platform.tt02.altinn.no
         - host: maskinporten.no
         - host: brreg.no
   liveness:
