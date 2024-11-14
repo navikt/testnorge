@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +39,11 @@ public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnRespo
                 .retrieve()
                 .bodyToMono(AltinnResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .doOnSuccess(value -> log.info("Organisasjontilgang opprettet for {}", organisasjon))
+                .doOnSuccess(value -> log.info("Altinn organisasjontilgang opprettet for {}",
+                        organisasjon.getData().stream()
+                                .map(data -> data.split(":"))
+                                .map(data -> data[data.length-1])
+                                .collect(Collectors.joining())))
                 .onErrorResume(throwable -> Mono.just(AltinnResponseDTO.builder()
                                 .status(WebClientFilter.getStatus(throwable))
                                 .feilmelding(WebClientFilter.getMessage(throwable))

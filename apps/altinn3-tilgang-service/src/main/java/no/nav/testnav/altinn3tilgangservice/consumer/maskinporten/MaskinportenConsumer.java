@@ -37,7 +37,6 @@ public class MaskinportenConsumer {
     public Mono<String> getAccessToken() {
 
         return new GetWellKnownCommand(webClient, maskinportenConfig).call()
-                .doOnNext(wellKnown -> log.info("Maskinporten wellKnown {}", wellKnown))
                 .flatMap(wellKnown -> new GetAccessTokenCommand(webClient, wellKnown,
                         createJwtClaims(wellKnown.issuer())).call())
                 .map(AccessToken::accessToken);

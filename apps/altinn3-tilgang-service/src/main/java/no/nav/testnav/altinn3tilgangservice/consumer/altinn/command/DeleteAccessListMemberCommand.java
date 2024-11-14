@@ -1,10 +1,10 @@
 package no.nav.testnav.altinn3tilgangservice.consumer.altinn.command;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.DeleteStatus;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDeleteDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +14,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+
+import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,7 +26,7 @@ public class DeleteAccessListMemberCommand implements Callable<Mono<DeleteStatus
 
     private final WebClient webClient;
     private final String token;
-    private final JsonNode identifiers;
+    private final OrganisasjonDeleteDTO identifiers;
     private final AltinnConfig altinnConfig;
 
 
@@ -43,7 +46,12 @@ public class DeleteAccessListMemberCommand implements Callable<Mono<DeleteStatus
                 .map(resultat -> DeleteStatus.builder()
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
-                .doOnSuccess(value -> log.info("Organisasjontilgang slettet for {}", identifiers))
+                .doOnSuccess(value -> log.info("Altinn organisasjontilgang slettet for {}",
+                        identifiers.getData().stream()
+                                .filter(data -> data.contains(ORGANISASJON_ID))
+                                .map(data -> data.split(":"))
+                                .map(data -> data[data.length-1])
+                                .collect(Collectors.joining())))
                 .doOnError(WebClientFilter::logErrorMessage);
     }
 }

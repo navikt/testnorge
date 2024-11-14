@@ -1,5 +1,6 @@
 package no.nav.testnav.altinn3tilgangservice.consumer.altinn;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDT
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.BrregResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.DeleteStatus;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDeleteDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.brreg.BrregConsumer;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.MaskinportenConsumer;
 import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -33,6 +37,7 @@ public class AltinnConsumer {
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
     private final MapperFacade mapperFacade;
+    private final ObjectMapper objectMapper;
     private final MaskinportenConsumer maskinportenConsumer;
     private final BrregConsumer brregConsumer;
 
@@ -58,6 +63,7 @@ public class AltinnConsumer {
                 .build();
         this.brregConsumer = brregConsumer;
         this.mapperFacade = mapperFacade;
+        this.objectMapper = objectMapper;
     }
 
     public Mono<String> exchangeToken(String token) {
@@ -65,12 +71,15 @@ public class AltinnConsumer {
         return new GetExchangeTokenCommand(webClient, token).call();
     }
 
-    public Flux<DeleteStatus> delete(String organiasjonsnummer) {
+    public Flux<DeleteStatus> delete(String organisasjonsnummer) {
 
         return getAccessListMembers()
                 .flatMapMany(value -> Flux.fromIterable(value.getData()))
                 .map(AltinnResponseDTO.AccessListMembershipDTO::getIdentifiers)
-                .filter(identifier -> organiasjonsnummer.equals(identifier.get(ORGANISASJON_ID).asText()))
+                .filter(identifier -> organisasjonsnummer.equals(identifier.get(ORGANISASJON_ID).asText()))
+                .map(identifier -> objectMapper.convertValue(identifier,
+                        new TypeReference<Map<String, String>>() {}))
+                .map(OrganisasjonDeleteDTO::new)
                 .flatMap(identifier -> maskinportenConsumer.getAccessToken()
                         .flatMap(this::exchangeToken)
                         .flatMap(exchangeToken -> new DeleteAccessListMemberCommand(
