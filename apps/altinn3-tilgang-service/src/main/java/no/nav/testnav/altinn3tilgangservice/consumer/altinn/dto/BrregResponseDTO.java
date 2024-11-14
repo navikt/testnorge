@@ -17,6 +17,7 @@ public class BrregResponseDTO {
     private Embedded _embedded;
     private Link _links;
 
+    private String organisasjonsnummer;
     private String feilmelding;
     private HttpStatus status;
 

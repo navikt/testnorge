@@ -24,6 +24,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO.ORGANISASJON_ID;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Component
@@ -89,11 +90,12 @@ public class AltinnConsumer {
                         exchangeToken,
                         new OrganisasjonCreateDTO(organisasjonsnummer),
                         altinnConfig).call())
-                .flatMap(response -> !response.getData().isEmpty() ?
+                .flatMap(response -> isBlank(response.getFeilmelding()) ?
                         Mono.just(response.getData().getFirst())
                                 .map(this::getOrgnummer)
                                 .flatMap(brregConsumer::getEnheter) :
                         Mono.just(BrregResponseDTO.builder()
+                                .organisasjonsnummer(organisasjonsnummer)
                                 .feilmelding(response.getFeilmelding())
                                 .status(response.getStatus())
                                 .build()))

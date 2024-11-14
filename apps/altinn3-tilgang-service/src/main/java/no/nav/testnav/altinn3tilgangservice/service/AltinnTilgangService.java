@@ -12,11 +12,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
 public class AltinnTilgangService {
 
+    private static final String ORGANISASJON_TILGANG = "tilgang";
     private final AltinnConsumer altinnConsumer;
     private final OrganisasjonTilgangRepository organisasjonTilgangRepository;
     private final MapperFacade mapperFacade;
@@ -32,36 +34,51 @@ public class AltinnTilgangService {
                                 Mono.just(new OrganisasjonTilgang()))
                         .map(organisasjonTilgang -> {
                             var context = new MappingContext.Factory().getContext();
-                            context.setProperty("organisasjonTilgang", organisasjonTilgang);
+                            context.setProperty(ORGANISASJON_TILGANG, organisasjonTilgang);
                             return mapperFacade.map(organisasjon, OrganisasjonResponse.class, context);
                         }));
     }
 
-    public Mono<OrganisasjonResponse> create(String organisasjonsnummer, String miljoe) {
+    public Mono<OrganisasjonResponse> create(String orgnummer, String miljoe) {
 
-        return organisasjonTilgangRepository.existsByOrganisasjonNummer(organisasjonsnummer)
-                .flatMap(exists -> isTrue(exists) ?
-                        organisasjonTilgangRepository.findByOrganisasjonNummer(organisasjonsnummer) :
-                        Mono.just(OrganisasjonTilgang.builder()
-                                .organisasjonNummer(organisasjonsnummer)
-                                .build()))
-                .flatMap(organisasjon -> {
-                    organisasjon.setMiljoe(miljoe);
-                    return organisasjonTilgangRepository.save(organisasjon);
-                })
-                .flatMap(organisasjonTilgang -> altinnConsumer.create(organisasjonsnummer)
-                        .flatMap(organisasjon -> organisasjonTilgangRepository
-                                .findByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
+        return altinnConsumer.create(orgnummer)
+                .flatMap(altinnOrg -> {
+                    if (isBlank(altinnOrg.getFeilmelding())) {
+                        return saveOrganisasjon(orgnummer, miljoe)
                                 .map(tilgang -> {
                                     var context = new MappingContext.Factory().getContext();
-                                    context.setProperty("organisasjonTilgang", tilgang);
-                                    return mapperFacade.map(organisasjon, OrganisasjonResponse.class, context);
-                                })));
+                                    context.setProperty(ORGANISASJON_TILGANG, tilgang);
+                                    return mapperFacade.map(altinnOrg, OrganisasjonResponse.class, context);
+                                });
+                    } else {
+                        var context = new MappingContext.Factory().getContext();
+                        context.setProperty(ORGANISASJON_TILGANG, OrganisasjonTilgang.builder()
+                                .organisasjonNummer(orgnummer)
+                                .miljoe(miljoe)
+                                .build());
+                        return Mono.just(mapperFacade.map(altinnOrg, OrganisasjonResponse.class, context));
+                    }
+                });
     }
 
     public Flux<Void> delete(String organisasjonsnummer) {
 
         return altinnConsumer.delete(organisasjonsnummer)
                 .flatMap(status -> organisasjonTilgangRepository.deleteByOrganisasjonNummer(organisasjonsnummer));
+    }
+
+    private Mono<OrganisasjonTilgang> saveOrganisasjon(String orgnummer, String miljoe) {
+
+        return organisasjonTilgangRepository.existsByOrganisasjonNummer(orgnummer)
+                .flatMap(exists -> isTrue(exists) ?
+                        organisasjonTilgangRepository.findByOrganisasjonNummer(orgnummer)
+                                .flatMap(organisasjon -> {
+                                    organisasjon.setMiljoe(miljoe);
+                                    return organisasjonTilgangRepository.save(organisasjon);
+                                }) :
+                        organisasjonTilgangRepository.save(OrganisasjonTilgang.builder()
+                                .organisasjonNummer(orgnummer)
+                                .miljoe(miljoe)
+                                .build()));
     }
 }

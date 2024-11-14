@@ -7,8 +7,8 @@ import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.BrregResponseDTO
 import no.nav.testnav.altinn3tilgangservice.domain.Organisasjon;
 import org.springframework.stereotype.Component;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class BrrregResponseMappingStrategy implements MappingStrategy {
@@ -20,7 +20,7 @@ public class BrrregResponseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BrregResponseDTO kilde, Organisasjon destinasjon, MappingContext context) {
 
-                        if (isNull(kilde.getFeilmelding())) {
+                        if (isBlank(kilde.getFeilmelding())) {
                             var link = kilde.get_links().getSelf().getHref();
                             if (nonNull(kilde.get_embedded())) {
                                 mapperFacade.map(kilde.get_embedded().getEnheter().getFirst(), destinasjon, context);

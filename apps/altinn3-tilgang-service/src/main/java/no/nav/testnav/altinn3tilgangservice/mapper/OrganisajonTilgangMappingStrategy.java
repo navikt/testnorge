@@ -22,7 +22,7 @@ public class OrganisajonTilgangMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Organisasjon organisasjon, OrganisasjonResponse response, MappingContext context) {
 
-                        var organisasjonTilgang = (OrganisasjonTilgang) context.getProperty("organisasjonTilgang");
+                        var organisasjonTilgang = (OrganisasjonTilgang) context.getProperty("tilgang");
                         response.setMiljoe(nonNull(organisasjonTilgang) && isNotBlank(organisasjonTilgang.getMiljoe()) ?
                                 organisasjonTilgang.getMiljoe() : "q1");
                     }
