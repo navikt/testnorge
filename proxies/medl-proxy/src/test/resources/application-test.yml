@@ -1,2 +1,7 @@
-azure.app.client.id: dummy
 TOKEN_X_ISSUER: dummy
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false

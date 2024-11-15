@@ -1,5 +1,11 @@
 TOKEN_X_ISSUER: dummy
 
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
+
 consumers:
   dokarkiv:
     url: http://dokarkiv-dummy.dummy.no
