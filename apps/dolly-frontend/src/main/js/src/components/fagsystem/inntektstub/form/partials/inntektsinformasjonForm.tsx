@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'

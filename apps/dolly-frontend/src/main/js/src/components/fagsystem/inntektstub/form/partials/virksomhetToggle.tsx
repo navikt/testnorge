@@ -40,6 +40,9 @@ type ArbeidsforholdToggleProps = {
 	loadingOrganisasjoner: boolean
 }
 
+// TODO: Ingen toggles funker som de skal når man sletter inntektsinformasjon.
+// TODO: Men alle under-arrayer ser ut til å fungere som de skal.
+
 export const VirksomhetToggle = ({
 	path,
 	// orgnummer,
