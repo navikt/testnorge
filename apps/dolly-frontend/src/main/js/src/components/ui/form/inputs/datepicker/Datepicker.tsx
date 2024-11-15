@@ -28,7 +28,6 @@ export const DollyDatepicker = (props) => {
 			fromDate: props.minDate || subYears(new Date(), 125),
 			toDate: props.maxDate || addYears(new Date(), 5),
 			disabled: props.excludeDates,
-			inputFormat: 'dd.MM.yyyy',
 		})
 	}, [props.minDate, props.maxDate, props.excludeDates, input])
 

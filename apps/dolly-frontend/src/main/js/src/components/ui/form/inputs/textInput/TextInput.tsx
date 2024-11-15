@@ -86,8 +86,8 @@ export const TextInput = React.forwardRef(
 			getFieldState,
 		} = useFormContext()
 		const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-		const { onChange, onBlur, ref } = register(name)
-		const [fieldValue, setFieldValue] = useState(watch(name) || props.value || '')
+		const { onChange, onBlur } = register(name)
+		const [fieldValue, setFieldValue] = useState(props.value || watch(name) || '')
 		const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 		const feil = getFieldState(name)?.error || getFieldState(fieldName)?.error
 		const visFeil = feil && (errorContext?.showError || isTouched)
@@ -104,7 +104,6 @@ export const TextInput = React.forwardRef(
 		return (
 			<>
 				<input
-					ref={ref}
 					value={fieldValue}
 					disabled={isDisabled}
 					id={name}
