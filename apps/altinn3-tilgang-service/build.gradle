@@ -34,7 +34,5 @@ dependencies {
 
     implementation "io.r2dbc:r2dbc-h2"
     testRuntimeOnly "com.h2database:h2"
-
-    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }
 
