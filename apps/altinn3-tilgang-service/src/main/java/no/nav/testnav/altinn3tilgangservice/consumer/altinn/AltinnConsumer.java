@@ -96,7 +96,7 @@ public class AltinnConsumer {
                 .flatMap(Flux::from);
     }
 
-    public Mono<Organisasjon> create(String organisasjonsnummer) {
+    public Flux<Organisasjon> create(String organisasjonsnummer) {
 
         return maskinportenConsumer.getAccessToken()
                 .flatMap(this::exchangeToken)
@@ -105,9 +105,11 @@ public class AltinnConsumer {
                         exchangeToken,
                         new OrganisasjonCreateDTO(organisasjonsnummer),
                         altinnConfig).call())
-                .flatMap(response -> isBlank(response.getFeilmelding()) ?
-                        Mono.just(response.getData().getFirst())
+                .flatMapMany(response ->
+                                isBlank(response.getFeilmelding()) ?
+                        Flux.fromIterable(response.getData())
                                 .map(this::getOrgnummer)
+                                .filter(organisasjonsnummer::equals)
                                 .flatMap(brregConsumer::getEnheter) :
                         Mono.just(BrregResponseDTO.builder()
                                 .organisasjonsnummer(organisasjonsnummer)

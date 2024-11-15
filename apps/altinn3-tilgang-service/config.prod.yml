@@ -21,8 +21,8 @@ spec:
     enabled: true
     scopes:
       consumes:
-        - name: altinn:resourceregistry/accesslist.read
-        - name: altinn:resourceregistry/accesslist.write
+        - name: altinn:resourceregistry/access-list.read
+        - name: altinn:resourceregistry/access-list.write
   accessPolicy:
     inbound:
       rules:

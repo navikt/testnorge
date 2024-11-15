@@ -30,7 +30,7 @@ public class AltinnTilgangService {
                 .flatMap(this::convertResponse);
     }
 
-    public Mono<OrganisasjonResponse> create(String orgnummer, String miljoe) {
+    public Flux<OrganisasjonResponse> create(String orgnummer, String miljoe) {
 
         return altinnConsumer.create(orgnummer)
                 .flatMap(altinnOrg -> {

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -32,7 +31,7 @@ public class AltinnTilgangController {
 
     @PostMapping("/{organisasjonsnummer}")
     @Operation(description = "Oppretter Altinn-tilgang for organisasjon")
-    public Mono<OrganisasjonResponse> create(@PathVariable String organisasjonsnummer,
+    public Flux<OrganisasjonResponse> create(@PathVariable String organisasjonsnummer,
                                              @RequestParam String miljoe) {
 
         return altinnTilgangService
