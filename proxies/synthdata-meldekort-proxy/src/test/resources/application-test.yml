@@ -3,3 +3,8 @@ spring:
     gcp:
       secretmanager:
         enabled: false
+
+azure:
+  openid:
+    config:
+      issuer: dummy

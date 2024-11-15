@@ -13,7 +13,7 @@ public class CredentialsConfig {
     @Value("${app.hendelse.lager.api.key}")
     private String hendelselagerApiKey;
 
-    @Value("${app.person.aktor.admin.api}")
+    @Value("${app.person.aktor.api.key}")
     private String aktoerAdminApiKey;
 
     @Value("${app.elastic.username}")
@@ -22,16 +22,16 @@ public class CredentialsConfig {
     @Value("${app.elastic.password}")
     private String elasticPassword;
 
-    @Value("${hendelse.lager.api.key}")
+    @Value("${hendelse.lager.api.key:null}")
     private String oldHendelselagerApiKey;
 
-    @Value("${person.aktor.admin.api}")
+    @Value("${person.aktor.admin.api:null}")
     private String oldAktoerAdminApiKey;
 
-    @Value("${elastic.username}")
+    @Value("${elastic.username:null}")
     private String oldElasticUsername;
 
-    @Value("${elastic.password}")
+    @Value("${elastic.password:null}")
     private String oldElasticPassword;
 
     @Bean
