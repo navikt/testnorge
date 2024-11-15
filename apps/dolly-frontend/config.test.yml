@@ -64,6 +64,7 @@ spec:
         - application: testnav-skattekort-service
         - application: testnav-yrkesskade-proxy
         - application: testnav-altinn3-tilgang-service-prod
+          cluster: prod-gcp
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
