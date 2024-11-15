@@ -65,6 +65,9 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
   ingresses:
     - "https://testnav-altinn3-tilgang-service.intern.dev.nav.no"
   gcp:

@@ -1,4 +1,4 @@
-name: altinn3-tilgang-service
+name: altinn3-tilgang-service-prod
 
 on:
   push:
@@ -14,8 +14,9 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/altinn3-tilgang-service"
-      deploy-tag: "#deploy-altinn3-tilgang-service"
-      nais-manifest: "config.dev.yml"
+      deploy-tag: "#deploy-altinn3-tilgang-service-prod"
+      nais-manifest: "config.prod.yml"
+      cluster: "prod-gcp"
     permissions:
       contents: read
       id-token: write
