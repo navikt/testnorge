@@ -71,6 +71,7 @@ spec:
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+        - host: testnav-altinn3-tilgang-service.nav.no
   replicas:
     min: 1
     max: 1

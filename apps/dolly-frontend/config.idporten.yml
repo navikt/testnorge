@@ -73,6 +73,7 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: idporten.no
+        - host: testnav-altinn3-tilgang-service.nav.no
 
   liveness:
     path: /internal/isAlive

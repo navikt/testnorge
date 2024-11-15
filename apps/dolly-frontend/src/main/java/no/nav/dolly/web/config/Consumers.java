@@ -67,5 +67,6 @@ public class Consumers {
     private ServerProperties testnavLevendeArbeidsforholdAnsettelse;
     private ServerProperties testnavLevendeArbeidsforholdScheduler;
     private ServerProperties testnavYrkesskadeProxy;
+    private ServerProperties testnavAltinn3TilgangService;
 
 }
