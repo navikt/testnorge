@@ -35,6 +35,7 @@ type TextInputProps = {
 	style?: any
 	readOnly?: boolean
 	onKeyDown?: any
+	'data-testid'?: string
 	onSubmit?: Function
 	onChange?: (val: any) => void
 	onPaste?: Function
@@ -120,6 +121,7 @@ export const TextInput = React.forwardRef(
 						onChange?.(e)
 						props.onChange?.(e)
 					}}
+					data-testid={props['data-testid']}
 					onClick={props.onClick}
 					onFocus={props.onFocus}
 					onKeyDown={props.onKeyDown}

@@ -2,12 +2,8 @@ import { format, isDate } from 'date-fns'
 import _ from 'lodash'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
-import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { convertInputToDate } from '@/components/ui/form/DateFormatUtils'
 
-dayjs.locale('nb')
-dayjs.extend(customParseFormat)
 export const yearFormat = 'yyyy'
 export const defaultDateFormat = 'dd.MM.yyyy'
 export const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm'
