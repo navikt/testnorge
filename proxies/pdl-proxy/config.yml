@@ -98,5 +98,6 @@ spec:
       memory: 2048Mi
   envFrom:
     - secret: azure-trygdeetaten-testnav-pdl-proxy-trygdeetaten
+    - secret: testnav-pdl-proxy
   ingresses:
     - "https://testnav-pdl-proxy.dev-fss-pub.nais.io"

@@ -25,6 +25,13 @@ spring:
     vault:
       enabled: false
 
+app:
+  elastic:
+    username: ${ELASTIC_PASSWORD}
+    password: ${ELASTIC_USERNAME}
+  hendelse.lager.api.key: ${HENDELSE_LAGER_API_KEY}
+  person.aktor.api.key: ${PERSON_AKTOR_API_KEY}
+
 sts:
   token:
     provider:

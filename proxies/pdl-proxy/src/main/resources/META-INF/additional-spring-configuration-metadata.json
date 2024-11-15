@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "app.hendelse.lager.api.key",
+      "type": "java.lang.String",
+      "description": "API key for hendelse-lager-api? Assigned by ?."
+    },
+    {
+      "name": "app.person.aktor.api.key",
+      "type": "java.lang.String",
+      "description": "API key for person-aktor-api? Assigned by ?."
+    },
+    {
+      "name": "app.elastic.username",
+      "type": "java.lang.String",
+      "description": "Elastic username."
+    },
+    {
+      "name": "app.elastic.password",
+      "type": "java.lang.String",
+      "description": "Elastic password."
+    }
+  ] }
