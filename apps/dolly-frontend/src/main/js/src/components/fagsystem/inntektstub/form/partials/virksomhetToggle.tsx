@@ -48,7 +48,7 @@ export const VirksomhetToggle = ({
 	// brukerOrganisasjoner,
 	// egneOrganisasjoner,
 	// loadingOrganisasjoner,
-	kanHaPrivatArbeidsgiver,
+	// kanHaPrivatArbeidsgiver,
 }: ArbeidsforholdToggleProps) => {
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
@@ -62,7 +62,9 @@ export const VirksomhetToggle = ({
 
 	const virksomhetPath = `${path}.virksomhet`
 	const opplysningspliktigPath = `${path}.opplysningspliktig`
-
+	console.log('fasteOrganisasjonerLoading: ', fasteOrganisasjonerLoading) //TODO - SLETT MEG
+	console.log('brukerOrganisasjonerLoading: ', brukerOrganisasjonerLoading) //TODO - SLETT MEG
+	console.log('egneOrganisasjoner: ', egneOrganisasjoner) //TODO - SLETT MEG
 	// console.log('orgnummer: ', orgnummer) //TODO - SLETT MEG
 	const getArbeidsgiverType = () => {
 		const orgnummerLength = 9
@@ -93,18 +95,18 @@ export const VirksomhetToggle = ({
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType())
 
 	// TODO: test fjerning av objekt i array
-	// useEffect(() => {
-	// 	setTypeArbeidsgiver(getArbeidsgiverType())
-	// }, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('aareg')?.length])
+	useEffect(() => {
+		setTypeArbeidsgiver(getArbeidsgiverType())
+	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('aareg')?.length])
 
 	const toggleValues = [
 		{
-			value: ArbeidsgiverTyper.egen,
-			label: 'Egen organisasjon',
-		},
-		{
 			value: ArbeidsgiverTyper.felles,
 			label: 'Felles organisasjoner',
+		},
+		{
+			value: ArbeidsgiverTyper.egen,
+			label: 'Egen organisasjon',
 		},
 		{
 			value: ArbeidsgiverTyper.fritekst,
@@ -122,8 +124,8 @@ export const VirksomhetToggle = ({
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(virksomhetPath) || null)
 	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
-	console.log('orgnummer: ', orgnummer) //TODO - SLETT MEG
-	console.log('organisasjon: ', organisasjon) //TODO - SLETT MEG
+	// console.log('orgnummer: ', orgnummer) //TODO - SLETT MEG
+	// console.log('organisasjon: ', organisasjon) //TODO - SLETT MEG
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
@@ -138,7 +140,7 @@ export const VirksomhetToggle = ({
 	}
 
 	const handleOrgChange = (value: { juridiskEnhet: string; orgnr: string }) => {
-		console.log('value: ', value) //TODO - SLETT MEG
+		// console.log('value: ', value) //TODO - SLETT MEG
 		opplysningspliktigPath && formMethods.setValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
 		formMethods.trigger(opplysningspliktigPath)
 		formMethods.setValue(virksomhetPath, value.orgnr)
@@ -189,10 +191,15 @@ export const VirksomhetToggle = ({
 		</StyledAlert>
 	)
 
-	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {
+	if (
+		fasteOrganisasjonerLoading ||
+		brukerOrganisasjonerLoading
+		// ||
+		// egneOrganisasjoner.length === 0
+	) {
 		return <Loading label="Laster organisasjoner ..." />
 	}
-	console.log('typeArbeidsgiver: ', typeArbeidsgiver) //TODO - SLETT MEG
+	// console.log('typeArbeidsgiver: ', typeArbeidsgiver) //TODO - SLETT MEG
 	return (
 		<div className="toggle--wrapper">
 			<ToggleArbeidsgiver
@@ -209,6 +216,13 @@ export const VirksomhetToggle = ({
 				))}
 			</ToggleArbeidsgiver>
 			<div className="flexbox--full-width">
+				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
+					<OrganisasjonMedArbeidsforholdSelect
+						afterChange={handleOrgChange}
+						path={`${path}.virksomhet`}
+						label={'Organisasjonsnummer'}
+					/>
+				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
 					<EgneOrganisasjoner
 						path={`${path}.virksomhet`}
@@ -216,13 +230,6 @@ export const VirksomhetToggle = ({
 						warningMessage={warningMessage}
 						filterValidEnhetstyper={true}
 						// isDisabled={erLaastArbeidsforhold}
-					/>
-				)}
-				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
-					<OrganisasjonMedArbeidsforholdSelect
-						afterChange={handleOrgChange}
-						path={`${path}.virksomhet`}
-						label={'Organisasjonsnummer'}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (

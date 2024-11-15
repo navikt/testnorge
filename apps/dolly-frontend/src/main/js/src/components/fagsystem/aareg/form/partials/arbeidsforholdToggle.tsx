@@ -99,12 +99,12 @@ export const ArbeidsforholdToggle = ({
 
 	const toggleValues = [
 		{
-			value: ArbeidsgiverTyper.egen,
-			label: 'Egen organisasjon',
-		},
-		{
 			value: ArbeidsgiverTyper.felles,
 			label: 'Felles organisasjoner',
+		},
+		{
+			value: ArbeidsgiverTyper.egen,
+			label: 'Egen organisasjon',
 		},
 		{
 			value: ArbeidsgiverTyper.fritekst,
@@ -197,6 +197,16 @@ export const ArbeidsforholdToggle = ({
 				</ToggleArbeidsgiver>
 			)}
 			<div className="flexbox--full-width">
+				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
+					<div title={title}>
+						<OrganisasjonMedArbeidsforholdSelect
+							path={`${path}.arbeidsgiver.orgnummer`}
+							label={'Organisasjonsnummer'}
+							afterChange={() => checkAktiveArbeidsforhold()}
+							isDisabled={erLaastArbeidsforhold}
+						/>
+					</div>
+				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
 					<div className="flex-box" title={title}>
 						<EgneOrganisasjoner
@@ -206,16 +216,6 @@ export const ArbeidsforholdToggle = ({
 							}
 							warningMessage={warningMessage}
 							filterValidEnhetstyper={true}
-							isDisabled={erLaastArbeidsforhold}
-						/>
-					</div>
-				)}
-				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
-					<div title={title}>
-						<OrganisasjonMedArbeidsforholdSelect
-							path={`${path}.arbeidsgiver.orgnummer`}
-							label={'Organisasjonsnummer'}
-							afterChange={() => checkAktiveArbeidsforhold()}
 							isDisabled={erLaastArbeidsforhold}
 						/>
 					</div>

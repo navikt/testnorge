@@ -19,11 +19,11 @@ export const OrganisasjonToogleGruppe = ({ handleToggleChange }: OrganisasjonToo
 			// value={sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe}
 			style={{ margin: '5px 0 5px', backgroundColor: '#ffffff' }}
 		>
-			<ToggleGroup.Item key={inputValg.fraEgenListe} value={inputValg.fraEgenListe}>
-				Egen organisasjon
-			</ToggleGroup.Item>
 			<ToggleGroup.Item key={inputValg.fraFellesListe} value={inputValg.fraFellesListe}>
 				Felles organisasjoner
+			</ToggleGroup.Item>
+			<ToggleGroup.Item key={inputValg.fraEgenListe} value={inputValg.fraEgenListe}>
+				Egen organisasjon
 			</ToggleGroup.Item>
 			<ToggleGroup.Item key={inputValg.skrivSelv} value={inputValg.skrivSelv}>
 				Skriv inn org.nr.
