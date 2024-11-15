@@ -8,8 +8,6 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAd
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.pdlproxy.config.Consumers;
-import no.nav.testnav.proxies.pdlproxy.dto.CredentialsHolder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -33,16 +31,6 @@ public class PdlProxyApplicationStarter {
 
     public static void main(String[] args) {
         SpringApplication.run(PdlProxyApplicationStarter.class, args);
-    }
-
-    @Bean
-    public CredentialsHolder credentialsHolder(
-            @Value("${hendelse.lager.api.key}") String hendelselagerApiKey,
-            @Value("${person.aktor.admin.api}") String aktoerAdminApiKey,
-            @Value("${elastic.username}") String elasticUsername,
-            @Value("${elastic.password}") String elasticPassword) {
-
-        return new CredentialsHolder(hendelselagerApiKey, aktoerAdminApiKey, elasticUsername, elasticPassword);
     }
 
     @Bean

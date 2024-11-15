@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.pdlproxy.dto;
+package no.nav.testnav.proxies.pdlproxy;
 
 public record CredentialsHolder(String hendelselagerApiKey,
                                 String aktoerAdminApiKey,
