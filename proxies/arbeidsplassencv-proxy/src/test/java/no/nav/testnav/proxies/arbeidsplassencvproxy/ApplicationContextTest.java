@@ -11,10 +11,12 @@ import org.springframework.test.context.ActiveProfiles;
 class ApplicationContextTest {
 
     @MockBean
-    public ReactiveJwtDecoder reactiveJwtDecoder;
+    private ReactiveJwtDecoder reactiveJwtDecoder;
 
     @Test
     @SuppressWarnings("java:S2699")
     void load_app_context() {
+        // Does nothing.
     }
+
 }
