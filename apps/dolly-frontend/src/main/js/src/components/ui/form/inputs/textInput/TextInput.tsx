@@ -125,6 +125,7 @@ export const TextInput = React.forwardRef(
 					onClick={props.onClick}
 					onFocus={props.onFocus}
 					onKeyDown={props.onKeyDown}
+					style={props.style}
 				/>
 				{icon &&
 					(datepickerOnclick ? (

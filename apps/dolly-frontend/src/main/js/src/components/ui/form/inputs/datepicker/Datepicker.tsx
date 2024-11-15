@@ -99,6 +99,7 @@ export const DollyDatepicker = (props) => {
 	const DateInput = (
 		<TextInput
 			{...props}
+			style={{ width: '172px' }}
 			onChange={(e: BaseSyntheticEvent) => {
 				const value = e.target.value
 				const date = convertInputToDate(value)
