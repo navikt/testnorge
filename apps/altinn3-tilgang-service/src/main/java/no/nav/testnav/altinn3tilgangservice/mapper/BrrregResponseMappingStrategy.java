@@ -25,7 +25,7 @@ public class BrrregResponseMappingStrategy implements MappingStrategy {
                             if (nonNull(kilde.get_embedded())) {
                                 mapperFacade.map(kilde.get_embedded().getEnheter().getFirst(), destinasjon, context);
                             } else {
-                                destinasjon.setNavn("Ukjent organisasjon hos BRRREG");
+                                destinasjon.setNavn("Ukjent organisasjon hos BRREG");
                                 destinasjon.setOrganisasjonsform("???");
                                 destinasjon.setOrganisasjonsnummer(link.substring(link.indexOf('=') + 1));
                             }
