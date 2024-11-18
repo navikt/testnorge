@@ -81,6 +81,10 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 		valgtMal,
 		'data.bestilling.pdldata.person.fullmakt.[0].omraader.[0]',
 	)
+	const erGammelAmeldingMal =
+		_.get(valgtMal, 'data.bestilling.aareg')?.find(
+			(arbforh: any) => arbforh?.amelding?.length > 0,
+		) !== undefined
 
 	return (
 		<FormProvider {...formMethods}>
@@ -133,17 +137,24 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 							/>
 						</InputDiv>
 						{erGammelFullmaktMal && (
-							<Alert variant={'warning'} style={{ width: '97%' }}>
+							<Alert variant={'warning'} size={'small'} style={{ width: '97%' }}>
 								Denne malen er utdatert, og vil muligens ikke fungere som den skal. Dette fordi
 								master for fullmakt er endret til Representasjon. Vi anbefaler at du oppretter en ny
 								mal og sletter denne malen.
 							</Alert>
 						)}
 						{erTpsfMal && (
-							<Alert variant={'warning'} style={{ width: '97%' }}>
+							<Alert variant={'warning'} size={'small'} style={{ width: '97%' }}>
 								Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
 								master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en
 								ny mal og sletter denne malen.
+							</Alert>
+						)}
+						{erGammelAmeldingMal && (
+							<Alert variant={'warning'} size={'small'} style={{ width: '97%' }}>
+								Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den
+								inneholder arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at
+								du sletter denne malen og oppretter en ny.
 							</Alert>
 						)}
 						<div className="mal-admin">

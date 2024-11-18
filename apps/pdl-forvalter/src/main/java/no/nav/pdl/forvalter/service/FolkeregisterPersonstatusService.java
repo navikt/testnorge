@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
@@ -191,10 +192,17 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
     protected static void setGyldigTilOgMed(List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus) {
 
-        for (var i = 0; i < folkeregisterPersonstatus.size(); i++) {
-            if (i + 1 < folkeregisterPersonstatus.size() && nonNull(folkeregisterPersonstatus.get(i).getGyldigFraOgMed())) {
-                folkeregisterPersonstatus.get(i + 1)
-                        .setGyldigTilOgMed(folkeregisterPersonstatus.get(i).getGyldigFraOgMed().minusDays(1));
+        for (var i = folkeregisterPersonstatus.size() - 1; i >= 0; i--) {
+            if (i - 1 >= 0 && isNull(folkeregisterPersonstatus.get(i).getGyldigTilOgMed())) {
+
+                folkeregisterPersonstatus.get(i)
+                        .setGyldigTilOgMed(folkeregisterPersonstatus.get(i - 1).getGyldigFraOgMed().plusDays(1));
+            }
+            if (i - 1 >= 0 && folkeregisterPersonstatus.get(i - 1).getGyldigFraOgMed()
+                            .isBefore(folkeregisterPersonstatus.get(i).getGyldigTilOgMed().plusDays(1))) {
+
+                folkeregisterPersonstatus.get(i - 1)
+                        .setGyldigFraOgMed(folkeregisterPersonstatus.get(i).getGyldigTilOgMed().plusDays(1));
             }
         }
 

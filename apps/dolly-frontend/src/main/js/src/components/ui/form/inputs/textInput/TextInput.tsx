@@ -40,6 +40,8 @@ type TextInputProps = {
 	onPaste?: Function
 	className?: string
 	icon?: string
+	isDatepicker?: boolean
+	title?: string
 	datepickerOnclick?: Function
 }
 
