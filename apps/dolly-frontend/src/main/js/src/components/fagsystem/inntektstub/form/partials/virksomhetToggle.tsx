@@ -10,7 +10,6 @@ import {
 import Loading from '@/components/ui/loading/Loading'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import {
 	useDollyFasteDataOrganisasjoner,
@@ -33,26 +32,12 @@ const StyledAlert = styled(Alert)`
 
 type ArbeidsforholdToggleProps = {
 	path: string
-	idx: number
-	fasteOrganisasjoner: any
-	brukerOrganisasjoner: any
-	egneOrganisasjoner: any
-	loadingOrganisasjoner: boolean
 }
 
 // TODO: Ingen toggles funker som de skal når man sletter inntektsinformasjon.
 // TODO: Men alle under-arrayer ser ut til å fungere som de skal.
 
-export const VirksomhetToggle = ({
-	path,
-	// orgnummer,
-	// aktoertype,
-	// fasteOrganisasjoner,
-	// brukerOrganisasjoner,
-	// egneOrganisasjoner,
-	// loadingOrganisasjoner,
-	// kanHaPrivatArbeidsgiver,
-}: ArbeidsforholdToggleProps) => {
+export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
 
@@ -65,10 +50,7 @@ export const VirksomhetToggle = ({
 
 	const virksomhetPath = `${path}.virksomhet`
 	const opplysningspliktigPath = `${path}.opplysningspliktig`
-	console.log('fasteOrganisasjonerLoading: ', fasteOrganisasjonerLoading) //TODO - SLETT MEG
-	console.log('brukerOrganisasjonerLoading: ', brukerOrganisasjonerLoading) //TODO - SLETT MEG
-	console.log('egneOrganisasjoner: ', egneOrganisasjoner) //TODO - SLETT MEG
-	// console.log('orgnummer: ', orgnummer) //TODO - SLETT MEG
+
 	const getArbeidsgiverType = () => {
 		const orgnummerLength = 9
 		const orgnr = formMethods.watch(virksomhetPath)
@@ -77,7 +59,7 @@ export const VirksomhetToggle = ({
 				!orgnr ||
 				orgnr === '' ||
 				fasteOrganisasjoner
-					?.map((organisasjon: any) => organisasjon?.orgnr)
+					?.map((organisasjon: any) => organisasjon?.orgnummer)
 					?.some((org: string) => org === orgnr)
 			) {
 				return ArbeidsgiverTyper.felles
@@ -97,10 +79,13 @@ export const VirksomhetToggle = ({
 
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType())
 
-	// TODO: test fjerning av objekt i array
 	useEffect(() => {
 		setTypeArbeidsgiver(getArbeidsgiverType())
-	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('aareg')?.length])
+	}, [
+		fasteOrganisasjoner,
+		brukerOrganisasjoner,
+		formMethods.watch('inntektstub.inntektsinformasjon')?.length,
+	])
 
 	const toggleValues = [
 		{
@@ -127,23 +112,15 @@ export const VirksomhetToggle = ({
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(virksomhetPath) || null)
 	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
-	// console.log('orgnummer: ', orgnummer) //TODO - SLETT MEG
-	// console.log('organisasjon: ', organisasjon) //TODO - SLETT MEG
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 		formMethods.setValue(virksomhetPath, '')
 		formMethods.setValue(opplysningspliktigPath, '')
 		formMethods.clearErrors(path)
-		// if (value === ArbeidsgiverTyper.privat) {
-		// 	formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverPers })
-		// } else {
-		// 	formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverOrg })
-		// }
 	}
 
 	const handleOrgChange = (value: { juridiskEnhet: string; orgnr: string }) => {
-		// console.log('value: ', value) //TODO - SLETT MEG
 		opplysningspliktigPath && formMethods.setValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
 		formMethods.trigger(opplysningspliktigPath)
 		formMethods.setValue(virksomhetPath, value.orgnr)
@@ -194,15 +171,10 @@ export const VirksomhetToggle = ({
 		</StyledAlert>
 	)
 
-	if (
-		fasteOrganisasjonerLoading ||
-		brukerOrganisasjonerLoading
-		// ||
-		// egneOrganisasjoner.length === 0
-	) {
+	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {
 		return <Loading label="Laster organisasjoner ..." />
 	}
-	// console.log('typeArbeidsgiver: ', typeArbeidsgiver) //TODO - SLETT MEG
+
 	return (
 		<div className="toggle--wrapper">
 			<ToggleArbeidsgiver
@@ -232,19 +204,9 @@ export const VirksomhetToggle = ({
 						handleChange={handleOrgChange}
 						warningMessage={warningMessage}
 						filterValidEnhetstyper={true}
-						// isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
-					// <FormTextInput
-					// 	name={`${path}.virksomhet`}
-					// 	label={'Organisasjonsnummer'}
-					// 	size="xlarge"
-					// 	onBlur={() => checkAktiveArbeidsforhold()}
-					// 	defaultValue={formMethods.watch(`${path}.virksomhet`)}
-					// 	// isDisabled={erLaastArbeidsforhold}
-					// 	// title={title}
-					// />
 					<OrganisasjonMedMiljoeSelect
 						path={`${path}.virksomhet`}
 						environment={environment}

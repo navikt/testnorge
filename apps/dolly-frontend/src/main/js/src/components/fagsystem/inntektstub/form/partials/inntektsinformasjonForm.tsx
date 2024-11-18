@@ -5,7 +5,6 @@ import InntektsendringForm from './inntektsendringForm'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { useFormContext } from 'react-hook-form'
-import { ArbeidsforholdToggle } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdToggle'
 import { VirksomhetToggle } from '@/components/fagsystem/inntektstub/form/partials/virksomhetToggle'
 
 interface InntektsinformasjonForm {
@@ -67,16 +66,7 @@ export default ({ path }: InntektsinformasjonForm) => {
 					onChange={handleRapporteringDateChange}
 				/>
 			</div>
-			<VirksomhetToggle
-				path={path}
-				orgnummer={formMethods.watch(`${path}.virksomhet`)}
-				aktoertype={null}
-				fasteOrganisasjoner={[]}
-				brukerOrganisasjoner={[]}
-				egneOrganisasjoner={[]}
-				loadingOrganisasjoner={false}
-			/>
-			{/*<InntektstubVirksomhetToggle formMethods={formMethods} path={path} />*/}
+			<VirksomhetToggle path={path} />
 			<InntektsinformasjonLister formMethods={formMethods} path={path} />
 			<InntektsendringForm formMethods={formMethods} path={path} />
 		</React.Fragment>
