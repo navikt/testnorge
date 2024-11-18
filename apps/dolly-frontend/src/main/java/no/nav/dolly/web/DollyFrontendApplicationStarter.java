@@ -22,6 +22,8 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -41,8 +43,17 @@ public class DollyFrontendApplicationStarter {
     private final UserJwtExchange userJwtExchange;
     private final Consumers consumers;
 
+    private final GatewayFilter removeCookiesFilter = (exchange, chain) -> {
+        ServerWebExchange modifiedExchange = exchange.mutate()
+                .request(r -> r.headers(headers -> headers.remove(HttpHeaders.COOKIE)))
+                .build();
+        return chain.filter(modifiedExchange);
+    };
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+
+
         return builder
                 .routes()
                 .route(createRoute(consumers.getTestnavKontoregisterPersonProxy()))
@@ -132,7 +143,7 @@ public class DollyFrontendApplicationStarter {
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filters(filter, addUserJwtHeaderFilter())
+                        .filters(filter, removeCookiesFilter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
 }
