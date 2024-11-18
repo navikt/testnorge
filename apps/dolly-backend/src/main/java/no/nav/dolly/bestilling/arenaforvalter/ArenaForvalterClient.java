@@ -16,17 +16,20 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.AAP;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.AAP115;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.ANDREFEIL;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.BRUKER;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.DAGPENGER;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.fmtResponse;
@@ -66,6 +69,9 @@ public class ArenaForvalterClient implements ClientRegister {
                                     BestillingProgress::setArenaforvalterStatus, initStatus);
                         })
                         .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
+                                .timeout(Duration.ofSeconds(30))
+                                .onErrorResume(error ->
+                                        Mono.just(fmtResponse(miljoer, ANDREFEIL, WebClientFilter.getMessage(error))))
                                 .map(status -> futurePersist(progress, status))));
     }
 
@@ -94,7 +100,7 @@ public class ArenaForvalterClient implements ClientRegister {
                                         arenaDagpengerService.sendDagpenger(arenadata, arenaOperasjoner, ident, miljoe)
                                                 .map(dagpengerStatus -> fmtResponse(miljoe, DAGPENGER, dagpengerStatus))
                                 ));
-                    } else {
+                           } else {
                         return Flux.just(fmtResponse(miljoe, BRUKER, NOT_SUPPORTED));
                     }
                 })
