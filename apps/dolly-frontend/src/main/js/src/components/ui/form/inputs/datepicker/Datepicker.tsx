@@ -21,7 +21,7 @@ export const DollyDatepicker = (props) => {
 	const existingValue = formMethods.watch(props.name)
 	const [showDatepicker, setShowDatepicker] = useState(false)
 	const [input, setInput] = useState(existingValue ? formatDate(existingValue) : '')
-	const [errorMessage, setErrorMessage] = useState(existingValue ? formatDate(existingValue) : '')
+	const [errorMessage, setErrorMessage] = useState('')
 
 	const getDatepickerProps = useCallback(() => {
 		return useDatepicker({
@@ -107,7 +107,7 @@ export const DollyDatepicker = (props) => {
 			}}
 			onBlur={handleInputBlur}
 			isDisabled={props.disabled}
-			value={input}
+			input={input}
 			icon={'calendar'}
 			datepickerOnclick={() => {
 				if (!props.disabled) {

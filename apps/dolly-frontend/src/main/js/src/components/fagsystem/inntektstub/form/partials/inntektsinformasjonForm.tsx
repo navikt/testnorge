@@ -35,15 +35,6 @@ export default ({ path }: InntektsinformasjonForm) => {
 		formMethods.trigger(`${path}.sisteAarMaaned`)
 	}
 
-	const handleRapporteringDateChange = (selectedDate: Date) => {
-		setRapporteringsdato(selectedDate)
-		formMethods.setValue(
-			`${path}.rapporteringsdato`,
-			selectedDate ? selectedDate.toISOString().substring(0, 19) : null,
-		)
-		formMethods.trigger(`${path}.rapporteringsdato`)
-	}
-
 	return (
 		<div key={path}>
 			<div className="flexbox--flex-wrap">
@@ -59,11 +50,9 @@ export default ({ path }: InntektsinformasjonForm) => {
 					type="number"
 				/>
 				<FormDateTimepicker
-					formMethods={formMethods}
 					name={`${path}.rapporteringsdato`}
 					label="Rapporteringstidspunkt"
 					date={rapporteringsdate}
-					onChange={handleRapporteringDateChange}
 				/>
 			</div>
 			<InntektstubVirksomhetToggle formMethods={formMethods} path={path} />

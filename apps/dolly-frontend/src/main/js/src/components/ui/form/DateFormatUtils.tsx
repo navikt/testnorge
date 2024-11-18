@@ -25,7 +25,12 @@ class DateFormatUtils {
 		})
 
 		// Spesifikke formater som ikke kan utledes enkelt
-		formats.push('YYYY-MM-DDTHH:mm:ss.SSSZ', 'YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss')
+		formats.push(
+			'YYYY-MM-DDTHH:mm:ss.SSSZ',
+			'YYYY-MM-DDTHH:mm:ss.SSS',
+			'YYYY-MM-DDTHH:mm:ss',
+			'DD.MM.YYYY HH:mm',
+		)
 
 		return formats
 	}
@@ -39,13 +44,13 @@ export const initDayjs = () => {
 	return dayjs
 }
 
-export const convertInputToDate = (date: any) => {
+export const convertInputToDate = (date: any, specificFormat?: string) => {
 	if (!date || date === '') {
 		return date
 	}
 	const customDayjs = initDayjs()
 	const dateLocalTime = isDate(date)
 		? customDayjs(date)
-		: customDayjs(date, DateFormatUtils.generateValidDateFormats(), true)
+		: customDayjs(date, specificFormat || DateFormatUtils.generateValidDateFormats(), true)
 	return dateLocalTime.add(dateLocalTime.utcOffset(), 'minute')
 }

@@ -6,10 +6,7 @@ import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
 import React, { useContext, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import {
-	ShowErrorContext,
-	ShowErrorContextType,
-} from '@/components/bestillingsveileder/ShowErrorContext'
+import { ShowErrorContext, ShowErrorContextType } from '@/components/bestillingsveileder/ShowErrorContext'
 import _ from 'lodash'
 import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
 import { Button } from '@navikt/ds-react'
@@ -23,6 +20,7 @@ type TextInputProps = {
 	type?: string
 	useOnChange?: boolean
 	onBlur?: (val: any) => void
+	afterChange?: (val: any) => void
 	onClick?: (val: any) => void
 	onFocus?: (val: any) => void
 	useControlled?: boolean
@@ -32,6 +30,7 @@ type TextInputProps = {
 	autoFocus?: boolean
 	fieldName?: string
 	value?: any
+	input?: string
 	style?: any
 	readOnly?: boolean
 	onKeyDown?: any
@@ -87,7 +86,8 @@ export const TextInput = React.forwardRef(
 		} = useFormContext()
 		const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 		const { onChange, onBlur } = register(name)
-		const [fieldValue, setFieldValue] = useState(props.value || watch(name) || '')
+		const input = props.input || props.value
+		const [fieldValue, setFieldValue] = useState(props.input || watch(name) || '')
 		const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 		const feil = getFieldState(name)?.error || getFieldState(fieldName)?.error
 		const visFeil = feil && (errorContext?.showError || isTouched)
@@ -96,10 +96,14 @@ export const TextInput = React.forwardRef(
 		})
 
 		useEffect(() => {
-			if (props.value && props.value !== fieldValue) {
-				setFieldValue(props.value)
+			if (input && input !== fieldValue) {
+				setFieldValue(input)
 			}
-		}, [props.value])
+		}, [input])
+
+		console.log('input: ', input) //TODO - SLETT MEG
+
+		//TODO: MÅ FIKSE HVORDAN TEXTINPUT FIELD IKKE FØLGER DET SOM BLIR SATT I SELVE TIMEPICKER
 
 		return (
 			<>
@@ -113,6 +117,7 @@ export const TextInput = React.forwardRef(
 					onBlur={(e) => {
 						onBlur?.(e)
 						props.onBlur?.(e)
+						props.afterChange?.(e)
 					}}
 					onChange={(e) => {
 						setValue(name, e.target.value)

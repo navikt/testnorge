@@ -58,8 +58,7 @@ export const TitleValue = ({
 	}
 
 	if (kodeverk) {
-		const { _value, children, ...rest } = restProps
-		const value = '123'
+		const { value, children, ...rest } = restProps
 		return (
 			<P_TitleValue {...rest}>
 				<KodeverkConnector navn={kodeverk} value={value}>

@@ -1,7 +1,7 @@
 import {
 	DollyFaBlokk,
 	DollyFieldArrayWrapper,
-	FieldArrayAddButton,
+	FieldArrayAddButton
 } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { Arbeidsforhold, Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
@@ -38,13 +38,6 @@ export default ({ formMethods, path }: InntektendringForm) => {
 	const data = formMethods.watch(historikkPath, [])
 	const fieldMethods = useFieldArray({ control: formMethods.control, name: historikkPath })
 
-	const handleRapporteringDateChange = (selectedDate: Date, listePath: string) => {
-		formMethods.setValue(
-			`${listePath}.rapporteringsdato`,
-			selectedDate && selectedDate.toISOString().substring(0, 19),
-		)
-	}
-
 	const addNewEntry = () => fieldMethods.append(initialValues)
 	return (
 		<ErrorBoundary>
@@ -61,10 +54,8 @@ export default ({ formMethods, path }: InntektendringForm) => {
 							handleRemove={clickRemove}
 						>
 							<FormDateTimepicker
-								formMethods={formMethods}
 								name={`${listePath}.rapporteringsdato`}
 								label="Rapporteringsdato"
-								onChange={(date: Date) => handleRapporteringDateChange(date, listePath)}
 							/>
 							<InntektsinformasjonLister formMethods={formMethods} path={listePath} />
 						</DollyFaBlokk>
