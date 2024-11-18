@@ -27,7 +27,7 @@ export const useDollyMaler = () => {
 	}
 }
 
-export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
+export const useDollyMalerBrukerOgMalnavn = (brukerId?: string, malNavn?: string) => {
 	const { data, isLoading, error, mutate } = useSWR<MalResponse, Error>(
 		brukerId && `${getMalerUrl}?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
 		fetcher,
@@ -63,7 +63,7 @@ export const useDollyOrganisasjonMaler = () => {
 	}
 }
 
-export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
+export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId?: string, malNavn?: string) => {
 	const { data, isLoading, error, mutate } = useSWR<MalResponse, Error>(
 		brukerId &&
 			`${getOrganisasjonMalerUrl}?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
