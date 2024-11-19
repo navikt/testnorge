@@ -19,11 +19,6 @@ spring:
     gateway:
       httpclient:
         response-timeout: 1200s
-    gcp:
-      secretmanager:
-        enabled: false
-    vault:
-      enabled: false
 
 app:
   elastic:

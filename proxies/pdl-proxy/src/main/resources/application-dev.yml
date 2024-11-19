@@ -1,1 +1,12 @@
 TOKEN_X_ISSUER: dummy
+
+spring:
+  config:
+    import: "sm://"
+
+app:
+  elastic:
+    username: ${sm://elastic-password}
+    password: ${sm://elastic-username}
+  hendelse.lager.api.key: ${sm://hendelse-lager-api-key}
+  person.aktor.api.key: ${sm://person-aktor-api-key}
