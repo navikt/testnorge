@@ -18,8 +18,6 @@ spring:
         wiretap: true
       httpserver:
         wiretap: true
-    vault:
-      enabled: false
 
 logging:
   level:

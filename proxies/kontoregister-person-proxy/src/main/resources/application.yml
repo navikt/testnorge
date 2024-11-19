@@ -19,8 +19,6 @@ spring:
     gateway:
       httpclient:
         response-timeout: 600s
-    vault:
-      enabled: false
 
 server:
   servlet:
