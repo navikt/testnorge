@@ -15,5 +15,4 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
 
     implementation "org.springframework.boot:spring-boot-starter-webflux"
-    implementation "org.springframework.cloud:spring-cloud-starter-vault-config"
 }
