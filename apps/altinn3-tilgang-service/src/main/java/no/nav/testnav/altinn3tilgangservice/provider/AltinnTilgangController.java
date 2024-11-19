@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+import java.util.Comparator;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/organisasjoner")
@@ -26,7 +28,8 @@ public class AltinnTilgangController {
     @Operation(description = "Henter alle organisasjoner med Altinn-tilgang")
     public Flux<OrganisasjonResponse> getAll() {
 
-        return altinnTilgangService.getAll();
+        return  altinnTilgangService.getAll()
+                .sort(Comparator.comparing(OrganisasjonResponse::getNavn));
     }
 
     @PostMapping("/{organisasjonsnummer}")
