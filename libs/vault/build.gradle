@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation "org.springframework.cloud:spring-cloud-starter-vault-config"
+    api "org.springframework.cloud:spring-cloud-starter-vault-config"
 }
