@@ -8,6 +8,9 @@ spring:
   main:
     banner-mode: off
     allow-circular-references: true
+  cloud:
+    vault:
+      enabled: false
   data:
     redis:
       host: ${REDIS_HOST}

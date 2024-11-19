@@ -4,6 +4,9 @@ spring:
   application:
     name: testnav-faste-data-frontend
     description: App for å se faste datasett
+  cloud:
+    vault:
+      enabled: false
   main:
     banner-mode: off
   security:

@@ -4,6 +4,9 @@ spring:
   application:
     name: endringsmelding-frontend
     description: App for å sende inn endringsmeldinger til tps
+  cloud:
+    vault:
+      enabled: false
   main:
     banner-mode: off
   security:
