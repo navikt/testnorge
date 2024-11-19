@@ -91,6 +91,7 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 					afterChange={handleChange}
 					path={path}
 					label={'Organisasjonsnummer'}
+					placeholder={'Velg organisasjon ...'}
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (

@@ -12,10 +12,12 @@ import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/ar
 import _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
+import { arbeidsgiverToggleValues } from '@/components/fagsystem/utils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	background-color: #ffffff;
 `
 
 const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
@@ -38,10 +40,6 @@ const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
 			}
 		}
 	}
-`
-
-const StyledAlert = styled(Alert)`
-	margin-top: 10px;
 `
 
 type ArbeidsforholdToggleProps = {
@@ -97,25 +95,6 @@ export const ArbeidsforholdToggle = ({
 		setTypeArbeidsgiver(getArbeidsgiverType())
 	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('aareg')?.length])
 
-	const toggleValues = [
-		{
-			value: ArbeidsgiverTyper.felles,
-			label: 'Felles organisasjoner',
-		},
-		{
-			value: ArbeidsgiverTyper.egen,
-			label: 'Egen organisasjon',
-		},
-		{
-			value: ArbeidsgiverTyper.fritekst,
-			label: 'Skriv inn org.nr.',
-		},
-		{
-			value: ArbeidsgiverTyper.privat,
-			label: 'Privat arbeidsgiver',
-		},
-	]
-
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 		if (value === ArbeidsgiverTyper.privat) {
@@ -146,15 +125,6 @@ export const ArbeidsforholdToggle = ({
 		}
 	}
 
-	const warningMessage = (
-		<StyledAlert variant={'warning'}>
-			Du har ingen egne organisasjoner, og kan derfor ikke sende inn A-meldinger for person. For å
-			lage dine egne organisasjoner trykk {<a href="/organisasjoner">her</a>}. For å opprette person
-			med arbeidsforhold i felles organisasjoner eller andre arbeidsgivere, velg en annen kategori
-			ovenfor.
-		</StyledAlert>
-	)
-
 	if (loadingOrganisasjoner) {
 		return <Loading label="Laster organisasjoner ..." />
 	}
@@ -174,7 +144,7 @@ export const ArbeidsforholdToggle = ({
 					key={idx}
 					title={'Kan ikke endre arbeidsgivertype på eksisterende arbeidsforhold'}
 				>
-					{toggleValues.map((type) => (
+					{arbeidsgiverToggleValues.map((type) => (
 						<ToggleGroup.Item key={type.value} value={type.value}>
 							{type.label}
 						</ToggleGroup.Item>
@@ -189,7 +159,7 @@ export const ArbeidsforholdToggle = ({
 					fill
 					key={idx}
 				>
-					{toggleValues.map((type) => (
+					{arbeidsgiverToggleValues.map((type) => (
 						<ToggleGroup.Item key={type.value} value={type.value}>
 							{type.label}
 						</ToggleGroup.Item>
@@ -204,6 +174,7 @@ export const ArbeidsforholdToggle = ({
 							label={'Organisasjonsnummer'}
 							afterChange={() => checkAktiveArbeidsforhold()}
 							isDisabled={erLaastArbeidsforhold}
+							placeholder={'Velg organisasjon ...'}
 						/>
 					</div>
 				)}
@@ -214,7 +185,6 @@ export const ArbeidsforholdToggle = ({
 							handleChange={(selected: any) =>
 								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
 							}
-							warningMessage={warningMessage}
 							filterValidEnhetstyper={true}
 							isDisabled={erLaastArbeidsforhold}
 						/>

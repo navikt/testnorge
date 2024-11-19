@@ -8,6 +8,7 @@ import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { OrgforvalterApi } from '@/service/Api'
 import { OrgMiljoeInfoVisning } from '@/components/fagsystem/brregstub/form/partials/OrgMiljoeInfoVisning'
 import { useFormContext } from 'react-hook-form'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 interface OrgProps {
 	path: string
@@ -155,10 +156,10 @@ export const EgneOrganisasjoner = ({
 	return (
 		<>
 			{error && (
-				<Alert variant={'warning'}>
+				<StyledAlert variant={'warning'} size={'small'} style={{ margin: '10px 0' }}>
 					Noe gikk galt med henting av egne organisasjoner! Prøv på nytt, velg et annet alternativ
 					eller kontakt Team Dolly ved vedvarende feil.
-				</Alert>
+				</StyledAlert>
 			)}
 			{!harEgneOrganisasjoner &&
 				!loading &&
@@ -166,10 +167,10 @@ export const EgneOrganisasjoner = ({
 				(warningMessage ? (
 					warningMessage
 				) : (
-					<Alert variant={'warning'}>
+					<StyledAlert variant={'warning'} size={'small'} style={{ margin: '10px 0' }}>
 						Du har ingen egne organisasjoner. For å lage dine egne organisasjoner trykk{' '}
 						<a href="/organisasjoner">her</a>.
-					</Alert>
+					</StyledAlert>
 				))}
 			{!error && (
 				<EgneOrgSelect

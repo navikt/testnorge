@@ -20,22 +20,17 @@ import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/Org
 import { useBoolean } from 'react-use'
 import { OrgserviceApi } from '@/service/Api'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import { arbeidsgiverToggleValues } from '@/components/fagsystem/utils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-`
-
-const StyledAlert = styled(Alert)`
-	margin-top: 10px;
+	background-color: #ffffff;
 `
 
 type ArbeidsforholdToggleProps = {
 	path: string
 }
-
-// TODO: Ingen toggles funker som de skal når man sletter inntektsinformasjon.
-// TODO: Men alle under-arrayer ser ut til å fungere som de skal.
 
 export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 	const formMethods = useFormContext()
@@ -87,25 +82,6 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 		formMethods.watch('inntektstub.inntektsinformasjon')?.length,
 	])
 
-	const toggleValues = [
-		{
-			value: ArbeidsgiverTyper.felles,
-			label: 'Felles organisasjoner',
-		},
-		{
-			value: ArbeidsgiverTyper.egen,
-			label: 'Egen organisasjon',
-		},
-		{
-			value: ArbeidsgiverTyper.fritekst,
-			label: 'Skriv inn org.nr.',
-		},
-		{
-			value: ArbeidsgiverTyper.privat,
-			label: 'Privat arbeidsgiver',
-		},
-	]
-
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
@@ -156,20 +132,12 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 					formMethods.setValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
 				formMethods.setValue(`${path}`, response.data.orgnummer)
 			})
-			.catch(() => {
+			.catch((error) => {
+				console.log('error: ', error) //TODO - SLETT MEG
 				setLoading(false)
 				formMethods.setError(path, { message: 'Fant ikke organisasjonen i ' + miljo })
 			})
 	}
-
-	const warningMessage = (
-		<StyledAlert variant={'warning'}>
-			Du har ingen egne organisasjoner, og kan derfor ikke sende inn A-meldinger for person. For å
-			lage dine egne organisasjoner trykk {<a href="/organisasjoner">her</a>}. For å opprette person
-			med arbeidsforhold i felles organisasjoner eller andre arbeidsgivere, velg en annen kategori
-			ovenfor.
-		</StyledAlert>
-	)
 
 	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {
 		return <Loading label="Laster organisasjoner ..." />
@@ -184,7 +152,7 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 				size={'small'}
 				fill
 			>
-				{toggleValues.map((type) => (
+				{arbeidsgiverToggleValues.map((type) => (
 					<ToggleGroup.Item key={type.value} value={type.value}>
 						{type.label}
 					</ToggleGroup.Item>
@@ -196,13 +164,13 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 						afterChange={handleOrgChange}
 						path={`${path}.virksomhet`}
 						label={'Organisasjonsnummer'}
+						placeholder={'Velg organisasjon ...'}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
 					<EgneOrganisasjoner
 						path={`${path}.virksomhet`}
 						handleChange={handleOrgChange}
-						warningMessage={warningMessage}
 						filterValidEnhetstyper={true}
 					/>
 				)}

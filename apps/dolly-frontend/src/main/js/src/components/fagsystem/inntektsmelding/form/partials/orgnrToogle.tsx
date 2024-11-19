@@ -48,6 +48,7 @@ export const OrgnrToggle = ({
 					label={label}
 					//@ts-ignore
 					isClearable={false}
+					placeholder={'Velg organisasjon ...'}
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
