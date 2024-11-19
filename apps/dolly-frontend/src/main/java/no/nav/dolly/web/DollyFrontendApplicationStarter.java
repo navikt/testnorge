@@ -51,7 +51,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getOppsummeringsdokumentService(), "oppsummeringsdokument-service"))
                 .route(createRoute(consumers.getTestnavOrganisasjonForvalter()))
                 .route(createRoute(consumers.getTestnavVarslingerService(), "testnav-varslinger-service"))
-                .route(createRoute(consumers.getTestnavOrganisasjonTilgangService(), "testnav-organisasjon-tilgang-service"))
                 .route(createRoute(consumers.getTestnavTpsMessagingService(), "testnav-tps-messaging-service"))
                 .route(createRoute(consumers.getTestnorgeProfilApi(), "testnorge-profil-api"))
                 .route(createRoute(consumers.getTestnavBrukerService(), "testnav-bruker-service"))

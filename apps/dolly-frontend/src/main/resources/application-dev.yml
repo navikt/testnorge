@@ -4,6 +4,10 @@ REDIS_HOST: dolly-dev-redis-session.dolly.svc.cluster.local
 
 consumers:
   # Konsumenter for dev-miljø
+  testnav-altinn3-tilgang-service:
+    cluster: dev-gcp
+    name: testnav-altinn3-tilgang-service
+    url: https://testnav-altinn3-tilgang-service.dolly.svc.cluster.local
   dolly-backend:
     name: dolly-backend-dev
     url: http://dolly-backend-dev.dolly.svc.cluster.local
@@ -13,9 +17,6 @@ consumers:
   testnav-varslinger-service:
     name: testnav-varslinger-service-dev
     url: http://testnav-varslinger-service-dev.dolly.svc.cluster.local
-  testnav-person-organisasjon-tilgang-service:
-    name: testnav-person-organisasjon-tilgang-service-dev
-    url: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
   testnav-bruker-service:
     name: testnav-bruker-service-dev
     url: http://testnav-bruker-service-dev.dolly.svc.cluster.local

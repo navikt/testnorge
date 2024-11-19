@@ -63,8 +63,7 @@ spec:
         - application: testnav-levende-arbeidsforhold-scheduler
         - application: testnav-skattekort-service
         - application: testnav-yrkesskade-proxy
-        - application: testnav-altinn3-tilgang-service-prod
-          cluster: prod-gcp
+        - application: testnav-altinn3-tilgang-service
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
@@ -80,7 +79,6 @@ spec:
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-        - host: testnav-altinn3-tilgang-service.nav.no
   replicas:
     min: 1
     max: 2
