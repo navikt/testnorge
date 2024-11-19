@@ -11,6 +11,15 @@ spring:
     username: sa
     password:
     driverClassName: org.h2.Driver
+  flyway:
+    # InMemmory database
+    url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    user: ${NAV_USERNAME}
+    password:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    username: ${NAV_USERNAME}
+    password:
   security:
     oauth2:
       resourceserver:
@@ -24,11 +33,5 @@ spring:
 consumers:
   testnav-kodeverk-service:
     url: https://testnav-kodeverk-service.intern.dev.nav.no
-    name: testnav-kodeverk-service
-    cluster: dev-gcp
-    namespace: dolly
   testnav-tenor-search-service:
     url: https://testnav-tenor-search-service.intern.dev.nav.no
-    name: testnav-tenor-search-service
-    cluster: dev-gcp
-    namespace: dolly

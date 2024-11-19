@@ -150,10 +150,6 @@ export const Personinformasjon = ({ formMethods }) => {
 					<Vergemaal formMethods={formMethods} />
 				</Kategori>
 
-				<Kategori title="Fullmakt" vis={fullmaktPath}>
-					<Fullmakt formMethods={formMethods} />
-				</Kategori>
-
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPath}>
 					<Sikkerhetstiltak formMethods={formMethods} />
 				</Kategori>

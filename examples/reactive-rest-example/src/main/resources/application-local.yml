@@ -1,3 +1,4 @@
+TOKEN_X_ISSUER: nada
 
 spring:
   application:
@@ -6,10 +7,13 @@ spring:
   config:
     import: "sm://"
   flyway:
-    # InMemmory database
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+  h2:
+    console:
+      enabled: true
+      path: /h2
   security:
     oauth2:
       resourceserver:

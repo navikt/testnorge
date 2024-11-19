@@ -7,12 +7,12 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 import { ToggleGroup } from '@navikt/ds-react'
+import { FyllInnInntektForm } from '@/components/fagsystem/pensjon/form/FyllInnInntektForm'
+import { GenerertInntektForm } from '@/components/fagsystem/pensjon/form/GenerertInntektForm'
 import {
 	initialPensjonGenerertInntekt,
 	initialPensjonInntekt,
-} from '@/components/fagsystem/aareg/form/initialValues'
-import { FyllInnInntektForm } from '@/components/fagsystem/pensjon/form/FyllInnInntektForm'
-import { GenerertInntektForm } from '@/components/fagsystem/pensjon/form/GenerertInntektForm'
+} from '@/components/fagsystem/pensjon/form/initialValues'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 export const pensjonGenererPath = 'pensjonforvalter.generertInntekt'

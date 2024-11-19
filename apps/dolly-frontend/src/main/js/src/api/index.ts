@@ -11,27 +11,25 @@ const fetchRetry = fetch_retry(originalFetch)
 
 const allowForbidden = ['testnav-arbeidsplassencv', 'testnav-fullmakt', 'infostripe', 'norg2']
 
-export const multiFetcherAll = (urlListe, headers = null) => {
-	return Promise.all(
+export const multiFetcherAll = (urlListe, headers = null) =>
+	Promise.all(
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
 				return result
 			}),
 		),
 	)
-}
-export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) => {
-	return Promise.all(
+export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
+	Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
 				return { miljo: obj.miljo, data: path ? result[path] : result?.[obj.miljo] }
 			}),
 		),
 	)
-}
 
-export const multiFetcherArena = (miljoUrlListe, headers = null) => {
-	return Promise.all(
+export const multiFetcherArena = (miljoUrlListe, headers = null) =>
+	Promise.all(
 		miljoUrlListe?.map((obj) =>
 			fetcher(obj.url, headers)
 				.then((result) => {
@@ -44,10 +42,9 @@ export const multiFetcherArena = (miljoUrlListe, headers = null) => {
 				}),
 		),
 	)
-}
 
-export const multiFetcherAareg = (miljoUrlListe, headers = null, path = null) => {
-	return Promise.allSettled(
+export const multiFetcherAareg = (miljoUrlListe, headers = null, path = null) =>
+	Promise.allSettled(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers)
 				.then((result) => {
@@ -58,32 +55,18 @@ export const multiFetcherAareg = (miljoUrlListe, headers = null, path = null) =>
 				}),
 		),
 	).then((liste) => liste?.map((item) => item?.value))
-}
 
-export const multiFetcherAmelding = (miljoUrlListe, headers = null, path = null) => {
-	return Promise.allSettled(
-		miljoUrlListe.map((obj) =>
-			fetcher(obj.url, { miljo: obj.miljo })
-				.then((result) => ({ miljo: obj.miljo, data: path ? result[path] : result }))
-				.catch((feil) => {
-					return { miljo: obj.miljo, feil: feil }
-				}),
-		),
-	).then((liste) => liste?.map((item) => item?.value))
-}
-
-export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) => {
-	return Promise.all(
+export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) =>
+	Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, { miljo: obj.miljo, ...headers }).then((result) => {
 				return { miljo: obj.miljo, data: result }
 			}),
 		),
 	)
-}
 
-export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = null) => {
-	return Promise.allSettled(
+export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = null) =>
+	Promise.allSettled(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers)
 				.then((result) => {
@@ -94,7 +77,6 @@ export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = n
 				}),
 		),
 	).then((liste) => liste?.map((item) => item?.value))
-}
 
 export const multiFetcherDokarkiv = (miljoUrlListe) =>
 	Promise.all(
@@ -169,7 +151,7 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
-			if (!response.ok && !runningE2ETest()) {
+			if (!response.ok && response?.status !== 404 && !runningE2ETest()) {
 				if (response?.status === 401 && !allowForbidden.some((value) => url.includes(value))) {
 					console.error('Auth feilet, navigerer til login')
 					navigateToLogin()

@@ -9,9 +9,14 @@ import { useNaviger } from '@/utils/hooks/useNaviger'
 type ArbeidsgiverIdentProps = {
 	path: string
 	isDisabled?: boolean
+	title?: string | undefined
 }
 
-export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
+export const ArbeidsgiverIdent = ({
+	path,
+	isDisabled,
+	title = undefined,
+}: ArbeidsgiverIdentProps) => {
 	const formMethods = useFormContext()
 	const [personnummer, setPersonnummer] = useState(formMethods.watch(path))
 	const [success, setSuccess] = useBoolean(false)
@@ -47,6 +52,8 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				label={'Arbeidsgiver ident'}
 				onChange={handleChange}
 				isDisabled={loadingNaviger || isDisabled}
+				size="xlarge"
+				title={title}
 			/>
 			{success && (
 				<div className="flexbox" style={{ marginTop: '-5px' }}>

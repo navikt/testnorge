@@ -5,7 +5,7 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Accordion, Button } from '@navikt/ds-react'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
-import { useSoekIdenter } from '@/utils/hooks/usePersonSoek'
+import { useSoekIdenter, useSoekTyper } from '@/utils/hooks/usePersonSoek'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import _ from 'lodash'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -61,6 +61,8 @@ const initialValues = {
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null as any)
 	const { result, loading, error, mutate } = useSoekIdenter(request)
+
+	const { typer, loading: loadingTyper } = useSoekTyper()
 
 	const personPath = 'personRequest'
 
@@ -127,9 +129,11 @@ export const SoekForm = () => {
 												<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
 													<FormSelect
 														name="typer"
-														placeholder="Velg fagsystemer ..."
+														placeholder={
+															loadingTyper ? 'Laster fagsystemer ...' : 'Velg fagsystemer ...'
+														}
 														title="Fagsystemer"
-														options={Options('registerTyper')}
+														options={typer}
 														isMulti={true}
 														size="grow"
 														onChange={(val: SyntheticEvent) => {

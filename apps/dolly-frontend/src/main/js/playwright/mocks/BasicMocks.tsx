@@ -405,107 +405,6 @@ export const aaregMock = [
 		},
 	},
 ]
-export const ameldingMock = [
-	{
-		kalendermaaned: '2023-05-01',
-		opplysningspliktigOrganisajonsnummer: '965059946',
-		virksomheter: [
-			{
-				organisajonsnummer: '941559069',
-				personer: [
-					{
-						ident: '12345678912',
-						arbeidsforhold: [
-							{
-								arbeidsforholdId: '1',
-								typeArbeidsforhold: 'ordinaertArbeidsforhold',
-								startdato: '2003-08-23',
-								sluttdato: null,
-								antallTimerPerUke: 37.5,
-								yrke: '3229105',
-								arbeidstidsordning: 'ikkeSkift',
-								stillingsprosent: 100,
-								sisteLoennsendringsdato: null,
-								permisjoner: [],
-								fartoey: null,
-								inntekter: [],
-								avvik: [],
-								historikk: null,
-							},
-						],
-					},
-				],
-			},
-		],
-		version: 1,
-	},
-	{
-		kalendermaaned: '2023-04-01',
-		opplysningspliktigOrganisajonsnummer: '965059946',
-		virksomheter: [
-			{
-				organisajonsnummer: '941559069',
-				personer: [
-					{
-						ident: '12345678912',
-						arbeidsforhold: [
-							{
-								arbeidsforholdId: '1',
-								typeArbeidsforhold: 'ordinaertArbeidsforhold',
-								startdato: '2003-08-23',
-								sluttdato: null,
-								antallTimerPerUke: 37.5,
-								yrke: '3229105',
-								arbeidstidsordning: 'ikkeSkift',
-								stillingsprosent: 100,
-								sisteLoennsendringsdato: null,
-								permisjoner: [],
-								fartoey: null,
-								inntekter: [],
-								avvik: [],
-								historikk: null,
-							},
-						],
-					},
-				],
-			},
-		],
-		version: 1,
-	},
-	{
-		kalendermaaned: '2023-06-01',
-		opplysningspliktigOrganisajonsnummer: '965059946',
-		virksomheter: [
-			{
-				organisajonsnummer: '941559069',
-				personer: [
-					{
-						ident: '12345678912',
-						arbeidsforhold: [
-							{
-								arbeidsforholdId: '1',
-								typeArbeidsforhold: 'ordinaertArbeidsforhold',
-								startdato: '2003-08-23',
-								sluttdato: null,
-								antallTimerPerUke: 37.5,
-								yrke: '3229105',
-								arbeidstidsordning: 'ikkeSkift',
-								stillingsprosent: 100,
-								sisteLoennsendringsdato: null,
-								permisjoner: [],
-								fartoey: null,
-								inntekter: [],
-								avvik: [],
-								historikk: null,
-							},
-						],
-					},
-				],
-			},
-		],
-		version: 1,
-	},
-]
 
 export const arenaMock = {
 	fodselsnr: '12345678912',
@@ -1227,7 +1126,6 @@ export const testnorgeMalBestillinger = [
 						aktoertype: 'ORG',
 						orgnummer: '972671234',
 					},
-					amelding: [],
 				},
 			],
 			sigrunstub: [
@@ -1624,7 +1522,6 @@ export const backendBestillingerMock = [
 			],
 			aareg: [
 				{
-					amelding: [{ temp: '' }],
 					arbeidsforholdstype: 'forenkletOppgjoersordning',
 					ansettelsesPeriode: {
 						fom: '2002-10-03T00:00:00',

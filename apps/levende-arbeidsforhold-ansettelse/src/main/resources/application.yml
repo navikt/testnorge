@@ -32,8 +32,9 @@ management:
       path-mapping:
         prometheus: metrics
   endpoint:
-    prometheus.enabled: true
+    health.show-details: always
     heapdump.enabled: true
+    prometheus.enabled: true
   prometheus:
     metrics:
       export:
