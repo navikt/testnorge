@@ -16,6 +16,9 @@ spring:
       httpclient:
         response-timeout: 30s
         wiretap: true
+    gcp:
+      secretmanager:
+        enabled: false
 
 server:
   servlet:

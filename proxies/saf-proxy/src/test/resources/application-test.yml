@@ -1,11 +1,5 @@
 TOKEN_X_ISSUER: dummy
 
-spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-
 consumers:
   saf:
     url: http://saf-dummy.dummy.no

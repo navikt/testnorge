@@ -1,6 +1,10 @@
 TOKEN_X_ISSUER: dummy
 
 spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: true
   config:
     import: "sm://"
 

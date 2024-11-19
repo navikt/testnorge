@@ -2,6 +2,10 @@ TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-dokarkiv-proxy
 TOKEN_X_ISSUER: dummy
 
 spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: true
   config:
     import: "sm://"
   security:

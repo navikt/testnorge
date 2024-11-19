@@ -18,6 +18,9 @@ spring:
         wiretap: true
       httpserver:
         wiretap: true
+    gcp:
+      secretmanager:
+        enabled: false
 
 logging:
   level:

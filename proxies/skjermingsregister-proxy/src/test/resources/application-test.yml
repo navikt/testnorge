@@ -2,10 +2,4 @@ TOKEN_X_ISSUER: dummy
 STS_TOKEN_PROVIDER_USERNAME: dummy
 STS_TOKEN_PROVIDER_PASSWORD: dummy
 
-spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-
 proxy.url: http://localhost

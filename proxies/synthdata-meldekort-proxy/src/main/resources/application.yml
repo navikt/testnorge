@@ -11,6 +11,10 @@ spring:
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
   codec:
     max-in-memory-size: 15MB
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
 
 server:
   servlet:

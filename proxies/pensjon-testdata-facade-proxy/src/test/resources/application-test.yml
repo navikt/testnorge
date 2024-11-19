@@ -1,9 +1,3 @@
-spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-
 consumers:
   samboer-testdata:
     name: pensjon-dummy

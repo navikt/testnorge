@@ -19,6 +19,9 @@ spring:
     gateway:
       httpclient:
         response-timeout: 600s
+    gcp:
+      secretmanager:
+        enabled: false
 
 server:
   servlet:

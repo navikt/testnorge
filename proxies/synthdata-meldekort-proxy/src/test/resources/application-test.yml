@@ -1,9 +1,3 @@
-spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-
 azure:
   openid:
     config:
