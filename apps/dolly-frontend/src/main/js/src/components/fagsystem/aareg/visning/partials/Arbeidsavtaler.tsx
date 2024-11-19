@@ -32,10 +32,15 @@ export const Arbeidsavtaler = ({ data }) => {
 						title="Stillingsprosent"
 						value={detaljer.stillingsprosent === 0 ? '0' : detaljer.stillingsprosent}
 					/>
-					{/* //TODO: Endringsdato stillingsprosent mangler fra Aareg */}
+					<TitleValue
+						title="Endringsdato stillingsprosent"
+						value={formatStringDates(detaljer.sistStillingsendring)}
+					/>
 					<TitleValue
 						title="Endringsdato lønn"
-						value={formatStringDates(detaljer.sisteLoennsendringsdato)}
+						value={formatStringDates(
+							detaljer.sisteLoennsendringsdato || detaljer.sistLoennsendring,
+						)}
 					/>
 					<TitleValue
 						title="Arbeidstidsordning"

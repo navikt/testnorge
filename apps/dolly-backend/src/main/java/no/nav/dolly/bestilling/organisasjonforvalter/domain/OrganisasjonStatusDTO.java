@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 public class OrganisasjonStatusDTO {
 
     public enum Status {
-        NOT_FOUND, ADDING_TO_QUEUE, IN_QUEUE_WAITING_TO_START, RUNNING, COMPLETED, ERROR, FAILED
+        NOT_FOUND, ADDING_TO_QUEUE, IN_QUEUE_WAITING_TO_START,
+        PENDING_COMPLETE,
+        RUNNING, COMPLETED, ERROR, FAILED
     }
 
     private Status status;

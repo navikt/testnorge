@@ -12,11 +12,11 @@ import { genInitialAlderspensjonVedtak } from '@/components/fagsystem/alderspens
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
 import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
-import { initialPensjonInntekt } from '@/components/fagsystem/aareg/form/initialValues'
 import { initialPensjonsavtale } from '@/components/fagsystem/pensjonsavtale/initalValues'
 import { initialAfpOffentlig } from '@/components/fagsystem/afpOffentlig/initialValues'
 import { avtalePath } from '@/components/fagsystem/pensjonsavtale/form/Form'
 import { afpOffentligPath } from '@/components/fagsystem/afpOffentlig/form/Form'
+import { initialPensjonInntekt } from '@/components/fagsystem/pensjon/form/initialValues'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)

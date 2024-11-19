@@ -30,3 +30,20 @@ export const useBestillingerPaaIdent = (ident: string) => {
 		error: error,
 	}
 }
+
+export const useSoekTyper = () => {
+	const { data, isLoading, error } = useSWR(`${elasticUrl}/typer`, (url) => Request.get(url))
+
+	const selectOptions = data?.data?.map((option) => {
+		return {
+			value: option?.type,
+			label: option?.beskrivelse,
+		}
+	})
+
+	return {
+		typer: selectOptions,
+		loading: isLoading,
+		error: error,
+	}
+}

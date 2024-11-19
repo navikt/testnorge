@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-fullmakt-proxy
-    description: Proxy for pdl-fullmakt som legger på sikkerhet og benytter trygdeetaten tenant.
+    description: Proxy for repr-fullmakt-api som legger på sikkerhet og benytter trygdeetaten tenant.
   security:
     oauth2:
       resourceserver:
@@ -31,7 +31,7 @@ server:
 
 consumers:
   fullmakt:
-    name: pdl-fullmakt
-    namespace: pdl
-    url: http://pdl-fullmakt.pdl.svc.nais.local
+    name: repr-fullmakt
+    namespace: repr
+    url: http://repr-fullmakt.repr.svc.nais.local
     cluster: dev-fss

@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherAareg, multiFetcherAmelding } from '@/api'
+import { fetcher, multiFetcherAareg } from '@/api'
 import { Organisasjon, OrganisasjonFasteData } from '@/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
@@ -30,13 +30,6 @@ const getFasteDataOrganisasjon = (orgnummer: string) =>
 const getArbeidsforholdUrl = (miljoer: string[]) => {
 	return miljoer.map((miljoe) => ({
 		url: `/testnav-aareg-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
-		miljo: miljoe,
-	}))
-}
-
-const getAmeldingerUrl = (ident: string, miljoer: string[]) => {
-	return miljoer.map((miljoe) => ({
-		url: `/oppsummeringsdokument-service/api/v1/oppsummeringsdokumenter/identer/${ident}`,
 		miljo: miljoe,
 	}))
 }
@@ -98,7 +91,7 @@ export type Bestillingsstatus = {
 	stoppet: boolean
 }
 
-export const useOrganisasjoner = (brukerId: string) => {
+export const useOrganisasjoner = (brukerId?: string) => {
 	if (!brukerId) {
 		return {
 			loading: false,
@@ -242,40 +235,6 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	return {
 		arbeidsforhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useAmeldinger = (ident: string, harAaregBestilling: boolean, miljoe?: string) => {
-	const { dollyEnvironmentList } = useDollyEnvironments()
-	const unsupportedEnvironments = ['t13', 'qx']
-	const filteredEnvironments = dollyEnvironmentList
-		?.map((miljoe) => miljoe.id)
-		?.filter((miljoe) => !unsupportedEnvironments.includes(miljoe))
-
-	if (!ident) {
-		return {
-			loading: false,
-			error: 'Ident mangler!',
-		}
-	}
-
-	if (!harAaregBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const miljoer = miljoe ? [miljoe] : filteredEnvironments
-
-	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
-		[getAmeldingerUrl(ident, miljoer)],
-		([url, headers]) => multiFetcherAmelding(url, headers),
-	)
-
-	return {
-		ameldinger: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

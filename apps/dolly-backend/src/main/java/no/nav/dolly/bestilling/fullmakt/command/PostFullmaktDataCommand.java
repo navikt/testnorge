@@ -61,7 +61,7 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                 .doOnError(throwable -> {
                     if (throwable instanceof WebClientResponseException ex) {
                         if (ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                            log.error("Bad request mot pdl-fullmakt, response: {}", ex.getResponseBodyAsString());
+                            log.error("Bad request mot repr-fullmakt, response: {}", ex.getResponseBodyAsString());
                         }
                     }
                 })

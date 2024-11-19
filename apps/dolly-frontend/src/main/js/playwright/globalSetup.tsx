@@ -2,7 +2,6 @@ import { test as base } from '@playwright/test'
 import {
 	aaregMock,
 	afpOffentligMock,
-	ameldingMock,
 	arenaMock,
 	backendBestillingerMock,
 	backendTransaksjonMock,
@@ -77,7 +76,6 @@ const tags = new RegExp(/\/tags$/)
 const kodeverk = new RegExp(/testnav-kodeverk-service\/api\/v1\/kodeverk\//)
 const dokarkivMiljoer = new RegExp(/testnav-dokarkiv-proxy\/rest\/miljoe/)
 const aareg = new RegExp(/testnav-aareg-proxy\/q1\/api\/v1\/arbeidstaker/)
-const amelding = new RegExp(/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/)
 const arena = new RegExp(/testnav-arena-forvalteren-proxy\/q1\/arena/)
 const inst = new RegExp(/testnav-inst-proxy\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
@@ -141,7 +139,6 @@ const mockRoutes: RouteInfo[] = [
 	{ url: joarkDokDokument, response: joarkDokumentMock },
 	{ url: krrstub, response: krrstubMock },
 	{ url: aareg, response: aaregMock },
-	{ url: amelding, response: ameldingMock },
 	{ url: arena, response: arenaMock },
 	{ url: tpsMessaging, response: tpsMessagingMock },
 	{ url: skjerming, response: skjermingMock },
