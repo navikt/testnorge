@@ -6,7 +6,10 @@ import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
 import React, { useContext, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { ShowErrorContext, ShowErrorContextType } from '@/components/bestillingsveileder/ShowErrorContext'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 import _ from 'lodash'
 import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
 import { Button } from '@navikt/ds-react'
@@ -102,10 +105,6 @@ export const TextInput = React.forwardRef(
 				setFieldValue(input)
 			}
 		}, [input])
-
-		console.log('input: ', input) //TODO - SLETT MEG
-
-		//TODO: MÅ FIKSE HVORDAN TEXTINPUT FIELD IKKE FØLGER DET SOM BLIR SATT I SELVE TIMEPICKER
 
 		return (
 			<>

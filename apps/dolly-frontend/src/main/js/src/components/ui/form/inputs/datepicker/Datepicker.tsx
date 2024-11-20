@@ -16,11 +16,12 @@ import { convertInputToDate } from '@/components/ui/form/DateFormatUtils'
 
 registerLocale('nb', locale_nb)
 
-export const DollyDatepicker = (props) => {
+export const DollyDatepicker = (props: any) => {
+	const format = props.format || 'DD.MM.YYYY'
 	const formMethods = useFormContext()
 	const existingValue = formMethods.watch(props.name)
 	const [showDatepicker, setShowDatepicker] = useState(false)
-	const [input, setInput] = useState(existingValue ? formatDate(existingValue) : '')
+	const [input, setInput] = useState(existingValue ? formatDate(existingValue, format) : '')
 	const [errorMessage, setErrorMessage] = useState('')
 
 	const getDatepickerProps = useCallback(() => {
@@ -35,7 +36,7 @@ export const DollyDatepicker = (props) => {
 
 	useEffect(() => {
 		const date = convertInputToDate(existingValue)
-		setInput(date?.isValid?.() ? formatDate(date) : existingValue)
+		setInput(date?.isValid?.() ? formatDate(date, format) : existingValue)
 		formMethods.trigger(props.name).then(() => {
 			validateDate(date)
 		})
@@ -84,7 +85,7 @@ export const DollyDatepicker = (props) => {
 
 	const handleInputBlur = (e: BaseSyntheticEvent) => {
 		const value = e.target.value
-		let date = convertInputToDate(value)
+		let date = convertInputToDate(value, true)
 		if (date.isValid?.()) {
 			setSelected(date.toDate?.())
 		} else {
@@ -92,7 +93,7 @@ export const DollyDatepicker = (props) => {
 		}
 
 		setFormDate(date)
-		setInput(formatDate(date))
+		setInput(formatDate(date, format))
 	}
 
 	const DateInput = (
@@ -101,7 +102,7 @@ export const DollyDatepicker = (props) => {
 			style={{ width: '172px' }}
 			onChange={(e: BaseSyntheticEvent) => {
 				const value = e.target.value
-				const date = convertInputToDate(value)
+				const date = convertInputToDate(value, true)
 				setFormDate(date)
 				setInput(value)
 			}}
@@ -126,9 +127,9 @@ export const DollyDatepicker = (props) => {
 						onSelect={(val) => {
 							setSelected(val)
 
-							const date = convertInputToDate(val)
+							const date = convertInputToDate(val, true)
 							setFormDate(date)
-							setInput(formatDate(date))
+							setInput(formatDate(date, format))
 							formMethods.trigger(props.name).then(() => {
 								validateDate(date)
 							})

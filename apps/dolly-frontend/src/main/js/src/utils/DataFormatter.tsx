@@ -2,7 +2,7 @@ import { format, isDate } from 'date-fns'
 import _ from 'lodash'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
-import { convertInputToDate } from '@/components/ui/form/DateFormatUtils'
+import { convertInputToDate, initDayjs } from '@/components/ui/form/DateFormatUtils'
 
 export const yearFormat = 'yyyy'
 export const defaultDateFormat = 'dd.MM.yyyy'
@@ -30,9 +30,14 @@ export const formatDate = (date: any, formatString?: string) => {
 	if (!date) {
 		return date
 	}
+	if (isDate(date)) {
+		const customdayjs = initDayjs()
+		return customdayjs(date)
+			.utc()
+			.format(formatString || 'DD.MM.YYYY')
+	}
 	const dayjsDate = convertInputToDate(date)
-	const valid = dayjsDate.isValid?.()
-	// Parse date if valid date
+	const valid = dayjsDate?.isValid?.()
 	if (!valid) {
 		return date
 	}
@@ -246,9 +251,17 @@ export const showKodeverkLabel = (kodeverkNavn, value) => {
 	return kodeverk?.find((kode) => kode?.value === value)?.label
 }
 
-export const getYearRangeOptions = (start, stop) => {
+export const getYearRangeOptions = (start, end) => {
+	let startYear = start
+	let endYear = end
+	if (isDate(start)) {
+		startYear = start.getFullYear()
+	}
+	if (isDate(end)) {
+		endYear = end.getFullYear()
+	}
 	const years = []
-	for (let i = start; i <= stop; i++) {
+	for (let i = startYear; i <= endYear; i++) {
 		years.push({ value: i, label: i.toString() })
 	}
 	return years.reverse()

@@ -4,8 +4,8 @@ import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
-import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { useFormContext } from 'react-hook-form'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 interface InntektsinformasjonForm {
 	path: string
@@ -49,9 +49,10 @@ export default ({ path }: InntektsinformasjonForm) => {
 					label="Generer x mnd tilbake i tid"
 					type="number"
 				/>
-				<FormDateTimepicker
+				<FormDatepicker
 					name={`${path}.rapporteringsdato`}
 					label="Rapporteringstidspunkt"
+					format={'DD.MM.YYYY HH:mm'}
 					date={rapporteringsdate}
 				/>
 			</div>

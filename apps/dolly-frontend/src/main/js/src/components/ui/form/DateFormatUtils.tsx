@@ -44,13 +44,20 @@ export const initDayjs = () => {
 	return dayjs
 }
 
-export const convertInputToDate = (date: any, specificFormat?: string) => {
+export const convertInputToDate = (
+	date: any,
+	fixOffset: boolean = false,
+	specificFormat?: string,
+) => {
 	if (!date || date === '') {
 		return date
 	}
 	const customDayjs = initDayjs()
-	const dateLocalTime = isDate(date)
+	const dayJs = isDate(date)
 		? customDayjs(date)
 		: customDayjs(date, specificFormat || DateFormatUtils.generateValidDateFormats(), true)
-	return dateLocalTime.add(dateLocalTime.utcOffset(), 'minute')
+	if (fixOffset) {
+		return dayJs.utc().add(dayJs.utcOffset(), 'minute')
+	}
+	return dayJs.utc()
 }

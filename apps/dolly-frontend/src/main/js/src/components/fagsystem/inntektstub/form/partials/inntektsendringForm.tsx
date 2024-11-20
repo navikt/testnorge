@@ -1,14 +1,14 @@
 import {
 	DollyFaBlokk,
 	DollyFieldArrayWrapper,
-	FieldArrayAddButton
+	FieldArrayAddButton,
 } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { Arbeidsforhold, Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useFieldArray } from 'react-hook-form'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 interface InntektendringForm {
 	formMethods: UseFormReturn
@@ -53,7 +53,8 @@ export default ({ formMethods, path }: InntektendringForm) => {
 							header={`Inntektsendring (versjon ${idx + 1})`}
 							handleRemove={clickRemove}
 						>
-							<FormDateTimepicker
+							<FormDatepicker
+								format={'DD.MM.YYYY HH:mm'}
 								name={`${listePath}.rapporteringsdato`}
 								label="Rapporteringsdato"
 							/>

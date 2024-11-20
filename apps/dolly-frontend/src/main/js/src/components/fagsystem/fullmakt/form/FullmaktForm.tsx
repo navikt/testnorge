@@ -45,7 +45,6 @@ const mapLegacyFullmaktTilNyFullmakt = (
 			fullmektig: gammelFullmakt.motpartsPersonident,
 			omraade: gammelFullmakt.omraader.map((legacyOmraade, index) => {
 				if (legacyOmraade === '*') {
-					//TODO: Handle "alle" value dersom forespurt av brukere i ny fullmakt
 					return { tema: 'AAP', handling: alleHandlinger }
 				}
 				if (omraadeKodeverk.filter((option) => option.value === legacyOmraade)?.length === 0) {

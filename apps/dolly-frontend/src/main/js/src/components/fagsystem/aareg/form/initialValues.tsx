@@ -47,13 +47,6 @@ export const initialArbeidsforhold = {
 	permittering: [],
 }
 
-export const initialPensjonInntekt = {
-	fomAar: runningE2ETest() ? new Date().getFullYear() - 2 : null,
-	tomAar: runningE2ETest() ? new Date().getFullYear() : null,
-	belop: runningE2ETest() ? '12345' : '',
-	redusertMedGrunnbelop: true,
-}
-
 export const initialArbeidsforholdOrg = {
 	...initialArbeidsforhold,
 	arbeidsgiver: initialArbeidsgiverOrg,
