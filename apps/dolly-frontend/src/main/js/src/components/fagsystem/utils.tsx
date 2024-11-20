@@ -69,7 +69,6 @@ export const arbeidsgiverToggleValues = [
 	},
 ]
 
-// TODO: Fix denne og fjern duplikater
 export const handleManualOrgChange = (
 	org: string,
 	miljo: string,
@@ -112,6 +111,8 @@ export const handleManualOrgChange = (
 		.catch(() => {
 			setLoading(false)
 			formMethods.setError(path, { message: 'Fant ikke organisasjonen i ' + miljo })
-			// formMethods.trigger(path)
 		})
 }
+
+//TODO: Se paa stedene den er brukt, de boer sikkert skrives om
+export const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'

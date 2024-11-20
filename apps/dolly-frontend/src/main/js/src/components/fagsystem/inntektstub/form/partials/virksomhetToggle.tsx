@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Alert, ToggleGroup } from '@navikt/ds-react'
+import { ToggleGroup } from '@navikt/ds-react'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useFormContext } from 'react-hook-form'
 import {
@@ -18,9 +18,8 @@ import {
 } from '@/utils/hooks/useOrganisasjoner'
 import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import { useBoolean } from 'react-use'
-import { OrgserviceApi } from '@/service/Api'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import { arbeidsgiverToggleValues } from '@/components/fagsystem/utils'
+import { arbeidsgiverToggleValues, handleManualOrgChange } from '@/components/fagsystem/utils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -102,43 +101,6 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 		formMethods.setValue(virksomhetPath, value.orgnr)
 	}
 
-	const handleManualOrgChange = (org: string, miljo: string) => {
-		const validEnhetstyper = ['BEDR', 'AAFY']
-		if (!org || !miljo) {
-			return
-		}
-		formMethods.clearErrors(path)
-		setLoading(true)
-		setSuccess(false)
-		OrgserviceApi.getOrganisasjonInfo(org, miljo)
-			.then((response: { data: { enhetType: string; juridiskEnhet: any; orgnummer: any } }) => {
-				setLoading(false)
-				if (!validEnhetstyper.includes(response.data.enhetType)) {
-					formMethods.setError(path, { message: 'Organisasjonen må være av type BEDR eller AAFY' })
-					return
-				}
-				if (!response.data.juridiskEnhet) {
-					if (organisasjon?.overenhet) {
-						opplysningspliktigPath &&
-							formMethods.setValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
-					} else {
-						formMethods.setError(path, { message: 'Organisasjonen mangler juridisk enhet' })
-						return
-					}
-				}
-				setSuccess(true)
-				opplysningspliktigPath &&
-					response.data.juridiskEnhet &&
-					formMethods.setValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
-				formMethods.setValue(`${path}`, response.data.orgnummer)
-			})
-			.catch((error) => {
-				console.log('error: ', error) //TODO - SLETT MEG
-				setLoading(false)
-				formMethods.setError(path, { message: 'Fant ikke organisasjonen i ' + miljo })
-			})
-	}
-
 	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {
 		return <Loading label="Laster organisasjoner ..." />
 	}
@@ -184,11 +146,29 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 						onTextBlur={(event) => {
 							const org = event.target.value
 							setOrgnummer(org)
-							handleManualOrgChange(org, environment)
+							handleManualOrgChange(
+								org,
+								environment,
+								formMethods,
+								virksomhetPath,
+								setLoading,
+								setSuccess,
+								organisasjon,
+								opplysningspliktigPath,
+							)
 						}}
 						onMiljoeChange={(event) => {
 							setEnvironment(event.value)
-							handleManualOrgChange(orgnummer, event.value)
+							handleManualOrgChange(
+								orgnummer,
+								event.value,
+								formMethods,
+								virksomhetPath,
+								setLoading,
+								setSuccess,
+								organisasjon,
+								opplysningspliktigPath,
+							)
 						}}
 					/>
 				)}

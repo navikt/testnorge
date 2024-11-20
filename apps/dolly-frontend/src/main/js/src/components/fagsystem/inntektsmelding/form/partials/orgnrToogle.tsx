@@ -7,7 +7,7 @@ import {
 } from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
+import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/utils'
 
 interface OrgnrToggleProps {
 	path: string
