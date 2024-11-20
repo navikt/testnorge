@@ -120,7 +120,7 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
             return match.group();
         });
 
-        message = bearer.matcher(message).replaceAll("REDACTED_AUTH_HEADER");
+        message = bearer.matcher(message).replaceAll("REDACTED_BEARER");
 
         return message;
     }
