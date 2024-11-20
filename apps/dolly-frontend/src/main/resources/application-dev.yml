@@ -7,7 +7,7 @@ consumers:
   testnav-altinn3-tilgang-service:
     cluster: dev-gcp
     name: testnav-altinn3-tilgang-service
-    url: https://testnav-altinn3-tilgang-service.dolly.svc.cluster.local
+    url: http://testnav-altinn3-tilgang-service.dolly.svc.cluster.local
   dolly-backend:
     name: dolly-backend-dev
     url: http://dolly-backend-dev.dolly.svc.cluster.local
