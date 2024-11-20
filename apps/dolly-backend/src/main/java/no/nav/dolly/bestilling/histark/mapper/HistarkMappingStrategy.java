@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import static io.micrometer.common.util.StringUtils.isBlank;
 import static no.nav.dolly.bestilling.dokarkiv.mapper.PdfVedlegg.PDF_VEDLEGG;
@@ -54,8 +55,12 @@ public class HistarkMappingStrategy implements MappingStrategy {
                                             .klage("")
                                             .sjekksum(calculateBinaryChecksum(fysiskDokument))
                                             .skanningstidspunkt(dokument.getSkanningsTidspunkt().format(dateTimeFormatter))
-                                            .startAar(String.valueOf(dokument.getStartAar().getYear()))
-                                            .sluttAar(String.valueOf(dokument.getSluttAar().getYear()))
+                                            .startAar(Optional.ofNullable(dokument.getStartYear())
+                                                    .map(String::valueOf)
+                                                    .orElseGet(() -> String.valueOf(dokument.getStartAar().getYear())))
+                                            .sluttAar(Optional.ofNullable(dokument.getSluttAar())
+                                                    .map(year -> String.valueOf(year.getYear()))
+                                                    .orElse(""))
                                             .temakoder(String.join(",", dokument.getTemakoder()))
                                             .build())
                                     .build());
