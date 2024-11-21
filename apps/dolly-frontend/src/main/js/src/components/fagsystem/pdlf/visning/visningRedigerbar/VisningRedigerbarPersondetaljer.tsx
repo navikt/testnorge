@@ -423,7 +423,7 @@ export const VisningRedigerbarPersondetaljer = ({
 			)}
 			{visningModus === Modus.Skriv && (
 				<FormProvider {...formMethods}>
-					<Form onSubmit={formMethods.handleSubmit(handleSubmit)}>
+					<Form onSubmit={(data) => handleSubmit(data)}>
 						<>
 							<FieldArrayEdit>
 								<div className="flexbox--flex-wrap">
@@ -444,7 +444,7 @@ export const VisningRedigerbarPersondetaljer = ({
 									</NavButton>
 									<NavButton
 										variant={'primary'}
-										onClick={() => formMethods.handleSubmit(handleSubmit)}
+										onClick={() => handleSubmit(formMethods.watch())}
 										disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
 									>
 										Endre
