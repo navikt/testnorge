@@ -397,11 +397,7 @@ export const VisningRedigerbar = ({
 					</>
 				)}
 				{visningModus === Modus.Skriv && (
-					<Form
-						onSubmit={(data) => {
-							return handleSubmit(data?.data)
-						}}
-					>
+					<Form onSubmit={(data) => handleSubmit(data)}>
 						<>
 							{devEnabled && (
 								<>
@@ -423,7 +419,7 @@ export const VisningRedigerbar = ({
 									</NavButton>
 									<NavButton
 										variant="primary"
-										onClick={() => formMethods.handleSubmit()}
+										onClick={() => handleSubmit(formMethods.watch())}
 										disabled={formMethods.formState.isSubmitting}
 									>
 										Endre
