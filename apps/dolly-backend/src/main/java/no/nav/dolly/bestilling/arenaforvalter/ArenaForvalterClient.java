@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaStansYtelseService;
 import no.nav.dolly.bestilling.arenaforvalter.utils.ArenaEksisterendeVedtakUtil;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -44,13 +45,14 @@ public class ArenaForvalterClient implements ClientRegister {
     private static final String MILJOE_FMT = "%s$BRUKER= %s";
     private static final String SYSTEM = "Arena";
 
-    private final ArenaForvalterConsumer arenaForvalterConsumer;
-    private final TransactionHelperService transactionHelperService;
-    private final ArenaBrukerService arenaBrukerService;
+    private final ApplicationConfig applicationConfig;
     private final ArenaAap115Service arenaAap115Service;
     private final ArenaAapService arenaAapService;
+    private final ArenaBrukerService arenaBrukerService;
     private final ArenaDagpengerService arenaDagpengerService;
+    private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final ArenaStansYtelseService arenaStansYtelseService;
+    private final TransactionHelperService transactionHelperService;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -69,7 +71,7 @@ public class ArenaForvalterClient implements ClientRegister {
                                     BestillingProgress::setArenaforvalterStatus, initStatus);
                         })
                         .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
-                                .timeout(Duration.ofSeconds(30))
+                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                                 .onErrorResume(error ->
                                         Mono.just(fmtResponse(miljoer, ANDREFEIL, WebClientFilter.getMessage(error))))
                                 .map(status -> futurePersist(progress, status))));
