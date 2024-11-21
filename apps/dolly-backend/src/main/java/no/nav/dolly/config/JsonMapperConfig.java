@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -36,6 +37,8 @@ public class JsonMapperConfig {
     @Bean
     public ObjectMapper objectMapper() {
 
+        var dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         var simpleModule = new SimpleModule()
                 .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
@@ -56,7 +59,8 @@ public class JsonMapperConfig {
                 .build()
                 .registerModule(new JavaTimeModule())
                 .registerModule(simpleModule)
-                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
+                .setDateFormat(dateFormat);
+
 
     }
 
