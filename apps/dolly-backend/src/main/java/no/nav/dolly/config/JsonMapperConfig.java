@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -54,7 +55,8 @@ public class JsonMapperConfig {
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build()
                 .registerModule(new JavaTimeModule())
-                .registerModule(simpleModule);
+                .registerModule(simpleModule)
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
 
     }
 
