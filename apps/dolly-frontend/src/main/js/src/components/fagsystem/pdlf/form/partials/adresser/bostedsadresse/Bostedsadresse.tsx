@@ -69,7 +69,7 @@ export const BostedsadresseForm = ({
 		} else if (_.get(boadresse, 'ukjentBosted') && _.get(boadresse, 'ukjentBosted') !== null) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Ukjent)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}, [])
 
 	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)

@@ -18,7 +18,6 @@ import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
-import { Exception } from '@opentelemetry/api'
 
 type TestnorgePageProps = {
 	gruppe?: Gruppe
@@ -47,7 +46,7 @@ export default ({ gruppe }: TestnorgePageProps) => {
 				setItems(response.items)
 				setLoading(false)
 			})
-			.catch((_e: Exception) => {
+			.catch((_e) => {
 				setLoading(false)
 				setError('Noe gikk galt med søket. Ta kontakt med Dolly hvis feilen vedvarer.')
 			})

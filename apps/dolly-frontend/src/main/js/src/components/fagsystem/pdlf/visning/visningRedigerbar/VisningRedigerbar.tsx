@@ -89,7 +89,7 @@ enum Attributt {
 
 const FieldArrayEdit = styled.div`
 	&&& {
-		button {
+		.dolly-button {
 			position: relative;
 			top: 0;
 			right: 0;
@@ -412,6 +412,7 @@ export const VisningRedigerbar = ({
 								<Knappegruppe>
 									<NavButton
 										variant="secondary"
+										style={{ marginRight: '10px' }}
 										onClick={onNavButtonClick}
 										disabled={formMethods.formState.isSubmitting}
 									>
