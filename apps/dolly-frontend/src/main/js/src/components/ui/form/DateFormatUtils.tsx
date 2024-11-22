@@ -40,7 +40,7 @@ export const initDayjs = () => {
 	dayjs.extend(customParseFormat)
 	dayjs.extend(utc)
 	dayjs.extend(timezone)
-	dayjs.tz.setDefault('Europe/Oslo')
+	// dayjs.tz.setDefault('Europe/Oslo')
 	return dayjs
 }
 
