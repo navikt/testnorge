@@ -37,13 +37,13 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 @RequiredArgsConstructor
 public class PensjonforvalterClient implements ClientRegister {
 
-    private final PensjonforvalterConsumer pensjonforvalterConsumer;
-    private final PensjonVedtakService pensjonVedtakService;
-    private final TransactionHelperService transactionHelperService;
+    private final ApplicationConfig applicationConfig;
+    private final PensjonPdlPersonService pensjonPdlPersonService;
     private final PensjonPensjonsdataService pensjonPensjonsdataService;
     private final PensjonPersondataService pensjonPersondataService;
-    private final PensjonPdlPersonService pensjonPdlPersonService;
-    private final ApplicationConfig applicationConfig;
+    private final PensjonVedtakService pensjonVedtakService;
+    private final PensjonforvalterConsumer pensjonforvalterConsumer;
+    private final TransactionHelperService transactionHelperService;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -55,8 +55,6 @@ public class PensjonforvalterClient implements ClientRegister {
         var bestilteMiljoer = new AtomicReference<>(bestilling.getEnvironments().stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet()));
-
-        bestilling.setId(bestilling.getId());
 
         return Flux.from(Flux.from(pensjonforvalterConsumer.getMiljoer())
                 .flatMap(tilgjengeligeMiljoer -> {
