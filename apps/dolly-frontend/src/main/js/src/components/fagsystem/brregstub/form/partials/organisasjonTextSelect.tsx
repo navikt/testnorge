@@ -32,11 +32,13 @@ export const OrganisasjonTextSelect = ({
 	setEnhetsinfo,
 }: OrgnanisasjonTextSelectProps) => {
 	const formMethods = useFormContext()
+	//TODO: Trenger vi ikke error? Sjekk naar master er tatt inn
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
-	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(path) || null)
+
+	const parentPath = path.substring(0, path.lastIndexOf('.'))
 
 	const handleChange = (org: string, miljoe: string) => {
 		if (!org || !miljoe) {
@@ -45,6 +47,7 @@ export const OrganisasjonTextSelect = ({
 		setError(null)
 		setLoading(true)
 		setSuccess(false)
+		formMethods.setValue(`${parentPath}.organisasjonMiljoe`, miljoe)
 		OrgserviceApi.getOrganisasjonInfo(org, miljoe)
 			.then((response) => {
 				const orgInfo = {
@@ -54,7 +57,7 @@ export const OrganisasjonTextSelect = ({
 					forretningsAdresse: mapAdresse(response.data.forretningsadresser),
 					postAdresse: mapAdresse(response.data.postadresse),
 				}
-				setEnhetsinfo(orgInfo, path)
+				setEnhetsinfo(orgInfo, parentPath)
 				setLoading(false)
 				setSuccess(true)
 			})
@@ -67,21 +70,20 @@ export const OrganisasjonTextSelect = ({
 	return (
 		<OrganisasjonMedMiljoeSelect
 			path={path}
-			environment={environment}
+			parentPath={parentPath}
 			miljoeOptions={aktiveMiljoer}
-			error={error}
 			success={success}
 			loading={loading}
 			onTextBlur={(event) => {
 				if (!_.isEmpty(event?.target?.value)) {
 					setOrgnummer(event.target.value)
-					handleChange(event.target.value, environment)
+					handleChange(event.target.value, formMethods.watch(`${parentPath}.organisasjonMiljoe`))
 				}
 			}}
 			onMiljoeChange={(event) => {
-				setEnvironment(event.value)
 				handleChange(orgnummer, event.value)
 			}}
+			formMethods={formMethods}
 		/>
 	)
 }

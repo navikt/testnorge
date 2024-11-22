@@ -162,7 +162,12 @@ export const ForelderBarnRelasjonForm = ({
 							isClearable={false}
 						/>
 						{!testnorgePerson && (
-							<FormCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
+							<FormCheckbox
+								name={`${path}.borIkkeSammen`}
+								id={`${path}.borIkkeSammen`}
+								label="Bor ikke sammen"
+								checkboxMargin
+							/>
 						)}
 					</>
 				)}

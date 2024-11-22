@@ -94,6 +94,7 @@ export const SivilstandForm = ({
 			/>
 			<FormCheckbox
 				name={`${path}.borIkkeSammen`}
+				id={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"
 				isDisabled={!kanHaRelatertPerson}
 				vis={!isTestnorgeIdent}

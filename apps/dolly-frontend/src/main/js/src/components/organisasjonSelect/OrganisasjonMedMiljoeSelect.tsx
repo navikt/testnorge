@@ -6,22 +6,24 @@ import React from 'react'
 
 interface OrgProps {
 	path: string
-	environment: string
+	parentPath: string
 	miljoeOptions: string[]
 	success: boolean
 	loading?: boolean
 	onTextBlur: (event: React.ChangeEvent<any>) => void
 	onMiljoeChange: (event: any) => void
+	formMethods: any
 }
 
 export const OrganisasjonMedMiljoeSelect = ({
 	path,
-	environment,
+	parentPath,
 	miljoeOptions,
 	success,
 	loading = false,
 	onTextBlur,
 	onMiljoeChange,
+	formMethods,
 }: OrgProps) => {
 	const options =
 		miljoeOptions &&
@@ -29,7 +31,6 @@ export const OrganisasjonMedMiljoeSelect = ({
 			value: value.id,
 			label: value.label,
 		}))
-	const parentPath = path.substring(0, path.lastIndexOf('.'))
 
 	return (
 		<div className={'flexbox--align-start'}>
@@ -42,11 +43,12 @@ export const OrganisasjonMedMiljoeSelect = ({
 				onBlur={onTextBlur}
 			/>
 			<DollySelect
+				name={`${parentPath}.organisasjonMiljoe`}
 				size={'small'}
 				isClearable={false}
-				label={'Organisasjon Miljø'}
+				label={'Organisasjon miljø'}
 				options={options}
-				value={environment}
+				value={formMethods.watch(`${parentPath}.organisasjonMiljoe`)}
 				onChange={onMiljoeChange}
 			/>
 			{loading && (

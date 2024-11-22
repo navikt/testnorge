@@ -50,6 +50,7 @@ export const getRandomValue = (liste: Array<any>) => {
 	return liste[random]
 }
 
+//TODO: Hente ut alle org-relaterte greier i en egen fil?
 export const arbeidsgiverToggleValues = [
 	{
 		value: ArbeidsgiverTyper.felles,

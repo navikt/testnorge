@@ -164,6 +164,7 @@ export const InntektsmeldingForm = () => {
 											/>
 											<FormCheckbox
 												name={`${path}.naerRelasjon`}
+												id={`${path}.naerRelasjon`}
 												label="Nær relasjon"
 												checkboxMargin
 											/>
@@ -177,7 +178,11 @@ export const InntektsmeldingForm = () => {
 												formMethods={formMethods}
 											/>
 											<div style={{ margin: '70px 0 0 30px' }}>
-												<FormCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />
+												<FormCheckbox
+													name={`${path}.naerRelasjon`}
+													id={`${path}.naerRelasjon`}
+													label="Nær relasjon"
+												/>
 											</div>
 										</div>
 									)}
