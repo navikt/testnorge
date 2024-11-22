@@ -35,7 +35,7 @@ export const FoedselsdatoForm = ({ formMethods, path }: FoedselsdatoTypes) => {
 			<FormDatepicker
 				name={`${path}.foedselsdato`}
 				label="Fødselsdato"
-				disabled={(foedselsaar !== null && foedselsaar !== '') || harAlder()}
+				disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
 				maxDate={new Date()}
 				minDate={minDateFoedsel}
 			/>
@@ -43,9 +43,7 @@ export const FoedselsdatoForm = ({ formMethods, path }: FoedselsdatoTypes) => {
 				name={`${path}.foedselsaar`}
 				label="Fødselsår"
 				options={getYearRangeOptions(minDateFoedsel, new Date())}
-				// maxDate={new Date()}
-				// minDate={minDateFoedsel}
-				isDisabled={(foedselsdato !== null && foedselsdato !== '') || harAlder()}
+				isDisabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
 			/>
 			<AvansertForm
 				path={path}
