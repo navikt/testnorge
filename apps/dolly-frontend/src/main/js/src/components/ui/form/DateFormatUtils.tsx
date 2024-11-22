@@ -59,5 +59,5 @@ export const convertInputToDate = (
 	if (fixOffset) {
 		return dayJs.utc().add(dayJs.utcOffset(), 'minute')
 	}
-	return dayJs.utc()
+	return dayJs
 }

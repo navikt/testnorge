@@ -32,9 +32,7 @@ export const formatDate = (date: any, formatString?: string) => {
 	}
 	if (isDate(date)) {
 		const customdayjs = initDayjs()
-		return customdayjs(date)
-			.utc()
-			.format(formatString || 'DD.MM.YYYY')
+		return customdayjs(date).format(formatString || 'DD.MM.YYYY')
 	}
 	const dayjsDate = convertInputToDate(date)
 	const valid = dayjsDate?.isValid?.()
