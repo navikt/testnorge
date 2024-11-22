@@ -15,23 +15,19 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Configuration
-@Slf4j
 public class JsonMapperConfig {
 
     private static final String YEAR_MONTH = "yyyy-MM";
@@ -39,8 +35,6 @@ public class JsonMapperConfig {
     @Bean
     public ObjectMapper objectMapper() {
 
-        var dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         var simpleModule = new SimpleModule()
                 .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
@@ -60,9 +54,7 @@ public class JsonMapperConfig {
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build()
                 .registerModule(new JavaTimeModule())
-                .registerModule(simpleModule)
-                .setDateFormat(dateFormat);
-
+                .registerModule(simpleModule);
 
     }
 
@@ -112,8 +104,6 @@ public class JsonMapperConfig {
                 return null;
             }
             var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
-            log.info(dateTime);
-            log.info(LocalDateTime.parse(dateTime).toString());
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
         }
     }
