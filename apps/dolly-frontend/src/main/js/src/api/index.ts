@@ -11,27 +11,25 @@ const fetchRetry = fetch_retry(originalFetch)
 
 const allowForbidden = ['testnav-arbeidsplassencv', 'testnav-fullmakt', 'infostripe', 'norg2']
 
-export const multiFetcherAll = (urlListe, headers = null) => {
-	return Promise.all(
+export const multiFetcherAll = (urlListe, headers = null) =>
+	Promise.all(
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
 				return result
 			}),
 		),
 	)
-}
-export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) => {
-	return Promise.all(
+export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
+	Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
 				return { miljo: obj.miljo, data: path ? result[path] : result?.[obj.miljo] }
 			}),
 		),
 	)
-}
 
-export const multiFetcherArena = (miljoUrlListe, headers = null) => {
-	return Promise.all(
+export const multiFetcherArena = (miljoUrlListe, headers = null) =>
+	Promise.all(
 		miljoUrlListe?.map((obj) =>
 			fetcher(obj.url, headers)
 				.then((result) => {
@@ -44,10 +42,9 @@ export const multiFetcherArena = (miljoUrlListe, headers = null) => {
 				}),
 		),
 	)
-}
 
-export const multiFetcherAareg = (miljoUrlListe, headers = null, path = null) => {
-	return Promise.allSettled(
+export const multiFetcherAareg = (miljoUrlListe, headers = null, path = null) =>
+	Promise.allSettled(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers)
 				.then((result) => {
@@ -58,20 +55,18 @@ export const multiFetcherAareg = (miljoUrlListe, headers = null, path = null) =>
 				}),
 		),
 	).then((liste) => liste?.map((item) => item?.value))
-}
 
-export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) => {
-	return Promise.all(
+export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) =>
+	Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, { miljo: obj.miljo, ...headers }).then((result) => {
 				return { miljo: obj.miljo, data: result }
 			}),
 		),
 	)
-}
 
-export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = null) => {
-	return Promise.allSettled(
+export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = null) =>
+	Promise.allSettled(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers)
 				.then((result) => {
@@ -82,7 +77,6 @@ export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, path = n
 				}),
 		),
 	).then((liste) => liste?.map((item) => item?.value))
-}
 
 export const multiFetcherDokarkiv = (miljoUrlListe) =>
 	Promise.all(
@@ -118,20 +112,8 @@ export const cvFetcher = (url, headers) =>
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
 
-const clearLargeCookies = () => {
-	const cookies = document.cookie.split(';')
-	cookies.forEach((cookie) => {
-		const [name, value] = cookie.split('=')
-		if (value && value.length > 1000) {
-			// Fjerner cookies som er over 1000 tegn
-			document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-		}
-	})
-}
-
-export const fetcher = (url, headers) => {
-	clearLargeCookies()
-	return axios
+export const fetcher = (url, headers) =>
+	axios
 		.get(url, { headers: headers })
 		.then((res) => {
 			return res.data
@@ -152,14 +134,11 @@ export const fetcher = (url, headers) => {
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
-}
 
-export const imageFetcher = (...args: Argument[]) => {
-	clearLargeCookies()
-	return originalFetch(...args).then((res: Response) =>
+export const imageFetcher = (...args: Argument[]) =>
+	originalFetch(...args).then((res: Response) =>
 		res.ok ? res.blob().then((blob: Blob) => URL.createObjectURL(blob)) : null,
 	)
-}
 
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
 
@@ -169,9 +148,8 @@ type Config = {
 	redirect?: 'follow' | 'manual'
 }
 
-const _fetch = (url: string, config: Config, body?: object): Promise<Response> => {
-	clearLargeCookies()
-	return fetchRetry(url, {
+const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
+	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
 			if (!response.ok && response?.status !== 404 && !runningE2ETest()) {
 				if (response?.status === 401 && !allowForbidden.some((value) => url.includes(value))) {
@@ -220,7 +198,6 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		}
 		return response
 	})
-}
 
 const fetchJson = (url: string, config: Config, body?: object): Promise =>
 	_fetch(
