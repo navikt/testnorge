@@ -14,7 +14,6 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.util.TransactionHelperService;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,6 +83,8 @@ class ArenaForvalterClientTest {
     @Test
     void gjenopprett_Ok() {
 
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
+
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
         when(arenaForvalterConsumer.getArenaBruker(anyString(), anyString()))
@@ -114,6 +115,8 @@ class ArenaForvalterClientTest {
 
     @Test
     void gjenopprett_FunksjonellFeil() {
+
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
 
         var progress = new BestillingProgress();
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
@@ -148,6 +151,8 @@ class ArenaForvalterClientTest {
     @Test
     void gjenopprett_TekniskFeil() {
 
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
+
         var progress = new BestillingProgress();
 
         var request = new RsDollyBestillingRequest();
@@ -155,10 +160,11 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singleton(ENV));
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
 
-        var gjenopprett = arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                .build(), progress, false);
-
-        Assertions.assertThrows(NullPointerException.class, () -> gjenopprett .blockFirst());
+        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
+                                .build(), progress, false)
+                        .map(ClientFuture::get))
+                .assertNext(status -> assertThat(status.getArenaforvalterStatus(), is(nullValue())))
+                .verifyComplete();
     }
 
     @Test
