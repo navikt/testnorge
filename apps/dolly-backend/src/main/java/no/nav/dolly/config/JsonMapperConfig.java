@@ -15,6 +15,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,6 +31,7 @@ import java.util.TimeZone;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Configuration
+@Slf4j
 public class JsonMapperConfig {
 
     private static final String YEAR_MONTH = "yyyy-MM";
@@ -110,6 +112,8 @@ public class JsonMapperConfig {
                 return null;
             }
             var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
+            log.info(dateTime);
+            log.info(LocalDateTime.parse(dateTime).toString());
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
         }
     }
