@@ -14,6 +14,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -193,6 +194,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
     protected static void setGyldigTilOgMed(PersonDTO person) {
 
+        person.setFolkeregisterPersonstatus(new ArrayList<>(person.getFolkeregisterPersonstatus()));
         person.getFolkeregisterPersonstatus()
                 .sort(Comparator.comparing(FolkeregisterPersonstatusDTO::getGyldigFraOgMed).reversed());
 
