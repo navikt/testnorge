@@ -25,6 +25,10 @@ export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = () => {
 	const formMethods = useFormContext()
+	if (!formMethods.watch(krrAttributt)) {
+		return null
+	}
+
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState(formMethods.watch('krrstub.land'))
 	const [mobilnummer, setMobilnummer] = useState(formMethods.watch('values.krrstub.mobil') || '')

@@ -10,7 +10,6 @@ import {
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
@@ -176,10 +175,10 @@ export const YrkesskaderForm = () => {
 										onChange={(value: any) => handleChangeTidstype(value, path)}
 									/>
 									{formMethods.watch(`${path}.tidstype`) === 'tidspunkt' && (
-										<FormDateTimepicker
-											formMethods={formMethods}
+										<FormDatepicker
 											name={`${path}.skadetidspunkt`}
 											label="Skadetidspunkt"
+											format={'DD.MM.YYYY HH:mm'}
 										/>
 									)}
 									{formMethods.watch(`${path}.tidstype`) === 'periode' && (

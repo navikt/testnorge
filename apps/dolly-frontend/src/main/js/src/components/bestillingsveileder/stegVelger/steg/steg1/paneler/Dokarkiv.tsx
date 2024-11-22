@@ -5,9 +5,9 @@ import { dokarkivAttributt } from '@/components/fagsystem/dokarkiv/form/Dokarkiv
 import {
 	initialDigitalInnsending,
 	initialDokarkiv,
-	initialHistark,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { histarkAttributt } from '@/components/fagsystem/histark/form/HistarkForm'
+import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 
 export const DokarkivPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(DokarkivPanel.initialValues)

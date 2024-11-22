@@ -46,7 +46,7 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }: Arbeidsforhold
 				? fixTimezone(field)
 				: field?.value || field?.target?.value || null
 			setValue(`${path}.${fieldPath}`, value)
-			trigger()
+			trigger(path)
 		}
 	}
 
@@ -59,7 +59,7 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }: Arbeidsforhold
 					arbeidsgiver: gjeldendeArbeidsgiver,
 					arbeidsavtale: { yrke: gjeldendeArbeidsavtale?.yrke || '' },
 				})
-				trigger()
+				trigger(path)
 			}
 		} else {
 			if (arbeidsforholdstype === 'forenkletOppgjoersordning' || arbeidsforholdstype === '') {
@@ -69,17 +69,17 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }: Arbeidsforhold
 					arbeidsgiver: gjeldendeArbeidsgiver,
 					arbeidsavtale: { ...initialArbeidsavtale, yrke: gjeldendeArbeidsavtale?.yrke || '' },
 				})
-				trigger()
+				trigger(path)
 			} else {
 				setValue(`${path}.arbeidsforholdstype`, event.value)
-				trigger()
+				trigger(path)
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
 				setValue(`${path}.fartoy`, initialFartoy)
-				trigger()
+				trigger(path)
 			} else {
 				setValue(`${path}.fartoy`, undefined)
-				trigger()
+				trigger(path)
 			}
 		}
 	}
