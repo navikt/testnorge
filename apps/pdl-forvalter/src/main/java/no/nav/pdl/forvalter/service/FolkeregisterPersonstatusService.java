@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.utils.ArtifactUtils;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -13,6 +14,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -71,7 +73,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             }
         }
 
-        setGyldigTilOgMed(person.getFolkeregisterPersonstatus());
+        setGyldigTilOgMed(person);
         return person.getFolkeregisterPersonstatus();
     }
 
@@ -189,7 +191,13 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                 .orElse(FoedselsdatoUtility.getFoedselsdato(person));
     }
 
-    protected static void setGyldigTilOgMed(List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus) {
+    protected static void setGyldigTilOgMed(PersonDTO person) {
+
+        person.getFolkeregisterPersonstatus()
+                .sort(Comparator.comparing(FolkeregisterPersonstatusDTO::getGyldigFraOgMed).reversed());
+
+        var folkeregisterPersonstatus = person.getFolkeregisterPersonstatus();
+        ArtifactUtils.renumberId(folkeregisterPersonstatus);
 
         for (var i = folkeregisterPersonstatus.size() - 1; i >= 0; i--) {
 
