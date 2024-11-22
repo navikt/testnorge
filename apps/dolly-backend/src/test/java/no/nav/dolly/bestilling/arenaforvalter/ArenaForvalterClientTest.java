@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaStansYtelseService;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -44,6 +45,9 @@ class ArenaForvalterClientTest {
 
     private static final String IDENT = "12423353112";
     private static final String ENV = "q2";
+
+    @Mock
+    private ApplicationConfig applicationConfig;
 
     @Mock
     private ArenaForvalterConsumer arenaForvalterConsumer;
