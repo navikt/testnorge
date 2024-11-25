@@ -38,7 +38,7 @@ const gyldigKontonummerMod11 = (kontonummer: string) => {
 	}
 }
 
-export const generateValidKontoOptions = (kontonummer?: string) => {
+export const generateValidKontoOptions = (kontonummer?: string): any => {
 	const kontoArray = _.isEmpty(kontonummer) ? [] : [{ value: kontonummer, label: kontonummer }]
 	let numIterations = 0
 	while (kontoArray.length < 10 && numIterations < 100) {
