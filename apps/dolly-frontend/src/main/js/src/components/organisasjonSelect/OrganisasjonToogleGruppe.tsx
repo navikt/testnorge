@@ -1,14 +1,10 @@
 import { ToggleGroup } from '@navikt/ds-react'
-import { useEffect } from 'react'
-import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/utils'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 
 interface OrganisasjonToogleGruppeProps {
 	inputType: string
 	handleToggleChange: (value: string) => void
 }
-
-export const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skrivSelv: 'skriv' }
 
 export const OrganisasjonToogleGruppe = ({
 	inputType,
@@ -19,7 +15,6 @@ export const OrganisasjonToogleGruppe = ({
 		<ToggleGroup
 			size={'small'}
 			onChange={handleToggleChange}
-			// defaultValue={sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe}
 			value={inputType}
 			style={{ margin: '5px 0 5px', backgroundColor: '#ffffff' }}
 		>

@@ -173,10 +173,7 @@ export const InntektsmeldingForm = () => {
 
 									{typeArbeidsgiver === TypeArbeidsgiver.VIRKSOMHET && (
 										<div className={'flexbox'}>
-											<OrgnrToggle
-												path={`${path}.arbeidsgiver.virksomhetsnummer`}
-												formMethods={formMethods}
-											/>
+											<OrgnrToggle path={path} formMethods={formMethods} />
 											<div style={{ margin: '70px 0 0 30px' }}>
 												<FormCheckbox
 													name={`${path}.naerRelasjon`}

@@ -114,6 +114,3 @@ export const handleManualOrgChange = (
 			formMethods.setError(path, { message: 'Fant ikke organisasjonen i ' + miljo })
 		})
 }
-
-//TODO: Se paa stedene den er brukt, de boer sikkert skrives om
-export const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'
