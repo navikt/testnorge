@@ -21,3 +21,7 @@ Applikasjonen deployes til dev-fss ved bruk av [Github Actions.](https://github.
 
 Applikasjonen kan også startes opp lokalt ved å bruke LocalApplicationStarter
 
+## Lokal kjøring
+* [Generelt.](../../docs/local_general.md)
+* [Lokal PSQL i Docker](../../docs/local_db.md)
+
