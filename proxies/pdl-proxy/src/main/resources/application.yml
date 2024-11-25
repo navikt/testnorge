@@ -26,7 +26,7 @@ spring:
 app:
   elastic:
     username: ${ELASTIC_USERNAME}
-    password: ${ELASTIC_PASWORD}
+    password: ${ELASTIC_PASSWORD}
   hendelse.lager.api.key: ${HENDELSE_LAGER_API_KEY}
   person.aktor.api.key: ${PERSON_AKTOR_API_KEY}
 
