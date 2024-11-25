@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -12,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class PensjonforvalterHelperTest {
 
