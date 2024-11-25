@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent } from 'react'
+import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
@@ -33,19 +33,6 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 		return null
 	}
 
-	const handleBlur = (aktivIndex: number, filnavn: string) => {
-		handleChange(
-			filer.map((fil, index) =>
-				index === aktivIndex
-					? {
-							...fil,
-							dokNavn: filnavn,
-						}
-					: fil,
-			),
-		)
-	}
-
 	const handleDeleteByIndex = (deleteIndex: number) =>
 		handleChange(filer.filter((fil, index) => index !== deleteIndex))
 
@@ -56,7 +43,7 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 			{isMultiple ? (
 				<DollyFieldArray data={filer} header={`Dokumentinfo`}>
 					{(fil: Vedlegg, index: number) => (
-						<div className="flexbox--space" key={fil.id + '-' + fil.dokNavn + '-' + fil.name}>
+						<div className="flexbox--space" key={fil.id + '-' + fil.name}>
 							<PdfDocument
 								options={{ isEvalSupported: false }}
 								file={'data:application/pdf;base64,' + fil.content.base64}
@@ -64,12 +51,7 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 								<Page pageNumber={1} height={80} width={60} />
 							</PdfDocument>
 							<DollyTextInput
-								name={undefined}
-								// @ts-ignore
-								defaultValue={
-									fil.dokNavn ? fil.dokNavn.replace('.pdf', '') : fil.name?.replace('.pdf', '')
-								}
-								onBlur={(event: BaseSyntheticEvent) => handleBlur(index, event.target.value)}
+								name={`histark.vedlegg.${index}.name`}
 								label={`Tittel på dokument #${index + 1}`}
 							/>
 							<StyledSlettKnapp kind="trashcan" onClick={() => handleDeleteByIndex(index)} />
@@ -77,10 +59,7 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 					)}
 				</DollyFieldArray>
 			) : (
-				<div
-					className="flexbox"
-					key={firstFile.id + '-' + firstFile.dokNavn + '-' + firstFile.name}
-				>
+				<div className="flexbox" key={firstFile.id + '-' + firstFile.name}>
 					<PdfDocument
 						options={{ isEvalSupported: false }}
 						file={'data:application/pdf;base64,' + firstFile.content.base64}
@@ -88,14 +67,8 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 						<Page pageNumber={1} height={80} width={60} />
 					</PdfDocument>
 					<DollyTextInput
-						name={undefined}
-						// @ts-ignore
-						defaultValue={
-							firstFile.dokNavn
-								? firstFile.dokNavn.replace('.pdf', '')
-								: firstFile.name?.replace('.pdf', '')
-						}
-						onBlur={(event: BaseSyntheticEvent) => handleBlur(0, event.target.value)}
+						name={`histark.vedlegg.0.name`}
+						defaultValue={firstFile.name}
 						label={`Tittel på dokument`}
 					/>
 					<StyledSlettKnapp kind="trashcan" onClick={() => handleDeleteByIndex(0)} />

@@ -197,7 +197,7 @@ export const FlyttPersonForm = ({
 						<Button
 							onClick={() => {
 								formMethods.setValue('identer', gruppeIdenterListe)
-								formMethods.trigger()
+								formMethods.trigger('identer')
 							}}
 						>
 							VELG ALLE
@@ -206,7 +206,7 @@ export const FlyttPersonForm = ({
 							data-testid={TestComponentSelectors.BUTTON_FLYTT_PERSONER_NULLSTILL}
 							onClick={() => {
 								formMethods.setValue('identer', [])
-								formMethods.trigger()
+								formMethods.trigger('identer')
 							}}
 						>
 							NULLSTILL

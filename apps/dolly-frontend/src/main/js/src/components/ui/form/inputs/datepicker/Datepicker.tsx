@@ -1,116 +1,174 @@
 import { registerLocale } from 'react-datepicker'
 import { addYears, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
-import { Label } from '@/components/ui/form/inputs/label/Label'
-import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
+import { SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
-import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import _ from 'lodash'
+import React, { BaseSyntheticEvent, useCallback, useEffect, useState } from 'react'
+import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { Label } from '@/components/ui/form/inputs/label/Label'
+import { formatDate } from '@/utils/DataFormatter'
+import { convertInputToDate } from '@/components/ui/form/DateFormatUtils'
 
 registerLocale('nb', locale_nb)
 
-const StyledInput = styled(DatePicker.Input)`
-	&&& {
-		p {
-			font-style: italic;
-			font-weight: normal;
-			color: #ba3a26;
-			margin-top: 0.5rem;
-
-			&::before {
-				content: none;
-			}
-		}
-	}
-`
-
-export const Datepicker = ({
-	name,
-	placeholder = 'Ikke spesifisert',
-	onChange,
-	onBlur,
-	disabled = false,
-	excludeDates,
-	minDate,
-	maxDate,
-}) => {
+export const DollyDatepicker = (props: any) => {
+	const format = props.format || 'DD.MM.YYYY'
 	const formMethods = useFormContext()
-	const selectedDate = formMethods.watch(name) ? new Date(formMethods.watch(name)) : undefined
+	const existingValue = formMethods.watch(props.name)
+	const [showDatepicker, setShowDatepicker] = useState(false)
+	const [input, setInput] = useState(existingValue ? formatDate(existingValue, format) : '')
+	const [errorMessage, setErrorMessage] = useState('')
 
-	const [hasError, setHasError] = useState(false)
+	const getDatepickerProps = useCallback(() => {
+		return useDatepicker({
+			fromDate: props.minDate || subYears(new Date(), 125),
+			toDate: props.maxDate || addYears(new Date(), 5),
+			disabled: props.excludeDates,
+		})
+	}, [props.minDate, props.maxDate, props.excludeDates, input])
 
-	const { datepickerProps, inputProps, setSelected } = useDatepicker({
-		fromDate: minDate || subYears(new Date(), 125),
-		toDate: maxDate || addYears(new Date(), 5),
-		onDateChange: onChange || onBlur,
-		disabled: excludeDates,
-		defaultSelected: selectedDate,
-		onValidate: (date) => {
-			setHasError(!date.isValidDate && !date.isEmpty)
-		},
-	})
+	const { datepickerProps, setSelected } = getDatepickerProps()
 
 	useEffect(() => {
-		const [day, month, year] =
-			inputProps.value && inputProps.value !== '' && inputProps.value?.split('.')
-		const inputDate = (year && new Date(year, month - 1, day)) || undefined
-		if (selectedDate && !_.isEqual(inputDate?.toDateString(), selectedDate?.toDateString())) {
-			setTimeout(() => {
-				setSelected(selectedDate)
-			}, 200)
+		const date = convertInputToDate(existingValue)
+		setInput(date?.isValid?.() ? formatDate(date, format) : existingValue)
+		formMethods.trigger(props.name).then(() => {
+			validateDate(date)
+		})
+	}, [])
+
+	useEffect(() => {
+		if (errorMessage) {
+			formMethods.setError(props.name, {
+				type: 'invalid-date',
+				message: errorMessage,
+			})
+		} else {
+			formMethods.clearErrors(props.name)
 		}
-	}, [inputProps.value, selectedDate])
+	}, [errorMessage])
+
+	const validateDate = (date) => {
+		if (!date || date.isValid?.()) {
+			setErrorMessage(null)
+			formMethods.clearErrors(props.name)
+		} else if (date.isAfter?.(props.maxDate) || date.isBefore?.(props.minDate)) {
+			setErrorMessage('Dato utenfor gyldig periode')
+			formMethods.setError(props.name, {
+				type: 'invalid-date',
+				message: 'Dato utenfor gyldig periode',
+			})
+		} else {
+			setErrorMessage('Ugyldig dato-format')
+			formMethods.setError(props.name, {
+				type: 'invalid-date-format',
+				message: 'Ugyldig dato-format',
+			})
+		}
+	}
+
+	const setFormDate = (date) => {
+		const formDate = date.isValid?.() ? date.toDate() : date
+		props.onChange?.(formDate)
+		const dateStr = formDate?.toISOString?.().substring?.(0, 19)
+		formMethods.setValue(props.name, dateStr || date, {
+			shouldTouch: true,
+		})
+		formMethods.trigger(props.name).then(() => {
+			validateDate(date)
+		})
+	}
+
+	const handleInputBlur = (e: BaseSyntheticEvent) => {
+		const value = e.target.value
+		let date = convertInputToDate(value, true)
+		if (date.isValid?.()) {
+			setSelected(date.toDate?.())
+		} else {
+			date = value
+		}
+
+		setFormDate(date)
+		setInput(formatDate(date, format))
+	}
+
+	const DateInput = (
+		<TextInput
+			{...props}
+			style={{ width: '172px' }}
+			onChange={(e: BaseSyntheticEvent) => {
+				const value = e.target.value
+				const date = convertInputToDate(value, true)
+				setFormDate(date)
+				setInput(value)
+			}}
+			onBlur={handleInputBlur}
+			isDisabled={props.disabled}
+			input={input}
+			icon={'calendar'}
+			datepickerOnclick={() => {
+				if (!props.disabled) {
+					setShowDatepicker((prev) => !prev)
+				}
+			}}
+		/>
+	)
 
 	return (
-		<DatePicker {...datepickerProps} dropdownCaption={true}>
-			<StyledInput
-				{...inputProps}
-				placeholder={placeholder}
-				onChange={(e) => {
-					setSelected(undefined)
-					inputProps.onChange(e)
-					formMethods.trigger(name)
-				}}
-				size={'small'}
-				disabled={disabled}
-				label={null}
-				error={hasError && 'Ugyldig dato-format'}
-			/>
-		</DatePicker>
+		<InputWrapper {...props}>
+			<Label name={props.name} label={props.label}>
+				{(showDatepicker && (
+					<DatePicker
+						{...datepickerProps}
+						onSelect={(val) => {
+							setSelected(val)
+
+							const date = convertInputToDate(val, true)
+							setFormDate(date)
+							setInput(formatDate(date, format))
+							formMethods.trigger(props.name).then(() => {
+								validateDate(date)
+							})
+							setShowDatepicker(false)
+						}}
+						onClose={() => setShowDatepicker(false)}
+						open
+						dropdownCaption
+					>
+						{DateInput}
+					</DatePicker>
+				)) ||
+					DateInput}
+			</Label>
+		</InputWrapper>
 	)
 }
-
-export const DollyDatepicker = (props) => (
-	<InputWrapper {...props}>
-		<Label name={props.name} label={props.label}>
-			<Datepicker {...props} />
-		</Label>
-	</InputWrapper>
-)
 
 const P_FormDatepicker = ({ ...props }) => {
 	const formMethods = useFormContext()
 	const value = formMethods.watch(props.name)
-	const handleChange = (date) => {
-		if (props.afterChange) {
-			props.afterChange(date)
-		}
-		let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
-		formMethods.setValue(props.name, val, { shouldTouch: true })
-		formMethods.trigger(props.name)
-	}
-	const handleBlur = () => {
+
+	const handleChange = useCallback(
+		(date: any) => {
+			formMethods.setValue(props.name, date, { shouldTouch: true })
+			props.onChange?.(date)
+			props.afterChange?.(date)
+			formMethods.trigger(props.name)
+		},
+		[formMethods, props.afterChange, props],
+	)
+	const handleBlur = useCallback(() => {
 		props?.onBlur?.(SyntEvent(props.name, value))
 		formMethods.setValue(props.name, value, { shouldTouch: true })
 		formMethods.trigger(props.name)
-	}
-	return <DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
+	}, [props, formMethods])
+
+	return <DollyDatepicker onChange={handleChange} onBlur={handleBlur} {...props} />
 }
 
 export const FormDatepicker = ({ visHvisAvhuket = true, ...props }) => {

@@ -25,7 +25,7 @@ export const MatrikkeladresseTilfeldig = ({ formMethods, path }: Matrikkeladress
 			tilleggsnavn: adresse.tilleggsnavn,
 			matrikkeladresseType: formMethods.watch(`${path}.matrikkeladresseType`),
 		})
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const renderAdresse = () => {
