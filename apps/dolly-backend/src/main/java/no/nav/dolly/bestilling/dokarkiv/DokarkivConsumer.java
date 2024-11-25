@@ -13,7 +13,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -41,18 +40,18 @@ public class DokarkivConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
-    public Flux<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
+    @Timed(name = "providers", tags = {"operation", "dokarkiv-opprett"})
+    public Mono<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
 
         log.info("Dokarkiv sender melding for ident {} miljoe {} request {}",
                 dokarkivRequest.getBruker().getId(), environment, dokarkivRequest);
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new DokarkivPostCommand(webClient, environment, dokarkivRequest,
+                .flatMap(token -> new DokarkivPostCommand(webClient, environment, dokarkivRequest,
                         token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "dokarkiv_getEnvironments" })
+    @Timed(name = "providers", tags = {"operation", "dokarkiv_getEnvironments"})
     public Mono<List<String>> getEnvironments() {
 
         return tokenService.exchange(serverProperties)

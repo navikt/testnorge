@@ -1,7 +1,7 @@
 package no.nav.dolly.errorhandling;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ErrorStatusDecoder {
 
     private static final String TEKNISK_FEIL = "Teknisk feil {} mottatt fra system";
@@ -31,7 +31,11 @@ public class ErrorStatusDecoder {
     private static final String DETAILS = "details";
     private static final String FEIL = "Feil= ";
 
-    private final ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+
+    public ErrorStatusDecoder(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     public static String getInfoVenter(String system) {
 
@@ -65,16 +69,6 @@ public class ErrorStatusDecoder {
         }
 
         return builder.toString();
-    }
-
-    public String decodeException(Exception e) {
-
-        log.error(TEKNISK_FEIL, e.getMessage(), e);
-        return new StringBuilder()
-                .append(FEIL)
-                .append(TEKNISK_FEIL_SE_LOGG)
-                .append(encodeStatus(e.getMessage()))
-                .toString();
     }
 
     public String decodeThrowable(Throwable error) {

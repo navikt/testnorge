@@ -16,6 +16,7 @@ import java.util.Set;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AFP_OFFENTLIG;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_ANNET;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
@@ -37,6 +38,7 @@ public final class BestillingPensjonforvalterStatusMapper {
     private static final String SAMBOER = "Samboer";
     private static final String PENSJONSAVTALE = "Pensjonsavtale";
     private static final String PEN_AFPOFFENTLIG = "AfpOffentlig";
+    private static final String ANNET = "Annet";
 
     public static List<RsStatusRapport> buildPensjonforvalterStatusMap(List<BestillingProgress> progressList) {
 
@@ -53,7 +55,7 @@ public final class BestillingPensjonforvalterStatusMapper {
                             String[] miljoStatuser = miljostatus.split(":");
                             String miljoe = miljoStatuser.length > 1 ? miljoStatuser[0] : null;
                             if (nonNull(miljoe)) {
-                                String status = miljoStatuser.length > 1 ? miljoStatuser[1] : miljoStatuser[0];
+                                String status = miljoStatuser[1];
                                 insertArtifact(meldStatusMiljoeIdents, melding, status, miljoe, progress.getIdent());
                             }
                         });
@@ -71,6 +73,7 @@ public final class BestillingPensjonforvalterStatusMapper {
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ALDERSPENSJON, PEN_AP));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJONSAVTALE, PEN_PENSJONSAVTALE));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PEN_AFPOFFENTLIG, PEN_AFP_OFFENTLIG));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ANNET, PEN_ANNET));
 
         return statusRapporter;
     }
