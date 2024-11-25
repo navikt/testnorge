@@ -114,7 +114,7 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
 
     private String formatMessage(String message) {
         message = identNummer.matcher(message).replaceAll(match -> {
-            if (match.group().charAt(2) == '0' || match.group().charAt(2) == '1') {
+            if (match.group().charAt(2) < '4') {
                 return match.group().substring(0, 6) + "xxxxx";
             }
             return match.group();
