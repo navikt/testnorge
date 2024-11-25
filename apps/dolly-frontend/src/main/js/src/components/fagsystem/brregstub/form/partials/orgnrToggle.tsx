@@ -12,6 +12,7 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import Loading from '@/components/ui/loading/Loading'
+import { getOrgType } from '@/components/fagsystem/utils'
 
 interface OrgnrToggleProps {
 	path: string
@@ -35,32 +36,13 @@ export const OrgnrToggle = ({
 		useOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
-	const getOrgType = () => {
-		const orgnr = formMethods.watch(`${path}.orgNr`)
-		//TODO: Denne kan sikkert lages som felles funksjon
-		if (
-			!orgnr ||
-			orgnr === '' ||
-			fasteOrganisasjoner
-				?.map((organisasjon: any) => organisasjon?.orgnummer)
-				?.some((org: string) => org === orgnr)
-		) {
-			return ArbeidsgiverTyper.felles
-		} else if (
-			egneOrganisasjoner
-				?.map((organisasjon: any) => organisasjon?.orgnr)
-				?.some((org: string) => org === orgnr)
-		) {
-			return ArbeidsgiverTyper.egen
-		} else {
-			return ArbeidsgiverTyper.fritekst
-		}
-	}
-
-	const [inputType, setInputType] = useState(getOrgType())
+	const orgnr = formMethods.watch(`${path}.orgNr`)
+	const [inputType, setInputType] = useState(
+		getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner),
+	)
 
 	useEffect(() => {
-		setInputType(getOrgType())
+		setInputType(getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner))
 	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('brregstub.enheter')?.length])
 
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()

@@ -19,7 +19,11 @@ import {
 import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import { useBoolean } from 'react-use'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import { arbeidsgiverToggleValues, handleManualOrgChange } from '@/components/fagsystem/utils'
+import {
+	arbeidsgiverToggleValues,
+	getOrgType,
+	handleManualOrgChange,
+} from '@/components/fagsystem/utils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -49,23 +53,7 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 		const orgnummerLength = 9
 		const orgnr = formMethods.watch(virksomhetPath)
 		if (!orgnr || orgnr === '' || orgnr?.length === orgnummerLength) {
-			if (
-				!orgnr ||
-				orgnr === '' ||
-				fasteOrganisasjoner
-					?.map((organisasjon: any) => organisasjon?.orgnummer)
-					?.some((org: string) => org === orgnr)
-			) {
-				return ArbeidsgiverTyper.felles
-			} else if (
-				egneOrganisasjoner
-					?.map((organisasjon: any) => organisasjon?.orgnr)
-					?.some((org: string) => org === orgnr)
-			) {
-				return ArbeidsgiverTyper.egen
-			} else {
-				return ArbeidsgiverTyper.fritekst
-			}
+			return getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner)
 		} else {
 			return ArbeidsgiverTyper.privat
 		}

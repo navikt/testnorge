@@ -114,3 +114,23 @@ export const handleManualOrgChange = (
 			formMethods.setError(path, { message: 'Fant ikke organisasjonen i ' + miljo })
 		})
 }
+
+export const getOrgType = (orgnr: string, fasteOrganisasjoner: any, egneOrganisasjoner: any) => {
+	if (
+		!orgnr ||
+		orgnr === '' ||
+		fasteOrganisasjoner
+			?.map((organisasjon: any) => organisasjon?.orgnummer)
+			?.some((org: string) => org === orgnr)
+	) {
+		return ArbeidsgiverTyper.felles
+	} else if (
+		egneOrganisasjoner
+			?.map((organisasjon: any) => organisasjon?.orgnr)
+			?.some((org: string) => org === orgnr)
+	) {
+		return ArbeidsgiverTyper.egen
+	} else {
+		return ArbeidsgiverTyper.fritekst
+	}
+}
