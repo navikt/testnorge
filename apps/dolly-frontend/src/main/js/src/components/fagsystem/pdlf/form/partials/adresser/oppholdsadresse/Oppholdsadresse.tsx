@@ -66,7 +66,7 @@ export const OppholdsadresseForm = ({
 		) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}, [])
 
 	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)

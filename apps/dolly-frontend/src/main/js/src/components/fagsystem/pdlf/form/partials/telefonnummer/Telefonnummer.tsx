@@ -4,10 +4,7 @@ import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textI
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import {
-	initialTelefonnummer,
-	initialTpsTelefonnummer,
-} from '@/components/fagsystem/pdlf/form/initialValues'
+import { initialTelefonnummer } from '@/components/fagsystem/pdlf/form/initialValues'
 import styled from 'styled-components'
 import { lookup } from 'country-data-list'
 
@@ -84,7 +81,7 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 	useEffect(() => {
 		if (tlfListe && tlfListe.length === 1) {
 			formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-			formMethods.trigger()
+			formMethods.trigger(path)
 		}
 	}, [tlfListe])
 
@@ -107,17 +104,17 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 		setLand(option.value)
 		formMethods.setValue(`${path}.landskode`, option.landkode)
 		formMethods.setValue(`${path}.land`, option.value)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const handleChangeNummer = (target: { value: string }) => {
 		formMethods.setValue(`${path}.nummer`, target.value)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const handleChangePrioritet = (value: number) => {
 		formMethods.setValue(`${path}.prioritet`, value)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	return (
@@ -161,14 +158,14 @@ export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 
 	const handleNewEntry = () => {
 		formMethods.setValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const handleRemoveEntry = (idx: number) => {
 		tlfListe.splice(idx, 1)
 		formMethods.setValue(paths.pdlTelefonnummer, tlfListe)
 		formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	return (

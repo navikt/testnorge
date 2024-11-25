@@ -22,7 +22,7 @@ export const FoedestedForm = ({ formMethods, path }: FoedestedTypes) => {
 		if (selected?.value !== 'NOR') {
 			formMethods.setValue(`${foededtedPath}.foedekommune`, null)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	return (

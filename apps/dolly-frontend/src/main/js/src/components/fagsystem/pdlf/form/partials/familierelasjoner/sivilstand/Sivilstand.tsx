@@ -50,7 +50,7 @@ export const SivilstandForm = ({
 		if (selected.value === 'SAMBOER') {
 			formMethods.setValue(`${path}.bekreftelsesdato`, null)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const opts = useContext(BestillingsveilederContext)

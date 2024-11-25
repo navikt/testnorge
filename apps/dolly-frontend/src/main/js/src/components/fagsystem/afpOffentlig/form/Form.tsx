@@ -18,6 +18,9 @@ export const afpOffentligPath = 'pensjonforvalter.afpOffentlig'
 
 export const AfpOffentligForm = () => {
 	const formMethods = useFormContext()
+	if (!formMethods.watch(afpOffentligPath)) {
+		return null
+	}
 
 	const { tpOrdningData } = useTpOrdning()
 	const { direktekallData } = useMuligeDirektekall()

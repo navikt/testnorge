@@ -37,7 +37,7 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 
 	const handleGenerer = () => {
 		formMethods.clearErrors(pensjonGenererPath)
-		trigger()
+		trigger(pensjonGenererPath)
 			.then((values) => {
 				if (!values) {
 					formMethods.setError(`${pensjonGenererPath}.generer.tomAar`, {
@@ -55,7 +55,7 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 	}
 
 	useEffect(() => {
-		trigger()
+		trigger(pensjonGenererPath)
 	}, [])
 
 	useEffect(() => {

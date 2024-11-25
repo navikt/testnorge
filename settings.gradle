@@ -31,7 +31,6 @@ def includeAllBuildsFrom(String subdir) {
 }
 
 includeAllBuildsFrom("./apps")
-includeAllBuildsFrom("./examples")
 includeAllBuildsFrom("./libs")
 includeAllBuildsFrom("./mocks")
 includeAllBuildsFrom("./plugins")
