@@ -10,7 +10,7 @@ spring:
 
 app:
   elastic:
-    username: ${sm://elastic-password}
-    password: ${sm://elastic-username}
+    username: ${sm://elastic-username}
+    password: ${sm://elastic-password}
   hendelse.lager.api.key: ${sm://hendelse-lager-api-key}
   person.aktor.api.key: ${sm://person-aktor-api-key}
