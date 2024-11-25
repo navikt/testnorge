@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @UtilityClass
@@ -46,6 +47,10 @@ public class WebClientFilter {
                 return requestException.getCause().toString();
             }
 
+        } else if (throwable instanceof TimeoutException) {
+
+            return "Mottaker svarer ikke, eller har for lang svartid.";
+
         } else {
             return throwable.getMessage();
         }
@@ -53,14 +58,23 @@ public class WebClientFilter {
 
     public static HttpStatus getStatus(Throwable throwable) {
 
-        return throwable instanceof WebClientResponseException webClientResponseException ?
-                HttpStatus.valueOf(webClientResponseException.getStatusCode().value()) :
-                HttpStatus.INTERNAL_SERVER_ERROR;
+        if (throwable instanceof WebClientResponseException webClientResponseException) {
+            return HttpStatus.valueOf(webClientResponseException.getStatusCode().value());
+
+        } else if (throwable instanceof TimeoutException) {
+            return HttpStatus.REQUEST_TIMEOUT;
+
+        } else {
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 
     public static void logErrorMessage(Throwable throwable) {
 
-        if (!(throwable instanceof WebClientResponseException)) {
+        if ((throwable instanceof WebClientResponseException webClientResponseException)) {
+            log.error("%s, %s".formatted(throwable.getMessage(),
+                    webClientResponseException.getResponseBodyAsString()), throwable);
+        } else {
             log.error(throwable.getMessage(), throwable);
         }
     }

@@ -67,16 +67,6 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
-    public String decodeException(Exception e) {
-
-        log.error(TEKNISK_FEIL, e.getMessage(), e);
-        return new StringBuilder()
-                .append(FEIL)
-                .append(TEKNISK_FEIL_SE_LOGG)
-                .append(encodeStatus(e.getMessage()))
-                .toString();
-    }
-
     public String decodeThrowable(Throwable error) {
 
         StringBuilder builder = new StringBuilder()

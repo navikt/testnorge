@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -16,11 +17,13 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +53,7 @@ public class TpsMessagingClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
     private final MiljoerConsumer miljoerConsumer;
+    private final ApplicationConfig applicationConfig;
 
     private static String getResultat(TpsMeldingResponseDTO respons) {
 
@@ -61,9 +65,9 @@ public class TpsMessagingClient implements ClientRegister {
 
         return !statuser.isEmpty() ?
 
-                String.format("%s#%s", melding,
+                "%s#%s".formatted(melding,
                         statuser.stream()
-                                .map(respons -> String.format(STATUS_FMT,
+                                .map(respons -> STATUS_FMT.formatted(
                                         respons.getMiljoe(),
                                         getResultat(respons)))
                                 .collect(Collectors.joining(","))) :
@@ -103,9 +107,21 @@ public class TpsMessagingClient implements ClientRegister {
                                             .toList())
                                     .flatMap(Flux::fromIterable)
                                     .filter(StringUtils::isNotBlank)
+                                    .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                    .onErrorResume(error -> getError(error, miljoer))
                                     .collect(Collectors.joining(SEP));
                         }))
                 .map(status -> futurePersist(dollyPerson, progress, status));
+    }
+
+    private Flux<String> getError(Throwable error, List<String> miljoer) {
+
+        return Flux.just("Meldinger til TPS#%s".formatted(
+                miljoer.stream()
+                        .map(miljoe -> STATUS_FMT.formatted(
+                                miljoe,
+                                "FEIL= " + ErrorStatusDecoder.encodeStatus(WebClientFilter.getMessage(error))))
+                        .collect(Collectors.joining(","))));
     }
 
     private boolean isTpsMessage(RsDollyUtvidetBestilling bestilling) {

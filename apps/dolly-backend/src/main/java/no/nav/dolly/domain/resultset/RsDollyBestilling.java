@@ -132,6 +132,16 @@ public class RsDollyBestilling {
     }
 
     @JsonIgnore
+    public boolean isPensjon() {
+        return nonNull(pensjonforvalter);
+    }
+
+    @JsonIgnore
+    public boolean isExistInntekstsmelding() {
+        return nonNull(inntektsmelding);
+    }
+
+    @JsonIgnore
     public boolean isNonEmpty() {
 
         return Arrays.stream(RsDollyBestilling.class.getMethods())

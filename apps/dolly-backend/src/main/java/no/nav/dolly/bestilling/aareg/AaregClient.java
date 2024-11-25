@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -16,11 +17,13 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Set;
@@ -49,9 +52,10 @@ public class AaregClient implements ClientRegister {
     private static final String SYSTEM = "AAREG";
 
     private final AaregConsumer aaregConsumer;
+    private final AmeldingService ameldingService;
+    private final ApplicationConfig applicationConfig;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final AmeldingService ameldingService;
     private final TransactionHelperService transactionHelperService;
 
     @Override
@@ -66,7 +70,7 @@ public class AaregClient implements ClientRegister {
             var miljoerTrygg = new AtomicReference<>(miljoer);
 
             var initStatus = miljoer.stream()
-                    .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
+                    .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SYSTEM)))
                     .collect(Collectors.joining(","));
 
             transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
@@ -83,9 +87,18 @@ public class AaregClient implements ClientRegister {
                             return ameldingService.sendAmelding(bestilling, dollyPerson, miljoerTrygg.get());
                         }
                     })
+                    .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                    .onErrorResume(error -> getErrors(error, miljoerTrygg.get()))
                     .map(status -> futurePersist(progress, status));
         }
         return Flux.empty();
+    }
+
+    private Flux<String> getErrors(Throwable error, Set<String> miljoer) {
+
+        return Flux.just(miljoer.stream()
+                .map(miljoe -> "%s:Feil= %s".formatted(miljoe, ErrorStatusDecoder.encodeStatus(WebClientFilter.getMessage(error))))
+                .collect(Collectors.joining(",")));
     }
 
     @Override

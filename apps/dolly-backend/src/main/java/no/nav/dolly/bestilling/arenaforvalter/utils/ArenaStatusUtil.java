@@ -11,6 +11,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ public class ArenaStatusUtil {
     public static final String AAP115 = "AAP115";
     public static final String AAP = "AAP";
     public static final String DAGPENGER = "DAGP";
+    public static final String ANDREFEIL = "ARENA Oppretting Feil=";
 
     public static Mono<String> getDagpengerStatus(ArenaNyeDagpengerResponse response, ErrorStatusDecoder errorStatusDecoder) {
 
@@ -37,7 +39,7 @@ public class ArenaStatusUtil {
                                 .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
                         Flux.fromIterable(response.getNyeDagp())
                                 .filter(nyDagP -> nonNull(nyDagP.getNyeDagpResponse()))
-                                .map(nyDagP ->  "JA".equals(nyDagP.getNyeDagpResponse().getUtfall()) ?
+                                .map(nyDagP -> "JA".equals(nyDagP.getNyeDagpResponse().getUtfall()) ?
                                         "OK" :
                                         encodeStatus(ArenaUtils.AVSLAG + nyDagP.getNyeDagpResponse().getBegrunnelse()))
                                 .collect(Collectors.joining()),
@@ -78,9 +80,16 @@ public class ArenaStatusUtil {
         }
     }
 
+    public static String fmtResponse(Collection<String> miljoer, String system, String status) {
+
+        return miljoer.stream()
+                .map(miljo -> fmtResponse(miljo, system, status))
+                .collect(Collectors.joining(","));
+    }
+
     public static String fmtResponse(String miljoe, String system, String status) {
 
-        return String.format(MILJOE_FMT, miljoe, system, encodeStatus(status));
+        return MILJOE_FMT.formatted(miljoe, system, encodeStatus(status));
     }
 
     public static String getMessage(String jsonFeilmelding) {
