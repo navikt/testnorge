@@ -81,7 +81,6 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
-	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(organisasjonPath) || null)
 	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
 
@@ -140,16 +139,16 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 					{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
 						<OrganisasjonMedMiljoeSelect
 							path={organisasjonPath}
-							environment={environment}
+							parentPath={path}
 							miljoeOptions={aktiveMiljoer}
-							loading={loading}
 							success={success}
+							loading={loading}
 							onTextBlur={(event) => {
 								const org = event.target.value
 								setOrgnummer(org)
 								handleManualOrgChange(
 									org,
-									environment,
+									formMethods.watch(`${path}.organisasjonMiljoe`),
 									formMethods,
 									organisasjonPath,
 									setLoading,
@@ -159,7 +158,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 								)
 							}}
 							onMiljoeChange={(event) => {
-								setEnvironment(event.value)
+								formMethods.setValue(`${path}.organisasjonMiljoe`, event.value)
 								handleManualOrgChange(
 									orgnummer,
 									event.value,
@@ -171,6 +170,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 									null,
 								)
 							}}
+							formMethods={formMethods}
 						/>
 					)}
 					{typeArbeidsgiver === ArbeidsgiverTyper.privat && (

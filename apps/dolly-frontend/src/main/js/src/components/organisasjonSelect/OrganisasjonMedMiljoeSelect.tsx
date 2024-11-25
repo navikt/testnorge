@@ -33,7 +33,7 @@ export const OrganisasjonMedMiljoeSelect = ({
 		}))
 
 	return (
-		<div className={'flexbox--align-start'}>
+		<div className={'flexbox--align-start'} key={path}>
 			<DollyTextInput
 				fieldName={`${parentPath}.opplysningspliktig`}
 				name={path}
