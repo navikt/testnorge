@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -21,18 +21,12 @@ import static org.apache.poi.util.StringUtil.isNotBlank;
 
 @Slf4j
 @Service
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class PensjonforvalterHelper {
 
-    private TransaksjonMappingService transaksjonMappingService;
-    private ObjectMapper objectMapper;
-    private ErrorStatusDecoder errorStatusDecoder;
-
-    public PensjonforvalterHelper(TransaksjonMappingService transaksjonMappingService, ObjectMapper objectMapper, ErrorStatusDecoder errorStatusDecoder) {
-        this.transaksjonMappingService = transaksjonMappingService;
-        this.objectMapper = objectMapper;
-        this.errorStatusDecoder = errorStatusDecoder;
-    }
+    private final TransaksjonMappingService transaksjonMappingService;
+    private final ObjectMapper objectMapper;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @SuppressWarnings("java:S3740")
     public void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId,
