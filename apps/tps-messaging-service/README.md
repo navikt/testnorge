@@ -6,12 +6,8 @@ Swagger finnes under [/swagger](https://testnav-tps-messaging-service.intern.dev
 applikasjonen.
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør TpsMessagingServiceApplicationStarter med følgende argumenter:
-```
---add-opens java.base/java.lang=ALL-UNNAMED
--Dspring.profiles.active=local
--Dspring.cloud.vault.token=[kopier token fra vault]
-```
+* [Generelt](../../docs/local_general.md)
+* [Lokal PSQL i Docker](../../docs/local_db.md)
 
 På Naisdevice er det ikke åpnet opp for kjøring mot MQ. Det er mulig å teste mot et Dockerimage som innholder en test-MQ,
 i hht denne lenke:

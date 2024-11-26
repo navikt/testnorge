@@ -15,7 +15,3 @@ consumers:
       name: testnav-miljoer-service
 
 TOKEN_X_ISSUER: dummy
-spring:
-  cloud:
-    vault:
-      enabled: false
