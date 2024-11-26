@@ -33,5 +33,5 @@ consumers:
   sykemelding:
     name: syfosmregler
     namespace: teamsykmelding
-    url: https://syfosmregler.intern.dev.nav.no
+    url: http://syfosmregler.teamsykmelding.svc.nais.local
     cluster: dev-gcp
