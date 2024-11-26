@@ -26,7 +26,7 @@ consumers:
   testnav-altinn3-tilgang-service:
     cluster: dev-gcp
     name: testnav-altinn3-tilgang-service
-    url: https://testnav-altinn3-tilgang-service.nav.no
+    url: https://testnav-altinn3-tilgang-service.intern.dev.nav.no
   dolly-backend:
     name: dolly-backend-dev
     url: https://dolly-backend-dev.intern.dev.nav.no
