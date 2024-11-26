@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "http://syfosmregler.teamsykmelding.svc.cluster.local" + "/internal/isAlive",
-                "http://syfosmregler.teamsykmelding.svc.cluster.local" + "/internal/isReady",
+                "http://syfosmregler.teamsykmelding.svc.cluster.local" + "/internal/is_alive",
+                "http://syfosmregler.teamsykmelding.svc.cluster.local" + "/internal/is_ready",
                 statusWebClient);
 
         return Map.of(
