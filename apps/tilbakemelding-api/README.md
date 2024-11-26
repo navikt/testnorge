@@ -12,15 +12,6 @@ Swagger finnes under [/swagger](https://testnorge-tilbakemelding-api.intern.dev.
 
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør TilbakemeldingApiApplicationStarter med følgende argumenter:
-```
--Dspring.cloud.vault.token=[kopier token fra vault]
--Dspring.profiles.active=dev
-```
+* [Generelt.](../../docs/local_general.md)
 
-### Utviklerimage
-I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
-```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
-```
+**NB: Bruk av TOKEN_X_ISSUER må fikses før applikasjonen kan kjøres lokalt.**
