@@ -2,8 +2,5 @@
 Applikasjon for å registrere Testnorge identer som brukere i Arena forvalteren og registrere vedtak på dem.
 
 ## Lokal kjøring
-
-Start `SyntVedtakshistorikkServiceApplicationStarter` med følgenede props:
-```
--Dspring.profiles.active=dev 
-```
+* [Generelt.](../../docs/local_general.md)
+* [Secret Manager.](../../docs/local_secretmanager.md)

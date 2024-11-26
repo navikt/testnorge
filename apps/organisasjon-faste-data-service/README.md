@@ -1,16 +1,7 @@
 # Organisasjon Faste data service
-
 Service som utfører CRUD funksjonalitet for organisasjoner mot EREG. Ofte benyttet etter prod laster mot miljøer for å
 sende inn organisasjoner fra grupper som er blitt overskrevet.
 
-## Swagger
-
-Swagger finnes under [/swagger](https://testnav-organisasjon-faste-data-service.intern.dev.nav.no/swagger) -endepunktet
-til applikasjonen.
-
 ## Lokal kjøring
-
-Ha naisdevice kjørende og kjør OrganisasjonFasteDataServiceApplicationStarter med følgende argumenter:
-```
--Dspring.profiles.active=dev
-```
+* [Generelt.](../../docs/local_general.md)
+* [Secret Manager.](../../docs/local_secretmanager.md)

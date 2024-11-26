@@ -6,19 +6,11 @@ grand_parent: Applikasjoner
 ---
 
 # Oppsummeringsdokument
-
 API for å sende inn oppsummeringsdokumenter til AAreg, og søke i de innsendte dokumentene.
-
-Applikasjonen kan nås fra [/swagger](https://testnav-oppsummeringsdokument-service.intern.dev.nav.no/swagger) -endepunktet.
 
 ## Lokal kjøring
 * [Generelt.](../../docs/local_general.md)
-
-For å kjøre lokalt med OpenSearch:
-
-```
-> docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" --name opensearch-node -d opensearchproject/opensearch:latest
-```
+* [OpenSearch.](../../docs/local_opensearch.md)
 
 Liste over alle indekser:
 

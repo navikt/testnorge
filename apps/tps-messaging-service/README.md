@@ -1,17 +1,11 @@
 # TPS-messaging-service
 TPS-messaging-service gir mulighet å sende og motta XML-meldinger mot TPS MQ-køer, samt lese XML-innhold fra TPS servicerutiner over CICS.
- 
-## Swagger
-Swagger finnes under [/swagger](https://testnav-tps-messaging-service.intern.dev.nav.no/swagger) -endepunktet til
-applikasjonen.
 
 ## Lokal kjøring
 * [Generelt](../../docs/local_general.md)
-* [Lokal PSQL i Docker](../../docs/local_db.md)
+* [Lokal PostgreSQL.](../../docs/local_db.md)
 
-På Naisdevice er det ikke åpnet opp for kjøring mot MQ. Det er mulig å teste mot et Dockerimage som innholder en test-MQ,
-i hht denne lenke:
-https://developer.ibm.com/tutorials/mq-connect-app-queue-manager-containers/
+Gjennom `naisdevice` er det ikke åpnet opp for kjøring mot MQ. Det er mulig å teste mot et Dockerimage som innholder en test-MQ, i hht. [dokumentasjon](https://developer.ibm.com/tutorials/mq-connect-app-queue-manager-containers/).
 
 Kommandoer for Docker:
 ```

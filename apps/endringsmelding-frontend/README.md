@@ -6,8 +6,5 @@ azure-applikasjonen `dev-gcp:dolly:endringsmelding-frontend`.
 https://testnav-endringsmelding.intern.dev.nav.no
 
 ## Lokal kjøring
-
-For å kjøre lokalt (DollyFrontendRedirectApplicationStarter) må active profile settes til `dev`.
-```
--Dspring.profiles.active=dev
-```
+* [Generelt.](../../docs/local_general.md)
+* [Secret Manager.](../../docs/local_secretmanager.md)
