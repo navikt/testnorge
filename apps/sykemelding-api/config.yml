@@ -45,6 +45,7 @@ spec:
     max: 1
   envFrom:
     - secret: dolly-sykemelding-mq
+  env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
   resources:
