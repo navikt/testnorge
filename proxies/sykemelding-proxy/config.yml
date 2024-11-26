@@ -21,7 +21,6 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
-  webproxy: true
   tokenx:
     enabled: true
   azure:
