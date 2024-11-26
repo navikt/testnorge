@@ -200,7 +200,8 @@ const P_FormSelect = ({ feil, ...props }: SelectProps) => {
 				(errorContext?.showError || isTouched) &&
 				(feil ||
 					formMethods?.getFieldState(props.name)?.error ||
-					formMethods?.getFieldState(props.fieldName)?.error)
+					formMethods?.getFieldState(props.fieldName)?.error ||
+					formMethods?.getFieldState(`manual.${props.name}`)?.error)
 			}
 			{...props}
 		/>
