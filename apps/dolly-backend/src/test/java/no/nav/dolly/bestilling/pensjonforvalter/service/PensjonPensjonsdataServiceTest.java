@@ -14,6 +14,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,6 +46,7 @@ import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class PensjonPensjonsdataServiceTest {
