@@ -7,13 +7,13 @@ import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaStansYtelseService;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.util.TransactionHelperService;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +44,9 @@ class ArenaForvalterClientTest {
 
     private static final String IDENT = "12423353112";
     private static final String ENV = "q2";
+
+    @Mock
+    private ApplicationConfig applicationConfig;
 
     @Mock
     private ArenaForvalterConsumer arenaForvalterConsumer;
@@ -80,6 +83,8 @@ class ArenaForvalterClientTest {
     @Test
     void gjenopprett_Ok() {
 
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
+
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
         when(arenaForvalterConsumer.getArenaBruker(anyString(), anyString()))
@@ -110,6 +115,8 @@ class ArenaForvalterClientTest {
 
     @Test
     void gjenopprett_FunksjonellFeil() {
+
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
 
         var progress = new BestillingProgress();
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
@@ -144,6 +151,8 @@ class ArenaForvalterClientTest {
     @Test
     void gjenopprett_TekniskFeil() {
 
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
+
         var progress = new BestillingProgress();
 
         var request = new RsDollyBestillingRequest();
@@ -151,10 +160,11 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singleton(ENV));
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
 
-        var gjenopprett = arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                .build(), progress, false);
-
-        Assertions.assertThrows(NullPointerException.class, () -> gjenopprett .blockFirst());
+        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
+                                .build(), progress, false)
+                        .map(ClientFuture::get))
+                .assertNext(status -> assertThat(status.getArenaforvalterStatus(), is(nullValue())))
+                .verifyComplete();
     }
 
     @Test

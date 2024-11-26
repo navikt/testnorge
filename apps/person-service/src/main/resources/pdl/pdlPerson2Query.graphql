@@ -442,16 +442,6 @@ query($ident: ID!, $historikk: Boolean!) {
                 ...metadataDetails
             }
         },
-        fullmakt(historikk: $historikk) {
-            motpartsPersonident,
-            motpartsRolle,
-            omraader,
-            gyldigFraOgMed,
-            gyldigTilOgMed,
-            metadata {
-                ...metadataDetails
-            }
-        },
         folkeregisteridentifikator(historikk: $historikk) {
             identifikasjonsnummer,
             status,

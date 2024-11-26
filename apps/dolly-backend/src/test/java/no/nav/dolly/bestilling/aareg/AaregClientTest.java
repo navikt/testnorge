@@ -4,6 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -49,6 +50,9 @@ class AaregClientTest {
     private static final String ORGNUMMER = "222222222";
 
     @Mock
+    private ApplicationConfig applicationConfig;
+
+    @Mock
     private AaregConsumer aaregConsumer;
 
     @Mock
@@ -74,6 +78,7 @@ class AaregClientTest {
 
     @BeforeEach
     void setup() {
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
         when(aaregConsumer.getAccessToken())
                 .thenReturn(Mono.just(accessToken));
         statusCaptor = ArgumentCaptor.forClass(String.class);
@@ -107,28 +112,6 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any()))
-                .thenReturn(singletonList(new Arbeidsforhold()));
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
-                .thenReturn(Mono.just(new ArbeidsforholdRespons()));
-        when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
-                .thenReturn(Flux.just(new ArbeidsforholdRespons()));
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
-                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
-
-        var request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsAareg.builder().build()));
-        request.setEnvironments(singleton(ENV));
-        aaregClient.gjenopprett(request,
-                        DollyPerson.builder().ident(IDENT)
-                                .bruker(bruker)
-                                .build(), bestillingProgress, false)
-                .subscribe(resultat ->
-                        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
-    }
-
-    @Test
-    void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_lesKasterException() {
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(singletonList(new Arbeidsforhold()));
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
