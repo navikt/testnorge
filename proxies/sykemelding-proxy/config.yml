@@ -48,8 +48,8 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: skjermede-personer
-          namespace: nom
+        - application: syfosmregler
+          namespace: teamsykmelding
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -79,4 +79,4 @@ spec:
   envFrom:
     - secret: azure-trygdeetaten-testnav-sykemelding-proxy-trygdeetaten
   ingresses:
-    - "https://testnav-sykemelding-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-sykemelding-proxy.intern.dev.nav.no"

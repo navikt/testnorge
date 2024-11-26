@@ -11,19 +11,19 @@ import java.util.Map;
 
 @RestController
 public class StatusController {
-    private static final String TEAM = "Team Org (NOM)";
+    private static final String TEAM = "Team sykmelding";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "http://skjermede-personer.nom.svc.nais.local" + "/internal/isAlive",
-                "http://skjermede-personer.nom.svc.nais.local" + "/internal/isReady",
+                "http://syfosmregler.teamsykmelding.svc.cluster.local" + "/internal/isAlive",
+                "http://syfosmregler.teamsykmelding.svc.cluster.local" + "/internal/isReady",
                 statusWebClient);
 
         return Map.of(
-                "skjermede-personer", status
+                "syfosmregler", status
         );
     }
 

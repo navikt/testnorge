@@ -30,6 +30,18 @@ class RouteLocatorConfigTest {
     @Autowired
     private WebTestClient webClient;
 
+    @TestConfiguration
+    static class TestAuthenticationConfig {
+
+        @Primary
+        @Bean
+        GatewayFilter getNoopAuthenticationFilter() {
+            return (exchange, chain) -> chain.filter(exchange);
+
+        }
+
+    }
+
     @Test
     void shouldRouteToStub() {
 
@@ -50,18 +62,6 @@ class RouteLocatorConfigTest {
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.TEXT_PLAIN_VALUE)
                 .expectBody(String.class).isEqualTo("Some content");
-
-    }
-
-    @TestConfiguration
-    static class TestAuthenticationConfig {
-
-        @Primary
-        @Bean
-        GatewayFilter getNoopAuthenticationFilter() {
-            return (exchange, chain) -> chain.filter(exchange);
-
-        }
 
     }
 

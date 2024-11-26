@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-sykemelding-proxy
-    description: Proxy for sykemelding som legger på sikkerhet.
+    description: Proxy for sykemelding.
   security:
     oauth2:
       resourceserver:
@@ -33,5 +33,5 @@ consumers:
   sykemelding:
     name: syfosmregler
     namespace: teamsykmelding
-    url: https://syfosmregler.intern.dev.nav.no
+    url: http://syfosmregler.teamsykmelding.svc.cluster.local
     cluster: dev-gcp
