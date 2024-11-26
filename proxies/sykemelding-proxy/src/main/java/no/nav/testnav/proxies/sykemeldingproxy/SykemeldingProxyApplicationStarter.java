@@ -8,9 +8,8 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @Import(CoreConfig.class)
 public class SykemeldingProxyApplicationStarter {
-
+   
     public static void main(String[] args) {
         SpringApplication.run(SykemeldingProxyApplicationStarter.class, args);
     }
-
 }
