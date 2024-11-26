@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.testnav.apps.syntsykemeldingapi.service.SykemeldingService;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldningResponseDTO;
 import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 
 import org.springframework.http.HttpStatus;
@@ -21,23 +22,11 @@ import org.springframework.web.client.HttpClientErrorException;
 @RequestMapping("/api/v1/synt-sykemelding")
 @RequiredArgsConstructor
 public class SyntSykemeldingController {
-    private final SykemeldingService service;
+    private final SykemeldingService sykemeldingService;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> opprett(@RequestBody SyntSykemeldingDTO sykemelding) {
-        service.opprettSykemelding(sykemelding);
-        return ResponseEntity.ok().build();
-    }
-
-    @ControllerAdvice
-    public static class ExceptionHandlerAdvice {
-
-        @ExceptionHandler(HttpClientErrorException.class)
-        public ResponseEntity<String> handleException(HttpClientErrorException e) {
-            log.error("Klarte ikke å finne arbeidsforhold", e);
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("Klarte ikke å finne aktivt arbeidsforhold for personen");
-        }
+    public SykemeldningResponseDTO opprett(@RequestBody SyntSykemeldingDTO sykemelding) {
+        
+        return sykemeldingService.opprettSykemelding(sykemelding);
     }
 }

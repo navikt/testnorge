@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.sykemelding.provider;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldningResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +23,8 @@ public class SykemeldingController {
     private final ApplicationInfo applicationInfo;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> create(@RequestBody SykemeldingDTO dto) {
-        service.send(new Sykemelding(dto, applicationInfo));
-        return ResponseEntity.ok().build();
+    public SykemeldningResponseDTO create(@RequestBody SykemeldingDTO dto) {
+
+        return service.send(new Sykemelding(dto, applicationInfo));
     }
 }
