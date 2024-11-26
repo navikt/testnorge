@@ -48,10 +48,6 @@ sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette man
 
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør StatiskDataForvalterApplicationStarter med følgende argumenter:
-```
--Dspring.cloud.vault.token=[kopier token fra vault]
--Dspring.profiles.active=local
-```
-Swagger på [http://localhost:8080/swagger](http://localhost:4390/swagger).
+* [Generelt.](../../docs/local_general.md)
+* [Vault.](../../docs/local_vault.md)
 
