@@ -1,3 +1,8 @@
+dolly:
+  client:
+    general:
+      timeout: 30
+
 spring:
   cache:
     type: none

@@ -141,11 +141,6 @@ query($ident1: ID!) {
                 opplysningsId
             }
         }
-        fullmakt {
-            metadata {
-                opplysningsId
-            }
-        }
     },
     hentIdenter(ident: $ident1, historikk: true, grupper: [AKTORID, FOLKEREGISTERIDENT, NPID]) {
         identer {

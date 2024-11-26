@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -18,7 +17,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
-public class DokarkivPostCommand implements Callable<Flux<DokarkivResponse>> {
+public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
 
     private final WebClient webClient;
     private final String environment;
@@ -27,7 +26,7 @@ public class DokarkivPostCommand implements Callable<Flux<DokarkivResponse>> {
 
 
     @Override
-    public Flux<DokarkivResponse> call() {
+    public Mono<DokarkivResponse> call() {
 
         return webClient.post()
                 .uri(builder ->
@@ -38,7 +37,7 @@ public class DokarkivPostCommand implements Callable<Flux<DokarkivResponse>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(dokarkivRequest)
                 .retrieve()
-                .bodyToFlux(DokarkivResponse.class)
+                .bodyToMono(DokarkivResponse.class)
                 .map(response -> {
                     response.setMiljoe(environment);
                     return response;

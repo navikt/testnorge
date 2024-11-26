@@ -101,7 +101,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 							const fornavn = change?.map((option: Option) => option.value)
 							setSelectedFornavn(fornavn)
 							formMethods.setValue(`${path}.fornavn`, fornavn?.join(' '))
-							formMethods.trigger()
+							formMethods.trigger(path)
 						}}
 						isMulti={true}
 						size="grow"
@@ -119,7 +119,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 							const mellomnavn = change?.map((option: Option) => option.value)
 							setSelectedMellomnavn(mellomnavn)
 							formMethods.setValue(`${path}.mellomnavn`, mellomnavn?.join(' '))
-							formMethods.trigger()
+							formMethods.trigger(path)
 						}}
 						isDisabled={formMethods.watch(`${path}.hasMellomnavn`)}
 						isMulti={true}
@@ -138,7 +138,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 							const etternavn = change?.map((option: Option) => option.value)
 							setSelectedEtternavn(etternavn)
 							formMethods.setValue(`${path}.etternavn`, etternavn.join(' '))
-							formMethods.trigger()
+							formMethods.trigger(path)
 						}}
 						isMulti={true}
 						size="grow"

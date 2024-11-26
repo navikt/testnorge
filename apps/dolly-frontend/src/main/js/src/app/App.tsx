@@ -27,7 +27,7 @@ const logout = (feilmelding: string) => {
 }
 
 export const App = () => {
-	const [criticalError, setCriticalError] = useState(null)
+	const [criticalError, setCriticalError]: any = useState(null)
 
 	const { loading, error: userError, currentBruker } = useCurrentBruker()
 
@@ -46,7 +46,7 @@ export const App = () => {
 	useEffect(() => {
 		if (criticalError && !runningE2ETest()) {
 			console.error(criticalError)
-			logout(criticalError.stack)
+			logout(criticalError?.stack)
 		}
 	}, [criticalError])
 

@@ -6,7 +6,6 @@ import {
 	formatDate,
 	formatDateTime,
 	formatDateTimeWithSeconds,
-	formatDateToYear,
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
@@ -2275,16 +2274,8 @@ const mapHistark = (bestillingData, data) => {
 				),
 				obj('Enhetsnavn', histarkKriterier.dokumenter?.[0]?.enhetsnavn),
 				obj('Enhetsnummer', histarkKriterier.dokumenter?.[0]?.enhetsnummer),
-				obj(
-					'Startår',
-					histarkKriterier.dokumenter?.[0]?.startAar &&
-						formatDateToYear(histarkKriterier.dokumenter?.[0]?.startAar),
-				),
-				obj(
-					'Sluttår',
-					histarkKriterier.dokumenter?.[0]?.sluttAar &&
-						formatDateToYear(histarkKriterier.dokumenter?.[0]?.sluttAar),
-				),
+				obj('Startår', histarkKriterier.dokumenter?.[0]?.startYear),
+				obj('Sluttår', histarkKriterier.dokumenter?.[0]?.endYear),
 			],
 		}
 

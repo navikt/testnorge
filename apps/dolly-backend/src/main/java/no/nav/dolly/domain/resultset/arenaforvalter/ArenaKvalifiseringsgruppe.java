@@ -2,5 +2,5 @@ package no.nav.dolly.domain.resultset.arenaforvalter;
 
 public enum ArenaKvalifiseringsgruppe {
 
-    IKVAL, BFORM, BATT, VARIG, IVURD, BKART
+    IKVAL, BFORM, BATT, VARIG, IVURD, BKART, VURDI
 }

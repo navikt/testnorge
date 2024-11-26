@@ -12,6 +12,7 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -21,17 +22,21 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -40,13 +45,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class DokarkivClient implements ClientRegister {
 
+    private final ApplicationConfig applicationConfig;
     private final DokarkivConsumer dokarkivConsumer;
-    private final MapperFacade mapperFacade;
-    private final TransaksjonMappingService transaksjonMappingService;
-    private final ObjectMapper objectMapper;
-    private final TransactionHelperService transactionHelperService;
-    private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
+    private final ObjectMapper objectMapper;
+    private final PersonServiceConsumer personServiceConsumer;
+    private final TransactionHelperService transactionHelperService;
+    private final TransaksjonMappingService transaksjonMappingService;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -54,24 +60,30 @@ public class DokarkivClient implements ClientRegister {
         return Flux.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getDokarkiv()))
                 .map(RsDollyUtvidetBestilling::getDokarkiv)
-                .flatMap(dokarkiv -> Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
-                                .map(person -> buildRequest(dokarkiv, person))
-                                .flatMap(request -> dokarkivConsumer.getEnvironments()
-                                        .flatMapIterable(env -> env)
-                                        .filter(env -> bestilling.getEnvironments().contains(env))
-                                        .flatMap(env ->
-                                                !transaksjonMappingService.existAlready(DOKARKIV,
-                                                        dollyPerson.getIdent(), env, bestilling.getId()) || isOpprettEndre ?
-
-                                                        dokarkivConsumer.postDokarkiv(env, request)
-                                                                .map(status ->
-                                                                        getStatus(dollyPerson.getIdent(),
-                                                                                bestilling.getId(), status)) :
-
-                                                        Mono.just(env + ":OK")
-                                        ))
-                                .collect(Collectors.joining(",")))
+                .flatMap(dokarkiv -> Flux.from(getPersonData(dollyPerson.getIdent())
+                                .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
+                                        .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
+                                                .flatMap(env -> buildRequest(dokarkiv, person)
+                                                        .flatMap(request ->
+                                                                !transaksjonMappingService.existAlready(DOKARKIV,
+                                                                        dollyPerson.getIdent(), env, bestilling.getId()) || isOpprettEndre ?
+                                                                        dokarkivConsumer.postDokarkiv(env, request)
+                                                                                .map(status ->
+                                                                                        getStatus(dollyPerson.getIdent(),
+                                                                                                bestilling.getId(), status)) :
+                                                                        Mono.just(env + ":OK")
+                                                        ))
+                                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                                .onErrorResume(error -> getErrors(error, miljoer))
+                                        )))
+                        .collect(Collectors.joining(","))
                         .map(status -> futurePersist(progress, status)));
+    }
+
+    private Flux<String> getErrors(Throwable error, List<String> miljoer) {
+
+        return Flux.fromIterable(miljoer)
+                .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(WebClientFilter.getMessage(error))));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -84,12 +96,20 @@ public class DokarkivClient implements ClientRegister {
         };
     }
 
+    private Mono<List<String>> getFilteredMiljoer(Set<String> miljoer) {
+
+        return dokarkivConsumer.getEnvironments()
+                .flatMapMany(Flux::fromIterable)
+                .filter(miljoer::contains)
+                .collectList();
+    }
+
     private String getStatus(String ident, Long bestillingId, DokarkivResponse response) {
 
         log.info("Dokarkiv response {} for ident {}", response, ident);
 
         if (isNull(response)) {
-            return null;
+            return "UKJENT:Intet svar";
         }
 
         if (isBlank(response.getFeilmelding())) {
@@ -101,7 +121,7 @@ public class DokarkivClient implements ClientRegister {
 
             return String.format("%s:FEIL=Teknisk feil se logg! %s", response.getMiljoe(),
                     isNotBlank(response.getFeilmelding()) ?
-                            ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(response.getFeilmelding())) :
+                            encodeStatus(errorStatusDecoder.getStatusMessage(response.getFeilmelding())) :
                             "UKJENT");
         }
     }
@@ -112,9 +132,9 @@ public class DokarkivClient implements ClientRegister {
         // Sletting er ikke støttet
     }
 
-    private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
+    private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {
 
-        return personServiceConsumer.getPdlPersoner(identer)
+        return personServiceConsumer.getPdlPersoner(List.of(ident))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
@@ -122,12 +142,12 @@ public class DokarkivClient implements ClientRegister {
                 .filter(personBolk -> nonNull(personBolk.getPerson()));
     }
 
-    private DokarkivRequest buildRequest(RsDokarkiv rsDokarkiv, PdlPersonBolk.PersonBolk personBolk) {
+    private Mono<DokarkivRequest> buildRequest(RsDokarkiv rsDokarkiv, PdlPersonBolk.PersonBolk personBolk) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personBolk", personBolk);
 
-        return mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context);
+        return Mono.just(mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context));
     }
 
     private void saveTransaksjonId(DokarkivResponse response, String ident, Long bestillingId, String miljoe) {
@@ -140,7 +160,7 @@ public class DokarkivClient implements ClientRegister {
                         .bestillingId(bestillingId)
                         .transaksjonId(toJson(JoarkTransaksjon.builder()
                                 .journalpostId(response.getJournalpostId())
-                                .dokumentInfoId(response.getDokumenter().get(0).getDokumentInfoId())
+                                .dokumentInfoId(response.getDokumenter().getFirst().getDokumentInfoId())
                                 .build()))
                         .datoEndret(LocalDateTime.now())
                         .miljoe(miljoe)

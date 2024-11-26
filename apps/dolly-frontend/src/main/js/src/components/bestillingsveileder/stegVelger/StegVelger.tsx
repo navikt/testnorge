@@ -114,9 +114,6 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 					onPrevious={handleBack}
 					isLastStep={isLastStep()}
 					handleSubmit={() => {
-						formMethods.trigger().catch((error) => {
-							console.warn(error)
-						})
 						return _handleSubmit(formMethods.getValues())
 					}}
 				/>

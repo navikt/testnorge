@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
+import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -8,15 +8,14 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { initialHistark } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import _ from 'lodash'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
-import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { useFormContext } from 'react-hook-form'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { getYearRangeOptions } from '@/utils/DataFormatter'
+import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 
 const DokumentInfoListe = React.lazy(
 	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'),
@@ -37,8 +36,6 @@ export const HistarkForm = () => {
 
 	const sessionDokumenter = formMethods.watch('histark.vedlegg')
 	const [files, setFiles] = useState(sessionDokumenter || [])
-	const [startAar, setStartAar] = useState(new Date())
-	const [sluttAar, setSluttAar] = useState(new Date())
 	const [selectedNavEnhet, setSelectedNavEnhet] = useState(
 		formMethods.watch('histark.dokumenter.0.enhetsnummer'),
 	)
@@ -110,41 +107,23 @@ export const HistarkForm = () => {
 										options={navEnheter}
 										isLoading={_.isEmpty(navEnheter)}
 									/>
-									<Yearpicker
-										formMethods={formMethods}
-										name={`${path}.startAar`}
+									<FormSelect
+										name={`${path}.startYear`}
 										label="Startår"
-										date={startAar}
-										handleDateChange={(val) => {
-											const time = val ? new Date(val) : null
-											setStartAar(time)
-											formMethods.setValue(`${path}.startAar`, val ? new Date(val) : null, {
-												shouldTouch: true,
-											})
-											formMethods.trigger(`${path}.startAar`)
-											formMethods.trigger(`${path}.sluttAar`)
-										}}
-										maxDate={new Date()}
+										options={getYearRangeOptions(1980, 2019)}
+										afterChange={() => formMethods.trigger(path)}
 									/>
-									<Yearpicker
-										formMethods={formMethods}
-										name={`${path}.sluttAar`}
+									<FormSelect
+										name={`${path}.endYear`}
 										label="Sluttår"
-										date={sluttAar}
-										handleDateChange={(val) => {
-											const time = val ? new Date(val) : null
-											setSluttAar(time)
-											formMethods.setValue(`${path}.sluttAar`, time, { shouldTouch: true })
-											formMethods.trigger(`${path}.sluttAar`)
-											formMethods.trigger(`${path}.startAar`)
-										}}
-										maxDate={new Date()}
+										options={getYearRangeOptions(1980, 2019)}
+										afterChange={() => formMethods.trigger(path)}
 									/>
-									<FormDateTimepicker
+									<FormDatepicker
+										format={'DD.MM.YYYY HH:mm'}
 										name={`${path}.skanningsTidspunkt`}
 										label="Skanningstidspunkt"
 										visHvisAvhuket={false}
-										size="medium"
 									/>
 									<FormTextInput
 										name={`${path}.skanner`}
@@ -191,12 +170,18 @@ HistarkForm.validation = {
 					skanner: requiredString,
 					skannested: requiredString,
 					skanningsTidspunkt: requiredDate.nullable(),
-					startAar: testDatoFom(requiredDate.nullable(), 'sluttAar', 'Startår må være før sluttår'),
-					sluttAar: testDatoTom(
-						requiredDate.nullable(),
-						'startAar',
-						'Sluttår må være etter startår',
-					),
+					startYear: Yup.number()
+						.required(messages.required)
+						.test('start-before-slutt', 'Startår må være før sluttår', (value, context) => {
+							const sluttAar = context.parent.endYear
+							return value && sluttAar && value < sluttAar
+						}),
+					endYear: Yup.number()
+						.required(messages.required)
+						.test('slutt-after-start', 'Sluttår må være etter startår', (value, context) => {
+							const startAar = context.parent.startYear
+							return value && startAar && value > startAar
+						}),
 				}),
 			),
 		}),
