@@ -28,7 +28,7 @@ public class SlackConsumer {
         this.token = token;
         this.applicationName = applicationName;
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Slack api", proxyHost);
+            log.trace("Setter opp proxy host {} for Slack api", proxyHost);
             var uri = URI.create(proxyHost);
             webClientBuilder.clientConnector(new ReactorClientHttpConnector(
                 HttpClient
@@ -47,7 +47,7 @@ public class SlackConsumer {
     public void publish(Message message) {
         log.info("Publiserer melding til slack.");
         SlackResponse response = new PublishMessageCommand(webClient, token, message).call();
-        if (!response.getOk()) {
+        if (!Boolean.TRUE.equals(response.getOk())) {
             throw new SlackConsumerException("Klarer ikke aa opprette slack melding", response);
         }
     }
@@ -55,7 +55,7 @@ public class SlackConsumer {
     public void uploadFile(byte[] file, String fileName, String channel) {
         log.info("Publiserer fil til slack.");
         SlackResponse response = new UploadFileCommand(webClient, token, file, fileName, channel, applicationName).call();
-        if (!response.getOk()) {
+        if (!Boolean.TRUE.equals(response.getOk())) {
             throw new SlackConsumerException("Klarer ikke aa opprette slack melding", response);
         }
     }
