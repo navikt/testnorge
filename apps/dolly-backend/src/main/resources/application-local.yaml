@@ -53,7 +53,8 @@ consumers:
     url: https://testnav-amelding-service.intern.dev.nav.no
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.intern.dev.nav.no
-  testnav-synt-sykemelding-api:
+  testnav-synt-sykemelding-api-dev:
+    name: testnav-pdl-forvalter-dev
     url: https://testnav-synt-sykemelding-api.intern.dev.nav.no
   testnav-sykemelding-api:
     url: http://testnav-sykemelding-api.intern.dev.nav.no
