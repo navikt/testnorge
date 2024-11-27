@@ -40,6 +40,7 @@ spec:
         - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
+        - application: testnav-synt-sykemelding-api-dev
         - application: testnav-tps-messaging-service
         - application: testnav-yrkesskade-proxy
         - application: testnorge-profil-api-dev
