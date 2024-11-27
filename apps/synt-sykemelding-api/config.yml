@@ -68,3 +68,6 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   ingresses:
     - "https://testnav-synt-sykemelding-api.intern.dev.nav.no"
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
