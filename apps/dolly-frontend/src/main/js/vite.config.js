@@ -41,6 +41,17 @@ function __preserveRef(key, v) {
 	}
 }
 
+const createProxyConfig = (routes) => {
+	const target = 'http://localhost:8020'
+	const secure = false
+	return Object.fromEntries(
+		Object.entries(routes).map(([path, { changeOrigin }]) => [
+			path,
+			{ target, changeOrigin, secure },
+		]),
+	)
+}
+
 export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
@@ -66,7 +77,7 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	server: mode === 'local-dev' && {
-		proxy: proxyRoutes,
+		proxy: createProxyConfig(proxyRoutes),
 		port: 3000,
 	},
 	test: {

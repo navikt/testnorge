@@ -53,6 +53,11 @@ consumers:
     namespace: dolly
     name: testnav-brregstub-proxy
     url: https://testnav-brregstub-proxy.dev-fss-pub.nais.io
+  testnav-sykemelding-proxy:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-sykemelding-proxy
+    url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
   testnav-udistub-proxy:
     cluster: dev-fss
     namespace: dolly

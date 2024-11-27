@@ -15,8 +15,9 @@ import {
 } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
+import { useSykemeldingValidering } from '@/utils/hooks/useSykemelding'
 
 type DiagnoseSelect = {
 	diagnoseNavn: string
@@ -42,12 +43,25 @@ const initialValuesPeriode = {
 const KODESYSTEM = '2.16.578.1.12.4.1.1.7170'
 
 export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
+	const [shouldValidate, setShouldValidate] = useState(false)
 	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
 		formMethods.setValue(`${path}.diagnose`, v.diagnoseNavn)
 		formMethods.setValue(`${path}.system`, KODESYSTEM)
 	}
 
+	const { validation, loading, error } = useSykemeldingValidering(
+		shouldValidate,
+		formMethods.watch('sykemelding.detaljertSykemelding)'),
+	)
+	console.log('error: ', error) //TODO - SLETT MEG
+	console.log('validation: ', validation) //TODO - SLETT MEG
+
+	useEffect(() => {
+		setShouldValidate(false)
+	}, [validation, loading])
+
 	const handleLegeChange = (v: Helsepersonell) => {
+		// setShouldValidate(true)
 		formMethods.setValue('sykemelding.detaljertSykemelding.helsepersonell', {
 			etternavn: v.etternavn,
 			fornavn: v.fornavn,
