@@ -41,7 +41,7 @@ public class AzureAdProfileConsumer {
                         .build());
 
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Azure Ad", proxyHost);
+            log.trace("Setter opp proxy host {} for Azure Ad", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
                 HttpClient
