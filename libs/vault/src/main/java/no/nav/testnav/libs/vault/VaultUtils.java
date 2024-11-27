@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 @Slf4j
-public final class VaultUtil {
+public final class VaultUtils {
 
     private static final String NAIS_CLUSTER_SYSTEM_PROPERTY = "NAIS_CLUSTER_NAME";
     private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
@@ -49,8 +49,10 @@ public final class VaultUtil {
 
     }
 
-    public static void initCloudVaultToken() {
-        System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken());
+    public static void initCloudVaultToken(String ifProfileIs) {
+        if (ifProfileIs.equals(System.getProperty("spring.profiles.active"))) {
+            System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken());
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 package no.nav.registre.sdforvalter;
 
-import no.nav.testnav.libs.vault.VaultUtil;
+import no.nav.testnav.libs.vault.VaultUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,11 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class StatiskDataForvalterApplicationStarter {
 
     public static void main(String[] args) {
-
-        if ("prod".equals(System.getProperty("spring.profiles.active"))) {
-            VaultUtil.initCloudVaultToken();
-        }
+        VaultUtils.initCloudVaultToken("prod");
         SpringApplication.run(StatiskDataForvalterApplicationStarter.class, args);
 
     }
+
 }
