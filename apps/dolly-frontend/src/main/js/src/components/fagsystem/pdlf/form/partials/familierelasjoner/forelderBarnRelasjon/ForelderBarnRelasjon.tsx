@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
@@ -54,13 +54,26 @@ export const ForelderBarnRelasjonForm = ({
 	const antall = opts?.antall || 1
 	const identMaster = opts?.identMaster || 'PDLF'
 
-	const [erBarn, setErBarn] = React.useState(
+	const [erBarn, setErBarn] = useState(
 		formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN,
 	)
+
 	const relatertPerson = 'relatertPerson'
 	const nyRelatertPerson = 'nyRelatertPerson'
 	const relatertPersonUtenFolkeregisteridentifikator =
 		'relatertPersonUtenFolkeregisteridentifikator'
+
+	const getRolle = () => {
+		const rolle = formMethods.watch(`${path}.relatertPersonsRolle`)
+		return forelderTyper.includes(rolle) ? RELASJON_FORELDER : RELASJON_BARN
+	}
+
+	const [relatertPersonsRolle, setRelatertPersonsRolle] = useState(getRolle())
+
+	useEffect(() => {
+		setRelatertPersonsRolle(getRolle())
+		setErBarn(formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN)
+	}, [formMethods.watch('pdldata.person.forelderBarnRelasjon')?.length])
 
 	const handleChangeTypeForelderBarn = (target: Target, path: string) => {
 		const forelderBarnRelasjon = formMethods.watch(path)
@@ -91,12 +104,6 @@ export const ForelderBarnRelasjonForm = ({
 		formMethods.setValue(path, forelderBarnClone)
 		formMethods.trigger(path)
 	}
-
-	const relatertPersonsRolle = forelderTyper.includes(
-		formMethods.watch(`${path}.relatertPersonsRolle`),
-	)
-		? RELASJON_FORELDER
-		: RELASJON_BARN
 
 	const id = formMethods.watch(`${path}.id`)
 
@@ -130,6 +137,7 @@ export const ForelderBarnRelasjonForm = ({
 			<div className="toggle--wrapper">
 				<ToggleGroup
 					onChange={(value: string) => {
+						setRelatertPersonsRolle(value)
 						formMethods.setValue(
 							path,
 							value === RELASJON_BARN
@@ -140,7 +148,7 @@ export const ForelderBarnRelasjonForm = ({
 						formMethods.trigger(path)
 					}}
 					size={'small'}
-					defaultValue={relatertPersonsRolle || RELASJON_BARN}
+					value={relatertPersonsRolle}
 					style={{ backgroundColor: '#ffffff' }}
 				>
 					<ToggleGroup.Item value={RELASJON_BARN} style={{ marginRight: 0 }}>
@@ -249,12 +257,20 @@ export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
 	const { identtype, identMaster, personFoerLeggTil } = useContext(BestillingsveilederContext)
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
+	const handleRemoveEntry = (idx: number) => {
+		const forelderBarnListe = formMethods.watch('pdldata.person.forelderBarnRelasjon')
+		const filterForelderBarnListe = forelderBarnListe?.filter((_, index) => index !== idx)
+		formMethods.setValue('pdldata.person.forelderBarnRelasjon', filterForelderBarnListe)
+		formMethods.trigger('pdldata.person.forelderBarnRelasjon')
+	}
+
 	return (
 		<FormDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
 			header={'Relasjon'}
 			newEntry={getInitialBarn(initiellMaster)}
 			canBeEmpty={false}
+			handleRemoveEntry={handleRemoveEntry}
 		>
 			{(path: string, idx: number) => {
 				return (

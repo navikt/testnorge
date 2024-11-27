@@ -132,7 +132,7 @@ export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 		const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')
 		const filterSivilstandListe = sivilstandListe?.filter((_, index) => index !== idx)
 		formMethods.setValue('pdldata.person.sivilstand', filterSivilstandListe)
-		formMethods.trigger()
+		formMethods.trigger('pdldata.person.sivilstand')
 	}
 
 	return (

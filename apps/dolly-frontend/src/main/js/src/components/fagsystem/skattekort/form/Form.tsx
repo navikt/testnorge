@@ -52,7 +52,7 @@ export const SkattekortForm = () => {
 		const skattekortListe = formMethods.watch('skattekort.arbeidsgiverSkatt')
 		const filterskattekortListe = skattekortListe?.filter((_, index) => index !== idx)
 		formMethods.setValue('skattekort.arbeidsgiverSkatt', filterskattekortListe)
-		formMethods.trigger()
+		formMethods.trigger('skattekort.arbeidsgiverSkatt')
 	}
 
 	return (
