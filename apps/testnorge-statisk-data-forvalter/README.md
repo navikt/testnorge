@@ -45,5 +45,5 @@ sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette man
 
 ## Lokal kjøring
 * [Generelt.](../../docs/local_general.md)
-* [Vault.](../../docs/local_vault.md)
+* [Secret Manager.](../../docs/local_secretmanager.md)
 
