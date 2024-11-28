@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
@@ -13,6 +14,9 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.repository.TransaksjonMappingRepository;
+import no.nav.dolly.service.TransaksjonMappingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,8 +55,13 @@ class PensjonPensjonsdataServiceTest {
 
     private static final String IDENT = "11111111111";
 
+    @Mock
+    private TransaksjonMappingRepository transaksjonMappingRepository;
+
     @Spy
-    private PensjonforvalterHelper pensjonforvalterHelper;
+    private PensjonforvalterHelper pensjonforvalterHelper =
+            new PensjonforvalterHelper(new TransaksjonMappingService(transaksjonMappingRepository, new ObjectMapper()),
+                    new ObjectMapper(), new ErrorStatusDecoder(new ObjectMapper()));
 
     @Mock
     private PensjonforvalterConsumer pensjonforvalterConsumer;

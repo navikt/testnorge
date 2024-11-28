@@ -46,7 +46,7 @@ public class JwtDecoder {
     private WebClient buildProxyWebClient(String proxyHost) {
         var builder = WebClient.builder();
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for jwt decoder.", proxyHost);
+            log.trace("Setter opp proxy host {} for jwt decoder.", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
                     HttpClient

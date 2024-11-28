@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 class PensjonforvalterHelperTest {
 
     @Spy
-    private ErrorStatusDecoder errorStatusDecoder;
+    private ErrorStatusDecoder errorStatusDecoder = new ErrorStatusDecoder(new ObjectMapper());
 
     @InjectMocks
     private PensjonforvalterHelper pensjonforvalterHelper;
