@@ -3,10 +3,11 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer.command;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
-import no.nav.testnav.apps.syntsykemeldingapi.exception.GenererSykemeldingerException;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -39,7 +40,7 @@ public class PostSyntSykemeldingCommand implements Callable<Mono<HashMap<String,
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
                     log.error("Klarte ikke å hente data fra synthdata-elsam", throwable);
-                    throw new GenererSykemeldingerException("Klarte ikke å generere sykemeldinger.");
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Klarte ikke å generere sykemeldinger.");
                 });
     }
 }

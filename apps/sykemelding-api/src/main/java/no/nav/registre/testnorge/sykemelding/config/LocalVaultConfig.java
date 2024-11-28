@@ -5,6 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile("dev")
+@Profile("local")
 public class LocalVaultConfig extends AbstractLocalVaultConfiguration {
 }

@@ -1,15 +1,16 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-sykemelding-api
+  name: testnav-synt-sykemelding-api-dev
   namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
   labels:
     team: dolly
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
 spec:
+  image: "{{image}}"
+  port: 8080
   webproxy: true
   tokenx:
     enabled: true
@@ -18,8 +19,6 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-  image: "{{image}}"
-  port: 8080
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -43,11 +42,8 @@ spec:
   replicas:
     min: 1
     max: 1
-  envFrom:
-    - secret: dolly-sykemelding-mq
-  env:
-    - name: SPRING_PROFILES_ACTIVE
-      value: prod
+  vault:
+    enabled: true
   resources:
     requests:
       cpu: 200m
@@ -59,16 +55,19 @@ spec:
       rules:
         - application: dolly-backend
         - application: dolly-backend-dev
-        - application: dolly-frontend
-        - application: dolly-frontend-dev
-        - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
-        - application: testnav-synt-sykemelding-api
     outbound:
+      rules:
+        - application: synthdata-elsam-gcp
+        - application: testnav-organisasjon-service
+        - application: testnav-arbeidsforhold-service
+        - application: testnav-helsepersonell-service
+        - application: testnav-sykemelding-api-dev
       external:
-        - host: mqls04.preprod.local
-          ports:
-            - port: 1413
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   ingresses:
-    - "https://testnav-sykemelding-api.intern.dev.nav.no"
+    - "https://testnav-synt-sykemelding-api-dev.intern.dev.nav.no"
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev

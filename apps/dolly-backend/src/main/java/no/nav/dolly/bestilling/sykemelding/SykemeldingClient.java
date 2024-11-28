@@ -188,6 +188,7 @@ public class SykemeldingClient implements ClientRegister {
 
             log.info("Lagrer transaksjon for {} i q1 ", sykemelding.getIdent());
 
+            sykemelding.getSykemeldingRequest().setSykemeldingId(sykemelding.getMsgId());
             transaksjonMappingService.save(TransaksjonMapping.builder()
                     .ident(sykemelding.getIdent())
                     .bestillingId(bestillingId)
