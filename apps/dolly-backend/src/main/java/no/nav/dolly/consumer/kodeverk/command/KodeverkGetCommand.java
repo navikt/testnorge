@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -31,6 +32,10 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(KodeverkDTO.class)
+                .map(kodeverk -> {
+                    kodeverk.setStatus(HttpStatus.OK);
+                    return kodeverk;
+                })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(KodeverkDTO.builder()
                                 .kodeverknavn(kodeverk)

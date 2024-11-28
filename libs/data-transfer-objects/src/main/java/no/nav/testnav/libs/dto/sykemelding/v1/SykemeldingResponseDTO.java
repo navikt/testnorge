@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SykemeldningResponseDTO {
+public class SykemeldingResponseDTO {
 
     private HttpStatus status;
     private String sykemeldingId;

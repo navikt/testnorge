@@ -45,7 +45,8 @@ public class SykemeldingConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SykemeldingPostCommand(webClient, detaljertSykemeldingRequest,
-                        token.getTokenValue()).call());
+                        token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Status fra sykemelding innsending: {}", response.getStatus()));
     }
 
     @Override

@@ -9,11 +9,9 @@ import no.nav.testnav.apps.syntsykemeldingapi.consumer.SykemeldingConsumer;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.SyntElsamConsumer;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Person;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
-import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldningResponseDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingResponseDTO;
 import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 
@@ -27,7 +25,7 @@ public class SykemeldingService {
     private final ArbeidsforholdAdapter arbeidsforholdAdapter;
     private final PdlProxyConsumer pdlProxyConsumer;
 
-    public SykemeldningResponseDTO opprettSykemelding(SyntSykemeldingDTO syntSykemelding) {
+    public SykemeldingResponseDTO opprettSykemelding(SyntSykemeldingDTO syntSykemelding) {
 
         var pdlData = pdlProxyConsumer.getPdlPerson(syntSykemelding.getIdent());
         var pasient = new Person(pdlData);
