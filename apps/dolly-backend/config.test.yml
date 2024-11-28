@@ -39,6 +39,7 @@ spec:
         - application: testnav-person-service
         - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
+        - application: testnav-sykemelding-api-dev
         - application: testnav-synt-sykemelding-api
         - application: testnav-synt-sykemelding-api-dev
         - application: testnav-tps-messaging-service
