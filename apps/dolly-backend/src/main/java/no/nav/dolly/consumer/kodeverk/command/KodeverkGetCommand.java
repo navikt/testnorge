@@ -32,9 +32,9 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(KodeverkDTO.class)
-                .map(kodeverk -> {
-                    kodeverk.setStatus(HttpStatus.OK);
-                    return kodeverk;
+                .map(kodeverket -> {
+                    kodeverket.setStatus(HttpStatus.OK);
+                    return kodeverket;
                 })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(KodeverkDTO.builder()
