@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.sykemelding.service;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer;
 import no.nav.registre.testnorge.sykemelding.consumer.SyfosmreglerConsumer;
 import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class SykemeldingService {
 
+    private final MapperFacade mapperFacade;
     private final SyfoConsumer syfoConsumer;
     private final SyfosmreglerConsumer syfosmreglerConsumer;
 
@@ -24,8 +26,8 @@ public class SykemeldingService {
 
     public Mono<ValidationResultDTO> validate(Sykemelding sykemelding) {
 
-        // TBD Mapping
+        var request = mapperFacade.map(sykemelding, ReceivedSykemeldingDTO.class);
 
-        return syfosmreglerConsumer.validate(new ReceivedSykemeldingDTO());
+        return syfosmreglerConsumer.validate(request);
     }
 }
