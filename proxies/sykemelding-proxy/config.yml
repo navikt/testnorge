@@ -38,6 +38,8 @@ spec:
         - application: dolly-backend
         - application: dolly-backend-dev
         - application: testnav-oversikt-frontend
+        - application: testnav-sykemelding-api-dev
+        - application: testnav-sykemelding-api
     outbound:
       rules:
         - application: syfosmregler
