@@ -3,10 +3,10 @@ package no.nav.dolly.bestilling.sykemelding.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingResponseDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -34,10 +34,10 @@ public class SyntSykemeldingPostCommand {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(sykemeldingRequest)
                 .retrieve()
-                .toBodilessEntity()
-                .timeout(Duration.ofMinutes(4))
+                .bodyToMono(SykemeldingResponseDTO.class)
                 .map(response -> SykemeldingResponse.builder()
-                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                        .status(response.getStatus())
+                        .msgId(response.getSykemeldingId())
                         .ident(sykemeldingRequest.getIdent())
                         .sykemeldingRequest(SykemeldingResponse.SykemeldingRequest.builder()
                                 .syntSykemeldingRequest(sykemeldingRequest)

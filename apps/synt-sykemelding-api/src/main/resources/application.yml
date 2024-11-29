@@ -5,6 +5,9 @@ spring:
     version: application.version.todo
     name: testnav-synt-sykemelding-api
     description: Api for opprettelse av syntetiske sykemeldinger
+  cloud:
+    vault:
+      enabled: false
   security:
     oauth2:
       resourceserver:
