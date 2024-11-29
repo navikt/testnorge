@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.sykemelding.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.sykemelding.dto.ReceivedSykemeldingDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.ValidationResultDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -26,6 +27,11 @@ public class SyfosmreglerPostValidateCommand implements Callable<Mono<Validation
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .bodyValue(receivedSykemelding)
                 .retrieve()
-                .bodyToMono(ValidationResultDTO.class);
+                .bodyToMono(ValidationResultDTO.class)
+                .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(error -> Mono.just(ValidationResultDTO.builder()
+                                .httpStatus(WebClientFilter.getStatus(error))
+                                .message(WebClientFilter.getMessage(error))
+                        .build()));
     }
 }

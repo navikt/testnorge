@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,9 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ValidationResultDTO {
+
+    private HttpStatus httpStatus;
+    private String message;
 
     private AllowedValues status;
     private List<Items> ruleHits;
