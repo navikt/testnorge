@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.sykemelding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sykemelding.command.SykemeldingPostCommand;
@@ -41,7 +42,7 @@ public class SykemeldingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
     public Mono<SykemeldingResponse> postDetaljertSykemelding(DetaljertSykemeldingRequest detaljertSykemeldingRequest) {
 
-        log.info("Detaljert Sykemelding sendt {}", detaljertSykemeldingRequest);
+        log.info("Detaljert Sykemelding sendt {}", Json.pretty(detaljertSykemeldingRequest));
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SykemeldingPostCommand(webClient, detaljertSykemeldingRequest,
