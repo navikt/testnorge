@@ -44,6 +44,7 @@ const KODESYSTEM = '2.16.578.1.12.4.1.1.7170'
 
 export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	const [shouldValidate, setShouldValidate] = useState(false)
+
 	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
 		formMethods.setValue(`${path}.diagnose`, v.diagnoseNavn)
 		formMethods.setValue(`${path}.system`, KODESYSTEM)
@@ -61,7 +62,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	}, [validation, loading])
 
 	const handleLegeChange = (v: Helsepersonell) => {
-		// setShouldValidate(true)
+		setShouldValidate(true)
 		formMethods.setValue('sykemelding.detaljertSykemelding.helsepersonell', {
 			etternavn: v.etternavn,
 			fornavn: v.fornavn,

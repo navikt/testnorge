@@ -67,7 +67,6 @@ spec:
         - application: testnav-levende-arbeidsforhold-ansettelse
         - application: testnav-levende-arbeidsforhold-scheduler
         - application: testnav-yrkesskade-proxy
-        - application: testnav-sykemelding-proxy
 
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io

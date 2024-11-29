@@ -42,7 +42,6 @@ public class Consumers {
     private ServerProperties testnavKodeverkService;
     private ServerProperties testnavKontoregisterPersonProxy;
     private ServerProperties testnavKrrstubProxy;
-    private ServerProperties testnavSykemeldingProxy;
     private ServerProperties testnavFullmaktProxy;
     private ServerProperties testnavMedlProxy;
     private ServerProperties testnavMiljoerService;

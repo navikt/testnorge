@@ -137,6 +137,9 @@
   "/testnav-helsepersonell-service": {
     "changeOrigin": true
   },
+  "/testnav-sykemelding-api": {
+    "changeOrigin": true
+  },
   "/generer-navn-service": {
     "changeOrigin": true
   },
@@ -156,9 +159,6 @@
     "changeOrigin": true
   },
   "/testnav-yrkesskade-proxy": {
-    "changeOrigin": true
-  },
-  "/testnav-sykemelding-proxy": {
     "changeOrigin": true
   }
 }

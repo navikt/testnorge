@@ -1,9 +1,9 @@
 import useSWR from 'swr'
 import { sykemeldingFetcher } from '@/api'
 
-const baseUrl = '/testnav-sykemelding-proxy'
+const baseUrl = '/testnav-sykemelding-api'
 const getValideringUrl = (shouldValidate: boolean) =>
-	shouldValidate ? `${baseUrl}/v1/rules/validate` : null
+	shouldValidate ? `${baseUrl}/api/v1/sykemeldinger/validate` : null
 
 export const useSykemeldingValidering = (shouldValidate: boolean, values: any) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
