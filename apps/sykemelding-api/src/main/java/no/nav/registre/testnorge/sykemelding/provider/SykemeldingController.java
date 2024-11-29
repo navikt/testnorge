@@ -27,7 +27,7 @@ public class SykemeldingController {
         return sykemeldingService.send(new Sykemelding(dto, applicationInfo));
     }
 
-    @PostMapping
+    @PostMapping(value = "/validate")
     public Mono<ValidationResultDTO> validate(@RequestBody SykemeldingDTO dto) {
 
         return sykemeldingService.validate(new Sykemelding(dto, applicationInfo));
