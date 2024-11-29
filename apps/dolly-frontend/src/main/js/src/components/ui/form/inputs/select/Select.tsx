@@ -197,11 +197,10 @@ const P_FormSelect = ({ feil, ...props }: SelectProps) => {
 			onChange={handleChange}
 			onBlur={handleBlur}
 			feil={
-				(errorContext?.showError || isTouched) &&
-				(feil ||
-					formMethods?.getFieldState(props.name)?.error ||
-					formMethods?.getFieldState(props.fieldName)?.error ||
-					formMethods?.getFieldState(`manual.${props.name}`)?.error)
+				((errorContext?.showError || isTouched) &&
+					(feil || formMethods?.getFieldState(`manual.${props.name}`)?.error)) ||
+				formMethods?.getFieldState(props.name)?.error ||
+				formMethods?.getFieldState(props.fieldName)?.error
 			}
 			{...props}
 		/>

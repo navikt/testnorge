@@ -38,9 +38,9 @@ export const Label = ({
 	} = useFormContext() || useForm()
 	const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 	const error =
-		getFieldState(fieldName)?.error ||
+		getFieldState(`manual.${name}`)?.error ||
 		getFieldState(name)?.error ||
-		getFieldState(`manual.${name}`)?.error
+		getFieldState(fieldName)?.error
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const feilmelding = error?.message
 	const wrapClass = cn('skjemaelement', containerClass, {

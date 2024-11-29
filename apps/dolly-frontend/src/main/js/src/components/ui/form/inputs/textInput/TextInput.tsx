@@ -95,9 +95,9 @@ export const TextInput = React.forwardRef(
 		const [fieldValue, setFieldValue] = useState(props.input || watch(name) || '')
 		const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 		const feil =
+			getFieldState(`manual.${name}`)?.error ||
 			getFieldState(name)?.error ||
-			getFieldState(fieldName)?.error ||
-			getFieldState(`manual.${name}`)?.error
+			getFieldState(fieldName)?.error
 		const visFeil = feil && (errorContext?.showError || isTouched)
 		const css = cn('skjemaelement__input', className, {
 			'skjemaelement__input--harFeil': visFeil,

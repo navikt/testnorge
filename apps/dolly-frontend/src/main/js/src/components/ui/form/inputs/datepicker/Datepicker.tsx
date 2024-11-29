@@ -59,6 +59,7 @@ export const DollyDatepicker = (props: any) => {
 			})
 		} else if (!date || date.isValid?.()) {
 			formMethods.clearErrors(`manual.${name}`)
+			formMethods.clearErrors(name)
 		} else {
 			formMethods.setError(`manual.${name}`, {
 				type: 'invalid-date-format',
