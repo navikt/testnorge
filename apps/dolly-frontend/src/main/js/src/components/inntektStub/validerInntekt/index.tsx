@@ -96,6 +96,7 @@ const InntektStub = ({ inntektPath }) => {
 			formMethods.getValues(`${inntektPath}.${name}`) !== undefined
 		) {
 			formMethods.setValue(`${inntektPath}.${name}`, undefined)
+			formMethods.clearErrors(`manual.${inntektPath}.${name}`)
 			formMethods.clearErrors(`${inntektPath}.${name}`)
 		}
 	}
@@ -107,6 +108,7 @@ const InntektStub = ({ inntektPath }) => {
 
 		if (isObjectEmptyDeep(tilleggsinformasjon)) {
 			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+			formMethods.clearErrors(`manual.${inntektPath}.tilleggsinformasjon`)
 			formMethods.clearErrors(`${inntektPath}.tilleggsinformasjon`)
 		}
 	}

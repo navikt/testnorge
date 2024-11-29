@@ -17,55 +17,51 @@ import { convertInputToDate } from '@/components/ui/form/DateFormatUtils'
 registerLocale('nb', locale_nb)
 
 export const DollyDatepicker = (props: any) => {
-	const format = props.format || 'DD.MM.YYYY'
+	const {
+		excludeDates,
+		disabled,
+		onChange,
+		minDate = subYears(new Date(), 125),
+		name,
+		label,
+		maxDate = addYears(new Date(), 5),
+		format,
+	} = props
+	const dateFormat = format || 'DD.MM.YYYY'
 	const formMethods = useFormContext()
-	const existingValue = formMethods.watch(props.name)
+	const existingValue = formMethods.watch(name)
 	const [showDatepicker, setShowDatepicker] = useState(false)
-	const [input, setInput] = useState(existingValue ? formatDate(existingValue, format) : '')
-	const [errorMessage, setErrorMessage] = useState('')
+	const [input, setInput] = useState(existingValue ? formatDate(existingValue, dateFormat) : '')
 
 	const getDatepickerProps = useCallback(() => {
 		return useDatepicker({
-			fromDate: props.minDate || subYears(new Date(), 125),
-			toDate: props.maxDate || addYears(new Date(), 5),
-			disabled: props.excludeDates,
+			fromDate: minDate,
+			toDate: maxDate,
+			disabled: excludeDates,
 		})
-	}, [props.minDate, props.maxDate, props.excludeDates, input])
+	}, [minDate, maxDate, excludeDates, input])
 
 	const { datepickerProps, setSelected } = getDatepickerProps()
 
 	useEffect(() => {
 		const date = convertInputToDate(existingValue)
-		setInput(date?.isValid?.() ? formatDate(date, format) : existingValue)
-		formMethods.trigger(props.name).then(() => {
+		setInput(date?.isValid?.() ? formatDate(date, dateFormat) : existingValue)
+		formMethods.trigger(`manual.${name}`).then(() => {
 			validateDate(date)
 		})
 	}, [])
 
-	useEffect(() => {
-		if (errorMessage) {
-			formMethods.setError(props.name, {
-				type: 'invalid-date',
-				message: errorMessage,
-			})
-		} else {
-			formMethods.clearErrors(props.name)
-		}
-	}, [errorMessage])
-
 	const validateDate = (date) => {
-		if (!date || date.isValid?.()) {
-			setErrorMessage(null)
-			formMethods.clearErrors(props.name)
-		} else if (date.isAfter?.(props.maxDate) || date.isBefore?.(props.minDate)) {
-			setErrorMessage('Dato utenfor gyldig periode')
-			formMethods.setError(props.name, {
+		if (date?.isAfter?.(maxDate) || date?.isBefore?.(minDate)) {
+			formMethods.setError(`manual.${name}`, {
 				type: 'invalid-date',
 				message: 'Dato utenfor gyldig periode',
 			})
+		} else if (!date || date.isValid?.()) {
+			formMethods.clearErrors(`manual.${name}`)
+			formMethods.clearErrors(name)
 		} else {
-			setErrorMessage('Ugyldig dato-format')
-			formMethods.setError(props.name, {
+			formMethods.setError(`manual.${name}`, {
 				type: 'invalid-date-format',
 				message: 'Ugyldig dato-format',
 			})
@@ -74,12 +70,12 @@ export const DollyDatepicker = (props: any) => {
 
 	const setFormDate = (date) => {
 		const formDate = date.isValid?.() ? date.toDate() : date
-		props.onChange?.(formDate)
+		onChange?.(formDate)
 		const dateStr = formDate?.toISOString?.().substring?.(0, 19)
-		formMethods.setValue(props.name, dateStr || date, {
+		formMethods.setValue(name, dateStr || date, {
 			shouldTouch: true,
 		})
-		formMethods.trigger(props.name).then(() => {
+		formMethods.trigger(`manual.${name}`).then(() => {
 			validateDate(date)
 		})
 	}
@@ -94,7 +90,8 @@ export const DollyDatepicker = (props: any) => {
 		}
 
 		setFormDate(date)
-		setInput(formatDate(date, format))
+		setInput(formatDate(date, dateFormat))
+		validateDate(date)
 	}
 
 	const DateInput = (
@@ -108,11 +105,11 @@ export const DollyDatepicker = (props: any) => {
 				setInput(value)
 			}}
 			onBlur={handleInputBlur}
-			isDisabled={props.disabled}
+			isDisabled={disabled}
 			input={input}
 			icon={'calendar'}
 			datepickerOnclick={() => {
-				if (!props.disabled) {
+				if (!disabled) {
 					setShowDatepicker((prev) => !prev)
 				}
 			}}
@@ -121,7 +118,7 @@ export const DollyDatepicker = (props: any) => {
 
 	return (
 		<InputWrapper {...props}>
-			<Label name={props.name} label={props.label}>
+			<Label name={name} label={label}>
 				{(showDatepicker && (
 					<DatePicker
 						{...datepickerProps}
@@ -130,8 +127,8 @@ export const DollyDatepicker = (props: any) => {
 
 							const date = convertInputToDate(val, true)
 							setFormDate(date)
-							setInput(formatDate(date, format))
-							formMethods.trigger(props.name).then(() => {
+							setInput(formatDate(date, dateFormat))
+							formMethods.trigger(`manual.${name}`).then(() => {
 								validateDate(date)
 							})
 							setShowDatepicker(false)
