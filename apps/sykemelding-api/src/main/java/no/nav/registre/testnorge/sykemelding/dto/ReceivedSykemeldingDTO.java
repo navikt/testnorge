@@ -1,15 +1,16 @@
 package no.nav.registre.testnorge.sykemelding.dto;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.dto.sykemelding.v1.UtdypendeOpplysningerDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -71,7 +72,7 @@ public class ReceivedSykemeldingDTO {
         private Arbeidsgiver arbeidsgiver;
         private List<Periode> perioder;
         private Prognose prognose;
-        private JsonNode utdypendeOpplysninger;
+        private UtdypendeOpplysninger utdypendeOpplysninger;
         private String tiltakArbeidsplassen;
         private String tiltakNAV;
         private String andreTiltak;
@@ -92,6 +93,28 @@ public class ReceivedSykemeldingDTO {
             }
             return perioder;
         }
+    }
+
+    @Data
+    @Builder
+    public static class UtdypendeOpplysninger {
+
+        private Map<String, Map<String, SporsmalSvar>> sporsmalSvar;
+
+        public UtdypendeOpplysninger(Map<String, Map<String, SporsmalSvar>> sporsmalSvar) {
+            this.sporsmalSvar = sporsmalSvar;
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SporsmalSvar {
+
+             private String sporsmal;
+             private String svar;
+             private List<UtdypendeOpplysningerDTO.Restriksjon> restriksjoner;
     }
 
     @Data

@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.sykemelding.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -10,12 +9,16 @@ import no.nav.registre.testnorge.sykemelding.dto.ReceivedSykemeldingDTO;
 import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLMottakenhetBlokk;
 import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLMsgHead;
 import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCS;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLDynaSvarType;
 import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet.UtdypendeOpplysninger.SpmGruppe;
+import no.nav.testnav.libs.dto.sykemelding.v1.UtdypendeOpplysningerDTO.Restriksjon;
 import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -25,8 +28,6 @@ import static java.util.Objects.nonNull;
 public class SykemeldingValidateMappingStrategy implements MappingStrategy {
 
     private static final String DUMMY_FNR = "12508407724";
-
-    private final ObjectMapper objectMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -45,45 +46,42 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                     target.setPersonNrPasient(DUMMY_FNR);
 
                                     if (any instanceof XMLMsgHead xmlMsgHead) {
-                                        xmlMsgHead.getDocument().forEach(document -> {
-                                            document.getRefDoc().getContent().getAny().forEach(refDoc -> {
+                                        xmlMsgHead.getDocument().forEach(document ->
+                                                document.getRefDoc().getContent().getAny().forEach(refDoc -> {
 
-                                                if (refDoc instanceof XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet) {
-                                                    sykemelding.syketilfelleStartDato(xmlHelseOpplysningerArbeidsuforhet.getSyketilfelleStartDato())
-                                                            .navnFastlege(xmlHelseOpplysningerArbeidsuforhet.getPasient().getNavnFastlege())
-                                                            .arbeidsgiver(ReceivedSykemeldingDTO.Arbeidsgiver.builder()
-                                                                    .harArbeidsgiver(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER)
-                                                                    .yrkesbetegnelse(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getYrkesbetegnelse())
-                                                                    .stillingsprosent(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getStillingsprosent())
-                                                                    .navn(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getNavnArbeidsgiver())
-                                                                    .build())
-                                                            .medisinskVurdering(mapMedisinskVurdering(xmlHelseOpplysningerArbeidsuforhet.getMedisinskVurdering()))
-                                                            .behandler(ReceivedSykemeldingDTO.Behandler.builder()
-                                                                    .fornavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getFornavn())
-                                                                    .mellomnavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getMellomnavn())
-                                                                    .etternavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getEtternavn())
-                                                                    .fnr(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getId().getFirst().getId())
-                                                                    .build())
-                                                            .avsenderSystem(ReceivedSykemeldingDTO.AvsenderSystem.builder()
-                                                                    .navn(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemNavn())
-                                                                    .versjon(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemVersjon())
-                                                                    .build())
-                                                            .kontaktMedPasient(ReceivedSykemeldingDTO.KontaktMedpasient.builder()
-                                                                    .build())
-                                                            .tiltakArbeidsplassen(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
-                                                                    xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakArbeidsplassen() : null)
-                                                            .tiltakNAV(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
-                                                                    xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakNAV() : null)
-                                                            .andreTiltak(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
-                                                                    xmlHelseOpplysningerArbeidsuforhet.getTiltak().getAndreTiltak() : null)
-//                                                            .utdypendeOpplysninger(mapUtdypendeOpplysninger(xmlHelseOpplysningerArbeidsuforhet))
-                                                            .perioder(mapPerioder(xmlHelseOpplysningerArbeidsuforhet.getAktivitet().getPeriode()))
-                                                            .prognose(mapPrognose(xmlHelseOpplysningerArbeidsuforhet.getPrognose()));
-
-
-                                                }
-                                            });
-                                        });
+                                            if (refDoc instanceof XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet) {
+                                                sykemelding.syketilfelleStartDato(xmlHelseOpplysningerArbeidsuforhet.getSyketilfelleStartDato())
+                                                        .navnFastlege(xmlHelseOpplysningerArbeidsuforhet.getPasient().getNavnFastlege())
+                                                        .arbeidsgiver(ReceivedSykemeldingDTO.Arbeidsgiver.builder()
+                                                                .harArbeidsgiver(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER)
+                                                                .yrkesbetegnelse(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getYrkesbetegnelse())
+                                                                .stillingsprosent(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getStillingsprosent())
+                                                                .navn(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getNavnArbeidsgiver())
+                                                                .build())
+                                                        .medisinskVurdering(mapMedisinskVurdering(xmlHelseOpplysningerArbeidsuforhet.getMedisinskVurdering()))
+                                                        .behandler(ReceivedSykemeldingDTO.Behandler.builder()
+                                                                .fornavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getFornavn())
+                                                                .mellomnavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getMellomnavn())
+                                                                .etternavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getEtternavn())
+                                                                .fnr(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getId().getFirst().getId())
+                                                                .build())
+                                                        .avsenderSystem(ReceivedSykemeldingDTO.AvsenderSystem.builder()
+                                                                .navn(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemNavn())
+                                                                .versjon(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemVersjon())
+                                                                .build())
+                                                        .kontaktMedPasient(ReceivedSykemeldingDTO.KontaktMedpasient.builder()
+                                                                .build())
+                                                        .tiltakArbeidsplassen(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
+                                                                xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakArbeidsplassen() : null)
+                                                        .tiltakNAV(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
+                                                                xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakNAV() : null)
+                                                        .andreTiltak(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
+                                                                xmlHelseOpplysningerArbeidsuforhet.getTiltak().getAndreTiltak() : null)
+                                                        .utdypendeOpplysninger(mapUtdypendeOpplysninger(xmlHelseOpplysningerArbeidsuforhet.getUtdypendeOpplysninger()))
+                                                        .perioder(mapPerioder(xmlHelseOpplysningerArbeidsuforhet.getAktivitet().getPeriode()))
+                                                        .prognose(mapPrognose(xmlHelseOpplysningerArbeidsuforhet.getPrognose()));
+                                            }
+                                        }));
                                     }
                                     if (any instanceof XMLMottakenhetBlokk xmlMottakenhetBlokk) {
 
@@ -95,9 +93,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                 });
                     }
                 })
-//                .byDefault()
                 .register();
-
     }
 
     private List<ReceivedSykemeldingDTO.Periode> mapPerioder(List<XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode> perioder) {
@@ -145,11 +141,21 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                 .build();
     }
 
-//    private JsonNode mapUtdypendeOpplysninger(XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet) {
-//
-//        return objectMapper.readTree("{\"6.3\":{\"6.3.1\"{\"sporsmal\":\"+" +
-//                xmlHelseOpplysningerArbeidsuforhet.getUtdypendeOpplysninger());
-//    }
+    private ReceivedSykemeldingDTO.UtdypendeOpplysninger mapUtdypendeOpplysninger(XMLHelseOpplysningerArbeidsuforhet.UtdypendeOpplysninger utdypendeOpplysninger) {
+
+        return new ReceivedSykemeldingDTO.UtdypendeOpplysninger(
+                utdypendeOpplysninger.getSpmGruppe().stream()
+                        .collect(Collectors.toMap(SpmGruppe::getSpmGruppeId,
+                                gruppe -> gruppe.getSpmSvar().stream()
+                                        .collect(Collectors.toMap(XMLDynaSvarType::getSpmId, spmsvar -> ReceivedSykemeldingDTO.SporsmalSvar.builder()
+                                                .sporsmal(spmsvar.getSpmTekst())
+                                                .svar(spmsvar.getSvarTekst())
+                                                .restriksjoner(spmsvar.getRestriksjon().getRestriksjonskode().stream()
+                                                        .map(XMLCS::getDN)
+                                                        .map(Restriksjon::valueOf)
+                                                        .toList())
+                                                .build())))));
+    }
 
     private ReceivedSykemeldingDTO.AktivitetIkkeMulig mapAktivitetIkkeMulig(XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode.AktivitetIkkeMulig aktivitetIkkeMulig) {
 

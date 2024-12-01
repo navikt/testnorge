@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.sykemelding.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
 import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
@@ -15,6 +14,7 @@ import no.nav.testnav.libs.dto.sykemelding.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.PeriodeDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.UtdypendeOpplysningerDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +23,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.List;
 
+import static no.nav.testnav.libs.dto.sykemelding.v1.UtdypendeOpplysningerDTO.Restriksjon.SKJERMET_FOR_ARBEIDSGIVER;
+import static no.nav.testnav.libs.dto.sykemelding.v1.UtdypendeOpplysningerDTO.Restriksjon.SKJERMET_FOR_PASIENT;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -34,7 +36,7 @@ class SykemeldingValidateMappingStrategyTest {
 
     private MapperFacade mapperFacade;
 
-    private ApplicationInfo applicationInfo = ApplicationInfo.builder()
+    private final ApplicationInfo applicationInfo = ApplicationInfo.builder()
             .name("Test")
             .version("1.0.0")
             .build();
@@ -42,11 +44,11 @@ class SykemeldingValidateMappingStrategyTest {
     @BeforeEach
     void setup() {
 
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new SykemeldingValidateMappingStrategy(new ObjectMapper()));
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new SykemeldingValidateMappingStrategy());
     }
 
     @Test
-    void validate() {
+    void validateAllFields_OK() {
 
         var sykemeldingDTO = getSykemeldingOK();
         var sykemelding = new Sykemelding(sykemeldingDTO, applicationInfo);
@@ -73,13 +75,12 @@ class SykemeldingValidateMappingStrategyTest {
 
         assertThat(target.getPersonNrPasient(), is(equalTo(DUMMY_FNR)));
         assertThat(target.getMottattDato(), is(equalTo(sykemeldingDTO.getStartDato().atStartOfDay())));
-//        assertThat(target.getSykmelding().getPerioder(), hasItems(ReceivedSykemeldingDTO.Periode.builder()
-//                .fom(sykemelding.getFom())
-//                .tom(sykemelding.getTom())
-//                .build()));
+
         assertThat(target.getSykmelding().getNavnFastlege(),
                 is(equalTo(sykemeldingDTO.getHelsepersonell().getFornavn() + " " + sykemeldingDTO.getHelsepersonell().getEtternavn())));
         assertThat(target.getLegekontorOrgNr(), is(equalTo(sykemeldingDTO.getMottaker().getOrgNr())));
+
+        // TBD utdypendeOpplysninger, Perioder, mm
     }
 
     private SykemeldingDTO getSykemeldingOK() {
@@ -147,6 +148,22 @@ class SykemeldingValidateMappingStrategyTest {
                         .beskrivHensynArbeidsplassen("Beskrivende hensyn til arbeidsplassen")
                         .arbeidsforEtterEndtPeriode(true)
                         .build())
+                .utdypendeOpplysninger(List.of(UtdypendeOpplysningerDTO.builder()
+                        .spmGruppeId("6.3")
+                        .spmGruppeTekst("Gruppe 6.3")
+                        .spmSvar(List.of(UtdypendeOpplysningerDTO.SvarType.builder()
+                                        .spmId("6.3.1")
+                                        .spmTekst("Beskriv kort sykehistorie, symptomer og funn i dagens situasjon")
+                                        .svarTekst("word word word word")
+                                        .restriksjon(SKJERMET_FOR_ARBEIDSGIVER)
+                                        .build(),
+                                UtdypendeOpplysningerDTO.SvarType.builder()
+                                        .spmId("6.3.2")
+                                        .spmTekst("Beskriv kort sykehistorie, symptomer og funn i dagens situasjon")
+                                        .svarTekst("word word word word")
+                                        .restriksjon(SKJERMET_FOR_PASIENT)
+                                        .build()))
+                        .build()))
                 .build();
     }
 }
