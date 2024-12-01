@@ -25,7 +25,7 @@ public class UtdypendeOpplysninger {
                                                         .withSvarTekst(spmSvar.getSvarTekst())
                                                         .withRestriksjon(new XMLDynaSvarType.Restriksjon(
                                                                 List.of(new XMLCS()
-                                                                        .withV(Integer.toString(spmSvar.getRestriksjon().ordinal() + 1))
+                                                                        .withV(Integer.toString(spmSvar.getRestriksjon().ordinal()))
                                                                         .withDN(spmSvar.getRestriksjon().name())))))
                                                 .toList()))
                         .toList());
