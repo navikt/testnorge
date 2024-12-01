@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.sykemelding.dto;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -37,6 +41,22 @@ public class ReceivedSykemeldingDTO {
     private String fellesformat;
     private String tssid;
 
+    public List<String> getVedlegg() {
+
+        if (isNull(vedlegg)) {
+            vedlegg = new ArrayList<>();
+        }
+        return vedlegg;
+    }
+
+    public List<Merknad> getMerknader() {
+
+        if (isNull(merknader)) {
+            merknader = new ArrayList<>();
+        }
+        return merknader;
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -51,7 +71,7 @@ public class ReceivedSykemeldingDTO {
         private Arbeidsgiver arbeidsgiver;
         private List<Periode> perioder;
         private Prognose prognose;
-        private String utdypendeOpplysninger;
+        private JsonNode utdypendeOpplysninger;
         private String tiltakArbeidsplassen;
         private String tiltakNAV;
         private String andreTiltak;
@@ -64,6 +84,14 @@ public class ReceivedSykemeldingDTO {
         private LocalDate syketilfelleStartDato;
         private LocalDateTime signaturDato;
         private String navnFastlege;
+
+        public List<Periode> getPerioder() {
+
+            if (isNull(perioder)) {
+                perioder = new ArrayList<>();
+            }
+            return perioder;
+        }
     }
 
     @Data
@@ -153,7 +181,7 @@ public class ReceivedSykemeldingDTO {
     public static class Prognose {
 
         private Boolean arbeidsforEtterPeriode;
-        private Boolean hensynArbeidsplassen;
+        private String hensynArbeidsplassen;
         private ErIArbeid erIArbeid;
         private ErIkkeIArbeid erIkkeIArbeid;
     }
@@ -224,6 +252,14 @@ public class ReceivedSykemeldingDTO {
 
         private String beskrivelse;
         private List<MedisinskArsakType> arsak;
+
+        public List<MedisinskArsakType> getArsak() {
+
+            if (isNull(arsak)) {
+                arsak = new ArrayList<>();
+            }
+            return arsak;
+        }
     }
 
     @Data
@@ -234,6 +270,14 @@ public class ReceivedSykemeldingDTO {
 
         private String beskrivelse;
         private List<ArbeidsrelatertArsakType> arsak;
+
+        public List<ArbeidsrelatertArsakType> getArsak() {
+
+            if (isNull(arsak)) {
+                arsak = new ArrayList<>();
+            }
+            return arsak;
+        }
     }
 
     @Data
@@ -260,6 +304,14 @@ public class ReceivedSykemeldingDTO {
         private Boolean yrkesskade;
         private LocalDate yrkesskadeDato;
         private AnnenFraversArsak annenFraversArsak;
+
+        public List<Diagnose> getBiDiagnoser() {
+
+            if (isNull(biDiagnoser)) {
+                biDiagnoser = new ArrayList<>();
+            }
+            return biDiagnoser;
+        }
     }
 
     @Data
@@ -270,6 +322,14 @@ public class ReceivedSykemeldingDTO {
 
         private String beskrivelse;
         private List<AnnetFravaersArsakType> grunn;
+
+        public List<AnnetFravaersArsakType> getGrunn() {
+
+            if (isNull(grunn)) {
+                grunn = new ArrayList<>();
+            }
+            return grunn;
+        }
     }
 
     @Data

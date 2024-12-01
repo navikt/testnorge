@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.sykemelding.domain;
 
+import lombok.Data;
 import lombok.SneakyThrows;
-import lombok.ToString;
 import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLEIFellesformat;
 import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLMottakenhetBlokk;
 import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLAddress;
@@ -30,7 +30,7 @@ import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
-@ToString
+@Data
 public class Sykemelding {
     private final XMLEIFellesformat fellesformat;
     private final LocalDate fom;
@@ -58,7 +58,7 @@ public class Sykemelding {
                 .build());
         updatePatient(head.getMsgInfo().getPatient(), dto.getPasient());
         var dokument = new Dokument(dto, applicationInfo);
-        head.getDocument().get(0).getRefDoc().getContent().getAny().set(0, dokument.getXmlObject());
+        head.getDocument().getFirst().getRefDoc().getContent().getAny().set(0, dokument.getXmlObject());
 
         fom = dokument.getFom();
         tom = dokument.getTom();
@@ -69,21 +69,9 @@ public class Sykemelding {
         xmlMottakenhetBlokk.setAvsenderFnrFraDigSignatur(dto.getHelsepersonell().getIdent());
         xmlMottakenhetBlokk.setMottattDatotid(
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(
-                        GregorianCalendar.from(dto.getStartDato().atStartOfDay(ZoneId.systemDefault()))
+                        GregorianCalendar.from(dto.getStartDato().atStartOfDay(ZoneId.of("UTC")))
                 )
         );
-    }
-
-    public LocalDate getFom() {
-        return fom;
-    }
-
-    public LocalDate getTom() {
-        return tom;
-    }
-
-    public String getIdent() {
-        return ident;
     }
 
     public String toXml() {
