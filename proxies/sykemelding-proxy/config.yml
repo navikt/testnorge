@@ -37,6 +37,8 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-backend
         - application: dolly-backend-dev
+        - application: testnav-sykemelding-api
+        - application: testnav-sykemelding-api-dev
         - application: testnav-oversikt-frontend
         - application: testnav-sykemelding-api-dev
         - application: testnav-sykemelding-api

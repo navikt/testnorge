@@ -27,10 +27,11 @@ export const ArbeidsgiverIdent = ({
 			if (result?.identNavigerTil) {
 				formMethods.setValue(path, personnummer, { shouldTouch: true })
 				formMethods.trigger(path)
+				formMethods.clearErrors(`manual.${path}`)
 				formMethods.clearErrors(path)
 				setSuccess(true)
 			} else {
-				formMethods.setError(path, { message: 'Fant ikke arbeidsgiver-ident' })
+				formMethods.setError(`manual.${path}`, { message: 'Fant ikke arbeidsgiver-ident' })
 			}
 		}
 	}, [result, errorNaviger])
@@ -39,6 +40,7 @@ export const ArbeidsgiverIdent = ({
 		setSuccess(false)
 		const personnr = event.target.value
 		formMethods.setValue(path, '123', { shouldTouch: true })
+		formMethods.clearErrors(`manual.${path}`)
 		formMethods.trigger(path)
 		setPersonnummer(personnr)
 	}
