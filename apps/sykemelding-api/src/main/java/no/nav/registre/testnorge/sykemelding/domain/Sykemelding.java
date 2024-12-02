@@ -104,9 +104,10 @@ public class Sykemelding {
         patient.setFamilyName(pasient.getEtternavn());
         patient.setDateOfBirth(pasient.getFoedselsdato());
 
-        AdresseDTO adresse = dto.getAdresse();
-        if (adresse != null) {
+        if (nonNull(dto) && nonNull(dto.getAdresse())) {
             XMLAddress address = patient.getAddress() == null ? new XMLAddress() : patient.getAddress();
+
+            AdresseDTO adresse = dto.getAdresse();
             address.setStreetAdr(adresse.getGate());
             address.setPostalCode(adresse.getPostnummer());
             address.setCity(adresse.getBy());
