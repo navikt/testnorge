@@ -4,31 +4,40 @@ import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.util.Objects.isNull;
 
 public class SykemeldingRequestValidator {
 
     public static void validate(SykemeldingDTO dto) {
+        List<String> missingFields = new ArrayList<>();
+
         if (isNull(dto.getHovedDiagnose())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler feltet 'hovedDiagnose'");
+            missingFields.add("hovedDiagnose");
         }
         if (isNull(dto.getBiDiagnoser())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler feltet 'biDiagnoser'");
+            missingFields.add("biDiagnoser");
         }
         if (isNull(dto.getArbeidsgiver())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler feltet 'arbeidsgiver'");
+            missingFields.add("arbeidsgiver");
         }
         if (isNull(dto.getPerioder())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler feltet 'perioder'");
+            missingFields.add("perioder");
         }
         if (isNull(dto.getUtdypendeOpplysninger())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler feltet 'utdypendeOpplysninger'");
+            missingFields.add("utdypendeOpplysninger");
         }
         if (isNull(dto.getHelsepersonell())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler feltet 'helsepersonell'");
+            missingFields.add("helsepersonell");
         }
         if (isNull(dto.getSender())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler feltet 'sender'");
+            missingFields.add("sender");
+        }
+
+        if (!missingFields.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler felt: " + String.join(", ", missingFields));
         }
     }
 }
