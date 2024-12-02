@@ -112,9 +112,9 @@ export const cvFetcher = (url, headers) =>
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
 
-export const sykemeldingFetcher = (url, headers, body) =>
+export const sykemeldingFetcher = (url, body) =>
 	axios
-		.post(url, { headers: headers, body: body })
+		.post(url, { body: body })
 		.then((res) => {
 			return res.data
 		})

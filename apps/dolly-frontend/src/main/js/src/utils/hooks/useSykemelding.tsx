@@ -7,8 +7,8 @@ const getValideringUrl = (shouldValidate: boolean) =>
 
 export const useSykemeldingValidering = (shouldValidate: boolean, values: any) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		[getValideringUrl(shouldValidate)],
-		([url, _headers]) => sykemeldingFetcher(url, _headers, values),
+		getValideringUrl(shouldValidate),
+		(url: string) => sykemeldingFetcher(url, values),
 	)
 
 	return {
