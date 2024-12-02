@@ -5,12 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.config.Consumers;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.PostSyntSykemeldingCommand;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
-import no.nav.testnav.apps.syntsykemeldingapi.exception.GenererSykemeldingerException;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class SyntElsamConsumer {
                 .block();
 
         if (isNull(response)) {
-            throw new GenererSykemeldingerException("Klarte ikke å generere sykemeldinger.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Klarte ikke å generere sykemeldinger.");
         }
         log.info("Sykemelding generert.");
         return response.get(ident);

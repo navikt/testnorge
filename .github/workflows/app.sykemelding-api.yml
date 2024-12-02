@@ -17,6 +17,7 @@ jobs:
       cluster: "dev-gcp"
       working-directory: "apps/sykemelding-api"
       deploy-tag: "#deploy-sykemelding-api"
+      deploy-tag-test: "#deploy-test-sykemelding-api"
     permissions:
       contents: read
       id-token: write
