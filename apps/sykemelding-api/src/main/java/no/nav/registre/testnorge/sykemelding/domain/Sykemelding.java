@@ -26,12 +26,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
 @Data
 public class Sykemelding {
+    private static final String DUMMY_FNR = "12508407724";
+
     private final XMLEIFellesformat fellesformat;
     private final LocalDate fom;
     private final LocalDate tom;
@@ -39,6 +42,7 @@ public class Sykemelding {
 
     @SneakyThrows
     public Sykemelding(SykemeldingDTO dto, ApplicationInfo applicationInfo) {
+
         var xml = StaticResourceLoader.loadAsString("sykmelding.xml", StandardCharsets.ISO_8859_1);
         fellesformat = JAXBSykemeldingConverter.getInstance().convertToXMLEIFellesformat(xml);
         var head = getXMLMsgHead();
@@ -62,8 +66,8 @@ public class Sykemelding {
 
         fom = dokument.getFom();
         tom = dokument.getTom();
-        ident = dto.getPasient().getIdent();
-
+        ident = Optional.ofNullable(dto.getPasient().getIdent()).orElse(DUMMY_FNR);
+       
         var xmlMottakenhetBlokk = getXMLMottakenhetBlokk();
         xmlMottakenhetBlokk.setEdiLoggId(UUID.randomUUID().toString());
         xmlMottakenhetBlokk.setAvsenderFnrFraDigSignatur(dto.getHelsepersonell().getIdent());
