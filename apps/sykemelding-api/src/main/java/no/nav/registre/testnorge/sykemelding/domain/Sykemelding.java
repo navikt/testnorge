@@ -26,14 +26,19 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Data
 public class Sykemelding {
     private static final String DUMMY_FNR = "12508407724";
+    private static final PasientDTO DUMMY_PASIENT = PasientDTO.builder()
+            .ident(DUMMY_FNR)
+            .fornavn("Test")
+            .etternavn("Testesen")
+            .build();
 
     private final XMLEIFellesformat fellesformat;
     private final LocalDate fom;
@@ -66,8 +71,8 @@ public class Sykemelding {
 
         fom = dokument.getFom();
         tom = dokument.getTom();
-        ident = Optional.ofNullable(dto.getPasient().getIdent()).orElse(DUMMY_FNR);
-       
+        ident = isNull(dto.getPasient()) ? DUMMY_FNR : dto.getPasient().getIdent();
+
         var xmlMottakenhetBlokk = getXMLMottakenhetBlokk();
         xmlMottakenhetBlokk.setEdiLoggId(UUID.randomUUID().toString());
         xmlMottakenhetBlokk.setAvsenderFnrFraDigSignatur(dto.getHelsepersonell().getIdent());
@@ -91,11 +96,13 @@ public class Sykemelding {
     }
 
     private void updatePatient(XMLPatient patient, PasientDTO dto) {
-        patient.getIdent().forEach(value -> value.setId(dto.getIdent()));
-        patient.setGivenName(dto.getFornavn());
-        patient.setMiddleName(dto.getMellomnavn());
-        patient.setFamilyName(dto.getEtternavn());
-        patient.setDateOfBirth(dto.getFoedselsdato());
+        var pasient = isNull(dto) ? DUMMY_PASIENT : dto;
+
+        patient.getIdent().forEach(value -> value.setId(pasient.getIdent()));
+        patient.setGivenName(pasient.getFornavn());
+        patient.setMiddleName(pasient.getMellomnavn());
+        patient.setFamilyName(pasient.getEtternavn());
+        patient.setDateOfBirth(pasient.getFoedselsdato());
 
         AdresseDTO adresse = dto.getAdresse();
         if (adresse != null) {
