@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,14 @@ import static java.util.Objects.nonNull;
 public class SykemeldingValidateMappingStrategy implements MappingStrategy {
 
     private static final String DUMMY_FNR = "12508407724";
+    private static final ReceivedSykemeldingDTO.UtdypendeOpplysninger DUMMY_UTDYPENDE_OPPLYSNINGER = ReceivedSykemeldingDTO.UtdypendeOpplysninger.builder()
+            .sporsmalSvar(Collections.singletonMap("1", Collections.singletonMap("2",
+                    ReceivedSykemeldingDTO.SporsmalSvar.builder()
+                            .sporsmal("Hva er din hovedplage?")
+                            .svar("Tester")
+                            .restriksjoner(List.of(Restriksjon.SKJERMET_FOR_ARBEIDSGIVER))
+                            .build())))
+            .build();
 
     @Override
     public void register(MapperFactory factory) {
@@ -49,39 +58,39 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                         xmlMsgHead.getDocument().forEach(document ->
                                                 document.getRefDoc().getContent().getAny().forEach(refDoc -> {
 
-                                            if (refDoc instanceof XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet) {
-                                                sykemelding.syketilfelleStartDato(xmlHelseOpplysningerArbeidsuforhet.getSyketilfelleStartDato())
-                                                        .navnFastlege(xmlHelseOpplysningerArbeidsuforhet.getPasient().getNavnFastlege())
-                                                        .arbeidsgiver(ReceivedSykemeldingDTO.Arbeidsgiver.builder()
-                                                                .harArbeidsgiver(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER)
-                                                                .yrkesbetegnelse(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getYrkesbetegnelse())
-                                                                .stillingsprosent(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getStillingsprosent())
-                                                                .navn(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getNavnArbeidsgiver())
-                                                                .build())
-                                                        .medisinskVurdering(mapMedisinskVurdering(xmlHelseOpplysningerArbeidsuforhet.getMedisinskVurdering()))
-                                                        .behandler(ReceivedSykemeldingDTO.Behandler.builder()
-                                                                .fornavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getFornavn())
-                                                                .mellomnavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getMellomnavn())
-                                                                .etternavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getEtternavn())
-                                                                .fnr(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getId().getFirst().getId())
-                                                                .build())
-                                                        .avsenderSystem(ReceivedSykemeldingDTO.AvsenderSystem.builder()
-                                                                .navn(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemNavn())
-                                                                .versjon(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemVersjon())
-                                                                .build())
-                                                        .kontaktMedPasient(ReceivedSykemeldingDTO.KontaktMedpasient.builder()
-                                                                .build())
-                                                        .tiltakArbeidsplassen(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
-                                                                xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakArbeidsplassen() : null)
-                                                        .tiltakNAV(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
-                                                                xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakNAV() : null)
-                                                        .andreTiltak(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
-                                                                xmlHelseOpplysningerArbeidsuforhet.getTiltak().getAndreTiltak() : null)
-                                                        .utdypendeOpplysninger(mapUtdypendeOpplysninger(xmlHelseOpplysningerArbeidsuforhet.getUtdypendeOpplysninger()))
-                                                        .perioder(mapPerioder(xmlHelseOpplysningerArbeidsuforhet.getAktivitet().getPeriode()))
-                                                        .prognose(mapPrognose(xmlHelseOpplysningerArbeidsuforhet.getPrognose()));
-                                            }
-                                        }));
+                                                    if (refDoc instanceof XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet) {
+                                                        sykemelding.syketilfelleStartDato(xmlHelseOpplysningerArbeidsuforhet.getSyketilfelleStartDato())
+                                                                .navnFastlege(xmlHelseOpplysningerArbeidsuforhet.getPasient().getNavnFastlege())
+                                                                .arbeidsgiver(ReceivedSykemeldingDTO.Arbeidsgiver.builder()
+                                                                        .harArbeidsgiver(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER)
+                                                                        .yrkesbetegnelse(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getYrkesbetegnelse())
+                                                                        .stillingsprosent(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getStillingsprosent())
+                                                                        .navn(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getNavnArbeidsgiver())
+                                                                        .build())
+                                                                .medisinskVurdering(mapMedisinskVurdering(xmlHelseOpplysningerArbeidsuforhet.getMedisinskVurdering()))
+                                                                .behandler(ReceivedSykemeldingDTO.Behandler.builder()
+                                                                        .fornavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getFornavn())
+                                                                        .mellomnavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getMellomnavn())
+                                                                        .etternavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getEtternavn())
+                                                                        .fnr(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getId().getFirst().getId())
+                                                                        .build())
+                                                                .avsenderSystem(ReceivedSykemeldingDTO.AvsenderSystem.builder()
+                                                                        .navn(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemNavn())
+                                                                        .versjon(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemVersjon())
+                                                                        .build())
+                                                                .kontaktMedPasient(ReceivedSykemeldingDTO.KontaktMedpasient.builder()
+                                                                        .build())
+                                                                .tiltakArbeidsplassen(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
+                                                                        xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakArbeidsplassen() : null)
+                                                                .tiltakNAV(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
+                                                                        xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakNAV() : null)
+                                                                .andreTiltak(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
+                                                                        xmlHelseOpplysningerArbeidsuforhet.getTiltak().getAndreTiltak() : null)
+                                                                .utdypendeOpplysninger(mapUtdypendeOpplysninger(xmlHelseOpplysningerArbeidsuforhet.getUtdypendeOpplysninger()))
+                                                                .perioder(mapPerioder(xmlHelseOpplysningerArbeidsuforhet.getAktivitet().getPeriode()))
+                                                                .prognose(mapPrognose(xmlHelseOpplysningerArbeidsuforhet.getPrognose()));
+                                                    }
+                                                }));
                                     }
                                     if (any instanceof XMLMottakenhetBlokk xmlMottakenhetBlokk) {
 
@@ -143,7 +152,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
 
     private ReceivedSykemeldingDTO.UtdypendeOpplysninger mapUtdypendeOpplysninger(XMLHelseOpplysningerArbeidsuforhet.UtdypendeOpplysninger utdypendeOpplysninger) {
 
-        return new ReceivedSykemeldingDTO.UtdypendeOpplysninger(
+        return isNull(utdypendeOpplysninger) ? DUMMY_UTDYPENDE_OPPLYSNINGER : new ReceivedSykemeldingDTO.UtdypendeOpplysninger(
                 utdypendeOpplysninger.getSpmGruppe().stream()
                         .collect(Collectors.toMap(SpmGruppe::getSpmGruppeId,
                                 gruppe -> gruppe.getSpmSvar().stream()
