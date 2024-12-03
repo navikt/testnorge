@@ -32,6 +32,8 @@ import static java.util.Objects.nonNull;
 public class SykemeldingValidateMappingStrategy implements MappingStrategy {
 
     private static final String DUMMY_FNR = "12508407724";
+    private static final String DUMMY_AKTOER_ID = "123456789";
+    private static final String DUMMY_LEGEKONTOR_ORG_NAME = "Testkontoret";
     private static final ReceivedSykemeldingDTO.UtdypendeOpplysninger DUMMY_UTDYPENDE_OPPLYSNINGER = ReceivedSykemeldingDTO.UtdypendeOpplysninger.builder()
             .sporsmalSvar(Collections.singletonMap("1", Collections.singletonMap("2",
                     ReceivedSykemeldingDTO.SporsmalSvar.builder()
@@ -49,21 +51,25 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Sykemelding source, ReceivedSykemeldingDTO target, MappingContext context) {
 
                         log.info("Mapping Sykemelding: {} to ReceivedSykemeldingDTO", Json.pretty(source));
-                        var sykemelding = ReceivedSykemeldingDTO.Sykemelding.builder();
+                        var sykemeldingBuilder = ReceivedSykemeldingDTO.Sykemelding.builder();
 
 
                         source.getFellesformat().getAny()
                                 .forEach(any -> {
 
                                     target.setMsgId(source.getMsgId());
+                                    target.setNavLogId(source.getMsgId());
+                                    target.setId(source.getMsgId());
                                     target.setPersonNrPasient(DUMMY_FNR);
+                                    target.setPasientAktoerId(DUMMY_AKTOER_ID);
+                                    target.setLegekontorOrgName(DUMMY_LEGEKONTOR_ORG_NAME);
 
                                     if (any instanceof XMLMsgHead xmlMsgHead) {
                                         xmlMsgHead.getDocument().forEach(document ->
                                                 document.getRefDoc().getContent().getAny().forEach(refDoc -> {
 
                                                     if (refDoc instanceof XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet) {
-                                                        sykemelding.syketilfelleStartDato(xmlHelseOpplysningerArbeidsuforhet.getSyketilfelleStartDato())
+                                                        sykemeldingBuilder.syketilfelleStartDato(xmlHelseOpplysningerArbeidsuforhet.getSyketilfelleStartDato())
                                                                 .navnFastlege(xmlHelseOpplysningerArbeidsuforhet.getPasient().getNavnFastlege())
                                                                 .arbeidsgiver(ReceivedSykemeldingDTO.Arbeidsgiver.builder()
                                                                         .harArbeidsgiver(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER)
@@ -101,8 +107,12 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                         target.setMottattDato(convertDateNTime(xmlMottakenhetBlokk.getMottattDatotid()));
 
                                     }
+                                    var sykemelding = sykemeldingBuilder.build();
 
-                                    target.setSykmelding(sykemelding.build());
+                                    target.setBehandletTidspunkt(LocalDateTime.now());
+                                    target.setSignaturDato(LocalDateTime.now());
+                                    target.setPersonNrLege(sykemelding.getBehandler().getFnr());
+                                    target.setSykmelding(sykemelding);
                                 });
                     }
                 })

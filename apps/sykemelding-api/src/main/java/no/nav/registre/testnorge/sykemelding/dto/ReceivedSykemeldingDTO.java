@@ -23,17 +23,21 @@ public class ReceivedSykemeldingDTO {
     private Sykemelding sykmelding;
 
     private String personNrPasient;
+    private String pasientAktoerId;
     private String tlfPasient;
     private String personNrLege;
     private String legeHelsepersonellkategori;
     private String legeHprNr;
     private String navLogId;
     private String msgId;
+    private String id;
     private String legekontorOrgNr;
     private String legekontorHerId;
     private String legekontorReshId;
     private String legekontorOrgName;
     private LocalDateTime mottattDato;
+    private LocalDateTime behandletTidspunkt;
+    private LocalDateTime signaturDato;
     private String rulesetVersion;
     private List<Merknad> merknader;
     private String partnerreferanse;
@@ -56,6 +60,37 @@ public class ReceivedSykemeldingDTO {
             merknader = new ArrayList<>();
         }
         return merknader;
+    }
+
+    public enum AnnetFravaersArsakType {
+        GODKJENT_HELSEINSTITUSJON,
+        BEHANDLING_FORHINDRER_ARBEID,
+        ARBEIDSRETTET_TILTAK,
+        MOTTAR_TILSKUDD_GRUNNET_HELSETILSTAND,
+        NEDVENDIG_KONTROLLUNDENRSOKELSE,
+        SMITTEFARE,
+        ABORT,
+        UFOR_GRUNNET_BARNLOSHET,
+        DONOR,
+        BEHANDLING_STERILISERING
+    }
+
+    public enum ArbeidsgiverType {
+        EN_ARBEIDSGIVER,
+        FLERE_ARBEIDSGIVERE,
+        INGEN_ARBEIDSGIVER
+    }
+
+    public enum MedisinskArsakType {
+        TILSTAND_HINDRER_AKTIVITET,
+        AKTIVITET_FORVERRER_TILSTAND,
+        AKTIVITET_FORHINDRER_BEDRING,
+        ANNET
+    }
+
+    public enum ArbeidsrelatertArsakType {
+        MANGLENDE_TILRETTELEGGING,
+        ANNET
     }
 
     @Data
@@ -112,9 +147,9 @@ public class ReceivedSykemeldingDTO {
     @AllArgsConstructor
     public static class SporsmalSvar {
 
-             private String sporsmal;
-             private String svar;
-             private List<UtdypendeOpplysningerDTO.Restriksjon> restriksjoner;
+        private String sporsmal;
+        private String svar;
+        private List<UtdypendeOpplysningerDTO.Restriksjon> restriksjoner;
     }
 
     @Data
@@ -364,36 +399,5 @@ public class ReceivedSykemeldingDTO {
         private String system;
         private String kode;
         private String tekst;
-    }
-
-    public enum AnnetFravaersArsakType {
-        GODKJENT_HELSEINSTITUSJON,
-        BEHANDLING_FORHINDRER_ARBEID,
-        ARBEIDSRETTET_TILTAK,
-        MOTTAR_TILSKUDD_GRUNNET_HELSETILSTAND,
-        NEDVENDIG_KONTROLLUNDENRSOKELSE,
-        SMITTEFARE,
-        ABORT,
-        UFOR_GRUNNET_BARNLOSHET,
-        DONOR,
-        BEHANDLING_STERILISERING
-    }
-
-    public enum ArbeidsgiverType {
-        EN_ARBEIDSGIVER,
-        FLERE_ARBEIDSGIVERE,
-        INGEN_ARBEIDSGIVER
-    }
-
-    public enum MedisinskArsakType {
-        TILSTAND_HINDRER_AKTIVITET,
-        AKTIVITET_FORVERRER_TILSTAND,
-        AKTIVITET_FORHINDRER_BEDRING,
-        ANNET
-    }
-
-    public enum ArbeidsrelatertArsakType {
-        MANGLENDE_TILRETTELEGGING,
-        ANNET
     }
 }
