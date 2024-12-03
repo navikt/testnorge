@@ -32,8 +32,8 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
                         sivilstander.getSivilstander().stream()
                                 .sorted(Comparator.comparing(SivilstandDTO::getId).reversed())
                                 .filter(SivilstandDTO::isSamboer)
-                                .findFirst()
-                                .ifPresent(sivilstandSamboer -> {
+//                                .findFirst()
+                                .forEach(sivilstandSamboer -> {
 
                                     var hovedperson = PensjonSamboerRequest.builder()
                                             .pidBruker(ident)
