@@ -1,6 +1,8 @@
 package no.nav.registre.testnorge.sykemelding.mapper;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -26,6 +28,7 @@ import static java.util.Objects.nonNull;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class SykemeldingValidateMappingStrategy implements MappingStrategy {
 
     private static final String DUMMY_FNR = "12508407724";
@@ -45,6 +48,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Sykemelding source, ReceivedSykemeldingDTO target, MappingContext context) {
 
+                        log.trace("Mapping Sykemelding: {} to ReceivedSykemeldingDTO", Json.pretty(source));
                         var sykemelding = ReceivedSykemeldingDTO.Sykemelding.builder();
 
 
