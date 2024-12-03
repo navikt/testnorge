@@ -156,7 +156,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
 
     private ReceivedSykemeldingDTO.UtdypendeOpplysninger mapUtdypendeOpplysninger(XMLHelseOpplysningerArbeidsuforhet.UtdypendeOpplysninger utdypendeOpplysninger) {
 
-        return isNull(utdypendeOpplysninger) ? DUMMY_UTDYPENDE_OPPLYSNINGER : new ReceivedSykemeldingDTO.UtdypendeOpplysninger(
+        return isNull(utdypendeOpplysninger) || utdypendeOpplysninger.getSpmGruppe().isEmpty() ? DUMMY_UTDYPENDE_OPPLYSNINGER : new ReceivedSykemeldingDTO.UtdypendeOpplysninger(
                 utdypendeOpplysninger.getSpmGruppe().stream()
                         .collect(Collectors.toMap(SpmGruppe::getSpmGruppeId,
                                 gruppe -> gruppe.getSpmSvar().stream()
