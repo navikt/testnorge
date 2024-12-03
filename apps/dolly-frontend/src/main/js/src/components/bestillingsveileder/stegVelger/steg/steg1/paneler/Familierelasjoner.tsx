@@ -134,42 +134,7 @@ FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
 			label: 'Sivilstand (har partner)',
 			checked: has('pdldata.person.sivilstand'),
 			add() {
-				// set('pdldata.person.sivilstand', [getInitialSivilstand(initialMaster)])
-				//TODO: Settes tilbake naar ferdig med testing
-				set('pdldata.person.sivilstand', [
-					{
-						type: 'GIFT',
-						sivilstandsdato: '2010-11-08T00:00:00',
-						bekreftelsesdato: null,
-						borIkkeSammen: false,
-						nyRelatertPerson: {
-							identtype: 'FNR',
-							kjoenn: 'KVINNE',
-							foedtEtter: null,
-							foedtFoer: null,
-							alder: null,
-							syntetisk: true,
-							nyttNavn: {
-								hasMellomnavn: false,
-							},
-							statsborgerskapLandkode: 'MDA',
-							gradering: null,
-						},
-						kilde: 'Dolly',
-						master: 'FREG',
-						eksisterendePerson: false,
-					},
-					{
-						type: 'GIFT',
-						sivilstandsdato: '2020-11-10T00:00:00',
-						relatertVedSivilstand: '22488522675',
-						bekreftelsesdato: null,
-						borIkkeSammen: false,
-						kilde: 'Dolly',
-						master: 'FREG',
-						eksisterendePerson: true,
-					},
-				])
+				set('pdldata.person.sivilstand', [getInitialSivilstand(initialMaster)])
 			},
 			remove() {
 				del('pdldata.person.sivilstand')

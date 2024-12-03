@@ -25,6 +25,8 @@ export const PdlPersonExpander = ({
 	eksisterendePersonPath,
 	fullmektigsNavnPath,
 	eksisterendeNyPerson = null,
+	initialNyIdent = null,
+	initialEksisterendePerson = null,
 	label,
 	formMethods,
 	nyIdentValg = null,
@@ -39,7 +41,7 @@ export const PdlPersonExpander = ({
 			setSkjulPersonValg()
 		}
 	}, [])
-
+	console.log('nyIdentValg: ', nyIdentValg) //TODO - SLETT MEG
 	return (
 		<div className="flexbox--full-width">
 			{toggleExpansion &&
@@ -62,6 +64,8 @@ export const PdlPersonExpander = ({
 					formMethods={formMethods}
 					nyIdentValg={nyIdentValg}
 					eksisterendeNyPerson={eksisterendeNyPerson}
+					initialNyIdent={initialNyIdent}
+					initialEksisterendePerson={initialEksisterendePerson}
 				/>
 			)}
 		</div>

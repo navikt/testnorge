@@ -347,6 +347,7 @@ export const getInitialNyIdent = (master = 'FREG') => ({
 	nyttNavn: {
 		hasMellomnavn: false,
 	},
+	eksisterendePerson: false,
 	kilde: 'Dolly',
 	master: master,
 })

@@ -29,13 +29,29 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 						obj[key] = formMethods.watch(path)[key]
 						return obj
 					}, {})
+				// console.log('nyIdentValg: ', nyIdentValg) //TODO - SLETT MEG
 
+				const initialNyIdent = {
+					...getInitialNyIdent(),
+					kilde: formMethods.watch(`${path}.kilde`),
+					master: formMethods.watch(`${path}.master`),
+				}
+
+				const initialEksisterendePerson = {
+					eksisterendeIdent: '',
+					kilde: formMethods.watch(`${path}.kilde`),
+					master: formMethods.watch(`${path}.master`),
+				}
+
+				console.log('initialNyIdent: ', initialNyIdent) //TODO - SLETT MEG
 				return (
 					<div className="flexbox--flex-wrap">
 						<PdlPersonExpander
 							path={path}
 							nyPersonPath={path}
 							eksisterendePersonPath={`${path}.eksisterendeIdent`}
+							initialNyIdent={initialNyIdent}
+							initialEksisterendePerson={initialEksisterendePerson}
 							label="NY IDENTITET"
 							formMethods={formMethods}
 							nyIdentValg={nyIdentValg}

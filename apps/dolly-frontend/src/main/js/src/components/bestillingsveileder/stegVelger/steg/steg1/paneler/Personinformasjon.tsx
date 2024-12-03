@@ -404,6 +404,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 				set('fullmakt', [
 					{
 						...initialFullmakt,
+						nyFullmektig: initialPdlPerson,
 						master: identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG',
 					},
 				])

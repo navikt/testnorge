@@ -52,13 +52,23 @@ export const PdlPersonForm = ({
 	formMethods,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
+	initialNyIdent = null,
+	initialEksisterendePerson = null,
 }: PdlPersonValues) => {
 	const { gruppeId } = useParams()
 	const gruppe = useAsync(async () => {
 		return await DollyApi.getGruppeById(gruppeId)
 	}, [])
+	// console.log('path: ', path) //TODO - SLETT MEG
+	// console.log('nyPersonPath: ', nyPersonPath) //TODO - SLETT MEG
+	// console.log('eksisterendePersonPath: ', eksisterendePersonPath) //TODO - SLETT MEG
+	// console.log('nyIdentValg: ', nyIdentValg) //TODO - SLETT MEG
+	console.log('eksisterendeNyPerson: ', eksisterendeNyPerson) //TODO - SLETT MEG
 
 	const getType = () => {
+		if (formMethods.watch(`${path}.eksisterendePerson`)) {
+			return PersonType.EKSISTERENDE_PERSON
+		}
 		const eksisterende = formMethods.watch(eksisterendePersonPath)
 		return eksisterende ? PersonType.EKSISTERENDE_PERSON : PersonType.NY_PERSON
 	}
@@ -71,32 +81,27 @@ export const PdlPersonForm = ({
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
 
+	const parentPath = path.substring(0, path.lastIndexOf('.'))
+
 	useEffect(() => {
 		setType(getType())
-	}, [formMethods.watch('pdldata.person.sivilstand')?.length])
+	}, [formMethods.watch(parentPath)?.length])
 
-	// useEffect(() => {
-	// 	formMethods.setValue(nyPersonPath, type === PersonType.NY_PERSON ? initialPdlPerson : undefined)
-	// 	formMethods.setValue(
-	// 		eksisterendePersonPath,
-	// 		type === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
-	// 	)
-	// 	if (path) {
-	// 		formMethods.setValue(`${path}.eksisterendePerson`, type === PersonType.EKSISTERENDE_PERSON)
-	// 	}
-	// 	formMethods.trigger()
-	// }, [type, path])
-
+	//TODO: funker denne for alle tilfeller? F.eks. fullmakt?
 	const handleTypeChange = (value: string) => {
 		setType(value)
 		formMethods.setValue(
 			nyPersonPath,
-			value === PersonType.NY_PERSON ? initialPdlPerson : undefined,
+			value === PersonType.NY_PERSON ? initialNyIdent || initialPdlPerson : undefined,
 		)
-		formMethods.setValue(
-			eksisterendePersonPath,
-			value === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
-		)
+		if (value === PersonType.EKSISTERENDE_PERSON && initialEksisterendePerson) {
+			formMethods.setValue(path, initialEksisterendePerson)
+		} else {
+			formMethods.setValue(
+				eksisterendePersonPath,
+				value === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
+			)
+		}
 		if (path) {
 			formMethods.setValue(`${path}.eksisterendePerson`, value === PersonType.EKSISTERENDE_PERSON)
 		}

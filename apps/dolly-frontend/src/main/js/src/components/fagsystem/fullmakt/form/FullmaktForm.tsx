@@ -191,6 +191,7 @@ export const FullmaktForm = () => {
 	const fullmaktValues = formMethods.watch('fullmakt')
 	const opts: any = useContext(BestillingsveilederContext)
 	const val = formMethods.watch(fullmaktAttributter)
+	const { identtype, identMaster } = opts
 
 	if ((!fullmaktValues || fullmaktValues?.length === 0) && val.some((v) => v)) {
 		formMethods.setValue('fullmakt', [initialFullmakt])
@@ -207,7 +208,11 @@ export const FullmaktForm = () => {
 				<FormDollyFieldArray
 					name="fullmakt"
 					header="Fullmakt"
-					newEntry={initialFullmakt}
+					newEntry={{
+						...initialFullmakt,
+						nyFullmektig: initialPdlPerson,
+						master: identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG',
+					}}
 					canBeEmpty={false}
 				>
 					{(path: string) => <Fullmakt formMethods={formMethods} path={path} opts={opts} />}
