@@ -48,7 +48,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Sykemelding source, ReceivedSykemeldingDTO target, MappingContext context) {
 
-                        log.trace("Mapping Sykemelding: {} to ReceivedSykemeldingDTO", Json.pretty(source));
+                        log.info("Mapping Sykemelding: {} to ReceivedSykemeldingDTO", Json.pretty(source));
                         var sykemelding = ReceivedSykemeldingDTO.Sykemelding.builder();
 
 
