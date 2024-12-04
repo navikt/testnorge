@@ -1,4 +1,11 @@
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 TOKEN_X_ISSUER: dummy
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
 
 consumers:
   synt-vedtakshistorikk:
@@ -26,9 +33,6 @@ consumers:
     namespace: dolly
     name: testnav-pdl-proxy
     url: http://localhost:${wiremock.server.port:0}/pdl
-
-
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 
 batch:
   miljoe: test

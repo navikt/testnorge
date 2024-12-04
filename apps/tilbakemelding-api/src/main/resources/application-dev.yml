@@ -1,3 +1,6 @@
+TOKEN_X_ISSUER: dummy
+SLACK_CHANNEL: dummy
+SLACK_TOKEN: dummy
 
 consumers:
   profil-api:

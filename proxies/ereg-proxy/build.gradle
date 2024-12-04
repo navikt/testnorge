@@ -8,9 +8,3 @@ sonarqube {
         property "sonar.projectName", "testnav-ereg-proxy"
     }
 }
-
-dependencies {
-    implementation "no.nav.testnav.libs:vault"
-    
-    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
-}

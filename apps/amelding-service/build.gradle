@@ -14,7 +14,6 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
-    implementation "no.nav.testnav.libs:vault"
 
     implementation "no.nav.testnav.libs:commands"
     implementation "no.nav.testnav.libs:avro-schema"
