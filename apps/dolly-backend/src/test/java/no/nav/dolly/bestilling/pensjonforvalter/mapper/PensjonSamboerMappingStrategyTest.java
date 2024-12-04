@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.nullValue;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
@@ -185,20 +186,14 @@ class PensjonSamboerMappingStrategyTest {
 
         assertThat(resultat, containsInAnyOrder(
                 allOf(hasProperty("pidBruker", is(equalTo(IDENT_1))),
-                        hasProperty("pidSamboer", is(equalTo(IDENT_2))),
-                        hasProperty("datoFom", is(equalTo(SIVILSTAND_DATO_EARLIEST.toLocalDate()))),
-                        hasProperty("registrertAv", is(equalTo("Dolly")))),
-                allOf(hasProperty("pidBruker", is(equalTo(IDENT_2))),
-                        hasProperty("pidSamboer", is(equalTo(IDENT_1))),
-                        hasProperty("datoFom", is(equalTo(SIVILSTAND_DATO_EARLIEST.toLocalDate()))),
-                        hasProperty("registrertAv", is(equalTo("Dolly")))),
-                allOf(hasProperty("pidBruker", is(equalTo(IDENT_1))),
                         hasProperty("pidSamboer", is(equalTo(IDENT_4))),
                         hasProperty("datoFom", is(equalTo(SIVILSTAND_DATO_LATEST.toLocalDate()))),
+                        hasProperty("datoTom", nullValue()),
                         hasProperty("registrertAv", is(equalTo("Dolly")))),
                 allOf(hasProperty("pidBruker", is(equalTo(IDENT_4))),
                         hasProperty("pidSamboer", is(equalTo(IDENT_1))),
                         hasProperty("datoFom", is(equalTo(SIVILSTAND_DATO_LATEST.toLocalDate()))),
+                        hasProperty("datoTom", nullValue()),
                         hasProperty("registrertAv", is(equalTo("Dolly"))))));
     }
 }
