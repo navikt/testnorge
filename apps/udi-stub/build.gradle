@@ -25,7 +25,6 @@ dependencies {
 
     implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
 
-    implementation "no.nav.testnav.libs:database"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:vault"
