@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc(addFilters = false)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 public class OrganisasjonControllerEregIntegrationTest {
 
     @Autowired
@@ -39,9 +39,9 @@ public class OrganisasjonControllerEregIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final String orgnummer = "123456789";
-    private static final String miljo = "test";
-    private static final String eregUrl = "/api/{miljo}/v1/organisasjon/" + orgnummer;
+    private static final String ORGNUMMER = "123456789";
+    private static final String MILJO = "test";
+    private static final String EREG_URL = "/api/{miljo}/v1/organisasjon/" + ORGNUMMER;
 
     private OrganisasjonDTO organisasjonReponse;
 
@@ -51,7 +51,7 @@ public class OrganisasjonControllerEregIntegrationTest {
                 .navn(NavnDTO.builder().navnelinje1("NavneLinje").redigertnavn("RedigertNavn").build())
                 .type("Type")
                 .detaljer(DetaljerDTO.builder().enhetstype("Enhetstype").build())
-                .organisasjonsnummer(orgnummer)
+                .organisasjonsnummer(ORGNUMMER)
                 .build();
     }
 
@@ -61,20 +61,20 @@ public class OrganisasjonControllerEregIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(eregUrl)
+                .withUrlPathMatching(EREG_URL)
                 .withQueryParam("inkluderHierarki", "true")
                 .withQueryParam("inkluderHistorikk", "false")
                 .withResponseBody(organisasjonReponse)
                 .stubGet();
 
 
-        mvc.perform(get("/api/v1/organisasjoner/" + orgnummer)
+        mvc.perform(get("/api/v1/organisasjoner/" + ORGNUMMER)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("miljo", miljo));
+                .header("miljo", MILJO));
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(eregUrl)
+                .withUrlPathMatching(EREG_URL)
                 .withQueryParam("inkluderHierarki", "true")
                 .withQueryParam("inkluderHistorikk", "false")
                 .withResponseBody(organisasjonReponse)

@@ -1,8 +1,4 @@
 spring:
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
   application:
     name: brreg-stub
 

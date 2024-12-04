@@ -72,8 +72,6 @@ spec:
   replicas:
     min: 1
     max: 2
-  vault:
-    enabled: true
   resources:
     requests:
       cpu: 200m

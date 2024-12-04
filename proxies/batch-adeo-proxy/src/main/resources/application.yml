@@ -10,7 +10,7 @@ spring:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER} 
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
@@ -19,8 +19,9 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
-    vault:
-      enabled: false
+    gcp:
+      secretmanager:
+        enabled: false
 
 server:
   servlet:
