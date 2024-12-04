@@ -17,6 +17,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   cloud:
+    gcp:
+      secretmanager:
+        enabled: false # Running in dev-fss.
     vault:
       host: vault.adeo.no
       port: 443
