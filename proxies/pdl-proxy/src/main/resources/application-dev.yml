@@ -1,0 +1,16 @@
+TOKEN_X_ISSUER: dummy
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: true
+  config:
+    import: "sm://"
+
+app:
+  elastic:
+    username: ${sm://elastic-username}
+    password: ${sm://elastic-password}
+  hendelse.lager.api.key: ${sm://hendelse-lager-api-key}
+  person.aktor.api.key: ${sm://person-aktor-api-key}

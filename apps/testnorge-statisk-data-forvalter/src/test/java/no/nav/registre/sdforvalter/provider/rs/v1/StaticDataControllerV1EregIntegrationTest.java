@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -40,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.yml"
 )
+@ActiveProfiles("test")
 class StaticDataControllerV1EregIntegrationTest {
     private static final String EREG_API = "/api/v1/faste-data/ereg";
     @Autowired
@@ -158,10 +160,9 @@ class StaticDataControllerV1EregIntegrationTest {
         assertThat(eregRepository.findAll())
                 .hasSize(1)
                 .first()
-                .isEqualToIgnoringGivenFields(
-                        new EregModel(ereg, null, null, null),
-                        "id", "createdAt", "updatedAt"
-                );
+                .usingRecursiveComparison()
+                .ignoringFields("id", "createdAt", "updatedAt")
+                .isEqualTo(new EregModel(ereg, null, null, null));
     }
 
     @Test
@@ -216,7 +217,7 @@ class StaticDataControllerV1EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    void shouldAddEregWithGrouppe() throws Exception {
+    void shouldAddEregWithGruppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
                 "TestKode",
@@ -232,7 +233,9 @@ class StaticDataControllerV1EregIntegrationTest {
         Iterable<EregModel> iterable = eregRepository.findAll();
         assertThat(iterable).hasSize(1);
         assertThat(iterable.iterator().next().getGruppeModel())
-                .isEqualToIgnoringGivenFields(gruppeModel, "id", "updatedAt", "createdAt");
+                .usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
+                .isEqualTo(gruppeModel);
     }
 
 
@@ -240,16 +243,18 @@ class StaticDataControllerV1EregIntegrationTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
-        Ereg ereg_123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
-        Ereg ereg_987654321 = createEreg("987654321", "BEDR", altinn.getNavn());
+        var ereg123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
+        var ereg987654321 = createEreg("987654321", "BEDR", altinn.getNavn());
         mvc.perform(post(EREG_API)
-                        .content(objectMapper.writeValueAsString(create(ereg_123456789, ereg_987654321)))
+                        .content(objectMapper.writeValueAsString(create(ereg123456789, ereg987654321)))
                         .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
         assertThat(Lists.newArrayList(opprinnelseRepository.findAll()))
                 .hasSize(1)
                 .first()
-                .isEqualToComparingOnlyGivenFields(new OpprinnelseModel(altinn), "navn");
+                .usingRecursiveComparison()
+                .comparingOnlyFields("navn")
+                .isEqualTo(new OpprinnelseModel(altinn));
     }
 
 

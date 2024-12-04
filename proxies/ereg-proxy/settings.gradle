@@ -8,7 +8,6 @@ includeBuild "../../plugins/java"
 
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/reactive-proxy"
-includeBuild "../../libs/vault"
 
 develocity {
     buildScan {

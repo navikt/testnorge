@@ -8,6 +8,9 @@ spring:
       initialization-fail-timeout: 10000
       jdbc-url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-udistub?autoReconnect=true&useSSL=false
   cloud:
+    gcp:
+      secretmanager:
+        enabled: false # Running in dev-fss.
     vault:
       kv:
         enabled: false

@@ -12,6 +12,9 @@ spring:
   flyway:
     enabled: true
   cloud:
+    gcp:
+      secretmanager:
+        enabled: false
     vault:
       token: dummy
 

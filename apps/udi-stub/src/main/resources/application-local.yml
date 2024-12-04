@@ -1,4 +1,7 @@
 spring:
+  cloud:
+    vault:
+      enabled: false
   datasource:
     hikari:
       maximum-pool-size: 3

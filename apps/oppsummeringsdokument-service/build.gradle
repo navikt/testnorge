@@ -18,7 +18,6 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
-    implementation "no.nav.testnav.libs:vault"
     implementation "no.nav.testnav.xsd:arbeidsforhold-xsd"
 
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"

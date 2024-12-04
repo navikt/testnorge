@@ -5,12 +5,9 @@ nå synt-applikasjonen.
 
 ## Lokal kjøring
 
-Start `SynthdataMeldekortProxyApplicationStarter` med følgende props:
-
-```
--Dspring.profiles.active=dev 
--Dspring.cloud.vault.token=<<VAULT_TOKEN>>
-```
+## Lokal kjøring
+* [Generelt.](../../docs/local_general.md)
+* [Secret Manager.](../../docs/local_secretmanager.md)
 
 ## Access token
 Siden proxy-en kjører med trygdeetaten tenant kan man ikke bruke oversikt-frontend for å hente access token når man 

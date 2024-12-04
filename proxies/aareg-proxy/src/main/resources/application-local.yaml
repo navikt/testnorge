@@ -1,5 +1,14 @@
 TOKEN_X_ISSUER: dummy
 
+spring:
+  config:
+    import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
+
 management:
   endpoint:
     shutdown:
@@ -8,10 +17,3 @@ management:
     web:
       exposure:
         include: "*"
-
-logging:
-  level:
-    org.springframework.security: trace
-    org.springframework.cloud.gateway: trace
-    org.springframework.web.reactive: trace
-    org.springframework.web.server: trace

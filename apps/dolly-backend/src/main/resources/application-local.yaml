@@ -6,16 +6,17 @@ dolly:
 spring:
   cache:
     type: none
-  cloud:
-    gcp:
-      secretmanager:
-        project-id: dolly-dev-ff83
   config:
     import: "sm://"
   datasource:
     url: jdbc:postgresql://localhost:5432/testnav-dolly-backend-local
     username: testnav-dolly-backend-local
     password: ${sm://testnav-dolly-backend-local}
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
 
 management:
   endpoints:
