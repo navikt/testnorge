@@ -82,12 +82,7 @@ export const PdlPersonForm = ({
 		setType(getType())
 	}, [formMethods.watch(parentPath)?.length])
 
-	//TODO: funker denne for alle tilfeller? F.eks. fullmakt?
 	const handleTypeChange = (value: string) => {
-		console.log('path: ', path) //TODO - SLETT MEG
-		console.log('value: ', value) //TODO - SLETT MEG
-		console.log('nyPersonPath: ', nyPersonPath) //TODO - SLETT MEG
-		console.log('eksisterendePersonPath: ', eksisterendePersonPath) //TODO - SLETT MEG
 		setType(value)
 		formMethods.setValue(
 			nyPersonPath,
@@ -117,7 +112,6 @@ export const PdlPersonForm = ({
 					<StyledToggleGroup
 						size={'small'}
 						value={type}
-						// onChange={setType}
 						onChange={(type) => handleTypeChange(type)}
 						label={'Personvalg'}
 						key={'toggle-' + path}

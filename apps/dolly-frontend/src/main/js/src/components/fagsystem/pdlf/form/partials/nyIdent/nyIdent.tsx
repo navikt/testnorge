@@ -29,7 +29,6 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 						obj[key] = formMethods.watch(path)[key]
 						return obj
 					}, {})
-				// console.log('nyIdentValg: ', nyIdentValg) //TODO - SLETT MEG
 
 				const initialNyIdent = {
 					...getInitialNyIdent(),
@@ -43,7 +42,6 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 					master: formMethods.watch(`${path}.master`),
 				}
 
-				console.log('initialNyIdent: ', initialNyIdent) //TODO - SLETT MEG
 				return (
 					<div className="flexbox--flex-wrap">
 						<PdlPersonExpander
