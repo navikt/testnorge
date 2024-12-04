@@ -41,7 +41,7 @@ export const PdlPersonExpander = ({
 			setSkjulPersonValg()
 		}
 	}, [])
-	console.log('nyIdentValg: ', nyIdentValg) //TODO - SLETT MEG
+
 	return (
 		<div className="flexbox--full-width">
 			{toggleExpansion &&

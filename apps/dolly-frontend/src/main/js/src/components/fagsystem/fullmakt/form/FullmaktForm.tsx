@@ -18,6 +18,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorMessage } from '@hookform/error-message'
 import { validation } from '@/components/fagsystem/fullmakt/form/validation'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
@@ -169,7 +170,11 @@ export const Fullmakt = ({
 				fullmektigsNavnPath={`${path}.fullmektigsNavn`}
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
-				isExpanded={isTestnorgeIdent || !!formMethods.watch(`${path}.fullmektig`)}
+				isExpanded={
+					isTestnorgeIdent ||
+					!isEmpty(formMethods.watch(`${path}.nyFullmektig`), ['syntetisk']) ||
+					!!formMethods.watch(`${path}.fullmektig`)
+				}
 				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>

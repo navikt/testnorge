@@ -356,7 +356,6 @@ export const initialFullmakt = {
 	omraade: [{ tema: '', handling: [] }] as any,
 	gyldigFraOgMed: new Date(),
 	gyldigTilOgMed: null as unknown as string,
-	fullmektig: null as unknown as string,
 }
 
 export const initialOpphold = {
@@ -373,12 +372,6 @@ export const initialTelefonnummer = {
 	prioritet: 2,
 	kilde: 'Dolly',
 	master: 'PDL',
-}
-
-export const initialTpsTelefonnummer = {
-	landkode: '+47',
-	telefonnummer: '',
-	telefontype: 'HJET',
 }
 
 export const initialPersonstatus = {

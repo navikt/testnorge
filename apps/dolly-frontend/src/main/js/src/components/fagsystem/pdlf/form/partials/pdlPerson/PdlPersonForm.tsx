@@ -59,11 +59,6 @@ export const PdlPersonForm = ({
 	const gruppe = useAsync(async () => {
 		return await DollyApi.getGruppeById(gruppeId)
 	}, [])
-	// console.log('path: ', path) //TODO - SLETT MEG
-	// console.log('nyPersonPath: ', nyPersonPath) //TODO - SLETT MEG
-	// console.log('eksisterendePersonPath: ', eksisterendePersonPath) //TODO - SLETT MEG
-	// console.log('nyIdentValg: ', nyIdentValg) //TODO - SLETT MEG
-	console.log('eksisterendeNyPerson: ', eksisterendeNyPerson) //TODO - SLETT MEG
 
 	const getType = () => {
 		if (formMethods.watch(`${path}.eksisterendePerson`)) {
@@ -89,6 +84,10 @@ export const PdlPersonForm = ({
 
 	//TODO: funker denne for alle tilfeller? F.eks. fullmakt?
 	const handleTypeChange = (value: string) => {
+		console.log('path: ', path) //TODO - SLETT MEG
+		console.log('value: ', value) //TODO - SLETT MEG
+		console.log('nyPersonPath: ', nyPersonPath) //TODO - SLETT MEG
+		console.log('eksisterendePersonPath: ', eksisterendePersonPath) //TODO - SLETT MEG
 		setType(value)
 		formMethods.setValue(
 			nyPersonPath,
@@ -101,6 +100,9 @@ export const PdlPersonForm = ({
 				eksisterendePersonPath,
 				value === PersonType.EKSISTERENDE_PERSON ? eksisterendeNyPerson?.value : undefined,
 			)
+		}
+		if (value === PersonType.NY_PERSON) {
+			formMethods.setValue(`${path}.fullmektigsNavn`, undefined)
 		}
 		if (path) {
 			formMethods.setValue(`${path}.eksisterendePerson`, value === PersonType.EKSISTERENDE_PERSON)
