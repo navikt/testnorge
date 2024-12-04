@@ -1,16 +1,9 @@
 name: Integration Tests
 on:
   push:
-    branches:
-      - master
     paths:
       - 'apps/bruker-service/**'
       - 'apps/person-organisasjon-tilgang-service/**'
-  pull_request:
-    paths:
-      - 'apps/bruker-service/**'
-      - 'apps/person-organisasjon-tilgang-service/**'
-    types: [ ready_for_review, review_requested ]
   workflow_dispatch:
 
 jobs:

@@ -19,7 +19,6 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
-    implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -28,6 +27,7 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-bootstrap" // TODO remove legacy bootstrap config
 
     implementation "org.springframework.kafka:spring-kafka"
+    implementation "org.apache.httpcomponents.core5:httpcore5:5.3"
     implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
     implementation "io.confluent:kafka-avro-serializer:$versions.avro"
 

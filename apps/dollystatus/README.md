@@ -5,8 +5,8 @@ Applikasjon for viser status på forskjellig applikasjoner og tjeneserter fra Do
 Lenke https://dollystatus.intern.dev.nav.no/ 
 
 ## Lokal kjøring
-Ha naisdevice kjørende og i "src/main/js" mappe kjør
+Fra `/src/main/js` kjør
 ```
-npm install
-npm start
+> npm install
+> npm start
 ```

@@ -7,7 +7,6 @@ import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerCon
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.kontoregisterperson.config.Consumers;
-import no.nav.testnav.proxies.kontoregisterperson.config.LocalVaultConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Import;
 
 @Import({
         CoreConfig.class,
-        LocalVaultConfig.class,
         SecurityConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })

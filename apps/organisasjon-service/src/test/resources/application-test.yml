@@ -1,0 +1,5 @@
+TOKEN_X_ISSUER: dummy
+
+consumers:
+  ereg:
+    url: http://localhost:${wiremock.server.port}
