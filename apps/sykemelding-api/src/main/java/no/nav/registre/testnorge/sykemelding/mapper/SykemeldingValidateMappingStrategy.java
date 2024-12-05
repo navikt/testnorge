@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.sykemelding.mapper;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -52,7 +51,6 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Sykemelding source, ReceivedSykemeldingDTO target, MappingContext context) {
 
-                        log.info("Mapping Sykemelding: {} to ReceivedSykemeldingDTO", Json.pretty(source));
                         var sykemeldingBuilder = ReceivedSykemeldingDTO.Sykemelding.builder();
 
 
@@ -64,6 +62,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                     target.setId(source.getMsgId());
                                     target.setPersonNrPasient(DUMMY_FNR);
                                     target.setLegekontorOrgName(DUMMY_LEGEKONTOR_ORG_NAME);
+                                    target.setFellesformat(String.valueOf(source.getFellesformat()));
 
                                     if (any instanceof XMLMsgHead xmlMsgHead) {
                                         xmlMsgHead.getDocument().forEach(document ->
@@ -87,6 +86,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                                                         .mellomnavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getMellomnavn())
                                                                         .etternavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getEtternavn())
                                                                         .fnr(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getId().getFirst().getId())
+                                                                        .aktoerId(DUMMY_AKTOER_ID)
                                                                         .adresse(ReceivedSykemeldingDTO.Adresse.builder()
                                                                                 .gate(DUMMY_GATE)
                                                                                 .postnummer(DUMMY_POSTNUMMER)
