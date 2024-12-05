@@ -35,6 +35,8 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
     private static final String DUMMY_FNR = "12508407724";
     private static final String DUMMY_AKTOER_ID = "123456789";
     private static final String DUMMY_LEGEKONTOR_ORG_NAME = "Testkontoret";
+    private static final String DUMMY_GATE = "Testveien 1";
+    private static final Integer DUMMY_POSTNUMMER = 1234;
     private static final Map<String, Map<String, ReceivedSykemeldingDTO.SporsmalSvar>> DUMMY_UTDYPENDE_OPPLYSNINGER =
             Collections.singletonMap("1", Collections.singletonMap("2",
                     ReceivedSykemeldingDTO.SporsmalSvar.builder()
@@ -86,8 +88,8 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                                                         .etternavn(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getNavn().getEtternavn())
                                                                         .fnr(xmlHelseOpplysningerArbeidsuforhet.getBehandler().getId().getFirst().getId())
                                                                         .adresse(ReceivedSykemeldingDTO.Adresse.builder()
-                                                                                .gate("Testveien 1")
-                                                                                .postnummer(1234)
+                                                                                .gate(DUMMY_GATE)
+                                                                                .postnummer(DUMMY_POSTNUMMER)
                                                                                 .build())
                                                                         .build())
                                                                 .avsenderSystem(ReceivedSykemeldingDTO.AvsenderSystem.builder()
