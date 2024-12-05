@@ -35,8 +35,6 @@ public class ReceivedSykemeldingDTO {
     private String legekontorReshId;
     private String legekontorOrgName;
     private LocalDateTime mottattDato;
-    private LocalDateTime behandletTidspunkt;
-    private LocalDateTime signaturDato;
     private String rulesetVersion;
     private List<Merknad> merknader;
     private String partnerreferanse;
@@ -106,7 +104,7 @@ public class ReceivedSykemeldingDTO {
         private Arbeidsgiver arbeidsgiver;
         private List<Periode> perioder;
         private Prognose prognose;
-        private UtdypendeOpplysninger utdypendeOpplysninger;
+        private Map<String, Map<String, SporsmalSvar>> utdypendeOpplysninger;
         private String tiltakArbeidsplassen;
         private String tiltakNAV;
         private String andreTiltak;
@@ -126,17 +124,6 @@ public class ReceivedSykemeldingDTO {
                 perioder = new ArrayList<>();
             }
             return perioder;
-        }
-    }
-
-    @Data
-    @Builder
-    public static class UtdypendeOpplysninger {
-
-        private Map<String, Map<String, SporsmalSvar>> sporsmalSvar;
-
-        public UtdypendeOpplysninger(Map<String, Map<String, SporsmalSvar>> sporsmalSvar) {
-            this.sporsmalSvar = sporsmalSvar;
         }
     }
 

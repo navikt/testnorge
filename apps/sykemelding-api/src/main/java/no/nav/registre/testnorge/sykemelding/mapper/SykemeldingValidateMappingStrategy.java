@@ -21,6 +21,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -34,14 +35,13 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
     private static final String DUMMY_FNR = "12508407724";
     private static final String DUMMY_AKTOER_ID = "123456789";
     private static final String DUMMY_LEGEKONTOR_ORG_NAME = "Testkontoret";
-    private static final ReceivedSykemeldingDTO.UtdypendeOpplysninger DUMMY_UTDYPENDE_OPPLYSNINGER = ReceivedSykemeldingDTO.UtdypendeOpplysninger.builder()
-            .sporsmalSvar(Collections.singletonMap("1", Collections.singletonMap("2",
+    private static final Map<String, Map<String, ReceivedSykemeldingDTO.SporsmalSvar>> DUMMY_UTDYPENDE_OPPLYSNINGER =
+            Collections.singletonMap("1", Collections.singletonMap("2",
                     ReceivedSykemeldingDTO.SporsmalSvar.builder()
                             .sporsmal("Hva er din hovedplage?")
                             .svar("Tester")
                             .restriksjoner(List.of(Restriksjon.SKJERMET_FOR_ARBEIDSGIVER))
-                            .build())))
-            .build();
+                            .build()));
 
     @Override
     public void register(MapperFactory factory) {
@@ -100,7 +100,9 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                                                         xmlHelseOpplysningerArbeidsuforhet.getTiltak().getAndreTiltak() : null)
                                                                 .utdypendeOpplysninger(mapUtdypendeOpplysninger(xmlHelseOpplysningerArbeidsuforhet.getUtdypendeOpplysninger()))
                                                                 .perioder(mapPerioder(xmlHelseOpplysningerArbeidsuforhet.getAktivitet().getPeriode()))
-                                                                .prognose(mapPrognose(xmlHelseOpplysningerArbeidsuforhet.getPrognose()));
+                                                                .prognose(mapPrognose(xmlHelseOpplysningerArbeidsuforhet.getPrognose()))
+                                                                .behandletTidspunkt(LocalDateTime.now())
+                                                                .signaturDato(LocalDateTime.now());
                                                     }
                                                 }));
                                     }
@@ -111,8 +113,6 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                     }
                                     var sykemelding = sykemeldingBuilder.build();
 
-                                    target.setBehandletTidspunkt(LocalDateTime.now());
-                                    target.setSignaturDato(LocalDateTime.now());
                                     target.setPersonNrLege(sykemelding.getBehandler().getFnr());
                                     target.setSykmelding(sykemelding);
                                 });
@@ -166,9 +166,9 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                 .build();
     }
 
-    private ReceivedSykemeldingDTO.UtdypendeOpplysninger mapUtdypendeOpplysninger(XMLHelseOpplysningerArbeidsuforhet.UtdypendeOpplysninger utdypendeOpplysninger) {
+    private Map<String, Map<String, ReceivedSykemeldingDTO.SporsmalSvar>> mapUtdypendeOpplysninger(XMLHelseOpplysningerArbeidsuforhet.UtdypendeOpplysninger utdypendeOpplysninger) {
 
-        return isNull(utdypendeOpplysninger) || utdypendeOpplysninger.getSpmGruppe().isEmpty() ? DUMMY_UTDYPENDE_OPPLYSNINGER : new ReceivedSykemeldingDTO.UtdypendeOpplysninger(
+        return isNull(utdypendeOpplysninger) || utdypendeOpplysninger.getSpmGruppe().isEmpty() ? DUMMY_UTDYPENDE_OPPLYSNINGER :
                 utdypendeOpplysninger.getSpmGruppe().stream()
                         .collect(Collectors.toMap(SpmGruppe::getSpmGruppeId,
                                 gruppe -> gruppe.getSpmSvar().stream()
@@ -179,7 +179,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                                         .map(XMLCS::getDN)
                                                         .map(Restriksjon::valueOf)
                                                         .toList())
-                                                .build())))));
+                                                .build()))));
     }
 
     private ReceivedSykemeldingDTO.AktivitetIkkeMulig mapAktivitetIkkeMulig(XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode.AktivitetIkkeMulig aktivitetIkkeMulig) {
