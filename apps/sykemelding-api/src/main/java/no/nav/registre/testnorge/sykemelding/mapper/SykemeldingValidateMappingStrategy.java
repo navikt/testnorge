@@ -61,7 +61,6 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                     target.setNavLogId(source.getMsgId());
                                     target.setId(source.getMsgId());
                                     target.setPersonNrPasient(DUMMY_FNR);
-                                    target.setPasientAktoerId(DUMMY_AKTOER_ID);
                                     target.setLegekontorOrgName(DUMMY_LEGEKONTOR_ORG_NAME);
 
                                     if (any instanceof XMLMsgHead xmlMsgHead) {
@@ -70,6 +69,9 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
 
                                                     if (refDoc instanceof XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet) {
                                                         sykemeldingBuilder.syketilfelleStartDato(xmlHelseOpplysningerArbeidsuforhet.getSyketilfelleStartDato())
+                                                                .id(source.getMsgId())
+                                                                .msgId(source.getMsgId())
+                                                                .pasientAktoerId(DUMMY_AKTOER_ID)
                                                                 .navnFastlege(xmlHelseOpplysningerArbeidsuforhet.getPasient().getNavnFastlege())
                                                                 .arbeidsgiver(ReceivedSykemeldingDTO.Arbeidsgiver.builder()
                                                                         .harArbeidsgiver(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER)

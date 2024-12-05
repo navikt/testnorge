@@ -23,7 +23,6 @@ public class ReceivedSykemeldingDTO {
     private Sykemelding sykmelding;
 
     private String personNrPasient;
-    private String pasientAktoerId;
     private String tlfPasient;
     private String personNrLege;
     private String legeHelsepersonellkategori;
