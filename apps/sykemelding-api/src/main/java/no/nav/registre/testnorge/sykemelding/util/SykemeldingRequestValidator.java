@@ -5,14 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
 public class SykemeldingRequestValidator {
 
     public static void validate(SykemeldingDTO dto) {
-        var missingFields = new ArrayList<>();
+        var missingFields = new ArrayList<String>();
 
         if (isNull(dto.getHovedDiagnose())) {
             missingFields.add("hovedDiagnose");
@@ -37,9 +36,7 @@ public class SykemeldingRequestValidator {
         }
 
         if (!missingFields.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler felt: " + missingFields.stream()
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse(Optional.empty()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.join(", ", missingFields));
         }
     }
 }
