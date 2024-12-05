@@ -33,11 +33,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = RANDOM_PORT,
+        properties = "spring.cloud.vault.token=SET_TO_SOMETHING_TO_ALLOW_CONTEXT_TO_LOAD"
+)
 @ActiveProfiles("test")
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
