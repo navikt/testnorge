@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { OrganisasjonToogleGruppe } from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
+import { OrganisasjonToggleGruppe } from '@/components/organisasjonSelect/OrganisasjonToggleGruppe'
 import {
 	EgneOrganisasjoner,
 	getEgneOrganisasjoner,
@@ -63,7 +63,7 @@ export const OrgnrToggle = ({
 
 	return (
 		<div className="toggle--wrapper">
-			<OrganisasjonToogleGruppe
+			<OrganisasjonToggleGruppe
 				path={virksomhetPath}
 				inputType={inputType}
 				handleToggleChange={handleToggleChange}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
-import { OrganisasjonToogleGruppe } from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
+import { OrganisasjonToggleGruppe } from '@/components/organisasjonSelect/OrganisasjonToggleGruppe'
 import {
 	EgneOrganisasjoner,
 	getEgneOrganisasjoner,
@@ -78,7 +78,7 @@ export const OrgnrToggle = ({
 
 	return (
 		<div className="toggle--wrapper">
-			<OrganisasjonToogleGruppe inputType={inputType} handleToggleChange={handleToggleChange} />
+			<OrganisasjonToggleGruppe inputType={inputType} handleToggleChange={handleToggleChange} />
 			{inputType === ArbeidsgiverTyper.felles && (
 				<OrganisasjonLoader
 					path={`${path}.orgNr`}

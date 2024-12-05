@@ -1,16 +1,15 @@
 import { ToggleGroup } from '@navikt/ds-react'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 
-interface OrganisasjonToogleGruppeProps {
+interface OrganisasjonToggleGruppeProps {
 	inputType: string
 	handleToggleChange: (value: string) => void
 }
 
-export const OrganisasjonToogleGruppe = ({
+export const OrganisasjonToggleGruppe = ({
 	inputType,
 	handleToggleChange,
-}: OrganisasjonToogleGruppeProps) => {
-	// TODO: bruk samme toggle som arb.for.?? Nei, men kanskje legge denne i utils?
+}: OrganisasjonToggleGruppeProps) => {
 	return (
 		<ToggleGroup
 			size={'small'}
