@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
@@ -36,7 +37,9 @@ public class SykemeldingRequestValidator {
         }
 
         if (!missingFields.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler felt: " + missingFields.stream().reduce((a, b) -> a + ", " + b));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mangler felt: " + missingFields.stream()
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse(Optional.empty()));
         }
     }
 }
