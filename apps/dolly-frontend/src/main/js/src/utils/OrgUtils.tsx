@@ -52,8 +52,10 @@ export const handleManualOrgChange = (
 ) => {
 	const validEnhetstyper = ['BEDR', 'AAFY']
 	if (!org || !miljo) {
+		formMethods.setError(`manual.${path}`, { message: !org ? 'Skriv inn org' : 'Velg miljø' })
 		return
 	}
+	formMethods.clearErrors(`manual.${path}`)
 	formMethods.clearErrors(path)
 	setLoading(true)
 	setSuccess(false)
@@ -61,7 +63,9 @@ export const handleManualOrgChange = (
 		.then((response: { data: { enhetType: string; juridiskEnhet: any; orgnummer: any } }) => {
 			setLoading(false)
 			if (!validEnhetstyper.includes(response.data.enhetType)) {
-				formMethods.setError(path, { message: 'Organisasjonen må være av type BEDR eller AAFY' })
+				formMethods.setError(`manual.${path}`, {
+					message: 'Organisasjonen må være av type BEDR eller AAFY',
+				})
 				return
 			}
 			if (!response.data.juridiskEnhet) {
@@ -69,7 +73,9 @@ export const handleManualOrgChange = (
 					opplysningspliktigPath &&
 						formMethods.setValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
 				} else {
-					formMethods.setError(path, { message: 'Organisasjonen mangler juridisk enhet' })
+					formMethods.setError(`manual.${path}`, {
+						message: 'Organisasjonen mangler juridisk enhet',
+					})
 					return
 				}
 			}
@@ -81,6 +87,6 @@ export const handleManualOrgChange = (
 		})
 		.catch(() => {
 			setLoading(false)
-			formMethods.setError(path, { message: 'Fant ikke organisasjonen i ' + miljo })
+			formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen i ' + miljo })
 		})
 }

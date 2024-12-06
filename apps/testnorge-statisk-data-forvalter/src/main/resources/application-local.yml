@@ -1,24 +1,31 @@
 spring:
+  config:
+    import: "sm://"
+  cloud:
+    vault:
+      enabled: false
+  datasource:
+    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
+    username: sa
+  flyway:
+    enabled: true
   h2:
     console:
       enabled: true
       path: /h2
-  flyway:
-    enabled: true
-  datasource:
-    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
-    username: sa
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-  cloud:
-    vault:
-      enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
 
 ereg.api: dummy
 
-VAULT_URL: dummy
+#VAULT_URL: dummy
 
 consumers:
   testnav-bruker-service:

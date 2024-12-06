@@ -14,11 +14,8 @@ properties {
 }
 
 dependencies {
-    implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
-
     implementation "no.nav.testnav.libs:avro-schema"
     implementation "no.nav.testnav.libs:data-transfer-objects"
-    implementation "no.nav.testnav.libs:database"
     implementation "no.nav.testnav.libs:kafka-config"
     implementation "no.nav.testnav.libs:kafka-producers"
     implementation "no.nav.testnav.libs:reactive-core"

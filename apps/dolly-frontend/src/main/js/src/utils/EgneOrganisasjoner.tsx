@@ -179,8 +179,8 @@ export const EgneOrganisasjoner = ({
 
 	const sjekkOrganisasjoner = () => {
 		if (formMethods.watch(path) === '') {
-			if (!_.has(formMethods.formState.errors, path)) {
-				formMethods.setError(path, { message: 'Feltet er påkrevd' })
+			if (!_.has(formMethods.formState.errors, `manual.${path}`)) {
+				formMethods.setError(`manual.${path}`, { message: 'Feltet er påkrevd' })
 			}
 			return { feilmelding: 'Feltet er påkrevd' }
 		}

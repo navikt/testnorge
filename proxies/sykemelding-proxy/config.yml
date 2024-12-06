@@ -1,0 +1,76 @@
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-sykemelding-proxy-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-trygdeetaten-testnav-sykemelding-proxy-trygdeetaten
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: testnav-sykemelding-proxy
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{image}}
+  port: 8080
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+        - application: dolly-frontend
+        - application: dolly-idporten
+        - application: dolly-frontend-dev
+        - application: dolly-backend
+        - application: dolly-backend-dev
+        - application: testnav-sykemelding-api
+        - application: testnav-sykemelding-api-dev
+        - application: testnav-oversikt-frontend
+    outbound:
+      rules:
+        - application: syfosmregler
+          namespace: teamsykmelding
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      memory: 2048Mi
+  envFrom:
+    - secret: azure-trygdeetaten-testnav-sykemelding-proxy-trygdeetaten
+  ingresses:
+    - "https://testnav-sykemelding-proxy.intern.dev.nav.no"

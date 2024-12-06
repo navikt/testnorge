@@ -8,7 +8,6 @@ import no.nav.testnav.apps.syntsykemeldingapi.domain.Helsepersonell;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Person;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
-import no.nav.testnav.apps.syntsykemeldingapi.exception.LagreSykemeldingException;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
@@ -30,24 +29,25 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestPdlPerson;
-import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestHistorikk;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestArbeidsforholdDTO;
+import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestHistorikk;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestLegeListeDTO;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestOrganisasjonDTO;
+import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestPdlPerson;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -126,7 +126,7 @@ public class SykemeldingConsumerTest {
     @Test
     public void shouldGetFeil() {
         stubSykemeldingError();
-        assertThrows(LagreSykemeldingException.class, () -> sykemeldingConsumer.opprettSykemelding(sykemeldingRequest));
+        assertThrows(ResponseStatusException.class, () -> sykemeldingConsumer.opprettSykemelding(sykemeldingRequest));
     }
 
     private void stubSykemelding() {

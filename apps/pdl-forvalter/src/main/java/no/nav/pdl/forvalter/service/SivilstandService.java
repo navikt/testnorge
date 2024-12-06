@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -168,6 +169,12 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                 .max(Comparator.comparing(SivilstandDTO::getId))
                 .map(SivilstandDTO::getId)
                 .orElse(0) + 1);
+
+        // Ensure the list is modifiable
+        if (!(relatertPerson.get().getPerson().getSivilstand() instanceof LinkedList)) {
+            relatertPerson.get().getPerson().setSivilstand(new LinkedList<>(relatertPerson.get().getPerson().getSivilstand()));
+        }
+       
         relatertPerson.get().getPerson().getSivilstand().addFirst(relatertSivilstand);
 
         relatertPerson.get().getPerson().setSivilstand(enforceIntegrity(relatertPerson.get().getPerson()));

@@ -23,17 +23,21 @@ const ToggleArbeidsgiver = styled(ToggleGroup)`
 const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+
 	:hover {
 		background-color: white;
 		cursor: default;
 	}
+
 	&&& {
 		button {
 			color: #aab0ba;
 		}
+
 		.navds-toggle-group__button[aria-checked='true'] {
 			background-color: #aab0ba;
 			color: white;
+
 			:hover {
 				background-color: #aab0ba;
 				cursor: default;
@@ -119,7 +123,7 @@ export const ArbeidsforholdToggle = ({
 			)
 			.filter((arbeidsforhold: any) => !_.isEmpty(arbeidsforhold))
 		if (!_.isEmpty(dupliserteAktiveArbeidsforhold)) {
-			formMethods.setError(`${path}.arbeidsgiver.orgnummer`, {
+			formMethods.setError(`manual.${path}.arbeidsgiver.orgnummer`, {
 				message: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
 			})
 		}

@@ -1,0 +1,14 @@
+TOKEN_X_ISSUER: dummy
+
+sts:
+  token:
+    provider:
+      username: dummy
+      password: dummy
+
+app:
+  elastic:
+    username: dummy
+    password: dummy
+  hendelse.lager.api.key: dummy
+  person.aktor.api.key: dummy

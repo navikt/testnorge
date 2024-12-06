@@ -4,13 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.config.Consumers;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetPdlPersonCommand;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
-import no.nav.testnav.apps.syntsykemeldingapi.exception.PdlPersonException;
 import no.nav.testnav.apps.syntsykemeldingapi.util.FilLaster;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -60,12 +61,12 @@ public class PdlProxyConsumer {
             if (nonNull(response) && !response.getErrors().isEmpty()) {
                 var melding = response.getErrors().get(0).getMessage();
                 log.error("Klarte ikke hente pdlperson: " + melding);
-                throw new PdlPersonException("Feil i henting av person fra pdl" + melding);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feil i henting av person fra pdl" + melding);
             }
             return response;
         } catch (Exception e) {
             log.error("Klarte ikke hente pdlperson.", e);
-            throw new PdlPersonException("Feil i henting av person fra pdl");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feil i henting av person fra pdl");
         }
 
     }

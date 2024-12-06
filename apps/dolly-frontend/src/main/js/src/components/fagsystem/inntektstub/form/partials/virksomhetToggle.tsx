@@ -72,6 +72,7 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 		setTypeArbeidsgiver(value)
 		formMethods.setValue(virksomhetPath, '')
 		formMethods.setValue(opplysningspliktigPath, '')
+		formMethods.clearErrors(`manual.${path}`)
 		formMethods.clearErrors(path)
 	}
 
