@@ -4,19 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Value
+import static java.util.Objects.isNull;
+
+@Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
-@EqualsAndHashCode
 public class SykemeldingDTO {
 
     @JsonProperty
@@ -29,7 +28,6 @@ public class SykemeldingDTO {
     private ArbeidsgiverDTO arbeidsgiver;
     @JsonProperty
     private Boolean manglendeTilretteleggingPaaArbeidsplassen;
-    @JsonProperty
     private List<PeriodeDTO> perioder;
     @JsonProperty
     private OrganisasjonDTO sender;
@@ -37,12 +35,12 @@ public class SykemeldingDTO {
     private OrganisasjonDTO mottaker;
     @JsonProperty
     private DiagnoseDTO hovedDiagnose;
-    @JsonProperty
     private List<DiagnoseDTO> biDiagnoser;
     @JsonProperty
     private DetaljerDTO detaljer;
     @JsonProperty
     private Boolean umiddelbarBistand;
+    private List<UtdypendeOpplysningerDTO> utdypendeOpplysninger;
 
     @JsonIgnore
     public List<DiagnoseDTO> getBiDiagnoser() {
@@ -51,6 +49,24 @@ public class SykemeldingDTO {
         }
         return biDiagnoser;
     }
+
+    public List<PeriodeDTO> getPerioder() {
+
+        if (isNull(perioder)) {
+            perioder = new ArrayList<>();
+        }
+        return perioder;
+    }
+
+
+    public List<UtdypendeOpplysningerDTO> getUtdypendeOpplysninger() {
+
+        if (isNull(utdypendeOpplysninger)) {
+            utdypendeOpplysninger = new ArrayList<>();
+        }
+        return utdypendeOpplysninger;
+    }
+
 
     @JsonIgnore
     public Boolean getManglendeTilretteleggingPaaArbeidsplassen() {
