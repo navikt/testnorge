@@ -17,6 +17,7 @@ import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
 import { useEffect } from 'react'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
+import { useSykemeldingValidering } from '@/utils/hooks/useSykemelding'
 
 type DiagnoseSelect = {
 	diagnoseNavn: string
@@ -46,6 +47,19 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 		formMethods.setValue(`${path}.diagnose`, v.diagnoseNavn)
 		formMethods.setValue(`${path}.system`, KODESYSTEM)
 	}
+	const detaljertSykemelding = formMethods.watch('sykemelding.detaljertSykemelding')
+
+	const { validation, missingFields, mutate, error } =
+		useSykemeldingValidering(detaljertSykemelding)
+	console.log('error: ', error) //TODO - SLETT MEG
+	console.log('validation: ', validation) //TODO - SLETT MEG
+	console.log('missingFields: ', missingFields) //TODO - SLETT MEG
+	console.log('detaljertSykemelding: ', detaljertSykemelding) //TODO - SLETT MEG
+
+	useEffect(() => {
+		console.log('Mutating!') //TODO - SLETT MEG
+		mutate()
+	}, [detaljertSykemelding])
 
 	const handleLegeChange = (v: Helsepersonell) => {
 		formMethods.setValue('sykemelding.detaljertSykemelding.helsepersonell', {
