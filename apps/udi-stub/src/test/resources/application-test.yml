@@ -6,9 +6,6 @@ spring:
       secretmanager:
         enabled: false
     vault:
-      database:
-        enabled: false
-      token: "test"
       enabled: false
   datasource:
     url: jdbc:tc:postgresql:15:///test?TC_REUSABLE=true

@@ -22,7 +22,6 @@ dependencies {
         exclude group: "com.google.code.findbugs"
     }
 
-    implementation "no.nav.testnav.libs:database"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:vault"
 

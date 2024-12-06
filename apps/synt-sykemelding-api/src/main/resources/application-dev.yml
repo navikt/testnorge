@@ -1,18 +1,3 @@
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-synt-sykemelding-api
-
-spring:
-  config:
-    import: "sm://"
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
-
 consumers:
   synt-sykemelding:
     url: http://synthdata-elsam-gcp.intern.dolly.svc.cluster.local
