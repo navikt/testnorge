@@ -57,7 +57,6 @@ const simpleValues = {
 }
 
 export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
-	//TODO: Er det mulig å gjøre noe med denne?
 	const [formSimple, setFormSimple] = useBoolean(
 		sessionStorage.getItem(INNTEKTSTYPE_FORENKLET_TOGGLE) === FormType.FORENKLET,
 	)
@@ -87,6 +86,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 			formMethods.setValue(`${inntektsinformasjonPath}.inntektsliste`, newInntektArray)
 		formMethods.trigger(`${inntektsinformasjonPath}.inntektsliste`)
 	}
+
 	return (
 		<>
 			<div className="toggle--wrapper">

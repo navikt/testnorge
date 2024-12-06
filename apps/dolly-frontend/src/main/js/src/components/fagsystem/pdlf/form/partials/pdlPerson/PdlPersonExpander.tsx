@@ -11,10 +11,12 @@ interface PdlPersonValues {
 	nyPersonPath: string
 	eksisterendePersonPath: string
 	fullmektigsNavnPath?: string
-	eksisterendeNyPerson?: Option
+	eksisterendeNyPerson?: Option | null
+	initialNyIdent?: any
+	initialEksisterendePerson?: any
 	label: string
 	formMethods: UseFormReturn
-	nyIdentValg?: NyIdent
+	nyIdentValg?: NyIdent | null
 	isExpanded?: boolean
 	toggleExpansion?: boolean
 }

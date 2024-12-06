@@ -37,6 +37,7 @@ const mapLegacyFullmaktTilNyFullmakt = (
 	if (!legacyFullmakt || legacyFullmakt.length === 0) {
 		return null
 	}
+
 	const nyeFullmakter = legacyFullmakt
 		.filter((gammelFullmakt) => gammelFullmakt.omraader)
 		.map((gammelFullmakt) => ({

@@ -6,7 +6,6 @@ import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import styled from 'styled-components'
 import { useFieldArray, useFormContext } from 'react-hook-form'
-import { useEffect } from 'react'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -225,7 +224,6 @@ export const FormDollyFieldArray = ({
 	errorText = null,
 }) => {
 	const formMethods = useFormContext()
-
 	const { append, remove } = useFieldArray({
 		control: formMethods.control,
 		name: name,
@@ -249,6 +247,7 @@ export const FormDollyFieldArray = ({
 						handleRemoveEntry ? handleRemoveEntry(idx) : remove(idx)
 						formMethods.trigger(name)
 					}
+
 					if (nested) {
 						return (
 							<DollyFaBlokkNested

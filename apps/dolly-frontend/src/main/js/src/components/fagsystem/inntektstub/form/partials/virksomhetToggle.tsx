@@ -78,6 +78,7 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 
 	const handleOrgChange = (value: { juridiskEnhet: string; orgnr: string }) => {
 		opplysningspliktigPath && formMethods.setValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
+		formMethods.clearErrors(`manual.${path}`)
 		formMethods.trigger(opplysningspliktigPath)
 		formMethods.setValue(virksomhetPath, value.orgnr)
 	}

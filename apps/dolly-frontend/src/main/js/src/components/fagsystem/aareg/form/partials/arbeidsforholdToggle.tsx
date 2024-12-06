@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Alert, ToggleGroup } from '@navikt/ds-react'
+import { ToggleGroup } from '@navikt/ds-react'
 import { initialArbeidsgiverOrg, initialArbeidsgiverPers } from '../initialValues'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useFormContext } from 'react-hook-form'

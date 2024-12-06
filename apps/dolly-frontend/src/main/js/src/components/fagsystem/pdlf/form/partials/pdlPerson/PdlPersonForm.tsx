@@ -20,8 +20,10 @@ interface PdlPersonValues {
 	fullmektigsNavnPath?: string
 	label: string
 	formMethods: UseFormReturn
-	nyIdentValg?: NyIdent
-	eksisterendeNyPerson?: Option
+	nyIdentValg?: NyIdent | null
+	eksisterendeNyPerson?: Option | null
+	initialNyIdent?: any
+	initialEksisterendePerson?: any
 }
 
 const StyledToggleGroup = styled(ToggleGroup)`

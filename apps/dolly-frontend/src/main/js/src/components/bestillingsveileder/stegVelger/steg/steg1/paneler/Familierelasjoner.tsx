@@ -5,7 +5,6 @@ import {
 	getInitialForeldreansvar,
 	getInitialSivilstand,
 	initialDoedfoedtBarn,
-	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { relasjonerAttributter } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'

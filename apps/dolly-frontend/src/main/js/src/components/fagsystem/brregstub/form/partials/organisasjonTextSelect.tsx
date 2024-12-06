@@ -32,8 +32,6 @@ export const OrganisasjonTextSelect = ({
 	setEnhetsinfo,
 }: OrgnanisasjonTextSelectProps) => {
 	const formMethods = useFormContext()
-	//TODO: Trenger vi ikke error? Sjekk naar master er tatt inn
-	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(path) || null)
@@ -42,9 +40,11 @@ export const OrganisasjonTextSelect = ({
 
 	const handleChange = (org: string, miljoe: string) => {
 		if (!org || !miljoe) {
+			formMethods.setError(`manual.${path}`, { message: !org ? 'Skriv inn org' : 'Velg miljø' })
 			return
 		}
-		setError(null)
+		formMethods.clearErrors(`manual.${path}`)
+		formMethods.clearErrors(path)
 		setLoading(true)
 		setSuccess(false)
 		formMethods.setValue(`${parentPath}.organisasjonMiljoe`, miljoe)
@@ -63,7 +63,7 @@ export const OrganisasjonTextSelect = ({
 			})
 			.catch(() => {
 				setLoading(false)
-				setError('Fant ikke organisasjonen i ' + miljoe)
+				formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen i ' + miljoe })
 			})
 	}
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import _ from 'lodash'
 import { Adresse, Organisasjon } from '@/service/services/organisasjonforvalter/types'
-import { Alert } from '@navikt/ds-react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
@@ -77,7 +76,7 @@ const OrgMiljoeInfoVisning = ({ miljoer, loading = false, error = false }: Props
 			{!loading && error && (
 				<div className="flexbox">
 					<Icon size={20} kind="report-problem-circle" />
-					Feil oppsto i henting av organisasjon info
+					Feil oppsto i henting av organisasjon-info
 				</div>
 			)}
 			{!loading && !error && (
