@@ -144,7 +144,7 @@
     "changeOrigin": true,
     "secure": false
   },
-  "/testnav-organisasjon-tilgang-service/api": {
+  "/testnav-altinn3-tilgang-service/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false
