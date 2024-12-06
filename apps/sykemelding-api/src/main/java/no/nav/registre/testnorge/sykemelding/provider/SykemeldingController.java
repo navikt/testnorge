@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.sykemelding.provider;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
 import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
 import no.nav.registre.testnorge.sykemelding.service.SykemeldingService;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/v1/sykemeldinger")
 @RequiredArgsConstructor
+@Slf4j
 public class SykemeldingController {
 
     private final SykemeldingService sykemeldingService;
@@ -30,6 +32,7 @@ public class SykemeldingController {
 
     @PostMapping(value = "/validate")
     public Mono<ValidationResultDTO> validate(@RequestBody SykemeldingDTO dto) {
+        log.info("Mottok sykemelding: {}", dto);
 
         SykemeldingRequestValidator.validate(dto);
         return sykemeldingService.validate(new Sykemelding(dto, applicationInfo));

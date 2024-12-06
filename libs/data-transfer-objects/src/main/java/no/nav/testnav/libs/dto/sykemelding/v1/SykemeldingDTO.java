@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.dto.sykemelding.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,27 +17,17 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class SykemeldingDTO {
 
-    @JsonProperty
     private LocalDate startDato;
-    @JsonProperty
     private PasientDTO pasient;
-    @JsonProperty
     private HelsepersonellDTO helsepersonell;
-    @JsonProperty
     private ArbeidsgiverDTO arbeidsgiver;
-    @JsonProperty
     private Boolean manglendeTilretteleggingPaaArbeidsplassen;
     private List<PeriodeDTO> perioder;
-    @JsonProperty
     private OrganisasjonDTO sender;
-    @JsonProperty
     private OrganisasjonDTO mottaker;
-    @JsonProperty
     private DiagnoseDTO hovedDiagnose;
     private List<DiagnoseDTO> biDiagnoser;
-    @JsonProperty
     private DetaljerDTO detaljer;
-    @JsonProperty
     private Boolean umiddelbarBistand;
     private List<UtdypendeOpplysningerDTO> utdypendeOpplysninger;
 
