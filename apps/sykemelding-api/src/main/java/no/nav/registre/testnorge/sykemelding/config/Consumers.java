@@ -18,5 +18,4 @@ import static lombok.AccessLevel.PACKAGE;
 public class Consumers {
 
     private ServerProperties sykemeldingProxy;
-
 }
