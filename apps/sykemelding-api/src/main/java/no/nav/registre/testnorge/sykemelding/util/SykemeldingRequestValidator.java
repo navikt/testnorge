@@ -25,9 +25,6 @@ public class SykemeldingRequestValidator {
         if (isNull(dto.getPerioder())) {
             missingFields.add("perioder");
         }
-        if (isNull(dto.getUtdypendeOpplysninger())) {
-            missingFields.add("utdypendeOpplysninger");
-        }
         if (isNull(dto.getHelsepersonell())) {
             missingFields.add("helsepersonell");
         }

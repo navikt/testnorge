@@ -50,7 +50,7 @@ public class SykemeldingDTO {
 
     public List<UtdypendeOpplysningerDTO> getUtdypendeOpplysninger() {
 
-        if(isNull(utdypendeOpplysninger)) {
+        if (isNull(utdypendeOpplysninger)) {
             utdypendeOpplysninger = new ArrayList<>();
         }
         return utdypendeOpplysninger;
