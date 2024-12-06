@@ -1,4 +1,6 @@
-azure:
-  openid:
-    config:
-      issuer: dummy
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        trygdeetaten:
+          issuer-uri: # Intentionally left blank.
