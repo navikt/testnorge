@@ -2,15 +2,11 @@ package no.nav.testnav.libs.dto.sykemelding.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
+@AllArgsConstructor
 public class DetaljerDTO {
 
     private String tiltakArbeidsplass;

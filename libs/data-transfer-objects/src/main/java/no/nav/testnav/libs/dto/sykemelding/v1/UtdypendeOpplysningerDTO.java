@@ -12,7 +12,6 @@ import static java.util.Objects.isNull;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UtdypendeOpplysningerDTO {
 
@@ -28,6 +27,12 @@ public class UtdypendeOpplysningerDTO {
         return spmSvar;
     }
 
+    public enum Restriksjon {
+        SKJERMET_FOR_ARBEIDSGIVER,
+        SKJERMET_FOR_PASIENT,
+        SKJERMET_FOR_NAV
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -38,11 +43,5 @@ public class UtdypendeOpplysningerDTO {
         private String spmTekst;
         private Restriksjon restriksjon;
         private String svarTekst;
-    }
-
-    public enum Restriksjon {
-        SKJERMET_FOR_ARBEIDSGIVER,
-        SKJERMET_FOR_PASIENT,
-        SKJERMET_FOR_NAV
     }
 }

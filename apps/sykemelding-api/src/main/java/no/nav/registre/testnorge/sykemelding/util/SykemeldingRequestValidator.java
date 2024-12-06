@@ -28,9 +28,6 @@ public class SykemeldingRequestValidator {
         if (isNull(dto.getHelsepersonell())) {
             missingFields.add("helsepersonell");
         }
-        if (isNull(dto.getSender())) {
-            missingFields.add("sender");
-        }
 
         if (!missingFields.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.join(", ", missingFields));
