@@ -1,13 +1,12 @@
 package no.nav.testnav.libs.dto.sykemelding.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -15,6 +14,7 @@ import static java.util.Objects.isNull;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class SykemeldingDTO {
 
     private LocalDate startDato;
@@ -28,16 +28,8 @@ public class SykemeldingDTO {
     private DiagnoseDTO hovedDiagnose;
     private List<DiagnoseDTO> biDiagnoser;
     private DetaljerDTO detaljer;
-    private Boolean umiddelbarBistand;
     private List<UtdypendeOpplysningerDTO> utdypendeOpplysninger;
-
-    @JsonIgnore
-    public List<DiagnoseDTO> getBiDiagnoser() {
-        if (biDiagnoser == null) {
-            return Collections.emptyList();
-        }
-        return biDiagnoser;
-    }
+    private Boolean umiddelbarBistand;
 
     public List<PeriodeDTO> getPerioder() {
 
@@ -47,6 +39,13 @@ public class SykemeldingDTO {
         return perioder;
     }
 
+    public List<DiagnoseDTO> getBiDiagnoser() {
+
+        if (isNull(biDiagnoser)) {
+            biDiagnoser = new ArrayList<>();
+        }
+        return biDiagnoser;
+    }
 
     public List<UtdypendeOpplysningerDTO> getUtdypendeOpplysninger() {
 
@@ -56,9 +55,8 @@ public class SykemeldingDTO {
         return utdypendeOpplysninger;
     }
 
-
-    @JsonIgnore
     public Boolean getManglendeTilretteleggingPaaArbeidsplassen() {
         return manglendeTilretteleggingPaaArbeidsplassen != null && manglendeTilretteleggingPaaArbeidsplassen;
     }
 }
+
