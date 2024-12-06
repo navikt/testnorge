@@ -113,26 +113,9 @@ export const cvFetcher = (url, headers) =>
 		})
 
 export const sykemeldingFetcher = (url, body) =>
-	axios
-		.post(url, { body: body })
-		.then((res) => {
-			return res.data
-		})
-		.catch((reason) => {
-			if (reason?.response?.status === 403) {
-				throw {
-					message: `Mangler tilgang for å validere sykemelding mot ${url}`,
-					status: reason?.response?.status,
-				}
-			}
-			if (reason.status === 404 || reason.response?.status === 404) {
-				if (reason.response?.data?.error) {
-					throw new Error(reason.response?.data?.error)
-				}
-				throw new NotFoundError()
-			}
-			throw new Error(`Henting av data fra ${url} feilet.`)
-		})
+	axios.post(url, { body: body }).then((res) => {
+		return res.data
+	})
 
 export const fetcher = (url, headers) =>
 	axios

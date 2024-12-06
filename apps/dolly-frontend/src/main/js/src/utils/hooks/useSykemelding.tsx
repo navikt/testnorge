@@ -1,18 +1,25 @@
-import useSWR from 'swr'
 import { sykemeldingFetcher } from '@/api'
+import { AxiosError } from 'axios'
+import useSWR from 'swr'
 
-const getValideringUrl = (shouldValidate: boolean) =>
-	shouldValidate ? '/testnav-sykemelding-api/api/v1/sykemeldinger/validate' : null
-
-export const useSykemeldingValidering = (shouldValidate: boolean, values: any) => {
-	const { data, isLoading, error } = useSWR<any, Error>(
-		getValideringUrl(shouldValidate),
+export const useSykemeldingValidering = (values: any) => {
+	const { data, error, mutate } = useSWR<any, AxiosError<any>>(
+		'/testnav-sykemelding-api/api/v1/sykemeldinger/validate',
 		(url: string) => sykemeldingFetcher(url, values),
+		{ shouldRetryOnError: false },
 	)
+	let missingFields = []
+	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('error: ', error) //TODO - SLETT MEG
+
+	if (error?.status === 400) {
+		missingFields = error?.response?.data?.message?.split(',').map((field: string) => field.trim())
+	}
 
 	return {
 		validation: data,
-		loading: isLoading,
+		missingFields: missingFields,
+		mutate: mutate,
 		error: error,
 	}
 }
