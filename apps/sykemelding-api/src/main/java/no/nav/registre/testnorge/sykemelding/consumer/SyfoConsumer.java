@@ -6,11 +6,12 @@ import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-@Component
+@Service
 public class SyfoConsumer {
+
     private final JmsTemplate jmsTemplate;
     private final String queueName;
 

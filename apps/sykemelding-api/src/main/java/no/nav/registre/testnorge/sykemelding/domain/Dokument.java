@@ -28,6 +28,7 @@ class Dokument {
                 .withMedisinskVurdering(medisinskVurdering.getXmlObject())
                 .withAktivitet(aktivitet.getXmlObject())
                 .withPrognose(prognose.getXmlObject())
+                .withUtdypendeOpplysninger(new UtdypendeOpplysninger(dto.getUtdypendeOpplysninger()).getXmlObject())
                 .withTiltak(
                         new XMLHelseOpplysningerArbeidsuforhet.Tiltak()
                                 .withTiltakArbeidsplassen(dto.getDetaljer().getTiltakArbeidsplass())

@@ -15,7 +15,7 @@ spring:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
@@ -56,3 +56,9 @@ ibm:
     password: ${IBM_MQ_PASSWORD}
     application-name: testnav-sykemelding-api
     use-authentication-m-q-c-s-p: true
+consumers:
+  sykemelding-proxy:
+    url: http://testnav-sykemelding-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-sykemelding-proxy
