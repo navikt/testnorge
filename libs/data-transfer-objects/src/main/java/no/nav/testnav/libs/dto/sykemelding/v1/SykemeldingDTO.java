@@ -1,59 +1,55 @@
 package no.nav.testnav.libs.dto.sykemelding.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
-@Data
+@Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
+@EqualsAndHashCode
 public class SykemeldingDTO {
 
+    @JsonProperty
     private LocalDate startDato;
+    @JsonProperty
     private PasientDTO pasient;
+    @JsonProperty
     private HelsepersonellDTO helsepersonell;
+    @JsonProperty
     private ArbeidsgiverDTO arbeidsgiver;
+    @JsonProperty
     private Boolean manglendeTilretteleggingPaaArbeidsplassen;
+    @JsonProperty
     private List<PeriodeDTO> perioder;
+    @JsonProperty
     private OrganisasjonDTO sender;
+    @JsonProperty
     private OrganisasjonDTO mottaker;
+    @JsonProperty
     private DiagnoseDTO hovedDiagnose;
+    @JsonProperty
     private List<DiagnoseDTO> biDiagnoser;
+    @JsonProperty
     private DetaljerDTO detaljer;
-    private List<UtdypendeOpplysningerDTO> utdypendeOpplysninger;
+    @JsonProperty
     private Boolean umiddelbarBistand;
 
-    public List<PeriodeDTO> getPerioder() {
-
-        if (isNull(perioder)) {
-            perioder = new ArrayList<>();
-        }
-        return perioder;
-    }
-
+    @JsonIgnore
     public List<DiagnoseDTO> getBiDiagnoser() {
-
-        if (isNull(biDiagnoser)) {
-            biDiagnoser = new ArrayList<>();
+        if (biDiagnoser == null) {
+            return Collections.emptyList();
         }
         return biDiagnoser;
-    }
-
-    public List<UtdypendeOpplysningerDTO> getUtdypendeOpplysninger() {
-
-        if (isNull(utdypendeOpplysninger)) {
-            utdypendeOpplysninger = new ArrayList<>();
-        }
-        return utdypendeOpplysninger;
     }
 
     @JsonIgnore

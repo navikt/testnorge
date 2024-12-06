@@ -3,11 +3,15 @@ package no.nav.testnav.libs.dto.sykemelding.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Data
+@Value
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
+@EqualsAndHashCode
 public class HelsepersonellDTO {
     @JsonProperty
     private String ident;
