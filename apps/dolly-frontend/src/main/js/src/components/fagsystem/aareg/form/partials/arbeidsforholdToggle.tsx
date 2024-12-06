@@ -4,7 +4,7 @@ import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { initialArbeidsgiverOrg, initialArbeidsgiverPers } from '../initialValues'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useFormContext } from 'react-hook-form'
-import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { EgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import Loading from '@/components/ui/loading/Loading'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -12,7 +12,7 @@ import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/ar
 import _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
-import { arbeidsgiverToggleValues } from '@/components/fagsystem/utils'
+import { arbeidsgiverToggleValues } from '@/utils/OrgUtils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;

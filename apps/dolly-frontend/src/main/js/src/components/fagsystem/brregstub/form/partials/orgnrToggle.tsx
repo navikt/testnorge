@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import { OrganisasjonToggleGruppe } from '@/components/organisasjonSelect/OrganisasjonToggleGruppe'
-import {
-	EgneOrganisasjoner,
-	getEgneOrganisasjoner,
-} from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -12,7 +9,7 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import Loading from '@/components/ui/loading/Loading'
-import { getOrgType } from '@/components/fagsystem/utils'
+import { getOrgType } from '@/utils/OrgUtils'
 
 interface OrgnrToggleProps {
 	path: string

@@ -3,10 +3,7 @@ import styled from 'styled-components'
 import { ToggleGroup } from '@navikt/ds-react'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useFormContext } from 'react-hook-form'
-import {
-	EgneOrganisasjoner,
-	getEgneOrganisasjoner,
-} from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import Loading from '@/components/ui/loading/Loading'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -19,11 +16,7 @@ import {
 import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import { useBoolean } from 'react-use'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import {
-	arbeidsgiverToggleValues,
-	getOrgType,
-	handleManualOrgChange,
-} from '@/components/fagsystem/utils'
+import { arbeidsgiverToggleValues, getOrgType, handleManualOrgChange } from '@/utils/OrgUtils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;

@@ -6,9 +6,10 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { OrgforvalterApi } from '@/service/Api'
-import { OrgMiljoeInfoVisning } from '@/components/fagsystem/brregstub/form/partials/OrgMiljoeInfoVisning'
 import { useFormContext } from 'react-hook-form'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import Loading from '@/components/ui/loading/Loading'
+import Icon from '@/components/ui/icon/Icon'
 
 interface OrgProps {
 	path: string
@@ -17,6 +18,12 @@ interface OrgProps {
 	warningMessage?: React.ReactElement
 	filterValidEnhetstyper?: boolean
 	isDisabled?: boolean
+}
+
+type Props = {
+	miljoer: string[]
+	loading?: boolean
+	error?: boolean
 }
 
 const getAdresseWithAdressetype = (adresser: Adresse[], adressetype: string) => {
@@ -60,6 +67,33 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 		}
 	}
 	return ''
+}
+
+const OrgMiljoeInfoVisning = ({ miljoer, loading = false, error = false }: Props) => {
+	const harMiljoe = miljoer.length > 0
+	return (
+		<div style={{ padding: '0 0 10px 5px' }}>
+			{loading && <Loading label="Sjekker organisasjonsnummer..." />}
+			{!loading && error && (
+				<div className="flexbox">
+					<Icon size={20} kind="report-problem-circle" />
+					Feil oppsto i henting av organisasjon info
+				</div>
+			)}
+			{!loading && !error && (
+				<div className="flexbox">
+					<Icon
+						size={20}
+						kind={harMiljoe ? 'feedback-check-circle' : 'report-problem-circle'}
+						style={{ marginRight: '5px' }}
+					/>
+					{harMiljoe
+						? 'Organisasjon funnet i miljø: ' + miljoer
+						: 'Fant ikke organisasjon i noen miljø'}
+				</div>
+			)}
+		</div>
+	)
 }
 
 export const getEgneOrganisasjoner = (organisasjoner: Organisasjon[] | undefined) => {

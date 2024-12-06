@@ -9,18 +9,15 @@ import {
 	useFasteDataOrganisasjon,
 	useOrganisasjoner,
 } from '@/utils/hooks/useOrganisasjoner'
-import {
-	EgneOrganisasjoner,
-	getEgneOrganisasjoner,
-} from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { useBoolean } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
-import { arbeidsgiverToggleValues, handleManualOrgChange } from '@/components/fagsystem/utils'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import styled from 'styled-components'
+import { arbeidsgiverToggleValues, handleManualOrgChange } from '@/utils/OrgUtils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
