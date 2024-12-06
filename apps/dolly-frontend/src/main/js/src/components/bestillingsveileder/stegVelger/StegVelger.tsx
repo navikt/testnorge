@@ -47,13 +47,15 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const mutate = useMatchMutate()
 
+	const validationPaths = Object.keys(DollyValidation?.fields)
+
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => {
-		formMethods.trigger().then((valid) => {
+		formMethods.trigger(validationPaths).then(() => {
 			const errorFelter = Object.keys(formMethods.formState.errors)
 			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
 			const kunGruppeIdError = errorFelter.length === 1 && errorFelter[0] === 'gruppeId'
-			if (!valid && step === 1 && !kunEnvironmentError && !kunGruppeIdError) {
+			if (errorFelter.length > 0 && step === 1 && !kunEnvironmentError && !kunGruppeIdError) {
 				console.warn('Feil i form, stopper navigering videre')
 				console.error(formMethods.formState.errors)
 				errorContext?.setShowError(true)
@@ -114,9 +116,6 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 					onPrevious={handleBack}
 					isLastStep={isLastStep()}
 					handleSubmit={() => {
-						formMethods.trigger().catch((error) => {
-							console.warn(error)
-						})
 						return _handleSubmit(formMethods.getValues())
 					}}
 				/>

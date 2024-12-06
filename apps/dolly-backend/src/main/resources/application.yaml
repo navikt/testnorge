@@ -7,6 +7,9 @@ dolly:
       description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
         Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
       version: Versjon 1
+  client:
+    general:
+      timeout: 30
 
 server:
   port: 8080
@@ -21,9 +24,6 @@ server:
   max-http-request-header-size: 128KB
 
 spring:
-  cloud:
-    vault:
-      enabled: false
   main:
     allow-bean-definition-overriding: true
   flyway:
@@ -47,7 +47,7 @@ spring:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
   jackson:
     parser:
       include-source-in-location: true

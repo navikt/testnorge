@@ -12,7 +12,6 @@ export type Aareg = {
 		tom: string
 		periode: Array<string>
 	}
-	amelding: Array<Amelding>
 	navArbeidsforholdPeriode?: {
 		year: number
 		monthValue: number
@@ -40,22 +39,6 @@ export type Aareg = {
 	utenlandsopphold?: Array<Utenlands>
 	permisjon?: Array<PermisjonValues>
 	permittering?: Array<PermitteringValues>
-}
-
-export type Amelding = {
-	maaned: string
-	arbeidsforhold: Array<Arbeidsforhold>
-}
-
-type Arbeidsforhold = {
-	arbeidsforholdId: string
-}
-
-export type KodeverkValue = {
-	gyldigFra: string
-	gyldigTil: string
-	label: string
-	value: string
 }
 
 type Fartoy = {

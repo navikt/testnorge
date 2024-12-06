@@ -19,6 +19,7 @@ jobs:
     with:
       working-directory: "apps/synt-sykemelding-api"
       deploy-tag: "#deploy-synt-sykemelding-api"
+      deploy-tag-test: "#deploy-test-synt-sykemelding-api"
     permissions:
       contents: read
       id-token: write

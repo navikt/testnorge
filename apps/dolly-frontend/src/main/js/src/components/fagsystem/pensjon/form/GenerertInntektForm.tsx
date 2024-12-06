@@ -36,18 +36,19 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 	)
 
 	const handleGenerer = () => {
-		formMethods.clearErrors(pensjonGenererPath)
-		trigger()
+		formMethods.clearErrors(`manual.${pensjonGenererPath}`)
+		formMethods.clearErrors(`${pensjonGenererPath}`)
+		trigger(pensjonGenererPath)
 			.then((values) => {
 				if (!values) {
-					formMethods.setError(`${pensjonGenererPath}.generer.tomAar`, {
+					formMethods.setError(`manual.${pensjonGenererPath}.generer.tomAar`, {
 						message: 'Velg et gyldig år',
 					})
 				}
 				formMethods.setValue(`${pensjonGenererPath}.inntekter`, values?.data?.arInntektGList)
 			})
 			.catch(() => {
-				formMethods.setError(`${pensjonGenererPath}.generer.tomAar`, {
+				formMethods.setError(`manual.${pensjonGenererPath}.generer.tomAar`, {
 					message: 'Velg et gyldig år',
 				})
 			})
@@ -55,7 +56,7 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 	}
 
 	useEffect(() => {
-		trigger()
+		trigger(pensjonGenererPath)
 	}, [])
 
 	useEffect(() => {

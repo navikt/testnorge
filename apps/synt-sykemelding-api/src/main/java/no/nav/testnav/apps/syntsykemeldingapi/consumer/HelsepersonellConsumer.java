@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.config.Consumers;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetHelsepersonellCommand;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
-import no.nav.testnav.apps.syntsykemeldingapi.exception.HelsepersonellNotFoundException;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 
 import static java.util.Objects.nonNull;
 
@@ -44,7 +45,7 @@ public class HelsepersonellConsumer {
             return new HelsepersonellListe(response);
         } else {
             log.warn("Feil oppsto i henting av helsepersonell");
-            throw new HelsepersonellNotFoundException("Feil i henting av helsepersonell");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feil i henting av helsepersonell");
         }
     }
 }

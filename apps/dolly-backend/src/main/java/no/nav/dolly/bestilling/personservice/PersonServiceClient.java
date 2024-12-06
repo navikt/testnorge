@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -16,6 +17,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Service;
@@ -46,11 +48,11 @@ public class PersonServiceClient {
 
     private static final String PDL_SYNC_START = "Info: Synkronisering mot PDL startet ...";
     private static final int TIMEOUT = 500;
-    private static final int MAX_SEKUNDER = 30;
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
     private final ObjectMapper objectMapper;
+    private final ApplicationConfig applicationConfig;
 
     public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, BestillingProgress progress) {
 
@@ -60,11 +62,24 @@ public class PersonServiceClient {
         var startTime = System.currentTimeMillis();
 
         return Flux.from(getIdentWithRelasjoner(dollyPerson, progress)
-                .flatMap(status -> getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
+                .flatMap(status -> getPersonService(LocalTime.now().plusSeconds(applicationConfig.getClientTimeout()), LocalTime.now(),
                         new PersonServiceResponse(), status))
+                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                .onErrorResume(error -> getError(error, dollyPerson))
                 .doOnNext(status -> logStatus(status, startTime))
                 .collectList()
-                .map(status -> futurePersist(dollyPerson, progress, status)));
+                .map(status -> futurePersist(dollyPerson, progress, status))
+        );
+    }
+
+    private Flux<PersonServiceResponse> getError(Throwable error, DollyPerson person) {
+
+        return Flux.just(PersonServiceResponse.builder()
+                .ident(person.getIdent())
+                .formattertMelding("Feil= %s".formatted(ErrorStatusDecoder.encodeStatus(WebClientFilter.getMessage(error))))
+                .status(WebClientFilter.getStatus(error))
+                .exists(false)
+                .build());
     }
 
     private Map<String, Set<String>> getHendelseIder(boolean isOrdre, BestillingProgress progress) {
@@ -177,13 +192,14 @@ public class PersonServiceClient {
             log.error("Synkronisering mot PersonService (isPerson) for {} gitt opp etter {} ms.",
                     status.getIdent(), System.currentTimeMillis() - startTime);
             status.setFormattertMelding(String.format("Feil: Synkronisering mot PDL gitt opp etter %d sekunder.",
-                    MAX_SEKUNDER));
+                    applicationConfig.getClientTimeout()));
         } else {
-            log.error("Feilet å sjekke om person finnes for ident {}, medgått tid {} ms, feil {}.",
+            log.error("Feilet å sjekke om person finnes for ident {}, medgått tid {} ms, {}.",
                     status.getIdent(), System.currentTimeMillis() - startTime,
                     errorStatusDecoder.getErrorText(status.getStatus(),
                             status.getFeilmelding()));
-            status.setFormattertMelding("Feilet å skjekke status, se logg!");
+            status.setFormattertMelding("Feil: Synkronisering mot PDL gitt opp etter %d sekunder."
+                    .formatted(applicationConfig.getClientTimeout()));
         }
     }
 

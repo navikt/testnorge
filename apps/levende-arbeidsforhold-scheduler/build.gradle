@@ -15,7 +15,6 @@ dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
-    implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-quartz"

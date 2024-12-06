@@ -6,6 +6,8 @@ import Loading from '@/components/ui/loading/Loading'
 import './TitleValue.less'
 import React from 'react'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
+import { isDate } from 'date-fns'
+import { formatDate } from '@/utils/DataFormatter'
 
 const displayValue = (value, visKopier) => {
 	return visKopier ? (
@@ -30,11 +32,17 @@ const P_TitleValue = ({
 	visKopier = false,
 }) => {
 	const css = cn('title-value', `title-value_${size}`)
+	let dispValue = value
+	if (isDate(dispValue)) {
+		dispValue = formatDate(dispValue)
+	}
 
 	return (
 		<div className={className + ' ' + css}>
 			{React.createElement(titleType, null, [title])}
-			<div style={{ hyphens: 'auto' }}>{value ? displayValue(value, visKopier) : children}</div>
+			<div style={{ hyphens: 'auto' }}>
+				{dispValue ? displayValue(dispValue, visKopier) : children}
+			</div>
 		</div>
 	)
 }

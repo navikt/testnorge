@@ -68,7 +68,7 @@ export const FormCheckbox = ({
 	const value = formMethods.watch(props.name)
 	const handleChange = (event: { target: { checked: any } }) => {
 		formMethods.setValue(props.name, event.target.checked)
-		formMethods.trigger()
+		formMethods.trigger(props.name)
 		if (afterChange) afterChange(event.target.checked)
 	}
 

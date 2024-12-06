@@ -18,6 +18,7 @@ public class SykemeldingResponse {
     private HttpStatus status;
     private String avvik;
     private SykemeldingRequest sykemeldingRequest;
+    private String msgId;
     private String ident;
 
     @Data
@@ -27,6 +28,7 @@ public class SykemeldingResponse {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class SykemeldingRequest {
 
+        private String sykemeldingId;
         private SyntSykemeldingRequest syntSykemeldingRequest;
         private DetaljertSykemeldingRequest detaljertSykemeldingRequest;
     }

@@ -67,16 +67,6 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
-    public String decodeException(Exception e) {
-
-        log.error(TEKNISK_FEIL, e.getMessage(), e);
-        return new StringBuilder()
-                .append(FEIL)
-                .append(TEKNISK_FEIL_SE_LOGG)
-                .append(encodeStatus(e.getMessage()))
-                .toString();
-    }
-
     public String decodeThrowable(Throwable error) {
 
         StringBuilder builder = new StringBuilder()
@@ -112,10 +102,10 @@ public class ErrorStatusDecoder {
         if (json.contains("{")) {
             try {
                 Map<String, Object> status = objectMapper.readValue(json, Map.class);
-                if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
-                    builder.append("error=").append(status.get(ERROR)).append("; ");
-                } else if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
+                if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
+                } else if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
+                    builder.append("error=").append(status.get(ERROR)).append("; ");
                 } else if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
                     builder.append(encodeStatus((String) status.get(MELDING)));
                 } else if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {

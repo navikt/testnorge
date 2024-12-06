@@ -29,6 +29,6 @@
     {
       "name": "spring.security.oauth2.resourceserver.aad.accepted-audience",
       "type": "java.lang.String",
-      "description": "Accepted audience for Azure AD, i.e. '${azure.app.client.id}, api://${azure.app.client.id}'."
+      "description": "Accepted audience for Azure AD, i.e. ' ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}'."
     }
   ] }

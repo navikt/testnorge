@@ -1,9 +1,11 @@
+TOKEN_X_ISSUER: dummy
+
 spring:
   cloud:
-    vault:
-      database:
+    gcp:
+      secretmanager:
         enabled: false
-      token: "test"
+    vault:
       enabled: false
   datasource:
     url: jdbc:tc:postgresql:15:///test?TC_REUSABLE=true
@@ -14,5 +16,3 @@ spring:
       ddl-auto: create
   flyway:
     enabled: false
-
-TOKEN_X_ISSUER: dummy

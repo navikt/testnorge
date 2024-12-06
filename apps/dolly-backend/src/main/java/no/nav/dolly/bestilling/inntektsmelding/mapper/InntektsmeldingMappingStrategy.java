@@ -56,6 +56,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                                         Avsendertype.ORGNR : Avsendertype.FNR).name());
 
                         inntektsmelding.setArbeidstakerFnr((String) context.getProperty("ident"));
+                        inntektsmelding.setMiljoe((String) context.getProperty("miljoe"));
                     }
                 })
                 .byDefault()

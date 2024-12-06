@@ -8,8 +8,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.TransaksjonMappingDTO;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -17,17 +19,19 @@ import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
-import org.apache.commons.lang3.StringUtils;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -42,31 +46,37 @@ public class InntektsmeldingClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
     private final TransactionHelperService transactionHelperService;
-
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final ApplicationConfig applicationConfig;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getInntektsmelding())) {
+        return Flux.just(bestilling)
+                .filter(RsDollyBestilling::isExistInntekstsmelding)
+                .map(RsDollyBestilling::getInntektsmelding)
+                .flatMap(inntektsmelding -> Flux.just(bestilling.getEnvironments())
+                        .flatMap(miljoer -> Flux.fromIterable(miljoer)
+                                .flatMap(environment -> {
+                                    var context = MappingContextUtils.getMappingContext();
+                                    context.setProperty("ident", dollyPerson.getIdent());
+                                    context.setProperty("miljoe", environment);
+                                    var request = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
+                                    return postInntektsmelding(isOpprettEndre ||
+                                                    !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment, bestilling.getId()),
+                                            request, bestilling.getId());
+                                }))
+                        .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                        .onErrorResume(error -> getErrors(error, bestilling.getEnvironments()))
+                        .collect(Collectors.joining(","))
+                        .map(status -> futurePersist(progress, status)));
+    }
 
-            var context = MappingContextUtils.getMappingContext();
-            context.setProperty("ident", dollyPerson.getIdent());
+    private Flux<String> getErrors(Throwable error, Set<String> environments) {
 
-            return Flux.from(
-                    Flux.fromIterable(bestilling.getEnvironments())
-                            .flatMap(environment -> {
-                                var request = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
-                                request.setMiljoe(environment);
-                                return postInntektsmelding(isOpprettEndre ||
-                                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment, bestilling.getId()),
-                                        request, bestilling.getId());
-                            })
-                            .filter(StringUtils::isNotBlank)
-                            .collect(Collectors.joining(","))
-                            .map(status -> futurePersist(progress, status)));
-        }
-        return Flux.empty();
+        return Flux.fromIterable(environments)
+                .map(env -> STATUS_FMT.formatted(env,
+                        encodeStatus(WebClientFilter.getMessage(error))));
     }
 
     @Override
@@ -75,7 +85,8 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(BestillingProgress progress, String
+            status) {
 
         return () -> {
             transactionHelperService.persister(progress,

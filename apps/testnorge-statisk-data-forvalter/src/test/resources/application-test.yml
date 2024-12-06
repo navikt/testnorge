@@ -12,8 +12,11 @@ spring:
   flyway:
     enabled: true
   cloud:
+    gcp:
+      secretmanager:
+        enabled: false
     vault:
-      token: dummy
+      enabled: false
 
 AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 

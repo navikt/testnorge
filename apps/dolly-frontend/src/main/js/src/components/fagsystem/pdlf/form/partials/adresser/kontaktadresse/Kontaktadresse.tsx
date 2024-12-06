@@ -64,7 +64,7 @@ export const KontaktadresseForm = ({
 		) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Postboks)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}, [])
 
 	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)

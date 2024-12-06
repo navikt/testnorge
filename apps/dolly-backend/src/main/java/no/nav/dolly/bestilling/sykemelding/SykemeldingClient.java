@@ -12,6 +12,7 @@ import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
@@ -24,10 +25,12 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.util.DollyTextUtil.getGenereringStartet;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -53,6 +57,7 @@ public class SykemeldingClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
     private final Norg2Consumer norg2Consumer;
+    private final ApplicationConfig applicationConfig;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -76,6 +81,9 @@ public class SykemeldingClient implements ClientRegister {
                                         .doOnNext(status -> saveTransaksjonId(status, bestilling.getId()))
                                         .map(this::getStatus)
                                         .collect(Collectors.joining()))
+                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout() *
+                                        (sykemelding.hasSyntSykemelding() ? 3 : 1)))
+                                .onErrorResume(error -> Mono.just(encodeStatus(WebClientFilter.getMessage(error))))
                                 .collect(Collectors.joining())
                                 .map(status -> futurePersist(progress, status));
                     }
@@ -180,6 +188,7 @@ public class SykemeldingClient implements ClientRegister {
 
             log.info("Lagrer transaksjon for {} i q1 ", sykemelding.getIdent());
 
+            sykemelding.getSykemeldingRequest().setSykemeldingId(sykemelding.getMsgId());
             transaksjonMappingService.save(TransaksjonMapping.builder()
                     .ident(sykemelding.getIdent())
                     .bestillingId(bestillingId)

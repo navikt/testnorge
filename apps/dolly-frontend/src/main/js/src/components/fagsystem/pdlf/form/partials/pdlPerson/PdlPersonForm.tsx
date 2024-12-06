@@ -78,7 +78,7 @@ export const PdlPersonForm = ({
 		if (path) {
 			formMethods.setValue(`${path}.eksisterendePerson`, type === PersonType.EKSISTERENDE_PERSON)
 		}
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}, [type])
 
 	return (

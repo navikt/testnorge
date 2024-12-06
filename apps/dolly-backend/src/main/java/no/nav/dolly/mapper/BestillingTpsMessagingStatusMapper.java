@@ -131,7 +131,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     status.toLowerCase().contains("person ikke funnet i tps") ||
                     status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
                     status.toLowerCase().contains("utgått fødselsnr") ||
-                    status.toLowerCase().contains("mottaker svarer ikke") ||
+                    status.toLowerCase().contains("mottaker svarer ikke") && !status.toUpperCase().contains("MELDINGER TIL TPS") ||
                     status.toLowerCase().contains("forbindelsen er ustabil")
                     ? OKEY
                     : status;

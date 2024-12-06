@@ -37,7 +37,7 @@ public class AzureAdTokenService implements ExchangeToken {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
+            log.trace("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
                 HttpClient

@@ -6,7 +6,6 @@ import {
 	formatDate,
 	formatDateTime,
 	formatDateTimeWithSeconds,
-	formatDateToYear,
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
@@ -1046,14 +1045,14 @@ const mapTpsMessaging = (bestillingData, data) => {
 	}
 }
 
-export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKriterier) => [
+export const arbeidsforholdVisning = (arbeidsforhold, i, aaregKriterier, amelding) => [
 	{
 		numberHeader: `Arbeidsforhold ${i + 1}`,
 	},
+	obj('A-melding', amelding),
 	{
 		label: 'Type arbeidsforhold',
-		value:
-			arbeidsforhold.arbeidsforholdstype || (!harAmelding && aaregKriterier?.arbeidsforholdstype),
+		value: arbeidsforhold.arbeidsforholdstype || aaregKriterier?.arbeidsforholdstype,
 		apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
 	},
 	obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
@@ -1125,35 +1124,10 @@ const mapAareg = (bestillingData, data) => {
 			pagineringPages: [],
 		}
 
-		const harAmelding = aaregKriterier[0]?.amelding?.length > 0
-
-		if (harAmelding) {
-			aareg.items.push(
-				{
-					label: 'Type arbeidsforhold',
-					value: aaregKriterier[0]?.arbeidsforholdstype,
-					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
-				},
-				obj('F.o.m. kalendermåned', formatDate(aaregKriterier[0]?.genererPeriode?.fom)),
-				obj('T.o.m. kalendermåned', formatDate(aaregKriterier[0]?.genererPeriode?.tom)),
-			)
-			aaregKriterier[0]?.amelding?.forEach((maaned) => {
-				const maanedData = {
-					itemRows: [],
-				}
-				maaned.arbeidsforhold?.forEach((arbeidsforhold, i) => {
-					maanedData.itemRows.push(
-						arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier),
-					)
-				})
-				aareg.pagineringPages.push(maaned.maaned)
-				aareg.paginering.push(maanedData)
-			})
-		} else if (aaregKriterier[0]?.arbeidsgiver) {
-			aaregKriterier?.forEach((arbeidsforhold, i) => {
-				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier))
-			})
-		}
+		aaregKriterier?.forEach((arbeidsforhold, i) => {
+			const amelding = arbeidsforhold.amelding?.length > 0 ? 'Ikke lenger støttet' : null
+			aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, aaregKriterier, amelding))
+		})
 
 		data.push(aareg)
 	}
@@ -2300,16 +2274,8 @@ const mapHistark = (bestillingData, data) => {
 				),
 				obj('Enhetsnavn', histarkKriterier.dokumenter?.[0]?.enhetsnavn),
 				obj('Enhetsnummer', histarkKriterier.dokumenter?.[0]?.enhetsnummer),
-				obj(
-					'Startår',
-					histarkKriterier.dokumenter?.[0]?.startAar &&
-						formatDateToYear(histarkKriterier.dokumenter?.[0]?.startAar),
-				),
-				obj(
-					'Sluttår',
-					histarkKriterier.dokumenter?.[0]?.sluttAar &&
-						formatDateToYear(histarkKriterier.dokumenter?.[0]?.sluttAar),
-				),
+				obj('Startår', histarkKriterier.dokumenter?.[0]?.startYear),
+				obj('Sluttår', histarkKriterier.dokumenter?.[0]?.endYear),
 			],
 		}
 
