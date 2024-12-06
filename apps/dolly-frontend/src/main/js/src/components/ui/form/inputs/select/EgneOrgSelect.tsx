@@ -106,7 +106,7 @@ export const EgneOrgSelect = (props: any) => {
 					filterOption={createFilter({ ignoreAccents: false })}
 					onChange={props.onChange}
 					isLoading={props.isLoading}
-					placeholder={'Velg organisasjon..'}
+					placeholder={'Velg organisasjon ...'}
 					className={cn('basic-single', props.className)}
 					classNamePrefix={'select'}
 					components={{

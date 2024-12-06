@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { useFormContext } from 'react-hook-form'
+import { VirksomhetToggle } from '@/components/fagsystem/inntektstub/form/partials/virksomhetToggle'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 interface InntektsinformasjonForm {
@@ -36,7 +36,7 @@ export default ({ path }: InntektsinformasjonForm) => {
 	}
 
 	return (
-		<div key={path}>
+		<React.Fragment key={path}>
 			<div className="flexbox--flex-wrap">
 				<Monthpicker
 					name={`${path}.sisteAarMaaned`}
@@ -56,9 +56,9 @@ export default ({ path }: InntektsinformasjonForm) => {
 					date={rapporteringsdate}
 				/>
 			</div>
-			<InntektstubVirksomhetToggle formMethods={formMethods} path={path} />
+			<VirksomhetToggle path={path} />
 			<InntektsinformasjonLister formMethods={formMethods} path={path} />
 			<InntektsendringForm formMethods={formMethods} path={path} />
-		</div>
+		</React.Fragment>
 	)
 }

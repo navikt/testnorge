@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
-import {
-	inputValg,
-	OrganisasjonToogleGruppe,
-} from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { OrganisasjonToggleGruppe } from '@/components/organisasjonSelect/OrganisasjonToggleGruppe'
+import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
+import Loading from '@/components/ui/loading/Loading'
+import { getOrgType } from '@/utils/OrgUtils'
 
 interface OrgnrToggleProps {
 	path: string
@@ -23,13 +24,27 @@ export const OrgnrToggle = ({
 	setEnhetsinfo,
 	warningMessage,
 }: OrgnrToggleProps) => {
+	const { currentBruker } = useCurrentBruker()
+
+	const { organisasjoner: fasteOrganisasjoner, loading: fasteOrganisasjonerLoading } =
+		useDollyFasteDataOrganisasjoner()
+
+	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
+		useOrganisasjoner(currentBruker?.brukerId)
+	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
+
+	const orgnr = formMethods.watch(`${path}.orgNr`)
 	const [inputType, setInputType] = useState(
-		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
+		getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner),
 	)
+
+	useEffect(() => {
+		setInputType(getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner))
+	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('brregstub.enheter')?.length])
+
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
 	const handleToggleChange = (value: string) => {
-		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
 		setInputType(value)
 		clearEnhetsinfo()
 	}
@@ -54,17 +69,21 @@ export const OrgnrToggle = ({
 		setEnhetsinfo(event, path)
 	}
 
+	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {
+		return <Loading label="Laster organisasjoner ..." />
+	}
+
 	return (
 		<div className="toggle--wrapper">
-			<OrganisasjonToogleGruppe inputType={inputType} handleToggleChange={handleToggleChange} />
-			{inputType === inputValg.fraFellesListe && (
+			<OrganisasjonToggleGruppe inputType={inputType} handleToggleChange={handleToggleChange} />
+			{inputType === ArbeidsgiverTyper.felles && (
 				<OrganisasjonLoader
 					path={`${path}.orgNr`}
 					handleChange={handleChange}
 					value={formMethods.watch(`${path}.orgNr`)}
 				/>
 			)}
-			{inputType === inputValg.fraEgenListe && (
+			{inputType === ArbeidsgiverTyper.egen && (
 				<EgneOrganisasjoner
 					path={`${path}.orgNr`}
 					formMethods={formMethods}
@@ -72,7 +91,7 @@ export const OrgnrToggle = ({
 					warningMessage={warningMessage}
 				/>
 			)}
-			{inputType === inputValg.skrivSelv && (
+			{inputType === ArbeidsgiverTyper.fritekst && (
 				<OrganisasjonTextSelect
 					path={`${path}.orgNr`}
 					aktiveMiljoer={aktiveMiljoer}

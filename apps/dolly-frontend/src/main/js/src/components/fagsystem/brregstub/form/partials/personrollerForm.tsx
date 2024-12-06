@@ -2,6 +2,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import React from 'react'
 
 const initialValues = {
 	egenskap: '',
@@ -42,7 +43,7 @@ export const PersonrollerForm = ({ formMethods, path }) => {
 			{(path) => {
 				const egenskap = `${path}.egenskap`
 				return (
-					<>
+					<React.Fragment key={path}>
 						<DollySelect
 							name={egenskap}
 							label="Egenskap"
@@ -53,8 +54,13 @@ export const PersonrollerForm = ({ formMethods, path }) => {
 							isClearable={false}
 							styles={formMethods.watch(egenskap) ? colorStyles : null}
 						/>
-						<FormCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
-					</>
+						<FormCheckbox
+							name={`${path}.fratraadt`}
+							label="Har fratrådt"
+							id={`${path}.fratraadt`}
+							checkboxMargin
+						/>
+					</React.Fragment>
 				)
 			}}
 		</FormDollyFieldArray>

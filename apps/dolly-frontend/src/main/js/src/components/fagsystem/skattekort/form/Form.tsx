@@ -48,6 +48,13 @@ export const SkattekortForm = () => {
 	const { kodeverk: resultatstatus } = useSkattekortKodeverk('RESULTATSTATUS')
 	const { kodeverk: tilleggsopplysning } = useSkattekortKodeverk('TILLEGGSOPPLYSNING')
 
+	const handleRemoveEntry = (idx: number) => {
+		const skattekortListe = formMethods.watch('skattekort.arbeidsgiverSkatt')
+		const filterskattekortListe = skattekortListe?.filter((_, index) => index !== idx)
+		formMethods.setValue('skattekort.arbeidsgiverSkatt', filterskattekortListe)
+		formMethods.trigger('skattekort.arbeidsgiverSkatt')
+	}
+
 	return (
 		<Vis attributt={skattekortAttributt}>
 			<Panel
@@ -62,6 +69,7 @@ export const SkattekortForm = () => {
 						header="Skattekort"
 						newEntry={initialArbeidsgiverSkatt()}
 						canBeEmpty={false}
+						handleRemoveEntry={handleRemoveEntry}
 					>
 						{(path: string) => (
 							<>

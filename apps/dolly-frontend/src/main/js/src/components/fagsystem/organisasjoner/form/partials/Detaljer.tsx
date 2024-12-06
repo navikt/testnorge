@@ -42,6 +42,18 @@ export const Detaljer = ({
 	const underenheter = formMethods.getValues('organisasjon.underenheter')
 	const sektorkodeErValgt = formMethods.getValues('organisasjon.sektorkode')
 
+	const getTypeUnderenhet = () => {
+		return (
+			level === 0 ||
+			(_.has(formMethods.getValues(), `${path}.underenheter`) &&
+			formMethods.watch(`${path}.underenheter`)
+				? TypeUnderenhet.JURIDISKENHET
+				: TypeUnderenhet.VIRKSOMHET)
+		)
+	}
+
+	const [typeUnderenhet, setTypeUnderenhet] = useState(getTypeUnderenhet())
+
 	useEffect(() => {
 		if (level === 0 && _.isEmpty(formMethods.getValues(`${path}.underenheter`))) {
 			formMethods.setValue(`${path}.underenheter`, underenheter || [initialValues])
@@ -49,13 +61,9 @@ export const Detaljer = ({
 		}
 	}, [])
 
-	const [typeUnderenhet, setTypeUnderenhet] = useState(
-		level === 0 ||
-			(_.has(formMethods.getValues(), `${path}.underenheter`) &&
-				formMethods.watch(`${path}.underenheter`))
-			? TypeUnderenhet.JURIDISKENHET
-			: TypeUnderenhet.VIRKSOMHET,
-	)
+	useEffect(() => {
+		setTypeUnderenhet(getTypeUnderenhet())
+	}, [formMethods.watch(`${path}.underenheter`)?.length])
 
 	const handleToggleChange = (value: TypeUnderenhet) => {
 		setTypeUnderenhet(value)
