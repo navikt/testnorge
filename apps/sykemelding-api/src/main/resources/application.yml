@@ -9,9 +9,6 @@ spring:
     version: application.version.todo
     name: testnav-sykemelding-api
     description: Api for opprettelse av detaljerte sykemeldinger
-  cloud:
-    vault:
-      enabled: false
   security:
     oauth2:
       resourceserver:

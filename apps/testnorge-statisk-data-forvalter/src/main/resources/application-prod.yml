@@ -21,6 +21,8 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     vault:
+      application-name: preprod/fss/testnorge-statisk-data-forvalter
+      authentication: token
       kv:
         enabled: false
       host: vault.adeo.no
