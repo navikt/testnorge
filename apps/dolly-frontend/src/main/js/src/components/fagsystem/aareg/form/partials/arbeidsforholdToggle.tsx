@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Alert, ToggleGroup } from '@navikt/ds-react'
+import { ToggleGroup } from '@navikt/ds-react'
 import { initialArbeidsgiverOrg, initialArbeidsgiverPers } from '../initialValues'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useFormContext } from 'react-hook-form'
-import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { EgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import Loading from '@/components/ui/loading/Loading'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
-import _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
+import { arbeidsgiverToggleValues } from '@/utils/OrgUtils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	background-color: #ffffff;
 `
 
 const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
@@ -42,10 +43,6 @@ const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
 			}
 		}
 	}
-`
-
-const StyledAlert = styled(Alert)`
-	margin-top: 10px;
 `
 
 type ArbeidsforholdToggleProps = {
@@ -99,26 +96,7 @@ export const ArbeidsforholdToggle = ({
 
 	useEffect(() => {
 		setTypeArbeidsgiver(getArbeidsgiverType())
-	}, [fasteOrganisasjoner, brukerOrganisasjoner])
-
-	const toggleValues = [
-		{
-			value: ArbeidsgiverTyper.egen,
-			label: 'Egen organisasjon',
-		},
-		{
-			value: ArbeidsgiverTyper.felles,
-			label: 'Felles organisasjoner',
-		},
-		{
-			value: ArbeidsgiverTyper.fritekst,
-			label: 'Skriv inn org.nr.',
-		},
-		{
-			value: ArbeidsgiverTyper.privat,
-			label: 'Privat arbeidsgiver',
-		},
-	]
+	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('aareg')?.length])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
@@ -127,37 +105,9 @@ export const ArbeidsforholdToggle = ({
 		} else {
 			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverOrg })
 		}
+		formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
+		formMethods.clearErrors(`${path}.arbeidsgiver`)
 	}
-
-	const checkAktiveArbeidsforhold = () => {
-		const aaregValues = formMethods.getValues('aareg')
-		const aktiveArbeidsforhold = aaregValues?.map((arbeidsforhold: any) => {
-			const orgnummer = arbeidsforhold?.arbeidsgiver?.orgnummer
-			if (!arbeidsforhold?.ansettelsesPeriode?.sluttaarsak) {
-				return orgnummer
-			}
-		})
-		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
-			.filter(
-				(arbeidsforhold: any, index: number) =>
-					index !== aktiveArbeidsforhold.indexOf(arbeidsforhold),
-			)
-			.filter((arbeidsforhold: any) => !_.isEmpty(arbeidsforhold))
-		if (!_.isEmpty(dupliserteAktiveArbeidsforhold)) {
-			formMethods.setError(`manual.${path}.arbeidsgiver.orgnummer`, {
-				message: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
-			})
-		}
-	}
-
-	const warningMessage = (
-		<StyledAlert variant={'warning'}>
-			Du har ingen egne organisasjoner, og kan derfor ikke sende inn A-meldinger for person. For å
-			lage dine egne organisasjoner trykk {<a href="/organisasjoner">her</a>}. For å opprette person
-			med arbeidsforhold i felles organisasjoner eller andre arbeidsgivere, velg en annen kategori
-			ovenfor.
-		</StyledAlert>
-	)
 
 	if (loadingOrganisasjoner) {
 		return <Loading label="Laster organisasjoner ..." />
@@ -178,7 +128,7 @@ export const ArbeidsforholdToggle = ({
 					key={idx}
 					title={'Kan ikke endre arbeidsgivertype på eksisterende arbeidsforhold'}
 				>
-					{toggleValues.map((type) => (
+					{arbeidsgiverToggleValues.map((type) => (
 						<ToggleGroup.Item key={type.value} value={type.value}>
 							{type.label}
 						</ToggleGroup.Item>
@@ -193,7 +143,7 @@ export const ArbeidsforholdToggle = ({
 					fill
 					key={idx}
 				>
-					{toggleValues.map((type) => (
+					{arbeidsgiverToggleValues.map((type) => (
 						<ToggleGroup.Item key={type.value} value={type.value}>
 							{type.label}
 						</ToggleGroup.Item>
@@ -201,25 +151,26 @@ export const ArbeidsforholdToggle = ({
 				</ToggleArbeidsgiver>
 			)}
 			<div className="flexbox--full-width">
-				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
-					<div className="flex-box" title={title}>
-						<EgneOrganisasjoner
-							path={`${path}.arbeidsgiver.orgnummer`}
-							handleChange={(selected: any) =>
-								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
-							}
-							warningMessage={warningMessage}
-							filterValidEnhetstyper={true}
-							isDisabled={erLaastArbeidsforhold}
-						/>
-					</div>
-				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
 					<div title={title}>
 						<OrganisasjonMedArbeidsforholdSelect
 							path={`${path}.arbeidsgiver.orgnummer`}
 							label={'Organisasjonsnummer'}
-							afterChange={() => checkAktiveArbeidsforhold()}
+							isDisabled={erLaastArbeidsforhold}
+							placeholder={'Velg organisasjon ...'}
+						/>
+					</div>
+				)}
+				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
+					<div className="flex-box" title={title}>
+						<EgneOrganisasjoner
+							path={`${path}.arbeidsgiver.orgnummer`}
+							handleChange={(selected: any) => {
+								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
+								formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
+								formMethods.clearErrors(`${path}.arbeidsgiver`)
+							}}
+							filterValidEnhetstyper={true}
 							isDisabled={erLaastArbeidsforhold}
 						/>
 					</div>
@@ -229,7 +180,6 @@ export const ArbeidsforholdToggle = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						onBlur={() => checkAktiveArbeidsforhold()}
 						defaultValue={formMethods.watch(`${path}.arbeidsgiver.orgnummer`)}
 						isDisabled={erLaastArbeidsforhold}
 						title={title}

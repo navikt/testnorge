@@ -94,6 +94,7 @@ export const SivilstandForm = ({
 			/>
 			<FormCheckbox
 				name={`${path}.borIkkeSammen`}
+				id={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"
 				isDisabled={!kanHaRelatertPerson}
 				vis={!isTestnorgeIdent}
@@ -127,12 +128,20 @@ export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	const { identtype, identMaster } = useContext(BestillingsveilederContext)
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
+	const handleRemoveEntry = (idx: number) => {
+		const sivilstandListe = formMethods.watch('pdldata.person.sivilstand')
+		const filterSivilstandListe = sivilstandListe?.filter((_, index) => index !== idx)
+		formMethods.setValue('pdldata.person.sivilstand', filterSivilstandListe)
+		formMethods.trigger('pdldata.person.sivilstand')
+	}
+
 	return (
 		<FormDollyFieldArray
 			name="pdldata.person.sivilstand"
 			header="Sivilstand"
 			newEntry={getInitialSivilstand(initiellMaster)}
 			canBeEmpty={false}
+			handleRemoveEntry={handleRemoveEntry}
 		>
 			{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
 		</FormDollyFieldArray>
