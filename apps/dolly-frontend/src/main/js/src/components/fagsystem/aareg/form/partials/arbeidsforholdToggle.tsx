@@ -9,7 +9,6 @@ import Loading from '@/components/ui/loading/Loading'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
-import _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
 import { arbeidsgiverToggleValues } from '@/utils/OrgUtils'
@@ -106,27 +105,8 @@ export const ArbeidsforholdToggle = ({
 		} else {
 			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverOrg })
 		}
-	}
-
-	const checkAktiveArbeidsforhold = () => {
-		const aaregValues = formMethods.getValues('aareg')
-		const aktiveArbeidsforhold = aaregValues?.map((arbeidsforhold: any) => {
-			const orgnummer = arbeidsforhold?.arbeidsgiver?.orgnummer
-			if (!arbeidsforhold?.ansettelsesPeriode?.sluttaarsak) {
-				return orgnummer
-			}
-		})
-		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
-			.filter(
-				(arbeidsforhold: any, index: number) =>
-					index !== aktiveArbeidsforhold.indexOf(arbeidsforhold),
-			)
-			.filter((arbeidsforhold: any) => !_.isEmpty(arbeidsforhold))
-		if (!_.isEmpty(dupliserteAktiveArbeidsforhold)) {
-			formMethods.setError(`manual.${path}.arbeidsgiver.orgnummer`, {
-				message: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
-			})
-		}
+		formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
+		formMethods.clearErrors(`${path}.arbeidsgiver`)
 	}
 
 	if (loadingOrganisasjoner) {
@@ -176,7 +156,6 @@ export const ArbeidsforholdToggle = ({
 						<OrganisasjonMedArbeidsforholdSelect
 							path={`${path}.arbeidsgiver.orgnummer`}
 							label={'Organisasjonsnummer'}
-							afterChange={() => checkAktiveArbeidsforhold()}
 							isDisabled={erLaastArbeidsforhold}
 							placeholder={'Velg organisasjon ...'}
 						/>
@@ -186,9 +165,11 @@ export const ArbeidsforholdToggle = ({
 					<div className="flex-box" title={title}>
 						<EgneOrganisasjoner
 							path={`${path}.arbeidsgiver.orgnummer`}
-							handleChange={(selected: any) =>
+							handleChange={(selected: any) => {
 								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
-							}
+								formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
+								formMethods.clearErrors(`${path}.arbeidsgiver`)
+							}}
 							filterValidEnhetstyper={true}
 							isDisabled={erLaastArbeidsforhold}
 						/>
@@ -199,7 +180,6 @@ export const ArbeidsforholdToggle = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						onBlur={() => checkAktiveArbeidsforhold()}
 						defaultValue={formMethods.watch(`${path}.arbeidsgiver.orgnummer`)}
 						isDisabled={erLaastArbeidsforhold}
 						title={title}
