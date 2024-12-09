@@ -110,6 +110,7 @@ export const PdlNyPerson = ({
 			)}
 			<FormCheckbox
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
+				id={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"
 				isDisabled={hasEksisterendePerson}
 				checkboxMargin={true}

@@ -10,7 +10,7 @@ import { ArbeidsforholdForm } from '@/components/fagsystem/aareg/form/partials/a
 import React from 'react'
 import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { getEgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 
 export const aaregAttributt = 'aareg'
 

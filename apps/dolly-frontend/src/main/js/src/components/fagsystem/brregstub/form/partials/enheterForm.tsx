@@ -5,6 +5,7 @@ import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { PersonrollerForm } from '@/components/fagsystem/brregstub/form/partials/personrollerForm'
 import { OrgnrToggle } from '@/components/fagsystem/brregstub/form/partials/orgnrToggle'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import React from 'react'
 
 const initialValues = {
 	rolle: '',
@@ -47,7 +48,6 @@ export const EnheterForm = ({ formMethods }) => {
 		} else if (currentValues.hasOwnProperty('postAdresse')) {
 			delete currentValues['postAdresse']
 		}
-
 		formMethods.setValue(path, currentValues)
 		formMethods.trigger(path)
 	}
@@ -60,7 +60,7 @@ export const EnheterForm = ({ formMethods }) => {
 			canBeEmpty={false}
 		>
 			{(path) => (
-				<>
+				<React.Fragment key={path}>
 					<FormSelect
 						name={`${path}.rolle`}
 						label="Rolle"
@@ -72,7 +72,7 @@ export const EnheterForm = ({ formMethods }) => {
 					<FormDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
 					<OrgnrToggle path={path} formMethods={formMethods} setEnhetsinfo={setEnhetsinfo} />
 					<PersonrollerForm formMethods={formMethods} path={path} />
-				</>
+				</React.Fragment>
 			)}
 		</FormDollyFieldArray>
 	)
