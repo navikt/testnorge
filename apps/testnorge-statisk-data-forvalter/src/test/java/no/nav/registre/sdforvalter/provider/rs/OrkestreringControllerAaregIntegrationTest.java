@@ -15,8 +15,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +23,6 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
 
@@ -36,16 +33,18 @@ import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = RANDOM_PORT,
+        properties = "spring.cloud.vault.token=SET_TO_SOMETHING_TO_ALLOW_CONTEXT_TO_LOAD"
+)
+@ActiveProfiles("test")
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:application-test.yml")
-@ActiveProfiles("test")
 class OrkestreringControllerAaregIntegrationTest {
 
     @Autowired
@@ -66,7 +65,7 @@ class OrkestreringControllerAaregIntegrationTest {
 
     private final KodeverkResponse kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
     private static String syntString;
-    private final TypeReference<List<RsAaregSyntetiseringsRequest>> SYNT_RESPONSE = new TypeReference<>() {
+    private final TypeReference<List<RsAaregSyntetiseringsRequest>> syntResponse = new TypeReference<>() {
     };
 
     @BeforeAll
@@ -74,13 +73,13 @@ class OrkestreringControllerAaregIntegrationTest {
         syntString = getResourceFileContent("files/enkel_arbeidsforholdmelding.json");
     }
 
-    @Disabled
+    @Disabled("Fix verify GET on (.*)/kodeverk-api/api/v1/kodeverk/Yrker/koder")
     @Test
     void shouldInitiateAaregFromDatabase() throws Exception {
-        final AaregModel aaregModel = createAaregModel(FNR, ORGNR);
+        final AaregModel aaregModel = createAaregModel();
         aaregRepository.save(aaregModel);
 
-        var arbeidsforholdmelding = objectMapper.readValue(syntString, SYNT_RESPONSE);
+        var arbeidsforholdmelding = objectMapper.readValue(syntString, syntResponse);
 
         when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("dummy")));
 
@@ -142,10 +141,10 @@ class OrkestreringControllerAaregIntegrationTest {
 
     @Test
     void shouldNotOppretteAaregWhenAlreadyExists() throws Exception {
-        final AaregModel aaregModel = createAaregModel(FNR, ORGNR);
+        final AaregModel aaregModel = createAaregModel();
         aaregRepository.save(aaregModel);
 
-        var arbeidsforholdmelding = objectMapper.readValue(syntString, SYNT_RESPONSE);
+        var arbeidsforholdmelding = objectMapper.readValue(syntString, syntResponse);
         var arbeidsforholdResponse = Collections.singletonList(arbeidsforholdmelding.getFirst().getArbeidsforhold().toArbeidsforhold());
 
         when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("dummy")));
@@ -168,10 +167,10 @@ class OrkestreringControllerAaregIntegrationTest {
 
     }
 
-    @Disabled
+    @Disabled("Fix verify GET on (.*)/kodeverk-api/api/v1/kodeverk/Yrker/koder")
     @Test
     void shouldNotOppretteAaregIfSyntError() throws Exception {
-        final AaregModel aaregModel = createAaregModel(FNR, ORGNR);
+        final AaregModel aaregModel = createAaregModel();
         aaregRepository.save(aaregModel);
 
         when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("dummy")));
@@ -219,10 +218,10 @@ class OrkestreringControllerAaregIntegrationTest {
                 .verifyGet();
     }
 
-    private AaregModel createAaregModel(String fnr, String orgId) {
+    private AaregModel createAaregModel() {
         AaregModel model = new AaregModel();
-        model.setFnr(fnr);
-        model.setOrgId(orgId);
+        model.setFnr(FNR);
+        model.setOrgId(ORGNR);
         return model;
     }
 
