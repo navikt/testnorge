@@ -150,6 +150,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 			<div className="flexbox--flex-wrap">
 				<FormCheckbox
 					name={`${path}.hasMellomnavn`}
+					id={`${path}.hasMellomnavn`}
 					label="Har tilfeldig mellomnavn"
 					isDisabled={!isEmpty(selectedMellomnavn)}
 					checkboxMargin

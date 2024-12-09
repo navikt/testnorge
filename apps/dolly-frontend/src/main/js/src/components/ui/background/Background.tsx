@@ -104,7 +104,9 @@ const animateNedboer = (millimeterNedboer: number, nedBoerType: NEDBOER_TYPE) =>
 
 export const Background = (props: any) => {
 	const { millimeterNedboer = 0, nedBoerType } = useWeatherFyrstikkAlleen()
-	const nedboer = animateNedboer(millimeterNedboer, nedBoerType)
+	const nedboer = isChristmas
+		? animateNedboer(millimeterNedboer, NEDBOER_TYPE.SNOW)
+		: animateNedboer(millimeterNedboer, nedBoerType)
 	return (
 		<>
 			{!isEaster && nedboer}

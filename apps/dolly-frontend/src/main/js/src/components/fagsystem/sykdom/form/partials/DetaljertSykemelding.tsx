@@ -209,6 +209,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 						<FormTextInput name={`${path}.aktivitet.grad`} label="Grad" type="number" />
 						<FormCheckbox
 							name={`${path}.aktivitet.reisetilskudd`}
+							id={`${path}.aktivitet.reisetilskudd`}
 							label="Har reisetilskudd"
 							checkboxMargin
 						/>

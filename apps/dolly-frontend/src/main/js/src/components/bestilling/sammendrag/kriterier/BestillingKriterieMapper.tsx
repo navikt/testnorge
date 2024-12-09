@@ -1587,7 +1587,7 @@ const mapBrregstub = (bestillingData, data) => {
 				obj('Rolle', enhet.rolle),
 				obj('Registreringsdato', formatDate(enhet.registreringsdato)),
 				obj('Organisasjonsnummer', enhet.orgNr),
-				obj('Foretaksnavn', enhet.foretaksNavn.navn1),
+				obj('Foretaksnavn', enhet.foretaksNavn?.navn1),
 				obj('Antall registrerte personroller', enhet.personroller && enhet.personroller?.length),
 			])
 		})
