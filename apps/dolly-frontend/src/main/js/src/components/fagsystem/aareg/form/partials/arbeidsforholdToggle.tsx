@@ -105,6 +105,8 @@ export const ArbeidsforholdToggle = ({
 		} else {
 			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverOrg })
 		}
+		formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
+		formMethods.clearErrors(`${path}.arbeidsgiver`)
 	}
 
 	if (loadingOrganisasjoner) {
@@ -163,9 +165,11 @@ export const ArbeidsforholdToggle = ({
 					<div className="flex-box" title={title}>
 						<EgneOrganisasjoner
 							path={`${path}.arbeidsgiver.orgnummer`}
-							handleChange={(selected: any) =>
+							handleChange={(selected: any) => {
 								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
-							}
+								formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
+								formMethods.clearErrors(`${path}.arbeidsgiver`)
+							}}
 							filterValidEnhetstyper={true}
 							isDisabled={erLaastArbeidsforhold}
 						/>
