@@ -3,10 +3,3 @@ spring:
     gcp:
       secretmanager:
         enabled: false
-  security:
-    oauth2:
-      client:
-        registration:
-          aad:
-            client-id: dummy
-            client-secret: dummy

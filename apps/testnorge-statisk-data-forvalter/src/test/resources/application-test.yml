@@ -61,6 +61,7 @@ aareg:
   pageSize: 2
 
 controller.staticdata.cache.hours: 24
+azure.app.client.id: dummy
 
 KAFKA_SCHEMA_REGISTRY: http://localhost:9009
 kafka.groupid: organisasjon-forvalter-v1
