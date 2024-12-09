@@ -12,6 +12,7 @@ import static java.util.Objects.isNull;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class UtdypendeOpplysningerDTO {
 

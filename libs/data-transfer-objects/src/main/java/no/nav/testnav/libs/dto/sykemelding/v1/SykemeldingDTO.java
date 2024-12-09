@@ -14,7 +14,7 @@ import static java.util.Objects.isNull;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class SykemeldingDTO {
 
     private LocalDate startDato;
