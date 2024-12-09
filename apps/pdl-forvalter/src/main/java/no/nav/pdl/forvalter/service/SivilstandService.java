@@ -18,8 +18,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -170,11 +170,6 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                 .map(SivilstandDTO::getId)
                 .orElse(0) + 1);
 
-        // Ensure the list is modifiable
-        if (!(relatertPerson.get().getPerson().getSivilstand() instanceof LinkedList)) {
-            relatertPerson.get().getPerson().setSivilstand(new LinkedList<>(relatertPerson.get().getPerson().getSivilstand()));
-        }
-       
         relatertPerson.get().getPerson().getSivilstand().addFirst(relatertSivilstand);
 
         relatertPerson.get().getPerson().setSivilstand(enforceIntegrity(relatertPerson.get().getPerson()));
@@ -199,9 +194,9 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
         });
 
         return person.getSivilstand().stream().noneMatch(sivilstand -> isNull(sivilstand.getSivilstandsdato())) ?
-                person.getSivilstand().stream()
+                new ArrayList<>(person.getSivilstand().stream()
                         .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
-                        .toList() :
+                        .toList()) :
                 person.getSivilstand();
     }
 }
