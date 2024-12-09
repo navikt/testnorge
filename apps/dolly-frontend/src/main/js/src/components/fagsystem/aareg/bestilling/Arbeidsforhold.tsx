@@ -1,11 +1,10 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import React, { useState } from 'react'
+import React from 'react'
 import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showKodeverkLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk, ArbeidKodeverk } from '@/config/kodeverk'
-import DollyKjede from '@/components/dollyKjede/DollyKjede'
 import {
 	Aareg,
 	PermisjonValues,
@@ -13,6 +12,7 @@ import {
 	Timeloennet,
 	Utenlands,
 } from '@/components/fagsystem/aareg/AaregTypes'
+import { Alert } from '@navikt/ds-react'
 
 type ArbeidsforholdData = {
 	arbeidsforholdListe: Array<Aareg>
@@ -20,40 +20,30 @@ type ArbeidsforholdData = {
 
 type ArbeidsforholdVisningData = {
 	arbeidsforhold: Aareg
-	harAmelding: boolean
 }
 
 type TimerMedTimeloennetData = {
 	timerMedTimeloennet?: Array<Timeloennet>
-	harAmelding: boolean
 }
 
 type UtlandsoppholdData = {
 	utenlandsopphold?: Array<Utenlands>
-	harAmelding: boolean
 }
 
 type PermisjonData = {
 	permisjon?: Array<PermisjonValues>
-	harAmelding: boolean
 }
 
 type PermitteringData = {
 	permittering?: Array<PermitteringValues>
-	harAmelding: boolean
 }
 
-const TimerMedTimeloennet = ({ timerMedTimeloennet, harAmelding }: TimerMedTimeloennetData) => {
+const TimerMedTimeloennet = ({ timerMedTimeloennet }: TimerMedTimeloennetData) => {
 	if (!timerMedTimeloennet || timerMedTimeloennet.length < 1) {
 		return null
 	}
 	return (
-		<DollyFieldArray
-			header="Timer med timelønnet"
-			data={timerMedTimeloennet}
-			whiteBackground={harAmelding}
-			nested
-		>
+		<DollyFieldArray header="Timer med timelønnet" data={timerMedTimeloennet} nested>
 			{(timer: Timeloennet, idx: number) => (
 				<React.Fragment key={idx}>
 					<TitleValue title="Antall timer" value={timer?.antallTimer} />
@@ -65,17 +55,12 @@ const TimerMedTimeloennet = ({ timerMedTimeloennet, harAmelding }: TimerMedTimel
 	)
 }
 
-const Utenlandsopphold = ({ utenlandsopphold, harAmelding }: UtlandsoppholdData) => {
+const Utenlandsopphold = ({ utenlandsopphold }: UtlandsoppholdData) => {
 	if (!utenlandsopphold || utenlandsopphold.length < 1) {
 		return null
 	}
 	return (
-		<DollyFieldArray
-			header="Utenlandsopphold"
-			data={utenlandsopphold}
-			whiteBackground={harAmelding}
-			nested
-		>
+		<DollyFieldArray header="Utenlandsopphold" data={utenlandsopphold} nested>
 			{(opphold: Utenlands, idx: number) => (
 				<React.Fragment key={idx}>
 					<TitleValue
@@ -90,12 +75,12 @@ const Utenlandsopphold = ({ utenlandsopphold, harAmelding }: UtlandsoppholdData)
 	)
 }
 
-const Permisjon = ({ permisjon, harAmelding }: PermisjonData) => {
+const Permisjon = ({ permisjon }: PermisjonData) => {
 	if (!permisjon || permisjon.length < 1) {
 		return null
 	}
 	return (
-		<DollyFieldArray header="Permisjon" data={permisjon} whiteBackground={harAmelding} nested>
+		<DollyFieldArray header="Permisjon" data={permisjon} nested>
 			{(perm: PermisjonValues, idx: number) => (
 				<React.Fragment key={idx}>
 					<TitleValue
@@ -114,12 +99,12 @@ const Permisjon = ({ permisjon, harAmelding }: PermisjonData) => {
 	)
 }
 
-const Permittering = ({ permittering, harAmelding }: PermitteringData) => {
+const Permittering = ({ permittering }: PermitteringData) => {
 	if (!permittering || permittering.length < 1) {
 		return null
 	}
 	return (
-		<DollyFieldArray header="Permittering" data={permittering} whiteBackground={harAmelding} nested>
+		<DollyFieldArray header="Permittering" data={permittering} nested>
 			{(perm: PermitteringValues, idx: number) => (
 				<React.Fragment key={idx}>
 					<TitleValue
@@ -137,7 +122,7 @@ const Permittering = ({ permittering, harAmelding }: PermitteringData) => {
 	)
 }
 
-const ArbeidsforholdVisning = ({ arbeidsforhold, harAmelding }: ArbeidsforholdVisningData) => {
+const ArbeidsforholdVisning = ({ arbeidsforhold }: ArbeidsforholdVisningData) => {
 	const periode =
 		arbeidsforhold?.navArbeidsforholdPeriode?.year &&
 		arbeidsforhold?.navArbeidsforholdPeriode?.monthValue
@@ -224,23 +209,15 @@ const ArbeidsforholdVisning = ({ arbeidsforhold, harAmelding }: ArbeidsforholdVi
 					arbeidsforhold.fartoy?.[0]?.fartsomraade,
 				)}
 			/>
-			<TimerMedTimeloennet
-				timerMedTimeloennet={arbeidsforhold?.antallTimerForTimeloennet}
-				harAmelding={harAmelding}
-			/>
-			<Utenlandsopphold
-				utenlandsopphold={arbeidsforhold?.utenlandsopphold}
-				harAmelding={harAmelding}
-			/>
-			<Permisjon permisjon={arbeidsforhold?.permisjon} harAmelding={harAmelding} />
-			<Permittering permittering={arbeidsforhold?.permittering} harAmelding={harAmelding} />
+			<TimerMedTimeloennet timerMedTimeloennet={arbeidsforhold?.antallTimerForTimeloennet} />
+			<Utenlandsopphold utenlandsopphold={arbeidsforhold?.utenlandsopphold} />
+			<Permisjon permisjon={arbeidsforhold?.permisjon} />
+			<Permittering permittering={arbeidsforhold?.permittering} />
 		</React.Fragment>
 	)
 }
 
 export const Arbeidsforhold = ({ arbeidsforholdListe }: ArbeidsforholdData) => {
-	const [selectedIndex, setSelectedIndex] = useState(0)
-
 	if (!arbeidsforholdListe || arbeidsforholdListe.length < 1) {
 		return null
 	}
@@ -251,62 +228,21 @@ export const Arbeidsforhold = ({ arbeidsforholdListe }: ArbeidsforholdData) => {
 		<div className="person-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Arbeidsforhold (Aareg)</BestillingTitle>
-				<DollyFieldArray header="Arbeidsforhold" data={arbeidsforholdListe}>
-					{(arbeidsforhold: Aareg, idx: number) => {
-						return (
-							<React.Fragment key={idx}>
-								{harAmelding ? (
-									<>
-										<TitleValue
-											title="Type arbeidsforhold"
-											value={showKodeverkLabel(
-												ArbeidKodeverk.Arbeidsforholdstyper,
-												arbeidsforhold?.arbeidsforholdstype,
-											)}
-										/>
-										<TitleValue
-											title="F.o.m. kalendermåned"
-											value={formatDate(arbeidsforhold?.genererPeriode?.fom)}
-										/>
-										<TitleValue
-											title="T.o.m. kalendermåned"
-											value={formatDate(arbeidsforhold?.genererPeriode?.tom)}
-										/>
-										<div className="flexbox--full-width" style={{ margin: '10px 0' }}>
-											<DollyKjede
-												objectList={arbeidsforhold?.genererPeriode?.periode}
-												itemLimit={10}
-												selectedIndex={selectedIndex}
-												setSelectedIndex={setSelectedIndex}
-												isLocked={false}
-											/>
-										</div>
-										<DollyFieldArray
-											data={arbeidsforhold?.amelding[selectedIndex]?.arbeidsforhold}
-											nested
-										>
-											{(ameldingArbeidsforhold: Aareg, idy: number) => {
-												return (
-													<ArbeidsforholdVisning
-														arbeidsforhold={ameldingArbeidsforhold}
-														key={`${idx}_${idy}`}
-														harAmelding={harAmelding}
-													/>
-												)
-											}}
-										</DollyFieldArray>
-									</>
-								) : (
-									<ArbeidsforholdVisning
-										arbeidsforhold={arbeidsforhold}
-										key={idx}
-										harAmelding={harAmelding}
-									/>
-								)}
-							</React.Fragment>
-						)
-					}}
-				</DollyFieldArray>
+				{harAmelding ? (
+					<Alert variant="warning" size="small" style={{ marginBottom: '20px' }}>
+						Arbeidsforholdet inneholder A-melding, som ikke lenger er støttet.
+					</Alert>
+				) : (
+					<DollyFieldArray header="Arbeidsforhold" data={arbeidsforholdListe}>
+						{(arbeidsforhold: Aareg, idx: number) => {
+							return (
+								<React.Fragment key={idx}>
+									<ArbeidsforholdVisning arbeidsforhold={arbeidsforhold} key={idx} />
+								</React.Fragment>
+							)
+						}}
+					</DollyFieldArray>
+				)}
 			</ErrorBoundary>
 		</div>
 	)
