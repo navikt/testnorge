@@ -41,7 +41,7 @@ export const RedigerOrganisasjon = ({ orgNr, gyldigTil, miljoe, mutate }: Redige
 		OrganisasjonTilgangService.updateOrganisasjon(values).then(() => {
 			mutate()
 		})
-		schmutate('/testnav-organisasjon-tilgang-service/api/v1/organisasjoner', (currentData) =>
+		schmutate('/testnav-altinn3-tilgang-service/api/v1/organisasjoner', (currentData) =>
 			currentData.map((org) => {
 				if (org.organisasjonsnummer === values.organisasjonsnummer) {
 					return {
@@ -68,10 +68,9 @@ export const RedigerOrganisasjon = ({ orgNr, gyldigTil, miljoe, mutate }: Redige
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'50%'} overflow={'visible'}>
 				<div className="redigerModal">
 					<div className="redigerModal redigerModal-content">
-						<h1>Endre utløpsdato og miljøer</h1>
+						<h1>Oppdatere organisasjonstilgang</h1>
 					</div>
 					<div className="redigerModal redigerModal-input">
-						<FormDatepicker name={'gyldigTil'} label="Ny utløpsdato" />
 						<FormSelect
 							name={'miljoe'}
 							label={'Miljø'}
@@ -83,7 +82,7 @@ export const RedigerOrganisasjon = ({ orgNr, gyldigTil, miljoe, mutate }: Redige
 					</div>
 					<ModalActionKnapper
 						submitknapp="Endre tilgang"
-						disabled={values.miljoe.length === 0 || !values.gyldigTil}
+						disabled={values.miljoe.length === 0}
 						onSubmit={() => updateOrganisasjon()}
 						onAvbryt={closeModal}
 						center

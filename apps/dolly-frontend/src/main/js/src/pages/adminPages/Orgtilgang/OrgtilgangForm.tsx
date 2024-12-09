@@ -86,7 +86,6 @@ export const OrgtilgangForm = ({ mutate }: any) => {
 							isMulti={true}
 							size="medium"
 						/>
-						<FormDatepicker name={'gyldigTil'} label={'Gyldig til'} />
 					</div>
 					<div className="flexbox--align-center">
 						<Button type="submit" variant="primary" style={{ marginRight: '15px' }}>
