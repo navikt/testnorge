@@ -1,0 +1,18 @@
+AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+TOKEN_X_ISSUER: dummy
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: true
+  config:
+    import: "sm://"
+
+app:
+  elastic:
+    username: ${sm://elastic-username}
+    password: ${sm://elastic-password}
+  hendelse.lager.api.key: ${sm://hendelse-lager-api-key}
+  person.aktor.api.key: ${sm://person-aktor-api-key}

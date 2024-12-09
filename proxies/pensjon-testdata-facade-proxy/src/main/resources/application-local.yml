@@ -1,0 +1,14 @@
+AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: true
+  config:
+    import: "sm://"
+
+consumers:
+  pensjon-testdata-facade:
+    url: https://pensjon-testdata-facade.dev.intern.nav.no

@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yaml")
+@TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWireMock(port = 0)
 class KrrstubConsumerTest {
 

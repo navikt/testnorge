@@ -1,13 +1,12 @@
-TOKEN_X_ISSUER: dummy
-
+ALTINN_API_KEY: dummy
 ALTINN_URL: https://tt02.altinn.no
-
-altinn.api.key: dummy
-
+AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
 MASKINPORTEN_CLIENT_ID: dummy
 MASKINPORTEN_CLIENT_JWK: dummy
 MASKINPORTEN_SCOPES: dummy
 MASKINPORTEN_WELL_KNOWN_URL: dummy
+TOKEN_X_ISSUER: dummy
 
 spring:
   config:
@@ -16,8 +15,3 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}

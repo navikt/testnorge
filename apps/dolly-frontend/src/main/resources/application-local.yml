@@ -1,3 +1,5 @@
+AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 REDIS_HOST: localhost
 TOKEN_X_ISSUER: dummy
@@ -13,8 +15,6 @@ spring:
       client:
         registration:
           aad:
-            client-id: ${sm://azure-app-client-id}
-            client-secret: ${sm://azure-app-client-secret}
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
             scope: openid, offline_access,  ${sm://azure-app-client-id}/.default

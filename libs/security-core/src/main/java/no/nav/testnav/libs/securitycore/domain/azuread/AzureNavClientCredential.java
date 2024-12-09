@@ -7,9 +7,10 @@ import org.springframework.context.annotation.Configuration;
 public class AzureNavClientCredential extends ClientCredential {
 
     public AzureNavClientCredential(
-            @Value("${azure.app.client.id:#{null}}") String clientId,
-            @Value("${azure.app.client.secret:#{null}}") String clientSecret
+            @Value("${AZURE_APP_CLIENT_ID:#{null}}") String clientId,
+            @Value("${AZURE_APP_CLIENT_SECRET:#{null}}") String clientSecret
     ) {
         super(clientId, clientSecret);
     }
+
 }

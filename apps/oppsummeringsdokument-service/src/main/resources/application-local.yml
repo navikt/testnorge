@@ -1,0 +1,4 @@
+open:
+  search:
+    index: local
+    uri: http://localhost:9200
