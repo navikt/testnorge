@@ -15,6 +15,7 @@ public class DetaljerDTO {
 
     private String tiltakArbeidsplass;
     private String tiltakNav;
+    private String andreTiltak;
     private Boolean arbeidsforEtterEndtPeriode;
     private String beskrivHensynArbeidsplassen;
 }

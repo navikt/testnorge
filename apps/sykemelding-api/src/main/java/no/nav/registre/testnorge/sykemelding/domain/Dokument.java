@@ -33,6 +33,7 @@ class Dokument {
                         new XMLHelseOpplysningerArbeidsuforhet.Tiltak()
                                 .withTiltakArbeidsplassen(dto.getDetaljer().getTiltakArbeidsplass())
                                 .withTiltakNAV(dto.getDetaljer().getTiltakNav())
+                                .withAndreTiltak(dto.getDetaljer().getAndreTiltak())
                 )
                 .withKontaktMedPasient(
                         new XMLHelseOpplysningerArbeidsuforhet.KontaktMedPasient()

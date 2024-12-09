@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -47,7 +48,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Sykemelding.class, ReceivedSykemeldingDTO.class)
-                .customize(new CustomMapper<Sykemelding, ReceivedSykemeldingDTO>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Sykemelding source, ReceivedSykemeldingDTO target, MappingContext context) {
 
@@ -194,23 +195,27 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
             return null;
         }
 
+        var medisinskeArsakTyper = !aktivitetIkkeMulig.getMedisinskeArsaker().getArsakskode().isEmpty() ?
+                aktivitetIkkeMulig.getMedisinskeArsaker().getArsakskode().stream()
+                        .map(XMLCS::getV)
+                        .map(ReceivedSykemeldingDTO.MedisinskArsakType::valueOf)
+                        .toList() : null;
+
+        var arbeidsforholdArsakTyper = !aktivitetIkkeMulig.getArbeidsplassen().getArsakskode().isEmpty() ?
+                aktivitetIkkeMulig.getArbeidsplassen().getArsakskode().stream()
+                        .map(XMLCS::getV)
+                        .map(ReceivedSykemeldingDTO.ArbeidsrelatertArsakType::valueOf)
+                        .toList() : null;
+
         return ReceivedSykemeldingDTO.AktivitetIkkeMulig.builder()
                 .medisinskArsak(nonNull(aktivitetIkkeMulig.getMedisinskeArsaker()) ?
                         ReceivedSykemeldingDTO.MedisinskArsak.builder()
-                                .arsak(nonNull(aktivitetIkkeMulig.getMedisinskeArsaker().getArsakskode()) ?
-                                        aktivitetIkkeMulig.getMedisinskeArsaker().getArsakskode().stream()
-                                                .map(XMLCS::getV)
-                                                .map(ReceivedSykemeldingDTO.MedisinskArsakType::valueOf)
-                                                .toList() : null)
+                                .arsak(medisinskeArsakTyper)
                                 .beskrivelse(aktivitetIkkeMulig.getMedisinskeArsaker().getBeskriv())
                                 .build() : null)
                 .arbeidsrelatertArsak(nonNull(aktivitetIkkeMulig.getArbeidsplassen()) ?
                         ReceivedSykemeldingDTO.ArbeidsrelatertArsak.builder()
-                                .arsak(nonNull(aktivitetIkkeMulig.getArbeidsplassen().getArsakskode()) ?
-                                        aktivitetIkkeMulig.getArbeidsplassen().getArsakskode().stream()
-                                                .map(XMLCS::getV)
-                                                .map(ReceivedSykemeldingDTO.ArbeidsrelatertArsakType::valueOf)
-                                                .toList() : null)
+                                .arsak(arbeidsforholdArsakTyper)
                                 .beskrivelse(aktivitetIkkeMulig.getArbeidsplassen().getBeskriv())
                                 .build() : null)
                 .build();
@@ -224,6 +229,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                         .system(xmlMedisinskVurdering.getHovedDiagnose().getDiagnosekode().getS())
                         .tekst(xmlMedisinskVurdering.getHovedDiagnose().getDiagnosekode().getDN())
                         .build())
+                .biDiagnoser(mapBidiagnoser(xmlMedisinskVurdering.getBiDiagnoser()))
                 .annenFraversArsak(ReceivedSykemeldingDTO.AnnenFraversArsak.builder()
                         .beskrivelse(xmlMedisinskVurdering.getAnnenFraversArsak().getBeskriv())
                         .build())
@@ -231,6 +237,21 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                 .yrkesskade(xmlMedisinskVurdering.isYrkesskade())
                 .yrkesskadeDato(xmlMedisinskVurdering.getYrkesskadeDato())
                 .build();
+    }
+
+    private List<ReceivedSykemeldingDTO.Diagnose> mapBidiagnoser(XMLHelseOpplysningerArbeidsuforhet.MedisinskVurdering.BiDiagnoser biDiagnoser) {
+
+        if (isNull(biDiagnoser)) {
+            return emptyList();
+        }
+
+        return biDiagnoser.getDiagnosekode().stream()
+                .map(diagnose -> ReceivedSykemeldingDTO.Diagnose.builder()
+                        .kode(diagnose.getV())
+                        .system(diagnose.getS())
+                        .tekst(diagnose.getDN())
+                        .build())
+                .toList();
     }
 
     private LocalDateTime convertDateNTime(XMLGregorianCalendar xmlGregorianCalendar) {

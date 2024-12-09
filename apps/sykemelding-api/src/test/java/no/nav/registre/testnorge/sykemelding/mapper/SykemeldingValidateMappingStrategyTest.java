@@ -28,6 +28,11 @@ import static no.nav.testnav.libs.dto.sykemelding.v1.UtdypendeOpplysningerDTO.Re
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.nullValue;
 
 @ExtendWith(MockitoExtension.class)
 class SykemeldingValidateMappingStrategyTest {
@@ -53,8 +58,13 @@ class SykemeldingValidateMappingStrategyTest {
                 .hovedDiagnose(DiagnoseDTO.builder()
                         .diagnose("Diagnostisk prosedyre IKA")
                         .diagnosekode("F43")
-                        .system("2.16.578.1.12.4.1.1.7170")
+                        .system("123")
                         .build())
+                .biDiagnoser(List.of(DiagnoseDTO.builder()
+                        .diagnose("Diagnostisk prosedyre bla bla")
+                        .diagnosekode("H14")
+                        .system("456")
+                        .build()))
                 .helsepersonell(HelsepersonellDTO.builder()
                         .etternavn("September")
                         .fornavn("August")
@@ -101,6 +111,7 @@ class SykemeldingValidateMappingStrategyTest {
                 .detaljer(DetaljerDTO.builder()
                         .tiltakArbeidsplass("Beskrivende tiltak fra arbeidsplassen")
                         .tiltakNav("Beskrivende tiltak fra NAV")
+                        .andreTiltak("Andre tiltak")
                         .beskrivHensynArbeidsplassen("Beskrivende hensyn til arbeidsplassen")
                         .arbeidsforEtterEndtPeriode(true)
                         .build())
@@ -137,23 +148,37 @@ class SykemeldingValidateMappingStrategyTest {
         var target = mapperFacade.map(sykemelding, ReceivedSykemeldingDTO.class);
 
         assertThat(target.getMsgId(), is(equalTo(sykemelding.getMsgId())));
-        assertThat(target.getSykmelding().getMedisinskVurdering().getYrkesskadeDato(), is(equalTo(LocalDate.of(2024, 11, 21))));
-        assertThat(target.getSykmelding().getMedisinskVurdering().getSvangerskap(), is(equalTo(false)));
-        assertThat(target.getSykmelding().getMedisinskVurdering().getYrkesskade(), is(equalTo(false)));
-        assertThat(target.getSykmelding().getMedisinskVurdering().getAnnenFraversArsak().getBeskrivelse(), is(equalTo("Medising årsak i kategorien annet")));
 
-        assertThat(target.getSykmelding().getArbeidsgiver().getHarArbeidsgiver(), is(equalTo(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER)));
-        assertThat(target.getSykmelding().getArbeidsgiver().getStillingsprosent(), is(equalTo(sykemeldingDTO.getArbeidsgiver().getStillingsprosent().intValue())));
-        assertThat(target.getSykmelding().getArbeidsgiver().getYrkesbetegnelse(), is(equalTo(sykemeldingDTO.getArbeidsgiver().getYrkesbetegnelse())));
-        assertThat(target.getSykmelding().getArbeidsgiver().getNavn(), is(equalTo(sykemeldingDTO.getArbeidsgiver().getNavn())));
+        assertThat(target.getSykmelding().getMedisinskVurdering(), allOf(
+                hasProperty("hovedDiagnose", allOf(
+                        hasProperty("system", is(equalTo("123"))),
+                        hasProperty("kode", is(equalTo("F43"))),
+                        hasProperty("tekst", is(equalTo("Diagnostisk prosedyre IKA"))))),
+                hasProperty("biDiagnoser", contains(allOf(
+                        hasProperty("system", is(equalTo("456"))),
+                        hasProperty("kode", is(equalTo("H14"))),
+                        hasProperty("tekst", is(equalTo("Diagnostisk prosedyre bla bla")))))),
+                hasProperty("yrkesskadeDato", is(equalTo(LocalDate.of(2024, 11, 21)))),
+                hasProperty("svangerskap", is(equalTo(false))),
+                hasProperty("yrkesskade", is(equalTo(false))),
+                hasProperty("annenFraversArsak",
+                        hasProperty("beskrivelse", is(equalTo("Medisinsk årsak i kategorien annet"))))));
 
-        assertThat(target.getSykmelding().getBehandler().getFornavn(), is(equalTo(sykemeldingDTO.getHelsepersonell().getFornavn())));
-        assertThat(target.getSykmelding().getBehandler().getMellomnavn(), is(equalTo(sykemeldingDTO.getHelsepersonell().getMellomnavn())));
-        assertThat(target.getSykmelding().getBehandler().getEtternavn(), is(equalTo(sykemeldingDTO.getHelsepersonell().getEtternavn())));
-        assertThat(target.getSykmelding().getBehandler().getFnr(), is(equalTo(sykemeldingDTO.getHelsepersonell().getIdent())));
+        assertThat(target.getSykmelding().getArbeidsgiver(), allOf(
+                hasProperty("harArbeidsgiver", is(equalTo(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER))),
+                hasProperty("navn", is(equalTo(sykemeldingDTO.getArbeidsgiver().getNavn()))),
+                hasProperty("yrkesbetegnelse", is(equalTo(sykemeldingDTO.getArbeidsgiver().getYrkesbetegnelse()))),
+                hasProperty("stillingsprosent", is(equalTo(sykemeldingDTO.getArbeidsgiver().getStillingsprosent().intValue())))));
 
-        assertThat(target.getSykmelding().getAvsenderSystem().getNavn(), is(equalTo(applicationInfo.getName())));
-        assertThat(target.getSykmelding().getAvsenderSystem().getVersjon(), is(equalTo(applicationInfo.getVersion())));
+        assertThat(target.getSykmelding().getBehandler(), allOf(
+                hasProperty("fornavn", is(equalTo(sykemeldingDTO.getHelsepersonell().getFornavn()))),
+                hasProperty("mellomnavn", is(equalTo(sykemeldingDTO.getHelsepersonell().getMellomnavn()))),
+                hasProperty("etternavn", is(equalTo(sykemeldingDTO.getHelsepersonell().getEtternavn()))),
+                hasProperty("fnr", is(equalTo(sykemeldingDTO.getHelsepersonell().getIdent())))));
+
+        assertThat(target.getSykmelding().getAvsenderSystem(), allOf(
+                hasProperty("navn", is(equalTo(applicationInfo.getName()))),
+                hasProperty("versjon", is(equalTo(applicationInfo.getVersion())))));
 
         assertThat(target.getPersonNrPasient(), is(equalTo(DUMMY_FNR)));
         assertThat(target.getMottattDato(), is(equalTo(sykemeldingDTO.getStartDato().atStartOfDay())));
@@ -162,6 +187,38 @@ class SykemeldingValidateMappingStrategyTest {
                 is(equalTo(sykemeldingDTO.getHelsepersonell().getFornavn() + " " + sykemeldingDTO.getHelsepersonell().getEtternavn())));
         assertThat(target.getLegekontorOrgNr(), is(equalTo(sykemeldingDTO.getMottaker().getOrgNr())));
 
-        // TBD utdypendeOpplysninger, Perioder, mm
+        assertThat(target.getSykmelding().getUtdypendeOpplysninger(),
+                hasEntry(is("6.3"), allOf(
+                        hasEntry(is("6.3.1"), allOf(
+                                hasProperty("sporsmal", is(equalTo("Beskriv kort sykehistorie, symptomer og funn i dagens situasjon"))),
+                                hasProperty("svar", is(equalTo("word word word word"))),
+                                hasProperty("restriksjoner", is(equalTo(List.of(SKJERMET_FOR_ARBEIDSGIVER)))))),
+                        hasEntry(is("6.3.2"), allOf(
+                                hasProperty("sporsmal", is(equalTo("Beskriv kort sykehistorie, symptomer og funn i dagens situasjon"))),
+                                hasProperty("svar", is(equalTo("word word word word"))),
+                                hasProperty("restriksjoner", is(equalTo(List.of(SKJERMET_FOR_PASIENT)))))))));
+
+        assertThat(target.getSykmelding().getPerioder(), contains(allOf(
+                hasProperty("fom", is(equalTo(LocalDate.of(2024, 11, 21)))),
+                hasProperty("tom", is(equalTo(LocalDate.of(2024, 11, 27)))),
+                hasProperty("gradert",
+                        hasProperty("reisetilskudd", is(equalTo(false)))),
+                hasProperty("behandlingsdager", is(nullValue())))));
+
+        assertThat(target.getSykmelding().getPrognose(), allOf(
+                hasProperty("arbeidsforEtterPeriode", is(equalTo(true))),
+                hasProperty("hensynArbeidsplassen", is(equalTo("Beskrivende hensyn til arbeidsplassen"))),
+                hasProperty("erIArbeid", allOf(
+                        hasProperty("egetArbeidPaSikt", is(equalTo(true))),
+                        hasProperty("annetArbeidPaSikt", is(equalTo(true))),
+                        hasProperty("arbeidFOM", is(equalTo(LocalDate.of(2024, 11, 21)))),
+                        hasProperty("vurderingsdato", is(equalTo(LocalDate.of(2024, 11, 21)))))),
+                hasProperty("erIkkeIArbeid", is(nullValue()))));
+
+        assertThat(target.getSykmelding().getTiltakNAV(), is(equalTo("Beskrivende tiltak fra NAV")));
+        assertThat(target.getSykmelding().getTiltakArbeidsplassen(), is(equalTo("Beskrivende tiltak fra arbeidsplassen")));
+        assertThat(target.getSykmelding().getAndreTiltak(), is(equalTo("Andre tiltak")));
+
+        assertThat(target.getPersonNrLege(), is(equalTo(sykemeldingDTO.getHelsepersonell().getIdent())));
     }
 }
