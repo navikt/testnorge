@@ -40,6 +40,8 @@ spec:
         - application: testnav-sykemelding-api
         - application: testnav-sykemelding-api-dev
         - application: testnav-oversikt-frontend
+        - application: testnav-sykemelding-api-dev
+        - application: testnav-sykemelding-api
     outbound:
       rules:
         - application: syfosmregler
