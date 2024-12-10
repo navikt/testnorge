@@ -1536,6 +1536,17 @@ const mapSykemelding = (bestillingData, data) => {
 					_.get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.beskrivHensynArbeidsplassen'),
 				),
 				obj(
+					'Begrunnelse ikke kontakt',
+					_.get(
+						sykemeldingKriterier.detaljertSykemelding,
+						'kontaktMedPasient.begrunnelseIkkeKontakt',
+					),
+				),
+				obj(
+					'Kontaktdato',
+					formatDate(sykemeldingKriterier.detaljertSykemelding?.kontaktMedPasient?.kontaktDato),
+				),
+				obj(
 					'Arbeidsfør etter endt periode',
 					sykemeldingKriterier.detaljertSykemelding.detaljer &&
 						oversettBoolean(

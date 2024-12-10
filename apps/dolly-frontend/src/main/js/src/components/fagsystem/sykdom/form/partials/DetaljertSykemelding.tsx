@@ -15,9 +15,12 @@ import {
 } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
 import { useSykemeldingValidering } from '@/utils/hooks/useSykemelding'
+import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
+import { useWatch } from 'react-hook-form'
+import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
 
 type DiagnoseSelect = {
 	diagnoseNavn: string
@@ -43,23 +46,35 @@ const initialValuesPeriode = {
 const KODESYSTEM = '2.16.578.1.12.4.1.1.7170'
 
 export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
+	const setContextMutate: any = useContext(SwrMutateContext)
+
 	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
 		formMethods.setValue(`${path}.diagnose`, v.diagnoseNavn)
 		formMethods.setValue(`${path}.system`, KODESYSTEM)
 	}
-	const detaljertSykemelding = formMethods.watch('sykemelding.detaljertSykemelding')
+	const detaljertSykemelding = useWatch({
+		name: 'sykemelding.detaljertSykemelding',
+		control: formMethods.control,
+	})
 
-	const { validation, missingFields, mutate, error } =
-		useSykemeldingValidering(detaljertSykemelding)
-	console.log('error: ', error) //TODO - SLETT MEG
-	console.log('validation: ', validation) //TODO - SLETT MEG
-	console.log('missingFields: ', missingFields) //TODO - SLETT MEG
-	console.log('detaljertSykemelding: ', detaljertSykemelding) //TODO - SLETT MEG
+	const { data, mutate, errorMessage } = useSykemeldingValidering(detaljertSykemelding)
 
 	useEffect(() => {
-		console.log('Mutating!') //TODO - SLETT MEG
-		mutate()
-	}, [detaljertSykemelding])
+		if (errorMessage && errorMessage.length > 0) {
+			formMethods.setError('manual.sykemelding.detaljertSykemelding', {
+				type: 'manual',
+				message: errorMessage,
+			})
+		} else formMethods.clearErrors('manual.sykemelding.detaljertSykemelding')
+	}, [errorMessage, data])
+
+	useEffect(() => {
+		setContextMutate(() => mutate)
+		formMethods.setError('manual.sykemelding.detaljertSykemelding', {
+			type: 'manual',
+			message: 'Trykk "Videre" for å validere sykemeldingen',
+		})
+	}, [mutate])
 
 	const handleLegeChange = (v: Helsepersonell) => {
 		formMethods.setValue('sykemelding.detaljertSykemelding.helsepersonell', {
@@ -109,6 +124,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	return (
 		<div className="flexbox--wrap">
+			<DollyErrorMessage name={'manual.sykemelding.detaljertSykemelding'} />
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker name="sykemelding.detaljertSykemelding.startDato" label="Startdato" />
 				<FormCheckbox
@@ -133,6 +149,19 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 						}
 						size="xlarge"
 						isClearable={false}
+					/>
+				</div>
+			</Kategori>
+			<Kategori title="Tilbakedatering" vis="sykemelding">
+				<div className="flexbox--flex-wrap">
+					<FormTextInput
+						name="sykemelding.detaljertSykemelding.kontaktMedPasient.begrunnelseIkkeKontakt"
+						label="Begrunnelse"
+						size="xlarge"
+					/>
+					<FormDatepicker
+						name={'sykemelding.detaljertSykemelding.kontaktMedPasient.kontaktDato'}
+						label="Kontaktdato"
 					/>
 				</div>
 			</Kategori>

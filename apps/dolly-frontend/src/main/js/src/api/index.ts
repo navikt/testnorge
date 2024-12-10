@@ -113,7 +113,7 @@ export const cvFetcher = (url, headers) =>
 		})
 
 export const sykemeldingFetcher = (url, body) =>
-	axios.post(url, { body: body }).then((res) => {
+	axios.post(url, body).then((res) => {
 		return res.data
 	})
 

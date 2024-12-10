@@ -3,8 +3,9 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from './BestillingsveilederContext'
 
-export const useStateModifierFns = (formMethods: UseFormReturn) => {
+export const useStateModifierFns = (formMethods: UseFormReturn, setFormMutate: any) => {
 	const opts = useContext(BestillingsveilederContext)
+
 	const set = (path, value) => {
 		formMethods.setValue(path, value)
 	}
@@ -13,6 +14,9 @@ export const useStateModifierFns = (formMethods: UseFormReturn) => {
 	}
 	const values = (path) => {
 		return formMethods.watch(path)
+	}
+	const delMutate = () => {
+		return setFormMutate?.(() => undefined)
 	}
 	const del = (path) => {
 		if (isArray(path)) {
@@ -45,6 +49,7 @@ export const useStateModifierFns = (formMethods: UseFormReturn) => {
 			.map((b) => b.label)
 
 	const batchUpdate = (attrs, ignoreKeys = [], key = 'add') => {
+		delMutate()
 		Object.entries(attrs)
 			.filter(([name, value]) => {
 				return !ignoreKeys?.includes(name)
@@ -60,12 +65,14 @@ export const useStateModifierFns = (formMethods: UseFormReturn) => {
 			setMulti: (...arrays: any[]) => void
 			opts: any
 			del: (path: any) => void
+			delMutate: () => void
 			has: (path: any) => boolean
 			values: (path: any) => any
 			methods: any
 		}) => {},
 	) => {
-		const attrs = fn({ set, setMulti, opts, del, has, values, methods: formMethods }) || {}
+		const attrs =
+			fn({ set, setMulti, opts, del, delMutate, has, values, methods: formMethods }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,
