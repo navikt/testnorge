@@ -221,4 +221,17 @@ class SykemeldingValidateMappingStrategyTest {
 
         assertThat(target.getPersonNrLege(), is(equalTo(sykemeldingDTO.getHelsepersonell().getIdent())));
     }
+
+    @Test
+    void validateNoArbeidsgiver_OK() {
+
+        var sykemeldingDTO = getSykemeldingOK();
+        sykemeldingDTO.setArbeidsgiver(null);
+
+        var sykemelding = new Sykemelding(sykemeldingDTO, applicationInfo);
+        var target = mapperFacade.map(sykemelding, ReceivedSykemeldingDTO.class);
+
+        assertThat(target.getSykmelding().getArbeidsgiver(), allOf(
+                hasProperty("harArbeidsgiver", is(equalTo(ReceivedSykemeldingDTO.ArbeidsgiverType.INGEN_ARBEIDSGIVER)))));
+    }
 }

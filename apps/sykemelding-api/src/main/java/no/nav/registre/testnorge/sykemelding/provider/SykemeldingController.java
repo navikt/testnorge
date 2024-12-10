@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
 import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
 import no.nav.registre.testnorge.sykemelding.service.SykemeldingService;
-import no.nav.registre.testnorge.sykemelding.util.SykemeldingRequestValidator;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingResponseDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.ValidationResultDTO;
@@ -32,9 +31,10 @@ public class SykemeldingController {
 
     @PostMapping(value = "/validate")
     public Mono<ValidationResultDTO> validate(@RequestBody SykemeldingDTO dto) {
-        log.info("Mottok sykemelding: {}", dto);
 
-        SykemeldingRequestValidator.validate(dto);
+        log.info("Mottok vakidering av sykemelding: {}", dto);
+
+//        SykemeldingRequestValidator.validate(dto);
         return sykemeldingService.validate(new Sykemelding(dto, applicationInfo));
     }
 }

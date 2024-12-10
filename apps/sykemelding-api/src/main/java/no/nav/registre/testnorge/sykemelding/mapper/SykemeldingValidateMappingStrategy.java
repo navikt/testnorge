@@ -76,7 +76,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                                                 .pasientAktoerId(DUMMY_AKTOER_ID)
                                                                 .navnFastlege(xmlHelseOpplysningerArbeidsuforhet.getPasient().getNavnFastlege())
                                                                 .arbeidsgiver(ReceivedSykemeldingDTO.Arbeidsgiver.builder()
-                                                                        .harArbeidsgiver(ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER)
+                                                                        .harArbeidsgiver(mapHarArbeidsgiver(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getHarArbeidsgiver()))
                                                                         .yrkesbetegnelse(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getYrkesbetegnelse())
                                                                         .stillingsprosent(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getStillingsprosent())
                                                                         .navn(xmlHelseOpplysningerArbeidsuforhet.getArbeidsgiver().getNavnArbeidsgiver())
@@ -126,6 +126,18 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
+    }
+
+    private ReceivedSykemeldingDTO.ArbeidsgiverType mapHarArbeidsgiver(XMLCS harArbeidsgiver) {
+
+        if (isNull(harArbeidsgiver)) {
+            return ReceivedSykemeldingDTO.ArbeidsgiverType.INGEN_ARBEIDSGIVER;
+        }
+        return switch (harArbeidsgiver.getV()) {
+            case "1" ->  ReceivedSykemeldingDTO.ArbeidsgiverType.EN_ARBEIDSGIVER;
+            case "2" ->  ReceivedSykemeldingDTO.ArbeidsgiverType.FLERE_ARBEIDSGIVERE;
+            default -> ReceivedSykemeldingDTO.ArbeidsgiverType.INGEN_ARBEIDSGIVER;
+        };
     }
 
     private List<ReceivedSykemeldingDTO.Periode> mapPerioder(List<XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode> perioder) {
