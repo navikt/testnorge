@@ -10,6 +10,7 @@ import no.nav.testnav.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.DetaljerDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.DiagnoseDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.HelsepersonellDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.KontaktMedPasientDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.PeriodeDTO;
@@ -133,6 +134,10 @@ class SykemeldingValidateMappingStrategyTest {
                                         .restriksjon(SKJERMET_FOR_PASIENT)
                                         .build()))
                         .build()))
+                .kontaktMedPasient(KontaktMedPasientDTO.builder()
+                        .kontaktDato(LocalDate.of(2024, 11, 28))
+                        .begrunnelseIkkeKontakt("Begrunnelse ikke kontakt")
+                        .build())
                 .build();
     }
 
@@ -222,6 +227,10 @@ class SykemeldingValidateMappingStrategyTest {
         assertThat(target.getSykmelding().getAndreTiltak(), is(equalTo("Andre tiltak")));
 
         assertThat(target.getPersonNrLege(), is(equalTo(sykemeldingDTO.getHelsepersonell().getIdent())));
+
+        assertThat(target.getSykmelding().getKontaktMedPasient(), allOf(
+                hasProperty("kontaktDato", is(equalTo(LocalDate.of(2024, 11, 28)))),
+                hasProperty("begrunnelseIkkeKontakt", is(equalTo("Begrunnelse ikke kontakt")))));
     }
 
     @Test
