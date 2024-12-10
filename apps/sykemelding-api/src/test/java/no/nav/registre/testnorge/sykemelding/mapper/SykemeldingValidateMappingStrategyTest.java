@@ -255,4 +255,17 @@ class SykemeldingValidateMappingStrategyTest {
         var exception = assertThrows(ResponseStatusException.class, () -> new Sykemelding(sykemeldingDTO, applicationInfo));
         assertThat(exception.getMessage(), is(equalTo("400 BAD_REQUEST \"Perioder må angis\"")));
     }
+
+    @Test
+    void validateNoKontaktDato_() {
+
+        var sykemeldingDTO = getSykemeldingOK();
+        sykemeldingDTO.getKontaktMedPasient().setKontaktDato(null);
+
+        var sykemelding = new Sykemelding(sykemeldingDTO, applicationInfo);
+        var target = mapperFacade.map(sykemelding, ReceivedSykemeldingDTO.class);
+
+        assertThat(target.getSykmelding().getKontaktMedPasient(), allOf(
+                hasProperty("kontaktDato", is(nullValue()))));
+    }
 }

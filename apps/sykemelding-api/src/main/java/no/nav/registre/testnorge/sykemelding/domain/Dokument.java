@@ -20,7 +20,7 @@ class Dokument {
 
         var prognose = new Prognose(fomIArbeid, dto.getDetaljer());
         var helsepersonell = new Helsepersonell(dto.getHelsepersonell());
-        var kontaktMedPasient = new KontaktMedPasient(dto.getKontaktMedPasient(), fom);
+        var kontaktMedPasient = new KontaktMedPasient(dto.getKontaktMedPasient());
 
         xmlHelseOpplysningerArbeidsuforhet = new XMLHelseOpplysningerArbeidsuforhet()
                 .withSyketilfelleStartDato(dto.getStartDato())
