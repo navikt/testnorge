@@ -26,15 +26,16 @@ public class SykemeldingController {
     @PostMapping
     public SykemeldingResponseDTO create(@RequestBody SykemeldingDTO dto) {
 
+        log.info("Mottatt sykemelding: {}", dto);
+
         return sykemeldingService.send(new Sykemelding(dto, applicationInfo));
     }
 
     @PostMapping(value = "/validate")
     public Mono<ValidationResultDTO> validate(@RequestBody SykemeldingDTO dto) {
 
-        log.info("Mottok vakidering av sykemelding: {}", dto);
+        log.info("Validering av sykemelding: {}", dto);
 
-//        SykemeldingRequestValidator.validate(dto);
         return sykemeldingService.validate(new Sykemelding(dto, applicationInfo));
     }
 }

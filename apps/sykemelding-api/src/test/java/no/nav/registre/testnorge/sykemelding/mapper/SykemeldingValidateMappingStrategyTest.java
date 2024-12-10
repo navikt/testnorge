@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +34,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class SykemeldingValidateMappingStrategyTest {
@@ -233,5 +235,15 @@ class SykemeldingValidateMappingStrategyTest {
 
         assertThat(target.getSykmelding().getArbeidsgiver(), allOf(
                 hasProperty("harArbeidsgiver", is(equalTo(ReceivedSykemeldingDTO.ArbeidsgiverType.INGEN_ARBEIDSGIVER)))));
+    }
+
+    @Test
+    void validateNoPerioder_Failure() {
+
+        var sykemeldingDTO = getSykemeldingOK();
+        sykemeldingDTO.setPerioder(null);
+
+        var exception = assertThrows(ResponseStatusException.class, () -> new Sykemelding(sykemeldingDTO, applicationInfo));
+        assertThat(exception.getMessage(), is(equalTo("400 BAD_REQUEST \"Perioder må angis\"")));
     }
 }
