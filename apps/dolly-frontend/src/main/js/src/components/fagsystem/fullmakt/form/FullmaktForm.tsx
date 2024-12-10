@@ -18,6 +18,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorMessage } from '@hookform/error-message'
 import { validation } from '@/components/fagsystem/fullmakt/form/validation'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
@@ -36,6 +37,7 @@ const mapLegacyFullmaktTilNyFullmakt = (
 	if (!legacyFullmakt || legacyFullmakt.length === 0) {
 		return null
 	}
+
 	const nyeFullmakter = legacyFullmakt
 		.filter((gammelFullmakt) => gammelFullmakt.omraader)
 		.map((gammelFullmakt) => ({
@@ -169,7 +171,11 @@ export const Fullmakt = ({
 				fullmektigsNavnPath={`${path}.fullmektigsNavn`}
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
-				isExpanded={isTestnorgeIdent || !!formMethods.watch(`${path}.fullmektig`)}
+				isExpanded={
+					isTestnorgeIdent ||
+					!isEmpty(formMethods.watch(`${path}.nyFullmektig`), ['syntetisk']) ||
+					!!formMethods.watch(`${path}.fullmektig`)
+				}
 				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
@@ -191,6 +197,7 @@ export const FullmaktForm = () => {
 	const fullmaktValues = formMethods.watch('fullmakt')
 	const opts: any = useContext(BestillingsveilederContext)
 	const val = formMethods.watch(fullmaktAttributter)
+	const { identtype, identMaster } = opts
 
 	if ((!fullmaktValues || fullmaktValues?.length === 0) && val.some((v) => v)) {
 		formMethods.setValue('fullmakt', [initialFullmakt])
@@ -207,7 +214,11 @@ export const FullmaktForm = () => {
 				<FormDollyFieldArray
 					name="fullmakt"
 					header="Fullmakt"
-					newEntry={initialFullmakt}
+					newEntry={{
+						...initialFullmakt,
+						nyFullmektig: initialPdlPerson,
+						master: identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG',
+					}}
 					canBeEmpty={false}
 				>
 					{(path: string) => <Fullmakt formMethods={formMethods} path={path} opts={opts} />}
