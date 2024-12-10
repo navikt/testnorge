@@ -30,6 +30,7 @@ public class SykemeldingDTO {
     private DetaljerDTO detaljer;
     private List<UtdypendeOpplysningerDTO> utdypendeOpplysninger;
     private Boolean umiddelbarBistand;
+    private KontaktMedPasientDTO kontaktMedPasient;
 
     public List<PeriodeDTO> getPerioder() {
 
