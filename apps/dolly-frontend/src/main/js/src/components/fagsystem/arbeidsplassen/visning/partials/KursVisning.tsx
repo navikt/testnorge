@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
+import { Kurs } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const KursVisning = ({ data }) => {
+type KursVisningProps = {
+	data?: Array<Kurs>
+}
+
+export const KursVisning = ({ data }: KursVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const KursVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Kurs" nested>
-					{(kurs) => (
+					{(kurs: Kurs) => (
 						<>
 							<TitleValue title="Kursnavn" value={kurs.title} />
 							<TitleValue title="Kursholder" value={kurs.issuer} />

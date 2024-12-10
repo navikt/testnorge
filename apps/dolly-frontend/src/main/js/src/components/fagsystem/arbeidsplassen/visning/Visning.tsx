@@ -18,6 +18,14 @@ import { HjemmelVisning } from '@/components/fagsystem/arbeidsplassen/visning/pa
 import styled from 'styled-components'
 import { PadlockLockedFillIcon } from '@navikt/aksel-icons'
 import { BodyLong } from '@navikt/ds-react'
+import { ArbeidsplassenTypes } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
+
+type ArbeidsplassenVisningProps = {
+	data: ArbeidsplassenTypes
+	loading: boolean
+	error: any
+	hjemmel: boolean
+}
 
 const StyledCVVisning = styled.div`
 	margin-bottom: 20px;
@@ -34,7 +42,12 @@ const ForbiddenVisning = styled.div`
 	}
 `
 
-export const ArbeidsplassenVisning = ({ data, loading, error, hjemmel }) => {
+export const ArbeidsplassenVisning = ({
+	data,
+	loading,
+	error,
+	hjemmel,
+}: ArbeidsplassenVisningProps) => {
 	if (loading && !data && !error) return <Loading label="Laster CV" />
 
 	if (error?.status === 403)
