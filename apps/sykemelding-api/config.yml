@@ -66,6 +66,8 @@ spec:
         - application: testnav-oversikt-frontend
         - application: testnav-synt-sykemelding-api
     outbound:
+      rules:
+        - application: testnav-sykemelding-proxy
       external:
         - host: mqls04.preprod.local
           ports:

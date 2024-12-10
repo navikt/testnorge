@@ -7,15 +7,14 @@ import no.nav.testnav.libs.dto.sykemelding.v1.DiagnoseDTO;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class MedisinskVurdering {
 
-    private final XMLHelseOpplysningerArbeidsuforhet.MedisinskVurdering medisinskVurdering;
+    private final XMLHelseOpplysningerArbeidsuforhet.MedisinskVurdering xmlMedisinskVurdering;
 
     MedisinskVurdering(LocalDate fom, DiagnoseDTO hovedDiagnose, List<DiagnoseDTO> biDiagnoser) {
 
-        medisinskVurdering = new XMLHelseOpplysningerArbeidsuforhet.MedisinskVurdering()
+        xmlMedisinskVurdering = new XMLHelseOpplysningerArbeidsuforhet.MedisinskVurdering()
                 .withHovedDiagnose(new XMLHelseOpplysningerArbeidsuforhet.MedisinskVurdering.HovedDiagnose()
                         .withDiagnosekode(new XMLCV()
                                 .withDN(hovedDiagnose.getDiagnose())
@@ -29,19 +28,19 @@ class MedisinskVurdering {
                                         .withS(value.getSystem())
                                         .withV(value.getDiagnosekode())
                                 )
-                                .collect(Collectors.toList())
+                                .toList()
                         )
                 )
                 .withYrkesskade(false)
                 .withYrkesskadeDato(fom)
                 .withSvangerskap(false)
                 .withAnnenFraversArsak(
-                        new XMLArsakType().withBeskriv("Medising årsak i kategorien annet")
+                        new XMLArsakType().withBeskriv("Medisinsk årsak i kategorien annet")
                 )
                 .withSkjermesForPasient(false);
     }
 
     XMLHelseOpplysningerArbeidsuforhet.MedisinskVurdering getXmlObject() {
-        return medisinskVurdering;
+        return xmlMedisinskVurdering;
     }
 }

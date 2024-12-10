@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.sykemelding.domain;
 
+import lombok.Data;
 import lombok.SneakyThrows;
-import lombok.ToString;
 import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLEIFellesformat;
 import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLMottakenhetBlokk;
 import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLAddress;
@@ -28,10 +28,18 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-@ToString
+@Data
 public class Sykemelding {
+    private static final String DUMMY_FNR = "12508407724";
+    private static final PasientDTO DUMMY_PASIENT = PasientDTO.builder()
+            .ident(DUMMY_FNR)
+            .fornavn("Test")
+            .etternavn("Testesen")
+            .build();
+
     private final XMLEIFellesformat fellesformat;
     private final LocalDate fom;
     private final LocalDate tom;
@@ -39,6 +47,7 @@ public class Sykemelding {
 
     @SneakyThrows
     public Sykemelding(SykemeldingDTO dto, ApplicationInfo applicationInfo) {
+
         var xml = StaticResourceLoader.loadAsString("sykmelding.xml", StandardCharsets.ISO_8859_1);
         fellesformat = JAXBSykemeldingConverter.getInstance().convertToXMLEIFellesformat(xml);
         var head = getXMLMsgHead();
@@ -58,32 +67,20 @@ public class Sykemelding {
                 .build());
         updatePatient(head.getMsgInfo().getPatient(), dto.getPasient());
         var dokument = new Dokument(dto, applicationInfo);
-        head.getDocument().get(0).getRefDoc().getContent().getAny().set(0, dokument.getXmlObject());
+        head.getDocument().getFirst().getRefDoc().getContent().getAny().set(0, dokument.getXmlObject());
 
         fom = dokument.getFom();
         tom = dokument.getTom();
-        ident = dto.getPasient().getIdent();
+        ident = isNull(dto.getPasient()) ? DUMMY_FNR : dto.getPasient().getIdent();
 
         var xmlMottakenhetBlokk = getXMLMottakenhetBlokk();
         xmlMottakenhetBlokk.setEdiLoggId(UUID.randomUUID().toString());
         xmlMottakenhetBlokk.setAvsenderFnrFraDigSignatur(dto.getHelsepersonell().getIdent());
         xmlMottakenhetBlokk.setMottattDatotid(
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(
-                        GregorianCalendar.from(dto.getStartDato().atStartOfDay(ZoneId.systemDefault()))
+                        GregorianCalendar.from(dto.getStartDato().atStartOfDay(ZoneId.of("UTC")))
                 )
         );
-    }
-
-    public LocalDate getFom() {
-        return fom;
-    }
-
-    public LocalDate getTom() {
-        return tom;
-    }
-
-    public String getIdent() {
-        return ident;
     }
 
     public String toXml() {
@@ -99,15 +96,18 @@ public class Sykemelding {
     }
 
     private void updatePatient(XMLPatient patient, PasientDTO dto) {
-        patient.getIdent().forEach(value -> value.setId(dto.getIdent()));
-        patient.setGivenName(dto.getFornavn());
-        patient.setMiddleName(dto.getMellomnavn());
-        patient.setFamilyName(dto.getEtternavn());
-        patient.setDateOfBirth(dto.getFoedselsdato());
+        var pasient = isNull(dto) ? DUMMY_PASIENT : dto;
 
-        AdresseDTO adresse = dto.getAdresse();
-        if (adresse != null) {
+        patient.getIdent().forEach(value -> value.setId(pasient.getIdent()));
+        patient.setGivenName(pasient.getFornavn());
+        patient.setMiddleName(pasient.getMellomnavn());
+        patient.setFamilyName(pasient.getEtternavn());
+        patient.setDateOfBirth(pasient.getFoedselsdato());
+
+        if (nonNull(dto) && nonNull(dto.getAdresse())) {
             XMLAddress address = patient.getAddress() == null ? new XMLAddress() : patient.getAddress();
+
+            AdresseDTO adresse = dto.getAdresse();
             address.setStreetAdr(adresse.getGate());
             address.setPostalCode(adresse.getPostnummer());
             address.setCity(adresse.getBy());

@@ -7,13 +7,13 @@ import no.nav.testnav.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
 import static java.util.Objects.nonNull;
 
 public class Arbeidsgiver {
-    private XMLHelseOpplysningerArbeidsuforhet.Arbeidsgiver xmlArbeidsgiver;
+    private final XMLHelseOpplysningerArbeidsuforhet.Arbeidsgiver xmlArbeidsgiver;
 
     Arbeidsgiver(ArbeidsgiverDTO dto) {
         xmlArbeidsgiver = new XMLHelseOpplysningerArbeidsuforhet.Arbeidsgiver()
                 .withHarArbeidsgiver(new XMLCS()
-                        .withDN("En arbeidsgiver")
-                        .withV("1"))
+                        .withDN(nonNull(dto) ? "En arbeidsgiver" : "Ingen arbeidsgiver")
+                        .withV(nonNull(dto) ? "1" : "3"))
                 .withNavnArbeidsgiver(nonNull(dto) ? dto.getNavn() : null)
                 .withYrkesbetegnelse(nonNull(dto) ? dto.getYrkesbetegnelse() : null)
                 .withStillingsprosent(nonNull(dto) ? getStillingsprosent(dto) : null);

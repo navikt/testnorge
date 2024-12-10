@@ -3,16 +3,17 @@ package no.nav.testnav.libs.dto.sykemelding.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class AktivitetDTO {
-    private final Integer grad;
-    private final Boolean reisetilskudd;
-    private final Integer behandlingsdager;
-    private final Aktivitet aktivitet;
+
+    private Integer grad;
+    private Boolean reisetilskudd;
+    private Integer behandlingsdager;
+    private Aktivitet aktivitet;
 }
