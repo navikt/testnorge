@@ -36,6 +36,10 @@ import { Inntektstub } from '@/components/fagsystem/inntektstub/bestilling/Innte
 import { Inntektsmelding } from '@/components/fagsystem/inntektsmelding/bestilling/Inntektsmelding'
 import { Skattekort } from '@/components/fagsystem/skattekort/bestilling/Skattekort'
 import { Arbeidsplassen } from '@/components/fagsystem/arbeidsplassen/bestilling/Arbeidsplassen'
+import { PensjonsgivendeInntekt } from '@/components/fagsystem/pensjon/bestilling/PensjonsgivendeInntekt'
+import { GenerertPensjonsgivendeInntekt } from '@/components/fagsystem/pensjon/bestilling/GenerertPensjonsgivendeInntekt'
+import { Pensjonsavtale } from '@/components/fagsystem/pensjonsavtale/bestilling/Pensjonsavtale'
+import { Tjenestepensjon } from '@/components/fagsystem/tjenestepensjon/bestilling/Tjenestepensjon'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -118,6 +122,12 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Inntektsmelding inntektsmelding={bestilling.inntektsmelding} />
 			<Skattekort skattekort={bestilling.skattekort} />
 			<Arbeidsplassen arbeidsplassenCV={bestilling.arbeidsplassenCV} />
+			<PensjonsgivendeInntekt pensjon={bestilling.pensjonforvalter?.inntekt} />
+			<GenerertPensjonsgivendeInntekt
+				pensjon={bestilling.pensjonforvalter?.generertInntekt?.generer}
+			/>
+			<Pensjonsavtale pensjon={bestilling.pensjonforvalter?.pensjonsavtale} />
+			<Tjenestepensjon pensjon={bestilling.pensjonforvalter?.tp} />
 		</>
 	)
 }
