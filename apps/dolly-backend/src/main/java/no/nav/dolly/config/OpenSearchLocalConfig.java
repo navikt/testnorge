@@ -20,7 +20,7 @@ import java.time.Duration;
 @EnableElasticsearchRepositories("no.nav.dolly.elastic")
 public class OpenSearchLocalConfig extends AbstractOpenSearchConfiguration {
 
-    @Value("${open.search.uri}")
+    @Value("${OPEN_SEARCH_URI}")
     private String uri;
 
     @Override
