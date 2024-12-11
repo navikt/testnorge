@@ -20,6 +20,7 @@ class Dokument {
 
         var prognose = new Prognose(fomIArbeid, dto.getDetaljer());
         var helsepersonell = new Helsepersonell(dto.getHelsepersonell());
+        var kontaktMedPasient = new KontaktMedPasient(dto.getKontaktMedPasient());
 
         xmlHelseOpplysningerArbeidsuforhet = new XMLHelseOpplysningerArbeidsuforhet()
                 .withSyketilfelleStartDato(dto.getStartDato())
@@ -28,15 +29,14 @@ class Dokument {
                 .withMedisinskVurdering(medisinskVurdering.getXmlObject())
                 .withAktivitet(aktivitet.getXmlObject())
                 .withPrognose(prognose.getXmlObject())
+                .withUtdypendeOpplysninger(new UtdypendeOpplysninger(dto.getUtdypendeOpplysninger()).getXmlObject())
                 .withTiltak(
                         new XMLHelseOpplysningerArbeidsuforhet.Tiltak()
                                 .withTiltakArbeidsplassen(dto.getDetaljer().getTiltakArbeidsplass())
                                 .withTiltakNAV(dto.getDetaljer().getTiltakNav())
+                                .withAndreTiltak(dto.getDetaljer().getAndreTiltak())
                 )
-                .withKontaktMedPasient(
-                        new XMLHelseOpplysningerArbeidsuforhet.KontaktMedPasient()
-                                .withBehandletDato(fom.atStartOfDay())
-                )
+                .withKontaktMedPasient(kontaktMedPasient.getXmlObject())
                 .withBehandler(helsepersonell.getXmlObject())
                 .withAvsenderSystem(new XMLHelseOpplysningerArbeidsuforhet.AvsenderSystem()
                         .withSystemNavn(applicationInfo.getName())

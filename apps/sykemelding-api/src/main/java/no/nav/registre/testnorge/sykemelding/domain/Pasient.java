@@ -10,20 +10,27 @@ import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningera
 import no.nav.testnav.libs.dto.sykemelding.v1.HelsepersonellDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
 
+import static java.util.Objects.nonNull;
+
 public class Pasient {
 
     private final XMLHelseOpplysningerArbeidsuforhet.Pasient xmlPasient;
 
 
     Pasient(PasientDTO pasientDTO, HelsepersonellDTO helsepersonellDTO) {
+        var pasient = nonNull(pasientDTO) ? pasientDTO : PasientDTO.builder()
+                .ident("12508407724")
+                .fornavn("Test")
+                .etternavn("Testesen")
+                .build();
         xmlPasient = new XMLHelseOpplysningerArbeidsuforhet.Pasient()
                 .withNavn(new XMLNavnType()
-                        .withEtternavn(pasientDTO.getEtternavn())
-                        .withMellomnavn(pasientDTO.getMellomnavn())
-                        .withFornavn(pasientDTO.getFornavn())
+                        .withEtternavn(pasient.getEtternavn())
+                        .withMellomnavn(pasient.getMellomnavn())
+                        .withFornavn(pasient.getFornavn())
                 )
                 .withFodselsnummer(new XMLIdent()
-                        .withId(pasientDTO.getIdent())
+                        .withId(pasient.getIdent())
                         .withTypeId(new XMLCV()
                                 .withV("FNR")
                                 .withDN("Fødselsnummer")
@@ -31,10 +38,10 @@ public class Pasient {
                 )
                 .withKontaktInfo(new XMLTeleCom()
                         .withTypeTelecom(new XMLCS().withV("HP").withDN("Hovedtelefon"))
-                        .withTeleAddress(new XMLURL().withV("tel:" + pasientDTO.getTelefon()))
+                        .withTeleAddress(new XMLURL().withV("tel:" + pasient.getTelefon()))
                 )
                 .withNavnFastlege(helsepersonellDTO.getFornavn() + " " + helsepersonellDTO.getEtternavn())
-                .withNAVKontor(pasientDTO.getNavKontor());
+                .withNAVKontor(pasient.getNavKontor());
     }
 
     XMLHelseOpplysningerArbeidsuforhet.Pasient getXmlObject() {

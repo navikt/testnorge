@@ -61,13 +61,13 @@ public class MetadataTidspunkterService {
                             .forEach(MetadataTidspunkterService::fixVersioning);
                     person.getBostedsadresse()
                             .forEach(MetadataTidspunkterService::fixAdresser);
-                    fixOpphoert(person.getBostedsadresse());
+                    fixAddrOpphoert(person.getBostedsadresse());
                     person.getOppholdsadresse()
                             .forEach(MetadataTidspunkterService::fixAdresser);
-                    fixOpphoert(person.getOppholdsadresse());
+                    fixAddrOpphoert(person.getOppholdsadresse());
                     person.getKontaktadresse()
                             .forEach(MetadataTidspunkterService::fixAdresser);
-                    fixOpphoert(person.getKontaktadresse());
+                    fixAddrOpphoert(person.getKontaktadresse());
                     person.getDeltBosted()
                             .forEach(MetadataTidspunkterService::fixDeltBosted);
                     person.getDoedfoedtBarn()
@@ -118,6 +118,12 @@ public class MetadataTidspunkterService {
                     person.getVergemaal()
                             .forEach(MetadataTidspunkterService::fixVersioning);
                 });
+    }
+
+    private static void fixAddrOpphoert(List<? extends AdresseDTO> adresseopplysning) {
+
+        adresseopplysning.forEach(adresse ->
+                adresse.getFolkeregistermetadata().setOpphoerstidspunkt(adresse.getGyldigTilOgMed()));
     }
 
     private static void fixOpphoert(List<? extends DbVersjonDTO> opplysningstype) {
@@ -220,8 +226,8 @@ public class MetadataTidspunkterService {
         person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
 
         var counter = new AtomicInteger(0);
-        person.getSivilstand().stream()
-                .forEachOrdered(sivilstand -> {
+        person.getSivilstand()
+                .forEach(sivilstand -> {
                     fixFolkeregisterMetadata(sivilstand);
                     if (isNull(sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt())) {
 
