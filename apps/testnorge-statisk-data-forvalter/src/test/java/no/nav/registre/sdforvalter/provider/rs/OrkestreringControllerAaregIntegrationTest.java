@@ -47,33 +47,41 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class OrkestreringControllerAaregIntegrationTest {
 
-    @Autowired
-    private MockMvc mvc;
-
-    @MockBean
-    private TokenExchange tokenExchange;
-
-    @Autowired
-    private AaregRepository aaregRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     private static final String FNR = "01010101010";
     private static final String ORGNR = "999999999";
     private static final String MILJOE = "test";
-
-    private final KodeverkResponse kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
     private static String syntString;
+    private final KodeverkResponse kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
     private final TypeReference<List<RsAaregSyntetiseringsRequest>> syntResponse = new TypeReference<>() {
     };
+    @Autowired
+    private MockMvc mvc;
+    @MockBean
+    private TokenExchange tokenExchange;
+    @Autowired
+    private AaregRepository aaregRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @AfterEach
+    public void cleanUp() {
+        reset();
+        aaregRepository.deleteAll();
+    }
 
     @BeforeAll
     public static void setup() {
         syntString = getResourceFileContent("files/enkel_arbeidsforholdmelding.json");
     }
 
-    @Disabled("Fix verify GET on (.*)/kodeverk-api/api/v1/kodeverk/Yrker/koder")
+    private AaregModel createAaregModel() {
+        AaregModel model = new AaregModel();
+        model.setFnr(FNR);
+        model.setOrgId(ORGNR);
+        return model;
+    }
+
+    @Disabled("Fix verify GET on (.*)/testnav-kodeverk-service/api/v1/kodeverk/Yrker/koder")
     @Test
     void shouldInitiateAaregFromDatabase() throws Exception {
         final AaregModel aaregModel = createAaregModel();
@@ -127,7 +135,7 @@ class OrkestreringControllerAaregIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching("(.*)/kodeverk-api/api/v1/kodeverk/Yrker/koder")
+                .withUrlPathMatching("(.*)/testnav-kodeverk-service/api/v1/kodeverk/Yrker/koder")
                 .withResponseBody(kodeverkResponse)
                 .verifyGet();
 
@@ -167,7 +175,7 @@ class OrkestreringControllerAaregIntegrationTest {
 
     }
 
-    @Disabled("Fix verify GET on (.*)/kodeverk-api/api/v1/kodeverk/Yrker/koder")
+    @Disabled("Fix verify GET on (.*)/testnav-kodeverk-service/api/v1/kodeverk/Yrker/koder")
     @Test
     void shouldNotOppretteAaregIfSyntError() throws Exception {
         final AaregModel aaregModel = createAaregModel();
@@ -190,7 +198,7 @@ class OrkestreringControllerAaregIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching("(.*)/kodeverk-api/api/v1/kodeverk/Yrker/koder")
+                .withUrlPathMatching("(.*)/testnav-kodeverk-service/api/v1/kodeverk/Yrker/koder")
                 .withResponseBody(kodeverkResponse)
                 .stubGet();
 
@@ -213,22 +221,9 @@ class OrkestreringControllerAaregIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching("(.*)/kodeverk-api/api/v1/kodeverk/Yrker/koder")
+                .withUrlPathMatching("(.*)/testnav-kodeverk-service/api/v1/kodeverk/Yrker/koder")
                 .withResponseBody(kodeverkResponse)
                 .verifyGet();
-    }
-
-    private AaregModel createAaregModel() {
-        AaregModel model = new AaregModel();
-        model.setFnr(FNR);
-        model.setOrgId(ORGNR);
-        return model;
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        reset();
-        aaregRepository.deleteAll();
     }
 
 }

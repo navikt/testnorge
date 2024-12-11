@@ -22,6 +22,7 @@ spec:
         - application: testnav-pdl-forvalter
         - application: testnav-pdl-forvalter-dev
         - application: testnav-levende-arbeidsforhold-ansettelse
+        - application: testnorge-statisk-data-forvalter
     outbound:
       external:
         - host: kodeverk-api.nav.no
