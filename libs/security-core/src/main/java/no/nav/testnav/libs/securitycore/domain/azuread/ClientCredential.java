@@ -8,12 +8,13 @@ import org.springframework.util.Assert;
 @Getter
 public class ClientCredential {
 
+    private static final String MISSING_CONFIG_MESSAGE = "AZURE_NAV_APP_CLIENT_ID and AZURE_NAV_APP_CLIENT_SECRET must be set";
+
     private final String clientId;
     private final String clientSecret;
 
     public ClientCredential(String clientId, String clientSecret) {
-        Assert.notNull(clientId, "AZURE_NAV_APP_CLIENT_ID must be set");
-        Assert.notNull(clientSecret, "AZURE_NAV_APP_CLIENT_SECRET must be set");
+        Assert.noNullElements(new String[]{clientId, clientSecret}, MISSING_CONFIG_MESSAGE);
 
         this.clientId = clientId;
         this.clientSecret = clientSecret;
