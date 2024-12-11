@@ -45,28 +45,32 @@ public class MigrateDokumentService {
         migrateMalBestillinger(bestillingMalRepository.findAllByHistArk(), lagreHistark(), MAL_BESTILLING_HISTARK);
     }
 
-    private void migrateMalBestillinger(Iterable<BestillingMal> query, TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreConsumer, DokumentType dokumentType) {
+    private void migrateMalBestillinger(Iterable<BestillingMal> query, TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreDokument, DokumentType dokumentType) {
 
         StreamSupport.stream(Spliterators.spliteratorUnknownSize(
                         query.iterator(), Spliterator.ORDERED), false)
                 .forEach(bestilling -> {
                     try {
                         var utvidetBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyUtvidetBestilling.class);
-                        lagreConsumer.apply(utvidetBestilling, bestilling.getId(), dokumentType);
+                        lagreDokument.apply(utvidetBestilling, bestilling.getId(), dokumentType);
+                        var oppdatertBestilling = objectMapper.writeValueAsString(utvidetBestilling);
+                        bestilling.setBestKriterier(oppdatertBestilling);
                     } catch (JsonProcessingException e) {
                         log.error("Feil ved konvertering av bestilling {}, {} ", bestilling.getId(), e.getMessage(), e);
                     }
                 });
     }
 
-    private void migrateBestillinger(Iterable<Bestilling> query, TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreConsumer, DokumentType dokumentType) {
+    private void migrateBestillinger(Iterable<Bestilling> query, TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreDokument, DokumentType dokumentType) {
 
         StreamSupport.stream(Spliterators.spliteratorUnknownSize(
                         query.iterator(), Spliterator.ORDERED), false)
                 .forEach(bestilling -> {
                     try {
                         var utvidetBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyUtvidetBestilling.class);
-                        lagreConsumer.apply(utvidetBestilling, bestilling.getId(), dokumentType);
+                        lagreDokument.apply(utvidetBestilling, bestilling.getId(), dokumentType);
+                        var oppdatertBestilling = objectMapper.writeValueAsString(utvidetBestilling);
+                        bestilling.setBestKriterier(oppdatertBestilling);
                     } catch (JsonProcessingException e) {
                         log.error("Feil ved konvertering av bestilling {}, {} ", bestilling.getId(), e.getMessage(), e);
                     }
