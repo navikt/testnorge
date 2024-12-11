@@ -19,7 +19,7 @@ import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 
 @Setter
 @Getter
-@Document(indexName = "${open.search.index}")
+@Document(indexName = "#{@environment.getProperty('open.search.index')}")
 public class OppsummeringsdokumentModel implements Persistable<String> {
 
     @Id

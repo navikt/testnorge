@@ -39,7 +39,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Document(indexName = "${open.search.index}")
+@Document(indexName = "#{@environment.getProperty('open.search.index')}")
 @Data
 @Builder
 @NoArgsConstructor

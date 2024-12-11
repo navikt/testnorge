@@ -3,7 +3,6 @@ TOKEN_X_ISSUER: dummy
 
 APP_NAME: dolly
 APP_VERSION: ${application.version}
-environment: localhost
 
 jira:
   host: http://localhost:${wiremock.server.port:0}/jira
@@ -13,7 +12,7 @@ jira:
 open:
   search:
     total-fields: 150
-    index: dummy
+    index: test
 
 consumers:
   kodeverk-api:
