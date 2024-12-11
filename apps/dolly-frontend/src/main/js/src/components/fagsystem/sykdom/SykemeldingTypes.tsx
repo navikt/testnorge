@@ -32,6 +32,7 @@ export type SykemeldingDetaljert = {
 		helsepersonell: Helsepersonell
 		arbeidsgiver: Arbeidsgiver
 		detaljer: Detaljer
+		kontaktMedPasient?: KontaktMedPasient
 		perioder: Array<Periode>
 	}
 	idx: number
@@ -42,6 +43,11 @@ export type Diagnose = {
 	diagnose: string
 	diagnosekode: string
 	system?: string
+}
+
+export type KontaktMedPasient = {
+	begrunnelseIkkeKontakt: string
+	kontaktDato?: string
 }
 
 export type Helsepersonell = {

@@ -41,7 +41,7 @@ export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 
 SykdomPanel.heading = 'Sykdom og skade'
 
-SykdomPanel.initialValues = ({ set, del, has }: any) => ({
+SykdomPanel.initialValues = ({ set, del, delMutate, has }: any) => ({
 	sykemelding: {
 		label: 'Har sykemelding',
 		checked: has('sykemelding'),
@@ -56,6 +56,7 @@ SykdomPanel.initialValues = ({ set, del, has }: any) => ({
 		},
 		remove() {
 			del('sykemelding')
+			delMutate?.()
 		},
 	},
 	yrkesskader: {

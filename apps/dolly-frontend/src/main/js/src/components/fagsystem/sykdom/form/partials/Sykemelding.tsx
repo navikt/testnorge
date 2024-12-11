@@ -67,6 +67,10 @@ const initialValuesDetaljertSykemelding = {
 				tom: addDays(new Date(), -1),
 			},
 		],
+		kontaktMedPasient: {
+			kontaktDato: null,
+			begrunnelseIkkeKontakt: '',
+		},
 		startDato: new Date(),
 		umiddelbarBistand: false,
 	},
