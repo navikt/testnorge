@@ -20,6 +20,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.DokumentService;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
@@ -47,6 +48,7 @@ public class DokarkivClient implements ClientRegister {
 
     private final ApplicationConfig applicationConfig;
     private final DokarkivConsumer dokarkivConsumer;
+    private final DokumentService dokumentService;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
@@ -63,7 +65,7 @@ public class DokarkivClient implements ClientRegister {
                 .flatMap(dokarkiv -> Flux.from(getPersonData(dollyPerson.getIdent())
                                 .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
                                         .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
-                                                .flatMap(env -> buildRequest(dokarkiv, person)
+                                                .flatMap(env -> buildRequest(dokarkiv, person, progress.getBestilling().getId())
                                                         .flatMap(request ->
                                                                 !transaksjonMappingService.existAlready(DOKARKIV,
                                                                         dollyPerson.getIdent(), env, bestilling.getId()) || isOpprettEndre ?
@@ -142,10 +144,11 @@ public class DokarkivClient implements ClientRegister {
                 .filter(personBolk -> nonNull(personBolk.getPerson()));
     }
 
-    private Mono<DokarkivRequest> buildRequest(RsDokarkiv rsDokarkiv, PdlPersonBolk.PersonBolk personBolk) {
+    private Mono<DokarkivRequest> buildRequest(RsDokarkiv rsDokarkiv, PdlPersonBolk.PersonBolk personBolk, Long bestillingId) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personBolk", personBolk);
+        context.setProperty("dokumenter", dokumentService.getDokumenter(bestillingId));
 
         return Mono.just(mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context));
     }
