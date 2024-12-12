@@ -1,6 +1,7 @@
 package no.nav.testnav.altinn3tilgangproxy;
 
 import no.nav.testnav.altinn3tilgangproxy.config.Consumers;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @Import({
+        CoreConfig.class,
         InsecureJwtServerToServerConfiguration.class
 })
 @SpringBootApplication
