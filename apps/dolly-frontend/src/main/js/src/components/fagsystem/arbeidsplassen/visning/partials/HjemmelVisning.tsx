@@ -3,7 +3,11 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
 import { oversettBoolean } from '@/utils/DataFormatter'
 
-export const HjemmelVisning = ({ hjemmel }) => {
+type HjemmelVisningProps = {
+	hjemmel: boolean
+}
+
+export const HjemmelVisning = ({ hjemmel }: HjemmelVisningProps) => {
 	return (
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
