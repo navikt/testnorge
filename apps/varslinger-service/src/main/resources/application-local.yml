@@ -1,3 +1,5 @@
+AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
 
 spring:
   config:
@@ -12,15 +14,8 @@ spring:
     url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
     username: sa
     password:
-    driverClassName: org.h2.Driver
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
   security:
     oauth2:
       resourceserver:
-        aad:
-          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
         tokenx:
           accepted-audience: dev-gcp:dolly:testnav-varslinger-service-dev

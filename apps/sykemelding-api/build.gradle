@@ -21,13 +21,14 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
-    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
     implementation "jakarta.activation:jakarta.activation-api:$versions.jakartaActivation"
     implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
+
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
     testImplementation "no.nav.testnav.libs:testing"
     testImplementation "org.springframework.security:spring-security-test"
