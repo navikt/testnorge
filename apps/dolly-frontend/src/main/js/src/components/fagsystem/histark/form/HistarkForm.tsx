@@ -16,6 +16,7 @@ import { useFormContext } from 'react-hook-form'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
+import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 
 const DokumentInfoListe = React.lazy(
 	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'),
@@ -30,7 +31,7 @@ export const histarkAttributt = 'histark'
 
 export const HistarkForm = () => {
 	const formMethods = useFormContext()
-	if (!_.has(formMethods.getValues(), histarkAttributt)) {
+	if (!formMethods.getValues(histarkAttributt)) {
 		return null
 	}
 
@@ -55,7 +56,7 @@ export const HistarkForm = () => {
 		filer.forEach((fil: Vedlegg, index: number) => {
 			formMethods.setValue(`histark.dokumenter.${index}.tittel`, fil.dokNavn || fil.name)
 			formMethods.setValue(`histark.dokumenter.${index}.antallSider`, 1)
-			formMethods.setValue(`histark.dokumenter.${index}.fysiskDokument`, fil.content.base64)
+			formMethods.setValue(`histark.dokumenter.${index}.fysiskDokument`, fil.content?.base64)
 		})
 		formMethods.trigger('histark.dokumenter')
 		formMethods.trigger('histark.vedlegg')
@@ -141,12 +142,14 @@ export const HistarkForm = () => {
 										<FileUploader filer={files} setFiler={setFiles} isMultiple={false} />
 										{files.length > 0 && (
 											<DokumentInfoListe
+												path={'histark.dokumenter'}
 												handleChange={handleVedleggChange}
 												filer={files}
 												isMultiple={false}
 											/>
 										)}
 									</Kategori>
+									<DisplayFormError path={`${path}.tittel`} errorMessage={'Vedlegg er påkrevd'} />
 								</div>
 							</div>
 						)}

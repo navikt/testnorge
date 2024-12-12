@@ -41,6 +41,7 @@
     </springProfile>
 
     <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger"/>
+    <logger level="TRACE" name="no.nav.dolly.bestilling.histark.HistarkConsumer"/>
     <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor"/>
     <logger level="TRACE" name="org.jetbrains.nativecerts"/>
     <logger level="TRACE" name="com.intellij.util.net.ssl"/>
