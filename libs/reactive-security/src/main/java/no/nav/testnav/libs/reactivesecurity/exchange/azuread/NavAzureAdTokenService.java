@@ -1,7 +1,7 @@
 package no.nav.testnav.libs.reactivesecurity.exchange.azuread;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.reactivesecurity.domain.AzureNavProxyClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavProxyClientCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
