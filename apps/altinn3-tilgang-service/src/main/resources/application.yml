@@ -4,7 +4,7 @@ spring:
   application:
     version: application.version.todo
     name: testnav-altinn3-tilgang-service
-    desciption: Tjeneste for å hente og sette tilganger for orgnisasjoner
+    description: Tjeneste for å hente og sette tilganger for orgnisasjoner
   security:
     oauth2:
       resourceserver:
