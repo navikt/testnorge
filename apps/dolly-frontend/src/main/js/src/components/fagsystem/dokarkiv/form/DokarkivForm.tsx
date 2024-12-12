@@ -195,7 +195,11 @@ export const DokarkivForm = () => {
 					<Kategori title={'Vedlegg'}>
 						<FileUploader filer={files} setFiler={setFiles} />
 						{files.length > 0 && (
-							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
+							<DokumentInfoListe
+								handleChange={handleVedleggChange}
+								path={'dokarkiv.dokumenter'}
+								filer={files}
+							/>
 						)}
 					</Kategori>
 				</Kategori>

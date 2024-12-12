@@ -18,6 +18,8 @@ spring:
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
             scope: openid, offline_access,  ${sm://azure-app-client-id}/.default
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
         provider:
           aad:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
