@@ -11,7 +11,6 @@ metadata:
 spec:
   image: "{{image}}"
   port: 8080
-  webproxy: true
   tokenx:
     enabled: true
   azure:
@@ -56,12 +55,9 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
+      cpu: 100m
       memory: 1025Mi
     limits:
       memory: 2048Mi
-  envFrom:
-    - secret: azure-trygdeetaten-testnav-pdl-proxy-trygdeetaten
-    - secret: testnav-pdl-proxy
   ingresses:
     - "https://testnav-altinn3-tilgang-proxy.intern.dev.nav.no"
