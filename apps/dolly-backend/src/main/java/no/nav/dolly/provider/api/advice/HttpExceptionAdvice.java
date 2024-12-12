@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.KodeverkException;
@@ -22,6 +23,7 @@ import org.springframework.web.util.UrlPathHelper;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
+@Slf4j
 @RequiredArgsConstructor
 public class HttpExceptionAdvice {
 
@@ -29,6 +31,7 @@ public class HttpExceptionAdvice {
     private final UrlPathHelper urlPathHelper;
 
     private ExceptionInformation informationForException(RuntimeException exception, HttpStatus status) {
+        log.error("HttpException: ", exception);
         return ExceptionInformation.builder()
                 .error(status.getReasonPhrase())
                 .status(status.value())
