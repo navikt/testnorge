@@ -40,6 +40,9 @@ import { PensjonsgivendeInntekt } from '@/components/fagsystem/pensjon/bestillin
 import { GenerertPensjonsgivendeInntekt } from '@/components/fagsystem/pensjon/bestilling/GenerertPensjonsgivendeInntekt'
 import { Pensjonsavtale } from '@/components/fagsystem/pensjonsavtale/bestilling/Pensjonsavtale'
 import { Tjenestepensjon } from '@/components/fagsystem/tjenestepensjon/bestilling/Tjenestepensjon'
+import { Alderspensjon } from '@/components/fagsystem/alderspensjon/bestilling/Alderspensjon'
+import { Uforetrygd } from '@/components/fagsystem/uforetrygd/bestilling/Uforetrygd'
+import { AfpOffentlig } from '@/components/fagsystem/afpOffentlig/bestilling/AfpOffentlig'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -128,6 +131,9 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			/>
 			<Pensjonsavtale pensjon={bestilling.pensjonforvalter?.pensjonsavtale} />
 			<Tjenestepensjon pensjon={bestilling.pensjonforvalter?.tp} />
+			<Alderspensjon pensjon={bestilling.pensjonforvalter?.alderspensjon} />
+			<Uforetrygd pensjon={bestilling.pensjonforvalter?.uforetrygd} />
+			<AfpOffentlig pensjon={bestilling.pensjonforvalter?.afpOffentlig} />
 		</>
 	)
 }
