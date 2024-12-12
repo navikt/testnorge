@@ -32,6 +32,7 @@ spec:
       rules:
         - application: testnav-altinn3-tilgang-service-prod
           cluster: prod-gcp
+      external:
         - host: testnav-altinn3-tilgang-service.nav.no
   liveness:
     path: /internal/isAlive
