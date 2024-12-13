@@ -20,16 +20,16 @@ export const useSykemeldingValidering = (values: any) => {
 		'/testnav-sykemelding-api/api/v1/sykemeldinger/validate',
 		(url: string) => sykemeldingFetcher(url, values),
 	)
-	let errorMessage = ''
 
-	if (error?.status === 400) {
-		const missingFields = error?.response?.data?.message
-			?.split(',')
-			.map((field: string) => field.trim())
-		errorMessage = `Mangler felter: ${missingFields.join(', ')}`
-	} else if (data?.status === 'INVALID') {
-		errorMessage = 'Validering av sykemelding feilet: ' + data?.ruleHits?.[0]?.messageForUser
-	}
+	const errorMessage =
+		error?.status === 400
+			? `Mangler felter: ${error.response?.data?.message
+					?.split(',')
+					.map((field: string) => field.trim())
+					.join(', ')}`
+			: data?.status === 'INVALID'
+				? `Validering av sykemelding feilet: ${data.ruleHits?.[0]?.messageForUser}`
+				: ''
 
 	return {
 		data: data,
