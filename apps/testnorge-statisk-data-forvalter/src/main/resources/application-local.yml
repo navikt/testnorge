@@ -25,3 +25,6 @@ consumers:
     url: https://testnav-bruker-service-dev.intern.dev.nav.no
   synthdata-aareg:
     url: https://nais-synthdata-aareg.dev.intern.nav.no
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
+
