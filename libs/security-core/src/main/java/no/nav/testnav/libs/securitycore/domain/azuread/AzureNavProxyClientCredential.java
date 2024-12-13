@@ -9,7 +9,7 @@ public class AzureNavProxyClientCredential extends ClientCredential {
 
     private final String tokenEndpoint;
 
-    public AzureNavProxyClientCredential(String tokenEndpoint, String clientId, String clientSecret) {
+    AzureNavProxyClientCredential(String tokenEndpoint, String clientId, String clientSecret) {
         super(clientId, clientSecret);
         this.tokenEndpoint = tokenEndpoint;
     }

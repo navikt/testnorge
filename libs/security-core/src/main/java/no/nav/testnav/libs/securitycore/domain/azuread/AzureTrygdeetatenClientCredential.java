@@ -9,7 +9,7 @@ public class AzureTrygdeetatenClientCredential extends ClientCredential {
 
     private final String tokenEndpoint;
 
-    public AzureTrygdeetatenClientCredential(String tokenEndpoint, String clientId, String clientSecret) {
+    AzureTrygdeetatenClientCredential(String tokenEndpoint, String clientId, String clientSecret) {
         super(clientId, clientSecret);
         this.tokenEndpoint = tokenEndpoint;
     }
