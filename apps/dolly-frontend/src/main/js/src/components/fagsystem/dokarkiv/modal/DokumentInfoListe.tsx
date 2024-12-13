@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
@@ -8,12 +8,14 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
+import { useFormContext } from 'react-hook-form'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 type Data = {
 	filer: Vedlegg[]
 	handleChange: Function
+	path: string
 	isMultiple?: boolean
 }
 
@@ -28,10 +30,19 @@ const PdfDocument = styled(Document)`
 	max-height: 90px;
 	margin-right: 10px;
 `
-export default ({ filer, handleChange, isMultiple = true }: Data) => {
+export default ({ filer, handleChange, path, isMultiple = true }: Data) => {
+	const formMethods = useFormContext()
 	if (!filer || filer.length < 1) {
 		return null
 	}
+
+	useEffect(() => {
+		filer.forEach((fil: Vedlegg, index: number) => {
+			if (formMethods.watch(`${path}.${index}.tittel`) === '') {
+				formMethods.setValue(`${path}.${index}.tittel`, fil.name)
+			}
+		})
+	}, [filer])
 
 	const handleDeleteByIndex = (deleteIndex: number) =>
 		handleChange(filer.filter((fil, index) => index !== deleteIndex))
@@ -44,14 +55,11 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 				<DollyFieldArray data={filer} header={`Dokumentinfo`}>
 					{(fil: Vedlegg, index: number) => (
 						<div className="flexbox--space" key={fil.id + '-' + fil.name}>
-							<PdfDocument
-								options={{ isEvalSupported: false }}
-								file={'data:application/pdf;base64,' + fil.content.base64}
-							>
+							<PdfDocument file={'data:application/pdf;base64,' + fil.content.base64}>
 								<Page pageNumber={1} height={80} width={60} />
 							</PdfDocument>
 							<DollyTextInput
-								name={`histark.vedlegg.${index}.name`}
+								name={`${path}.${index}.tittel`}
 								label={`Tittel på dokument #${index + 1}`}
 							/>
 							<StyledSlettKnapp kind="trashcan" onClick={() => handleDeleteByIndex(index)} />
@@ -60,15 +68,12 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 				</DollyFieldArray>
 			) : (
 				<div className="flexbox" key={firstFile.id + '-' + firstFile.name}>
-					<PdfDocument
-						options={{ isEvalSupported: false }}
-						file={'data:application/pdf;base64,' + firstFile.content.base64}
-					>
+					<PdfDocument file={'data:application/pdf;base64,' + firstFile.content.base64}>
 						<Page pageNumber={1} height={80} width={60} />
 					</PdfDocument>
 					<DollyTextInput
-						name={`histark.vedlegg.0.name`}
-						defaultValue={firstFile.name}
+						name={`${path}.0.tittel`}
+						input={firstFile.name}
 						label={`Tittel på dokument`}
 					/>
 					<StyledSlettKnapp kind="trashcan" onClick={() => handleDeleteByIndex(0)} />

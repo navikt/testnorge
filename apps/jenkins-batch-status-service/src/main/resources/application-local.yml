@@ -1,0 +1,11 @@
+AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  organisasjon-bestilling-service:
+    url: https://organisasjon-bestilling-service.intern.dev.nav.no
+    name: organisasjon-bestilling-service
