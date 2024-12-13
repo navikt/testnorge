@@ -1,12 +1,16 @@
 import { Provider } from 'react-redux'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import {
+	createBrowserRouter,
+	createRoutesFromElements,
+	Route,
+	RouterProvider,
+} from 'react-router-dom'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import BrukerPage from '@/pages/brukerPage'
 import LoginPage from '@/pages/loginPage'
-import { history, store } from '@/Store'
+import { store } from '@/Store'
 import { SWRConfig } from 'swr'
 import { App } from '@/app/App'
-
 import { useRouteError } from 'react-router'
 import { AppError } from '@/components/ui/appError/AppError'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
@@ -51,23 +55,27 @@ const ErrorView = () => {
 	return <AppError error={error} stackTrace={error.stackTrace} />
 }
 
+const router = createBrowserRouter(
+	createRoutesFromElements(
+		<>
+			<Route path="/login" element={<LoginPage />} />
+			<Route path="/bruker" element={<BrukerPage />} errorElement={<ErrorView />} />
+			<Route path="*" element={<App />} errorElement={<ErrorView />} />
+		</>,
+	),
+)
+
 export const RootComponent = () => (
 	<ErrorBoundary>
 		<Provider store={store}>
-			<BrowserRouter history={history}>
-				<SWRConfig
-					value={{
-						dedupingInterval: 5000,
-						revalidateOnFocus: false,
-					}}
-				>
-					<Routes>
-						<Route path="/login" element={<LoginPage />} />
-						<Route errorElement={<ErrorView />} path="/bruker" element={<BrukerPage />} />
-						<Route errorElement={<ErrorView />} path="*" element={<App />} />
-					</Routes>
-				</SWRConfig>
-			</BrowserRouter>
+			<SWRConfig
+				value={{
+					dedupingInterval: 5000,
+					revalidateOnFocus: false,
+				}}
+			>
+				<RouterProvider router={router} />
+			</SWRConfig>
 		</Provider>
 	</ErrorBoundary>
 )
