@@ -92,7 +92,7 @@
   "/testnorge-profil-api/api": {
     "changeOrigin": true
   },
-  "/testnav-organisasjon-tilgang-service/api": {
+  "/testnav-altinn3-tilgang-service/api": {
     "changeOrigin": true
   },
   "/testnav-varslinger-service/api": {

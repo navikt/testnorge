@@ -9,8 +9,8 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { pensjonGenererPath } from '@/components/fagsystem/pensjon/form/Form'
 import styled from 'styled-components'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import { ErrorMessage } from '@hookform/error-message'
 import { usePensjonFacadeGenerer } from '@/utils/hooks/usePensjon'
+import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 
 const getTittel = (data) => {
 	const inntektsaar = data?.map((inntekt) => inntekt.ar)
@@ -118,15 +118,7 @@ export const GenerertInntektForm = ({ gyldigFraOgMedAar, formMethods }) => {
 					</StyledButton>
 				</div>
 
-				{formMethods.formState.errors && (
-					<ErrorMessage
-						name={`${pensjonGenererPath}.inntekter`}
-						errors={formMethods.formState.errors}
-						render={({ message }) => (
-							<p style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</p>
-						)}
-					/>
-				)}
+				<DisplayFormError path={`${pensjonGenererPath}.inntekter`} />
 
 				{formInntekter?.length > 0 && (
 					<StyledPanel>
