@@ -11,6 +11,7 @@ sonarqube {
         property "sonar.language", "java"
         property "sonar.organization", "navikt"
         property "sonar.project.monorepo.enabled", true
+        property "sonar.qualitygate.name", "Team Dolly"
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.token", System.getenv("SONAR_TOKEN")
     }
