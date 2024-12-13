@@ -38,6 +38,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnav-altinn3-tilgang-proxy
+          cluster: dev-gcp
     outbound:
       external:
         - host: platform.altinn.no

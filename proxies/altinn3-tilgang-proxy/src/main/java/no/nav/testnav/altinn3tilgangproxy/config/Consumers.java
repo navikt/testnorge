@@ -1,4 +1,4 @@
-package no.nav.registre.sdforvalter.config;
+package no.nav.testnav.altinn3tilgangproxy.config;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,10 +24,5 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter(PACKAGE)
 public class Consumers {
 
-    private ServerProperties testnavAaregProxy;
-    private ServerProperties genererNavnService;
-    private ServerProperties testnavKodeverkService;
-    private ServerProperties testnavOrganisasjonFasteDataService;
-    private ServerProperties testnavOrganisasjonService;
-    private ServerProperties testnavPersonFasteDataService;
+    private ServerProperties altinn3TilgangService;
 }
