@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.oppsummeringsdokumentservice.config;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.data.client.orhlc.AbstractOpenSearchConfiguration;
@@ -9,7 +8,6 @@ import org.opensearch.data.client.orhlc.RestClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import java.time.Duration;
 
@@ -18,7 +16,7 @@ import java.time.Duration;
 @Profile("dev")
 public class OpenSearchLocalConfig extends AbstractOpenSearchConfiguration {
 
-    @Value("${open.search.uri}")
+    @Value("${OPEN_SEARCH_URI}")
     private String uri;
 
     @Override
