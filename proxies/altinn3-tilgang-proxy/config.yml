@@ -28,9 +28,6 @@ spec:
         - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
     outbound:
-      rules:
-        - application: testnav-altinn3-tilgang-service-prod
-          cluster: prod-gcp
       external:
         - host: testnav-altinn3-tilgang-service.nav.no
   liveness:
