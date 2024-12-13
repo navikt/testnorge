@@ -38,7 +38,7 @@
     {
       "name": "AZURE_NAV_APP_CLIENT_SECRET",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Se ClientCredentialConfigazureNavProxyClientCredential."
+      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavProxyClientCredential."
     }
   ]
 }
