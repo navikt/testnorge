@@ -26,10 +26,10 @@ spring:
 
 consumers:
   testnav-altinn3-tilgang-service:
-    cluster: prod-gcp
+    cluster: dev-gcp
     namespace: dolly
-    name: testnav-altinn3-tilgang-service-prod
-    url: https://testnav-altinn3-tilgang-service.nav.no
+    name: testnav-altinn3-tilgang-proxy
+    url: http://testnav-altinn3-tilgang-proxy.dolly.svc.cluster.local
   testnav-tps-messaging-service:
     cluster: dev-gcp
     namespace: dolly

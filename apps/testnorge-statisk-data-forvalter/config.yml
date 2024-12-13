@@ -71,6 +71,7 @@ spec:
         - application: krr-stub
         - application: synthdata-aareg
           cluster: dev-fss
-        - application: kodeverk
+        - application: testnav-kodeverk-service
+          cluster: dev-gcp
         - application: testnav-aareg-proxy
           cluster: dev-fss
