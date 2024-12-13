@@ -10,11 +10,8 @@ sonarqube {
 }
 
 dependencies {
-    implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
-
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
-    implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
@@ -28,7 +25,6 @@ dependencies {
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    implementation "io.micrometer:micrometer-registry-prometheus"
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
