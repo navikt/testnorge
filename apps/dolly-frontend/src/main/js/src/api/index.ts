@@ -90,8 +90,11 @@ export const multiFetcherDokarkiv = (miljoUrlListe) =>
 		),
 	)
 
-export const cvFetcher = (url, headers) =>
-	axios
+export const cvFetcher = (url, headers) => {
+	if (!url) {
+		return Promise.resolve(null)
+	}
+	return axios
 		.get(url, { headers: headers })
 		.then((res) => {
 			return res.data
@@ -111,6 +114,7 @@ export const cvFetcher = (url, headers) =>
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
+}
 
 export const sykemeldingFetcher = (url, body) =>
 	axios.post(url, body).then((res) => {

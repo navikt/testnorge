@@ -36,7 +36,8 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	const context: any = useContext(BestillingsveilederContext)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 
-	const [formMutate, setFormMutate] = useState(() => null)
+	const [formMutate, setFormMutate] = useState(() => null as any)
+	const [mutateLoading, setMutateLoading] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [step, setStep] = useState(0)
 
@@ -75,7 +76,9 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		if (step === 1 && formMutate) {
 			formMethods.clearErrors(manualMutateFields)
 			errorContext?.setShowError(true)
-			formMutate().then((response) => {
+			setMutateLoading(true)
+			formMutate?.().then((response) => {
+				setMutateLoading(false)
 				if (response.status === 'INVALID') {
 					return
 				}
@@ -135,6 +138,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 				{!loading && (
 					<Navigation
 						step={step}
+						mutateLoading={mutateLoading}
 						onPrevious={handleBack}
 						isLastStep={isLastStep()}
 						handleSubmit={() => {

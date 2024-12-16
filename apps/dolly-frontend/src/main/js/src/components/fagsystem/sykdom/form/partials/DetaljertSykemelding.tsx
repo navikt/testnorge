@@ -152,19 +152,6 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 					/>
 				</div>
 			</Kategori>
-			<Kategori title="Tilbakedatering" vis="sykemelding">
-				<div className="flexbox--flex-wrap">
-					<FormTextInput
-						name="sykemelding.detaljertSykemelding.kontaktMedPasient.begrunnelseIkkeKontakt"
-						label="Begrunnelse"
-						size="xlarge"
-					/>
-					<FormDatepicker
-						name={'sykemelding.detaljertSykemelding.kontaktMedPasient.kontaktDato'}
-						label="Kontaktdato"
-					/>
-				</div>
-			</Kategori>
 			<FormDollyFieldArray
 				name="sykemelding.detaljertSykemelding.biDiagnoser"
 				header="Bidiagnose"
@@ -181,6 +168,19 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 					/>
 				)}
 			</FormDollyFieldArray>
+			<Kategori title="Tilbakedatering" vis="sykemelding">
+				<div className="flexbox--flex-wrap">
+					<FormTextInput
+						name="sykemelding.detaljertSykemelding.kontaktMedPasient.begrunnelseIkkeKontakt"
+						label="Begrunnelse ikke kontakt"
+						size="xlarge"
+					/>
+					<FormDatepicker
+						name={'sykemelding.detaljertSykemelding.kontaktMedPasient.kontaktDato'}
+						label="Kontaktdato"
+					/>
+				</div>
+			</Kategori>
 			<Kategori title="Helsepersonell" vis="sykemelding">
 				<FormSelect
 					name="sykemelding.detaljertSykemelding.helsepersonell.ident"

@@ -13,7 +13,7 @@ import {
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
 
-export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
+export const Navigation = ({ step, onPrevious, isLastStep, mutateLoading, handleSubmit }: any) => {
 	const showPrevious = step > 0
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const opts: any = useContext(BestillingsveilederContext)
@@ -62,6 +62,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 						<NavButton
 							data-testid={TestComponentSelectors.BUTTON_VIDERE}
 							variant={'primary'}
+							loading={mutateLoading}
 							disabled={isSubmitting || disabledVidere}
 							onClick={handleSubmit}
 						>

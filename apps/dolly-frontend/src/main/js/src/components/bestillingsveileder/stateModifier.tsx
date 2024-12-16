@@ -21,7 +21,7 @@ export const useStateModifierFns = (formMethods: UseFormReturn, setFormMutate: a
 		let newObj = _.omit(getValues(), path)
 
 		// Ingen tomme objekter guard
-		const rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
+		let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
 		if (path.includes('pdldata.person') || path[0].includes('pdldata.person'))
 			rootPath = 'pdldata.person'
 		if (_.isEmpty(_.get(newObj, rootPath))) newObj = _.omit(newObj, rootPath)
