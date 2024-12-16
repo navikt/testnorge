@@ -27,9 +27,14 @@ public class AltinnBrukerTilgangService {
 
         return getAuthenticatedUserId
                 .call()
-                .flatMapMany(userId -> altinnConsumer.getAuthorizedParties(userId)
-                        .flatMap(authorizedParty -> getUnitsAndSubunits(new ArrayList<>(), authorizedParty))
-                        .flatMap(Flux::fromIterable));
+                .flatMapMany(this::getPersonOrganisasjonTilgang);
+    }
+
+    public Flux<OrganisasjonDTO> getPersonOrganisasjonTilgang(String ident) {
+
+        return altinnConsumer.getAuthorizedParties(ident)
+                .flatMap(authorizedParty -> getUnitsAndSubunits(new ArrayList<>(), authorizedParty))
+                .flatMap(Flux::fromIterable);
     }
 
     private Mono<List<OrganisasjonDTO>> getUnitsAndSubunits(List<OrganisasjonDTO> organisasjoner,
