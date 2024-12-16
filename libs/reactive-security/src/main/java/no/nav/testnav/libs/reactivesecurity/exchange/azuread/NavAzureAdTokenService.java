@@ -1,7 +1,7 @@
 package no.nav.testnav.libs.reactivesecurity.exchange.azuread;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavProxyClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,13 +29,13 @@ public class NavAzureAdTokenService implements ExchangeToken {
 
     public NavAzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            AzureNavProxyClientCredential azureNavProxyClientCredential
+            AzureNavClientCredential azureNavClientCredential
     ) {
-        this.clientCredential = azureNavProxyClientCredential;
+        this.clientCredential = azureNavClientCredential;
         log.info("Init AzureAd Nav token service.");
         WebClient.Builder builder = WebClient
                 .builder()
-                .baseUrl(azureNavProxyClientCredential.getTokenEndpoint())
+                .baseUrl(azureNavClientCredential.getTokenEndpoint())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {

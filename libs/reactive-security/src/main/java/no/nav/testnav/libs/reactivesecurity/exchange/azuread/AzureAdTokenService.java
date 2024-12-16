@@ -9,7 +9,7 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.securitycore.domain.Token;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -39,7 +39,7 @@ public class AzureAdTokenService implements TokenService {
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            AzureNavClientCredential azureNavClientCredential,
+            AzureClientCredential azureClientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init AzureAd token exchange.");
@@ -63,7 +63,7 @@ public class AzureAdTokenService implements TokenService {
         }
         this.webClient = builder.build();
         this.getAuthenticatedToken = getAuthenticatedToken;
-        this.clientCredential = azureNavClientCredential;
+        this.clientCredential = azureClientCredential;
     }
 
     @Override

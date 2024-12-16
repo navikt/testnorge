@@ -5,7 +5,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
 import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
     public AzureAdTokenExchange(
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
             TokenResolver tokenResolver,
-            AzureNavClientCredential clientCredential) {
+            AzureClientCredential clientCredential) {
 
         this.webClient = WebClient
                 .builder()

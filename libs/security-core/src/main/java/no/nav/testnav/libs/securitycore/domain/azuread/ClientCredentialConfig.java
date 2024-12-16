@@ -34,20 +34,20 @@ public class ClientCredentialConfig {
     @Value("${AZURE_NAV_APP_CLIENT_SECRET:#{null}}")
     private String azureNavClientSecret;
 
-    @Bean("azureNavClientCredential")
+    @Bean("azureClientCredential")
     @Profile("!test")
-    @ConditionalOnMissingBean(AzureNavClientCredential.class)
-    public AzureNavClientCredential azureNavClientCredential() {
+    @ConditionalOnMissingBean(AzureClientCredential.class)
+    public AzureClientCredential azureNavClientCredential() {
         Assert.hasLength(azureClientId, AZURE_MISSING);
         Assert.hasLength(azureClientSecret, AZURE_MISSING);
-        return new AzureNavClientCredential(azureClientId, azureClientSecret);
+        return new AzureClientCredential(azureClientId, azureClientSecret);
     }
 
-    @Bean("azureNavClientCredential")
+    @Bean("azureClientCredential")
     @Profile("test")
-    @ConditionalOnMissingBean(AzureNavClientCredential.class)
-    public AzureNavClientCredential azureNavClientCredentialTest() {
-        return new AzureNavClientCredential(TEST_CLIENT_ID, TEST_CLIENT_SECRET);
+    @ConditionalOnMissingBean(AzureClientCredential.class)
+    public AzureClientCredential azureNavClientCredentialTest() {
+        return new AzureClientCredential(TEST_CLIENT_ID, TEST_CLIENT_SECRET);
     }
 
     @Bean("azureTrygdeetatenClientCredential")
@@ -69,23 +69,23 @@ public class ClientCredentialConfig {
         return new AzureTrygdeetatenClientCredential(TEST_TOKEN_ENDPOINT, TEST_CLIENT_ID, TEST_CLIENT_SECRET);
     }
 
-    @Bean("azureNavProxyClientCredential")
+    @Bean("azureNavClientCredential")
     @Profile("!test")
-    @ConditionalOnMissingBean(AzureNavProxyClientCredential.class)
+    @ConditionalOnMissingBean(AzureNavClientCredential.class)
     @ConditionalOnProperty("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT")
-    public AzureNavProxyClientCredential azureNavProxyClientCredential(
+    public AzureNavClientCredential azureNavProxyClientCredential(
             @Value("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT") String azureNavTokenEndpoint
     ) {
         Assert.hasLength(azureNavClientId, PROXY_MISSING);
         Assert.hasLength(azureNavClientSecret, PROXY_MISSING);
-        return new AzureNavProxyClientCredential(azureNavTokenEndpoint, azureNavClientId, azureNavClientSecret);
+        return new AzureNavClientCredential(azureNavTokenEndpoint, azureNavClientId, azureNavClientSecret);
     }
 
-    @Bean("azureNavProxyClientCredential")
+    @Bean("azureNavClientCredential")
     @Profile("test")
-    @ConditionalOnMissingBean(AzureNavProxyClientCredential.class)
-    public AzureNavProxyClientCredential azureNavProxyClientCredentialTest() {
-        return new AzureNavProxyClientCredential(TEST_TOKEN_ENDPOINT, TEST_CLIENT_ID, TEST_CLIENT_SECRET);
+    @ConditionalOnMissingBean(AzureNavClientCredential.class)
+    public AzureNavClientCredential azureNavProxyClientCredentialTest() {
+        return new AzureNavClientCredential(TEST_TOKEN_ENDPOINT, TEST_CLIENT_ID, TEST_CLIENT_SECRET);
     }
 
 }
