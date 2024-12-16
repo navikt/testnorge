@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AuthorizedPartyDTO;
-import no.nav.testnav.altinn3tilgangservice.domain.PersonRequest;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,12 +21,15 @@ public class AltinnBrukerTilgangService {
 
     private static final String DOLLY_RESOURCE = "nav_dolly_tilgang-samarbeidspartnere";
     private final AltinnConsumer altinnConsumer;
+    private final GetAuthenticatedUserId getAuthenticatedUserId;
 
-    public Flux<OrganisasjonDTO> getOrgsMedDollyTilgang(PersonRequest personRequest) {
+    public Flux<OrganisasjonDTO> getPersonOrganisasjonTilgang() {
 
-        return altinnConsumer.getAuthorizedParties(personRequest.getIdent())
-                .flatMap(authorizedParty -> getUnitsAndSubunits(new ArrayList<>(), authorizedParty))
-                .flatMap(Flux::fromIterable);
+        return getAuthenticatedUserId
+                .call()
+                .flatMapMany(userId -> altinnConsumer.getAuthorizedParties(userId)
+                        .flatMap(authorizedParty -> getUnitsAndSubunits(new ArrayList<>(), authorizedParty))
+                        .flatMap(Flux::fromIterable));
     }
 
     private Mono<List<OrganisasjonDTO>> getUnitsAndSubunits(List<OrganisasjonDTO> organisasjoner,
