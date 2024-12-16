@@ -18,12 +18,6 @@ public class AltinnBrukerTilgangController {
 
     private final AltinnBrukerTilgangService brukerTilgangService;
 
-    @GetMapping
-    public Flux<OrganisasjonDTO> getPersonOrganisasjonTilgang() {
-
-        return brukerTilgangService.getPersonOrganisasjonTilgang();
-    }
-
     @PostMapping
     public Flux<OrganisasjonDTO> getPersonOrganisasjonTilgang(@RequestBody PersonRequest request) {
 

@@ -21,14 +21,6 @@ public class AltinnBrukerTilgangService {
 
     private static final String DOLLY_RESOURCE = "nav_dolly_tilgang-samarbeidspartnere";
     private final AltinnConsumer altinnConsumer;
-    private final GetAuthenticatedUserId getAuthenticatedUserId;
-
-    public Flux<OrganisasjonDTO> getPersonOrganisasjonTilgang() {
-
-        return getAuthenticatedUserId
-                .call()
-                .flatMapMany(this::getPersonOrganisasjonTilgang);
-    }
 
     public Flux<OrganisasjonDTO> getPersonOrganisasjonTilgang(String ident) {
 
