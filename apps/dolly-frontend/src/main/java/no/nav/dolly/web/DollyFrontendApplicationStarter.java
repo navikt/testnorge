@@ -23,6 +23,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -35,6 +36,7 @@ import java.util.function.Function;
         FrontendConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
+@EnableWebFlux
 @SpringBootApplication
 @RequiredArgsConstructor
 public class DollyFrontendApplicationStarter {
