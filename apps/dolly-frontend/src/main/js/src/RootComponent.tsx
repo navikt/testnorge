@@ -4,14 +4,14 @@ import {
 	createRoutesFromElements,
 	Route,
 	RouterProvider,
-} from 'react-router-dom'
+	useRouteError,
+} from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import BrukerPage from '@/pages/brukerPage'
 import LoginPage from '@/pages/loginPage'
 import { store } from '@/Store'
 import { SWRConfig } from 'swr'
 import { App } from '@/app/App'
-import { useRouteError } from 'react-router'
 import { AppError } from '@/components/ui/appError/AppError'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 

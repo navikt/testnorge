@@ -6,7 +6,7 @@ import ItemCountSelect from './ItemCountSelect/ItemCountSelect'
 import './Pagination.less'
 import { setSideStoerrelse, setSidetall } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 type PaginationProps = {
 	visSide?: number

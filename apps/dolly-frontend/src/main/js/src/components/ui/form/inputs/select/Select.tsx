@@ -119,7 +119,7 @@ export const Select = ({
 				menuPortalTarget={
 					isInDialog
 						? (document.getElementsByClassName('navds-modal')[0] as HTMLElement)
-						: document.getElementById('react-select-root')
+						: document.getElementById('root')
 				}
 				menuPosition={isInDialog ? 'fixed' : undefined}
 				{...rest}

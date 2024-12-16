@@ -6,7 +6,7 @@ import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 
 import './SlettModal.less'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,

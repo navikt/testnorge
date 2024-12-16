@@ -4,7 +4,7 @@ import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 
 import './Navigation.less'
 import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'

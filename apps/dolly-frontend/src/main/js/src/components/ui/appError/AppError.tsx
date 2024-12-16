@@ -4,7 +4,7 @@ import './appError.less'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { CSSProperties, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 type Props = {
 	style?: CSSProperties | undefined

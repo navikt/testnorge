@@ -4,7 +4,7 @@ import { AppError } from '@/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
 
 import './bestillingsveileder.less'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'

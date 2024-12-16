@@ -26,7 +26,7 @@ import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoein
 import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { getBestillingsListe } from '@/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'

@@ -3,8 +3,8 @@ import viteTsconfigPaths from 'vite-tsconfig-paths'
 import proxyRoutes from './proxy-routes.json'
 import path from 'path'
 import EnvironmentPlugin from 'vite-plugin-environment'
-import react from '@vitejs/plugin-react'
 import * as child from 'child_process'
+import { reactRouter } from '@react-router/dev/vite'
 
 /** @type {import('vite').UserConfig} */
 
@@ -75,19 +75,7 @@ export default defineConfig(({ mode }) => ({
 		exclude: ['**/node_modules/**', '**/playwright/**'],
 	},
 	plugins: [
-		react({
-			babel: {
-				plugins: [
-					[
-						'babel-plugin-styled-components',
-						{
-							displayName: true,
-							ssr: false,
-						},
-					],
-				],
-			},
-		}),
+		reactRouter(),
 		viteTsconfigPaths(),
 		preserveRefPlugin(),
 		EnvironmentPlugin({

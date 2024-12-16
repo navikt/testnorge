@@ -1,5 +1,5 @@
 import React, { lazy } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import GruppeConnector from '@/pages/gruppe/GruppeConnector'
 import { OrganisasjonTenorSoekPage } from '@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'
 import NyansettelserPage from '@/pages/nyansettelser/NyansettelserPage'
@@ -26,7 +26,9 @@ const allRoutes = [
 	{ path: '/', breadcrumb: 'Hjem', element: () => <Navigate to="/gruppe" replace /> },
 	{
 		path: '/gruppe',
-		breadcrumb: 'Personer',
+		handle: {
+			crumb: () => 'Personer',
+		},
 		element: () => <GruppeOversikt />,
 	},
 	{ path: '/gruppe/:gruppeId', breadcrumb: GruppeBreadcrumb, element: () => <GruppeConnector /> },

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
 import { FingerButtonIcon, TenancyIcon } from '@navikt/aksel-icons'
 import { ActionMenu } from '@navikt/ds-react'
 import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'

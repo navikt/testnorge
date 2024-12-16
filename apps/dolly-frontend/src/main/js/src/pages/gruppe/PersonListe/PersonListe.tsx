@@ -18,7 +18,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { useToggle } from 'react-use'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 import Button from '@/components/ui/button/Button'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'

@@ -5,7 +5,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 import './RedigerGruppe.less'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useGruppeById } from '@/utils/hooks/useGruppe'

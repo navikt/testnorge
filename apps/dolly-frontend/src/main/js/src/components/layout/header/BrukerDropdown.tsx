@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import './Header.less'
 import { useBrukerProfil, useBrukerProfilBilde } from '@/utils/hooks/useBruker'
 import logoutBruker from '@/components/utlogging/logoutBruker'
