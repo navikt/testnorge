@@ -13,17 +13,18 @@ import reactor.core.publisher.Mono;
 @Service
 public class ElasticParamsConsumer {
 
-    private final WebClient webClient;
-    private final String username;
-    private final String password;
-    private final String index;
+    private WebClient webClient;
+    private String username;
+    private String password;
+    private String index;
 
     public ElasticParamsConsumer(
             WebClient.Builder webClientBuilder,
-            @Value("${OPEN_SEARCH_USERNAME:''}") String username,
-            @Value("${OPEN_SEARCH_PASSWORD:''}") String password,
-            @Value("${OPEN_SEARCH_URI}") String uri,
+            @Value("${open.search.username}") String username,
+            @Value("${open.search.password}") String password,
+            @Value("${open.search.uri}") String uri,
             @Value("${open.search.index}") String index) {
+
         webClient = webClientBuilder
                 .baseUrl(uri)
                 .build();

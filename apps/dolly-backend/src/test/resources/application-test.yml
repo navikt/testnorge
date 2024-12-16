@@ -1,8 +1,7 @@
-OPEN_SEARCH_URI: dummy
-TOKEN_X_ISSUER: dummy
-
 APP_NAME: dolly
 APP_VERSION: ${application.version}
+environment: localhost
+TOKEN_X_ISSUER: dummy
 
 jira:
   host: http://localhost:${wiremock.server.port:0}/jira
@@ -11,8 +10,11 @@ jira:
 
 open:
   search:
+    uri: dummy
+    username: dummy
+    password: dummy
     total-fields: 150
-    index: test
+    index: dummy
 
 consumers:
   kodeverk-api:
