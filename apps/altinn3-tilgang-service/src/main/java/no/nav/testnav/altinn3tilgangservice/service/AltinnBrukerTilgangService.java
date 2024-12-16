@@ -30,7 +30,7 @@ public class AltinnBrukerTilgangService {
     }
 
     private Mono<List<OrganisasjonDTO>> getUnitsAndSubunits(List<OrganisasjonDTO> organisasjoner,
-                                                      AuthorizedPartyDTO authorizedParties) {
+                                                            AuthorizedPartyDTO authorizedParties) {
 
         organisasjoner.addAll(Stream.of(authorizedParties)
                 .filter(part -> part.getAuthorizedResources().contains(DOLLY_RESOURCE))
@@ -39,12 +39,11 @@ public class AltinnBrukerTilgangService {
                         .organisasjonsnummer(part.getOrganizationNumber())
                         .organisasjonsform(part.getUnitType())
                         .build())
-                        .toList());
+                .toList());
 
-        if (!authorizedParties.getSubunits().isEmpty()) {
-            authorizedParties.getSubunits()
-                            .forEach(subunit -> getUnitsAndSubunits(organisasjoner, subunit));
-        }
+        authorizedParties.getSubunits()
+                .forEach(subunit -> getUnitsAndSubunits(organisasjoner, subunit));
+
         return Mono.just(organisasjoner);
     }
 }

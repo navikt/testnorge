@@ -1,4 +1,4 @@
-ALTINN_URL: https://tt02.altinn.no
+ALTINN_URL: https://platform.tt02.altinn.no
 AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
 AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
 MASKINPORTEN_CLIENT_ID: ef2960de-7fa6-4396-80a5-2eca00e4af28
