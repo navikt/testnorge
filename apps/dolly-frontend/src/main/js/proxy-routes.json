@@ -39,6 +39,10 @@
     "target": "http://localhost:8020",
     "secure": false
   },
+  "/altinn/organisasjoner": {
+    "target": "http://localhost:8020",
+    "secure": false
+  },
   "/testnav-organisasjon-faste-data-service/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,

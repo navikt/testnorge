@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.consumers.command.PostPersonOrganisasjonTilgangCommand;
 import no.nav.dolly.web.service.AccessService;
+import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -50,6 +52,14 @@ public class Altinn3PersonOrganisasjonTilgangConsumer {
                                     return Mono.empty();
                                 })
                         .reduce(Boolean.FALSE, (acc, value) -> Boolean.TRUE));
+    }
+
+    public Flux<OrganisasjonDTO> getOrganisasjoner(ServerWebExchange exchange) {
+
+        return getAuthenticatedUserId
+                .call()
+                .flatMapMany(userId -> accessService.getAccessToken(serverProperties, exchange)
+                        .flatMapMany(accessToken -> new PostPersonOrganisasjonTilgangCommand(webClient, userId, accessToken).call()));
     }
 }
 
