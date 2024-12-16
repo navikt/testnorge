@@ -23,16 +23,16 @@ public class ClientCredentialConfig {
     private String azureClientSecret;
 
     @Value("${AZURE_TRYGDEETATEN_APP_CLIENT_ID:#{null}}")
-    private String trygdeetatenClientId;
+    private String azureTrygdeetatenClientId;
 
     @Value("${AZURE_TRYGDEETATEN_APP_CLIENT_SECRET:#{null}}")
-    private String trygdeetatenClientSecret;
+    private String azureTrygdeetatenClientSecret;
 
     @Value("${AZURE_NAV_APP_CLIENT_ID:#{null}}")
-    private String proxyClientId;
+    private String azureNavClientId;
 
     @Value("${AZURE_NAV_APP_CLIENT_SECRET:#{null}}")
-    private String proxyClientSecret;
+    private String azureNavClientSecret;
 
     @Bean("azureNavClientCredential")
     @Profile("!test")
@@ -57,9 +57,9 @@ public class ClientCredentialConfig {
     public AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential(
             @Value("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT") String trygdeetatenTokenEndpoint
     ) {
-        Assert.hasLength(trygdeetatenClientId, TRYGDEETATEN_MISSING);
-        Assert.hasLength(trygdeetatenClientSecret, TRYGDEETATEN_MISSING);
-        return new AzureTrygdeetatenClientCredential(trygdeetatenTokenEndpoint, trygdeetatenClientId, trygdeetatenClientSecret);
+        Assert.hasLength(azureTrygdeetatenClientId, TRYGDEETATEN_MISSING);
+        Assert.hasLength(azureTrygdeetatenClientSecret, TRYGDEETATEN_MISSING);
+        return new AzureTrygdeetatenClientCredential(trygdeetatenTokenEndpoint, azureTrygdeetatenClientId, azureTrygdeetatenClientSecret);
     }
 
     @Bean("azureTrygdeetatenClientCredential")
@@ -74,11 +74,11 @@ public class ClientCredentialConfig {
     @ConditionalOnMissingBean(AzureNavProxyClientCredential.class)
     @ConditionalOnProperty("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT")
     public AzureNavProxyClientCredential azureNavProxyClientCredential(
-            @Value("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT") String proxyTokenEndpoint
+            @Value("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT") String azureNavTokenEndpoint
     ) {
-        Assert.hasLength(proxyClientId, PROXY_MISSING);
-        Assert.hasLength(proxyClientSecret, PROXY_MISSING);
-        return new AzureNavProxyClientCredential(proxyTokenEndpoint, proxyClientId, proxyClientSecret);
+        Assert.hasLength(azureNavClientId, PROXY_MISSING);
+        Assert.hasLength(azureNavClientSecret, PROXY_MISSING);
+        return new AzureNavProxyClientCredential(azureNavTokenEndpoint, azureNavClientId, azureNavClientSecret);
     }
 
     @Bean("azureNavProxyClientCredential")

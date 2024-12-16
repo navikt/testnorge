@@ -13,32 +13,32 @@
     {
       "name": "AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Hvis satt må også AZURE_TRYGDEETATEN_APP_CLIENT_ID og AZURE_TRYGDEETATEN_APP_CLIENT_SECRET være satt. Se ClientCredentialConfig#azureTrygdeetatenClientCredential."
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_TRYGDEETATEN\"). Hvis satt må også AZURE_TRYGDEETATEN_APP_CLIENT_ID og AZURE_TRYGDEETATEN_APP_CLIENT_SECRET være satt."
     },
     {
       "name": "AZURE_TRYGDEETATEN_APP_CLIENT_ID",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureTrygdeetatenClientCredential."
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_TRYGDEETATEN\")."
     },
     {
       "name": "AZURE_TRYGDEETATEN_APP_CLIENT_SECRET",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureTrygdeetatenClientCredential."
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_TRYGDEETATEN\")."
     },
     {
       "name": "AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Hvis satt må også AZURE_NAV_APP_CLIENT_ID og AZURE_NAV_APP_CLIENT_SECRET være satt. Se ClientCredentialConfig#azureNavProxyClientCredential."
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_NAV\"). Hvis satt må også AZURE_NAV_APP_CLIENT_ID og AZURE_NAV_APP_CLIENT_SECRET være satt."
     },
     {
       "name": "AZURE_NAV_APP_CLIENT_ID",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavProxyClientCredential."
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_NAV\")."
     },
     {
       "name": "AZURE_NAV_APP_CLIENT_SECRET",
       "type": "java.lang.String",
-      "description": "Satt av NAIS i pod. Se ClientCredentialConfig#azureNavProxyClientCredential."
+      "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_NAV\")."
     }
   ]
 }
