@@ -179,11 +179,6 @@
     "changeOrigin": true,
     "secure": false
   },
-  "/testnav-person-organisasjon-tilgang-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
-  },
   "/testnav-pdl-forvalter/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
