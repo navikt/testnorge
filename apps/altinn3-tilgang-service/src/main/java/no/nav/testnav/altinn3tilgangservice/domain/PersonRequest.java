@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class PersonRequest {
 
     private String ident;
-    private String orgnummer;
 }

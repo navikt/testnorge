@@ -8,24 +8,24 @@ import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetAuthorizedPartiesCommand implements Callable<Flux<AuthorizedPartyDTO>> {
+public class GetAuthorizedPartiesCommand implements Callable<Mono<AuthorizedPartyDTO[]>> {
 
-    private static final String ALTINN_URL = "/resourceregistry/accessmanagement/api/v1/resourceowner/authorizedparties";
+    private static final String ALTINN_URL = "/accessmanagement/api/v1/resourceowner/authorizedparties";
 
     private final WebClient webClient;
     private final AltinnAuthorizedPartiesRequestDTO request;
     private final String token;
 
     @Override
-    public Flux<AuthorizedPartyDTO> call() {
+    public Mono<AuthorizedPartyDTO[]> call() {
 
-        log.info("Spøøring om bruker {}", request);
+        log.info("Spørring på bruker {}", request);
         return webClient
                 .post()
                 .uri(builder -> builder.path(ALTINN_URL).build())
@@ -33,7 +33,7 @@ public class GetAuthorizedPartiesCommand implements Callable<Flux<AuthorizedPart
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(request)
                 .retrieve()
-                .bodyToFlux(AuthorizedPartyDTO.class)
+                .bodyToMono(AuthorizedPartyDTO[].class)
                 .doOnError(WebClientFilter::logErrorMessage);
     }
 }

@@ -28,6 +28,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -132,9 +133,11 @@ public class AltinnConsumer {
 
         return maskinportenConsumer.getAccessToken()
                 .flatMap(this::exchangeToken)
-                .flatMapMany(exchangeToken -> new GetAuthorizedPartiesCommand(webClient,
+                .flatMap(exchangeToken -> new GetAuthorizedPartiesCommand(webClient,
                         new AltinnAuthorizedPartiesRequestDTO(ident),
-                        exchangeToken).call());
+                        exchangeToken).call())
+                .map(Arrays::asList)
+                .flatMapIterable(list -> list);
     }
 
     private Mono<AltinnAccessListResponseDTO> getAccessListMembers() {

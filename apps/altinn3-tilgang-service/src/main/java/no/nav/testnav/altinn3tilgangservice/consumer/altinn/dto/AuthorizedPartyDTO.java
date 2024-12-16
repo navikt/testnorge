@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -13,8 +16,26 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthorizedPartyDTO {
 
-    private String personId;
+    private String name;
     private String organizationNumber;
+    private String unitType;
     private List<String> authorizedResources;
+    private List<AuthorizedPartyDTO> subunits;
+
+    public List<String> getAuthorizedResources() {
+
+        if (isNull(authorizedResources)) {
+            authorizedResources = new ArrayList<>();
+        }
+        return authorizedResources;
+    }
+
+    public List<AuthorizedPartyDTO> getSubunits() {
+
+        if (isNull(subunits)) {
+            subunits = new ArrayList<>();
+        }
+        return subunits;
+    }
 }
 
