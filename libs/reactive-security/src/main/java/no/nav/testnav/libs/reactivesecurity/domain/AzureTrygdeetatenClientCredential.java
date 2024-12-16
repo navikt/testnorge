@@ -16,8 +16,8 @@ public class AzureTrygdeetatenClientCredential extends ClientCredential {
 
     public AzureTrygdeetatenClientCredential(
             @Value("${AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT:#{null}}") String tokenEndpoint,
-            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-id' : '${AZURE_APP_CLIENT_ID:#{null}}'}") String clientId,
-            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-secret' : '${AZURE_APP_CLIENT_SECRET:#{null}}'}") String clientSecret
+            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-id' : '${AZURE_TRYGDEETATEN_APP_CLIENT_ID:#{null}}'}") String clientId,
+            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-secret' : '${AZURE_TRYGDEETATEN_CLIENT_SECRET:#{null}}'}") String clientSecret
     ) {
         super(clientId, clientSecret);
         this.tokenEndpoint = tokenEndpoint;

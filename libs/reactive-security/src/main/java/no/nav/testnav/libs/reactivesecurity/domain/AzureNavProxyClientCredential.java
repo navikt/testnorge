@@ -16,8 +16,8 @@ public class AzureNavProxyClientCredential extends ClientCredential {
 
     public AzureNavProxyClientCredential(
             @Value("${AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT:#{null}}") String tokenEndpoint,
-            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-id' : '${AZURE_APP_CLIENT_ID:#{null}}'}") String clientId,
-            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-secret' : '${AZURE_APP_CLIENT_SECRET:#{null}}'}") String clientSecret
+            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-id' : '${AZURE_NAV_APP_CLIENT_ID:#{null}}'}") String clientId,
+            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-secret' : '${AZURE_NAV_APP_CLIENT_SECRET:#{null}}'}") String clientSecret
     ) {
         super(clientId, clientSecret);
         this.tokenEndpoint = tokenEndpoint;
