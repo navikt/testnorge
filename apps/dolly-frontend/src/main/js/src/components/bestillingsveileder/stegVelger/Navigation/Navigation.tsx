@@ -65,6 +65,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, mutateLoading, handle
 							loading={mutateLoading}
 							disabled={isSubmitting || disabledVidere}
 							onClick={handleSubmit}
+							style={{ verticalAlign: 'bottom' }}
 						>
 							Videre
 						</NavButton>
