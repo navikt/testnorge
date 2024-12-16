@@ -44,6 +44,7 @@ import { Alderspensjon } from '@/components/fagsystem/alderspensjon/bestilling/A
 import { Uforetrygd } from '@/components/fagsystem/uforetrygd/bestilling/Uforetrygd'
 import { AfpOffentlig } from '@/components/fagsystem/afpOffentlig/bestilling/AfpOffentlig'
 import { Arena } from '@/components/fagsystem/arena/bestilling/Arena'
+import { Sykemelding } from '@/components/fagsystem/sykdom/bestilling/Sykemelding'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -136,6 +137,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Uforetrygd pensjon={bestilling.pensjonforvalter?.uforetrygd} />
 			<AfpOffentlig pensjon={bestilling.pensjonforvalter?.afpOffentlig} />
 			<Arena arbeidsytelse={bestilling.arenaforvalter} />
+			<Sykemelding sykemelding={bestilling.sykemelding} />
 		</>
 	)
 }
