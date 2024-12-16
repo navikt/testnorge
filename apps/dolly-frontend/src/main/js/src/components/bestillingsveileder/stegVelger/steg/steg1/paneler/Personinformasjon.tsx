@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'

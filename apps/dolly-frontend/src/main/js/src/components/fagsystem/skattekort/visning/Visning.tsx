@@ -10,7 +10,7 @@ import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { ForskuddstrekkVisning } from '@/components/fagsystem/skattekort/visning/ForskuddstrekkVisning'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { CodeView } from '@/components/codeView'
+import { PrettyXml } from '@/components/codeView'
 
 type SkattekortVisning = {
 	liste?: Array<any>
@@ -106,7 +106,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 									</Button>
 									{viserXml &&
 										(skattekort?.skattekortXml ? (
-											<CodeView language="xml" code={xmlFormatted} wrapLongLines />
+											<PrettyXml xmlString={xmlFormatted} wrapLongLines />
 										) : (
 											<Alert variant="error" size="small" inline>
 												Kunne ikke vise skattekort-xml

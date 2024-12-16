@@ -16,7 +16,7 @@ import {
 import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import { validation } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/validation'
 import { useFormContext } from 'react-hook-form'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {
 	return {

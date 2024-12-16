@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { runningE2ETest } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'

@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { BestillingsveilederContext } from './BestillingsveilederContext'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 export const useStateModifierFns = (formMethods: UseFormReturn, setFormMutate: any) => {
 	const { setValue, watch, resetField, getValues, reset, formState } = formMethods

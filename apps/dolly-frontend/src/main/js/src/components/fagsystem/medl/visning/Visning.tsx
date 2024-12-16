@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import MedlVisning from './MedlVisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { Medlemskapsperiode } from '@/components/fagsystem/medl/MedlTypes'
 import styled from 'styled-components'
 

@@ -12,7 +12,7 @@ import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import { PersonVisning } from '@/pages/dollySoek/PersonVisning'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 import { runningE2ETest } from '@/service/services/Request'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 export const ResultatVisning = ({ resultat, soekError }) => {
 	const identString = resultat?.identer?.join(',')

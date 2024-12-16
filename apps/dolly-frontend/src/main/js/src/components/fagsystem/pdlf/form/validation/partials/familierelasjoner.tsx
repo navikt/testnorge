@@ -2,7 +2,7 @@ import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import { matrikkeladresse, vegadresse } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const testForeldreansvar = (val: Yup.StringSchema<string, Yup.AnyObject>) => {
 	return val.test('er-gyldig-foreldreansvar', (selected, testContext) => {

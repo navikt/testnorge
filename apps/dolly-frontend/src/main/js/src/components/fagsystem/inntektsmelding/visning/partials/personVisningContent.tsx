@@ -1,6 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Button from '@/components/ui/button/Button'
-import { CodeView } from '@/components/codeView'
+import { PrettyXml } from '@/components/codeView'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { Journalpost } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import styled from 'styled-components'
@@ -59,7 +59,7 @@ export const PersonVisningContent = ({ miljoe, dokumentInfo }: PersonVisningCont
 			</div>
 			{viserSkjemainnhold &&
 				(dokument ? (
-					<CodeView language="xml" code={dokument} />
+					<PrettyXml xmlString={dokument} />
 				) : (
 					<Alert variant="error" size="small" inline>
 						Kunne ikke hente skjemainnhold

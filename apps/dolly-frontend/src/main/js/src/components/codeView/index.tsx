@@ -1,1 +1,1 @@
-export { default as CodeView } from './CodeView'
+export { default as PrettyXml } from './CodeView'

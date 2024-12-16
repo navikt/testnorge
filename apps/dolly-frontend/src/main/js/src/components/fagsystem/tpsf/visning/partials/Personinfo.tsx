@@ -3,7 +3,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatAlder, formatDate, formatKjonn, gtTypeLabel } from '@/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 function hentSkjermingData(skjermingPath) {
 	if (!skjermingPath) {

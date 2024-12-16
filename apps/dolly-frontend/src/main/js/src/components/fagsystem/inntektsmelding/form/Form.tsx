@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import * as Yup from 'yup'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'

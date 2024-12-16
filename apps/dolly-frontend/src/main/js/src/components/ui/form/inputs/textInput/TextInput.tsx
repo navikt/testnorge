@@ -10,7 +10,7 @@ import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
 import { Button } from '@navikt/ds-react'
 

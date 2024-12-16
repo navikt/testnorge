@@ -74,7 +74,7 @@ import {
 	sjekkManglerApData,
 } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
-import _has from 'lodash/has'
+import * as _ from 'lodash-es'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
 import { useMedlPerson } from '@/utils/hooks/useMedl'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
@@ -383,7 +383,7 @@ export default ({
 	const getArbeidsplassencvHjemmel = () => {
 		if (!harArbeidsplassenBestilling(bestillingerFagsystemer)) return null
 		const arbeidsplassenBestillinger = bestillingListe.filter((bestilling) =>
-			_has(bestilling.data, 'arbeidsplassenCV'),
+			_.has(bestilling.data, 'arbeidsplassenCV'),
 		)
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}

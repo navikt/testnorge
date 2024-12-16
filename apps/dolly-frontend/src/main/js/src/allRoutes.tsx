@@ -1,9 +1,11 @@
 import React, { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 import GruppeConnector from '@/pages/gruppe/GruppeConnector'
-import { OrganisasjonTenorSoekPage } from '@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'
-import NyansettelserPage from '@/pages/nyansettelser/NyansettelserPage'
 
+const OrganisasjonTenorSoekPage = lazy(
+	() => import('@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'),
+)
+const NyansettelserPage = lazy(() => import('@/pages/nyansettelser/NyansettelserPage'))
 const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
 const Organisasjon = lazy(() => import('@/pages/organisasjoner/Organisasjoner'))
 const BestillingsveilederConnector = lazy(

@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { TelefonData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import VisningRedigerbarSamletConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarSamletConnector'
 
 type DataListe = {
