@@ -1,8 +1,5 @@
 services:
 
-  #
-  # Local PostgreSQL database testnav-brregstub.
-  #
   postgresql:
     image: postgres
     network_mode: host

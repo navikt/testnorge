@@ -1,11 +1,5 @@
-#
-# Start before dolly-backend, or add to before launch for dolly-backend run configuration.
-#
 services:
 
-  #
-  # Proxy to a database testnav-dolly-backend-local running in Google Cloud SQL.
-  #
   cloud_sql_proxy:
     image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.2
     network_mode: host
@@ -19,9 +13,6 @@ services:
         source: $USERPROFILE/AppData/Roaming/gcloud/application_default_credentials.json # For Windows.
         target: /application_default_credentials.json
 
-  #
-  # OpenSearch with a non-trivial password.
-  #
   opensearch:
     image: opensearchproject/opensearch:latest
     ports:
