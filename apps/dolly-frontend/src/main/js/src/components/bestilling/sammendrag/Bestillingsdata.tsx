@@ -47,6 +47,7 @@ import { Arena } from '@/components/fagsystem/arena/bestilling/Arena'
 import { Sykemelding } from '@/components/fagsystem/sykdom/bestilling/Sykemelding'
 import { Yrkesskader } from '@/components/fagsystem/yrkesskader/bestilling/Yrkesskader'
 import { Brregstub } from '@/components/fagsystem/brregstub/bestilling/Brregstub'
+import { Inst } from '@/components/fagsystem/inst/bestilling/Inst'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -142,6 +143,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Sykemelding sykemelding={bestilling.sykemelding} />
 			<Yrkesskader yrkesskader={bestilling.yrkesskader} />
 			<Brregstub brregstub={bestilling.brregstub} />
+			<Inst inst={bestilling.instdata} />
 		</>
 	)
 }
