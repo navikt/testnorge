@@ -8,10 +8,5 @@ Swagger finnes under [/swagger-ui.html](https://testnav-altinn3-tilgang-service.
 -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-
-Ha naisdevice kjørende og kjør Altinn3TilgangServiceApplicationStarter med følgende argumenter:
-
-``` 
--Dspring.profiles.active=local
--Dspring.cloud.vault.token=[vault-token]
-```
+* [Generelt.](../../docs/local_general.md)
+* [Secret Manager.](../../docs/local_secretmanager.md)
