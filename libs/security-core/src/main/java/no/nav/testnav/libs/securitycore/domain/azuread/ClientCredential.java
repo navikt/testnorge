@@ -11,6 +11,7 @@ import static lombok.AccessLevel.PACKAGE;
 @EqualsAndHashCode
 public class ClientCredential {
 
+    private final String tokenEndpoint;
     private final String clientId;
     private final String clientSecret;
 
