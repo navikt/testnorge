@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.reactivesecurity.action;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GetAuthenticatedUserId implements Callable<Mono<String>> {
@@ -37,14 +39,16 @@ public class GetAuthenticatedUserId implements Callable<Mono<String>> {
 
     private String getTokenAttribute(Authentication context, String attribute) {
 
+        log.info("context.authentication {}", context);
         if (context instanceof JwtAuthenticationToken jwtAuthenticationToken) {
             return jwtAuthenticationToken.getTokenAttributes().get(attribute).toString();
 
         } else if (context instanceof OAuth2AuthenticationToken oauth2AuthenticationToken) {
+            log.info("oauth2AuthenticationToken {}", oauth2AuthenticationToken.getPrincipal());
             return oauth2AuthenticationToken.getPrincipal().getAttributes().get(attribute).toString();
 
         } else {
-            return null;
+            return "";
         }
     }
 }
