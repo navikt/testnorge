@@ -2,14 +2,15 @@ package no.nav.testnav.libs.reactivesecurity.exchange.azuread;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -17,21 +18,14 @@ import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
 
-import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-
 @Slf4j
-@Service
-@ConditionalOnProperty("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT")
 public class NavAzureAdTokenService implements TokenService {
 
     private final WebClient webClient;
     private final ClientCredential clientCredential;
 
     public NavAzureAdTokenService(
-            @Value("${http.proxy:#{null}}") String proxyHost,
+            String proxyHost,
             AzureNavClientCredential azureNavClientCredential
     ) {
         this.clientCredential = azureNavClientCredential;
@@ -45,11 +39,11 @@ public class NavAzureAdTokenService implements TokenService {
             log.trace("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
             HttpClient httpClient = HttpClient
-                .create()
-                .proxy(proxy -> proxy
-                    .type(ProxyProvider.Proxy.HTTP)
-                    .host(uri.getHost())
-                    .port(uri.getPort()));
+                    .create()
+                    .proxy(proxy -> proxy
+                            .type(ProxyProvider.Proxy.HTTP)
+                            .host(uri.getHost())
+                            .port(uri.getPort()));
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
         this.webClient = builder.build();

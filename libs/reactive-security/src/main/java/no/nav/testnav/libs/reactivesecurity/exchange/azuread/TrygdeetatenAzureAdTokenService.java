@@ -11,12 +11,9 @@ import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureTrygdeetatenClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -30,8 +27,6 @@ import java.util.Map;
 
 import static java.util.Objects.nonNull;
 
-@Service("trygdeetatenAzureAdTokenService")
-@ConditionalOnProperty("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT")
 @Slf4j
 public class TrygdeetatenAzureAdTokenService implements TokenService {
 
@@ -42,7 +37,7 @@ public class TrygdeetatenAzureAdTokenService implements TokenService {
     private final GetAuthenticatedUserId getAuthenticatedUserId;
 
     public TrygdeetatenAzureAdTokenService(
-            @Value("${http.proxy:#{null}}") String proxyHost,
+            String proxyHost,
             AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential,
             GetAuthenticatedUserId getAuthenticatedUserId,
             ObjectMapper objectMapper) {
