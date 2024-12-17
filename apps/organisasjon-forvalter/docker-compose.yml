@@ -1,0 +1,14 @@
+services:
+
+  cloud_sql_proxy:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.2
+    network_mode: host
+    command:
+      - "dolly-dev-ff83:europe-north1:testnav-organisasjon-forvalter-local"
+      - "--credentials-file=/application_default_credentials.json"
+      - "--run-connection-test"
+    volumes:
+      - type: bind
+        #source: $HOME/.config/gcloud/application_default_credentials.json # For Linux/macOS.
+        source: $USERPROFILE/AppData/Roaming/gcloud/application_default_credentials.json # For Windows.
+        target: /application_default_credentials.json
