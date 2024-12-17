@@ -11,14 +11,16 @@ import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 @EqualsAndHashCode(callSuper = false)
 @Configuration
 public class AzureNavProxyClientCredential extends ClientCredential {
+
     private final String tokenEndpoint;
 
     public AzureNavProxyClientCredential(
             @Value("${AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT:#{null}}") String tokenEndpoint,
-            @Value("${AZURE_NAV_APP_CLIENT_ID:#{null}}") String clientId,
-            @Value("${AZURE_NAV_APP_CLIENT_SECRET:#{null}}") String clientSecret
+            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-id' : '${AZURE_NAV_APP_CLIENT_ID:#{null}}'}") String clientId,
+            @Value("#{systemProperties['spring.profiles.active'] == 'test' ? 'test-client-secret' : '${AZURE_NAV_APP_CLIENT_SECRET:#{null}}'}") String clientSecret
     ) {
         super(clientId, clientSecret);
         this.tokenEndpoint = tokenEndpoint;
     }
+
 }

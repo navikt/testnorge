@@ -20,13 +20,13 @@ import java.time.Duration;
 @EnableElasticsearchRepositories("no.nav.dolly.elastic")
 public class OpenSearchConfig extends AbstractOpenSearchConfiguration {
 
-    @Value("${open.search.username}")
+    @Value("${OPEN_SEARCH_USERNAME}")
     private String username;
 
-    @Value("${open.search.password}")
+    @Value("${OPEN_SEARCH_PASSWORD}")
     private String password;
 
-    @Value("${open.search.uri}")
+    @Value("${OPEN_SEARCH_URI}")
     private String uri;
 
     @Override

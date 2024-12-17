@@ -1,5 +1,6 @@
 AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
 AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+OPEN_SEARCH_URI: http://localhost:9200
 
 dolly:
   client:
@@ -29,9 +30,6 @@ management:
 
 open:
   search:
-    uri: http://localhost:9200
-    username: dummy
-    password: dummy
     index: local
 
 consumers:
