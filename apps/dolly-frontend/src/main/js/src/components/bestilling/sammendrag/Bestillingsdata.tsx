@@ -46,6 +46,7 @@ import { AfpOffentlig } from '@/components/fagsystem/afpOffentlig/bestilling/Afp
 import { Arena } from '@/components/fagsystem/arena/bestilling/Arena'
 import { Sykemelding } from '@/components/fagsystem/sykdom/bestilling/Sykemelding'
 import { Yrkesskader } from '@/components/fagsystem/yrkesskader/bestilling/Yrkesskader'
+import { Brregstub } from '@/components/fagsystem/brregstub/bestilling/Brregstub'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -140,6 +141,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Arena arbeidsytelse={bestilling.arenaforvalter} />
 			<Sykemelding sykemelding={bestilling.sykemelding} />
 			<Yrkesskader yrkesskader={bestilling.yrkesskader} />
+			<Brregstub brregstub={bestilling.brregstub} />
 		</>
 	)
 }
