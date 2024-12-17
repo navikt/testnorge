@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -19,11 +21,12 @@ public class BrukerTilgangController {
     private final Altinn3PersonOrganisasjonTilgangConsumer altinn3PersonOrganisasjonTilgangConsumer;
 
     @GetMapping("/organisasjoner")
-    public Flux<OrganisasjonDTO> getOrganisasjoner(ServerWebExchange exchange) {
+    public Mono<List<OrganisasjonDTO>> getOrganisasjoner(ServerWebExchange exchange) {
 
         exchange.getAttributes()
                 .forEach((key, value) -> log.info("Atributt {}: {}", key, value));
 
-        return altinn3PersonOrganisasjonTilgangConsumer.getOrganisasjoner(exchange);
+        return altinn3PersonOrganisasjonTilgangConsumer.getOrganisasjoner(exchange)
+                .collectList();
     }
 }
