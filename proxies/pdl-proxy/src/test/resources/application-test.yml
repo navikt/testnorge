@@ -1,14 +1,9 @@
 TOKEN_X_ISSUER: dummy
-
-sts:
-  token:
-    provider:
-      username: dummy
-      password: dummy
+AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: dummy
 
 app:
   elastic:
     username: dummy
     password: dummy
   hendelse.lager.api.key: dummy
-  person.aktor.api.key: dummy
+  person.aktor.api.key: dumm
