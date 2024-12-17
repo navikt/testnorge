@@ -34,16 +34,16 @@ public class GetAuthenticatedUserId implements Callable<Mono<String>> {
         return ReactiveSecurityContextHolder
                 .getContext()
                 .map(SecurityContext::getAuthentication)
-                .map(context -> getTokenAttribute(context, attribute));
+                .map(authentication -> getTokenAttribute(authentication, attribute));
     }
 
-    private String getTokenAttribute(Authentication context, String attribute) {
+    private String getTokenAttribute(Authentication authentication, String attribute) {
 
-        log.info("context.authentication {}", context);
-        if (context instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+        log.info("context.authentication {}, {}", authentication.getClass().getCanonicalName(), authentication);
+        if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
             return jwtAuthenticationToken.getTokenAttributes().get(attribute).toString();
 
-        } else if (context instanceof OAuth2AuthenticationToken oauth2AuthenticationToken) {
+        } else if (authentication instanceof OAuth2AuthenticationToken oauth2AuthenticationToken) {
             log.info("oauth2AuthenticationToken {}", oauth2AuthenticationToken.getPrincipal());
             return oauth2AuthenticationToken.getPrincipal().getAttributes().get(attribute).toString();
 
