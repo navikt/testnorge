@@ -35,7 +35,7 @@ type VisningProps = {
 	data: Data
 }
 
-type Data = {
+export type Data = {
 	sdpLeverandoer: number
 	registrert: boolean
 	reservert: boolean

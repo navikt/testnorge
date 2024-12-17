@@ -48,6 +48,7 @@ import { Sykemelding } from '@/components/fagsystem/sykdom/bestilling/Sykemeldin
 import { Yrkesskader } from '@/components/fagsystem/yrkesskader/bestilling/Yrkesskader'
 import { Brregstub } from '@/components/fagsystem/brregstub/bestilling/Brregstub'
 import { Inst } from '@/components/fagsystem/inst/bestilling/Inst'
+import { Krrstub } from '@/components/fagsystem/krrstub/bestilling/Krrstub'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -144,6 +145,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Yrkesskader yrkesskader={bestilling.yrkesskader} />
 			<Brregstub brregstub={bestilling.brregstub} />
 			<Inst inst={bestilling.instdata} />
+			<Krrstub krrstub={bestilling.krrstub} />
 		</>
 	)
 }
