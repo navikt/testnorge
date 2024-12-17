@@ -1,6 +1,8 @@
 package no.nav.testnav.libs.reactivesecurity.exchange.azuread;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,7 +17,6 @@ import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
 
-import no.nav.testnav.libs.reactivesecurity.exchange.ExchangeToken;
 import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -24,7 +25,7 @@ import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 @Slf4j
 @Service
 @ConditionalOnProperty("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT")
-public class NavAzureAdTokenService implements ExchangeToken {
+public class NavAzureAdTokenService implements TokenService {
 
     private final WebClient webClient;
     private final ClientCredential clientCredential;
@@ -53,6 +54,11 @@ public class NavAzureAdTokenService implements ExchangeToken {
         }
         this.webClient = builder.build();
 
+    }
+
+    @Override
+    public ResourceServerType getType() {
+        return ResourceServerType.AZURE_AD;
     }
 
     @Override
