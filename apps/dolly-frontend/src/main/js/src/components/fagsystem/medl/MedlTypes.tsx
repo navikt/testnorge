@@ -13,6 +13,8 @@ export type Medlemskapsperiode = {
 	grunnlag: string
 	sporingsinformasjon?: Sporingsinformasjon
 	studieinformasjon?: Studieinformasjon
+	kilde?: string
+	kildedokument?: string
 }
 
 export type Sporingsinformasjon = {
