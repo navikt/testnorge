@@ -2,22 +2,6 @@ import React, { useEffect } from 'react'
 import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
-import {
-	AaregVisning,
-	ArenaVisning,
-	BrregVisning,
-	DokarkivVisning,
-	HistarkVisning,
-	InntektsmeldingVisning,
-	InntektstubVisning,
-	InstVisning,
-	KrrVisning,
-	PensjonVisning,
-	SigrunstubVisning,
-	SykemeldingVisning,
-	TpVisning,
-	UdiVisning,
-} from '@/components/fagsystem'
 import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
@@ -32,9 +16,15 @@ import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPerso
 import { useAsync } from 'react-use'
 import { DollyApi } from '@/service/Api'
 import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/GjenopprettPerson'
-import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
-import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
-import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
+import {
+	BrregVisning,
+	sjekkManglerBrregData,
+} from '@/components/fagsystem/brregstub/visning/BrregVisning'
+import {
+	PensjonVisning,
+	sjekkManglerPensjonData,
+} from '@/components/fagsystem/pensjon/visning/PensjonVisning'
+import { AaregVisning, sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
 	useArbeidsplassencvData,
@@ -47,8 +37,11 @@ import {
 	useTpData,
 	useTransaksjonIdData,
 } from '@/utils/hooks/useFagsystemer'
-import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
-import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
+import {
+	sjekkManglerTpData,
+	TpVisning,
+} from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
+import { InstVisning, sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
 	harAfpOffentligBestilling,
@@ -81,6 +74,7 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 import {
 	sjekkManglerSykemeldingBestilling,
 	sjekkManglerSykemeldingData,
+	SykemeldingVisning,
 } from '@/components/fagsystem/sykdom/visning/Visning'
 import {
 	sjekkManglerUforetrygdData,
@@ -104,6 +98,14 @@ import {
 	sjekkManglerYrkesskadeData,
 	YrkesskaderVisning,
 } from '@/components/fagsystem/yrkesskader/visning/YrkesskaderVisning'
+import { InntektsmeldingVisning } from '@/components/fagsystem/inntektsmelding/visning/Visning'
+import { SigrunstubVisning } from '@/components/fagsystem/sigrunstub/visning/Visning'
+import { InntektstubVisning } from '@/components/fagsystem/inntektstub/visning/Visning'
+import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
+import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
+import { UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
+import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/DokarkivVisning'
+import HistarkVisning from '@/components/fagsystem/histark/visning/HistarkVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {

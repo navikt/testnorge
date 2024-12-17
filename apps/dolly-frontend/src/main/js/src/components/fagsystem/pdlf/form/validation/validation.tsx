@@ -1,29 +1,33 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
-import {
-	adressebeskyttelse,
-	bostedsadresse,
-	doedfoedtBarn,
-	falskIdentitet,
-	forelderBarnRelasjon,
-	foreldreansvar,
-	innflytting,
-	kontaktadresse,
-	kontaktDoedsbo,
-	oppholdsadresse,
-	sikkerhetstiltak,
-	sivilstand,
-	statsborgerskap,
-	telefonnummer,
-	tilrettelagtKommunikasjon,
-	utenlandskId,
-	utflytting,
-	vergemaal,
-} from '@/components/fagsystem/pdlf/form/validation/partials'
 import { bankkontoValidation } from '@/components/fagsystem/bankkonto/form'
 import { tpsMessagingValidation } from '@/components/fagsystem/tpsmessaging/form/validation'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { isSameDay } from 'date-fns'
+import {
+	adressebeskyttelse,
+	bostedsadresse,
+	kontaktadresse,
+	oppholdsadresse,
+} from './partials/adresser'
+import { sikkerhetstiltak } from './partials/sikkerhetstiltak'
+import { tilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/form/validation/partials/tilrettelagtKommunikasjon'
+import {
+	falskIdentitet,
+	utenlandskId,
+} from '@/components/fagsystem/pdlf/form/validation/partials/identifikasjon'
+import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials/telefonnummer'
+import { statsborgerskap } from '@/components/fagsystem/pdlf/form/validation/partials/statborgerskap'
+import {
+	doedfoedtBarn,
+	forelderBarnRelasjon,
+	foreldreansvar,
+	sivilstand,
+} from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
+import { innflytting } from '@/components/fagsystem/pdlf/form/validation/partials/innvandring'
+import { utflytting } from '@/components/fagsystem/pdlf/form/validation/partials/utflytting'
+import { kontaktDoedsbo } from '@/components/fagsystem/pdlf/form/validation/partials/kontaktinformasjonForDoedsbo'
+import { vergemaal } from '@/components/fagsystem/pdlf/form/validation/partials/vergemaal'
 
 const testGyldigFom = (val) => {
 	return val.test('is-unique', (selected: string, testContext: any) => {

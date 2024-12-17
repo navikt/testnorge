@@ -6,7 +6,6 @@ import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
-import DisplayFormState from '@/utils/DisplayFormState'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
@@ -16,7 +15,6 @@ import {
 import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	ShowErrorContext,
@@ -24,6 +22,9 @@ import {
 } from '@/components/bestillingsveileder/ShowErrorContext'
 import { DollyValidation } from './steg/steg2/DollyValidation'
 import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
+
+const DisplayFormState = React.lazy(() => import('@/utils/DisplayFormState'))
+const DisplayFormErrors = React.lazy(() => import('@/utils/DisplayFormErrors'))
 
 const STEPS = [Steg1, Steg2, Steg3]
 const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']

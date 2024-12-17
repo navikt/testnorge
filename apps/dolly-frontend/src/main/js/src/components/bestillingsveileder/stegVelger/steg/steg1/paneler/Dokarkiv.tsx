@@ -1,12 +1,12 @@
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
-import { dokarkivAttributt } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import {
+	dokarkivAttributt,
+	histarkAttributt,
 	initialDigitalInnsending,
 	initialDokarkiv,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { histarkAttributt } from '@/components/fagsystem/histark/form/HistarkForm'
 import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 
 export const DokarkivPanel = ({ stateModifier, formValues }: any) => {

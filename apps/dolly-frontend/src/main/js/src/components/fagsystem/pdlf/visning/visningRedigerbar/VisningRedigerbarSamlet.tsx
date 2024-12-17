@@ -11,7 +11,6 @@ import { DollyModal } from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { ifPresent } from '@/utils/YupValidations'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '@/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import {
@@ -21,6 +20,7 @@ import {
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { telefonnummer } from '../../form/validation/partials/telefonnummer'
 
 type VisningTypes = {
 	getPdlForvalter: Function

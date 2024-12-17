@@ -1,6 +1,4 @@
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
-import * as Yup from 'yup'
-import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -10,24 +8,13 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import * as _ from 'lodash-es'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useFormContext } from 'react-hook-form'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
-
-const Digitalinnsending = React.lazy(
-	() => import('@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'),
-)
-
-const FileUploader = React.lazy(() => import('@/utils/FileUploader/FileUploader'))
-
-const DokumentInfoListe = React.lazy(
-	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'),
-)
-
-interface DokarkivFormProps {
-	formMethods: UseFormReturn
-}
+import Digitalinnsending from './partials/Digitalinnsending'
+import FileUploader from '@/utils/FileUploader/FileUploader'
+import DokumentInfoListe from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
+import { dokarkivAttributt } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
 type Skjema = {
 	data: string
@@ -53,9 +40,7 @@ enum Kodeverk {
 	BEHANDLINGSTEMA = 'Behandlingstema',
 }
 
-export const dokarkivAttributt = 'dokarkiv'
-
-export const DokarkivForm = () => {
+const DokarkivForm = () => {
 	const formMethods = useFormContext()
 	if (!formMethods.watch(dokarkivAttributt)) {
 		return null
@@ -208,76 +193,4 @@ export const DokarkivForm = () => {
 	)
 }
 
-DokarkivForm.validation = {
-	dokarkiv: ifPresent(
-		'$dokarkiv',
-		Yup.object({
-			tittel: requiredString,
-			tema: requiredString,
-			journalfoerendeEnhet: Yup.string()
-				.optional()
-				.nullable()
-				.matches(/^\d*$/, 'Journalfoerende enhet må enten være blank eller et tall med 4 sifre')
-				.test(
-					'len',
-					'Journalfoerende enhet må enten være blank eller et tall med 4 sifre',
-					(val) => !val || (val && val.length === 4),
-				),
-			sak: Yup.object({
-				sakstype: requiredString,
-				fagsaksystem: Yup.string().when('sakstype', {
-					is: 'FAGSAK',
-					then: () => requiredString,
-					otherwise: () => Yup.mixed().notRequired(),
-				}),
-				fagsakId: Yup.string().when('sakstype', {
-					is: 'FAGSAK',
-					then: () => requiredString,
-					otherwise: () => Yup.mixed().notRequired(),
-				}),
-			}),
-			avsenderMottaker: Yup.object({
-				idType: Yup.string().optional().nullable(),
-				id: Yup.string()
-					.when('idType', {
-						is: 'ORGNR',
-						then: () =>
-							Yup.string()
-								.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
-								.test(
-									'len',
-									'Orgnummer må være et tall med 9 sifre',
-									(val) => val && val.length === 9,
-								),
-					})
-					.when('idType', {
-						is: 'FNR',
-						then: () =>
-							Yup.string()
-								.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
-								.test(
-									'len',
-									'Ident må være et tall med 11 sifre',
-									(val) => val && val.length === 11,
-								),
-					}),
-				navn: Yup.string().optional(),
-			}),
-			dokumenter: Yup.array().of(
-				Yup.object({
-					tittel: requiredString,
-					brevkode: Yup.string().test(
-						'is-valid-brevkode',
-						'Feltet er påkrevd',
-						(_val, testContext) => {
-							const fullForm =
-								testContext.from && testContext.from[testContext.from.length - 1]?.value
-							const brevkode = _.get(fullForm, 'dokarkiv.dokumenter[0].brevkode')
-							return brevkode !== ''
-						},
-					),
-				}),
-			),
-		}),
-	),
-}
+export default DokarkivForm

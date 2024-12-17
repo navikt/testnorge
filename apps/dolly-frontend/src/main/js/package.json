@@ -13,7 +13,7 @@
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
     "test:start": "vite --port 5678",
     "test:playwright-dev": "playwright test --ui",
-    "test:playwright-run": "playwright test",
+    "test:playwright-run": "vite build && playwright test",
     "test:playwright-debug": "playwright test --debug",
     "test:vitest-debug": "vitest --ui",
     "test:vitest-run": "vitest",

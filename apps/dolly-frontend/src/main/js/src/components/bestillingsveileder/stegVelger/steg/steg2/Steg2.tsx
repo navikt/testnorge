@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { lazy, Suspense, useContext, useEffect } from 'react'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
@@ -11,7 +11,6 @@ import { ArenaForm } from '@/components/fagsystem/arena/form/Form'
 import { InstForm } from '@/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '@/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '@/components/fagsystem/pensjon/form/Form'
-import { DokarkivForm } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
 import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
@@ -19,7 +18,6 @@ import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form
 import { Alert } from '@navikt/ds-react'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
-import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
@@ -29,6 +27,10 @@ import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/F
 import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { AfpOffentligForm } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
+import Loading from '@/components/ui/loading/Loading'
+
+const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
+const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -90,8 +92,10 @@ export const Steg2 = () => {
 			<KrrstubForm />
 			<MedlForm />
 			<UdistubForm />
-			<DokarkivForm />
-			<HistarkForm />
+			<Suspense fallback={<Loading label="Laster komponenter..." />}>
+				<DokarkivForm />
+				<HistarkForm />
+			</Suspense>
 			<OrganisasjonForm />
 		</div>
 	)

@@ -11,20 +11,18 @@ import { ToggleGroup } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import './Gruppe.less'
 import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
+import GruppeHeaderConnector from '@/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import Icon from '@/components/ui/icon/Icon'
 
-const NavButton = lazy(() => import('@/components/ui/button/NavButton/NavButton'))
 const PersonListeConnector = lazy(() => import('./PersonListe/PersonListeConnector'))
 const BestillingListeConnector = lazy(() => import('./BestillingListe/BestillingListeConnector'))
-const Icon = lazy(() => import('@/components/ui/icon/Icon'))
 const BestillingsveilederModal = lazy(
 	() => import('@/components/bestillingsveileder/startModal/StartModal'),
 )
 
 const FinnPersonBestillingConnector = lazy(
 	() => import('@/pages/gruppeOversikt/FinnPersonBestillingConnector'),
-)
-const GruppeHeaderConnector = lazy(
-	() => import('@/pages/gruppe/GruppeHeader/GruppeHeaderConnector'),
 )
 const StatusListeConnector = lazy(
 	() => import('@/components/bestilling/statusListe/StatusListeConnector'),
