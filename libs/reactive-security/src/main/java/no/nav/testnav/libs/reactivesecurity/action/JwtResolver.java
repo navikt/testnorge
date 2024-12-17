@@ -19,6 +19,7 @@ abstract class JwtResolver {
         return ReactiveSecurityContextHolder
                 .getContext()
                 .switchIfEmpty(Mono.error(new JwtResolverException("ReactiveSecurityContext is empty")))
+                .doOnNext(context -> log.info("context.authentication {}", context.getAuthentication()))
                 .map(SecurityContext::getAuthentication)
                 .map(JwtAuthenticationToken.class::cast)
                 .doOnError(throwable -> log.warn("Klarte ikke hente Jwt Auth Token", throwable))

@@ -23,9 +23,6 @@ public class BrukerTilgangController {
     @GetMapping("/organisasjoner")
     public Mono<List<OrganisasjonDTO>> getOrganisasjoner(ServerWebExchange exchange) {
 
-        exchange.getAttributes()
-                .forEach((key, value) -> log.info("Atributt {}: {}", key, value));
-
         return altinn3PersonOrganisasjonTilgangConsumer.getOrganisasjoner(exchange)
                 .collectList();
     }

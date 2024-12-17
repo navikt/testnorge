@@ -40,9 +40,6 @@ public class Altinn3PersonOrganisasjonTilgangConsumer {
 
     public Mono<Boolean> hasAccess(String organisasjonsnummer, ServerWebExchange exchange) {
 
-        exchange.getAttributes()
-                .forEach((key, value) -> log.info("Atributt {}: {}", key, value));
-
         return getAuthenticatedUserId
                 .call()
                 .flatMap(userId -> accessService.getAccessToken(serverProperties, exchange)
@@ -59,12 +56,10 @@ public class Altinn3PersonOrganisasjonTilgangConsumer {
 
     public Flux<OrganisasjonDTO> getOrganisasjoner(ServerWebExchange exchange) {
 
-        exchange.getAttributes()
-                .forEach((key, value) -> log.info("Atributt {}: {}", key, value));
-
         return getAuthenticatedUserId
                 .call()
                 .flatMapMany(userId -> accessService.getAccessToken(serverProperties, exchange)
+                        .doOnNext(pid -> log.info("userid {}", pid))
                         .flatMapMany(accessToken -> new PostPersonOrganisasjonTilgangCommand(webClient, userId, accessToken).call()));
     }
 }
