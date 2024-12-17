@@ -39,7 +39,7 @@ public class GetAuthenticatedUserId implements Callable<Mono<String>> {
 
     private String getTokenAttribute(Authentication authentication, String attribute) {
 
-        log.info("context.authentication {}, {}", authentication.getClass().getCanonicalName(), authentication);
+        log.info("GetAuthenticatedUserId context.authentication {}, {}", authentication.getClass().getPackageName(), authentication);
         if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
             return jwtAuthenticationToken.getTokenAttributes().get(attribute).toString();
 

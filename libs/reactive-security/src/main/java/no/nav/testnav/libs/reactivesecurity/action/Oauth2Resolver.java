@@ -20,7 +20,7 @@ public class Oauth2Resolver {
         return ReactiveSecurityContextHolder
                 .getContext()
                 .switchIfEmpty(Mono.error(new JwtResolverException("ReactiveSecurityContext is empty")))
-                .doOnNext(context -> log.info("context.authentication {}", context.getAuthentication()))
+                .doOnNext(context -> log.info("Oauth2Resolver context.authentication {} {}", context.getAuthentication().getClass().getCanonicalName(), context.getAuthentication()))
                 .map(SecurityContext::getAuthentication)
                 .map(OAuth2AuthenticationToken.class::cast)
                 .doOnError(throwable -> log.warn("Klarte ikke hente Jwt Auth Token", throwable))

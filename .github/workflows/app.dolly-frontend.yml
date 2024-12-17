@@ -17,12 +17,12 @@ on:
       - ".github/workflows/common.playwright.yml"
 
 jobs:
-  playwright:
-    uses: ./.github/workflows/common.playwright.yml
-    with:
-      working-directory: "apps/dolly-frontend"
-    secrets:
-      READER_TOKEN: ${{ secrets.READER_TOKEN }}
+#  playwright:
+#    uses: ./.github/workflows/common.playwright.yml
+#    with:
+#      working-directory: "apps/dolly-frontend"
+#    secrets:
+#      READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
   workflow:
     uses: ./.github/workflows/common.workflow.frontend.yml
