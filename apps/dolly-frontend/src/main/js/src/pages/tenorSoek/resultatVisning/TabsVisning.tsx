@@ -2,7 +2,7 @@ import { Tabs } from '@navikt/ds-react'
 import React from 'react'
 import styled from 'styled-components'
 import { FileCodeIcon, KeyVerticalIcon } from '@navikt/aksel-icons'
-import SyntaxHighlighter from 'react-syntax-highlighter'
+import PrettyCode, { SupportedPrettyCodeLanguages } from '@/components/codeView/PrettyCode'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
@@ -18,11 +18,6 @@ const TabsVisningFormatter = styled.div`
 			position: static;
 		}
 	}
-`
-
-const StyledCodeView = styled(SyntaxHighlighter)`
-	font-size: 0.9em;
-	margin: 0;
 `
 
 export const TabsVisning = ({ children, kildedata }: any) => {
@@ -60,9 +55,11 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<StyledCodeView language="json" wrapLongLines>
-						{kildedataPretty}
-					</StyledCodeView>
+					<PrettyCode
+						language={SupportedPrettyCodeLanguages.JSON}
+						codeString={kildedataPretty}
+						wrapLongLines
+					/>
 				</Tabs.Panel>
 			</Tabs>
 		</TabsVisningFormatter>

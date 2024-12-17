@@ -1,11 +1,13 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Button from '@/components/ui/button/Button'
-import { PrettyXml } from '@/components/codeView'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { Journalpost } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import styled from 'styled-components'
 import { useDokument } from '@/utils/hooks/useJoarkDokument'
 import { Alert } from '@navikt/ds-react'
+import { lazy, Suspense } from 'react'
+import Loading from '@/components/ui/loading/Loading'
+import { SupportedPrettyCodeLanguages } from '@/components/codeView/PrettyCode'
 
 interface PersonVisningContentProps {
 	id: Journalpost
@@ -33,6 +35,7 @@ const StyledJournalpost = styled.div`
 		}
 	}
 `
+const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
 
 export const PersonVisningContent = ({ miljoe, dokumentInfo }: PersonVisningContentProps) => {
 	const [viserSkjemainnhold, vis, skjul] = useBoolean(false)
@@ -59,7 +62,9 @@ export const PersonVisningContent = ({ miljoe, dokumentInfo }: PersonVisningCont
 			</div>
 			{viserSkjemainnhold &&
 				(dokument ? (
-					<PrettyXml xmlString={dokument} />
+					<Suspense fallback={<Loading label={'Laster xml...'} />}>
+						<PrettyCode language={SupportedPrettyCodeLanguages.XML} codeString={dokument} />
+					</Suspense>
 				) : (
 					<Alert variant="error" size="small" inline>
 						Kunne ikke hente skjemainnhold

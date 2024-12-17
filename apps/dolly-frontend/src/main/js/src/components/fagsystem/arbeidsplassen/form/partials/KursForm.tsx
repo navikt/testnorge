@@ -8,7 +8,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { showLabel } from '@/utils/DataFormatter'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
@@ -20,7 +20,7 @@ export const KursForm = ({ formMethods }) => {
 		<Vis attributt={kursListePath}>
 			<FormDollyFieldArray name={kursListePath} header="Kurs" newEntry={initialKursVerdier} nested>
 				{(kursPath, idx) => {
-					const durationUnit = _get(formMethods.getValues(), `${kursPath}.durationUnit`)
+					const durationUnit = _.get(formMethods.getValues(), `${kursPath}.durationUnit`)
 					return (
 						<>
 							<div key={idx} className="flexbox--flex-wrap">
@@ -28,13 +28,13 @@ export const KursForm = ({ formMethods }) => {
 									name={`${kursPath}.title`}
 									label="Kursnavn"
 									size="xlarge"
-									key={`title_${_get(formMethods.getValues(), `${kursPath}.title`)}`}
+									key={`title_${_.get(formMethods.getValues(), `${kursPath}.title`)}`}
 								/>
 								<FormTextInput
 									name={`${kursPath}.issuer`}
 									label="Kursholder"
 									size="xlarge"
-									key={`issuer_${_get(formMethods.getValues(), `${kursPath}.issuer`)}`}
+									key={`issuer_${_.get(formMethods.getValues(), `${kursPath}.issuer`)}`}
 								/>
 								<FormDatepicker name={`${kursPath}.date`} label="Fullført" />
 								<FormSelect
@@ -52,7 +52,7 @@ export const KursForm = ({ formMethods }) => {
 									}`}
 									size="small"
 									type="number"
-									key={`duration_${_get(formMethods.getValues(), `${kursPath}.duration`)}`}
+									key={`duration_${_.get(formMethods.getValues(), `${kursPath}.duration`)}`}
 								/>
 							</div>
 							<EraseFillButtons

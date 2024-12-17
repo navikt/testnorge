@@ -21,8 +21,6 @@ import {
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
@@ -1278,7 +1276,7 @@ const mapInntektStub = (bestillingData, data) => {
 }
 
 const mapArbeidsplassenCV = (bestillingData, data) => {
-	const CVKriterier = _get(bestillingData, 'arbeidsplassenCV')
+	const CVKriterier = _.get(bestillingData, 'arbeidsplassenCV')
 
 	if (CVKriterier) {
 		const arbeidsplassenCV = {
@@ -1443,7 +1441,7 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 			])
 		}
 
-		if (_has(CVKriterier, 'harHjemmel')) {
+		if (_.has(CVKriterier, 'harHjemmel')) {
 			arbeidsplassenCV.itemRows.push([
 				{ numberHeader: 'Hjemmel' },
 				{

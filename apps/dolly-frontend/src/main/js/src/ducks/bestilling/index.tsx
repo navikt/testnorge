@@ -3,6 +3,7 @@ import { DollyApi } from '@/service/Api'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { getLeggTilIdent, rootPaths } from '@/components/bestillingsveileder/utils'
 import { v4 as uuid } from 'uuid'
+import * as _ from 'lodash-es'
 import { Logger } from '@/logger/Logger'
 
 export const actions = createActions(

@@ -1,5 +1,5 @@
 import Loading from '@/components/ui/loading/Loading'
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Alert } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -10,12 +10,14 @@ import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { ForskuddstrekkVisning } from '@/components/fagsystem/skattekort/visning/ForskuddstrekkVisning'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { PrettyXml } from '@/components/codeView'
+import { SupportedPrettyCodeLanguages } from '@/components/codeView/PrettyCode'
 
 type SkattekortVisning = {
 	liste?: Array<any>
 	loading?: boolean
 }
+
+const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
 
 export const showKodeverkLabel = (kodeverkstype: string, value: string) => {
 	const { kodeverk, loading, error } = useSkattekortKodeverk(kodeverkstype)
@@ -106,7 +108,13 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 									</Button>
 									{viserXml &&
 										(skattekort?.skattekortXml ? (
-											<PrettyXml xmlString={xmlFormatted} wrapLongLines />
+											<Suspense fallback={<Loading label={'Laster xml...'} />}>
+												<PrettyCode
+													language={SupportedPrettyCodeLanguages.XML}
+													codeString={xmlFormatted}
+													wrapLongLines
+												/>
+											</Suspense>
 										) : (
 											<Alert variant="error" size="small" inline>
 												Kunne ikke vise skattekort-xml

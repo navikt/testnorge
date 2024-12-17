@@ -1,30 +1,41 @@
+import React, { lazy, Suspense } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Loading from '@/components/ui/loading/Loading'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
-import PersonListeConnector from './PersonListe/PersonListeConnector'
-import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
-import { BestillingsveilederModal } from '@/components/bestillingsveileder/startModal/StartModal'
-import Icon from '@/components/ui/icon/Icon'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import FinnPersonBestillingConnector from '@/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { resetNavigering, resetPaginering } from '@/ducks/finnPerson'
-import GruppeHeaderConnector from '@/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { useIkkeFerdigBestillingerGruppe } from '@/utils/hooks/useBestilling'
-import StatusListeConnector from '@/components/bestilling/statusListe/StatusListeConnector'
-import './Gruppe.less'
-import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
 import { ToggleGroup } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import './Gruppe.less'
+import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
+
+const NavButton = lazy(() => import('@/components/ui/button/NavButton/NavButton'))
+const PersonListeConnector = lazy(() => import('./PersonListe/PersonListeConnector'))
+const BestillingListeConnector = lazy(() => import('./BestillingListe/BestillingListeConnector'))
+const Icon = lazy(() => import('@/components/ui/icon/Icon'))
+const BestillingsveilederModal = lazy(
+	() => import('@/components/bestillingsveileder/startModal/StartModal'),
+)
+
+const FinnPersonBestillingConnector = lazy(
+	() => import('@/pages/gruppeOversikt/FinnPersonBestillingConnector'),
+)
+const GruppeHeaderConnector = lazy(
+	() => import('@/pages/gruppe/GruppeHeader/GruppeHeaderConnector'),
+)
+const StatusListeConnector = lazy(
+	() => import('@/components/bestilling/statusListe/StatusListeConnector'),
+)
 
 export type GruppeProps = {
 	visning: string
-	setVisning: Function
+	setVisning: (value: VisningType) => void
 	sidetall: number
 	sideStoerrelse: number
-	sorting: object
+	sorting: { kolonne: string; retning: string }
 	update: string
 }
 
@@ -41,16 +52,14 @@ export default ({
 	sorting,
 	update,
 }: GruppeProps) => {
-	const { gruppeId } = useParams()
-	const {
-		currentBruker: { brukernavn, brukertype },
-		loading: loadingBruker,
-	} = useCurrentBruker()
-
+	const { gruppeId } = useParams<{ gruppeId: string }>()
+	const { currentBruker, loading: loadingBruker } = useCurrentBruker()
 	const location = useLocation()
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
 
 	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
-		gruppeId,
+		gruppeId!,
 		'personer',
 		sidetall,
 		sideStoerrelse,
@@ -58,7 +67,7 @@ export default ({
 	)
 
 	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
-		gruppeId,
+		gruppeId!,
 		visning,
 		sidetall,
 		sideStoerrelse,
@@ -69,22 +78,18 @@ export default ({
 		gruppe,
 		identer,
 		loading: loadingGruppe,
-		// @ts-ignore
 	} = useGruppeById(
-		gruppeId,
+		gruppeId!,
 		location?.state?.sidetall || sidetall,
 		sideStoerrelse,
 		false,
-		sorting?.kolonne,
-		sorting?.retning,
+		sorting?.kolonne || '',
+		sorting?.retning || '',
 	)
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 
-	const dispatch = useDispatch()
-	const navigate = useNavigate()
-
-	const bankIdBruker = brukertype === 'BANKID'
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
 	if (loadingBruker || loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
@@ -111,105 +116,111 @@ export default ({
 
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppeId={gruppe.id} />
-			{ikkeFerdigBestillinger && (
-				// @ts-ignore
-				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={ikkeFerdigBestillinger} />
-			)}
-			<div className="gruppe-toolbar">
-				<div className="gruppe--full gruppe--flex-row-center">
-					{!bankIdBruker && (
+			<Suspense fallback={<Loading label="Laster personer..." />}>
+				<GruppeHeaderConnector gruppeId={gruppe.id} />
+				{ikkeFerdigBestillinger && (
+					<StatusListeConnector
+						gruppeId={gruppe.id}
+						bestillingListe={Object.values(ikkeFerdigBestillinger)}
+					/>
+				)}
+				<div className="gruppe-toolbar">
+					<div className="gruppe--full gruppe--flex-row-center">
+						{!bankIdBruker && (
+							<NavButton
+								data-testid={TestComponentSelectors.BUTTON_OPPRETT_PERSONER}
+								variant={'primary'}
+								onClick={visStartBestilling}
+								disabled={erLaast}
+								title={
+									erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''
+								}
+								className="margin-top-5 margin-bottom-5 margin-right-10"
+							>
+								Opprett personer
+							</NavButton>
+						)}
 						<NavButton
-							data-testid={TestComponentSelectors.BUTTON_OPPRETT_PERSONER}
-							variant={'primary'}
-							onClick={visStartBestilling}
+							data-testid={TestComponentSelectors.BUTTON_IMPORTER_PERSONER}
+							variant={bankIdBruker ? 'primary' : 'secondary'}
+							onClick={() =>
+								navigate(`/tenor/personer`, {
+									state: {
+										gruppe: gruppe,
+									},
+								})
+							}
 							disabled={erLaast}
 							title={
 								erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''
 							}
-							className="margin-top-5 margin-bottom-5 margin-right-10"
+							className="margin-top-5 margin-bottom-5"
 						>
-							Opprett personer
+							Importer personer
 						</NavButton>
-					)}
-					<NavButton
-						data-testid={TestComponentSelectors.BUTTON_IMPORTER_PERSONER}
-						variant={bankIdBruker ? 'primary' : 'secondary'}
-						onClick={() =>
-							navigate(`/tenor/personer`, {
-								state: {
-									gruppe: gruppe,
-								},
-							})
-						}
-						disabled={erLaast}
-						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-						className="margin-top-5 margin-bottom-5"
-					>
-						Importer personer
-					</NavButton>
-					<div style={{ flexGrow: '2' }}></div>
-					{!bankIdBruker && <FinnPersonBestillingConnector />}
-				</div>
-				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
-					<ToggleGroup
-						value={visning}
-						onChange={byttVisning}
-						style={{ backgroundColor: '#ffffff' }}
-					>
-						<ToggleGroup.Item
-							data-testid={TestComponentSelectors.TOGGLE_VISNING_PERSONER}
-							key={VisningType.VISNING_PERSONER}
-							value={VisningType.VISNING_PERSONER}
+						<div style={{ flexGrow: '2' }}></div>
+						{!bankIdBruker && <FinnPersonBestillingConnector />}
+					</div>
+					<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
+						<ToggleGroup
+							value={visning}
+							onChange={byttVisning}
+							style={{ backgroundColor: '#ffffff' }}
 						>
-							<Icon
+							<ToggleGroup.Item
+								data-testid={TestComponentSelectors.TOGGLE_VISNING_PERSONER}
 								key={VisningType.VISNING_PERSONER}
-								size={13}
-								kind={visning === VisningType.VISNING_PERSONER ? 'man-light' : 'man'}
-							/>
-							{`Personer (${gruppe.antallIdenter || 0})`}
-						</ToggleGroup.Item>
-						<ToggleGroup.Item
-							data-testid={TestComponentSelectors.TOGGLE_VISNING_BESTILLINGER}
-							key={VisningType.VISNING_BESTILLING}
-							value={VisningType.VISNING_BESTILLING}
-						>
-							<Icon
+								value={VisningType.VISNING_PERSONER}
+							>
+								<Icon
+									key={VisningType.VISNING_PERSONER}
+									size={13}
+									kind={visning === VisningType.VISNING_PERSONER ? 'man-light' : 'man'}
+								/>
+								{`Personer (${gruppe.antallIdenter || 0})`}
+							</ToggleGroup.Item>
+							<ToggleGroup.Item
+								data-testid={TestComponentSelectors.TOGGLE_VISNING_BESTILLINGER}
 								key={VisningType.VISNING_BESTILLING}
-								size={13}
-								kind={
-									visning === VisningType.VISNING_BESTILLING ? 'bestilling-light' : 'bestilling'
-								}
-							/>
-							{`Bestillinger (${gruppe.antallBestillinger || 0})`}
-						</ToggleGroup.Item>
-					</ToggleGroup>
+								value={VisningType.VISNING_BESTILLING}
+							>
+								<Icon
+									key={VisningType.VISNING_BESTILLING}
+									size={13}
+									kind={
+										visning === VisningType.VISNING_BESTILLING ? 'bestilling-light' : 'bestilling'
+									}
+								/>
+								{`Bestillinger (${gruppe.antallBestillinger || 0})`}
+							</ToggleGroup.Item>
+						</ToggleGroup>
+					</div>
 				</div>
-			</div>
-			{startBestillingAktiv && (
-				<BestillingsveilederModal
-					onSubmit={startBestilling}
-					onAvbryt={skjulStartBestilling}
-					brukernavn={brukernavn}
-				/>
-			)}
-			{visning === VisningType.VISNING_PERSONER && (
-				<PersonListeConnector
-					iLaastGruppe={erLaast}
-					brukertype={brukertype}
-					gruppeId={gruppeId}
-					identer={identer}
-					bestillingerById={bestillingerById}
-				/>
-			)}
-			{visning === VisningType.VISNING_BESTILLING && (
-				<BestillingListeConnector
-					iLaastGruppe={erLaast}
-					brukertype={brukertype}
-					bestillingerById={bestillingerById}
-					gruppeId={gruppeId}
-				/>
-			)}
+				{startBestillingAktiv && (
+					<BestillingsveilederModal
+						onSubmit={startBestilling}
+						onAvbryt={skjulStartBestilling}
+						brukernavn={currentBruker?.brukernavn}
+					/>
+				)}
+				{visning === VisningType.VISNING_PERSONER && (
+					<PersonListeConnector
+						iLaastGruppe={erLaast}
+						brukertype={currentBruker?.brukertype}
+						gruppeId={gruppeId!}
+						identer={identer}
+						bestillingerById={bestillingerById}
+					/>
+				)}
+				{visning === VisningType.VISNING_BESTILLING && (
+					<BestillingListeConnector
+						iLaastGruppe={erLaast}
+						brukertype={currentBruker?.brukertype}
+						bestillingerById={bestillingerById}
+						gruppeId={gruppeId!}
+					/>
+				)}
+			</Suspense>
 		</div>
 	)
 }
