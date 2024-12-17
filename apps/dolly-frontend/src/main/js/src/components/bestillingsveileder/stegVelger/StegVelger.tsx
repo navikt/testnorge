@@ -1,11 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { lazy, Suspense, useContext, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
-
-import { Steg1 } from './steg/steg1/Steg1'
-import { Steg2 } from './steg/steg2/Steg2'
-import { Steg3 } from './steg/steg3/Steg3'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
@@ -20,11 +16,16 @@ import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
-import { DollyValidation } from './steg/steg2/DollyValidation'
 import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyValidation } from '@/components/bestillingsveileder/stegVelger/steg/steg2/DollyValidation'
 
-const DisplayFormState = React.lazy(() => import('@/utils/DisplayFormState'))
-const DisplayFormErrors = React.lazy(() => import('@/utils/DisplayFormErrors'))
+const Steg1 = lazy(() => import('./steg/steg1/Steg1'))
+const Steg2 = lazy(() => import('./steg/steg2/Steg2'))
+const Steg3 = lazy(() => import('./steg/steg3/Steg3'))
+
+const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
+const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
 
 const STEPS = [Steg1, Steg2, Steg3]
 const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
@@ -54,7 +55,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const matchMutate = useMatchMutate()
 
-	const validationPaths = Object.keys(DollyValidation?.fields)
+	const validationPaths = Object.keys(DollyValidation.fields)
 
 	const isLastStep = () => step === STEPS.length - 1
 
@@ -129,12 +130,14 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 					))}
 				</Stepper>
 				<BestillingsveilederHeader />
-				<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
+				<Suspense fallback={<Loading label="Laster komponenter" />}>
+					<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
+				</Suspense>
 				{devEnabled && (
-					<>
+					<Suspense fallback={<Loading label="Laster komponenter" />}>
 						<DisplayFormState />
 						<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
-					</>
+					</Suspense>
 				)}
 				{!loading && (
 					<Navigation

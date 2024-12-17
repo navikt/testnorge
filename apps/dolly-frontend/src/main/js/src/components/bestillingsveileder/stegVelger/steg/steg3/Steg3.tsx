@@ -16,7 +16,7 @@ const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
 )
 
-export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
+const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
@@ -143,3 +143,5 @@ export const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => 
 }
 
 Steg3.label = 'Oppsummering'
+
+export default Steg3

@@ -49,7 +49,7 @@ const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 	return 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
 }
 
-export const Steg2 = () => {
+const Steg2 = () => {
 	const opts: any = useContext(BestillingsveilederContext)
 	const formMethods = useFormContext()
 
@@ -102,3 +102,5 @@ export const Steg2 = () => {
 }
 
 Steg2.label = 'Velg verdier'
+
+export default Steg2
