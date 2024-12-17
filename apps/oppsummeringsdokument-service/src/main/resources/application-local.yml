@@ -1,11 +1,4 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
-OPEN_SEARCH_URI: http://localhost:9200
-
-spring:
-  config:
-    import: "sm://"
-
 open:
   search:
     index: local
+    uri: http://localhost:9200

@@ -64,5 +64,7 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
+  envFrom:
+    - secret: teamdolly-opensearch
   ingresses:
     - "https://testnav-oppsummeringsdokument-service.intern.dev.nav.no"
