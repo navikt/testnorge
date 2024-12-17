@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.util.Assert;
 
@@ -24,6 +25,7 @@ public class ClientCredentialAutoConfiguration {
     private static final String TEST_CLIENT_ID = "test-client-id";
     private static final String TEST_CLIENT_SECRET = "test-client-secret";
 
+    @Primary
     @Bean("azureClientCredential")
     @Profile("test")
     public AzureClientCredential azureClientCredentialTest() {
@@ -43,6 +45,7 @@ public class ClientCredentialAutoConfiguration {
         return new AzureClientCredential(azureTokenEndpoint, azureClientId, azureClientSecret);
     }
 
+    @Primary
     @Bean("azureTrygdeetatenClientCredential")
     @Profile("test")
     public AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredentialTest() {
@@ -62,6 +65,7 @@ public class ClientCredentialAutoConfiguration {
         return new AzureTrygdeetatenClientCredential(azureTrygdeetatenTokenEndpoint, azureTrygdeetatenClientId, azureTrygdeetatenClientSecret);
     }
 
+    @Primary
     @Bean("azureNavClientCredential")
     @Profile("test")
     public AzureNavClientCredential azureNavClientCredentialTest() {
