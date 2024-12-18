@@ -9,25 +9,25 @@ import {
 	bostedsadresse,
 	kontaktadresse,
 	oppholdsadresse,
-} from './partials/adresser'
-import { sikkerhetstiltak } from './partials/sikkerhetstiltak'
+} from '@/components/fagsystem/pdlf/form/validation/partials/adresser'
+import { sikkerhetstiltak } from '@/components/fagsystem/pdlf/form/validation/partials/sikkerhetstiltak'
 import { tilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/form/validation/partials/tilrettelagtKommunikasjon'
 import {
 	falskIdentitet,
 	utenlandskId,
 } from '@/components/fagsystem/pdlf/form/validation/partials/identifikasjon'
 import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials/telefonnummer'
-import { statsborgerskap } from '@/components/fagsystem/pdlf/form/validation/partials/statborgerskap'
 import {
 	doedfoedtBarn,
 	forelderBarnRelasjon,
 	foreldreansvar,
 	sivilstand,
 } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
-import { innflytting } from '@/components/fagsystem/pdlf/form/validation/partials/innvandring'
 import { utflytting } from '@/components/fagsystem/pdlf/form/validation/partials/utflytting'
 import { kontaktDoedsbo } from '@/components/fagsystem/pdlf/form/validation/partials/kontaktinformasjonForDoedsbo'
 import { vergemaal } from '@/components/fagsystem/pdlf/form/validation/partials/vergemaal'
+import { statsborgerskap } from '@/components/fagsystem/pdlf/form/validation/partials/statborgerskap'
+import { innflytting } from '@/components/fagsystem/pdlf/form/validation/partials/innvandring'
 
 const testGyldigFom = (val) => {
 	return val.test('is-unique', (selected: string, testContext: any) => {

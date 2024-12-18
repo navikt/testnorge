@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { lazy, Suspense, useCallback, useRef, useState } from 'react'
 import { FoedselForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
@@ -40,10 +40,9 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
 import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
-import DisplayFormState from '@/utils/DisplayFormState'
-import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
+import Loading from '@/components/ui/loading/Loading'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -131,6 +130,9 @@ export const VisningRedigerbar = ({
 	relatertPersonInfo = null,
 	master = null,
 }: VisningTypes) => {
+	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
+	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
+
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
@@ -401,8 +403,10 @@ export const VisningRedigerbar = ({
 						<>
 							{devEnabled && (
 								<>
-									<DisplayFormState />
-									<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+									<Suspense fallback={<Loading label="Laster komponenter" />}>
+										<DisplayFormState />
+										<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+									</Suspense>
 								</>
 							)}
 							<FieldArrayEdit>

@@ -10,7 +10,6 @@ import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
 import { ForskuddstrekkVisning } from '@/components/fagsystem/skattekort/visning/ForskuddstrekkVisning'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { SupportedPrettyCodeLanguages } from '@/components/codeView/PrettyCode'
 
 type SkattekortVisning = {
 	liste?: Array<any>
@@ -109,11 +108,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 									{viserXml &&
 										(skattekort?.skattekortXml ? (
 											<Suspense fallback={<Loading label={'Laster xml...'} />}>
-												<PrettyCode
-													language={SupportedPrettyCodeLanguages.XML}
-													codeString={xmlFormatted}
-													wrapLongLines
-												/>
+												<PrettyCode language={'xml'} codeString={xmlFormatted} wrapLongLines />
 											</Suspense>
 										) : (
 											<Alert variant="error" size="small" inline>

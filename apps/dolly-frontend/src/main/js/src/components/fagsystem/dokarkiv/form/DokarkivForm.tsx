@@ -14,7 +14,6 @@ import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import Digitalinnsending from './partials/Digitalinnsending'
 import FileUploader from '@/utils/FileUploader/FileUploader'
 import DokumentInfoListe from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
-import { dokarkivAttributt } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
 type Skjema = {
 	data: string
@@ -39,6 +38,8 @@ enum Kodeverk {
 	NAVSKJEMA = 'NAVSkjema',
 	BEHANDLINGSTEMA = 'Behandlingstema',
 }
+
+const dokarkivAttributt = 'dokarkiv'
 
 const DokarkivForm = () => {
 	const formMethods = useFormContext()

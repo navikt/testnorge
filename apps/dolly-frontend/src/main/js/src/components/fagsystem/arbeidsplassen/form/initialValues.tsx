@@ -9,10 +9,6 @@ export const initialJobboensker = {
 	workScheduleTypes: [],
 }
 
-export const histarkAttributt = 'histark'
-
-export const dokarkivAttributt = 'dokarkiv'
-
 export const initialJobboenskerVerdier = {
 	startOption: 'LEDIG_NAA',
 	occupations: [

@@ -1,8 +1,7 @@
 import { Tabs } from '@navikt/ds-react'
-import React from 'react'
+import React, { lazy } from 'react'
 import styled from 'styled-components'
 import { FileCodeIcon, KeyVerticalIcon } from '@navikt/aksel-icons'
-import PrettyCode, { SupportedPrettyCodeLanguages } from '@/components/codeView/PrettyCode'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
@@ -21,6 +20,8 @@ const TabsVisningFormatter = styled.div`
 `
 
 export const TabsVisning = ({ children, kildedata }: any) => {
+	const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
+
 	if (!kildedata) {
 		return <div className="person-visning_content">{children}</div>
 	}
@@ -55,11 +56,7 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<PrettyCode
-						language={SupportedPrettyCodeLanguages.JSON}
-						codeString={kildedataPretty}
-						wrapLongLines
-					/>
+					<PrettyCode language={'json'} codeString={kildedataPretty} wrapLongLines />
 				</Tabs.Panel>
 			</Tabs>
 		</TabsVisningFormatter>

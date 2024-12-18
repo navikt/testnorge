@@ -7,11 +7,6 @@ import { defaultStyle } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 SyntaxHighlighter.registerLanguage('xml', xml)
 SyntaxHighlighter.registerLanguage('json', json)
 
-export enum SupportedPrettyCodeLanguages {
-	JSON = 'json',
-	XML = 'xml',
-}
-
 const StyledSyntaxHighlighter = styled(SyntaxHighlighter)`
 	font-size: 0.9em;
 	width: 100%;
@@ -20,7 +15,7 @@ const StyledSyntaxHighlighter = styled(SyntaxHighlighter)`
 type Props = {
 	codeString: string
 	wrapLongLines?: boolean
-	language?: SupportedPrettyCodeLanguages
+	language?: string
 }
 
 const PrettyCode = ({ codeString, wrapLongLines = false, language }: Props) => (

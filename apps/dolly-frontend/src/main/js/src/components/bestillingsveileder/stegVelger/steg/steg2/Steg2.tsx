@@ -6,7 +6,6 @@ import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
 import { AaregForm } from '@/components/fagsystem/aareg/form/Form'
 import { BrregstubForm } from '@/components/fagsystem/brregstub/form/Form'
-import { PdlfForm } from '@/components/fagsystem/pdlf/form/Form'
 import { ArenaForm } from '@/components/fagsystem/arena/form/Form'
 import { InstForm } from '@/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '@/components/fagsystem/udistub/form/Form'
@@ -28,6 +27,7 @@ import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { AfpOffentligForm } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 import Loading from '@/components/ui/loading/Loading'
+import { PdlfForm } from '@/components/fagsystem/pdlf/form/Form'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))

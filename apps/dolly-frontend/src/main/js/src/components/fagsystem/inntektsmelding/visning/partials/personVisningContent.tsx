@@ -7,7 +7,6 @@ import { useDokument } from '@/utils/hooks/useJoarkDokument'
 import { Alert } from '@navikt/ds-react'
 import { lazy, Suspense } from 'react'
 import Loading from '@/components/ui/loading/Loading'
-import { SupportedPrettyCodeLanguages } from '@/components/codeView/PrettyCode'
 
 interface PersonVisningContentProps {
 	id: Journalpost
@@ -63,7 +62,7 @@ export const PersonVisningContent = ({ miljoe, dokumentInfo }: PersonVisningCont
 			{viserSkjemainnhold &&
 				(dokument ? (
 					<Suspense fallback={<Loading label={'Laster xml...'} />}>
-						<PrettyCode language={SupportedPrettyCodeLanguages.XML} codeString={dokument} />
+						<PrettyCode language={'xml'} codeString={dokument} />
 					</Suspense>
 				) : (
 					<Alert variant="error" size="small" inline>

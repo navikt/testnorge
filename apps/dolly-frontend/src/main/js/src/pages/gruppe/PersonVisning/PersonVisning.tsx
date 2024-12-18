@@ -104,6 +104,7 @@ import { InntektstubVisning } from '@/components/fagsystem/inntektstub/visning/V
 import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
 import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
 import { UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
+
 import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/DokarkivVisning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/HistarkVisning'
 

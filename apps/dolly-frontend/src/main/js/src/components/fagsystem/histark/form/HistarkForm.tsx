@@ -17,11 +17,12 @@ import { initialHistark } from '@/components/fagsystem/histark/form/initialValue
 import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 import FileUploader from '@/utils/FileUploader/FileUploader'
 import DokumentInfoListe from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
-import { histarkAttributt } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
 enum Kodeverk {
 	TEMA = 'Tema',
 }
+
+const histarkAttributt = 'histark'
 
 const HistarkForm = () => {
 	const formMethods = useFormContext()

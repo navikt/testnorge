@@ -47,7 +47,7 @@ export default function PersonListe({
 	tmpPersoner,
 	sorting,
 	bestillingerById,
-}) {
+}: any) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
