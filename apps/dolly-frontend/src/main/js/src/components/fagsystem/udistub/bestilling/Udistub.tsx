@@ -1,11 +1,13 @@
+import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { allCapsToCapitalized, formatDate, showLabel } from '@/utils/DataFormatter'
+import { allCapsToCapitalized, formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import _ from 'lodash'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
-const getTredjelandsborgerStatus = (oppholdKriterier, udiStubKriterier) => {
+const getTredjelandsborgerStatus = (oppholdKriterier: any, udiStubKriterier: any) => {
 	if (oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar) {
 		return 'Oppholdstillatelse eller opphold på samme vilkår'
 	} else if (oppholdKriterier && oppholdKriterier.uavklart) {
@@ -16,13 +18,14 @@ const getTredjelandsborgerStatus = (oppholdKriterier, udiStubKriterier) => {
 	return null
 }
 
-export const Udistub = ({ udistub }) => {
-	if (!udistub || isEmpty(udistub)) {
+export const Udistub = ({ udistub }: any) => {
+	if (!udistub || (isEmpty(udistub) && !udistub?.hasOwnProperty('flyktning'))) {
 		return null
 	}
 
 	const oppholdStatus = udistub.oppholdStatus
 	const arbeidsadgang = udistub.arbeidsadgang
+	const aliaser = udistub.aliaser
 	const flyktningstatus = udistub.flyktning
 	const asylsoeker = udistub.soeknadOmBeskyttelseUnderBehandling
 
@@ -81,6 +84,13 @@ export const Udistub = ({ udistub }) => {
 								)}
 							/>
 							<TitleValue
+								title="Grunnlag for opphold"
+								value={
+									oppholdsrett &&
+									showLabel(currentOppholdsrettType, oppholdStatus[currentOppholdsrettType])
+								}
+							/>
+							<TitleValue
 								title="Type oppholdstillatelse"
 								value={showLabel(
 									'oppholdstillatelseType',
@@ -111,8 +121,45 @@ export const Udistub = ({ udistub }) => {
 						<BestillingData>
 							<TitleValue
 								title="Har arbeidsadgang"
-								value={allCapsToCapitalized(arbeidsadgang && arbeidsadgang.harArbeidsAdgang)}
+								value={allCapsToCapitalized(arbeidsadgang.harArbeidsAdgang)}
 							/>
+							<TitleValue
+								title="Type arbeidsadgang"
+								value={showLabel('typeArbeidsadgang', arbeidsadgang.typeArbeidsadgang)}
+							/>
+							<TitleValue
+								title="Arbeidsomfang"
+								value={showLabel('arbeidsOmfang', arbeidsadgang.arbeidsOmfang)}
+							/>
+							<TitleValue
+								title="Arbeidsadgang fra dato"
+								value={formatDate(_.get(arbeidsadgang, 'periode.fra'))}
+							/>
+							<TitleValue
+								title="Arbeidsadgang til dato"
+								value={formatDate(_.get(arbeidsadgang, 'periode.til'))}
+							/>
+							<TitleValue title="Hjemmel" value={_.get(arbeidsadgang, 'hjemmel')} />
+							<TitleValue title="Forklaring" value={_.get(arbeidsadgang, 'forklaring')} />
+						</BestillingData>
+					</>
+				)}
+				{aliaser?.length > 0 && (
+					<DollyFieldArray header="Aliaser" data={aliaser} nested>
+						{(alias: any, idx: number) => (
+							<React.Fragment key={idx}>
+								<TitleValue title="Type alias" value={alias.nyIdent ? 'ID-nummer' : 'Navn'} />
+								<TitleValue title="Identtype" value={alias.identtype} />
+							</React.Fragment>
+						)}
+					</DollyFieldArray>
+				)}
+				{(udistub?.hasOwnProperty('flyktning') || asylsoeker) && (
+					<>
+						<h3>Annet</h3>
+						<BestillingData>
+							<TitleValue title="Flyktningstatus" value={oversettBoolean(flyktningstatus)} />
+							<TitleValue title="Asylsøker" value={allCapsToCapitalized(asylsoeker)} />
 						</BestillingData>
 					</>
 				)}
