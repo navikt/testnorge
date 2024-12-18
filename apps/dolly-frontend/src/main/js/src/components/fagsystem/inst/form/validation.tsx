@@ -54,6 +54,7 @@ export const validation = {
 			Yup.object({
 				institusjonstype: requiredString,
 				startdato: datoOverlapperIkkeAndreOppholdTest(requiredDate, true),
+				forventetSluttdato: Yup.string().nullable(),
 				sluttdato: datoOverlapperIkkeAndreOppholdTest(Yup.string().nullable(), false),
 			}),
 		),
