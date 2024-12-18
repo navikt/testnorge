@@ -64,6 +64,8 @@ export default defineConfig(({ mode }) => ({
 				manualChunks(id) {
 					if (id.includes('node_modules') && !id.includes('navikt')) {
 						return id.toString().split('node_modules/')[1].split('/')[0].toString()
+					} else if (id.includes('navikt')) {
+						return 'navikt'
 					}
 				},
 			},
