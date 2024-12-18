@@ -21,7 +21,7 @@ public class GetAuthenticatedUserId extends JwtResolver implements Callable<Mono
         return getAuthenticatedResourceServerType
                 .call()
                 .flatMap(serverType -> switch (serverType) {
-                    case TOKEN_X, OAUTH2 -> getTokenAttribute("pid");
+                    case TOKEN_X -> getTokenAttribute("pid");
                     case AZURE_AD -> getTokenAttribute("oid");
                 });
     }
@@ -38,7 +38,7 @@ public class GetAuthenticatedUserId extends JwtResolver implements Callable<Mono
                                 jwtAuthenticationToken.getTokenAttributes().get(attribute).toString();
 
                         case OAuth2AuthenticationToken oauth2AuthenticationToken ->
-                                oauth2AuthenticationToken.getPrincipal().getAttributes().get(attribute).toString();
+                                oauth2AuthenticationToken.getPrincipal().getAttribute("pid");
 
                         default -> "";
                     };

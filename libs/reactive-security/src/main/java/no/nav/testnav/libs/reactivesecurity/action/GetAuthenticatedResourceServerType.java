@@ -40,7 +40,7 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
                                 .map(Mono::just)
                                 .orElseGet(Mono::empty);
                     } else if (authentication instanceof OAuth2AuthenticationToken) {
-                        return Mono.just(ResourceServerType.OAUTH2);
+                        return Mono.just(ResourceServerType.TOKEN_X);
                     }
                     return Mono.empty();
                 });
