@@ -61,10 +61,10 @@ public class Altinn3PersonOrganisasjonTilgangConsumer {
 
         return getAuthenticatedUserId
                 .call()
+                .doOnNext(pid -> log.info("getOrganisasjoner userid {}", pid))
                 .flatMap(Altinn3PersonOrganisasjonTilgangConsumer::getUserId)
                 .flatMapMany(userId ->
                         accessService.getAccessToken(serverProperties, exchange)
-                                .doOnNext(pid -> log.info("userid {}", pid))
                                 .flatMapMany(accessToken -> new PostPersonOrganisasjonTilgangCommand(webClient, userId, accessToken).call()));
     }
 
