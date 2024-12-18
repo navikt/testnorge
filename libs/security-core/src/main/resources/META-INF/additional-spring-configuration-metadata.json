@@ -39,6 +39,12 @@
       "name": "AZURE_NAV_APP_CLIENT_SECRET",
       "type": "java.lang.String",
       "description": "Satt av NAIS i pod, fra en secret opprettet av en AzureAdApplication deployment (secretKeyPrefix: \"AZURE_NAV\")."
+    },
+    {
+      "name": "TOKEN_X_ISSUER",
+      "type": "java.net.URL",
+      "description": "Satt av NAIS i pod hvis NAIS-manifestet har <tt>spec.tokenx.enabled: true<tt>.",
+      "defaultValue": "https://tokenx.dev-gcp.nav.cloud.nais.io"
     }
   ]
 }
