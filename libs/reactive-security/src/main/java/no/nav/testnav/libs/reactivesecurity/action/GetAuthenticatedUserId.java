@@ -38,7 +38,7 @@ public class GetAuthenticatedUserId extends JwtResolver implements Callable<Mono
                                 jwtAuthenticationToken.getTokenAttributes().get(attribute).toString();
 
                         case OAuth2AuthenticationToken oauth2AuthenticationToken ->
-                                oauth2AuthenticationToken.getPrincipal().getAttribute("pid");
+                                oauth2AuthenticationToken.getPrincipal().getAttributes().get("pid").toString();
 
                         default -> "";
                     };

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.concurrent.Callable;
 
 @Component
@@ -32,9 +33,9 @@ public class GetAuthenticatedToken extends JwtResolver implements Callable<Mono<
                                 try {
                                     sink.next(Token.builder()
                                             .clientCredentials(false)
-                                            .userId(oauth2.getPrincipal().getAttribute("pid"))
+                                            .userId(oauth2.getPrincipal().getAttributes().get("pid").toString())
                                             .accessTokenValue(new ObjectMapper().writeValueAsString(oauth2))
-                                            .expiresAt(oauth2.getPrincipal().getAttribute("exp"))
+                                            .expiresAt((Instant) oauth2.getPrincipal().getAttributes().get("exp"))
                                             .build());
                                 } catch (JsonProcessingException e) {
                                     sink.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feilet å konvertere token to string", e));
