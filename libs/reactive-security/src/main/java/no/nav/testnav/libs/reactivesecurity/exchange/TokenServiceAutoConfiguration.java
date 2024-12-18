@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.util.Assert;
 
 @AutoConfiguration(after = ClientCredentialAutoConfiguration.class)
@@ -18,6 +20,16 @@ public class TokenServiceAutoConfiguration {
 
     @Value("${http.proxy:#{null}}")
     private String proxyHost;
+
+    @Primary
+    @Bean
+    @Profile("test")
+    AzureAdTokenService azureAdTokenServiceTest(
+            AzureClientCredential clientCredential,
+            GetAuthenticatedToken getAuthenticatedToken
+    ) {
+        return new AzureAdTokenService(null, null, clientCredential, getAuthenticatedToken);
+    }
 
     @Bean
     @ConditionalOnDollyApplicationConfiguredForAzure
@@ -31,6 +43,15 @@ public class TokenServiceAutoConfiguration {
         return new AzureAdTokenService(proxyHost, issuerUrl, clientCredential, getAuthenticatedToken);
     }
 
+    @Primary
+    @Bean
+    @Profile("test")
+    NavAzureAdTokenService azureNavTokenServiceTest(
+            AzureNavClientCredential azureNavClientCredential
+    ) {
+        return new NavAzureAdTokenService(null, azureNavClientCredential);
+    }
+
     @Bean
     @ConditionalOnDollyApplicationConfiguredForNav
     @ConditionalOnMissingBean(NavAzureAdTokenService.class)
@@ -38,6 +59,17 @@ public class TokenServiceAutoConfiguration {
             AzureNavClientCredential azureNavClientCredential
     ) {
         return new NavAzureAdTokenService(proxyHost, azureNavClientCredential);
+    }
+
+    @Primary
+    @Bean
+    @Profile("test")
+    TrygdeetatenAzureAdTokenService trygdeetatenAzureAdTokenServiceTest(
+            AzureTrygdeetatenClientCredential clientCredential,
+            GetAuthenticatedUserId getAuthenticatedUserId,
+            ObjectMapper objectMapper
+    ) {
+        return new TrygdeetatenAzureAdTokenService(null, clientCredential, getAuthenticatedUserId, objectMapper);
     }
 
     @Bean

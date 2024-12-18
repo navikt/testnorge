@@ -1,5 +1,4 @@
 TOKEN_X_ISSUER: placeholder
-AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: placeholder
 
 app:
   elastic:

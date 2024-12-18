@@ -20,13 +20,13 @@ public class ClientCredentialAutoConfiguration {
     private static final String TEST_CLIENT_SECRET = "test-client-secret";
 
     @Primary
-    @Bean("azureClientCredential")
+    @Bean
     @Profile("test")
     AzureClientCredential azureClientCredentialTest() {
         return new AzureClientCredential(TEST_TOKEN_ENDPOINT, TEST_CLIENT_ID, TEST_CLIENT_SECRET);
     }
 
-    @Bean("azureClientCredential")
+    @Bean
     @ConditionalOnDollyApplicationConfiguredForAzure
     @ConditionalOnMissingBean(AzureClientCredential.class)
     AzureClientCredential azureClientCredential(
@@ -40,13 +40,13 @@ public class ClientCredentialAutoConfiguration {
     }
 
     @Primary
-    @Bean("azureTrygdeetatenClientCredential")
+    @Bean
     @Profile("test")
     AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredentialTest() {
         return new AzureTrygdeetatenClientCredential(TEST_TOKEN_ENDPOINT, TEST_CLIENT_ID, TEST_CLIENT_SECRET);
     }
 
-    @Bean("azureTrygdeetatenClientCredential")
+    @Bean
     @ConditionalOnDollyApplicationConfiguredForTrygdeetaten
     @ConditionalOnMissingBean(AzureTrygdeetatenClientCredential.class)
     AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential(
@@ -60,13 +60,13 @@ public class ClientCredentialAutoConfiguration {
     }
 
     @Primary
-    @Bean("azureNavClientCredential")
+    @Bean
     @Profile("test")
     AzureNavClientCredential azureNavClientCredentialTest() {
         return new AzureNavClientCredential(TEST_TOKEN_ENDPOINT, TEST_CLIENT_ID, TEST_CLIENT_SECRET);
     }
 
-    @Bean("azureNavClientCredential")
+    @Bean
     @ConditionalOnDollyApplicationConfiguredForNav
     @ConditionalOnMissingBean(AzureNavClientCredential.class)
     AzureNavClientCredential azureNavClientCredential(
