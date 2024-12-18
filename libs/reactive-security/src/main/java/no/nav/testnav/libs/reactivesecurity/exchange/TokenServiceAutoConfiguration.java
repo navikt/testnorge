@@ -18,8 +18,8 @@ import org.springframework.util.Assert;
 @AutoConfiguration(after = ClientCredentialAutoConfiguration.class)
 public class TokenServiceAutoConfiguration {
 
-    @Value("${http.proxy:#{null}}")
-    private String proxyHost;
+    @Value("${HTTP_PROXY:#{null}}")
+    private String httpProxy;
 
     @Primary
     @Bean
@@ -40,7 +40,7 @@ public class TokenServiceAutoConfiguration {
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         Assert.notNull(issuerUrl, "AAD_ISSUER_URI must be set");
-        return new AzureTokenService(proxyHost, issuerUrl, clientCredential, getAuthenticatedToken);
+        return new AzureTokenService(httpProxy, issuerUrl, clientCredential, getAuthenticatedToken);
     }
 
     @Primary
@@ -58,7 +58,7 @@ public class TokenServiceAutoConfiguration {
     AzureNavTokenService azureNavTokenService(
             AzureNavClientCredential azureNavClientCredential
     ) {
-        return new AzureNavTokenService(proxyHost, azureNavClientCredential);
+        return new AzureNavTokenService(httpProxy, azureNavClientCredential);
     }
 
     @Primary
@@ -80,7 +80,7 @@ public class TokenServiceAutoConfiguration {
             GetAuthenticatedUserId getAuthenticatedUserId,
             ObjectMapper objectMapper
     ) {
-        return new AzureTrygdeetatenTokenService(proxyHost, clientCredential, getAuthenticatedUserId, objectMapper);
+        return new AzureTrygdeetatenTokenService(httpProxy, clientCredential, getAuthenticatedUserId, objectMapper);
     }
 
 }
