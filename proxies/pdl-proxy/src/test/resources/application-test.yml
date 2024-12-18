@@ -1,9 +1,9 @@
-TOKEN_X_ISSUER:
-AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT:
+TOKEN_X_ISSUER: placeholder
+AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: placeholder
 
 app:
   elastic:
-    username:
-    password:
-  hendelse.lager.api.key:
-  person.aktor.api.key:
+    username: placeholder
+    password: placeholder
+  hendelse.lager.api.key: placeholder
+  person.aktor.api.key: placeholder

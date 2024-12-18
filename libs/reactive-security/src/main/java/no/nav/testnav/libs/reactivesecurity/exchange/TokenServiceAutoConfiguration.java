@@ -6,14 +6,10 @@ import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureAdTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.NavAzureAdTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureTrygdeetatenClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredentialAutoConfiguration;
+import no.nav.testnav.libs.securitycore.domain.azuread.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.Assert;
 
@@ -24,7 +20,7 @@ public class TokenServiceAutoConfiguration {
     private String proxyHost;
 
     @Bean
-    @ConditionalOnProperty("spring.security.oauth2.resourceserver.aad.issuer-uri")
+    @ConditionalOnDollyApplicationConfiguredForAzure
     @ConditionalOnMissingBean(AzureAdTokenService.class)
     AzureAdTokenService azureAdTokenService(
             @Value("${AAD_ISSUER_URI:#{null}}") String issuerUrl,
@@ -36,7 +32,7 @@ public class TokenServiceAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT")
+    @ConditionalOnDollyApplicationConfiguredForNav
     @ConditionalOnMissingBean(NavAzureAdTokenService.class)
     NavAzureAdTokenService azureNavTokenService(
             AzureNavClientCredential azureNavClientCredential
@@ -45,7 +41,7 @@ public class TokenServiceAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT")
+    @ConditionalOnDollyApplicationConfiguredForTrygdeetaten
     @ConditionalOnMissingBean(TrygdeetatenAzureAdTokenService.class)
     TrygdeetatenAzureAdTokenService trygdeetatenAzureAdTokenService(
             AzureTrygdeetatenClientCredential clientCredential,

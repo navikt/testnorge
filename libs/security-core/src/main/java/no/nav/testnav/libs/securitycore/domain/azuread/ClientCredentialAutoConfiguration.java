@@ -3,7 +3,6 @@ package no.nav.testnav.libs.securitycore.domain.azuread;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -28,7 +27,7 @@ public class ClientCredentialAutoConfiguration {
     }
 
     @Bean("azureClientCredential")
-    @ConditionalOnProperty("AAD_ISSUER_URI")
+    @ConditionalOnDollyApplicationConfiguredForAzure
     @ConditionalOnMissingBean(AzureClientCredential.class)
     AzureClientCredential azureClientCredential(
             @Value("${AAD_ISSUER_URI:#{null}}") String azureTokenEndpoint, // TODO: Not currently used, AAD_ISSUER_URI is hardcoded elsewhere; should be refactored to use AZURE_OPENID_CONFIG_TOKEN_ENDPOINT instead.
@@ -48,7 +47,7 @@ public class ClientCredentialAutoConfiguration {
     }
 
     @Bean("azureTrygdeetatenClientCredential")
-    @ConditionalOnProperty("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT")
+    @ConditionalOnDollyApplicationConfiguredForTrygdeetaten
     @ConditionalOnMissingBean(AzureTrygdeetatenClientCredential.class)
     AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential(
             @Value("${AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT:#{null}}") String azureTrygdeetatenTokenEndpoint,
@@ -68,7 +67,7 @@ public class ClientCredentialAutoConfiguration {
     }
 
     @Bean("azureNavClientCredential")
-    @ConditionalOnProperty("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT")
+    @ConditionalOnDollyApplicationConfiguredForNav
     @ConditionalOnMissingBean(AzureNavClientCredential.class)
     AzureNavClientCredential azureNavClientCredential(
             @Value("${AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT:#{null}}") String azureNavTokenEndpoint,
