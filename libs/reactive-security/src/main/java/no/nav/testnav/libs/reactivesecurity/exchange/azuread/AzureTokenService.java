@@ -26,12 +26,12 @@ import java.time.ZonedDateTime;
 import static java.util.Objects.isNull;
 
 @Slf4j
-public class AzureAdTokenService implements TokenService {
+public class AzureTokenService implements TokenService {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
 
-    public AzureAdTokenService(
+    public AzureTokenService(
             String proxyHost,
             String issuerUrl,
             AzureClientCredential azureClientCredential,

@@ -19,12 +19,12 @@ import reactor.netty.transport.ProxyProvider;
 import java.net.URI;
 
 @Slf4j
-public class NavAzureAdTokenService implements TokenService {
+public class AzureNavTokenService implements TokenService {
 
     private final WebClient webClient;
     private final ClientCredential clientCredential;
 
-    public NavAzureAdTokenService(
+    public AzureNavTokenService(
             String proxyHost,
             AzureNavClientCredential azureNavClientCredential
     ) {

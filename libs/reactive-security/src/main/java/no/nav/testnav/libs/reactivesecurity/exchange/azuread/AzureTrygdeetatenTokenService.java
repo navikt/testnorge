@@ -28,7 +28,7 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 @Slf4j
-public class TrygdeetatenAzureAdTokenService implements TokenService {
+public class AzureTrygdeetatenTokenService implements TokenService {
 
     private final WebClient webClient;
     private final ClientCredential clientCredential;
@@ -36,7 +36,7 @@ public class TrygdeetatenAzureAdTokenService implements TokenService {
     private final Map<String, AccessToken> tokenCache;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
 
-    public TrygdeetatenAzureAdTokenService(
+    public AzureTrygdeetatenTokenService(
             String proxyHost,
             AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential,
             GetAuthenticatedUserId getAuthenticatedUserId,

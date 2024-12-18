@@ -3,9 +3,9 @@ package no.nav.testnav.libs.reactivesecurity.exchange;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureAdTokenService;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.NavAzureAdTokenService;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.azuread.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -24,63 +24,63 @@ public class TokenServiceAutoConfiguration {
     @Primary
     @Bean
     @Profile("test")
-    AzureAdTokenService azureAdTokenServiceTest(
+    AzureTokenService azureAdTokenServiceTest(
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
-        return new AzureAdTokenService(null, null, clientCredential, getAuthenticatedToken);
+        return new AzureTokenService(null, null, clientCredential, getAuthenticatedToken);
     }
 
     @Bean
     @ConditionalOnDollyApplicationConfiguredForAzure
-    @ConditionalOnMissingBean(AzureAdTokenService.class)
-    AzureAdTokenService azureAdTokenService(
+    @ConditionalOnMissingBean(AzureTokenService.class)
+    AzureTokenService azureAdTokenService(
             @Value("${AAD_ISSUER_URI:#{null}}") String issuerUrl,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         Assert.notNull(issuerUrl, "AAD_ISSUER_URI must be set");
-        return new AzureAdTokenService(proxyHost, issuerUrl, clientCredential, getAuthenticatedToken);
+        return new AzureTokenService(proxyHost, issuerUrl, clientCredential, getAuthenticatedToken);
     }
 
     @Primary
     @Bean
     @Profile("test")
-    NavAzureAdTokenService azureNavTokenServiceTest(
+    AzureNavTokenService azureNavTokenServiceTest(
             AzureNavClientCredential azureNavClientCredential
     ) {
-        return new NavAzureAdTokenService(null, azureNavClientCredential);
+        return new AzureNavTokenService(null, azureNavClientCredential);
     }
 
     @Bean
     @ConditionalOnDollyApplicationConfiguredForNav
-    @ConditionalOnMissingBean(NavAzureAdTokenService.class)
-    NavAzureAdTokenService azureNavTokenService(
+    @ConditionalOnMissingBean(AzureNavTokenService.class)
+    AzureNavTokenService azureNavTokenService(
             AzureNavClientCredential azureNavClientCredential
     ) {
-        return new NavAzureAdTokenService(proxyHost, azureNavClientCredential);
+        return new AzureNavTokenService(proxyHost, azureNavClientCredential);
     }
 
     @Primary
     @Bean
     @Profile("test")
-    TrygdeetatenAzureAdTokenService trygdeetatenAzureAdTokenServiceTest(
+    AzureTrygdeetatenTokenService trygdeetatenAzureAdTokenServiceTest(
             AzureTrygdeetatenClientCredential clientCredential,
             GetAuthenticatedUserId getAuthenticatedUserId,
             ObjectMapper objectMapper
     ) {
-        return new TrygdeetatenAzureAdTokenService(null, clientCredential, getAuthenticatedUserId, objectMapper);
+        return new AzureTrygdeetatenTokenService(null, clientCredential, getAuthenticatedUserId, objectMapper);
     }
 
     @Bean
     @ConditionalOnDollyApplicationConfiguredForTrygdeetaten
-    @ConditionalOnMissingBean(TrygdeetatenAzureAdTokenService.class)
-    TrygdeetatenAzureAdTokenService trygdeetatenAzureAdTokenService(
+    @ConditionalOnMissingBean(AzureTrygdeetatenTokenService.class)
+    AzureTrygdeetatenTokenService trygdeetatenAzureAdTokenService(
             AzureTrygdeetatenClientCredential clientCredential,
             GetAuthenticatedUserId getAuthenticatedUserId,
             ObjectMapper objectMapper
     ) {
-        return new TrygdeetatenAzureAdTokenService(proxyHost, clientCredential, getAuthenticatedUserId, objectMapper);
+        return new AzureTrygdeetatenTokenService(proxyHost, clientCredential, getAuthenticatedUserId, objectMapper);
     }
 
 }
