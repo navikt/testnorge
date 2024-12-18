@@ -1,6 +1,6 @@
 import React, { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
-import GruppeConnector from '@/pages/gruppe/GruppeConnector'
+import GruppeConnector from './pages/gruppe/GruppeConnector'
 
 const OrganisasjonTenorSoekPage = lazy(
 	() => import('@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'),

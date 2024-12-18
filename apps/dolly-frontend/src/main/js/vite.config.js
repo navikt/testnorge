@@ -56,13 +56,13 @@ export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
 		outDir: 'build',
-		sourcemap: true,
+		sourcemap: false,
 		cssCodeSplit: false,
 		rollupOptions: {
 			external: ['./nais.js'],
 			output: {
 				manualChunks(id) {
-					if (id.includes('node_modules')) {
+					if (id.includes('node_modules') && !id.includes('navikt')) {
 						return id.toString().split('node_modules/')[1].split('/')[0].toString()
 					}
 				},
