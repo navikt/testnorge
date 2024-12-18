@@ -40,6 +40,20 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 				</div>
 			</>
 			<Bidiagnoser data={sykemelding.biDiagnoser} />
+			{sykemelding.kontaktMedPasient && (
+				<>
+					<SykemeldingKategori>
+						<h4>Tilbakedatering</h4>
+					</SykemeldingKategori>
+					<div className="person-visning_content">
+						<TitleValue
+							title="Begrunnelse ikke kontakt"
+							value={sykemelding.kontaktMedPasient.begrunnelseIkkeKontakt}
+						/>
+						<TitleValue title="Kontaktdato" value={sykemelding.kontaktMedPasient.kontaktDato} />
+					</div>
+				</>
+			)}
 			<>
 				<SykemeldingKategori>
 					<h4>Helsepersonell</h4>
@@ -72,20 +86,6 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 			</>
 			<Perioder data={sykemelding.perioder} />
 			<>
-				{sykemelding.kontaktMedPasient && (
-					<>
-						<SykemeldingKategori>
-							<h4>Tilbakedatering</h4>
-						</SykemeldingKategori>
-						<div className="person-visning_content">
-							<TitleValue
-								title="Begrunnelse ikke kontakt"
-								value={sykemelding.kontaktMedPasient.begrunnelseIkkeKontakt}
-							/>
-							<TitleValue title="Kontaktdato" value={sykemelding.kontaktMedPasient.kontaktDato} />
-						</div>
-					</>
-				)}
 				<SykemeldingKategori>
 					<h4>Detaljer</h4>
 				</SykemeldingKategori>
