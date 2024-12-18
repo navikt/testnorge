@@ -9,8 +9,10 @@ services:
       - "--run-connection-test"
     volumes:
       - type: bind
-        # Set a variable DOLLY_ADC_LOCATION.
+        # Set a variable $DOLLY_APPLICATION_CREDENTIALS. We don't use
+        # GOOGLE_APPLICATION_CREDENTIALS, as this causes an extra step during login.
+        #
         #  - $HOME/.config/gcloud/application_default_credentials.json for Linux/macOS.
         #  - $APPDATA/gcloud/application_default_credentials.json for Windows.
-        source: $DOLLY_ADC_LOCATION
+        source: $DOLLY_APPLICATION_CREDENTIALS
         target: /application_default_credentials.json
