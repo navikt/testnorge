@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AuthorizedPartyDTO;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,9 +39,6 @@ public class AltinnBrukerTilgangService {
                         .organisasjonsform(part.getUnitType())
                         .build())
                 .toList());
-
-        authorizedParties.getSubunits()
-                .forEach(subunit -> getUnitsAndSubunits(organisasjoner, subunit));
 
         return Mono.just(organisasjoner);
     }
