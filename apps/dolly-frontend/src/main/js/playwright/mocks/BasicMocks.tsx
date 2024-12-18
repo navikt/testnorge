@@ -23,7 +23,7 @@ export const personOrgTilgangMock = [
 	{
 		navn: 'testytest',
 		organisasjonsnummer: '12345678',
-		organisasjonsfrom: 'BEDR',
+		organisasjonsform: 'BEDR',
 	},
 ]
 
