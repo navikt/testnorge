@@ -9,6 +9,8 @@ services:
       - "--run-connection-test"
     volumes:
       - type: bind
-        #source: $HOME/.config/gcloud/application_default_credentials.json # For Linux/macOS.
-        source: $USERPROFILE/AppData/Roaming/gcloud/application_default_credentials.json # For Windows.
+        # Set a variable DOLLY_ADC_LOCATION.
+        #  - $HOME/.config/gcloud/application_default_credentials.json for Linux/macOS.
+        #  - $APPDATA/gcloud/application_default_credentials.json for Windows.
+        source: $DOLLY_ADC_LOCATION
         target: /application_default_credentials.json
