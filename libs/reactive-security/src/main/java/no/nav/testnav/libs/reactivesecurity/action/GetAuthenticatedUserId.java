@@ -29,19 +29,18 @@ public class GetAuthenticatedUserId extends JwtResolver implements Callable<Mono
     private Mono<String> getTokenAttribute(String attribute) {
 
         return getJwtAuthenticationToken()
-                .map(authentication -> {
+                .map(authentication ->
 
-                    log.info("GetAuthenticatedUserId context.authentication {}, {}", authentication.getClass().getPackageName(), authentication);
-                    return switch (authentication) {
+                        switch (authentication) {
 
-                        case JwtAuthenticationToken jwtAuthenticationToken ->
-                                jwtAuthenticationToken.getTokenAttributes().get(attribute).toString();
+                            case JwtAuthenticationToken jwtAuthenticationToken ->
+                                    jwtAuthenticationToken.getTokenAttributes().get(attribute).toString();
 
-                        case OAuth2AuthenticationToken oauth2AuthenticationToken ->
-                                oauth2AuthenticationToken.getPrincipal().getAttributes().get("pid").toString();
+                            case OAuth2AuthenticationToken oauth2AuthenticationToken ->
+                                    oauth2AuthenticationToken.getPrincipal().getAttributes().get("pid").toString();
 
-                        default -> "";
-                    };
-                });
+                            default -> "";
+                        }
+                );
     }
 }
