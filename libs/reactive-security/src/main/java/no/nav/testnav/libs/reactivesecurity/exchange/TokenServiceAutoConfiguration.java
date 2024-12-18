@@ -36,6 +36,7 @@ public class TokenServiceAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT")
     @ConditionalOnMissingBean(NavAzureAdTokenService.class)
     NavAzureAdTokenService azureNavTokenService(
             AzureNavClientCredential azureNavClientCredential
@@ -44,6 +45,7 @@ public class TokenServiceAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT")
     @ConditionalOnMissingBean(TrygdeetatenAzureAdTokenService.class)
     TrygdeetatenAzureAdTokenService trygdeetatenAzureAdTokenService(
             AzureTrygdeetatenClientCredential clientCredential,
