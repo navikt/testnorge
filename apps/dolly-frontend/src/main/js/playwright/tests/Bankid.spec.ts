@@ -11,7 +11,7 @@ test.describe('Bankid testing', () => {
 				headers: { 'content-type': 'application/json' },
 			})
 		})
-		await page.route(new RegExp(/altinn\/organisasjoner), async (route) => {
+		await page.route(new RegExp(/altinn\/organisasjoner/), async (route) => {
 			await route.fulfill({
 				status: 200,
 				body: JSON.stringify(personOrgTilgangMock),
