@@ -6,8 +6,6 @@ sonarqube {
     properties {
         property "sonar.projectKey", "oppsummeringsdokument-service"
         property "sonar.projectName", "oppsummeringsdokument-service"
-        property "sonar.qualityGate.id", "116999"
-
     }
 }
 
