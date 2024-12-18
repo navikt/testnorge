@@ -62,14 +62,11 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.26.4",
-    "@babel/preset-env": "^7.26.0",
     "@hookform/error-message": "^2.0.1",
     "@navikt/ds-css": "^7.4.0",
     "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^7.4.0",
     "@playwright/test": "^1.48.2",
-    "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.3.0",
     "@testing-library/react": "^16.0.1",
     "@types/lodash-es": "^4.17.12",
@@ -103,7 +100,6 @@
     "react-router-dom": "^6.27.0",
     "sass": "^1.80.5",
     "swr": "^2.2.5",
-    "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "vite": "^6.0.1",
     "vite-plugin-environment": "^1.1.3",
