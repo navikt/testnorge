@@ -14,6 +14,9 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+import java.util.Base64;
+
 @Slf4j
 @Component
 public class Altinn3PersonOrganisasjonTilgangConsumer {
@@ -58,9 +61,22 @@ public class Altinn3PersonOrganisasjonTilgangConsumer {
 
         return getAuthenticatedUserId
                 .call()
-                .flatMapMany(userId -> accessService.getAccessToken(serverProperties, exchange)
-                        .doOnNext(pid -> log.info("userid {}", pid))
-                        .flatMapMany(accessToken -> new PostPersonOrganisasjonTilgangCommand(webClient, userId, accessToken).call()));
+                .flatMap(Altinn3PersonOrganisasjonTilgangConsumer::getUserId)
+                .flatMapMany(userId ->
+                        accessService.getAccessToken(serverProperties, exchange)
+                                .doOnNext(pid -> log.info("userid {}", pid))
+                                .flatMapMany(accessToken -> new PostPersonOrganisasjonTilgangCommand(webClient, userId, accessToken).call()));
+    }
+
+    public static Mono<String> getUserId(String token) {
+
+        if (token.length() == 11) {
+            return Mono.just(token);
+        } else {
+            var info = Arrays.toString(Base64.getDecoder().decode(token.split("\\.")[1]));
+            var start = info.indexOf("\"pid\":") + 7;
+            return Mono.just(info.substring(start, start + 11));
+        }
     }
 }
 
