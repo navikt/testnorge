@@ -100,9 +100,9 @@ public class AltinnConsumer {
                 .flatMap(Flux::from);
     }
 
-    public Flux<Organisasjon> create(String organisasjonsnummer) {
+    public Mono<Organisasjon> create(String organisasjonsnummer) {
 
-        return maskinportenConsumer.getAccessToken()
+        return Mono.from(maskinportenConsumer.getAccessToken()
                 .flatMap(this::exchangeToken)
                 .flatMap(exchangeToken -> new CreateAccessListeMemberCommand(
                         webClient,
@@ -114,13 +114,13 @@ public class AltinnConsumer {
                                 Flux.fromIterable(response.getData())
                                         .map(this::getOrgnummer)
                                         .filter(organisasjonsnummer::equals)
-                                        .flatMap(brregConsumer::getEnheter) :
+                                        .flatMap(brregConsumer::getEnhet) :
                                 Mono.just(BrregResponseDTO.builder()
                                         .organisasjonsnummer(organisasjonsnummer)
                                         .feilmelding(response.getFeilmelding())
                                         .status(response.getStatus())
                                         .build()))
-                .map(response -> mapperFacade.map(response, Organisasjon.class));
+                .map(response -> mapperFacade.map(response, Organisasjon.class)));
     }
 
     public Flux<Organisasjon> getOrganisasjoner() {
@@ -154,7 +154,7 @@ public class AltinnConsumer {
 
         return Flux.fromIterable(altInnResponse.getData())
                 .map(this::getOrgnummer)
-                .flatMap(brregConsumer::getEnheter)
+                .flatMap(brregConsumer::getEnhet)
                 .map(response -> mapperFacade.map(response, Organisasjon.class));
     }
 

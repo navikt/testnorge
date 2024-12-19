@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 
@@ -34,7 +35,7 @@ public class AltinnOrganisasjonTilgangController {
 
     @PostMapping("/{organisasjonsnummer}")
     @Operation(description = "Oppretter Altinn-tilgang for organisasjon")
-    public Flux<OrganisasjonResponse> create(@PathVariable String organisasjonsnummer,
+    public Mono<OrganisasjonResponse> create(@PathVariable String organisasjonsnummer,
                                              @RequestParam String miljoe) {
 
         return altinnTilgangService
