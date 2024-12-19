@@ -33,11 +33,12 @@ public class AltinnBrukerTilgangService {
     private Flux<OrganisasjonDTO> getOrganisasjon(Tuple2<List<AuthorizedPartyDTO>, List<Organisasjon>> organisasjoner) {
 
         return Flux.fromIterable(organisasjoner.getT1())
+                .doOnNext(org -> log.info("Organisasjon {}", org))
+//                .filter(party -> organisasjoner.getT2().stream()
+//                        .anyMatch(organisasjon -> organisasjon.getOrganisasjonsnummer().equals(party.getOrganizationNumber())))
                 .map(AuthorizedPartyDTO::getSubunits)
                 .flatMap(Flux::fromIterable)
                 .filter(party -> party.getAuthorizedResources().contains(DOLLY_RESOURCE))
-                .filter(party -> organisasjoner.getT2().stream()
-                        .anyMatch(organisasjon -> organisasjon.getOrganisasjonsnummer().equals(party.getOrganizationNumber())))
                 .map(part -> OrganisasjonDTO.builder()
                         .navn(part.getName())
                         .organisasjonsnummer(part.getOrganizationNumber())
