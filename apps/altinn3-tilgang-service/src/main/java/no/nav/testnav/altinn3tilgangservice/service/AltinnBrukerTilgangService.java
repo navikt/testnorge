@@ -14,9 +14,6 @@ import reactor.util.function.Tuple2;
 
 import java.util.List;
 
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,14 +25,16 @@ public class AltinnBrukerTilgangService {
     public Flux<OrganisasjonDTO> getPersonOrganisasjonTilgang(String ident) {
 
         return Flux.zip(
-                        altinnConsumer.getAuthorizedParties(ident),
+                        altinnConsumer.getAuthorizedParties(ident).collectList(),
                         altinnConsumer.getOrganisasjoner().collectList())
                 .flatMap(this::getOrganisasjon);
     }
 
-    private Mono<OrganisasjonDTO> getOrganisasjon(Tuple2<AuthorizedPartyDTO, List<Organisasjon>> organisasjoner) {
+    private Flux<OrganisasjonDTO> getOrganisasjon(Tuple2<List<AuthorizedPartyDTO>, List<Organisasjon>> organisasjoner) {
 
-        return Mono.just(organisasjoner.getT1())
+        return Flux.fromIterable(organisasjoner.getT1())
+                .map(AuthorizedPartyDTO::getSubunits)
+                .flatMap(Flux::fromIterable)
                 .filter(party -> party.getAuthorizedResources().contains(DOLLY_RESOURCE))
                 .filter(party -> organisasjoner.getT2().stream()
                         .anyMatch(organisasjon -> organisasjon.getOrganisasjonsnummer().equals(party.getOrganizationNumber())))
@@ -62,8 +61,8 @@ public class AltinnBrukerTilgangService {
     private Flux<PersonDTO.OrganisasjonDTO> getTilpassetOrganisasjon(Tuple2<List<AuthorizedPartyDTO>, List<Organisasjon>> organisasjoner) {
 
         return Flux.fromIterable(organisasjoner.getT1())
-                .filter(party -> isNotBlank(party.getOrganizationNumber()) && isNotBlank(party.getName()))
-                .filter(party -> isFalse(party.getIsDeleted()))
+                .map(AuthorizedPartyDTO::getSubunits)
+                .flatMap(Flux::fromIterable)
                 .map(party -> PersonDTO.OrganisasjonDTO.builder()
                         .navn(party.getName())
                         .organisasjonsnummer(party.getOrganizationNumber())
