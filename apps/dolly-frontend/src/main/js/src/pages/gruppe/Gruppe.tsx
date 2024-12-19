@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Loading from '@/components/ui/loading/Loading'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -14,17 +14,20 @@ import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeF
 import GruppeHeaderConnector from '@/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Icon from '@/components/ui/icon/Icon'
+import { lazyWithPreload } from '@/utils/lazyWithPreload'
 
-const PersonListeConnector = lazy(() => import('./PersonListe/PersonListeConnector'))
-const BestillingListeConnector = lazy(() => import('./BestillingListe/BestillingListeConnector'))
-const BestillingsveilederModal = lazy(
+const PersonListeConnector = lazyWithPreload(() => import('./PersonListe/PersonListeConnector'))
+const BestillingListeConnector = lazyWithPreload(
+	() => import('./BestillingListe/BestillingListeConnector'),
+)
+const BestillingsveilederModal = lazyWithPreload(
 	() => import('@/components/bestillingsveileder/startModal/StartModal'),
 )
 
-const FinnPersonBestillingConnector = lazy(
+const FinnPersonBestillingConnector = lazyWithPreload(
 	() => import('@/pages/gruppeOversikt/FinnPersonBestillingConnector'),
 )
-const StatusListeConnector = lazy(
+const StatusListeConnector = lazyWithPreload(
 	() => import('@/components/bestilling/statusListe/StatusListeConnector'),
 )
 
@@ -129,6 +132,10 @@ export default ({
 								data-testid={TestComponentSelectors.BUTTON_OPPRETT_PERSONER}
 								variant={'primary'}
 								onClick={visStartBestilling}
+								onMouseOver={() => {
+									BestillingsveilederModal?.preload?.()
+									StatusListeConnector?.preload?.()
+								}}
 								disabled={erLaast}
 								title={
 									erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''

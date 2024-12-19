@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useContext, useState } from 'react'
+import React, { Suspense, useContext, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -19,13 +19,14 @@ import {
 import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyValidation } from '@/components/bestillingsveileder/stegVelger/steg/steg2/DollyValidation'
+import { lazyWithPreload } from '@/utils/lazyWithPreload'
 
-const Steg1 = lazy(() => import('./steg/steg1/Steg1'))
-const Steg2 = lazy(() => import('./steg/steg2/Steg2'))
-const Steg3 = lazy(() => import('./steg/steg3/Steg3'))
+const Steg1 = lazyWithPreload(() => import('./steg/steg1/Steg1'))
+const Steg2 = lazyWithPreload(() => import('./steg/steg2/Steg2'))
+const Steg3 = lazyWithPreload(() => import('./steg/steg3/Steg3'))
 
-const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
-const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
+const DisplayFormState = lazyWithPreload(() => import('@/utils/DisplayFormState'))
+const DisplayFormErrors = lazyWithPreload(() => import('@/utils/DisplayFormErrors'))
 
 const STEPS = [Steg1, Steg2, Steg3]
 const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
