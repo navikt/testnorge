@@ -59,8 +59,9 @@ header.app-header {
       margin: 0 7px 0 0;
     }
 
-    .profil-navn {
+    p {
       line-height: normal;
+      font-size: 16px;
       min-width: 130px;
     }
   }
@@ -70,6 +71,7 @@ header.app-header {
     padding: 15px 0;
     border: none;
     background-color: @color-nav-black;
+    min-width: max-content;
 
     &.active {
       background-color: lighten(@color-nav-black, 10%);
@@ -79,7 +81,6 @@ header.app-header {
       cursor: pointer;
       background-color: @headerHoverColor;
     }
-
 
     a {
       color: white;
@@ -96,12 +97,12 @@ header.app-header {
         background-color: @headerHoverColor;
       }
     }
-
   }
 
   .menu-links {
     display: flex;
     justify-content: center;
+    align-content: center;
 
     a {
       color: white;
@@ -130,26 +131,4 @@ header.app-header {
       background-color: #ebfcff;
     }
   }
-}
-
-.svg-icon-logout {
-  g {
-    stroke: #212529;
-    stroke-width: 2;
-  }
-
-  margin-right: 10px;
-}
-
-.svg-icon-file-code, .svg-icon-file-new {
-  g {
-    stroke: #212529;
-    stroke-width: 2;
-  }
-
-  margin: 0 10px 0 0;
-}
-
-.dollysheep {
-  margin-left: 10px;
 }

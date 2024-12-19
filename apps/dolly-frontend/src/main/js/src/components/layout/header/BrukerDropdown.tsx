@@ -7,6 +7,7 @@ import { getDefaultImage } from '@/pages/minSide/Profil'
 import { ActionMenu } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { ActionMenuWrapper, DropdownStyledIcon, DropdownStyledLink } from './ActionMenuWrapper'
+import { preloadComponentOnRoute } from '@/allRoutes'
 
 export const BrukerDropdown = () => {
 	const navigate = useNavigate()
@@ -27,15 +28,14 @@ export const BrukerDropdown = () => {
 									src={brukerBilde || getDefaultImage()}
 								/>
 							</div>
-							<div className="profil-navn">
-								<p>{brukerProfil?.visningsNavn}</p>
-							</div>
+							<p>{brukerProfil?.visningsNavn}</p>
 						</div>
 					</ActionMenu.Trigger>
 				}
 			>
 				<ActionMenu.Item
 					onClick={() => navigate('/minside')}
+					onMouseOver={() => preloadComponentOnRoute('/minside')}
 					style={{ color: '#212529' }}
 					data-testid={TestComponentSelectors.BUTTON_PROFIL_MINSIDE}
 				>

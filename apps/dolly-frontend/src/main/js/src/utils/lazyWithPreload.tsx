@@ -1,7 +1,7 @@
 import React, { lazy, LazyExoticComponent } from 'react'
 
 type PreloadableComponent<T extends React.ComponentType<any>> = LazyExoticComponent<T> & {
-	preload: () => void
+	preload: () => Promise<{ default: T }>
 }
 
 export function lazyWithPreload<T extends React.ComponentType<any>>(

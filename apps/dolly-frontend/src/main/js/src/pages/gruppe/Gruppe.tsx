@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Loading from '@/components/ui/loading/Loading'
 import { useLocation, useNavigate, useParams } from 'react-router'
@@ -89,6 +89,14 @@ export default ({
 	)
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
+
+	useEffect(() => {
+		PersonListeConnector?.preload?.()
+		BestillingListeConnector?.preload?.()
+		BestillingsveilederModal?.preload?.()
+		StatusListeConnector?.preload?.()
+		FinnPersonBestillingConnector?.preload?.()
+	}, [])
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
