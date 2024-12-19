@@ -6,7 +6,7 @@ import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/M
 import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
 import { DeltBostedValues, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 

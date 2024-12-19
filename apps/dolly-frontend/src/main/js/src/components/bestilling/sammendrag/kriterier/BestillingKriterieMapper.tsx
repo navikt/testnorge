@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import {
 	allCapsToCapitalized,
 	arrayToString,
@@ -21,8 +21,6 @@ import {
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
@@ -1278,7 +1276,7 @@ const mapInntektStub = (bestillingData, data) => {
 }
 
 const mapArbeidsplassenCV = (bestillingData, data) => {
-	const CVKriterier = _get(bestillingData, 'arbeidsplassenCV')
+	const CVKriterier = _.get(bestillingData, 'arbeidsplassenCV')
 
 	if (CVKriterier) {
 		const arbeidsplassenCV = {
@@ -1443,7 +1441,7 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 			])
 		}
 
-		if (_has(CVKriterier, 'harHjemmel')) {
+		if (_.has(CVKriterier, 'harHjemmel')) {
 			arbeidsplassenCV.itemRows.push([
 				{ numberHeader: 'Hjemmel' },
 				{
@@ -1534,6 +1532,17 @@ const mapSykemelding = (bestillingData, data) => {
 				obj(
 					'Hensyn på arbeidsplass',
 					_.get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.beskrivHensynArbeidsplassen'),
+				),
+				obj(
+					'Begrunnelse ikke kontakt',
+					_.get(
+						sykemeldingKriterier.detaljertSykemelding,
+						'kontaktMedPasient.begrunnelseIkkeKontakt',
+					),
+				),
+				obj(
+					'Kontaktdato',
+					formatDate(sykemeldingKriterier.detaljertSykemelding?.kontaktMedPasient?.kontaktDato),
 				),
 				obj(
 					'Arbeidsfør etter endt periode',
@@ -1722,6 +1731,7 @@ const mapInst = (bestillingData, data) => {
 				institusjonstype: i.institusjonstype,
 				varighet: i.varighet,
 				startdato: i.startdato,
+				forventetSluttdato: i.forventetSluttdato,
 				sluttdato: i.sluttdato,
 			})
 		})
@@ -1739,6 +1749,7 @@ const mapInst = (bestillingData, data) => {
 				obj('Institusjonstype', showLabel('institusjonstype', inst.institusjonstype)),
 				obj('Varighet', inst.varighet && showLabel('varighet', inst.varighet)),
 				obj('Startdato', formatDate(inst.startdato)),
+				obj('Forventet sluttdato', formatDate(inst.forventetSluttdato)),
 				obj('Sluttdato', formatDate(inst.sluttdato)),
 			])
 		})

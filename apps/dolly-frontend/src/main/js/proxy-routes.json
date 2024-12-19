@@ -1,257 +1,164 @@
 {
   "/api": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/oauth2/authorization/aad": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/oauth2/authorization/idporten": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/login/oauth2/code/aad": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/login/oauth2/code/idporten": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/logout": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/oauth2/logout": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/oauth2/callback": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/session/ping": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/session/user": {
-    "target": "http://localhost:8020",
-    "secure": false
+    "changeOrigin": false
   },
   "/testnav-organisasjon-faste-data-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/oppsummeringsdokument-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-tps-messaging-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-adresse-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-joark-dokument-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-histark-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-udistub-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-inntektstub-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-norg2-proxy/norg2": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-brregstub-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-arena-forvalteren-proxy": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-krrstub-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-fullmakt-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-inst-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-sigrunstub-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-aareg-proxy/": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-medl-proxy/rest": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-pensjon-testdata-facade-proxy/": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/dolly-backend/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/person-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnorge-profil-api/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-altinn3-tilgang-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-varslinger-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-organisasjon-forvalter/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-organisasjon-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-miljoer-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/udi-stub/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-person-search-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-person-organisasjon-tilgang-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-pdl-forvalter/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-bruker-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-kontoregister-person-proxy/api/system": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-skjermingsregister-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-dokarkiv-proxy": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-arbeidsplassencv-proxy": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-helsepersonell-service": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
+  },
+  "/testnav-sykemelding-api/api": {
+    "changeOrigin": true
   },
   "/generer-navn-service": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-kodeverk-service": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-tenor-search-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-skattekort-service/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-levende-arbeidsforhold-ansettelse": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-levende-arbeidsforhold-scheduler": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   },
   "/testnav-yrkesskade-proxy": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
+    "changeOrigin": true
   }
 }

@@ -3,7 +3,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { Alert } from '@navikt/ds-react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 

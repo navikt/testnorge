@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const CHECK_DIGIT_1 = [3, 7, 6, 1, 8, 9, 4, 5, 2]
 const CHECK_DIGIT_2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]

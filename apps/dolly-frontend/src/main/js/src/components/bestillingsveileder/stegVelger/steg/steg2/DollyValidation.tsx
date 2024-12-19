@@ -9,13 +9,11 @@ import { ArenaForm } from '@/components/fagsystem/arena/form/Form'
 import { InstForm } from '@/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '@/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '@/components/fagsystem/pensjon/form/Form'
-import { DokarkivForm } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
 import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
-import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
 import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
@@ -24,6 +22,8 @@ import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/ste
 import { SkattekortForm } from '@/components/fagsystem/skattekort/form/Form'
 import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
+import { dokarkivValidation } from '@/components/fagsystem/dokarkiv/form/DokarkivValidation'
+import { histarkValidation } from '@/components/fagsystem/histark/form/HistarkValidation'
 
 export const DollyValidation = Yup.object({
 	...PdlfForm.validation,
@@ -44,8 +44,8 @@ export const DollyValidation = Yup.object({
 	...UdistubForm.validation,
 	...SkjermingForm.validation,
 	...FullmaktForm.validation,
-	...DokarkivForm.validation,
-	...HistarkForm.validation,
+	...dokarkivValidation,
+	...histarkValidation,
 	...OrganisasjonForm.validation,
 	...MiljoVelger.validation,
 	...PensjonForm.validation,

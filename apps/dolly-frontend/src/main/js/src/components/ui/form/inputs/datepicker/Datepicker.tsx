@@ -1,10 +1,6 @@
-import { registerLocale } from 'react-datepicker'
 import { addYears, subYears } from 'date-fns'
-import locale_nb from 'date-fns/locale/nb'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { SyntEvent } from '@/components/ui/form/formUtils'
-import 'react-datepicker/dist/react-datepicker.css'
-import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
 import React, { BaseSyntheticEvent, useCallback, useEffect, useState } from 'react'
@@ -13,8 +9,6 @@ import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { formatDate } from '@/utils/DataFormatter'
 import { convertInputToDate } from '@/components/ui/form/DateFormatUtils'
-
-registerLocale('nb', locale_nb)
 
 export const DollyDatepicker = (props: any) => {
 	const {

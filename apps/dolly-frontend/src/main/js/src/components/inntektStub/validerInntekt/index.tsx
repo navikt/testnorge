@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { Form, useFormContext, useWatch } from 'react-hook-form'
 import { isObjectEmptyDeep } from '@/components/ui/form/formUtils'
 

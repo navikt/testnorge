@@ -3,7 +3,7 @@ import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/Org
 import { useBoolean } from 'react-use'
 import { OrgserviceApi } from '@/service/Api'
 import { OrgInfoAdresse } from '@/service/services/organisasjonservice/types'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { useFormContext } from 'react-hook-form'
 
 interface OrgnanisasjonTextSelectProps {

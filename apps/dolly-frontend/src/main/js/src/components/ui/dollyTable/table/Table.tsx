@@ -1,7 +1,7 @@
 import cn from 'classnames'
 import Row from './TableRow'
 import Column from './TableColumn'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { LaastGruppeIconItem } from '@/components/ui/icon/IconItem'
 
 import './Table.less'

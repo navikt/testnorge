@@ -11,7 +11,7 @@ import { Alert } from '@navikt/ds-react'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 
 import styled from 'styled-components'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
 import { Mal, useDollyMaler } from '@/utils/hooks/useMaler'
 import { TestComponentSelectors } from '#/mocks/Selectors'

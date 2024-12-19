@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class HistarkResponse {
 
     private String histarkId;
+    private String saksmappeId;
     private String feilmelding;
 }

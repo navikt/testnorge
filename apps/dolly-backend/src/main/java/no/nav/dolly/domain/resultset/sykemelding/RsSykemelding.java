@@ -30,6 +30,18 @@ public class RsSykemelding {
     private RsSyntSykemelding syntSykemelding;
     private RsDetaljertSykemelding detaljertSykemelding;
 
+    @JsonIgnore
+    public boolean hasDetaljertSykemelding() {
+
+        return nonNull(detaljertSykemelding);
+    }
+
+    @JsonIgnore
+    public boolean hasSyntSykemelding() {
+
+        return nonNull(syntSykemelding);
+    }
+
     @Getter
     @Setter
     @Builder
@@ -53,9 +65,9 @@ public class RsSykemelding {
     public static class RsDetaljertSykemelding {
 
         private Arbeidsgiver arbeidsgiver;
+        private DollyDiagnose hovedDiagnose;
         private List<DollyDiagnose> biDiagnoser;
         private Detaljer detaljer;
-        private DollyDiagnose hovedDiagnose;
         private Helsepersonell helsepersonell;
         private Boolean manglendeTilretteleggingPaaArbeidsplassen;
         private Organisasjon mottaker;
@@ -65,6 +77,7 @@ public class RsSykemelding {
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate startDato;
         private Boolean umiddelbarBistand;
+        private KontaktMedPasient kontaktMedPasient;
 
         public List<DollyDiagnose> getBiDiagnoser() {
             if (isNull(biDiagnoser)) {
@@ -216,17 +229,16 @@ public class RsSykemelding {
             private String land;
             private String postnummer;
         }
-    }
 
-    @JsonIgnore
-    public boolean hasDetaljertSykemelding() {
-
-        return nonNull(detaljertSykemelding);
-    }
-
-    @JsonIgnore
-    public boolean hasSyntSykemelding() {
-
-        return nonNull(syntSykemelding);
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class KontaktMedPasient {
+            private LocalDate kontaktDato;
+            private String begrunnelseIkkeKontakt;
+        }
     }
 }

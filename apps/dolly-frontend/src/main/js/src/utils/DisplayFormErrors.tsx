@@ -15,11 +15,7 @@ const replacer = (key: string, value: any) => {
 	} else return value
 }
 
-export default function DisplayFormErrors({
-	visState = false,
-	errors = null as any,
-	label = 'Vis state',
-}) {
+const DisplayFormErrors = ({ visState = false, errors = null as any, label = 'Vis state' }) => {
 	const [showState, toggleShowState] = useToggle(visState)
 	return (
 		<div
@@ -45,3 +41,5 @@ export default function DisplayFormErrors({
 		</div>
 	)
 }
+
+export default DisplayFormErrors

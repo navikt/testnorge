@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import './Label.less'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'

@@ -3,7 +3,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { Steg1Person } from './Steg1Person'
 import { Steg1Organisasjon } from './Steg1Organisasjon'
 
-export const Steg1 = ({ stateModifier }) => {
+const Steg1 = ({ stateModifier }) => {
 	const opts: any = useContext(BestillingsveilederContext)
 
 	return opts.is.nyOrganisasjon ||
@@ -15,4 +15,4 @@ export const Steg1 = ({ stateModifier }) => {
 	)
 }
 
-Steg1.label = 'Velg egenskaper'
+export default Steg1

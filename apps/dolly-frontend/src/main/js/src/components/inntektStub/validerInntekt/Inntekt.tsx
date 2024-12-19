@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'

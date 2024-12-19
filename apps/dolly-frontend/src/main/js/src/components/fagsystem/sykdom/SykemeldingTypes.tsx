@@ -39,7 +39,8 @@ type DetaljertData = {
 	helsepersonell: Helsepersonell
 	arbeidsgiver: Arbeidsgiver
 	detaljer: Detaljer
-	perioder: Array<Periode>
+	kontaktMedPasient?: KontaktMedPasient
+    perioder: Array<Periode>
 }
 
 export type SykemeldingBestilling = {
@@ -51,6 +52,11 @@ export type Diagnose = {
 	diagnose: string
 	diagnosekode: string
 	system?: string
+}
+
+export type KontaktMedPasient = {
+	begrunnelseIkkeKontakt: string
+	kontaktDato?: string
 }
 
 export type Helsepersonell = {

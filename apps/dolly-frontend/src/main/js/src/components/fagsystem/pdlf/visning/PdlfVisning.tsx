@@ -22,7 +22,7 @@ import { Persondetaljer } from '@/components/fagsystem/pdlf/visning/partials/Per
 import { PdlSikkerhetstiltak } from '@/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMBankkonto } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { ForeldreansvarVisning } from '@/components/fagsystem/pdlf/visning/partials/Foreldreansvar'
-import { FullmaktVisning } from '@/components/fagsystem'
+import FullmaktVisning from '@/components/fagsystem/fullmakt/visning/FullmaktVisning'
 
 export const getBankkontoData = (data) => {
 	if (data?.kontoregister) {

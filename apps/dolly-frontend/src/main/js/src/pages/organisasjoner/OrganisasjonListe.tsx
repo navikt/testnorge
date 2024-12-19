@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import 'rc-tooltip/assets/bootstrap.css'
 import { OrganisasjonItem } from '@/components/ui/icon/IconItem'

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = (data) => {

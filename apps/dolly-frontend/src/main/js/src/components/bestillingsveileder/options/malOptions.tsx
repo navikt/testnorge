@@ -1,5 +1,5 @@
 import { initialValues } from './utils'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
 import {
 	BostedData,

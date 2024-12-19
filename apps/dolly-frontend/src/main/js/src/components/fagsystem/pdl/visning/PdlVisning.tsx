@@ -23,8 +23,8 @@ import { PdlDeltBosted } from '@/components/fagsystem/pdl/visning/partials/adres
 import { Doedsfall } from '@/components/fagsystem/pdlf/visning/partials/Doedsfall'
 import { PdlVergemaal } from '@/components/fagsystem/pdl/visning/partials/vergemaal/PdlVergemaal'
 import { getBankkontoData } from '@/components/fagsystem/pdlf/visning/PdlfVisning'
-import { FullmaktVisning } from '@/components/fagsystem'
 import React from 'react'
+import FullmaktVisning from '@/components/fagsystem/fullmakt/visning/FullmaktVisning'
 
 type PdlVisningProps = {
 	pdlData: PdlData

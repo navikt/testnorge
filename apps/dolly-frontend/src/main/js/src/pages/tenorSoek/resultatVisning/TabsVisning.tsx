@@ -1,8 +1,7 @@
 import { Tabs } from '@navikt/ds-react'
-import React from 'react'
+import React, { lazy } from 'react'
 import styled from 'styled-components'
 import { FileCodeIcon, KeyVerticalIcon } from '@navikt/aksel-icons'
-import SyntaxHighlighter from 'react-syntax-highlighter'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
@@ -20,12 +19,9 @@ const TabsVisningFormatter = styled.div`
 	}
 `
 
-const StyledCodeView = styled(SyntaxHighlighter)`
-	font-size: 0.9em;
-	margin: 0;
-`
-
 export const TabsVisning = ({ children, kildedata }: any) => {
+	const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
+
 	if (!kildedata) {
 		return <div className="person-visning_content">{children}</div>
 	}
@@ -60,9 +56,7 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<StyledCodeView language="json" wrapLongLines>
-						{kildedataPretty}
-					</StyledCodeView>
+					<PrettyCode language={'json'} codeString={kildedataPretty} wrapLongLines />
 				</Tabs.Panel>
 			</Tabs>
 		</TabsVisningFormatter>
