@@ -51,6 +51,7 @@ import { Inst } from '@/components/fagsystem/inst/bestilling/Inst'
 import { Krrstub } from '@/components/fagsystem/krrstub/bestilling/Krrstub'
 import { Medl } from '@/components/fagsystem/medl/bestilling/Medl'
 import { Udistub } from '@/components/fagsystem/udistub/bestilling/Udistub'
+import { Dokarkiv } from '@/components/fagsystem/dokarkiv/bestilling/Dokarkiv'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -150,6 +151,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Krrstub krrstub={bestilling.krrstub} />
 			<Medl medl={bestilling.medl} />
 			<Udistub udistub={bestilling.udistub} />
+			<Dokarkiv dokarkiv={bestilling.dokarkiv} />
 		</>
 	)
 }

@@ -33,7 +33,7 @@ export type Vedlegg = {
 	}
 }
 
-enum Kodeverk {
+export enum Kodeverk {
 	TEMA = 'Tema',
 	NAVSKJEMA = 'NAVSkjema',
 	BEHANDLINGSTEMA = 'Behandlingstema',
