@@ -15,6 +15,4 @@ const Steg1 = ({ stateModifier }) => {
 	)
 }
 
-Steg1.label = 'Velg egenskaper'
-
 export default Steg1

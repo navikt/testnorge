@@ -101,6 +101,4 @@ const Steg2 = () => {
 	)
 }
 
-Steg2.label = 'Velg verdier'
-
 export default Steg2

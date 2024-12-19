@@ -25,6 +25,10 @@ const Steg1 = lazyWithPreload(() => import('./steg/steg1/Steg1'))
 const Steg2 = lazyWithPreload(() => import('./steg/steg2/Steg2'))
 const Steg3 = lazyWithPreload(() => import('./steg/steg3/Steg3'))
 
+Steg1.label = 'Velg egenskaper'
+Steg2.label = 'Velg verdier'
+Steg3.label = 'Oppsummering'
+
 const DisplayFormState = lazyWithPreload(() => import('@/utils/DisplayFormState'))
 const DisplayFormErrors = lazyWithPreload(() => import('@/utils/DisplayFormErrors'))
 

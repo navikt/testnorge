@@ -142,6 +142,4 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	)
 }
 
-Steg3.label = 'Oppsummering'
-
 export default Steg3
