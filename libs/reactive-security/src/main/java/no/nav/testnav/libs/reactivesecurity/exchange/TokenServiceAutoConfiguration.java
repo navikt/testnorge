@@ -3,8 +3,8 @@ package no.nav.testnav.libs.reactivesecurity.exchange;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.azuread.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.util.Assert;
 
 @AutoConfiguration(after = ClientCredentialAutoConfiguration.class)
 public class TokenServiceAutoConfiguration {
@@ -35,11 +34,10 @@ public class TokenServiceAutoConfiguration {
     @ConditionalOnDollyApplicationConfiguredForAzure
     @ConditionalOnMissingBean(AzureTokenService.class)
     AzureTokenService azureAdTokenService(
-            @Value("${AAD_ISSUER_URI:#{null}}") String issuerUrl,
+            String issuerUrl,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
-        Assert.notNull(issuerUrl, "AAD_ISSUER_URI must be set");
         return new AzureTokenService(httpProxy, issuerUrl, clientCredential, getAuthenticatedToken);
     }
 
