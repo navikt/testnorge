@@ -31,8 +31,6 @@ type DollyModalProps = {
 	minWidth?: string
 }
 
-Modal.setAppElement('#root')
-
 export const DollyModal: React.FC<DollyModalProps> = ({
 	children,
 	isOpen,

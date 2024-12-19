@@ -6,7 +6,7 @@ import { GruppeIconItem } from '@/components/ui/icon/IconItem'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { arrayToString } from '@/utils/DataFormatter'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { VisningType } from '@/pages/gruppeOversikt/GruppeOversikt'
 
 export default function Liste({

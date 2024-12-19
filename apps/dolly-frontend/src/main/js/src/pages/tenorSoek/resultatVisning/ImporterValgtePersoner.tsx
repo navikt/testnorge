@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 import { Button, Checkbox } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'

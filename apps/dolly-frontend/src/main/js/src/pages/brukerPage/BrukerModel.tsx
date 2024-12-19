@@ -5,7 +5,7 @@ import OrganisasjonVelger from '@/pages/brukerPage/OrganisasjonVelger'
 import { Bruker, Organisasjon, OrgResponse } from '@/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '@/service/Api'
 import { NotFoundError } from '@/error'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import { Logger } from '@/logger/Logger'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 
