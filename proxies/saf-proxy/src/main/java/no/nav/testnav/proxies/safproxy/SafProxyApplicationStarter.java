@@ -3,7 +3,7 @@ package no.nav.testnav.proxies.safproxy;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
@@ -32,7 +32,7 @@ public class SafProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
-            TrygdeetatenAzureAdTokenService tokenService,
+            AzureTrygdeetatenTokenService tokenService,
             Consumers consumers
     ) {
         var routes = builder.routes();

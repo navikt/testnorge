@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.standalone.servletsecurity.config;
 
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
 import no.nav.testnav.libs.standalone.servletsecurity.decoder.MultipleIssuersJwtDecoder;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.AzureAdTokenService;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -20,8 +19,7 @@ import java.util.List;
         TokenXResourceServerProperties.class,
         AzureAdResourceServerProperties.class,
         TokenExchange.class,
-        AzureAdTokenService.class,
-        AzureNavClientCredential.class
+        AzureAdTokenService.class
 })
 public class InsecureJwtServerToServerConfiguration {
 

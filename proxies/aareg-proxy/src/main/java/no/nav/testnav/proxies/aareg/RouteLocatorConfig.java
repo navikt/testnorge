@@ -3,7 +3,7 @@ package no.nav.testnav.proxies.aareg;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -32,7 +32,7 @@ public class RouteLocatorConfig {
     @Bean
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
-            TrygdeetatenAzureAdTokenService tokenService,
+            AzureTrygdeetatenTokenService tokenService,
             Consumers consumers) {
 
         var routes = builder.routes();
@@ -50,7 +50,7 @@ public class RouteLocatorConfig {
         return routes.build();
     }
 
-    private GatewayFilter getAuthenticationFilter(TrygdeetatenAzureAdTokenService tokenService, ServerProperties serverProperties) {
+    private GatewayFilter getAuthenticationFilter(AzureTrygdeetatenTokenService tokenService, ServerProperties serverProperties) {
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(() -> tokenService
                         .exchange(serverProperties)

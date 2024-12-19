@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +28,7 @@ public class AzureAdTokenService implements ExchangeToken {
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            AzureNavClientCredential clientCredential
+            AzureClientCredential clientCredential
     ) {
         log.info("Init AzureAd token exchange.");
         WebClient.Builder builder = WebClient
