@@ -6,7 +6,7 @@ import { showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { ForeldreBarnRelasjon, Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import {
 	getInitialBarn,
 	getInitialForelder,

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -45,8 +45,8 @@ const RedigerGruppe = ({
 	const { gruppe } = useGruppeById(gruppeId)
 	const erRedigering = gruppe?.id !== undefined
 	const initialValues = {
-		navn: _get(gruppe, 'navn', ''),
-		hensikt: _get(gruppe, 'hensikt', ''),
+		navn: _.get(gruppe, 'navn', ''),
+		hensikt: _.get(gruppe, 'hensikt', ''),
 	}
 	const mutate = useMatchMutate()
 	const formMethods = useForm({

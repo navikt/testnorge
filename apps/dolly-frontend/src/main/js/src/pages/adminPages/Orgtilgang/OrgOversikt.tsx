@@ -34,7 +34,6 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 							<Table.HeaderCell scope="col">Navn</Table.HeaderCell>
 							<Table.HeaderCell scope="col">Form</Table.HeaderCell>
 							<Table.HeaderCell scope="col">Miljø</Table.HeaderCell>
-							<Table.HeaderCell scope="col">Gyldig til</Table.HeaderCell>
 							<Table.HeaderCell scope="col">Endre org.</Table.HeaderCell>
 						</Table.Header>
 						<Table.Body>
@@ -46,7 +45,6 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 											<Table.DataCell>{navn}</Table.DataCell>
 											<Table.DataCell>{organisasjonsform}</Table.DataCell>
 											<Table.DataCell>{miljoe}</Table.DataCell>
-											<Table.DataCell>{formatDate(gyldigTil)}</Table.DataCell>
 											<Table.DataCell>
 												<DeleteOrganisasjon
 													orgNr={organisasjonsnummer}
@@ -55,7 +53,6 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 												/>
 												<RedigerOrganisasjon
 													orgNr={organisasjonsnummer}
-													gyldigTil={gyldigTil}
 													miljoe={miljoe}
 													mutate={mutate}
 												/>

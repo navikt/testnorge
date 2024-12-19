@@ -1,10 +1,9 @@
 import { createActions } from 'redux-actions'
 import { DollyApi } from '@/service/Api'
-import _ from 'lodash'
-import _set from 'lodash/fp/set'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { getLeggTilIdent, rootPaths } from '@/components/bestillingsveileder/utils'
 import { v4 as uuid } from 'uuid'
+import * as _ from 'lodash-es'
 import { Logger } from '@/logger/Logger'
 
 export const actions = createActions(
@@ -57,17 +56,13 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 	} else if (opts.is.leggTilPaaGruppe) {
 		bestillingAction = actions.postBestillingLeggTilPaaGruppe(gruppeId, values)
 	} else if (opts.is.opprettFraIdenter) {
-		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
+		values = Object.assign({}, values, { opprettFraIdenter: opts.opprettFraIdenter })
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
 	} else if (opts.is.importTestnorge) {
-		values = _set(
-			'identer',
-			opts.importPersoner.map((person) => person.ident),
-			values,
-		)
-		if (!values.environments) {
-			values = _set('environments', [], values)
-		}
+		values = Object.assign({}, values, {
+			identer: opts.importPersoner.map((person) => person.ident),
+			environments: values.environments || [],
+		})
 		bestillingAction = actions.postTestnorgeBestilling(values.gruppeId, values)
 	} else if (values.organisasjon) {
 		trackBestilling(values)

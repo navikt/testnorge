@@ -8,7 +8,7 @@ import {
 	getInitialInntekt,
 	kodeverkKeyToLabel,
 } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const getSkatteordningOptions = (skatteordning) => {
 	return skatteordning?.map((item) => ({ value: item, label: _.capitalize(item) }))

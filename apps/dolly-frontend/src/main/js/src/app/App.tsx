@@ -30,7 +30,6 @@ export const App = () => {
 
 	const { loading, error: userError, currentBruker } = useCurrentBruker()
 
-	// Lazyloader miljøer, brukerens maler og profilData så det ligger cachet ved oppstart
 	useDollyEnvironments()
 	useBrukerProfil()
 	useDollyMalerBrukerOgMalnavn(currentBruker?.brukerId)

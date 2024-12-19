@@ -10,12 +10,14 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -36,11 +38,12 @@ public class HistarkConsumer {
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
+                .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
+    @Timed(name = "providers", tags = { "operation", "histark-opprett" })
     public Flux<HistarkResponse> postHistark(HistarkRequest histarkRequest) {
 
         var callId = getNavCallId();
@@ -49,6 +52,28 @@ public class HistarkConsumer {
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new HistarkPostCommand(webClient, histarkRequest,
                         token.getTokenValue()).call());
+    }
+
+    private ExchangeFilterFunction logRequest() {
+
+        return (clientRequest, next) -> {
+            var buffer = new StringBuilder(250)
+                    .append("Request: ")
+                    .append(clientRequest.method())
+                    .append(' ')
+                    .append(clientRequest.url())
+                    .append(System.lineSeparator());
+
+            clientRequest.headers()
+                    .forEach((name, values) -> values
+                            .forEach(value -> buffer.append('\t')
+                                    .append(name)
+                                    .append('=')
+                                    .append(nonNull(value) && value.contains("Bearer ") ? "Bearer token" : value)
+                                    .append(System.lineSeparator())));
+            log.trace(buffer.substring(0, buffer.length() - 1));
+            return next.exchange(clientRequest);
+        };
     }
 
     private static String getNavCallId() {

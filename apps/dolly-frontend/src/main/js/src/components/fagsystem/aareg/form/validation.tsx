@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import _, { toNumber } from 'lodash'
+import * as _ from 'lodash-es'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
@@ -92,7 +92,7 @@ const arbeidsavtale = Yup.object({
 		'$avtaltArbeidstimerPerUke',
 		Yup.string()
 			.test('isBetween', 'Må være mellom 1 og 75', (val, context) => {
-				const value = toNumber(val)
+				const value = _.toNumber(val)
 				return !val || isNaN(value) || (value >= 1 && value <= 75)
 			})
 			.nullable(),

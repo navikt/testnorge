@@ -52,7 +52,7 @@ spec:
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-person-search-service
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
+        - application: testnav-sykemelding-api-dev
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
@@ -63,6 +63,7 @@ spec:
         - application: testnav-levende-arbeidsforhold-scheduler
         - application: testnav-skattekort-service
         - application: testnav-yrkesskade-proxy
+        - application: testnav-altinn3-tilgang-service
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io

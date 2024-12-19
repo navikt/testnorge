@@ -1,0 +1,33 @@
+AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+
+spring:
+  config:
+    import: "sm://"
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  flyway:
+    # InMemmory database
+    url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    user: ${NAV_USERNAME}
+    password:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
+    username: ${NAV_USERNAME}
+    password:
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:/db/dev/h2-default-config.sql
+
+consumers:
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
+  testnav-tenor-search-service:
+    url: https://testnav-tenor-search-service.intern.dev.nav.no

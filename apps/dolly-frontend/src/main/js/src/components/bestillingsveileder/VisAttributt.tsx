@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { useFormContext } from 'react-hook-form'
 
 export const Vis = ({ attributt, children }) => {

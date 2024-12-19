@@ -1,9 +1,8 @@
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { Accordion } from '@navikt/ds-react'
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Header } from '@/components/ui/soekForm/SoekForm'
-import DisplayFormState from '@/utils/DisplayFormState'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
 import { FolkeregisteretIdentifikasjonStatus } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretIdentifikasjonStatus'
 import { FolkeregisteretStatsborgerskap } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretStatsborgerskap'
@@ -16,6 +15,7 @@ import { fixTimezone } from '@/components/ui/form/formUtils'
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
+import Loading from '@/components/ui/loading/Loading'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -33,6 +33,7 @@ const Soekefelt = styled.div`
 `
 
 export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
+	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: {},
@@ -290,7 +291,11 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 								</Accordion.Item>
 							</Accordion>
 						</Form>
-						{devEnabled && <DisplayFormState />}
+						{devEnabled && (
+							<Suspense fallback={<Loading label="Laster komponenter" />}>
+								<DisplayFormState />
+							</Suspense>
+						)}
 					</>
 				</FormProvider>
 			</Soekefelt>

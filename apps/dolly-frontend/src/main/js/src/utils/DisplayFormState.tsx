@@ -14,7 +14,7 @@ const replacer = (key: string, value: any) => {
 	} else return value
 }
 
-export default function DisplayFormState({ visState = false, label = 'Vis form' }) {
+export default ({ visState = false, label = 'Vis form' }) => {
 	const { getValues } = useFormContext()
 	const [showState, toggleShowState] = useToggle(visState)
 

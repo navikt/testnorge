@@ -28,8 +28,6 @@ import static org.apache.http.util.TextUtils.isBlank;
 @RequiredArgsConstructor
 public class FullmaktClient implements ClientRegister {
 
-    private static final String FULLMAKT_REPRESENTASJON = "FULLMAKT_REPR#";
-
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
     private final FullmaktConsumer fullmaktConsumer;

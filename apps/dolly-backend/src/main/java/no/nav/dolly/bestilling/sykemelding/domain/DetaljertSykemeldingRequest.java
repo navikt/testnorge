@@ -20,9 +20,9 @@ import static java.util.Objects.isNull;
 public class DetaljertSykemeldingRequest {
 
     private Arbeidsgiver arbeidsgiver;
+    private DollyDiagnose hovedDiagnose;
     private List<DollyDiagnose> biDiagnoser;
     private Detaljer detaljer;
-    private DollyDiagnose hovedDiagnose;
     private Helsepersonell helsepersonell;
     private Boolean manglendeTilretteleggingPaaArbeidsplassen;
     private Organisasjon mottaker;
@@ -31,6 +31,7 @@ public class DetaljertSykemeldingRequest {
     private Organisasjon sender;
     private LocalDate startDato;
     private Boolean umiddelbarBistand;
+    private KontaktMedPasient kontaktMedPasient;
 
     public List<DollyDiagnose> getBiDiagnoser() {
         if (isNull(biDiagnoser)) {
@@ -57,7 +58,6 @@ public class DetaljertSykemeldingRequest {
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Arbeidsgiver {
-
         private String navn;
         private Double stillingsprosent;
         private String yrkesbetegnelse;
@@ -69,7 +69,6 @@ public class DetaljertSykemeldingRequest {
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class DollyDiagnose {
-
         private String diagnose;
         private String diagnosekode;
         private String system;
@@ -81,7 +80,6 @@ public class DetaljertSykemeldingRequest {
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Detaljer {
-
         private Boolean arbeidsforEtterEndtPeriode;
         private String beskrivHensynArbeidsplassen;
         private String tiltakArbeidsplass;
@@ -94,7 +92,6 @@ public class DetaljertSykemeldingRequest {
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Helsepersonell {
-
         private String etternavn;
         private String fornavn;
         private String hprId;
@@ -109,7 +106,6 @@ public class DetaljertSykemeldingRequest {
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Organisasjon {
-
         private Adresse adresse;
         private String navn;
         private String orgNr;
@@ -121,7 +117,6 @@ public class DetaljertSykemeldingRequest {
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Pasient {
-
         private Adresse adresse;
         private String etternavn;
         private LocalDate foedselsdato;
@@ -138,7 +133,6 @@ public class DetaljertSykemeldingRequest {
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Periode {
-
         private DollyAktivitet aktivitet;
         private LocalDate fom;
         private LocalDate tom;
@@ -155,7 +149,6 @@ public class DetaljertSykemeldingRequest {
         private Integer behandlingsdager;
         private Integer grad;
         private Boolean reisetilskudd;
-
     }
 
     @Data
@@ -164,10 +157,19 @@ public class DetaljertSykemeldingRequest {
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Adresse {
-
         private String by;
         private String gate;
         private String land;
         private String postnummer;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    public static class KontaktMedPasient {
+        private LocalDate kontaktDato;
+        private String begrunnelseIkkeKontakt;
     }
 }
