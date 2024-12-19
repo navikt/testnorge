@@ -66,7 +66,6 @@ public class IdportenSecurityConfig {
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.pathMatchers(
                                 "/internal/isReady",
                                 "/internal/isAlive",
-                                "/altinn/*",
                                 "/assets/*",
                                 "/internal/metrics",
                                 "/oauth2/callback",

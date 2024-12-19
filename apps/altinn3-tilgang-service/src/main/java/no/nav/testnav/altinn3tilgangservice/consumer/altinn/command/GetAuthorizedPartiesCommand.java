@@ -29,7 +29,7 @@ public class GetAuthorizedPartiesCommand implements Callable<Mono<AuthorizedPart
         return webClient
                 .post()
                 .uri(builder -> builder.path(ALTINN_URL)
-                        .queryParam("includeAltinn2", true).build())
+                        .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(request)
