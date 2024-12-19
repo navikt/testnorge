@@ -7,5 +7,4 @@ Identer kan frigjøres og benyttes om igjen
 ## Lokal kjøring
 * [Generelt.](../../docs/local_general.md)
 * [Secret Manager.](../../docs/local_secretmanager.md)
-* [Lokal PostgreSQL.](../../docs/local_db.md)
     
