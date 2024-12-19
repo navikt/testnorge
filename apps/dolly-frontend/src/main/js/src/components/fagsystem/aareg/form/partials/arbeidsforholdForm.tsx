@@ -17,7 +17,7 @@ import {
 } from '../initialValues'
 import { isDate } from 'date-fns'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'

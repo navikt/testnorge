@@ -5,7 +5,7 @@ import {
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
@@ -31,12 +31,12 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 								name={`${annenErfaringPath}.role`}
 								label="Rolle"
 								size="xlarge"
-								key={`role_${_get(formMethods.getValues(), `${annenErfaringPath}.role`)}`}
+								key={`role_${_.get(formMethods.getValues(), `${annenErfaringPath}.role`)}`}
 							/>
 							<Fritekstfelt
 								label="Beskrivelse"
 								placeholder="Beskrivelse av annen erfaring"
-								defaultValue={_get(formMethods.getValues(), `${annenErfaringPath}.description`)}
+								defaultValue={_.get(formMethods.getValues(), `${annenErfaringPath}.description`)}
 								onBlur={(beskrivelse) =>
 									formMethods.setValue(
 										`${annenErfaringPath}.description`,
@@ -44,7 +44,7 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 									)
 								}
 								size="small"
-								key={`description_${_get(
+								key={`description_${_.get(
 									formMethods.getValues(),
 									`${annenErfaringPath}.description`,
 								)}`}
@@ -54,14 +54,14 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 							<FormDatepicker
 								name={`${annenErfaringPath}.toDate`}
 								label="Sluttdato"
-								disabled={_get(formMethods.getValues(), `${annenErfaringPath}.ongoing`)}
+								disabled={_.get(formMethods.getValues(), `${annenErfaringPath}.ongoing`)}
 							/>
 							<FormCheckbox
 								id={`${annenErfaringPath}.ongoing`}
 								name={`${annenErfaringPath}.ongoing`}
 								label="Pågående"
 								wrapperSize="inherit"
-								isDisabled={_get(formMethods.getValues(), `${annenErfaringPath}.toDate`)}
+								isDisabled={_.get(formMethods.getValues(), `${annenErfaringPath}.toDate`)}
 								checkboxMargin
 							/>
 						</div>

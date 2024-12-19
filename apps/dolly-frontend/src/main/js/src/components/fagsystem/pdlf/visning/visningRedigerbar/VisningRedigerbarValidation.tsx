@@ -2,24 +2,24 @@ import * as Yup from 'yup'
 import { ifPresent } from '@/utils/YupValidations'
 import { doedsfall, navn } from '@/components/fagsystem/pdlf/form/validation/validation'
 import {
-	adressebeskyttelse,
-	bostedsadresse,
+	deltBosted,
 	doedfoedtBarn,
 	forelderBarnRelasjon,
-	innflytting,
-	kontaktadresse,
-	kontaktDoedsbo,
-	oppholdsadresse,
-	sivilstand,
-	statsborgerskap,
-	utenlandskId,
-	utflytting,
-	vergemaal,
-} from '@/components/fagsystem/pdlf/form/validation/partials'
-import {
-	deltBosted,
 	foreldreansvarForBarn,
+	sivilstand,
 } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
+import { statsborgerskap } from '@/components/fagsystem/pdlf/form/validation/partials/statborgerskap'
+import { innflytting } from '@/components/fagsystem/pdlf/form/validation/partials/innvandring'
+import { utflytting } from '@/components/fagsystem/pdlf/form/validation/partials/utflytting'
+import { vergemaal } from '@/components/fagsystem/pdlf/form/validation/partials/vergemaal'
+import {
+	adressebeskyttelse,
+	bostedsadresse,
+	kontaktadresse,
+	oppholdsadresse,
+} from '@/components/fagsystem/pdlf/form/validation/partials/adresser'
+import { kontaktDoedsbo } from '@/components/fagsystem/pdlf/form/validation/partials/kontaktinformasjonForDoedsbo'
+import { utenlandskId } from '@/components/fagsystem/pdlf/form/validation/partials/identifikasjon'
 
 export const visningRedigerbarValidation = Yup.object().shape(
 	{

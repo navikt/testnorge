@@ -21,7 +21,7 @@ import '@/snow.scss'
 import '@/rain.scss'
 import '@/flowers.scss'
 import { NEDBOER_TYPE, useWeatherFyrstikkAlleen } from '@/utils/hooks/useWeather'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const month = new Date().getMonth()
 const day = new Date().getDate()

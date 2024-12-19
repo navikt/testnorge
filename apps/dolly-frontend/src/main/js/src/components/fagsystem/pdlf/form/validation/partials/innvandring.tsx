@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
 

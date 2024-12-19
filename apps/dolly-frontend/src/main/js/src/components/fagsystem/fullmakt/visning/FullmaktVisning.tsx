@@ -42,3 +42,5 @@ export const FullmaktVisning = ({ ident }: FullmaktProps) => {
 		</ErrorBoundary>
 	)
 }
+
+export default FullmaktVisning

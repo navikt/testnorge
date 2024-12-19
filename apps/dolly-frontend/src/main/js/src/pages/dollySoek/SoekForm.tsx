@@ -7,7 +7,7 @@ import { Accordion, Button } from '@navikt/ds-react'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { useSoekIdenter, useSoekTyper } from '@/utils/hooks/usePersonSoek'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import {

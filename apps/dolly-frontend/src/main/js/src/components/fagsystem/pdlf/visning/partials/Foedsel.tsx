@@ -5,7 +5,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { formatDate } from '@/utils/DataFormatter'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import {
 	Kodeverk,
 	KodeverkValues,

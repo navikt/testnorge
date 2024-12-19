@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, lazy, Suspense, useState } from 'react'
 import Title from '@/components/Title'
 import SearchContainer from './search/searchContainer/SearchContainer'
 import { SearchOptions } from './search/SearchOptions'
@@ -9,21 +9,23 @@ import '@/pages/gruppe/PersonVisning/PersonVisning.less'
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import './TestnorgePage.less'
 import * as Yup from 'yup'
-import DisplayFormState from '@/utils/DisplayFormState'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
+import Loading from '@/components/ui/loading/Loading'
 
 type TestnorgePageProps = {
 	gruppe?: Gruppe
 }
 
 export default ({ gruppe }: TestnorgePageProps) => {
+	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
+	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
+
 	const [items, setItems] = useState<PdlData[]>([])
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
@@ -96,9 +98,11 @@ export default ({ gruppe }: TestnorgePageProps) => {
 			<FormProvider {...formMethods}>
 				<Form control={formMethods.control} onSubmit={formMethods.handleSubmit(onSubmit)}>
 					<Fragment>
-						{devEnabled && <DisplayFormState {...formMethods} />}
 						{devEnabled && (
-							<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+							<Suspense fallback={<Loading label="Laster komponenter" />}>
+								<DisplayFormState />
+								<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+							</Suspense>
 						)}
 						<SearchContainer
 							left={

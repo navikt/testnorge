@@ -235,6 +235,11 @@ consumers:
     namespace: dolly
     name: testnav-yrkesskade-proxy
     url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
+  testnav-sykemelding-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-sykemelding-api
+    url: http://testnav-sykemelding-api.dolly.svc.cluster.local
 
 management:
   endpoints:

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import subYears from 'date-fns/subYears'
 
 export const hentAaregEksisterendeData = (personFoerLeggTil: any) => {

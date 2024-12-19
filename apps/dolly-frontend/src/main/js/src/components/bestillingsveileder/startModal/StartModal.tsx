@@ -3,9 +3,7 @@ import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { NyBestillingProps, NyIdent } from './NyIdent/NyIdent'
 import { EksisterendeIdent } from './EksisterendeIdent/EksisterendeIdent'
 import styled from 'styled-components'
-
 import './startModal.less'
-
 import { ToggleGroup } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
@@ -14,7 +12,7 @@ const StyledToggleGroup = styled(ToggleGroup)`
 	margin-bottom: 20px;
 `
 
-export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingProps) => {
+const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingProps) => {
 	const [type, setType] = useState('ny')
 	return (
 		<DollyModal isOpen closeModal={onAvbryt} width="60%" overflow="auto">
@@ -44,3 +42,5 @@ export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }: NyB
 		</DollyModal>
 	)
 }
+
+export default BestillingsveilederModal

@@ -7,7 +7,7 @@ import Button from '@/components/ui/button/Button'
 import Icon from '@/components/ui/icon/Icon'
 
 import './InfoStripe.less'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const getInfoStripeUrl = `/dolly-backend/api/v1/infostripe`
 const HIDDEN_ALERTS = 'HIDDEN_ALERTS'

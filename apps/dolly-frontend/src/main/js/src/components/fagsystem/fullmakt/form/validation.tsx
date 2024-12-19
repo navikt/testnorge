@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoTom } from '@/components/fagsystem/utils'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { isBefore, subDays } from 'date-fns'
 
 export const validation = {

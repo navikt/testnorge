@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import * as Yup from 'yup'
-import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -9,7 +7,7 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { useFormContext } from 'react-hook-form'
@@ -17,19 +15,16 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
-
-const DokumentInfoListe = React.lazy(
-	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'),
-)
-const FileUploader = React.lazy(() => import('@/utils/FileUploader/FileUploader'))
+import FileUploader from '@/utils/FileUploader/FileUploader'
+import DokumentInfoListe from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
 
 enum Kodeverk {
 	TEMA = 'Tema',
 }
 
-export const histarkAttributt = 'histark'
+const histarkAttributt = 'histark'
 
-export const HistarkForm = () => {
+const HistarkForm = () => {
 	const formMethods = useFormContext()
 	if (!formMethods.getValues(histarkAttributt)) {
 		return null
@@ -160,33 +155,4 @@ export const HistarkForm = () => {
 	)
 }
 
-HistarkForm.validation = {
-	histark: ifPresent(
-		'$histark',
-		Yup.object({
-			dokumenter: Yup.array().of(
-				Yup.object({
-					tittel: requiredString,
-					temakoder: Yup.array().required().min(1, 'Velg minst en temakode'),
-					enhetsnavn: Yup.string().required('Velg en NAV-enhet'),
-					enhetsnummer: requiredString,
-					skanner: requiredString,
-					skannested: requiredString,
-					skanningsTidspunkt: requiredDate.nullable(),
-					startYear: Yup.number()
-						.required(messages.required)
-						.test('start-before-slutt', 'Startår må være før sluttår', (value, context) => {
-							const sluttAar = context.parent.endYear
-							return value && sluttAar && value < sluttAar
-						}),
-					endYear: Yup.number()
-						.required(messages.required)
-						.test('slutt-after-start', 'Sluttår må være etter startår', (value, context) => {
-							const startAar = context.parent.startYear
-							return value && startAar && value > startAar
-						}),
-				}),
-			),
-		}),
-	),
-}
+export default HistarkForm

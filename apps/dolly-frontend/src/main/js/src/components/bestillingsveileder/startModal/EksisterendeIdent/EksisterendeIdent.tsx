@@ -1,6 +1,6 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { useAsyncFn } from 'react-use'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { PdlforvalterApi } from '@/service/Api'
 import Loading from '@/components/ui/loading/Loading'

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { isAfter, isBefore, isEqual } from 'date-fns'
 import { Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 

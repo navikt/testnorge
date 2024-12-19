@@ -85,3 +85,6 @@ consumers:
     url: https://testnav-levende-arbeidsforhold-scheduler.intern.dev.nav.no
   testnav-yrkesskade-proxy:
     url: https://testnav-yrkesskade-proxy.intern.dev.nav.no
+  testnav-sykemelding-api:
+    name: testnav-sykemelding-api-dev
+    url: https://testnav-sykemelding-api-dev.intern.dev.nav.no

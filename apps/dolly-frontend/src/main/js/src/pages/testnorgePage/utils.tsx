@@ -1,5 +1,5 @@
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 export const initialValues = {
 	alder: {
