@@ -53,7 +53,6 @@ public class DollyFrontendApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
-
         return builder
                 .routes()
                 .route(createRoute(consumers.getTestnavKontoregisterPersonProxy()))
