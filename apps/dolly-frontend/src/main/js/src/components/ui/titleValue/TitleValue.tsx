@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import Loading from '@/components/ui/loading/Loading'
 

@@ -2,8 +2,18 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import { useContext, useEffect } from 'react'
+import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
+import { useFormContext } from 'react-hook-form'
 
 export const SyntSykemelding = () => {
+	const setFormMutate: any = useContext(SwrMutateContext)
+	const formMethods = useFormContext()
+
+	useEffect(() => {
+		setFormMutate?.(undefined)
+		formMethods.clearErrors('manual.sykemelding.detaljertSykemelding')
+	}, [])
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormDatepicker name="sykemelding.syntSykemelding.startDato" label="Startdato" />

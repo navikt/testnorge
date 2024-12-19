@@ -1,12 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { Suspense, useContext, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
-
-import { Steg1 } from './steg/steg1/Steg1'
-import { Steg2 } from './steg/steg2/Steg2'
-import { Steg3 } from './steg/steg3/Steg3'
-import DisplayFormState from '@/utils/DisplayFormState'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
@@ -16,15 +11,29 @@ import {
 import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
-import { DollyValidation } from './steg/steg2/DollyValidation'
+import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyValidation } from '@/components/bestillingsveileder/stegVelger/steg/steg2/DollyValidation'
+import { lazyWithPreload } from '@/utils/lazyWithPreload'
+
+const Steg1 = lazyWithPreload(() => import('./steg/steg1/Steg1'))
+const Steg2 = lazyWithPreload(() => import('./steg/steg2/Steg2'))
+const Steg3 = lazyWithPreload(() => import('./steg/steg3/Steg3'))
+
+Steg1.label = 'Velg egenskaper'
+Steg2.label = 'Velg verdier'
+Steg3.label = 'Oppsummering'
+
+const DisplayFormState = lazyWithPreload(() => import('@/utils/DisplayFormState'))
+const DisplayFormErrors = lazyWithPreload(() => import('@/utils/DisplayFormErrors'))
 
 const STEPS = [Steg1, Steg2, Steg3]
+const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
 
 export const devEnabled =
 	window.location.hostname.includes('localhost') ||
@@ -32,9 +41,13 @@ export const devEnabled =
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const context: any = useContext(BestillingsveilederContext)
-	const [loading, setLoading] = useState(false)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+
+	const [formMutate, setFormMutate] = useState(() => null as any)
+	const [mutateLoading, setMutateLoading] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const [step, setStep] = useState(0)
+
 	const CurrentStepComponent: any = STEPS[step]
 	const stepMaxIndex = STEPS.length - 1
 	const formMethods = useForm({
@@ -43,14 +56,15 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		resolver: yupResolver(DollyValidation),
 		context: context,
 	})
-	const stateModifier = useStateModifierFns(formMethods)
+	const stateModifier = useStateModifierFns(formMethods, setFormMutate)
 
-	const mutate = useMatchMutate()
+	const matchMutate = useMatchMutate()
 
-	const validationPaths = Object.keys(DollyValidation?.fields)
+	const validationPaths = Object.keys(DollyValidation.fields)
 
 	const isLastStep = () => step === STEPS.length - 1
-	const handleNext = () => {
+
+	const validateForm = () => {
 		formMethods.trigger(validationPaths).then(() => {
 			const errorFelter = Object.keys(formMethods.formState.errors)
 			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
@@ -63,6 +77,23 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 			}
 			setStep(step + 1)
 		})
+	}
+
+	const handleNext = () => {
+		if (step === 1 && formMutate) {
+			formMethods.clearErrors(manualMutateFields)
+			errorContext?.setShowError(true)
+			setMutateLoading(true)
+			formMutate?.().then((response) => {
+				setMutateLoading(false)
+				if (response.status === 'INVALID') {
+					return
+				}
+				validateForm()
+			})
+		} else {
+			validateForm()
+		}
 	}
 
 	const handleBack = () => {
@@ -82,44 +113,49 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		formMethods.handleSubmit(onSubmit(values))
 
 		formMethods.reset()
-		mutate(REGEX_BACKEND_GRUPPER)
-		mutate(REGEX_BACKEND_ORGANISASJONER)
-		mutate(REGEX_BACKEND_BESTILLINGER)
+		matchMutate(REGEX_BACKEND_GRUPPER)
+		matchMutate(REGEX_BACKEND_ORGANISASJONER)
+		matchMutate(REGEX_BACKEND_BESTILLINGER)
 	}
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
 	return (
-		<FormProvider {...formMethods}>
-			<Stepper orientation="horizontal" activeStep={step + 1}>
-				{labels.map((label, index) => (
-					<Stepper.Step
-						key={index}
-						completed={index < step}
-						onClick={() => index < stepMaxIndex && setStep(index)}
-					>
-						{label.label}
-					</Stepper.Step>
-				))}
-			</Stepper>
-			<BestillingsveilederHeader />
-			<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
-			{devEnabled && (
-				<>
-					<DisplayFormState />
-					<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
-				</>
-			)}
-			{!loading && (
-				<Navigation
-					step={step}
-					onPrevious={handleBack}
-					isLastStep={isLastStep()}
-					handleSubmit={() => {
-						return _handleSubmit(formMethods.getValues())
-					}}
-				/>
-			)}
-		</FormProvider>
+		<SwrMutateContext.Provider value={setFormMutate}>
+			<FormProvider {...formMethods}>
+				<Stepper orientation="horizontal" activeStep={step + 1}>
+					{labels.map((label, index) => (
+						<Stepper.Step
+							key={index}
+							completed={index < step}
+							onClick={() => index < stepMaxIndex && setStep(index)}
+						>
+							{label.label}
+						</Stepper.Step>
+					))}
+				</Stepper>
+				<BestillingsveilederHeader />
+				<Suspense fallback={<Loading label="Laster komponenter" />}>
+					<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
+				</Suspense>
+				{devEnabled && (
+					<Suspense fallback={<Loading label="Laster komponenter" />}>
+						<DisplayFormState />
+						<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+					</Suspense>
+				)}
+				{!loading && (
+					<Navigation
+						step={step}
+						mutateLoading={mutateLoading}
+						onPrevious={handleBack}
+						isLastStep={isLastStep()}
+						handleSubmit={() => {
+							return _handleSubmit(formMethods.getValues())
+						}}
+					/>
+				)}
+			</FormProvider>
+		</SwrMutateContext.Provider>
 	)
 }

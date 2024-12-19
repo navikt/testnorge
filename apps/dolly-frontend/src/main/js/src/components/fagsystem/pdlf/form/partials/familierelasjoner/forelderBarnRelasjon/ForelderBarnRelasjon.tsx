@@ -8,7 +8,7 @@ import {
 	initialPdlBiPerson,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'

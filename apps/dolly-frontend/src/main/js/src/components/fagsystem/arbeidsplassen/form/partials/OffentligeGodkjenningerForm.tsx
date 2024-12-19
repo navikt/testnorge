@@ -10,7 +10,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 export const OffentligeGodkjenningerForm = ({ formMethods }) => {
 	const offentligeGodkjenningerListePath = 'arbeidsplassenCV.offentligeGodkjenninger'
@@ -38,7 +38,7 @@ export const OffentligeGodkjenningerForm = ({ formMethods }) => {
 								name={`${offentligGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								key={`issuer_${_get(
+								key={`issuer_${_.get(
 									formMethods.getValues(),
 									`${offentligGodkjenningPath}.issuer`,
 								)}`}

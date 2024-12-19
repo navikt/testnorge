@@ -4,7 +4,7 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import _, { isEmpty } from 'lodash'
+import * as _ from 'lodash-es'
 import { useContext, useEffect, useState } from 'react'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
@@ -152,7 +152,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 					name={`${path}.hasMellomnavn`}
 					id={`${path}.hasMellomnavn`}
 					label="Har tilfeldig mellomnavn"
-					isDisabled={!isEmpty(selectedMellomnavn)}
+					isDisabled={!_.isEmpty(selectedMellomnavn)}
 					checkboxMargin
 				/>
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
@@ -163,7 +163,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 }
 
 export const Navn = ({ formMethods }: NavnTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext)
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormDollyFieldArray

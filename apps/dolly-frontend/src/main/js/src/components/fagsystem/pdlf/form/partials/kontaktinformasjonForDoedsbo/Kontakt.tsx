@@ -3,7 +3,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getPlaceholder, setNavn } from '../utils'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import {
 	initialNyPerson,
 	initialOrganisasjon,

@@ -1,12 +1,10 @@
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
-import { dokarkivAttributt } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import {
 	initialDigitalInnsending,
 	initialDokarkiv,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { histarkAttributt } from '@/components/fagsystem/histark/form/HistarkForm'
 import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 
 export const DokarkivPanel = ({ stateModifier, formValues }: any) => {
@@ -19,7 +17,7 @@ export const DokarkivPanel = ({ stateModifier, formValues }: any) => {
 			checkAttributeArray={() => sm.batchAdd(['digitalInnsending', 'histark'])}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="dokarkiv"
-			startOpen={harValgtAttributt(formValues, [dokarkivAttributt, histarkAttributt])}
+			startOpen={harValgtAttributt(formValues, ['dokarkiv', 'histark'])}
 		>
 			<AttributtKategori title="Oppretting av dokument" attr={sm.attrs}>
 				<Attributt

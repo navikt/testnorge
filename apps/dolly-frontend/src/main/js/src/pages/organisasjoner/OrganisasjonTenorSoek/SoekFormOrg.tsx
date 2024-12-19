@@ -1,9 +1,8 @@
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { Accordion } from '@navikt/ds-react'
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Header } from '@/components/ui/soekForm/SoekForm'
-import DisplayFormState from '@/utils/DisplayFormState'
 import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
@@ -12,6 +11,7 @@ import { EnhetsregisteretArbeidsforhold } from '@/pages/organisasjoner/Organisas
 import { SamletReskontroinnsyn } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/SamletReskontroinnsyn'
 import { Tjenestepensjonsavtale } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import Loading from '@/components/ui/loading/Loading'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -29,6 +29,8 @@ const Soekefelt = styled.div`
 `
 
 export const SoekFormOrg = ({ setRequest, mutate }: any) => {
+	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
+
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: {},
@@ -207,7 +209,11 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 								</Accordion.Item>
 							</Accordion>
 						</Form>
-						{devEnabled && <DisplayFormState />}
+						{devEnabled && (
+							<Suspense fallback={<Loading label="Laster komponenter" />}>
+								<DisplayFormState />
+							</Suspense>
+						)}
 					</>
 				</FormProvider>
 			</Soekefelt>
