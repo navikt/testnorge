@@ -15,6 +15,7 @@ import { useFormContext } from 'react-hook-form'
 export const initialValues = {
 	institusjonstype: '',
 	startdato: '',
+	forventetSluttdato: '',
 	sluttdato: '',
 }
 export const instAttributt = 'instdata'
@@ -53,6 +54,12 @@ export const InstForm = () => {
 							<FormDatepicker
 								name={`${path}.startdato`}
 								label="Startdato"
+								excludeDates={excludeDates}
+								maxDate={maxDate}
+							/>
+							<FormDatepicker
+								name={`${path}.forventetSluttdato`}
+								label="Forventet sluttdato"
 								excludeDates={excludeDates}
 								maxDate={maxDate}
 							/>

@@ -1,0 +1,18 @@
+services:
+
+  cloud_sql_proxy:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.2
+    network_mode: host
+    command:
+      - "dolly-dev-ff83:europe-north1:testnav-organisasjon-forvalter-local"
+      - "--credentials-file=/application_default_credentials.json"
+      - "--run-connection-test"
+    volumes:
+      - type: bind
+        # Set a variable $DOLLY_APPLICATION_CREDENTIALS. We don't use
+        # GOOGLE_APPLICATION_CREDENTIALS, as this causes an extra step during login.
+        #
+        #  - $HOME/.config/gcloud/application_default_credentials.json for Linux/macOS.
+        #  - $APPDATA/gcloud/application_default_credentials.json for Windows.
+        source: $DOLLY_APPLICATION_CREDENTIALS
+        target: /application_default_credentials.json

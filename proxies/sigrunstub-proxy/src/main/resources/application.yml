@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-sigrunstub-proxy
-    desciption: Proxy for sigrunstub som legger på sikkerhet.
+    description: Proxy for sigrunstub som legger på sikkerhet.
   security:
     oauth2:
       resourceserver:

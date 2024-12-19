@@ -1,0 +1,16 @@
+services:
+
+  mq:
+    image: icr.io/ibm-messaging/mq:latest
+    environment:
+      LICENSE: accept
+      MQ_QMGR_NAME: QM1
+      MQ_APP_USER: app
+      MQ_APP_PASSWORD: passw0rd
+      MQ_ADMIN_USER: admin
+      MQ_ADMIN_PASSWORD: passw0rd
+    ports:
+      - "127.0.0.1:1414:1414"
+      - "127.0.0.1:9443:9443"
+    volumes:
+      - ./docker-compose.mqsc:/etc/mqm/20-config.mqsc
