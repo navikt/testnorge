@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
+import { Arbeidserfaring } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const ArbeidserfaringVisning = ({ data }) => {
+type ArbeidserfaringVisningProps = {
+	data?: Array<Arbeidserfaring>
+}
+
+export const ArbeidserfaringVisning = ({ data }: ArbeidserfaringVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const ArbeidserfaringVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Arbeidserfaring" nested>
-					{(arbeidserfaring) => (
+					{(arbeidserfaring: Arbeidserfaring) => (
 						<>
 							<TitleValue
 								title="Stilling/yrke"
