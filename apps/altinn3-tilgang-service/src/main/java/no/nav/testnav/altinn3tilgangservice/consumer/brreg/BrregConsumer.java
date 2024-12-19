@@ -19,7 +19,7 @@ public class BrregConsumer {
                 .build();
     }
 
-    public Mono<BrregResponseDTO> getEnheter(String orgnummer) {
+    public Mono<BrregResponseDTO> getEnhet(String orgnummer) {
 
         return new GetBrregEnheterCommand(webClient, orgnummer).call();
     }
