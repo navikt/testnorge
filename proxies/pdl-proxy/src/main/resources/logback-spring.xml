@@ -37,4 +37,5 @@
     </springProfile>
 
     <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor"/>
+    <logger level="DEBUG" name="org.springframework.boot.autoconfigure.logging"/>
 </configuration>
