@@ -19,6 +19,7 @@ public class AuthorizedPartyDTO {
     private String name;
     private String organizationNumber;
     private String unitType;
+    private Boolean isDeleted;
     private List<String> authorizedResources;
     private List<AuthorizedPartyDTO> subunits;
 
