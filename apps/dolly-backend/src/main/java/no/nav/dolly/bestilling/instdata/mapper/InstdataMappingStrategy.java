@@ -10,7 +10,6 @@ import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.inst.TssEksternId.ADAMSTUEN_SYKEHJEM;
 import static no.nav.dolly.domain.resultset.inst.TssEksternId.HELGELANDSSYKEHUSET_HF;
 import static no.nav.dolly.domain.resultset.inst.TssEksternId.INDRE_OSTFOLD_FENGSEL;
@@ -29,12 +28,6 @@ public class InstdataMappingStrategy implements MappingStrategy {
                         instdata.setNorskident((String) context.getProperty("ident"));
                         instdata.setRegistrertAv("Dolly");
 
-                        if (nonNull(rsInstdata.getForventetSluttdato())) {
-                            instdata.setSluttdato(rsInstdata.getForventetSluttdato().toLocalDate());
-                        }
-                        if (nonNull(rsInstdata.getFaktiskSluttdato())) {
-                            instdata.setSluttdato(rsInstdata.getFaktiskSluttdato().toLocalDate());
-                        }
                         instdata.setOppholdstype(nullcheckSetDefaultValue(rsInstdata.getKategori(),
                                 decideKategori(instdata.getInstitusjonstype())).name());
                         instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(),

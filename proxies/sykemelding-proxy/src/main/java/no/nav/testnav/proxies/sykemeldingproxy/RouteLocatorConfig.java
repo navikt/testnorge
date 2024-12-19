@@ -3,7 +3,7 @@ package no.nav.testnav.proxies.sykemeldingproxy;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -36,7 +36,7 @@ public class RouteLocatorConfig {
 
     @Bean
     GatewayFilter getAuthenticationFilter(
-            TrygdeetatenAzureAdTokenService tokenService,
+            AzureTrygdeetatenTokenService tokenService,
             Consumers consumers
     ) {
         return AddAuthenticationRequestGatewayFilterFactory

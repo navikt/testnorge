@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-medl-proxy
-    desciption: Proxy for medl-stub som legger på sikkerhet.
+    description: Proxy for medl-stub som legger på sikkerhet.
   security:
     oauth2:
       resourceserver:

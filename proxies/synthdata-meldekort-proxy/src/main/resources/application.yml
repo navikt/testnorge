@@ -1,7 +1,7 @@
 spring:
   application:
     name: testnav-synthdata-meldekort-proxy
-    desciption: Proxy for synthdata-arena-meldekort som legger på sikkerhet.
+    description: Proxy for synthdata-arena-meldekort som legger på sikkerhet.
   security:
     oauth2:
       resourceserver:

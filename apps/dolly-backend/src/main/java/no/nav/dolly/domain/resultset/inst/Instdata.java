@@ -23,6 +23,7 @@ public class Instdata {
 
     private LocalDate startdato;
     private LocalDate sluttdato;
+    private LocalDate forventetSluttdato;
 
     private String registrertAv;
 }

@@ -4,17 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import no.nav.testnav.libs.reactivesecurity.domain.AzureTrygdeetatenClientCredential;
-import no.nav.testnav.libs.reactivesecurity.exchange.ExchangeToken;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
 import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureTrygdeetatenClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -29,8 +28,7 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 @Slf4j
-@Service
-public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
+public class AzureTrygdeetatenTokenService implements TokenService {
 
     private final WebClient webClient;
     private final ClientCredential clientCredential;
@@ -38,8 +36,8 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
     private final Map<String, AccessToken> tokenCache;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
 
-    public TrygdeetatenAzureAdTokenService(
-            @Value("${http.proxy:#{null}}") String proxyHost,
+    public AzureTrygdeetatenTokenService(
+            String proxyHost,
             AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential,
             GetAuthenticatedUserId getAuthenticatedUserId,
             ObjectMapper objectMapper) {
@@ -68,6 +66,11 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
             ));
         }
         this.webClient = builder.build();
+    }
+
+    @Override
+    public ResourceServerType getType() {
+        return ResourceServerType.AZURE_AD;
     }
 
     @Override

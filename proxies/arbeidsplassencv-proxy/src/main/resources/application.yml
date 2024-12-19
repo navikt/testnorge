@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-arbeidsplassencv-proxy
-    desciption: Proxy for arbeidsplassencv, henter fra fakedings og signerer med tokenx
+    description: Proxy for arbeidsplassencv, henter fra fakedings og signerer med tokenx
   security:
     oauth2:
       resourceserver:

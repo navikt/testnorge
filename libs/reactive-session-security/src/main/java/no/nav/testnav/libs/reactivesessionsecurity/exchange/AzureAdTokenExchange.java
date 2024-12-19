@@ -1,15 +1,13 @@
 package no.nav.testnav.libs.reactivesessionsecurity.exchange;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
 import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -19,9 +17,6 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-@Import({
-        AzureNavClientCredential.class
-})
 public class AzureAdTokenExchange implements ExchangeToken {
     private final WebClient webClient;
     private final TokenResolver tokenResolver;
@@ -30,7 +25,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
     public AzureAdTokenExchange(
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
             TokenResolver tokenResolver,
-            AzureNavClientCredential clientCredential) {
+            AzureClientCredential clientCredential) {
 
         this.webClient = WebClient
                 .builder()

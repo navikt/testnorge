@@ -12,7 +12,7 @@ import java.time.Duration;
 
 @Profile("prod")
 @Configuration
-public class OpensearchConfig extends AbstractOpenSearchConfiguration {
+public class OpenSearchConfig extends AbstractOpenSearchConfiguration {
 
     @Value("${open.search.username}")
     private String username;

@@ -1731,6 +1731,7 @@ const mapInst = (bestillingData, data) => {
 				institusjonstype: i.institusjonstype,
 				varighet: i.varighet,
 				startdato: i.startdato,
+				forventetSluttdato: i.forventetSluttdato,
 				sluttdato: i.sluttdato,
 			})
 		})
@@ -1748,6 +1749,7 @@ const mapInst = (bestillingData, data) => {
 				obj('Institusjonstype', showLabel('institusjonstype', inst.institusjonstype)),
 				obj('Varighet', inst.varighet && showLabel('varighet', inst.varighet)),
 				obj('Startdato', formatDate(inst.startdato)),
+				obj('Forventet sluttdato', formatDate(inst.forventetSluttdato)),
 				obj('Sluttdato', formatDate(inst.sluttdato)),
 			])
 		})
