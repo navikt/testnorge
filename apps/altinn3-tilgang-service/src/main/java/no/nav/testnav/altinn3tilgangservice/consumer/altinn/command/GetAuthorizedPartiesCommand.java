@@ -2,8 +2,8 @@ package no.nav.testnav.altinn3tilgangservice.consumer.altinn.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAccessListResponseDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAuthorizedPartiesRequestDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AuthorizedPartyDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,26 +14,27 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetAccessListMembersCommand implements Callable<Mono<AltinnAccessListResponseDTO>> {
+public class GetAuthorizedPartiesCommand implements Callable<Mono<AuthorizedPartyDTO[]>> {
 
-    private static final String ALTINN_URL = "/resourceregistry/api/v1/access-lists/{owner}/{identifier}/members";
+    private static final String ALTINN_URL = "/accessmanagement/api/v1/resourceowner/authorizedparties";
 
     private final WebClient webClient;
+    private final AltinnAuthorizedPartiesRequestDTO request;
     private final String token;
-    private final AltinnConfig altinnConfig;
 
     @Override
-    public Mono<AltinnAccessListResponseDTO> call() {
+    public Mono<AuthorizedPartyDTO[]> call() {
 
+        log.info("Spørring på bruker {}", request);
         return webClient
-                .get()
+                .post()
                 .uri(builder -> builder.path(ALTINN_URL)
-                        .build(altinnConfig.getOwner(), altinnConfig.getIdentifier()))
+                        .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(request)
                 .retrieve()
-                .bodyToMono(AltinnAccessListResponseDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .doOnSuccess(value -> log.info("Altinn-tilgang hentet"));
+                .bodyToMono(AuthorizedPartyDTO[].class)
+                .doOnError(WebClientFilter::logErrorMessage);
     }
 }

@@ -44,9 +44,7 @@ spec:
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-tilgang-service
         - application: testnav-pdl-forvalter-dev
-        - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-person-search-service
         - application: testnav-person-service
         - application: testnav-tenor-search-service
