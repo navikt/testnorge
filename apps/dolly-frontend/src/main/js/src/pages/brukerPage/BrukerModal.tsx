@@ -26,6 +26,7 @@ export default () => {
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
+				console.log('response BrukerModal: ', response) //TODO - SLETT MEG
 				if (response === null || response.data === null || response.data.length === 0) {
 					console.log('INGEN RESPONSE!!! ', response) //TODO - SLETT MEG
 					openErrorModal()

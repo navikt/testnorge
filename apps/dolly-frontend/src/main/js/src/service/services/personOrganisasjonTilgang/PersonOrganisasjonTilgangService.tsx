@@ -9,11 +9,11 @@ export default {
 			.catch((error) => {
 				console.warn('Noe gikk galt ved henting av tilganger for bruker')
 				console.error(error)
-				logoutBruker('person_org_error')
+				// logoutBruker('person_org_error')
 			})
 			.then((response) => {
-				console.log('response', response)
+				console.log('response personOrgTilgangService', response)
 				return response
 			})
-	}
+	},
 }
