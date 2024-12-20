@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AltinnAccessListResponseDTO {
+public class AltinnResponseDTO {
 
     private List<AccessListMembershipDTO> data;
     private String feilmelding;

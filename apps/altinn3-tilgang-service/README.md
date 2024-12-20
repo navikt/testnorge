@@ -10,4 +10,3 @@ Swagger finnes under [/swagger-ui.html](https://testnav-altinn3-tilgang-service.
 ## Lokal kjøring
 * [Generelt.](../../docs/local_general.md)
 * [Secret Manager.](../../docs/local_secretmanager.md)
-* [Database i GCP.](../../docs/gcp_db.md)

@@ -3,7 +3,7 @@ import { fetcher } from '@/api'
 import { useBrukerProfil } from '@/utils/hooks/useBruker'
 
 const getOrganisasjonMiljoeUrl = (orgnummer: string) =>
-	`/testnav-altinn3-tilgang-service/api/v1/miljoer/organisasjon/${orgnummer}`
+	`/testnav-altinn3-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
 
 const organisasjonTilgangUrl = `/testnav-altinn3-tilgang-service/api/v1/organisasjoner`
 

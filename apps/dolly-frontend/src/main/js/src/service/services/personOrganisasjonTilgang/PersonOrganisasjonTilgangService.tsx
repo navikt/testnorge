@@ -1,7 +1,8 @@
 import Request from '@/service/services/Request'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 
-const personOrgTilgangServiceUrl = '/altinn/organisasjoner'
+const personOrgTilgangServiceUrl =
+	'/testnav-person-organisasjon-tilgang-service/api/v1/person/organisasjoner'
 
 export default {
 	getOrganisasjoner() {
@@ -14,5 +15,5 @@ export default {
 			.then((response) => {
 				return response
 			})
-	}
+	},
 }
