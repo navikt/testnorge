@@ -11,14 +11,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public class PersonOrganisasjonTilgangConsumer {
+public class AltinnTilgangServiceConsumer {
 
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
 
-    public PersonOrganisasjonTilgangConsumer(
+    public AltinnTilgangServiceConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
             WebClient.Builder webClientBuilder,
