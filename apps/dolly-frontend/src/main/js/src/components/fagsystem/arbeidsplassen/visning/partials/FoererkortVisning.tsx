@@ -3,8 +3,13 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
+import { Foererkort } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
-export const FoererkortVisning = ({ data }) => {
+type FoererkortVisningProps = {
+	data?: Array<Foererkort>
+}
+
+export const FoererkortVisning = ({ data }: FoererkortVisningProps) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -13,7 +18,7 @@ export const FoererkortVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Førerkort" nested>
-					{(foererkort) => (
+					{(foererkort: Foererkort) => (
 						<>
 							<TitleValue
 								title="Type førerkort"

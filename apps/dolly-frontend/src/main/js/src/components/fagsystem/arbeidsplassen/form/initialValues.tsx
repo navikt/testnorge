@@ -128,7 +128,7 @@ export const initialAnnenErfaring = {
 export const initialAnnenErfaringVerdier = {
 	description: 'Mange års erfaring med trening av sau til utstillinger.',
 	role: 'Sauetrener',
-	fromDate: '2010-05-01T00:00:00+02:00',
+	fromDate: '2010-05-01T00:00:00',
 	toDate: null,
 	ongoing: true,
 }
