@@ -53,6 +53,8 @@ import { Medl } from '@/components/fagsystem/medl/bestilling/Medl'
 import { Udistub } from '@/components/fagsystem/udistub/bestilling/Udistub'
 import { Dokarkiv } from '@/components/fagsystem/dokarkiv/bestilling/Dokarkiv'
 import { Histark } from '@/components/fagsystem/histark/bestilling/Histark'
+import { Foedested } from '@/components/fagsystem/pdlf/bestilling/partials/Foedested'
+import { Foedselsdato } from '@/components/fagsystem/pdlf/bestilling/partials/Foedselsdato'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -84,6 +86,8 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 	return (
 		<>
 			<Alder opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
+			<Foedested foedestedListe={bestilling.pdldata?.person?.foedested} />
+			<Foedselsdato foedselsdatoListe={bestilling.pdldata?.person?.foedselsdato} />
 			<Foedsel foedselListe={bestilling.pdldata?.person?.foedsel} />
 			<Doedsfall doedsfallListe={bestilling.pdldata?.person?.doedsfall} />
 			<Statsborgerskap statsborgerskapListe={bestilling.pdldata?.person?.statsborgerskap} />
