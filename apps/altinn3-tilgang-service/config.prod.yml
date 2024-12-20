@@ -29,10 +29,6 @@ spec:
       rules:
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: dolly-frontend-dev-unstable
-          cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp
         - application: team-dolly-lokal-app
