@@ -4,6 +4,8 @@ import { DollyModal } from '@/components/ui/modal/DollyModal'
 import React from 'react'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 
+//TODO: Tilpass styling av modalen, lag en egen CSS og fjern bruk av slettModal
+//TODO: Tilpass tekst i modalen
 export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 	return (
 		<DollyModal isOpen={errorModalIsOpen} closeModal={closeErrorModal} width="40%" overflow="auto">

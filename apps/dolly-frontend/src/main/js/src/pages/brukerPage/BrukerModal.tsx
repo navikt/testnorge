@@ -26,47 +26,33 @@ export default () => {
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
-				console.log('response BrukerModal: ', response) //TODO - SLETT MEG
 				if (response === null || response.data === null || response.data.length === 0) {
-					console.log('INGEN RESPONSE!!! ', response) //TODO - SLETT MEG
-					openErrorModal()
 					Logger.error({
 						event: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
 						message: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
 						uuid: window.uuid,
 					})
-					// return (
-					// 	<ErrorModal
-					// 		closeErrorModal={closeErrorModal}
-					// 		errorModalIsOpen={errorModalIsOpen}
-					// 		error={UNKNOWN_ERROR}
-					// 	/>
-					// )
-					// else {
-					// 	logoutBruker(UNKNOWN_ERROR)
-					// }
+					openErrorModal()
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
 			.catch((_e: NotFoundError) => {
-				openErrorModal()
 				Logger.error({
 					event: 'Fant ingen organisasjoner for bankid bruker',
 					message: 'Fant ingen organisasjoner for bankid bruker',
 					uuid: window.uuid,
 				})
-				// logoutBruker(ORG_ERROR)
+				logoutBruker(ORG_ERROR)
 			})
 			.catch((e: Error) => {
-				openErrorModal()
 				Logger.error({
 					event: e.name,
 					message: e.message,
 					uuid: window.uuid,
 				})
-				// logoutBruker(UNKNOWN_ERROR)
+				logoutBruker(UNKNOWN_ERROR)
 			})
 	}, [])
 
@@ -84,7 +70,7 @@ export default () => {
 						message: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
 						uuid: window.uuid,
 					})
-					// logoutBruker(UNKNOWN_ERROR)
+					logoutBruker(UNKNOWN_ERROR)
 				}
 			})
 			.catch((_e: NotFoundError) => {
@@ -96,7 +82,7 @@ export default () => {
 					message: e.message,
 					uuid: window.uuid,
 				})
-				// logoutBruker(UNKNOWN_ERROR)
+				logoutBruker(UNKNOWN_ERROR)
 			})
 	}
 
@@ -122,13 +108,11 @@ export default () => {
 			<div className="bruker-modal" style={{ height: modalHeight + 'px', display: 'flexbox' }}>
 				<h1>Velkommen til Dolly</h1>
 				{loading && <Loading label="Loading" />}
-				{errorModalIsOpen && (
-					<ErrorModal
-						closeErrorModal={closeErrorModal}
-						errorModalIsOpen={errorModalIsOpen}
-						error={UNKNOWN_ERROR}
-					/>
-				)}
+				<ErrorModal
+					closeErrorModal={closeErrorModal}
+					errorModalIsOpen={errorModalIsOpen}
+					error={UNKNOWN_ERROR}
+				/>
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
