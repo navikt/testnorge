@@ -22,7 +22,7 @@ spring:
             client-secret: ${AZURE_APP_CLIENT_SECRET}
         provider:
           aad:
-            authorization-uri: '#{T(java.lang.String).valueOf("${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}").replace("token", "authorize")}' # Not directly set by NAIS.
+            authorization-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/oauth2/v2.0/authorize # Not set by NAIS, but required because of authorization_code.
             token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
             jwk-set-uri: ${AZURE_OPENID_CONFIG_JWKS_URI}
 
