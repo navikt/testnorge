@@ -23,14 +23,11 @@ spec:
       consumes:
         - name: altinn:resourceregistry/accesslist.read
         - name: altinn:resourceregistry/accesslist.write
+        - name: altinn:accessmanagement/authorizedparties.resourceowner
   accessPolicy:
     inbound:
       rules:
         - application: dolly-frontend
-          cluster: dev-gcp
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: dolly-frontend-dev-unstable
           cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp

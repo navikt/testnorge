@@ -3,7 +3,7 @@ package no.nav.testnav.altinn3tilgangservice.consumer.altinn.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAccessListResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnResponseDTO>> {
+public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnAccessListResponseDTO>> {
 
     private static final String ALTINN_URL = "/resourceregistry/api/v1/access-lists/{owner}/{identifier}/members";
 
@@ -27,7 +27,7 @@ public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnRespo
 
 
     @Override
-    public Mono<AltinnResponseDTO> call() {
+    public Mono<AltinnAccessListResponseDTO> call() {
 
         return webClient
                 .post()
@@ -37,14 +37,14 @@ public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnRespo
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .bodyToMono(AltinnResponseDTO.class)
+                .bodyToMono(AltinnAccessListResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .doOnSuccess(value -> log.info("Altinn organisasjontilgang opprettet for {}",
                         organisasjon.getData().stream()
                                 .map(data -> data.split(":"))
                                 .map(data -> data[data.length-1])
                                 .collect(Collectors.joining())))
-                .onErrorResume(throwable -> Mono.just(AltinnResponseDTO.builder()
+                .onErrorResume(throwable -> Mono.just(AltinnAccessListResponseDTO.builder()
                                 .status(WebClientFilter.getStatus(throwable))
                                 .feilmelding(WebClientFilter.getMessage(throwable))
                         .build()));

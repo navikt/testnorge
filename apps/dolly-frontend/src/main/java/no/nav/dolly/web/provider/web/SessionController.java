@@ -2,7 +2,7 @@ package no.nav.dolly.web.provider.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.consumers.PersonOrganisasjonTilgangConsumer;
+import no.nav.dolly.web.consumers.Altinn3PersonOrganisasjonTilgangConsumer;
 import no.nav.dolly.web.service.BrukerService;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class SessionController {
 
     private final BrukerService brukerService;
 
-    private final PersonOrganisasjonTilgangConsumer personOrganisasjonTilgangConsumer;
+    private final Altinn3PersonOrganisasjonTilgangConsumer altinn3PersonOrganisasjonTilgangConsumer;
 
     /**
      * Ping endepunkt for aa holde sessionen aapen.
@@ -44,7 +44,8 @@ public class SessionController {
 
     @PutMapping("/user")
     public Mono<ResponseEntity<?>> addUserToSession(@RequestParam String organisasjonsnummer, ServerWebExchange exchange) {
-        return personOrganisasjonTilgangConsumer
+
+        return altinn3PersonOrganisasjonTilgangConsumer
                 .hasAccess(organisasjonsnummer, exchange)
                 .doOnError(e -> log.error("Feil ved sjekk av tilgang til org {}", organisasjonsnummer, e))
                 .flatMap(hasAccess -> {

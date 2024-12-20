@@ -51,7 +51,6 @@ public class Consumers {
     private ServerProperties testnavOrganisasjonService;
     private ServerProperties testnavPdlForvalter;
     private ServerProperties testnavPensjonTestdataFacadeProxy;
-    private ServerProperties testnavPersonOrganisasjonTilgangService;
     private ServerProperties testnavPersonSearchService;
     private ServerProperties testnavPersonService;
     private ServerProperties testnavSigrunstubProxy;
