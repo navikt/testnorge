@@ -10,11 +10,8 @@ import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.CreateAccessListeMemberCommand;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.DeleteAccessListMemberCommand;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetAccessListMembersCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetAuthorizedPartiesCommand;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.command.GetExchangeTokenCommand;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAccessListResponseDTO;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAuthorizedPartiesRequestDTO;
-import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AuthorizedPartyDTO;
+import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.BrregResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonDeleteDTO;
@@ -28,7 +25,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +76,7 @@ public class AltinnConsumer {
 
         return Flux.from(getAccessListMembers()
                         .flatMapMany(value -> Flux.fromIterable(value.getData()))
-                        .map(AltinnAccessListResponseDTO.AccessListMembershipDTO::getIdentifiers)
+                        .map(AltinnResponseDTO.AccessListMembershipDTO::getIdentifiers)
                         .collectList()
                         .map(data -> getIdentifier(data, organisasjonsnummer))
                         .map(identifier ->
@@ -110,16 +106,16 @@ public class AltinnConsumer {
                         new OrganisasjonCreateDTO(organisasjonsnummer),
                         altinnConfig).call())
                 .flatMapMany(response ->
-                        isBlank(response.getFeilmelding()) ?
-                                Flux.fromIterable(response.getData())
-                                        .map(this::getOrgnummer)
-                                        .filter(organisasjonsnummer::equals)
-                                        .flatMap(brregConsumer::getEnheter) :
-                                Mono.just(BrregResponseDTO.builder()
-                                        .organisasjonsnummer(organisasjonsnummer)
-                                        .feilmelding(response.getFeilmelding())
-                                        .status(response.getStatus())
-                                        .build()))
+                                isBlank(response.getFeilmelding()) ?
+                        Flux.fromIterable(response.getData())
+                                .map(this::getOrgnummer)
+                                .filter(organisasjonsnummer::equals)
+                                .flatMap(brregConsumer::getEnheter) :
+                        Mono.just(BrregResponseDTO.builder()
+                                .organisasjonsnummer(organisasjonsnummer)
+                                .feilmelding(response.getFeilmelding())
+                                .status(response.getStatus())
+                                .build()))
                 .map(response -> mapperFacade.map(response, Organisasjon.class));
     }
 
@@ -129,18 +125,7 @@ public class AltinnConsumer {
                 .flatMapMany(this::convertToOrganisasjon);
     }
 
-    public Flux<AuthorizedPartyDTO> getAuthorizedParties(String ident) {
-
-        return maskinportenConsumer.getAccessToken()
-                .flatMap(this::exchangeToken)
-                .flatMap(exchangeToken -> new GetAuthorizedPartiesCommand(webClient,
-                        new AltinnAuthorizedPartiesRequestDTO(ident),
-                        exchangeToken).call())
-                .map(Arrays::asList)
-                .flatMapIterable(list -> list);
-    }
-
-    private Mono<AltinnAccessListResponseDTO> getAccessListMembers() {
+    private Mono<AltinnResponseDTO> getAccessListMembers() {
 
         return maskinportenConsumer.getAccessToken()
                 .flatMap(this::exchangeToken)
@@ -150,7 +135,7 @@ public class AltinnConsumer {
                         altinnConfig).call());
     }
 
-    private Flux<Organisasjon> convertToOrganisasjon(AltinnAccessListResponseDTO altInnResponse) {
+    private Flux<Organisasjon> convertToOrganisasjon(AltinnResponseDTO altInnResponse) {
 
         return Flux.fromIterable(altInnResponse.getData())
                 .map(this::getOrgnummer)
@@ -170,7 +155,7 @@ public class AltinnConsumer {
     }
 
     @SneakyThrows
-    private String getOrgnummer(AltinnAccessListResponseDTO.AccessListMembershipDTO data) {
+    private String getOrgnummer(AltinnResponseDTO.AccessListMembershipDTO data) {
 
         return data.getIdentifiers()
                 .get(ORGANISASJON_ID)

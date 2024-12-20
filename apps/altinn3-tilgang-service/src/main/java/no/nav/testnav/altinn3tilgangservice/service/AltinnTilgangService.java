@@ -17,7 +17,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
-public class AltinnOrganisasjonTilgangService {
+public class AltinnTilgangService {
 
     private static final String ORGANISASJON_TILGANG = "tilgang";
     private final AltinnConsumer altinnConsumer;

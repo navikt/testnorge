@@ -23,7 +23,6 @@ spec:
       consumes:
         - name: altinn:resourceregistry/accesslist.read
         - name: altinn:resourceregistry/accesslist.write
-        - name: altinn:accessmanagement/authorizedparties.resourceowner
   accessPolicy:
     inbound:
       rules:

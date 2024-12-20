@@ -53,4 +53,3 @@ server:
       charset: UTF-8
   error:
     include-message: always
-    include-stacktrace: never

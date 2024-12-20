@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer;
 import no.nav.testnav.altinn3tilgangservice.database.entity.OrganisasjonTilgang;
 import no.nav.testnav.altinn3tilgangservice.database.repository.OrganisasjonTilgangRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -49,13 +47,17 @@ public class MiljoerOversiktService {
                                     organisasjon.setMiljoe(miljoe);
                                     return organisasjonTilgangRepository.save(organisasjon);
                                 }) :
-
-                        throwError(orgnummer));
+                        organisasjonTilgangRepository.save(OrganisasjonTilgang.builder()
+                                .organisasjonNummer(orgnummer)
+                                .miljoe(miljoe)
+                                .build()));
     }
 
     private static Mono<OrganisasjonTilgang> throwError(String orgnummer) {
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Organisasjonsnummer %s ble ikke funnet".formatted(orgnummer));
+        return Mono.just(OrganisasjonTilgang.builder()
+                .organisasjonNummer(orgnummer)
+                .feilmelding("404 Not found: Organisasjonsnummer %s ble ikke funnet".formatted(orgnummer))
+                .build());
     }
 }
