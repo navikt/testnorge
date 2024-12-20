@@ -8,15 +8,15 @@ spring:
     oauth2:
       client:
         registration:
-          aad:
+          azure:
             authorization-grant-type: authorization_code
             client-id:  ${AZURE_APP_CLIENT_ID}
             client-secret:  ${AZURE_APP_CLIENT_SECRET}
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope: openid,  ${AZURE_APP_CLIENT_ID}/.default
+            scope: openid, ${AZURE_APP_CLIENT_ID}/.default
         provider:
-          aad:
-            issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
+          azure:
+            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
 
 consumers:
   endringsmelding-service:

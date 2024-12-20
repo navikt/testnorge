@@ -36,4 +36,6 @@
         </root>
     </springProfile>
 
+    <logger level="DEBUG" name="org.springframework.security"/>
+
 </configuration>
