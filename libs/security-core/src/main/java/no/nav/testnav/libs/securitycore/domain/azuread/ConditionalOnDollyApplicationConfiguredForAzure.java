@@ -19,7 +19,7 @@ import static org.springframework.util.StringUtils.hasText;
  * Conditional that matches if the application is configured for Nav.
  * Requires the following properties set:
  * <ul>
- *     <li>AAD_ISSUER_URI</li>
+ *     <li>AZURE_OPENID_CONFIG_TOKEN_ENDPOINT</li>
  *     <li>AZURE_APP_CLIENT_ID</li>
  *     <li>AZURE_APP_CLIENT_SECRET</li>
  * </ul>
@@ -33,7 +33,7 @@ public @interface ConditionalOnDollyApplicationConfiguredForAzure {
 class OnDollyApplicationConfiguredForAzureCondition extends SpringBootCondition {
 
     private static final List<String> REQUIRED = Arrays.asList(
-            "AAD_ISSUER_URI",
+            "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
             "AZURE_APP_CLIENT_ID",
             "AZURE_APP_CLIENT_SECRET"
     );

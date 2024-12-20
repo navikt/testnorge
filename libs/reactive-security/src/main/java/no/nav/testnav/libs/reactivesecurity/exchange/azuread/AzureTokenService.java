@@ -33,7 +33,6 @@ public class AzureTokenService implements TokenService {
 
     public AzureTokenService(
             String proxyHost,
-            String issuerUrl,
             AzureClientCredential azureClientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
@@ -41,7 +40,7 @@ public class AzureTokenService implements TokenService {
 
         WebClient.Builder builder = WebClient
                 .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+                .baseUrl(azureClientCredential.getTokenEndpoint())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {

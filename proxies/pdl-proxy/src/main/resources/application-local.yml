@@ -1,9 +1,11 @@
 AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
 AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+AZURE_OPENID_CONFIG_ISSUER: ${sm://azure-openid-config-issuer}
+AZURE_OPENID_CONFIG_JWKS_URI: ${sm://azure-openid-config-jwks-uri}
 AZURE_TRYGDEETATEN_APP_CLIENT_ID: placeholder
 AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: placeholder
-AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: http://localhost/placeholder
-TOKEN_X_ISSUER: dummy
+AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: ${sm://azure-trygdeetaten-openid-config-token-endpoint}
+TOKEN_X_ISSUER: ${sm://token-x-issuer}
 
 spring:
   cloud:

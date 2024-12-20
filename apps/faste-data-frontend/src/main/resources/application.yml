@@ -1,5 +1,3 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
   application:
     name: testnav-faste-data-frontend
@@ -21,9 +19,9 @@ spring:
             scope: openid,  ${AZURE_APP_CLIENT_ID}/.default
         provider:
           aad:
-            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
-            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
-            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+            authorization-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/oauth2/v2.0/authorize # Not set by NAIS, but required because of authorization_code.
+            token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+            jwk-set-uri: ${AZURE_OPENID_CONFIG_JWKS_URI}
 
 consumers:
   testnorge-profil-api:

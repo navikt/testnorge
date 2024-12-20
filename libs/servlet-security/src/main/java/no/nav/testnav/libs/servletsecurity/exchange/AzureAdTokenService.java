@@ -25,6 +25,7 @@ import java.net.URI;
 
 @Slf4j
 @Service
+// TODO: Check no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService. These behave differently.
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.aad.issuer-uri")
 public class AzureAdTokenService implements TokenService {
     private final WebClient webClient;
@@ -33,7 +34,7 @@ public class AzureAdTokenService implements TokenService {
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
+            @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}") String issuerUri,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
@@ -41,7 +42,7 @@ public class AzureAdTokenService implements TokenService {
         this.getAuthenticatedToken = getAuthenticatedToken;
         WebClient.Builder builder = WebClient
                 .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+                .baseUrl(issuerUri)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {

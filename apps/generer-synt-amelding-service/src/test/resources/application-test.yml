@@ -1,4 +1,5 @@
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
+AZURE_OPENID_CONFIG_ISSUER: http://localhost:${wiremock.server.port:0}/token/v2.0
+AZURE_OPENID_CONFIG_JWKS_URI: http://localhost:${wiremock.server.port:0}/token/discovery/v2.0/keys
 TOKEN_X_ISSUER: dummy
 
 spring:
