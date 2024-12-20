@@ -1,3 +1,6 @@
+AZURE_OPENID_CONFIG_ISSUER: http://localhost:${wiremock.server.port:0}/token/v2.0
+AZURE_OPENID_CONFIG_JWKS_URI: http://localhost:${wiremock.server.port:0}/token/discovery/v2.0/keys
+
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
@@ -17,8 +20,6 @@ spring:
         enabled: false
     vault:
       enabled: false
-
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 
 consumers:
   generer-navn-service:

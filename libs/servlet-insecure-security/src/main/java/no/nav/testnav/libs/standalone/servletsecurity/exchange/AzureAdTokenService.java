@@ -27,13 +27,13 @@ public class AzureAdTokenService implements ExchangeToken {
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
+            @Value("${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}") String tokenEndpoint,
             AzureClientCredential clientCredential
     ) {
         log.info("Init AzureAd token exchange.");
         WebClient.Builder builder = WebClient
                 .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+                .baseUrl(tokenEndpoint)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {

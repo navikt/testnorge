@@ -1,5 +1,7 @@
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
-TOKEN_X_ISSUER: dummy
+AZURE_OPENID_CONFIG_ISSUER: http://localhost:${wiremock.server.port:0}/token/v2.0
+AZURE_OPENID_CONFIG_JWKS_URI: http://localhost:${wiremock.server.port:0}/token/discovery/v2.0/keys
+AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: placeholder
+TOKEN_X_ISSUER: placeholder
 
 spring:
   cloud:
@@ -10,27 +12,17 @@ spring:
 consumers:
   synt-vedtakshistorikk:
     url: http://localhost:${wiremock.server.port:0}/synt
-    cluster: dummy
-    namespace: dolly
     name: synthdata-arena-vedtakshistorikk
   testnav-arena-forvalteren-proxy:
-    cluster: dummy
-    namespace: dolly
     name: testnav-arena-forvalteren-proxy
     url: http://localhost:${wiremock.server.port:0}/arena
   testnav-pensjon-testdata-facade-proxy:
-    cluster: dummy
-    namespace: dolly
     name: testnav-pensjon-testdata-facade-proxy
     url: http://localhost:${wiremock.server.port:0}/pensjon
   testnav-person-search-service:
-    cluster: dummy
-    namespace: dolly
     name: testnav-person-search-service
     url: http://localhost:${wiremock.server.port:0}/search
   pdl-api-proxy:
-    cluster: dummy
-    namespace: dolly
     name: testnav-pdl-proxy
     url: http://localhost:${wiremock.server.port:0}/pdl
 
