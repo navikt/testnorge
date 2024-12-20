@@ -1,21 +1,24 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useMatches } from 'react-router'
 import cn from 'classnames'
 import Version from '@/components/version/Version'
 
 import './Breadcrumb.less'
-import allRoutes from '@/allRoutes'
-import useReactRouterBreadcrumbs from 'use-react-router-breadcrumbs'
 
 export const Breadcrumbs = () => {
 	const location = useLocation()
+	let matches = useMatches()
+
+	let crumbs = matches
+		.filter((match) => Boolean(match.handle?.crumb))
+		.map((match) => match.handle.crumb(match.data))
 
 	const isActive = (match, currentLocation) => match.pathname === currentLocation.pathname
+	//TODO: Må fikses
 
-	const breadcrumbs = useReactRouterBreadcrumbs(allRoutes)
 	return (
 		<nav aria-label="breadcrumb" className="breadcrumb">
 			<ol>
-				{breadcrumbs.map(({ match, breadcrumb }, idx) => {
+				{crumbs.map(({ match, breadcrumb }, idx) => {
 					const active = isActive(match, location)
 					const classes = cn('breadcrumb-item', {})
 
