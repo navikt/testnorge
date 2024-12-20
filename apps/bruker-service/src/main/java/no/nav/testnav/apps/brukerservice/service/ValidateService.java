@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.brukerservice.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.brukerservice.consumer.PersonOrganisasjonTilgangConsumer;
+import no.nav.testnav.apps.brukerservice.consumer.AltinnTilgangServiceConsumer;
 import no.nav.testnav.apps.brukerservice.exception.UserHasNoAccessToOrgnisasjonException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -9,10 +9,11 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class ValidateService {
-    private final PersonOrganisasjonTilgangConsumer client;
+
+    private final AltinnTilgangServiceConsumer altinnTilgangServiceConsumer;
 
     public Mono<Void> validateOrganiasjonsnummerAccess(String organisasjonsnummer) {
-        return client
+        return altinnTilgangServiceConsumer
                 .getOrganisasjon(organisasjonsnummer)
                 .doOnNext(organisasjon -> {
                     if (!organisasjon.getOrganisasjonsnummer().equals(organisasjonsnummer)) {

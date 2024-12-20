@@ -26,65 +26,10 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: dolly-backend
-        - application: dolly-backend-dev
-        - application: generer-navn-service
-        - application: organisasjon-bestilling-service
-        - application: synthdata-amelding
-        - application: synthdata-arena-aap
-        - application: synthdata-arena-dagpenger
-        - application: synthdata-arena-meldekort
-        - application: synthdata-arena-tilleggsstonad
-        - application: synthdata-arena-tiltak
-        - application: synthdata-arena-vedtakshistorikk
-        - application: synthdata-elsam-gcp
-        - application: testnav-adresse-service
-        - application: testnav-amelding-service
-        - application: testnav-app-tilgang-analyse-service
-        - application: testnav-arbeidsforhold-service
-        - application: testnav-arbeidsplassencv-proxy
-        - application: testnav-batch-bestilling-service
-        - application: testnav-bruker-service
         - application: testnav-bruker-service-dev
-        - application: testnav-endringsmelding-service
-        - application: testnav-generer-arbeidsforhold-populasjon-service
-        - application: testnav-generer-organisasjon-populasjon-service
-        - application: testnav-generer-synt-amelding-service
-        - application: testnav-helsepersonell-service
-        - application: testnav-ident-pool
-        - application: testnav-inntektsmelding-generator-service
-        - application: testnav-inntektsmelding-service
-        - application: testnav-jenkins-batch-status-service
-        - application: testnav-joark-dokument-service
-        - application: testnav-kodeverk-service
-        - application: testnav-miljoer-service
-        - application: testnav-oppsummeringsdokument-service
-        - application: testnav-organisasjon-faste-data-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnav-organisasjon-mottak-service
-        - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-tilgang-service
-        - application: testnav-orgnummer-service
-        - application: testnav-pdl-forvalter
-        - application: testnav-pdl-forvalter-dev
-        - application: testnav-person-faste-data-service
-        - application: testnav-person-organisasjon-tilgang-service-dev
-        - application: testnav-person-search-service
-        - application: testnav-person-service
-        - application: testnav-skattekort-service
-        - application: testnav-sykemelding-api
-        - application: testnav-synt-sykemelding-api
-        - application: testnav-synt-vedtakshistorikk-service
-        - application: testnav-tenor-search-service
-        - application: testnav-tps-messaging-service
-        - application: testnav-varslinger-service
-        - application: testnav-varslinger-service-dev
-        - application: testnorge-profil-api
+        - application: testnav-app-tilgang-analyse-service
         - application: testnorge-profil-api-dev
-        - application: testnorge-tilbakemelding-api
-        - application: testnav-levende-arbeidsforhold-ansettelse
-        - application: testnav-levende-arbeidsforhold-service
-        - application: testnav-levende-arbeidsforhold-scheduler
+        - application: testnav-altinn3-tilgang-service
   liveness:
     path: /internal/isAlive
     initialDelay: 4
