@@ -49,20 +49,22 @@ export default () => {
 				setLoading(false)
 			})
 			.catch((_e: NotFoundError) => {
+				openErrorModal()
 				Logger.error({
 					event: 'Fant ingen organisasjoner for bankid bruker',
 					message: 'Fant ingen organisasjoner for bankid bruker',
 					uuid: window.uuid,
 				})
-				logoutBruker(ORG_ERROR)
+				// logoutBruker(ORG_ERROR)
 			})
 			.catch((e: Error) => {
+				openErrorModal()
 				Logger.error({
 					event: e.name,
 					message: e.message,
 					uuid: window.uuid,
 				})
-				logoutBruker(UNKNOWN_ERROR)
+				// logoutBruker(UNKNOWN_ERROR)
 			})
 	}, [])
 
