@@ -16,7 +16,9 @@ spring:
             scope: openid, ${AZURE_APP_CLIENT_ID}/.default
         provider:
           azure:
-            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+            authorization-uri: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/oauth2/v2.0/authorize
+            token-uri: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/oauth2/v2.0/token
+            jwk-set-uri: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/discovery/v2.0/keys
 
 consumers:
   endringsmelding-service:
