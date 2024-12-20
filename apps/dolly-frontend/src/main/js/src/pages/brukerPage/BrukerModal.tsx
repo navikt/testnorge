@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Loading from '@/components/ui/loading/Loading'
 import BrukernavnVelger from '@/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '@/pages/brukerPage/OrganisasjonVelger'
-import {Bruker, Organisasjon, OrgResponse} from '@/pages/brukerPage/types'
-import {BrukerApi, PersonOrgTilgangApi, SessionApi} from '@/service/Api'
-import {NotFoundError} from '@/error'
-import {Navigate} from 'react-router-dom'
-import {Logger} from '@/logger/Logger'
+import { Bruker, Organisasjon, OrgResponse } from '@/pages/brukerPage/types'
+import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '@/service/Api'
+import { NotFoundError } from '@/error'
+import { Navigate } from 'react-router-dom'
+import { Logger } from '@/logger/Logger'
 import logoutBruker from '@/components/utlogging/logoutBruker'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { ErrorModal } from '@/pages/brukerPage/ErrorModal'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -19,17 +21,25 @@ export default () => {
 	const [modalHeight, setModalHeight] = useState(310)
 	const [sessionUpdated, setSessionUpdated] = useState(false)
 
+	const [errorModalIsOpen, openErrorModal, closeErrorModal] = useBoolean(false)
+
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
+					openErrorModal()
 					Logger.error({
 						event: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
 						message: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
 						uuid: window.uuid,
 					})
-					// TBD
-					logoutBruker(UNKNOWN_ERROR)
+					if (errorModalIsOpen) {
+						return (
+							<ErrorModal closeErrorModal={closeErrorModal} errorModalIsOpen={errorModalIsOpen} />
+						)
+					} else {
+						logoutBruker(UNKNOWN_ERROR)
+					}
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
