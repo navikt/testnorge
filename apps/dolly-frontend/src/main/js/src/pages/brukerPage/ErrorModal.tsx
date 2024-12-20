@@ -2,8 +2,9 @@ import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import React from 'react'
+import logoutBruker from '@/components/utlogging/logoutBruker'
 
-export const ErrorModal = ({ errorModalIsOpen, closeErrorModal }) => {
+export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 	return (
 		<DollyModal isOpen={errorModalIsOpen} closeModal={closeErrorModal} width="40%" overflow="auto">
 			<div className="slettModal">
@@ -16,7 +17,13 @@ export const ErrorModal = ({ errorModalIsOpen, closeErrorModal }) => {
 					</h4>
 				</div>
 				<div className="slettModal-actions">
-					<NavButton onClick={() => closeErrorModal()} variant="primary">
+					<NavButton
+						onClick={() => {
+							closeErrorModal()
+							logoutBruker(error)
+						}}
+						variant="primary"
+					>
 						Tilbake
 					</NavButton>
 				</div>

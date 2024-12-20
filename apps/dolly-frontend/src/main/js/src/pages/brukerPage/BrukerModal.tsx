@@ -33,13 +33,16 @@ export default () => {
 						message: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
 						uuid: window.uuid,
 					})
-					if (errorModalIsOpen) {
-						return (
-							<ErrorModal closeErrorModal={closeErrorModal} errorModalIsOpen={errorModalIsOpen} />
-						)
-					} else {
-						logoutBruker(UNKNOWN_ERROR)
-					}
+					// return (
+					// 	<ErrorModal
+					// 		closeErrorModal={closeErrorModal}
+					// 		errorModalIsOpen={errorModalIsOpen}
+					// 		error={UNKNOWN_ERROR}
+					// 	/>
+					// )
+					// else {
+					// 	logoutBruker(UNKNOWN_ERROR)
+					// }
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
@@ -115,6 +118,13 @@ export default () => {
 			<div className="bruker-modal" style={{ height: modalHeight + 'px', display: 'flexbox' }}>
 				<h1>Velkommen til Dolly</h1>
 				{loading && <Loading label="Loading" />}
+				{errorModalIsOpen && (
+					<ErrorModal
+						closeErrorModal={closeErrorModal}
+						errorModalIsOpen={errorModalIsOpen}
+						error={UNKNOWN_ERROR}
+					/>
+				)}
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
