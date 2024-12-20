@@ -27,6 +27,7 @@ export default () => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
+					console.log('INGEN RESPONSE!!! ', response) //TODO - SLETT MEG
 					openErrorModal()
 					Logger.error({
 						event: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
@@ -82,7 +83,7 @@ export default () => {
 						message: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
 						uuid: window.uuid,
 					})
-					logoutBruker(UNKNOWN_ERROR)
+					// logoutBruker(UNKNOWN_ERROR)
 				}
 			})
 			.catch((_e: NotFoundError) => {
@@ -94,7 +95,7 @@ export default () => {
 					message: e.message,
 					uuid: window.uuid,
 				})
-				logoutBruker(UNKNOWN_ERROR)
+				// logoutBruker(UNKNOWN_ERROR)
 			})
 	}
 
