@@ -78,6 +78,9 @@ export const EmptyObject = () => <StyledText>Ingen verdier satt</StyledText>
 
 export const Bestillingsdata = ({ bestilling }: any) => {
 	console.log('bestilling: ', bestilling) //TODO - SLETT MEG
+	// const windowHeight = window.innerHeight
+	// console.log('windowHeight: ', windowHeight) //TODO - SLETT MEG
+
 	return (
 		<>
 			<Alder opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />

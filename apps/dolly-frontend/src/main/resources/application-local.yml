@@ -15,8 +15,6 @@ spring:
       client:
         registration:
           aad:
-            client-id: ${sm://azure-app-client-id}
-            client-secret: ${sm://azure-app-client-secret}
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
             scope: openid, offline_access,  ${sm://azure-app-client-id}/.default

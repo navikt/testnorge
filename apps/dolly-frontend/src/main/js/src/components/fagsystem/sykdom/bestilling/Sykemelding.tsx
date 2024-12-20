@@ -73,6 +73,21 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 								)}
 							</DollyFieldArray>
 						)}
+						{detaljertSykemelding?.kontaktMedPasient && (
+							<>
+								<BestillingTitle>Tilbakedatering</BestillingTitle>
+								<BestillingData>
+									<TitleValue
+										title="Begrunnelse ikke kontakt"
+										value={detaljertSykemelding.kontaktMedPasient?.begrunnelseIkkeKontakt}
+									/>
+									<TitleValue
+										title="Kontaktdato"
+										value={formatDate(detaljertSykemelding.kontaktMedPasient?.kontaktDato)}
+									/>
+								</BestillingData>
+							</>
+						)}
 						{detaljertSykemelding.helsepersonell && (
 							<>
 								<BestillingTitle>Helsepersonell</BestillingTitle>

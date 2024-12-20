@@ -82,6 +82,12 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	if (loadingBestilling) {
 		return <Loading label={'Oppretter bestilling ...'} />
 	}
+
+	// const divElement = document.getElementsByClassName('oppsummering')
+	// console.log('divElement: ', divElement) //TODO - SLETT MEG
+	// const elementHeight = divElement?.[0]?.clientHeight
+	// console.log('elementHeight: ', elementHeight) //TODO - SLETT MEG
+
 	return (
 		<div>
 			{harAvhukedeAttributter(formMethods.getValues()) && (
