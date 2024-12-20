@@ -14,9 +14,6 @@ import reactor.util.function.Tuple2;
 
 import java.util.List;
 
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,10 +34,6 @@ public class AltinnBrukerTilgangService {
 
         return Flux.fromIterable(organisasjoner.getT1())
                 .doOnNext(org -> log.info("Organisasjon {}", org))
-//                .filter(party -> organisasjoner.getT2().stream()
-//                        .anyMatch(organisasjon -> organisasjon.getOrganisasjonsnummer().equals(party.getOrganizationNumber())))
-                .map(AuthorizedPartyDTO::getSubunits)
-                .flatMap(Flux::fromIterable)
                 .filter(party -> party.getAuthorizedResources().contains(DOLLY_RESOURCE))
                 .filter(party -> organisasjoner.getT2().stream()
                         .anyMatch(organisasjon -> organisasjon.getOrganisasjonsnummer().equals(party.getOrganizationNumber())))
@@ -67,8 +60,6 @@ public class AltinnBrukerTilgangService {
     private Flux<PersonDTO.OrganisasjonDTO> getTilpassetOrganisasjon(Tuple2<List<AuthorizedPartyDTO>, List<Organisasjon>> organisasjoner) {
 
         return Flux.fromIterable(organisasjoner.getT1())
-                .map(AuthorizedPartyDTO::getSubunits)
-                .flatMap(Flux::fromIterable)
                 .map(party -> PersonDTO.OrganisasjonDTO.builder()
                         .navn(party.getName())
                         .organisasjonsnummer(party.getOrganizationNumber())
