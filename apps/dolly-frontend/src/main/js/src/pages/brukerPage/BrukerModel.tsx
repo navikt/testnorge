@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import Loading from '@/components/ui/loading/Loading'
 import BrukernavnVelger from '@/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '@/pages/brukerPage/OrganisasjonVelger'
-import { Bruker, Organisasjon, OrgResponse } from '@/pages/brukerPage/types'
-import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '@/service/Api'
-import { NotFoundError } from '@/error'
-import { Navigate } from 'react-router-dom'
-import { Logger } from '@/logger/Logger'
+import {Bruker, Organisasjon, OrgResponse} from '@/pages/brukerPage/types'
+import {BrukerApi, PersonOrgTilgangApi, SessionApi} from '@/service/Api'
+import {NotFoundError} from '@/error'
+import {Navigate} from 'react-router-dom'
+import {Logger} from '@/logger/Logger'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 
 const ORG_ERROR = 'organisation_error'
@@ -28,6 +28,7 @@ export default () => {
 						message: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
 						uuid: window.uuid,
 					})
+					// TBD
 					logoutBruker(UNKNOWN_ERROR)
 				}
 				setOrganisasjoner(response.data)

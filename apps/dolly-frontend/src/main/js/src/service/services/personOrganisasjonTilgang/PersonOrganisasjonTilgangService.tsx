@@ -12,6 +12,7 @@ export default {
 				logoutBruker('person_org_error')
 			})
 			.then((response) => {
+				console.log('response', response)
 				return response
 			})
 	}
