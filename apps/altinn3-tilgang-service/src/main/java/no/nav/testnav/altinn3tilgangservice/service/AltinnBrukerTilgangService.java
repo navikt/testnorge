@@ -14,6 +14,9 @@ import reactor.util.function.Tuple2;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,8 @@ public class AltinnBrukerTilgangService {
                 .map(AuthorizedPartyDTO::getSubunits)
                 .flatMap(Flux::fromIterable)
                 .filter(party -> party.getAuthorizedResources().contains(DOLLY_RESOURCE))
+                .filter(party -> organisasjoner.getT2().stream()
+                        .anyMatch(organisasjon -> organisasjon.getOrganisasjonsnummer().equals(party.getOrganizationNumber())))
                 .map(part -> OrganisasjonDTO.builder()
                         .navn(part.getName())
                         .organisasjonsnummer(part.getOrganizationNumber())
