@@ -19,6 +19,6 @@ spring:
     
     
 consumers:
-  testnav-person-organisasjon-tilgang-service:
-    url: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
-    name: testnav-person-organisasjon-tilgang-service-dev
+  testnav-altinn3-tilgang-service:
+    url: http://testnav-altinn3-tilgang-service.dolly.svc.cluster.local
+    name: testnav-altinn3-tilgang-service

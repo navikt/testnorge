@@ -1,27 +1,23 @@
 package no.nav.testnav.apps.brukerservice.domain;
 
-import no.nav.testnav.apps.brukerservice.consumer.dto.OrganisasjonDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 
 public class Organisasjon {
-    private final String navn;
-    private final String organisasjonsnummer;
-    private final String organisasjonsform;
+
+    private String navn;
+    private String organisasjonsnummer;
+    private String organisasjonsform;
 
     public Organisasjon(OrganisasjonDTO dto) {
-        this.navn = dto.navn();
-        this.organisasjonsnummer = dto.organisasjonsnummer();
-        this.organisasjonsform = dto.organisasjonsfrom();
-    }
-
-    public String getNavn() {
-        return navn;
-    }
-
-    public String getOrganisasjonsnummer() {
-        return organisasjonsnummer;
-    }
-
-    public String getOrganisasjonsform() {
-        return organisasjonsform;
+        this.navn = dto.getNavn();
+        this.organisasjonsnummer = dto.getOrganisasjonsnummer();
+        this.organisasjonsform = dto.getOrganisasjonsform();
     }
 }

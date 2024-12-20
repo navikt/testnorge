@@ -4,6 +4,8 @@ AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
 CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE
 JWT_SECRET: DUMMY SUPER SECRET JWT KEY THAT IS NOT SECURE
 
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service-dev
+
 spring:
   application:
     name: testnav-bruker-service-dev
@@ -15,6 +17,6 @@ spring:
     password:
 
 consumers:
-  testnav-person-organisasjon-tilgang-service:
-    url: https://testnav-person-organisasjon-tilgang-service-dev.intern.dev.nav.no
-    name: testnav-person-organisasjon-tilgang-service-dev
+  testnav-altinn3-tilgang-service:
+    url: https://testnav-altinn3-tilgang-service.intern.dev.nav.no
+    name: testnav-altinn3-tilgang-service

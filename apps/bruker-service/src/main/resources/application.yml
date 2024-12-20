@@ -22,11 +22,11 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  testnav-person-organisasjon-tilgang-service:
-    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
+  testnav-altinn3-tilgang-service:
+    url: http://testnav-altinn3-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-organisasjon-tilgang-service
+    name: testnav-altinn3-proxy
 
 management:
   endpoints:
