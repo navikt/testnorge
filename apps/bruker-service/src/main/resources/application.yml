@@ -26,7 +26,7 @@ consumers:
     url: http://testnav-altinn3-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-altinn3-proxy
+    name: testnav-altinn3-tilgang-proxy
 
 management:
   endpoints:

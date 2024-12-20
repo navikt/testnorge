@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.reactivesecurity.action;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -10,8 +11,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 
 @Component
 @RequiredArgsConstructor

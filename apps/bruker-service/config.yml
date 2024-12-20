@@ -21,14 +21,11 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
     outbound:
       rules:
-        - application: testnav-person-organisasjon-tilgang-service
+        - application: testnav-altinn3-tilgang-proxy
   liveness:
     path: /internal/isAlive
     initialDelay: 4
