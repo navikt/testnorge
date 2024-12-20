@@ -12,8 +12,8 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-endringsmelding.intern.dev.nav.no/login/oauth2/code/aad"
-        - "http://localhost:8080/login/oauth2/code/aad"
+        - "https://testnav-endringsmelding.intern.dev.nav.no/login/oauth2/code/azure"
+        - "http://localhost:8080/login/oauth2/code/azure"
       claims:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
