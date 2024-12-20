@@ -8,7 +8,15 @@ import logoutBruker from '@/components/utlogging/logoutBruker'
 //TODO: Tilpass tekst i modalen
 export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 	return (
-		<DollyModal isOpen={errorModalIsOpen} closeModal={closeErrorModal} width="40%" overflow="auto">
+		<DollyModal
+			isOpen={errorModalIsOpen}
+			closeModal={() => {
+				closeErrorModal()
+				logoutBruker(error)
+			}}
+			width="40%"
+			overflow="auto"
+		>
 			<div className="slettModal">
 				<div className="slettModal slettModal-content">
 					<Icon size={50} kind="report-problem-circle" />
