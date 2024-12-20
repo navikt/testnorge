@@ -9,16 +9,16 @@ spring:
       client:
         registration:
           aad:
+            authorization-grant-type: authorization_code
             client-id:  ${AZURE_APP_CLIENT_ID}
             client-secret:  ${AZURE_APP_CLIENT_SECRET}
-            authorization-grant-type: authorization_code
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope: openid,  ${AZURE_APP_CLIENT_ID}/.default
         provider:
           aad:
-            authorization-uri: '#{T(java.lang.String).valueOf("${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}").replace("token", "authorize")}' # Not directly set by NAIS.
-            token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
             jwk-set-uri: ${AZURE_OPENID_CONFIG_JWKS_URI}
+            token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
 
 consumers:
   endringsmelding-service:
