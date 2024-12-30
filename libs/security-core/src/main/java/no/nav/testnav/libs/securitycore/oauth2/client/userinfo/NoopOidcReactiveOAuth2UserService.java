@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.endringsmeldingfrontend.config;
+package no.nav.testnav.libs.securitycore.oauth2.client.userinfo;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
 import static lombok.AccessLevel.PACKAGE;
 
 @RequiredArgsConstructor(access = PACKAGE)
-class CustomOidcReactiveOAuth2UserService extends OidcReactiveOAuth2UserService {
+class NoopOidcReactiveOAuth2UserService extends OidcReactiveOAuth2UserService {
 
     /**
      * Stripped from {@code org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequestUtils#getUser(OidcUserRequest, OidcUserInfo)}.
