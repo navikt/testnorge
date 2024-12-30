@@ -154,11 +154,6 @@ consumers:
     namespace: dolly
     name: testnorge-tilbakemelding-api
     url: http://testnorge-tilbakemelding-api.dolly.svc.cluster.local
-  testnav-person-organisasjon-tilgang-service:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-person-organisasjon-tilgang-service
-    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly
@@ -239,6 +234,11 @@ consumers:
     namespace: dolly
     name: testnav-yrkesskade-proxy
     url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
+  testnav-sykemelding-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-sykemelding-api
+    url: http://testnav-sykemelding-api.dolly.svc.cluster.local
 
 management:
   endpoints:

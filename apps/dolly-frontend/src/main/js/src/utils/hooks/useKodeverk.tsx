@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
-import _, { toLower } from 'lodash'
+import * as _ from 'lodash-es'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { SortKodeverkArray } from '@/service/services/dolly/Utils'
 
@@ -43,7 +43,11 @@ export const useKodeverk = (kodeverkNavn) => {
 	const kodeverkSortert = SortKodeverkArray({ koder: koder, name: kodeverkNavn })
 
 	return {
-		kodeverk: SelectOptionsFormat.formatOptions(toLower(kodeverkNavn), kodeverkSortert, isLoading),
+		kodeverk: SelectOptionsFormat.formatOptions(
+			_.toLower(kodeverkNavn),
+			kodeverkSortert,
+			isLoading,
+		),
 		loading: isLoading,
 		error: error,
 	}

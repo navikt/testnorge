@@ -41,14 +41,34 @@ function __preserveRef(key, v) {
 	}
 }
 
+const createProxyConfig = (routes) => {
+	const target = 'http://localhost:8020'
+	const secure = false
+	return Object.fromEntries(
+		Object.entries(routes).map(([path, { changeOrigin }]) => [
+			path,
+			{ target, changeOrigin, secure },
+		]),
+	)
+}
+
 export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
 		outDir: 'build',
-		sourcemap: true,
+		sourcemap: false,
 		cssCodeSplit: false,
 		rollupOptions: {
 			external: ['./nais.js'],
+			output: {
+				manualChunks(id) {
+					if (id.includes('node_modules') && !id.includes('navikt')) {
+						return id.toString().split('node_modules/')[1].split('/')[0].toString()
+					} else if (id.includes('navikt')) {
+						return 'navikt'
+					}
+				},
+			},
 		},
 	},
 	css: {
@@ -66,7 +86,7 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	server: mode === 'local-dev' && {
-		proxy: proxyRoutes,
+		proxy: createProxyConfig(proxyRoutes),
 		port: 3000,
 	},
 	test: {

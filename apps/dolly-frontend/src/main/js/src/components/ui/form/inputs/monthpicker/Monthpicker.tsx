@@ -3,7 +3,7 @@ import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { MonthPicker, useMonthpicker } from '@navikt/ds-react'
 import { addYears, isDate, subYears } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { useEffect } from 'react'
 
 interface MonthpickerProps {

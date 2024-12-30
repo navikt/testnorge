@@ -17,7 +17,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
-public class AltinnTilgangService {
+public class AltinnOrganisasjonTilgangService {
 
     private static final String ORGANISASJON_TILGANG = "tilgang";
     private final AltinnConsumer altinnConsumer;
@@ -30,7 +30,7 @@ public class AltinnTilgangService {
                 .flatMap(this::convertResponse);
     }
 
-    public Flux<OrganisasjonResponse> create(String orgnummer, String miljoe) {
+    public Mono<OrganisasjonResponse> create(String orgnummer, String miljoe) {
 
         return altinnConsumer.create(orgnummer)
                 .flatMap(altinnOrg -> {

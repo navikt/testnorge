@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { requiredString } from '@/utils/YupValidations'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const testTelefonnummer = () =>
 	Yup.string()

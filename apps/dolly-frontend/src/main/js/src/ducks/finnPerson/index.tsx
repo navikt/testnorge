@@ -4,7 +4,7 @@ import { onFailure, onSuccess } from '@/ducks/utils/requestActions'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { LOCATION_CHANGE } from 'redux-first-history'
 import { VisningType } from '@/pages/gruppe/Gruppe'
-import { isEmpty } from 'lodash'
+import * as _ from 'lodash-es'
 import { ERROR_NAVIGATE_IDENT } from '../errors/ErrorMessages'
 
 export const {
@@ -56,7 +56,7 @@ export default handleActions(
 			state.feilmelding = action.payload.data?.message
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
-			state.feilmelding = isEmpty(action.payload?.data)
+			state.feilmelding = _.isEmpty(action.payload?.data)
 				? ERROR_NAVIGATE_IDENT
 				: action.payload?.data?.message
 			state.hovedperson = action.payload.data.identHovedperson

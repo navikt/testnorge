@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const testMobil = (val) => {
 	return val.test('gyldig-mobil', 'Ugyldig telefonnummer', (mobil, testContext) => {

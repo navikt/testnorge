@@ -41,9 +41,6 @@ consumers:
   testnav-varslinger-service:
     name: testnav-varslinger-service-dev
     url: http://testnav-varslinger-service-dev.intern.dev.nav.no
-  testnav-person-organisasjon-tilgang-service:
-    name: testnav-person-organisasjon-tilgang-service-dev
-    url: https://testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
   oppsummeringsdokument-service:
     url: https://testnav-oppsummeringsdokument-service.intern.dev.nav.no
   testnav-bruker-service:
@@ -88,3 +85,6 @@ consumers:
     url: https://testnav-levende-arbeidsforhold-scheduler.intern.dev.nav.no
   testnav-yrkesskade-proxy:
     url: https://testnav-yrkesskade-proxy.intern.dev.nav.no
+  testnav-sykemelding-api:
+    name: testnav-sykemelding-api-dev
+    url: https://testnav-sykemelding-api-dev.intern.dev.nav.no

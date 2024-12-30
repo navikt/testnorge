@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 // @ts-ignore
 import { Inntektsinformasjon } from './inntektinformasjonTypes'
 import { UseFormReturn } from 'react-hook-form/dist/types'

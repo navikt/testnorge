@@ -1,5 +1,5 @@
 import { format, isDate } from 'date-fns'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { convertInputToDate, initDayjs } from '@/components/ui/form/DateFormatUtils'
