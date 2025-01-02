@@ -20,10 +20,31 @@ export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 			<div className="slettModal">
 				<div className="slettModal slettModal-content">
 					<Icon size={50} kind="report-problem-circle" />
-					<h1>Ukjent feil</h1>
+					<h1>Manglende tilgang</h1>
 					<h4>
-						Ukjent feil ved henting av organisasjoner for bankid-bruker. Ta kontakt med en ansvarlig
-						voksen for å løse problemet.
+						Du er nå pålogget med Bank-ID, men mangler tilgang til Dolly. <br/>
+						For å få tilgang må følgende være oppfylt:
+						<ol>
+							<li>Organisasjonen du gjør arbeid for må være lagt til i
+								liste over godkjente organisajoner hos Nav.
+							</li>
+							<li>Du trenger rettigheten <em>Tilgang til NAVs Dolly
+								for samarbeidspartnere" i Altinn for denne organisasjonen</em>.
+							</li>
+						</ol>
+						Hvis hensikten er å ta i bruk Dolly kan dette
+						løses som følger:
+						<ol>
+							<li>Ta kontakt med NAV ved Anders Marstrander epost: anders.marstrander@nav.no,
+								oppgi organisasjonsnummer for organisasjon du jobber for og spør om denne kan gis tilgang
+								til <em>Dolly syntetiske testdata selvbetjening</em>.
+							</li>
+							<li>Ta kontakt med Altinn-ansvarlig i organisasjonen du jobber for
+								og spør om vedkommende kan gi deg rettighet til enkelttjenesten med navn:
+								<em>Tilgang til NAVs Dolly for samarbeidspartnere</em>.
+							</li>
+						</ol>
+						Hvis overnevnte er på plass og du forsatt mangler tilgang, ta kontakt med NAV ved anders.marstrander@nav.no.
 					</h4>
 				</div>
 				<div className="slettModal-actions">
@@ -34,7 +55,7 @@ export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 						}}
 						variant="primary"
 					>
-						Tilbake
+						OK
 					</NavButton>
 				</div>
 			</div>
