@@ -25,18 +25,18 @@ export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 						Du er nå pålogget med Bank-ID, men mangler tilgang til Dolly. <br/>
 						For å få tilgang må følgende være oppfylt:
 						<ol>
-							<li>Organisasjonen du gjør arbeid for må være lagt til i
-								liste over godkjente organisajoner hos Nav.
+							<li>Organisasjonen du arbeider for må være lagt til i
+								liste over godkjente organisasjoner hos Nav.
 							</li>
-							<li>Du trenger rettigheten <em>Tilgang til NAVs Dolly
-								for samarbeidspartnere" i Altinn for denne organisasjonen</em>.
+							<li>Du trenger rettigheten <em>"Tilgang til NAVs Dolly
+								for samarbeidspartnere"</em> i Altinn for denne organisasjonen.
 							</li>
 						</ol>
 						Hvis hensikten er å ta i bruk Dolly kan dette
 						løses som følger:
 						<ol>
 							<li>Ta kontakt med NAV ved Anders Marstrander epost: anders.marstrander@nav.no,
-								oppgi organisasjonsnummer for organisasjon du jobber for og spør om denne kan gis tilgang
+								oppgi organisasjonsnummer til organisasjon du jobber for og spør om denne kan gis tilgang
 								til <em>Dolly syntetiske testdata selvbetjening</em>.
 							</li>
 							<li>Ta kontakt med Altinn-ansvarlig i organisasjonen du jobber for
