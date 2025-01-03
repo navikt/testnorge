@@ -30,11 +30,11 @@ access.scopes:
 api.azuread.url: https://graph.microsoft.com
 
 consumers:
-  testnav-person-organisasjon-tilgang-service:
+  testnav-altinn3-tilgang-service:
     cluster: dev-gcp
     namespace: dolly
-    name: ${PERSON_ORG_TILGANG_NAME}
-    url: ${PERSON_ORG_TILGANG_URL}
+    name: ${ALTINN3_TILGANG_NAME}
+    url: ${ALTINN3_TILGANG_URL}
 
 management:
   endpoints:

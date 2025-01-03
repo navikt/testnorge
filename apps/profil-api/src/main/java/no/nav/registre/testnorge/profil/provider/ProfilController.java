@@ -33,7 +33,7 @@ public class ProfilController {
     }
 
     @GetMapping(value = "/bilde", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getImage() {
+    public ResponseEntity<byte[]> getImage() {
         return profilService
                 .getImage()
                 .map(value -> ResponseEntity.ok().cacheControl(cacheControl).body(value))
