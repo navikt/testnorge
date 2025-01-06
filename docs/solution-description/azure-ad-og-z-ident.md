@@ -75,9 +75,3 @@ Med access_tokene, som brukes i kommunikasjon fra frontend til backend, vil back
 Det betyr at vi kan bruke dagens mekanismer for å hente ut epost istedenfor for Z-bruker i Dolly. 
 
 I Dolly frontend vil vi nå ha mulighet til å hente ut personlige informasjon om brukeren. Som epost, navn osv... som vil hjelpe oss til bedre feilsøkning, og være et steg i å kunne hjelpe personer utenfor NAV.
-
-### Migererig fra Z-Bruker
-
-I en periode vil vi legge til funksjonalitet for å kunne kopiere en Z-bruker over til din personlige bruker. På den måten vil ingen miste allerede opprettede brukere.
-
-[Prototype](https://invis.io/ENXCGRI6XD8#/429665609_Innlogging_Personlig_ident_1)

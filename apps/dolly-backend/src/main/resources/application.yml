@@ -64,15 +64,14 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump,health
+      exposure:
+        include: prometheus,health
       path-mapping:
         prometheus: metrics
   endpoint:
     health:
       show-components: always
       show-details: always
-    heapdump:
-      enabled: true
     prometheus:
       enabled: true
   prometheus:
