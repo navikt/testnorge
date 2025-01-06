@@ -181,6 +181,7 @@ export type DoedfoedtBarnData = {
 export type ForeldreansvarData = {
 	ansvar: string
 	ansvarlig: string
+	ansvarssubjekt?: string
 	gyldigFraOgMed?: string
 	gyldigTilOgMed?: string
 	ansvarligUtenIdentifikator: ForeldreansvarUtenId

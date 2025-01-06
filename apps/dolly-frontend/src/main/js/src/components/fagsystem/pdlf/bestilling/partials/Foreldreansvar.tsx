@@ -46,10 +46,8 @@ export const Foreldreansvar = ({ foreldreansvarListe }: ForeldreansvarTypes) => 
 										(foreldreansvar.ansvarligUtenIdentifikator && 'Person uten identifikator')
 									}
 								/>
-								<TitleValue
-									title="Ansvarlig"
-									value={showLabel('foreldreansvar', foreldreansvar.ansvarlig)}
-								/>
+								<TitleValue title="Ansvarlig" value={foreldreansvar.ansvarlig} />
+								<TitleValue title="Ansvarssubjekt" value={foreldreansvar.ansvarssubjekt} />
 								<EkspanderbarVisning
 									vis={_get(foreldreansvar, 'nyAnsvarlig')}
 									header={'NY ANSVARLIG'}
