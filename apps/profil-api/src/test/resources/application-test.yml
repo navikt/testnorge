@@ -1,1 +1,14 @@
 TOKEN_X_ISSUER: dummy
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
+
+consumers:
+  testnav-person-organisasjon-tilgang-service:
+    cluster: cluster
+    namespace: namespace
+    name: name
+    url: http://valid.but.not.used
