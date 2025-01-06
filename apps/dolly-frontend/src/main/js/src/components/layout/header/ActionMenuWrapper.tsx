@@ -15,15 +15,15 @@ export const DropdownStyledIcon = styled(Icon)`
 	}
 `
 export const DropdownStyledLink = styled.a`
-	color: #212529 !important;
+	color: #212529;
 	text-decoration: none;
-	font-size: 1em !important;
+	font-size: 1em;
 
 	&:hover {
-		background-color: #ebfcff !important;
+		background-color: unset;
 	}
 
-	padding: 0 !important;
+	padding: 0;
 
 	&&& {
 		margin: 0;
@@ -32,7 +32,7 @@ export const DropdownStyledLink = styled.a`
 
 interface ActionMenuProps {
 	title: string
-	children: React.ReactElement
+	children: React.ReactElement | React.ReactElement[]
 	trigger?: React.ReactElement
 	isActive?: boolean
 }
@@ -56,7 +56,7 @@ export const ActionMenuWrapper: React.FC<ActionMenuProps> = ({
 						<InternalHeader.Button>{title}</InternalHeader.Button>
 					</ActionMenu.Trigger>
 				)}
-				<ActionMenu.Content placement="bottom-start">
+				<ActionMenu.Content>
 					<ActionMenu.Group aria-label={title}>{children}</ActionMenu.Group>
 				</ActionMenu.Content>
 			</ActionMenu>
