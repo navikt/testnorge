@@ -1,7 +1,10 @@
 package no.nav.registre.testnorge.profil.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
+import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,10 +16,6 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-
-import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 
 @Slf4j
 @Service
