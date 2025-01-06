@@ -23,11 +23,11 @@ spring:
     password: compose-postgres
 
 consumers:
-  testnav-person-organisasjon-tilgang-service:
-    url: http://testnav-person-organisasjon-tilgang-service:8080
+  testnav-altinn3-tilgang-service:
+    url: http://testnav-altinn3-tilgang-service:8080
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-organisasjon-tilgang-service
+    name: testnav-altinn3-tilgang-service
 
 TOKEN_X_WELL_KNOWN_URL: http://tokendings:8080/.well-known/oauth-authorization-server
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service

@@ -20,5 +20,5 @@ spring:
           jwk-set-uri: ${wiremockBaseUrl}/jwks
 
 consumers:
-  testnav-person-organisasjon-tilgang-service:
+  testnav-altinn3-tilgang-service:
     url: ${wiremockBaseUrl}
