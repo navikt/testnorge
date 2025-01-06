@@ -6,9 +6,9 @@ rootProject.name = 'altinn3-tilgang-service'
 
 includeBuild "../../plugins/java"
 
+includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'
-includeBuild '../../libs/vault'
 
 develocity {
     buildScan {
