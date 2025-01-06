@@ -1,3 +1,5 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
 spring:
   application:
     version: application.version.todo
@@ -6,10 +8,10 @@ spring:
   security:
     oauth2:
       resourceserver:
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER} 
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
   jackson:
     serialization:
       write_dates_as_timestamps:
@@ -20,23 +22,24 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  testnav-person-organisasjon-tilgang-service:
-    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
+  testnav-altinn3-tilgang-service:
+    url: http://testnav-altinn3-tilgang-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-organisasjon-tilgang-service
+    name: testnav-altinn3-tilgang-proxy
 
 management:
   endpoints:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump,health
+      exposure:
+        include: prometheus,health
       path-mapping:
         prometheus: metrics
   endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
+    prometheus:
+      enabled: true
   prometheus:
     metrics:
       export:
