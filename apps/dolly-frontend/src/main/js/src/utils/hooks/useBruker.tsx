@@ -54,7 +54,7 @@ export const useCurrentBruker = () => {
 }
 
 export const useBrukerProfil = () => {
-	const { data, isLoading, error } = useSWR<BrukerProfil, Error>(getProfilUrl, fetcher)
+	const { data, isLoading, error } = useSWRImmutable<BrukerProfil, Error>(getProfilUrl, fetcher)
 
 	return {
 		brukerProfil: data,

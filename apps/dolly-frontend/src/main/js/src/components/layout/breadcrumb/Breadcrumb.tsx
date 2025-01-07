@@ -13,7 +13,6 @@ export const Breadcrumbs = () => {
 		.map((match) => match.handle.crumb(match.data))
 
 	const isActive = (match, currentLocation) => match.pathname === currentLocation.pathname
-	//TODO: Må fikses
 
 	return (
 		<nav aria-label="breadcrumb" className="breadcrumb">

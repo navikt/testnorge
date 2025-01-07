@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import Request from '@/service/services/Request'
+import useSWRImmutable from 'swr/immutable'
 
 const tenorSearchUrl = '/testnav-tenor-search-service/api/v1/tenor/testdata'
 
@@ -93,7 +94,7 @@ export const useTenorOversiktOrganisasjoner = (
 }
 
 export const useTenorDomain = (lookup: string) => {
-	const { data, isLoading, error } = useSWR(
+	const { data, isLoading, error } = useSWRImmutable(
 		lookup ? `${tenorSearchUrl}/domain?lookup=${lookup}` : null,
 		(url) => Request.get(url),
 	)
@@ -106,7 +107,7 @@ export const useTenorDomain = (lookup: string) => {
 }
 
 export const useTenorOrganisasjonDomain = (lookup: string) => {
-	const { data, isLoading, error } = useSWR(
+	const { data, isLoading, error } = useSWRImmutable(
 		lookup ? `${tenorSearchUrl}/organisasjoner/domain?lookup=${lookup}` : null,
 		(url) => Request.get(url),
 	)
