@@ -25,15 +25,16 @@ public class ProfilService {
 
     public Profil getProfile() {
         if (isTokenX()) {
-            return getUserInfo.call().map(userInfo ->
+            return getUserInfo.call()
+                    .map(userInfo ->
                     organisasjonTilgangConsumer
                             .getOrganisasjon(userInfo.organisasjonsnummer())
                             .map(dto -> new Profil(
                                     userInfo.brukernavn(),
                                     UKJENT,
                                     UKJENT,
-                                    dto.navn(),
-                                    dto.organisasjonsnummer(),
+                                    dto.getNavn(),
+                                    dto.getOrganisasjonsnummer(),
                                     BANK_ID)
                             ).block()
             ).orElse(new Profil(

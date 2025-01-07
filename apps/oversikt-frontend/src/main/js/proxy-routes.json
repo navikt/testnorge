@@ -7,10 +7,6 @@
     "target": "http://localhost:8080",
     "changeOrigin": true
   },
-  "/testnav-person-organisasjon-tilgang-service/api": {
-    "target": "http://localhost:8080",
-    "changeOrigin": true
-  },
   "/testnav-bruker-service/api": {
     "target": "http://localhost:8080",
     "changeOrigin": true

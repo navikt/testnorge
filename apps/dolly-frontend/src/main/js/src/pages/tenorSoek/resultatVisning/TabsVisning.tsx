@@ -1,7 +1,8 @@
 import { Tabs } from '@navikt/ds-react'
-import React, { lazy } from 'react'
+import React, { lazy, Suspense } from 'react'
 import styled from 'styled-components'
 import { FileCodeIcon, KeyVerticalIcon } from '@navikt/aksel-icons'
+import Loading from '@/components/ui/loading/Loading'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
@@ -56,7 +57,9 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<PrettyCode language={'json'} codeString={kildedataPretty} wrapLongLines />
+					<Suspense fallback={<Loading label={'Laster kildedata...'} />}>
+						<PrettyCode language={'json'} codeString={kildedataPretty} wrapLongLines />
+					</Suspense>
 				</Tabs.Panel>
 			</Tabs>
 		</TabsVisningFormatter>
