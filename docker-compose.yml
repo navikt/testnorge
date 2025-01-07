@@ -1,13 +1,13 @@
 services:
-  testnav-person-organisasjon-tilgang-service:
-    container_name: testnav-person-organisasjon-tilgang-service
+  testnav-altinn3-tilgang-service:
+    container_name: testnav-altinn3-tilgang-service
     environment:
       - SPRING_PROFILES_ACTIVE=virtual
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - TOKEN_X_PRIVATE_JWK=${JWK}
       - MASKINPORTEN_CLIENT_JWK=${JWK}
     build:
-      context: ./apps/person-organisasjon-tilgang-service
+      context: ./apps/person-altinn3-tilgang-service
     depends_on:
       - tokendings
       - maskinporten
@@ -54,7 +54,7 @@ services:
       context: ./apps/bruker-service
     depends_on:
       - testnav-bruker-service-db
-      - testnav-person-organisasjon-tilgang-service
+      - testnav-altinn3-tilgang-service
       - tokendings
     ports:
       - "8002:8080"
