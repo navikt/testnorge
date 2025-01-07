@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.servletsecurity.config;
 
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
 import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedResourceServerType;
@@ -24,7 +23,6 @@ import java.util.List;
 
 @Configuration
 @Import({
-        AzureNavClientCredential.class,
         TokenXResourceServerProperties.class,
         AzureAdResourceServerProperties.class,
         TokenXService.class,

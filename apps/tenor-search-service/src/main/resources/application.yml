@@ -3,7 +3,7 @@ spring:
   application:
     version: 1
     name: testnav-tenor-search-service
-    desciption: Tjeneste som formidler søk til Tenor testdata hos Skatteetaten
+    description: Tjeneste som formidler søk til Tenor testdata hos Skatteetaten
   security:
     oauth2:
       resourceserver:
@@ -29,12 +29,13 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump,health
+      exposure:
+        include: prometheus,health
       path-mapping:
         prometheus: metrics
   endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
+    prometheus:
+      enabled: true
   prometheus:
     metrics:
       export:

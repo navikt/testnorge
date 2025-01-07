@@ -1,6 +1,10 @@
 package no.nav.registre.testnorge.profil.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureClientCredential;
+import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,23 +17,17 @@ import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
 
-import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
-
 @Slf4j
 @Service
 public class AzureAdTokenService {
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
+    private final AzureClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            AzureNavClientCredential clientCredential,
+            AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init custom AzureAd token exchange.");

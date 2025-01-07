@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { Adresse, Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'

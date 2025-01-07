@@ -1,5 +1,5 @@
 import { createActions } from 'redux-actions'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { DollyApi } from '@/service/Api'
 
 export const {

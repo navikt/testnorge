@@ -97,8 +97,7 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                                                                         .navn(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemNavn())
                                                                         .versjon(xmlHelseOpplysningerArbeidsuforhet.getAvsenderSystem().getSystemVersjon())
                                                                         .build())
-                                                                .kontaktMedPasient(ReceivedSykemeldingDTO.KontaktMedpasient.builder()
-                                                                        .build())
+                                                                .kontaktMedPasient(mapKontaktMedPasient(xmlHelseOpplysningerArbeidsuforhet.getKontaktMedPasient()))
                                                                 .tiltakArbeidsplassen(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
                                                                         xmlHelseOpplysningerArbeidsuforhet.getTiltak().getTiltakArbeidsplassen() : null)
                                                                 .tiltakNAV(nonNull(xmlHelseOpplysningerArbeidsuforhet.getTiltak()) ?
@@ -126,6 +125,18 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
+    }
+
+    private ReceivedSykemeldingDTO.KontaktMedpasient mapKontaktMedPasient(XMLHelseOpplysningerArbeidsuforhet.KontaktMedPasient kontaktMedPasient) {
+
+        if (isNull(kontaktMedPasient)) {
+            return null;
+        }
+
+        return ReceivedSykemeldingDTO.KontaktMedpasient.builder()
+                .begrunnelseIkkeKontakt(kontaktMedPasient.getBegrunnIkkeKontakt())
+                .kontaktDato(kontaktMedPasient.getKontaktDato())
+                .build();
     }
 
     private ReceivedSykemeldingDTO.ArbeidsgiverType mapHarArbeidsgiver(XMLCS harArbeidsgiver) {

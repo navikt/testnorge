@@ -17,7 +17,7 @@ spec:
       tenant: nav.no
   replicas:
     min: 1
-    max: 2
+    max: 1
   port: 8080
   ingresses:
     - "https://dolly-idporten.ekstern.dev.nav.no"
@@ -42,11 +42,8 @@ spec:
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-tilgang-service
         - application: testnav-pdl-forvalter
         - application: testnav-person-faste-data-service
-        - application: testnav-person-organisasjon-tilgang-service
-        - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-person-search-service
         - application: testnav-person-service
         - application: testnav-skattekort-service
@@ -57,6 +54,7 @@ spec:
         - application: testnorge-profil-api
         - application: testnorge-tilbakemelding-api
         - application: testnav-yrkesskade-proxy
+        - application: testnav-altinn3-tilgang-proxy
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io

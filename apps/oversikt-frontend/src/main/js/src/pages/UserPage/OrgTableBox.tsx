@@ -31,7 +31,7 @@ const OrgTableBox = () => (
 							{list &&
 								list.map((item, index) => (
 									<tr key={index}>
-										<td>{item.navn + (item.organisasjonsfrom === 'AS' ? ' AS' : '')}</td>
+										<td>{item.navn + (item.organisasjonsform === 'AS' ? ' AS' : '')}</td>
 										<td>
 											<CopyToClipboard text={item.organisasjonsnummer}>
 												<a href="" onClick={(event) => event.preventDefault()}>

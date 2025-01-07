@@ -1,3 +1,6 @@
+AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+
 spring:
   config:
     import: "sm://"
@@ -13,19 +16,8 @@ spring:
     console:
       enabled: true
       path: /h2
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          accepted-audience: ${sm://azure-app-client-id}, api://${sm://azure-app-client-id}
 
 ereg.api: dummy
-
-#VAULT_URL: dummy
 
 consumers:
   testnav-bruker-service:
@@ -33,3 +25,6 @@ consumers:
     url: https://testnav-bruker-service-dev.intern.dev.nav.no
   synthdata-aareg:
     url: https://nais-synthdata-aareg.dev.intern.nav.no
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
+

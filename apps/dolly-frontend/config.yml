@@ -51,10 +51,8 @@ spec:
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-tilgang-service
         - application: testnav-pdl-forvalter
         - application: testnav-person-faste-data-service
-        - application: testnav-person-organisasjon-tilgang-service
         - application: testnav-person-search-service
         - application: testnav-person-service
         - application: testnav-skattekort-service
@@ -67,7 +65,7 @@ spec:
         - application: testnav-levende-arbeidsforhold-ansettelse
         - application: testnav-levende-arbeidsforhold-scheduler
         - application: testnav-yrkesskade-proxy
-
+        - application: testnav-altinn3-tilgang-proxy
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io

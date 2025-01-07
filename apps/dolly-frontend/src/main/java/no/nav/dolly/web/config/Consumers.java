@@ -49,10 +49,8 @@ public class Consumers {
     private ServerProperties testnavOrganisasjonFasteDataService;
     private ServerProperties testnavOrganisasjonForvalter;
     private ServerProperties testnavOrganisasjonService;
-    private ServerProperties testnavOrganisasjonTilgangService;
     private ServerProperties testnavPdlForvalter;
     private ServerProperties testnavPensjonTestdataFacadeProxy;
-    private ServerProperties testnavPersonOrganisasjonTilgangService;
     private ServerProperties testnavPersonSearchService;
     private ServerProperties testnavPersonService;
     private ServerProperties testnavSigrunstubProxy;
@@ -63,9 +61,11 @@ public class Consumers {
     private ServerProperties testnorgeProfilApi;
     private ServerProperties testnorgeTilbakemeldingApi;
     private ServerProperties testnavTenorSearchService;
+    private ServerProperties testnavSykemeldingApi;
     private ServerProperties testnavSkattekortService;
     private ServerProperties testnavLevendeArbeidsforholdAnsettelse;
     private ServerProperties testnavLevendeArbeidsforholdScheduler;
     private ServerProperties testnavYrkesskadeProxy;
+    private ServerProperties testnavAltinn3TilgangService;
 
 }

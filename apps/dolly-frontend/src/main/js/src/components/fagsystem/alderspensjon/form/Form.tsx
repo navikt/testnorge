@@ -6,8 +6,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
-import _has from 'lodash/has'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { add, getYear, isAfter, isDate, parseISO } from 'date-fns'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
@@ -55,8 +54,8 @@ export const AlderspensjonForm = () => {
 
 	function sjekkAlderFelt() {
 		const harAlder =
-			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
-			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
+			_.has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
+			_.has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
 		const alderNyPerson = formMethods.watch('pdldata.opprettNyPerson.alder')
 		const foedtFoer =
 			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
@@ -74,14 +73,14 @@ export const AlderspensjonForm = () => {
 	const { harAlder, alderNyPerson, foedtFoer, harGyldigAlder } = sjekkAlderFelt()
 
 	const alderLeggTilPerson = getAlder(
-		_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedselsdato[0].foedselsdato') ||
-			_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),
+		_.get(opts, 'personFoerLeggTil.pdl.hentPerson.foedselsdato[0].foedselsdato') ||
+			_.get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),
 	)
 
 	const alderImportertPerson = opts?.importPersoner?.map((person) =>
 		getAlder(
-			_get(person, 'data.hentPerson.foedselsdato[0].foedselsdato') ||
-				_get(person, 'data.hentPerson.foedsel[0].foedselsdato'),
+			_.get(person, 'data.hentPerson.foedselsdato[0].foedselsdato') ||
+				_.get(person, 'data.hentPerson.foedsel[0].foedselsdato'),
 		),
 	)
 
@@ -107,7 +106,7 @@ export const AlderspensjonForm = () => {
 				ugyldigFoedselsaar = true
 			}
 		}
-		const foedsel = _get(formMethods.getValues(), 'pdldata.person.foedsel')
+		const foedsel = _.get(formMethods.getValues(), 'pdldata.person.foedsel')
 		if (foedsel) {
 			const foedselsaar =
 				foedsel[foedsel.length - 1]?.foedselsaar ||
@@ -122,20 +121,20 @@ export const AlderspensjonForm = () => {
 	}
 
 	const harNorskBankkonto =
-		_has(formMethods.getValues(), 'bankkonto.norskBankkonto') ||
-		_has(opts, 'personFoerLeggTil.kontoregister.aktivKonto')
+		_.has(formMethods.getValues(), 'bankkonto.norskBankkonto') ||
+		_.has(opts, 'personFoerLeggTil.kontoregister.aktivKonto')
 
 	const harPopp =
-		_has(formMethods.getValues(), 'pensjonforvalter.inntekt') ||
+		_.has(formMethods.getValues(), 'pensjonforvalter.inntekt') ||
 		opts?.tidligereBestillinger?.some((bestilling) => bestilling.data?.pensjonforvalter?.inntekt)
 
 	const gyldigSivilstand = ['GIFT', 'SAMBOER', 'REGISTRERT_PARTNER']
 
 	const harPartner =
-		_get(formMethods.getValues(), 'pdldata.person.sivilstand')?.some((siv) =>
+		_.get(formMethods.getValues(), 'pdldata.person.sivilstand')?.some((siv) =>
 			gyldigSivilstand.includes(siv?.type),
 		) ||
-		_get(opts, 'personFoerLeggTil.pdl.hentPerson.sivilstand')?.some((siv) =>
+		_.get(opts, 'personFoerLeggTil.pdl.hentPerson.sivilstand')?.some((siv) =>
 			gyldigSivilstand.includes(siv?.type),
 		)
 
@@ -153,12 +152,13 @@ export const AlderspensjonForm = () => {
 		utland: 'UTLAND',
 	}
 	const valgtAdresseType = () => {
-		const adresseUtenTilDato = _get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.find(
-			(adresse) => adresse.gyldigFraOgMed && !adresse.gyldigTilOgMed,
-		)
+		const adresseUtenTilDato = _.get(
+			formMethods.getValues(),
+			'pdldata.person.bostedsadresse',
+		)?.find((adresse) => adresse.gyldigFraOgMed && !adresse.gyldigTilOgMed)
 		const gjeldendeAdresse =
 			adresseUtenTilDato ||
-			_get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
+			_.get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
 				if (
 					!prev.gyldigTilOgMed ||
 					!curr.gyldigTilOgMed ||
@@ -178,7 +178,7 @@ export const AlderspensjonForm = () => {
 	const harNorskAdresse = () => {
 		if (opts?.personFoerLeggTil) {
 			return (
-				_get(opts?.personFoerLeggTil, 'pdl.hentGeografiskTilknytning.gtType') !== 'UTLAND' ||
+				_.get(opts?.personFoerLeggTil, 'pdl.hentGeografiskTilknytning.gtType') !== 'UTLAND' ||
 				valgtAdresseType() === adressetyper.norge
 			)
 		}

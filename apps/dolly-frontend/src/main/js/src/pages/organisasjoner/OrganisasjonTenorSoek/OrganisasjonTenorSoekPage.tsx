@@ -29,7 +29,7 @@ const initialState = {
 	nesteSide: null,
 }
 
-export const OrganisasjonTenorSoekPage = () => {
+export default () => {
 	const [request, setRequest] = useState({})
 	const [state, setState] = useState<any>(initialState)
 	const { response, loading, error, mutate } = useTenorOversiktOrganisasjoner(

@@ -16,7 +16,7 @@ spring:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
 springdoc:
   swagger-ui:
@@ -59,11 +59,11 @@ consumers:
     url: https://krr-stub-%s.dev.intern.nav.no/api
   synthdata-aareg:
     url: http://nais-synthdata-aareg.dolly.svc.nais.local
-  kodeverk-api:
-    name: kodeverk-api
-    namespace: team-rocket
-    url: https://kodeverk-api.nav.no
-    cluster: prod-gcp
+  testnav-kodeverk-service:
+    name: testnav-kodeverk-service
+    namespace: dolly
+    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-aareg-proxy:
     name: testnav-aareg-proxy
     namespace: dolly
@@ -83,12 +83,13 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump,health
+      exposure:
+        include: prometheus,health
       path-mapping:
         prometheus: metrics
   endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
+    prometheus:
+      enabled: true
   prometheus:
     metrics:
       export:

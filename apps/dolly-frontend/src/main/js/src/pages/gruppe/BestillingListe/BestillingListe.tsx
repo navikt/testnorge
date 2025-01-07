@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 import BestillingDetaljer from '@/components/bestilling/detaljer/BestillingDetaljer'

@@ -33,6 +33,7 @@ InstitusjonsoppholdPanel.initialValues = ({ set, del, has }) => ({
 				{
 					institusjonstype: runningE2ETest() ? 'AS' : '',
 					startdato: runningE2ETest() ? new Date() : '',
+					forventetSluttdato: '',
 					sluttdato: '',
 				},
 			])

@@ -41,6 +41,10 @@ public class HistarkRequest {
         @Schema(description = "Metadata tilhørende filen som sendes")
         private HistarkMetadata metadata;
 
+        @Override
+        public String toString() {
+            return "HistarkDokument{file='%s...', metadata=%s}".formatted(file.substring(file.length() - 21, file.length() - 1), metadata);
+        }
 
         @Data
         @Builder

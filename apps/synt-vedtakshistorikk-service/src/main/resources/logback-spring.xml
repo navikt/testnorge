@@ -3,6 +3,7 @@
     <springProfile name="prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
+                <addCauses>true</addCauses>
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     
@@ -22,7 +23,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="dev">
+    <springProfile name="local">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>
