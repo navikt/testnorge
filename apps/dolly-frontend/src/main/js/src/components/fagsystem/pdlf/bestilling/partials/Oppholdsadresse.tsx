@@ -9,7 +9,6 @@ import { Adresseinfo } from '@/components/fagsystem/pdlf/bestilling/partials/Adr
 import { Matrikkeladresse } from '@/components/fagsystem/pdlf/bestilling/partials/Matrikkeladresse'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskAdresse'
-import { OppholdAnnetSted } from '@/components/fagsystem/pdlf/bestilling/partials/OppholdAnnetSted'
 
 type OppholdsadresseTypes = {
 	oppholdsadresseListe: Array<OppholdsadresseData>
@@ -38,7 +37,6 @@ export const Oppholdsadresse = ({ oppholdsadresseListe }: OppholdsadresseTypes) 
 										<Vegadresse vegadresse={oppholdsadresse.vegadresse} />
 										<Matrikkeladresse matrikkeladresse={oppholdsadresse.matrikkeladresse} />
 										<UtenlandskAdresse utenlandskAdresse={oppholdsadresse.utenlandskAdresse} />
-										<OppholdAnnetSted oppholdAnnetSted={oppholdsadresse.oppholdAnnetSted} />
 										<Adresseinfo adresseinfo={oppholdsadresse} />
 									</>
 								)}
