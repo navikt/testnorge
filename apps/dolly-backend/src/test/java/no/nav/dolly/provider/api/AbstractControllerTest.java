@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
@@ -46,11 +46,11 @@ public abstract class AbstractControllerTest {
     @Autowired
     private Flyway flyway;
 
-    @MockBean
+    @MockitoBean
     @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
-    @MockBean
+    @MockitoBean
     @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 

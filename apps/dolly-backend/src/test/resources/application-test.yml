@@ -94,3 +94,4 @@ spring:
     url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true
     user: user
     password: pass
+    clean-disabled: false
