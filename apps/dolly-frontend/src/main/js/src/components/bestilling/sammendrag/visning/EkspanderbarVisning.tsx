@@ -7,6 +7,7 @@ type EkspanderbarVisningTypes = {
 	header: string
 	children?: any
 }
+
 export const EkspanderbarVisning = ({ vis, header, children }: EkspanderbarVisningTypes) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
 

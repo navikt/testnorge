@@ -283,7 +283,7 @@ export type KontaktinformasjonForDoedsboData = {
 	}
 	personSomKontakt?: {
 		identifikasjonsnummer?: string
-		foedsalsdato?: string
+		foedselsdato?: string
 		navn?: Navn
 		nyKontaktperson?: {
 			identtype: string

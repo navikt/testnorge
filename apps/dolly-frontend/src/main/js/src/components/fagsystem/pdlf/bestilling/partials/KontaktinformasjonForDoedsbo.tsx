@@ -1,6 +1,6 @@
 import { KontaktinformasjonForDoedsboData, Navn } from '@/components/fagsystem/pdlf/PdlTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -9,6 +9,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
 import _get from 'lodash/get'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 type KontaktinformasjonForDoedsboTypes = {
 	kontaktinformasjonForDoedsboListe: Array<KontaktinformasjonForDoedsboData>
@@ -21,14 +22,18 @@ export const KontaktinformasjonForDoedsbo = ({
 		return null
 	}
 
-	const getKontaktperson = (kontaktperson: Navn) => {
-		return (
-			<>
-				<TitleValue title="Kontaktperson fornavn" value={kontaktperson?.fornavn} />
-				<TitleValue title="Kontaktperson mellomnavn" value={kontaktperson?.mellomnavn} />
-				<TitleValue title="Kontaktperson etternavn" value={kontaktperson?.etternavn} />
-			</>
-		)
+	const getKontaktperson = (kontaktperson: Navn | undefined) => {
+		if (!kontaktperson?.fornavn && !kontaktperson?.mellomnavn && !kontaktperson?.etternavn) {
+			return null
+		}
+		return `${kontaktperson?.fornavn} ${kontaktperson?.mellomnavn} ${kontaktperson?.etternavn}`
+	}
+
+	const getOrganisasjon = (organisasjon: any) => {
+		if (!organisasjon.organisasjonsnummer && !organisasjon.organisasjonsnavn) {
+			return null
+		}
+		return `${organisasjon.organisasjonsnummer} - ${organisasjon.organisasjonsnavn}`
 	}
 
 	return (
@@ -60,72 +65,82 @@ export const KontaktinformasjonForDoedsbo = ({
 									title="Utstedelsesdato skifteattest"
 									value={formatDate(kontaktinformasjonForDoedsbo.attestutstedelsesdato)}
 								/>
-								<TitleValue
-									title="Kontakttype"
-									value={
-										kontaktinformasjonForDoedsbo.kontaktType
-											? showLabel('kontaktType', kontaktinformasjonForDoedsbo.kontaktType)
-											: getKontakttype()
-									}
-								/>
-								{advokatSomKontakt && (
-									<>
+								<div className="flexbox--full-width" style={{ margin: '15px 0 -15px 0' }}>
+									<BestillingTitle>Kontakt</BestillingTitle>
+									<BestillingData>
 										<TitleValue
-											title="Organisasjonsnummer"
-											value={advokatSomKontakt.organisasjonsnummer}
+											title="Kontakttype"
+											value={
+												kontaktinformasjonForDoedsbo.kontaktType
+													? showLabel('kontaktType', kontaktinformasjonForDoedsbo.kontaktType)
+													: getKontakttype()
+											}
 										/>
-										<TitleValue
-											title="Organisasjonsnavn"
-											value={advokatSomKontakt.organisasjonsnavn}
-										/>
-										{getKontaktperson(advokatSomKontakt.kontaktperson)}
-									</>
-								)}
-								{organisasjonSomKontakt && (
-									<>
-										<TitleValue
-											title="Organisasjonsnummer"
-											value={organisasjonSomKontakt.organisasjonsnummer}
-										/>
-										<TitleValue
-											title="Organisasjonsnavn"
-											value={organisasjonSomKontakt.organisasjonsnavn}
-										/>
-										{getKontaktperson(organisasjonSomKontakt.kontaktperson)}
-									</>
-								)}
-								{personSomKontakt && (
-									<>
-										<TitleValue
-											title="Identifikasjonsnummer"
-											value={personSomKontakt.identifikasjonsnummer}
-										/>
-										<TitleValue
-											title="Fødselsdato"
-											value={formatDate(personSomKontakt.foedsalsdato)}
-										/>
-										{getKontaktperson(personSomKontakt.navn)}
-									</>
-								)}
-								<TitleValue
-									title="Land"
-									value={showKodeverkLabel(AdresseKodeverk.PostadresseLand, adresse?.landkode)}
-								/>
-								<TitleValue title="Adresselinje 1" value={adresse?.adresselinje1} />
-								<TitleValue title="Adresselinje 2" value={adresse?.adresselinje2} />
-								<TitleValue
-									title="Postnummer og -sted"
-									value={
-										(adresse?.postnummer || adresse?.poststedsnavn) &&
-										`${adresse?.postnummer} ${adresse?.poststedsnavn}`
-									}
-								/>
+										{advokatSomKontakt && (
+											<>
+												<TitleValue
+													title="Organisasjonsnummer"
+													value={getOrganisasjon(advokatSomKontakt)}
+												/>
+												<TitleValue
+													title="Kontaktperson"
+													value={getKontaktperson(advokatSomKontakt.kontaktperson)}
+												/>
+											</>
+										)}
+										{organisasjonSomKontakt && (
+											<>
+												<TitleValue
+													title="Organisasjonsnummer"
+													value={getOrganisasjon(organisasjonSomKontakt)}
+												/>
+												<TitleValue
+													title="Kontaktperson"
+													value={getKontaktperson(organisasjonSomKontakt.kontaktperson)}
+												/>
+											</>
+										)}
+										{personSomKontakt && (
+											<>
+												<TitleValue
+													title="Kontaktperson"
+													value={personSomKontakt.identifikasjonsnummer}
+												/>
+												<TitleValue
+													title="Fødselsdato"
+													value={formatDate(personSomKontakt.foedselsdato)}
+												/>
+												<TitleValue
+													title="Kontaktperson"
+													value={getKontaktperson(personSomKontakt.navn)}
+												/>
+											</>
+										)}
+									</BestillingData>
+								</div>
 								{personSomKontakt?.nyKontaktperson && (
 									<EkspanderbarVisning
 										vis={_get(personSomKontakt, 'nyKontaktperson')}
 										header="NY KONTAKTPERSON"
 									>
 										<RelatertPerson personData={personSomKontakt.nyKontaktperson} />
+									</EkspanderbarVisning>
+								)}
+								{adresse && !isEmpty(adresse) && (
+									<EkspanderbarVisning vis={adresse} header="ADRESSE">
+										<TitleValue
+											title="Land"
+											value={showKodeverkLabel(AdresseKodeverk.PostadresseLand, adresse?.landkode)}
+										/>
+										<TitleValue title="Adresselinje 1" value={adresse?.adresselinje1} />
+										<TitleValue title="Adresselinje 2" value={adresse?.adresselinje2} />
+										<TitleValue
+											title="Postnummer og -sted"
+											value={
+												(adresse?.postnummer || adresse?.poststedsnavn) &&
+												`${adresse?.postnummer} ${adresse?.poststedsnavn}`
+											}
+										/>
 									</EkspanderbarVisning>
 								)}
 							</React.Fragment>
