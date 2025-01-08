@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -54,7 +54,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 class UdiStubITest {
 
     protected static final UdiPerson TESTPERSON_UDI = createPersonTo();
-    @MockBean
+    @MockitoBean
     @SuppressWarnings("unused")
     private JwtDecoder jwtDecoder;
     @Autowired
@@ -63,7 +63,7 @@ class UdiStubITest {
     private MapperFacade mapperFacade;
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
+    @MockitoBean
     private Flyway flyway;
 
     @BeforeEach

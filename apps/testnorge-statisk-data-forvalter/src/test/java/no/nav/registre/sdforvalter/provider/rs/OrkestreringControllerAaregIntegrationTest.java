@@ -2,6 +2,7 @@ package no.nav.registre.sdforvalter.provider.rs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkResponse;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
@@ -15,14 +16,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
 
@@ -39,12 +43,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(
-        webEnvironment = RANDOM_PORT,
-        properties = "spring.cloud.vault.token=SET_TO_SOMETHING_TO_ALLOW_CONTEXT_TO_LOAD"
+        webEnvironment = RANDOM_PORT
 )
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
+@AutoConfigureWireMock(port = 0)
+@Import(JwtDecoderConfig.class)
 class OrkestreringControllerAaregIntegrationTest {
 
     private static final String FNR = "01010101010";
@@ -54,9 +59,10 @@ class OrkestreringControllerAaregIntegrationTest {
     private final KodeverkResponse kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
     private final TypeReference<List<RsAaregSyntetiseringsRequest>> syntResponse = new TypeReference<>() {
     };
+
     @Autowired
     private MockMvc mvc;
-    @MockBean
+    @MockitoBean
     private TokenExchange tokenExchange;
     @Autowired
     private AaregRepository aaregRepository;

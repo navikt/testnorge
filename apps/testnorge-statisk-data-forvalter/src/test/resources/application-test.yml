@@ -1,3 +1,5 @@
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
+
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
@@ -18,7 +20,6 @@ spring:
     vault:
       enabled: false
 
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 
 consumers:
   generer-navn-service:

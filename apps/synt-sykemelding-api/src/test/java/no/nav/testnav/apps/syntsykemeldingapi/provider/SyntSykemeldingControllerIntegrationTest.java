@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureWireMock(port = 0)
 class SyntSykemeldingControllerIntegrationTest {
 
-    @MockBean
+    @MockitoBean
     @SuppressWarnings("unused")
     private JwtDecoder jwtDecoder;
 
@@ -51,22 +51,22 @@ class SyntSykemeldingControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private TokenExchange tokenExchange;
 
-    @MockBean
+    @MockitoBean
     private PdlProxyConsumer pdlProxyConsumer;
 
-    @MockBean
+    @MockitoBean
     private ArbeidsforholdConsumer arbeidsforholdConsumer;
 
-    @MockBean
+    @MockitoBean
     private OrganisasjonConsumer organisasjonConsumer;
 
-    @MockBean
+    @MockitoBean
     private HelsepersonellConsumer helsepersonellConsumer;
 
-    @MockBean
+    @MockitoBean
     private SykemeldingConsumer sykemeldingConsumer;
 
     @BeforeEach
