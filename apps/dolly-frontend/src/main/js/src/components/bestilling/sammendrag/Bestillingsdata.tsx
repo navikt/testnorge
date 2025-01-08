@@ -110,7 +110,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
 			<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
 			<Vergemaal vergemaalListe={bestilling.pdldata?.person?.vergemaal} />
-			<Fullmakt fullmaktListe={bestilling.pdldata?.person?.fullmakt} />
+			<Fullmakt fullmaktListe={bestilling.fullmakt || bestilling.pdldata?.person?.fullmakt} />
 			<Sikkerhetstiltak sikkerhetstiltakListe={bestilling.pdldata?.person?.sikkerhetstiltak} />
 			<TilrettelagtKommunikasjon
 				tilrettelagtKommunikasjonListe={bestilling.pdldata?.person?.tilrettelagtKommunikasjon}

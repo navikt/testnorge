@@ -7,6 +7,8 @@ import { VergemaalKodeverk } from '@/config/kodeverk'
 import { VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { formatDate } from '@/utils/DataFormatter'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
+import _get from 'lodash/get'
+import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
 
 type VergemaalTypes = {
 	vergemaalListe: Array<VergemaalValues>
@@ -43,7 +45,9 @@ export const Vergemaal = ({ vergemaalListe }: VergemaalTypes) => {
 								<TitleValue title="Gyldig f.o.m." value={formatDate(vergemaal.gyldigFraOgMed)} />
 								<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaal.gyldigTilOgMed)} />
 								<TitleValue title="Verge" value={vergemaal.vergeIdent} />
-								<EkspanderbarVisning data={vergemaal.nyVergeIdent} header={'VERGE'} />
+								<EkspanderbarVisning vis={_get(vergemaal, 'nyVergeIdent')} header="VERGE">
+									<RelatertPerson personData={vergemaal.nyVergeIdent} tittel="Verge" />
+								</EkspanderbarVisning>
 							</React.Fragment>
 						)
 					}}

@@ -208,12 +208,18 @@ export type VergemaalValues = {
 }
 
 export type FullmaktValues = {
-	omraader?: Array<string>
+	omraade?: Array<FullmaktOmraade>
 	gyldigFraOgMed?: string
 	gyldigTilOgMed?: string
-	motpartsPersonident?: string
+	fullmektig?: string
+	fullmektigsNavn?: string
 	nyFullmektig?: NyIdent
 	id: number
+}
+
+export type FullmaktOmraade = {
+	tema: string
+	handling: Array<string>
 }
 
 export type DeltBostedValues = {
