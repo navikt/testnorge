@@ -12,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.net.URISyntaxException;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,8 +24,7 @@ class FinnesHosSkattComponentTest extends ComponentTestbase {
     private static final String FNR = "10108000398";
 
     @BeforeEach
-    void populerDatabaseMedTestidenter() throws URISyntaxException {
-
+    void populerDatabaseMedTestidenter() {
         identRepository.deleteAll();
         identRepository.save(
                 createIdentEntity(Identtype.FNR, DNR, Rekvireringsstatus.LEDIG, 10)
