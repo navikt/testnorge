@@ -71,8 +71,8 @@ export const Uforetrygd = ({ pensjon }: UforetrygdProps) => {
 										value={showLabel('inntektType', inntekt?.inntektType)}
 									/>
 									<TitleValue title="Beløp" value={inntekt?.belop} />
-									<TitleValue title="Dato fra" value={formatDate(inntekt?.datoFom)} />
-									<TitleValue title="Dato til" value={formatDate(inntekt?.datoTom)} />
+									<TitleValue title="Dato f.o.m." value={formatDate(inntekt?.datoFom)} />
+									<TitleValue title="Dato t.o.m." value={formatDate(inntekt?.datoTom)} />
 								</React.Fragment>
 							)}
 						</DollyFieldArray>
@@ -90,8 +90,8 @@ export const Uforetrygd = ({ pensjon }: UforetrygdProps) => {
 										value={showLabel('inntektType', inntekt?.inntektType)}
 									/>
 									<TitleValue title="Beløp" value={inntekt?.belop} />
-									<TitleValue title="Dato fra" value={formatDate(inntekt?.datoFom)} />
-									<TitleValue title="Dato til" value={formatDate(inntekt?.datoTom)} />
+									<TitleValue title="Dato f.o.m." value={formatDate(inntekt?.datoFom)} />
+									<TitleValue title="Dato t.o.m." value={formatDate(inntekt?.datoTom)} />
 								</React.Fragment>
 							)}
 						</DollyFieldArray>

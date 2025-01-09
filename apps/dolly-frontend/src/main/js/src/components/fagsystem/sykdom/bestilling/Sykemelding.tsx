@@ -67,9 +67,9 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 						{detaljertSykemelding?.biDiagnoser?.length > 0 && (
 							<DollyFieldArray header="Bidiagnoser" data={detaljertSykemelding.biDiagnoser} nested>
 								{(diagnose: Diagnose, idx: number) => (
-									<div className="person-visning_content" key={idx}>
+									<React.Fragment key={idx}>
 										<TitleValue title="Diagnose" value={getDiagnose(diagnose)} size="xlarge" />
-									</div>
+									</React.Fragment>
 								)}
 							</DollyFieldArray>
 						)}
@@ -125,7 +125,7 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 						{detaljertSykemelding.perioder?.length > 0 && (
 							<DollyFieldArray header="Perioder" data={detaljertSykemelding.perioder} nested>
 								{(periode: Periode, idx: number) => (
-									<div className="person-visning_content" key={idx}>
+									<React.Fragment key={idx}>
 										<TitleValue title="F.o.m. dato" value={formatDate(periode?.fom)} />
 										<TitleValue title="T.o.m. dato" value={formatDate(periode?.tom)} />
 										<TitleValue title="Aktivitet" value={periode?.aktivitet?.aktivitet} />
@@ -138,25 +138,35 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 											title="Har reisetilskudd"
 											value={oversettBoolean(periode?.aktivitet?.reisetilskudd)}
 										/>
-									</div>
+									</React.Fragment>
 								)}
 							</DollyFieldArray>
 						)}
-						<BestillingData>
-							<TitleValue title="Tiltak fra NAV" value={detaljertSykemelding.detaljer.tiltakNav} />
-							<TitleValue
-								title="Tiltak på arbeidsplass"
-								value={detaljertSykemelding.detaljer.tiltakArbeidsplass}
-							/>
-							<TitleValue
-								title="Hensyn på arbeidsplass"
-								value={detaljertSykemelding.detaljer.beskrivHensynArbeidsplassen}
-							/>
-							<TitleValue
-								title="Arbeidsfør etter endt periode"
-								value={oversettBoolean(detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode)}
-							/>
-						</BestillingData>
+						{!isEmpty(detaljertSykemelding.detaljer) && (
+							<>
+								<BestillingTitle>Detaljer</BestillingTitle>
+								<BestillingData>
+									<TitleValue
+										title="Tiltak fra NAV"
+										value={detaljertSykemelding.detaljer.tiltakNav}
+									/>
+									<TitleValue
+										title="Tiltak på arbeidsplass"
+										value={detaljertSykemelding.detaljer.tiltakArbeidsplass}
+									/>
+									<TitleValue
+										title="Hensyn på arbeidsplass"
+										value={detaljertSykemelding.detaljer.beskrivHensynArbeidsplassen}
+									/>
+									<TitleValue
+										title="Arbeidsfør etter endt periode"
+										value={oversettBoolean(
+											detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode,
+										)}
+									/>
+								</BestillingData>
+							</>
+						)}
 					</>
 				)}
 			</ErrorBoundary>
