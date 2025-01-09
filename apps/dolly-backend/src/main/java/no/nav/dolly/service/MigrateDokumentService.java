@@ -24,6 +24,7 @@ import static no.nav.dolly.domain.jpa.Dokument.DokumentType.BESTILLING_DOKARKIV;
 import static no.nav.dolly.domain.jpa.Dokument.DokumentType.BESTILLING_HISTARK;
 import static no.nav.dolly.domain.jpa.Dokument.DokumentType.MAL_BESTILLING_DOKARKIV;
 import static no.nav.dolly.domain.jpa.Dokument.DokumentType.MAL_BESTILLING_HISTARK;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -48,14 +49,12 @@ public class MigrateDokumentService {
 
         StreamSupport.stream(Spliterators.spliteratorUnknownSize(
                         query.iterator(), Spliterator.ORDERED), false)
-                .forEach(bestilling -> {
-                    try {
-                        var utvidetBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyUtvidetBestilling.class);
-                        lagreDokument.apply(utvidetBestilling, bestilling.getId(), dokumentType);
-                        var oppdatertBestilling = objectMapper.writeValueAsString(utvidetBestilling);
-                        bestilling.setBestKriterier(oppdatertBestilling);
-                    } catch (JsonProcessingException e) {
-                        log.error("Feil ved konvertering av bestilling {}, {} ", bestilling.getId(), e.getMessage(), e);
+                .forEach(malBestilling -> {
+                    var utvidetBestilling = fromJson(malBestilling.getBestKriterier(), malBestilling.getId());
+                    if (nonNull(utvidetBestilling)) {
+                        lagreDokument.apply(utvidetBestilling, malBestilling.getId(), dokumentType);
+                        var oppdatertBestilling = toJson(utvidetBestilling, malBestilling.getId());
+                        malBestilling.setBestKriterier(isNotBlank(oppdatertBestilling) ? oppdatertBestilling : malBestilling.getBestKriterier());
                     }
                 });
     }
@@ -65,13 +64,11 @@ public class MigrateDokumentService {
         StreamSupport.stream(Spliterators.spliteratorUnknownSize(
                         query.iterator(), Spliterator.ORDERED), false)
                 .forEach(bestilling -> {
-                    try {
-                        var utvidetBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyUtvidetBestilling.class);
+                    var utvidetBestilling = fromJson(bestilling.getBestKriterier(), bestilling.getId());
+                    if (nonNull(utvidetBestilling)) {
                         lagreDokument.apply(utvidetBestilling, bestilling.getId(), dokumentType);
-                        var oppdatertBestilling = objectMapper.writeValueAsString(utvidetBestilling);
-                        bestilling.setBestKriterier(oppdatertBestilling);
-                    } catch (JsonProcessingException e) {
-                        log.error("Feil ved konvertering av bestilling {}, {} ", bestilling.getId(), e.getMessage(), e);
+                        var oppdatertBestilling = toJson(utvidetBestilling, bestilling.getId());
+                        bestilling.setBestKriterier(isNotBlank(oppdatertBestilling) ? oppdatertBestilling : bestilling.getBestKriterier());
                     }
                 });
     }
@@ -108,5 +105,27 @@ public class MigrateDokumentService {
                 .dokumentType(dokumentType)
                 .bestillingId(bestillingId)
                 .build()).getId();
+    }
+
+    private RsDollyUtvidetBestilling fromJson(String kriterier, Long bestillingId) {
+
+        try {
+            return objectMapper.readValue(kriterier, RsDollyUtvidetBestilling.class);
+
+        } catch (JsonProcessingException e) {
+            log.error("Konvertering fra JSON av bestilling {} feilet: {} ", bestillingId, e.getMessage(), e);
+            return null;
+        }
+    }
+
+    private String toJson(RsDollyUtvidetBestilling dollyUtvidetBestilling, Long bestillingId) {
+
+        try {
+            return objectMapper.writeValueAsString(dollyUtvidetBestilling);
+
+        } catch (JsonProcessingException e) {
+            log.error("Konvertering til JSON av bestilling {} feilet, {} ", bestillingId, e.getMessage(), e);
+            return null;
+        }
     }
 }
