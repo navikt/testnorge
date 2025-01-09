@@ -2,6 +2,7 @@ name: Integration Tests
 on:
   push:
     paths:
+      - 'docker-compose.yml'
       - 'apps/bruker-service/**'
   workflow_dispatch:
 
