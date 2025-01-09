@@ -7,9 +7,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.properties.AzureAdResource
 import no.nav.testnav.libs.standalone.servletsecurity.properties.ResourceServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.properties.TokenXResourceServerProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.util.List;
@@ -24,8 +22,17 @@ import java.util.List;
 public class InsecureJwtServerToServerConfiguration {
 
     @Bean
+    @Profile("!test")
     @ConditionalOnMissingBean
-    public JwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
+    JwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
         return new MultipleIssuersJwtDecoder(properties);
     }
+
+    @Bean
+    @Profile("test")
+    @ConditionalOnMissingBean
+    JwtDecoder jwtDecoderForTesting() {
+        return token -> null;
+    }
+
 }
