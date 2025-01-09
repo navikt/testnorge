@@ -37,6 +37,7 @@ import java.util.List;
 })
 public class SecureOAuth2ServerToServerConfiguration {
 
+    // TODO: There's also one in no.nav.testnav.libs.standalone.servletsecurity.config.SecureOAuth2ServerToServerConfiguration. testnav-ident-pool (and possibly others) includes both libraries. This should be fixed.
     @Bean
     @ConditionalOnMissingBean
     public JwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
