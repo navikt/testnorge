@@ -27,9 +27,9 @@ public class DokumentController {
         return dokumentService.getDokumenterByBestilling(bestilllingId);
     }
 
-    @Operation(description = "Henter dokumenter basert på malId")
+    @Operation(description = "Henter dokumenter basert på mal-Id")
     @GetMapping("/mal/{malId}")
-    public List<Dokument> getDokumenterRelatertTilMal(@Parameter(description = "malId fra mal")
+    public List<Dokument> getDokumenterRelatertTilMal(@Parameter(description = "mal-Id fra mal")
                                         @PathVariable("malId") Long malId) {
 
         return dokumentService.getDokumenterByMal(malId);

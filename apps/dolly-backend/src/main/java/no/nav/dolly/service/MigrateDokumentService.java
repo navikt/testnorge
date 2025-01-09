@@ -80,14 +80,14 @@ public class MigrateDokumentService {
     private TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreDokarkiv() {
 
         return (utvidetBestilling, bestillingId, dokumentType) ->
-        utvidetBestilling.getDokarkiv().getDokumenter().forEach(dokument ->
-                dokument.getDokumentvarianter().forEach(dokumentVariant -> {
-                    if (nonNull(dokumentVariant.getFysiskDokument())) {
-                        dokumentVariant.setDokumentReferanse(
-                                lagreDokument(dokumentVariant.getFysiskDokument(), bestillingId, dokumentType));
-//                        dokumentVariant.setFysiskDokument(null);
-                    }
-                }));
+                utvidetBestilling.getDokarkiv().getDokumenter().forEach(dokument ->
+                        dokument.getDokumentvarianter().forEach(dokumentVariant -> {
+                            if (nonNull(dokumentVariant.getFysiskDokument())) {
+                                dokumentVariant.setDokumentReferanse(
+                                        lagreDokument(dokumentVariant.getFysiskDokument(), bestillingId, dokumentType));
+                                dokumentVariant.setFysiskDokument(null);
+                            }
+                        }));
     }
 
     private TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreHistark() {
@@ -97,7 +97,7 @@ public class MigrateDokumentService {
                     if (nonNull(dokument.getFysiskDokument())) {
                         dokument.setDokumentReferanse(
                                 lagreDokument(dokument.getFysiskDokument(), bestillingId, dokumentType));
-//                        dokument.setFysiskDokument(null);
+                        dokument.setFysiskDokument(null);
                     }
                 });
     }
@@ -105,9 +105,9 @@ public class MigrateDokumentService {
     private Long lagreDokument(String fysiskDokument, Long bestillingId, DokumentType dokumentType) {
 
         return dokumentRepository.save(Dokument.builder()
-                        .contents(fysiskDokument)
-                        .dokumentType(dokumentType)
-                        .bestillingId(bestillingId)
+                .contents(fysiskDokument)
+                .dokumentType(dokumentType)
+                .bestillingId(bestillingId)
                 .build()).getId();
     }
 }

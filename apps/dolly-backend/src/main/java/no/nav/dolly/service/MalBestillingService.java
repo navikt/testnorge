@@ -234,13 +234,15 @@ public class MalBestillingService {
             akkumulertMal = bestillingMalRepository.save(BestillingMal.builder()
                     .bruker(bruker)
                     .malNavn(name)
+                    .miljoer(String.join(",", aggregertRequest.getEnvironments()))
+                    .bestKriterier(toJson(aggregertRequest))
                     .build());
         } else {
 
             akkumulertMal = maler.getFirst();
+            akkumulertMal.setMiljoer(String.join(",", aggregertRequest.getEnvironments()));
+            akkumulertMal.setBestKriterier(toJson(aggregertRequest));
         }
-        akkumulertMal.setMiljoer(String.join(",", aggregertRequest.getEnvironments()));
-        akkumulertMal.setBestKriterier(toJson(aggregertRequest));
 
         return mapperFacade.map(akkumulertMal, RsMalBestilling.class);
     }
