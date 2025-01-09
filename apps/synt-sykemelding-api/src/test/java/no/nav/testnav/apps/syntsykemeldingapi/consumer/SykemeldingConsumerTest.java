@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Arbeidsforhold;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,16 +33,8 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestArbeidsforholdDTO;
-import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestHistorikk;
-import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestLegeListeDTO;
-import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestOrganisasjonDTO;
-import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestPdlPerson;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -57,58 +47,46 @@ import static org.mockito.Mockito.when;
 public class SykemeldingConsumerTest {
 
     @MockBean
-    private JwtDecoder jwtDecoder;
-
-    @MockBean
     private TokenExchange tokenService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private SykemeldingConsumer sykemeldingConsumer;
 
-    private static final String ident = "12345678910";
-    private static final String orgnr = "123456789";
-    private static final String arbeidsforholdId = "1";
-    private static final String sykemeldingUrl = "(.*)/sykemelding/sykemelding/api/v1/sykemeldinger";
+    private static final String IDENT = "12345678910";
+    private static final String ORGNR = "123456789";
+    private static final String ARBEIDSFORHOLD_ID = "1";
+    private static final String SYKEMELDING_URL = "(.*)/sykemelding/sykemelding/api/v1/sykemeldinger";
 
-    private SyntSykemeldingDTO dto;
-    private PdlPerson pdlResponse;
-    private ArbeidsforholdDTO arbeidsforholdResponse;
-    private OrganisasjonDTO organisasjonResponse;
-    private Map<String, SyntSykemeldingHistorikkDTO> syntResponse;
-    private HelsepersonellListeDTO helsepersonellResponse;
     private SykemeldingDTO sykemeldingRequest;
 
     @Before
     public void setUp() {
         when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
-        dto = SyntSykemeldingDTO.builder()
-                .arbeidsforholdId(arbeidsforholdId)
-                .ident(ident)
-                .orgnummer(orgnr)
+        SyntSykemeldingDTO dto = SyntSykemeldingDTO.builder()
+                .arbeidsforholdId(ARBEIDSFORHOLD_ID)
+                .ident(IDENT)
+                .orgnummer(ORGNR)
                 .startDato(LocalDate.now())
                 .build();
 
-        pdlResponse = getTestPdlPerson(ident);
-        arbeidsforholdResponse = getTestArbeidsforholdDTO(arbeidsforholdId, orgnr);
-        organisasjonResponse = getTestOrganisasjonDTO(orgnr);
+        PdlPerson pdlResponse = getTestPdlPerson(IDENT);
+        ArbeidsforholdDTO arbeidsforholdResponse = getTestArbeidsforholdDTO(ARBEIDSFORHOLD_ID, ORGNR);
+        OrganisasjonDTO organisasjonResponse = getTestOrganisasjonDTO(ORGNR);
 
         var arbeidsforhold = new Arbeidsforhold(
                 arbeidsforholdResponse,
                 organisasjonResponse
         );
 
-        syntResponse = getTestHistorikk(ident);
-        helsepersonellResponse = getTestLegeListeDTO();
+        Map<String, SyntSykemeldingHistorikkDTO> syntResponse = getTestHistorikk(IDENT);
+        HelsepersonellListeDTO helsepersonellResponse = getTestLegeListeDTO();
 
         sykemeldingRequest = new Sykemelding(
                 new Person(pdlResponse),
-                syntResponse.get(ident),
+                syntResponse.get(IDENT),
                 dto,
-                new Helsepersonell(helsepersonellResponse.getHelsepersonell().get(0)),
+                new Helsepersonell(helsepersonellResponse.getHelsepersonell().getFirst()),
                 arbeidsforhold).toDTO();
     }
 
@@ -130,11 +108,11 @@ public class SykemeldingConsumerTest {
     }
 
     private void stubSykemelding() {
-        stubFor(post(urlPathMatching(sykemeldingUrl)).willReturn(ok()));
+        stubFor(post(urlPathMatching(SYKEMELDING_URL)).willReturn(ok()));
     }
 
     private void stubSykemeldingError() {
-        stubFor(post(urlPathMatching(sykemeldingUrl)).willReturn(aResponse().withStatus(500)));
+        stubFor(post(urlPathMatching(SYKEMELDING_URL)).willReturn(aResponse().withStatus(500)));
     }
 
 }

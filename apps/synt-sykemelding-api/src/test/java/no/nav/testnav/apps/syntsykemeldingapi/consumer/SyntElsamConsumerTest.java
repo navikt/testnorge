@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,13 +23,10 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestHistorikk;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -38,9 +34,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(locations = "classpath:application-test.yml")
 @AutoConfigureWireMock(port = 0)
 public class SyntElsamConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenService;
@@ -51,28 +44,28 @@ public class SyntElsamConsumerTest {
     @Autowired
     private SyntElsamConsumer syntElsamConsumer;
 
-    private static final String ident = "01019049945";
-    private static final String syntUrl = "(.*)/synt/api/v1/generate_sykmeldings_history_json";
+    private static final String IDENT = "01019049945";
+    private static final String SYNT_URL = "(.*)/synt/api/v1/generate_sykmeldings_history_json";
     private Map<String, SyntSykemeldingHistorikkDTO> syntResponse;
 
     @Before
     public void before() {
         WireMock.reset();
         when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-        syntResponse = getTestHistorikk(ident);
+        syntResponse = getTestHistorikk(IDENT);
     }
 
     @Test
     public void shouldGetSyntSykemelding() throws JsonProcessingException {
         stubSynt();
 
-        var response = syntElsamConsumer.genererSykemeldinger(ident, LocalDate.now());
+        var response = syntElsamConsumer.genererSykemeldinger(IDENT, LocalDate.now());
 
-        assertThat(response).isNotNull().isEqualTo(syntResponse.get(ident));
+        assertThat(response).isNotNull().isEqualTo(syntResponse.get(IDENT));
     }
 
     private void stubSynt() throws JsonProcessingException {
-        stubFor(post(urlPathMatching(syntUrl))
+        stubFor(post(urlPathMatching(SYNT_URL))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(objectMapper.writeValueAsString(syntResponse))));

@@ -1,4 +1,5 @@
 AZURE_OPENID_CONFIG_ISSUER: http://localhost/placeholder
+AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: http://localhost/placeholder
 
 spring:
   cloud:

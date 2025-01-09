@@ -1,5 +1,6 @@
-ALTINN_URL: http://localhost:8080
 ALTINN_API_KEY: dummy
+ALTINN_URL: http://localhost:8080
+AZURE_OPENID_CONFIG_ISSUER: http://localhost/placeholder
 MASKINPORTEN_CLIENT_ID: dummy
 MASKINPORTEN_CLIENT_JWK: dummy
 MASKINPORTEN_SCOPES: dummy

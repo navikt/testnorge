@@ -15,19 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestLegeListeDTO;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -35,9 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(locations = "classpath:application-test.yml")
 @AutoConfigureWireMock(port = 0)
 public class HelsepersonellConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenService;
@@ -48,7 +41,7 @@ public class HelsepersonellConsumerTest {
     @Autowired
     private HelsepersonellConsumer helsepersonellConsumer;
 
-    private static final String helsepersonellUrl = "(.*)/testnav-helsepersonell/api/v1/helsepersonell";
+    private static final String HELSEPERSONELL_URL = "(.*)/testnav-helsepersonell/api/v1/helsepersonell";
 
     private HelsepersonellListeDTO helsepersonellResponse;
 
@@ -67,11 +60,11 @@ public class HelsepersonellConsumerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getList()).isNotNull().hasSize(1);
-        assertThat(response.getList().get(0).getIdent()).isNotNull().isEqualTo(helsepersonellResponse.getHelsepersonell().get(0).getFnr());
+        assertThat(response.getList().getFirst().getIdent()).isNotNull().isEqualTo(helsepersonellResponse.getHelsepersonell().getFirst().getFnr());
     }
 
     private void stubHelsepersonell() throws JsonProcessingException {
-        stubFor(get(urlPathMatching(helsepersonellUrl))
+        stubFor(get(urlPathMatching(HELSEPERSONELL_URL))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(objectMapper.writeValueAsString(helsepersonellResponse))));

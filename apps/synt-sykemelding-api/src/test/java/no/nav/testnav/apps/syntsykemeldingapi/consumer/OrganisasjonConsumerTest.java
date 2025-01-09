@@ -15,19 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestOrganisasjonDTO;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -35,9 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(locations = "classpath:application-test.yml")
 @AutoConfigureWireMock(port = 0)
 public class OrganisasjonConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenService;
@@ -48,28 +41,28 @@ public class OrganisasjonConsumerTest {
     @Autowired
     private OrganisasjonConsumer organisasjonConsumer;
 
-    private static final String orgnr = "123456789";
-    private static final String organisasjonUrl = "(.*)/organisasjon/api/v1/organisasjoner/" + orgnr;
+    private static final String ORGNR = "123456789";
+    private static final String ORGANISASJON_URL = "(.*)/organisasjon/api/v1/organisasjoner/" + ORGNR;
     private OrganisasjonDTO organisasjonResponse;
 
     @Before
     public void before() {
         WireMock.reset();
         when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-        organisasjonResponse = getTestOrganisasjonDTO(orgnr);
+        organisasjonResponse = getTestOrganisasjonDTO(ORGNR);
     }
 
     @Test
     public void shouldGetOrgansiasjon() throws JsonProcessingException {
         stubOrgansisasjon();
 
-        var response = organisasjonConsumer.getOrganisasjon(orgnr);
+        var response = organisasjonConsumer.getOrganisasjon(ORGNR);
 
         assertThat(response).isNotNull().isEqualTo(organisasjonResponse);
     }
 
     private void stubOrgansisasjon() throws JsonProcessingException {
-        stubFor(get(urlPathMatching(organisasjonUrl))
+        stubFor(get(urlPathMatching(ORGANISASJON_URL))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(objectMapper.writeValueAsString(organisasjonResponse))));

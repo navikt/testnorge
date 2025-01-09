@@ -15,19 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestArbeidsforholdDTO;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -35,9 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(locations = "classpath:application-test.yml")
 @AutoConfigureWireMock(port = 0)
 public class ArbeidsforholdConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenService;
@@ -48,10 +41,10 @@ public class ArbeidsforholdConsumerTest {
     @Autowired
     private ArbeidsforholdConsumer arbeidsforholdConsumer;
 
-    private static final String ident = "01019049945";
-    private static final String orgnr = "123456789";
-    private static final String arbeidsforholdId = "1";
-    private static final String arbeidsforholdUrl = "(.*)/arbeidsforhold/api/v1/arbeidsforhold/" + ident + "/" + orgnr + "/" + arbeidsforholdId;
+    private static final String IDENT = "01019049945";
+    private static final String ORGNR = "123456789";
+    private static final String ARBEIDSFORHOLD_ID = "1";
+    private static final String ARBEIDSFORHOLD_URL = "(.*)/arbeidsforhold/api/v1/arbeidsforhold/" + IDENT + "/" + ORGNR + "/" + ARBEIDSFORHOLD_ID;
 
     private ArbeidsforholdDTO arbeidsforholdResponse;
 
@@ -59,20 +52,20 @@ public class ArbeidsforholdConsumerTest {
     public void before() {
         WireMock.reset();
         when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-        arbeidsforholdResponse = getTestArbeidsforholdDTO(arbeidsforholdId, orgnr);
+        arbeidsforholdResponse = getTestArbeidsforholdDTO(ARBEIDSFORHOLD_ID, ORGNR);
     }
 
     @Test
     public void shouldGetArbeidsforhold() throws JsonProcessingException {
         stubArbeidsforhold();
 
-        var response = arbeidsforholdConsumer.getArbeidsforhold(ident, orgnr, arbeidsforholdId);
+        var response = arbeidsforholdConsumer.getArbeidsforhold(IDENT, ORGNR, ARBEIDSFORHOLD_ID);
 
         assertThat(response).isNotNull().isEqualTo(arbeidsforholdResponse);
     }
 
     private void stubArbeidsforhold() throws JsonProcessingException {
-        stubFor(get(urlPathMatching(arbeidsforholdUrl))
+        stubFor(get(urlPathMatching(ARBEIDSFORHOLD_URL))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(objectMapper.writeValueAsString(arbeidsforholdResponse))));
