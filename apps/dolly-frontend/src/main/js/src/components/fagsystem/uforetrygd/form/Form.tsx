@@ -49,8 +49,6 @@ export const UforetrygdForm = () => {
 							formMethods.trigger(`${uforetrygdPath}`)
 						}}
 					/>
-				</div>
-				<div className="flexbox--flex-wrap">
 					<FormTextInput
 						name={`${uforetrygdPath}.inntektForUforhet`}
 						label="Inntekt før uførhet"
@@ -61,16 +59,12 @@ export const UforetrygdForm = () => {
 						label="Inntekt etter uførhet"
 						type="number"
 					/>
-				</div>
-				<BarnetilleggForm formMethods={formMethods} />
-				<div className="flexbox--flex-wrap">
 					<FormSelect
 						name={`${uforetrygdPath}.minimumInntektForUforhetType`}
 						label="Sats for minimum IFU"
 						size="xlarge"
 						options={Options('minimumInntektForUforhetType')}
 					/>
-
 					<FormTextInput name={`${uforetrygdPath}.uforegrad`} label="Uføregrad" type="number" />
 					<FormSelect
 						options={randomSaksbehandlere}
@@ -85,10 +79,11 @@ export const UforetrygdForm = () => {
 					<FormSelect
 						name={`${uforetrygdPath}.navEnhetId`}
 						label={'NAV-kontor'}
-						size={'xxlarge'}
+						size={'xlarge'}
 						options={navEnheter}
 					/>
 				</div>
+				<BarnetilleggForm formMethods={formMethods} />
 			</Panel>
 		</Vis>
 	)
