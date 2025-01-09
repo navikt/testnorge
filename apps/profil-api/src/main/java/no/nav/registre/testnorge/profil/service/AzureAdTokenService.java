@@ -17,6 +17,7 @@ import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
 
+// TODO: Why do we not use a library here?
 @Slf4j
 @Service
 public class AzureAdTokenService {
@@ -26,7 +27,7 @@ public class AzureAdTokenService {
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
+            @Value("${AZURE_OPENID_CONFIG_ISSUER}") String issuerUrl,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
