@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import {
@@ -17,20 +17,48 @@ import { initialAfpOffentlig } from '@/components/fagsystem/afpOffentlig/initial
 import { avtalePath } from '@/components/fagsystem/pensjonsavtale/form/Form'
 import { afpOffentligPath } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { initialPensjonInntekt } from '@/components/fagsystem/pensjon/form/initialValues'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
+
+	const opts: any = useContext(BestillingsveilederContext)
+
+	const harGyldigApBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
+		bestilling.status?.some(
+			(status) => status.id === 'PEN_AP' && status.statuser?.some((item) => item?.melding === 'OK'),
+		),
+	)
+
+	const harGyldigUforetrygdBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
+		bestilling.status?.some(
+			(status) => status.id === 'PEN_UT' && status.statuser?.some((item) => item.melding === 'OK'),
+		),
+	)
 
 	const infoTekst =
 		'Pensjon: \nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\n' +
 		'Tjenestepensjon: \nTjenestepensjonsforhold lagt til i TP. \n\n' +
 		'Alderspensjon: \nAlderspensjonssak med vedtak blir lagt til i PEN.'
 
+	const getIgnoreKeys = () => {
+		const ignoreKeys = []
+		if (harGyldigApBestilling) {
+			ignoreKeys.push('alderspensjon')
+		}
+		if (harGyldigUforetrygdBestilling) {
+			ignoreKeys.push('uforetrygd')
+		}
+		return ignoreKeys
+	}
+
 	return (
 		<Panel
 			heading={PensjonPanel.heading}
 			informasjonstekst={infoTekst}
-			checkAttributeArray={sm.batchAdd}
+			checkAttributeArray={() => {
+				sm.batchAdd(getIgnoreKeys())
+			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="pensjon"
 			startOpen={harValgtAttributt(formValues, [
@@ -52,10 +80,18 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 				<Attributt attr={sm.attrs.tp} />
 			</AttributtKategori>
 			<AttributtKategori title="Alderspensjon" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.alderspensjon} />
+				<Attributt
+					attr={sm.attrs.alderspensjon}
+					disabled={harGyldigApBestilling}
+					title={harGyldigApBestilling ? 'Personen har allerede alderspensjon' : null}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Uføretrygd" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.uforetrygd} />
+				<Attributt
+					attr={sm.attrs.uforetrygd}
+					disabled={harGyldigUforetrygdBestilling}
+					title={harGyldigUforetrygdBestilling ? 'Personen har allerede uføretrygd' : null}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="AFP offentlig" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.afpOffentlig} />
