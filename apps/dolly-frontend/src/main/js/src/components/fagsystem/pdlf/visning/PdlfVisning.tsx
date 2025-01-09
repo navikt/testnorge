@@ -78,6 +78,8 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 
 	const bankkontoData = getBankkontoData(fagsystemData)
 
+	const erDoed = data?.person?.doedsfall?.find((d) => d.doedsdato)
+
 	return (
 		<ErrorBoundary>
 			<div>
@@ -196,7 +198,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					ident={ident}
 					erRedigerbar={erRedigerbar}
 				/>
-				<FullmaktVisning ident={ident} />
+				{!erDoed && <FullmaktVisning ident={ident} />}
 				<FalskIdentitet data={data?.person?.falskIdentitet} />
 				<UtenlandsId
 					data={data?.person?.utenlandskIdentifikasjonsnummer}

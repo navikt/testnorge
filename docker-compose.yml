@@ -7,7 +7,7 @@ services:
       - TOKEN_X_PRIVATE_JWK=${JWK}
       - MASKINPORTEN_CLIENT_JWK=${JWK}
     build:
-      context: ./apps/person-altinn3-tilgang-service
+      context: ./apps/testnav-altinn3-tilgang-service
     depends_on:
       - tokendings
       - maskinporten

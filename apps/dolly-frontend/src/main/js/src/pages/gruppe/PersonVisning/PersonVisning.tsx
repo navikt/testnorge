@@ -105,8 +105,8 @@ import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
 import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
 import { UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
 
-import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/DokarkivVisning'
-import HistarkVisning from '@/components/fagsystem/histark/visning/HistarkVisning'
+import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
+import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {

@@ -10,6 +10,7 @@ interface Form {
 	data?: Array<MiljoDataListe>
 	bestillingIdListe: Array<string>
 	loading: boolean
+	tilgjengeligMiljoe?: string
 }
 
 type MiljoDataListe = {
