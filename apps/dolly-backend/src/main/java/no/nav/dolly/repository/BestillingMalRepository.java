@@ -18,4 +18,19 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
 
     List<BestillingMal> findByBruker(Bruker bruker);
 
+    @Query(value = """
+            from BestillingMal b
+            where b.bestKriterier like '%dokarkiv%'
+            and length(b.bestKriterier) > 10000
+            order by b.id
+            """)
+    Iterable<BestillingMal> findAllByDokumentArkiv();
+
+    @Query(value = """
+            from BestillingMal b
+            where b.bestKriterier like '%histark%'
+            and length(b.bestKriterier) > 10000
+            order by b.id
+            """)
+    Iterable<BestillingMal> findAllByHistArk();
 }

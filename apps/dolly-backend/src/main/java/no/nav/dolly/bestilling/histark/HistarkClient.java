@@ -17,6 +17,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.DokumentService;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class HistarkClient implements ClientRegister {
     private final ObjectMapper objectMapper;
     private final TransactionHelperService transactionHelperService;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final DokumentService dokumentService;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -50,7 +52,7 @@ public class HistarkClient implements ClientRegister {
         if (nonNull(bestilling.getHistark())) {
 
             return Flux.just(dollyPerson.getIdent())
-                    .map(person -> buildRequest(bestilling.getHistark(), person))
+                    .map(person -> buildRequest(bestilling.getHistark(), person, progress.getBestilling().getId()))
                     .flatMap(request -> !transaksjonMappingService.existAlready(HISTARK,
                             dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre ?
 
@@ -100,10 +102,11 @@ public class HistarkClient implements ClientRegister {
         }
     }
 
-    private HistarkRequest buildRequest(RsHistark rsHistark, String ident) {
+    private HistarkRequest buildRequest(RsHistark rsHistark, String ident, Long bestillingId) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personIdent", ident);
+        context.setProperty("dokumenter", dokumentService.getDokumenterByBestilling(bestillingId));
 
         return mapperFacade.map(rsHistark, HistarkRequest.class, context);
     }

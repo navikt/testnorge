@@ -104,6 +104,7 @@ class BestillingServiceTest {
 
         when(testgruppeRepository.findById(gruppeId)).thenReturn(Optional.of(gruppe));
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(new ArrayList<>(miljoer)));
+        when(bestillingRepository.save(any(Bestilling.class))).thenReturn(Bestilling.builder().id(1L).build());
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
                 antallIdenter, null, null, null);
