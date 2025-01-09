@@ -82,5 +82,8 @@ public class RsHistark {
         @Schema(description = "Selve PDF dokumentet. Ved fysisk dokument brukes bytearray.")
         @Field(enabled = false)
         private String fysiskDokument;
+
+        @Schema(description = "Referanse til dokumentet")
+        private Long dokumentReferanse;
     }
 }
