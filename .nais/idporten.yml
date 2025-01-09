@@ -15,3 +15,4 @@ spec:
     - https://dolly.ekstern.dev.nav.no/login/oauth2/code/idporten
     - https://dolly-idporten.ekstern.dev.nav.no/login/oauth2/code/idporten
   secretName: idporten-dolly-prod # deployes til prod. secret kopieres manuelt til dev.
+  ssoDisabled: true
