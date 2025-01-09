@@ -23,9 +23,9 @@ import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
 
+// TODO: Check no.nav.testnav.libs.standalone.servletsecurity.exchange.AzureAdTokenService and others. These behave differently. Note difference in issuerUri usage.
 @Slf4j
 @Service
-// TODO: Check no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService. These behave differently.
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.aad.issuer-uri")
 public class AzureAdTokenService implements TokenService {
     private final WebClient webClient;
