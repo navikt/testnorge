@@ -148,7 +148,7 @@ public class DokarkivClient implements ClientRegister {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personBolk", personBolk);
-        context.setProperty("dokumenter", dokumentService.getDokumenter(bestillingId));
+        context.setProperty("dokumenter", dokumentService.getDokumenterByBestilling(bestillingId));
 
         return Mono.just(mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context));
     }

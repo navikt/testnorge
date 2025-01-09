@@ -21,9 +21,25 @@ public class DokumentController {
 
     @Operation(description = "Henter dokumenter basert på bestillingId")
     @GetMapping("/bestilling/{bestillingId}")
-    public List<Dokument> getDokumenter(@Parameter(description = "bestillingId kan være fra bestilling eller malbestilling")
+    public List<Dokument> getDokumenterRelatertTilBestilling(@Parameter(description = "bestillingId fra bestilling")
                                         @PathVariable("bestillingId") Long bestilllingId) {
 
-        return dokumentService.getDokumenter(bestilllingId);
+        return dokumentService.getDokumenterByBestilling(bestilllingId);
+    }
+
+    @Operation(description = "Henter dokumenter basert på malId")
+    @GetMapping("/mal/{malId}")
+    public List<Dokument> getDokumenterRelatertTilMal(@Parameter(description = "malId fra mal")
+                                        @PathVariable("malId") Long malId) {
+
+        return dokumentService.getDokumenterByMal(malId);
+    }
+
+    @Operation(description = "Henter dokumenter basert på liste av dokumentId")
+    @GetMapping("/dokument/{dokumentId}")
+    public List<Dokument> getDokumenter(@Parameter(description = "Liste av dokumentId")
+                                        @PathVariable("dokumentId") List<Long> dokumentIdListe) {
+
+        return dokumentService.getDokumenter(dokumentIdListe);
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -139,6 +140,7 @@ public class MalBestillingService {
                     .bruker(bruker)
                     .malNavn(malNavn)
                     .miljoer(bestilling.getMiljoer())
+                    .sistOppdatert(LocalDateTime.now())
                     .build());
         } else {
 
@@ -166,6 +168,7 @@ public class MalBestillingService {
                     .bruker(bruker)
                     .malNavn(malNavn)
                     .miljoer(bestilling.getMiljoer())
+                    .sistOppdatert(LocalDateTime.now())
                     .build());
         } else {
             malbestilling = maler.getFirst();
@@ -231,15 +234,13 @@ public class MalBestillingService {
             akkumulertMal = bestillingMalRepository.save(BestillingMal.builder()
                     .bruker(bruker)
                     .malNavn(name)
-                    .miljoer(String.join(",", aggregertRequest.getEnvironments()))
-                    .bestKriterier(toJson(aggregertRequest))
                     .build());
         } else {
 
             akkumulertMal = maler.getFirst();
-            akkumulertMal.setMiljoer(String.join(",", aggregertRequest.getEnvironments()));
-            akkumulertMal.setBestKriterier(toJson(aggregertRequest));
         }
+        akkumulertMal.setMiljoer(String.join(",", aggregertRequest.getEnvironments()));
+        akkumulertMal.setBestKriterier(toJson(aggregertRequest));
 
         return mapperFacade.map(akkumulertMal, RsMalBestilling.class);
     }

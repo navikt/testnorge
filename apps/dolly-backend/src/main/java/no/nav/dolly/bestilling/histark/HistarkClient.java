@@ -106,7 +106,7 @@ public class HistarkClient implements ClientRegister {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personIdent", ident);
-        context.setProperty("dokumenter", dokumentService.getDokumenter(bestillingId));
+        context.setProperty("dokumenter", dokumentService.getDokumenterByBestilling(bestillingId));
 
         return mapperFacade.map(rsHistark, HistarkRequest.class, context);
     }
