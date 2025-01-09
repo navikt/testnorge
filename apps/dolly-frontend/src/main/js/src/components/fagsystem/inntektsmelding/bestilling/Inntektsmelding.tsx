@@ -258,7 +258,6 @@ export const Inntektsmelding = ({ inntektsmelding }: BestillingVisning) => {
 								value={codeToNorskLabel(inntekt.aarsakTilInnsending)}
 							/>
 							<TitleValue title="Ytelse" value={codeToNorskLabel(inntekt?.ytelse)} />
-							<TitleValue title="Nær relasjon" value={inntekt?.naerRelasjon ? 'Ja' : null} />
 							<TitleValue
 								title="Innsendingstidspunkt"
 								value={formatDate(inntekt?.avsendersystem?.innsendingstidspunkt)}
@@ -271,6 +270,7 @@ export const Inntektsmelding = ({ inntektsmelding }: BestillingVisning) => {
 								title="Arbeidsgiver (fnr/dnr/npid)"
 								value={inntekt?.arbeidsgiverPrivat?.arbeidsgiverFnr}
 							/>
+							<TitleValue title="Nær relasjon" value={inntekt?.naerRelasjon ? 'Ja' : null} />
 							<TitleValue
 								title="Arbeidsforhold-ID"
 								value={inntekt?.arbeidsforhold?.arbeidsforholdId}
@@ -278,7 +278,7 @@ export const Inntektsmelding = ({ inntektsmelding }: BestillingVisning) => {
 							<TitleValue title="Beløp" value={inntekt?.arbeidsforhold?.beregnetInntekt?.beloep} />
 							<TitleValue
 								title="Årsak ved endring"
-								value={codeToNorskLabel(inntekt?.arbeidsforhold?.aarsakVedEndring)}
+								value={codeToNorskLabel(inntekt?.arbeidsforhold?.beregnetInntekt?.aarsakVedEndring)}
 							/>
 							<TitleValue
 								title="Første fraværsdag"
