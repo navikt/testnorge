@@ -1,7 +1,7 @@
-TOKEN_X_ISSUER: dummy
-
+AZURE_OPENID_CONFIG_ISSUER: http://localhost/placeholder
 IDPORTEN_CLIENT_ID: dummy
 IDPORTEN_CLIENT_JWK: "{}"
+TOKEN_X_ISSUER: dummy
 
 spring:
   cloud:

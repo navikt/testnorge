@@ -1,1 +1,2 @@
+AZURE_OPENID_CONFIG_ISSUER: http://localhost/placeholder
 TOKEN_X_ISSUER: dummy

@@ -1,7 +1,9 @@
 APP_NAME: dolly
 APP_VERSION: ${application.version}
-environment: localhost
+AZURE_OPENID_CONFIG_ISSUER: http://localhost/placeholder
+AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: placeholder
 TOKEN_X_ISSUER: dummy
+environment: localhost
 
 jira:
   host: http://localhost:${wiremock.server.port:0}/jira

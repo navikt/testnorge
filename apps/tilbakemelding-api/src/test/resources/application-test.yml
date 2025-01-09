@@ -1,5 +1,6 @@
-SLACK_TOKEN: dummy
+AZURE_OPENID_CONFIG_ISSUER: http://localhost/placeholder
 SLACK_CHANNEL: dummy
+SLACK_TOKEN: dummy
 TOKEN_X_ISSUER: dummy
 
 spring:
