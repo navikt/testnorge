@@ -84,6 +84,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 		formMethods.clearErrors(path)
+		formMethods.clearErrors(`manual.${path}`)
 		if (value === ArbeidsgiverTyper.privat) {
 			formMethods.setValue(personPath, '')
 			formMethods.setValue(organisasjonPath, undefined)
@@ -95,6 +96,8 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 
 	const handleOrgChange = (value: { orgnr: string }) => {
 		formMethods.setValue(organisasjonPath, value.orgnr)
+		formMethods.clearErrors(path)
+		formMethods.clearErrors(`manual.${path}`)
 		formMethods.trigger(organisasjonPath)
 	}
 
