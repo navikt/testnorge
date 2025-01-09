@@ -11,34 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
-import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
-
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService.SYNT_TAGS;
-
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 class PdlConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenExchange;
@@ -57,7 +46,7 @@ class PdlConsumerTest {
         var response = pdlProxyConsumer.getPdlPerson(IDENT).getData();
         var ident = response.getHentIdenter().getIdenter().stream()
                 .filter(identer -> identer.getGruppe().equals(PdlPerson.Gruppe.FOLKEREGISTERIDENT))
-                .toList().get(0).getIdent();
+                .toList().getFirst().getIdent();
 
         assertThat(ident).isEqualTo(IDENT);
         assertThat(response.getHentPerson().getBostedsadresse()).hasSize(1);
@@ -85,7 +74,7 @@ class PdlConsumerTest {
 
         var response = pdlProxyConsumer.getPdlPersoner(Collections.singletonList(IDENT)).getData();
         var bolk = response.getHentPersonBolk();
-        var ident = bolk.get(0).getIdent();
+        var ident = bolk.getFirst().getIdent();
 
         assertThat(ident).isEqualTo(IDENT);
         assertThat(bolk).hasSize(1);

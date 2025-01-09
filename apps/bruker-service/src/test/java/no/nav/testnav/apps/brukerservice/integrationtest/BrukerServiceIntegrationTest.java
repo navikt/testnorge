@@ -8,20 +8,15 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Tag("integration")
 class BrukerServiceIntegrationTest {
@@ -29,8 +24,6 @@ class BrukerServiceIntegrationTest {
     private static final String PID = "01810048413";
     private static final String ORGNUMMER = "811306312";
     public static MockWebServer mockBackEnd;
-    @MockBean
-    JwtDecoder jwtDecoder;
 
     private ObjectMapper objectMapper;
     private WebClient webClient;
@@ -65,7 +58,7 @@ class BrukerServiceIntegrationTest {
                         .setBody(objectMapper.writeValueAsString(new AccessToken("test"))));
 
         var token = tokendingsClient.generateToken("dev-gcp:dolly:testnav-bruker-service", PID).block();
-
+        assertThat(token).isNotNull();
 
         // Create user
         var expected = new BrukerDTO(null, "username", ORGNUMMER, null, null);
@@ -83,7 +76,8 @@ class BrukerServiceIntegrationTest {
                 .bodyToMono(BrukerDTO.class)
                 .block();
 
-        Assertions.assertThat(bruker)
+        assertThat(bruker)
+                .isNotNull()
                 .usingRecursiveComparison()
                 .comparingOnlyFields("brukernavn", "organisasjonsnummer")
                 .isEqualTo(expected);
@@ -132,7 +126,8 @@ class BrukerServiceIntegrationTest {
                 .bodyToMono(BrukerDTO.class)
                 .block();
 
-        Assertions.assertThat(updatedUser.brukernavn()).isEqualTo("new-username");
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.brukernavn()).isEqualTo("new-username");
 
         mockBackEnd.enqueue(
                 new MockResponse().setResponseCode(200)

@@ -5,7 +5,6 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,23 +23,16 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Mono;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 class ArenaForvalterConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenExchange;
@@ -58,9 +51,7 @@ class ArenaForvalterConsumerTest {
     @Test
     void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
         stubOpprettErrorResponse();
-        assertThrows(Exception.class, () -> {
-            arenaForvalterConsumer.sendBrukereTilArenaForvalter(null);
-        });
+        assertThrows(Exception.class, () -> arenaForvalterConsumer.sendBrukereTilArenaForvalter(null));
 
     }
 
@@ -235,7 +226,7 @@ class ArenaForvalterConsumerTest {
 
         var response = arenaForvalterConsumer.opprettRettighet(rettigheter);
 
-        assertThat(response.get(fnr).get(0).getNyeRettigheterTillegg()).hasSize(1);
+        assertThat(response.get(fnr).getFirst().getNyeRettigheterTillegg()).hasSize(1);
     }
 
     private void stubArenaForvalterOpprettTilleggRettighet() {

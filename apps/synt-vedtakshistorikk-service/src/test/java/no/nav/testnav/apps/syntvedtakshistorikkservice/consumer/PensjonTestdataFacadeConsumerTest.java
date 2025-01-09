@@ -13,25 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 class PensjonTestdataFacadeConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenExchange;
@@ -59,7 +54,7 @@ class PensjonTestdataFacadeConsumerTest {
 
         var response = pensjonConsumer.opprettPerson(PERSON);
         assertThat(response.getStatus()).hasSize(1);
-        assertThat(response.getStatus().get(0).getMiljo()).isEqualTo("q2");
+        assertThat(response.getStatus().getFirst().getMiljo()).isEqualTo("q2");
     }
 
     private void stubOpprettPerson() {
@@ -90,7 +85,7 @@ class PensjonTestdataFacadeConsumerTest {
 
         var response = pensjonConsumer.opprettInntekt(INNTEKT);
         assertThat(response.getStatus()).hasSize(1);
-        assertThat(response.getStatus().get(0).getMiljo()).isEqualTo("q2");
+        assertThat(response.getStatus().getFirst().getMiljo()).isEqualTo("q2");
     }
 
     private void stubOpprettInntekt() {

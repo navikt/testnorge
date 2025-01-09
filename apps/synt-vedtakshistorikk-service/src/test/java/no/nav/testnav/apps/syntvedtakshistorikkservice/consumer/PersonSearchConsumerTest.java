@@ -4,6 +4,7 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.AlderSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,27 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.mockito.Mockito.when;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 class PersonSearchConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenExchange;
@@ -67,7 +63,7 @@ class PersonSearchConsumerTest {
         var response = personSearchConsumer.search(REQUEST);
         assertThat(response.getItems()).hasSize(1);
         assertThat(response.getNumberOfItems()).isEqualTo(1);
-        assertThat(response.getItems().get(0).getIdent()).isEqualTo("11866800000");
+        assertThat(response.getItems().getFirst().getIdent()).isEqualTo("11866800000");
     }
 
     private void stubPostPersonSearch() {

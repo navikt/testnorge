@@ -11,26 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 class SyntVedtakshistorikkConsumerTest {
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenExchange;
@@ -50,7 +44,7 @@ class SyntVedtakshistorikkConsumerTest {
 
         assertThat(response).hasSize(2);
 
-        var historikk1 = response.get(0);
+        var historikk1 = response.getFirst();
         assertThat(historikk1.getAap115()).hasSize(1);
         assertThat(historikk1.getAap()).hasSize(5);
         assertThat(historikk1.getAlleVedtak()).hasSize(6);
