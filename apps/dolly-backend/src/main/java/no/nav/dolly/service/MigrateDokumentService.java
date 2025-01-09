@@ -2,7 +2,6 @@ package no.nav.dolly.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -36,7 +35,6 @@ public class MigrateDokumentService {
     private final DokumentRepository dokumentRepository;
     private final ObjectMapper objectMapper;
 
-    @Transactional
     public void migrateDokumenter() {
 
         migrateBestillinger(bestillingRepository.findAllByDokumentArkiv(), lagreDokarkiv(), BESTILLING_DOKARKIV);
@@ -50,13 +48,24 @@ public class MigrateDokumentService {
         StreamSupport.stream(Spliterators.spliteratorUnknownSize(
                         query.iterator(), Spliterator.ORDERED), false)
                 .forEach(malBestilling -> {
-                    var utvidetBestilling = fromJson(malBestilling.getBestKriterier(), malBestilling.getId());
-                    if (nonNull(utvidetBestilling)) {
-                        lagreDokument.apply(utvidetBestilling, malBestilling.getId(), dokumentType);
-                        var oppdatertBestilling = toJson(utvidetBestilling, malBestilling.getId());
-                        malBestilling.setBestKriterier(isNotBlank(oppdatertBestilling) ? oppdatertBestilling : malBestilling.getBestKriterier());
+                    try {
+                        storeMalDokument(lagreDokument, dokumentType, malBestilling);
+                    } catch (RuntimeException e) {
+                        log.error("Lagring av malbestilling {} feilet: {} ", malBestilling.getId(), e.getMessage(), e);
                     }
                 });
+    }
+
+    public void storeMalDokument(TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreDokument, DokumentType dokumentType, BestillingMal malBestilling) {
+
+        log.info("Migrerer malbestilling for id {} ... ", malBestilling.getId());
+        var utvidetBestilling = fromJson(malBestilling.getBestKriterier(), malBestilling.getId());
+        if (nonNull(utvidetBestilling)) {
+            lagreDokument.apply(utvidetBestilling, malBestilling.getId(), dokumentType);
+            var oppdatertBestilling = toJson(utvidetBestilling, malBestilling.getId());
+            malBestilling.setBestKriterier(isNotBlank(oppdatertBestilling) ? oppdatertBestilling : malBestilling.getBestKriterier());
+        }
+        log.info("Malbestilling med id {} ferdig!", malBestilling.getId());
     }
 
     private void migrateBestillinger(Iterable<Bestilling> query, TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreDokument, DokumentType dokumentType) {
@@ -64,13 +73,24 @@ public class MigrateDokumentService {
         StreamSupport.stream(Spliterators.spliteratorUnknownSize(
                         query.iterator(), Spliterator.ORDERED), false)
                 .forEach(bestilling -> {
-                    var utvidetBestilling = fromJson(bestilling.getBestKriterier(), bestilling.getId());
-                    if (nonNull(utvidetBestilling)) {
-                        lagreDokument.apply(utvidetBestilling, bestilling.getId(), dokumentType);
-                        var oppdatertBestilling = toJson(utvidetBestilling, bestilling.getId());
-                        bestilling.setBestKriterier(isNotBlank(oppdatertBestilling) ? oppdatertBestilling : bestilling.getBestKriterier());
+                    try {
+                        storeDokument(lagreDokument, dokumentType, bestilling);
+                    } catch (RuntimeException e) {
+                        log.error("Lagring av bestilling {} feilet: {} ", bestilling.getId(), e.getMessage(), e);
                     }
                 });
+    }
+
+    public void storeDokument(TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreDokument, DokumentType dokumentType, Bestilling bestilling) {
+
+        log.info("Migrerer bestilling for id {} ... ", bestilling.getId());
+        var utvidetBestilling = fromJson(bestilling.getBestKriterier(), bestilling.getId());
+        if (nonNull(utvidetBestilling)) {
+            lagreDokument.apply(utvidetBestilling, bestilling.getId(), dokumentType);
+            var oppdatertBestilling = toJson(utvidetBestilling, bestilling.getId());
+            bestilling.setBestKriterier(isNotBlank(oppdatertBestilling) ? oppdatertBestilling : bestilling.getBestKriterier());
+        }
+        log.info("Bestilling med id {} ferdig!", bestilling.getId());
     }
 
     private TriConsumer<RsDollyUtvidetBestilling, Long, DokumentType> lagreDokarkiv() {
@@ -80,7 +100,7 @@ public class MigrateDokumentService {
                         dokument.getDokumentvarianter().forEach(dokumentVariant -> {
                             if (nonNull(dokumentVariant.getFysiskDokument())) {
                                 dokumentVariant.setDokumentReferanse(
-                                        lagreDokument(dokumentVariant.getFysiskDokument(), bestillingId, dokumentType));
+                                        storeMalDokument(dokumentVariant.getFysiskDokument(), bestillingId, dokumentType));
                                 dokumentVariant.setFysiskDokument(null);
                             }
                         }));
@@ -92,13 +112,13 @@ public class MigrateDokumentService {
                 utvidetBestilling.getHistark().getDokumenter().forEach(dokument -> {
                     if (nonNull(dokument.getFysiskDokument())) {
                         dokument.setDokumentReferanse(
-                                lagreDokument(dokument.getFysiskDokument(), bestillingId, dokumentType));
+                                storeMalDokument(dokument.getFysiskDokument(), bestillingId, dokumentType));
                         dokument.setFysiskDokument(null);
                     }
                 });
     }
 
-    private Long lagreDokument(String fysiskDokument, Long bestillingId, DokumentType dokumentType) {
+    private Long storeMalDokument(String fysiskDokument, Long bestillingId, DokumentType dokumentType) {
 
         return dokumentRepository.save(Dokument.builder()
                 .contents(fysiskDokument)
