@@ -13,7 +13,6 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.DokumentRepository;
-import org.opensearch.common.TriConsumer;
 import org.springframework.stereotype.Service;
 
 import java.util.Spliterator;
