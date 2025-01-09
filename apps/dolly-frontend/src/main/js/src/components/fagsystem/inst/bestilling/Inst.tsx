@@ -32,6 +32,10 @@ export const Inst = ({ inst }: InstProps) => {
 									value={opphold.varighet && showLabel('varighet', opphold.varighet)}
 								/>
 								<TitleValue title="Startdato" value={formatDate(opphold.startdato)} />
+								<TitleValue
+									title="Forventet sluttdato"
+									value={formatDate(opphold.forventetSluttdato)}
+								/>
 								<TitleValue title="Sluttdato" value={formatDate(opphold.sluttdato)} />
 							</React.Fragment>
 						)
