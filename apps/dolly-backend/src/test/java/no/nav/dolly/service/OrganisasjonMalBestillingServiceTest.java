@@ -9,7 +9,6 @@ import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +24,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
@@ -45,7 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 )
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@Testcontainers(disabledWithoutDocker = true)
 @AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureWireMock(port = 0)
 class OrganisasjonMalBestillingServiceTest {
@@ -86,13 +82,9 @@ class OrganisasjonMalBestillingServiceTest {
     private OrganisasjonBestillingRepository organisasjonBestillingRepository;
     @Autowired
     private BrukerRepository brukerRepository;
-    @Autowired
-    private Flyway flyway;
 
     @BeforeEach
-    @Transactional
     public void beforeEach() {
-        flyway.migrate();
         saveDummyBruker(DUMMY_EN);
         saveDummyBruker(DUMMY_TO);
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();

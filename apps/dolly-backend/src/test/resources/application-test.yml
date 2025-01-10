@@ -93,9 +93,6 @@ management:
         include: none
 
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: create
   cloud:
     gcp:
       secretmanager:

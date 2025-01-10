@@ -8,7 +8,6 @@ import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +19,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -33,7 +31,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@Testcontainers(disabledWithoutDocker = true)
 @AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureWireMock(port = 0)
 public abstract class AbstractControllerTest {
@@ -44,8 +41,6 @@ public abstract class AbstractControllerTest {
     private TestgruppeRepository testgruppeRepository;
     @Autowired
     private IdentRepository identRepository;
-    @Autowired
-    private Flyway flyway;
 
     @MockitoBean
     @SuppressWarnings("unused")

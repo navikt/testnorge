@@ -185,8 +185,8 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
                                                 .build())
                                 .build())
                 .build();
-        mockMvc
-                .perform(
+
+        mockMvc.perform(
                         post("/api/v1/gruppe/{gruppeId}/bestilling", testgruppe.getId())
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(bestilling)))
