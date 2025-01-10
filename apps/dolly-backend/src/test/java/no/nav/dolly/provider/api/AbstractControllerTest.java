@@ -57,7 +57,6 @@ public abstract class AbstractControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        flyway.migrate();
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
