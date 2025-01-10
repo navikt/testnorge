@@ -35,7 +35,7 @@ export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 						Hvis hensikten er å ta i bruk Dolly kan dette
 						løses som følger:
 						<ol>
-							<li>Ta kontakt med NAV ved Anders Marstrander epost: anders.marstrander@nav.no,
+							<li>Ta kontakt med NAV på epost: dolly@nav.no,
 								oppgi organisasjonsnummer til organisasjon du jobber for og spør om denne kan gis tilgang
 								til <em>Dolly syntetiske testdata selvbetjening</em>.
 							</li>
@@ -45,6 +45,7 @@ export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 							</li>
 						</ol>
 						Hvis overnevnte er på plass og du forsatt mangler tilgang, ta kontakt med NAV ved anders.marstrander@nav.no.
+						Spørsmål om support forøvrig sendes til dolly@nav.no.
 					</h4>
 				</div>
 				<div className="slettModal-actions">
