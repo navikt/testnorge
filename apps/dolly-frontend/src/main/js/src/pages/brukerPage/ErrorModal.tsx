@@ -44,8 +44,7 @@ export const ErrorModal = ({ errorModalIsOpen, closeErrorModal, error }) => {
 								<em>Tilgang til NAVs Dolly for samarbeidspartnere</em>.
 							</li>
 						</ol>
-						Hvis overnevnte er på plass og du forsatt mangler tilgang, ta kontakt med NAV ved anders.marstrander@nav.no. <br/>
-						Henvendelse om støtte og assistanse forøvrig sendes til Team Dolly (dolly@nav.no) som vil bistå så godt vi kan.
+						Hvis overnevnte er på plass og du forsatt mangler tilgang, ta kontakt med NAV ved anders.marstrander@nav.no.
 					</h4>
 				</div>
 				<div className="slettModal-actions">
