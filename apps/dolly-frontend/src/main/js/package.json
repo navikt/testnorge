@@ -88,7 +88,7 @@
     "eslint-plugin-react": "^7.37.2",
     "fetch-retry": "^6.0.0",
     "isomorphic-fetch": "^3.0.0",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.0.0",
     "less": "^4.2.0",
     "msw": "^2.6.0",
     "prettier": "^3.3.3",
