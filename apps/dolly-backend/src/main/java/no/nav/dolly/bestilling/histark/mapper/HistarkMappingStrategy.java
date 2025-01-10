@@ -5,6 +5,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
+import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -16,9 +17,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
-import static io.micrometer.common.util.StringUtils.isBlank;
 import static no.nav.dolly.bestilling.dokarkiv.mapper.PdfVedlegg.PDF_VEDLEGG;
 
 @Slf4j
@@ -36,11 +37,15 @@ public class HistarkMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsHistark histark, HistarkRequest histarkRequest, MappingContext context) {
 
+                        var dokumenter = (List<Dokument>) context.getProperty("dokumenter");
 
                         histark.getDokumenter().forEach(dokument -> {
 
-
-                            String fysiskDokument = isBlank(dokument.getFysiskDokument()) ? PDF_VEDLEGG : dokument.getFysiskDokument();
+                            var fysiskDokument = dokumenter.stream()
+                                    .filter(dok -> dokument.getDokumentReferanse().equals(dok.getId()))
+                                    .map(Dokument::getContents)
+                                    .findFirst()
+                                    .orElse(PDF_VEDLEGG);
 
                             histarkRequest.getHistarkDokumenter().add(HistarkRequest.HistarkDokument.builder()
                                     .file(fysiskDokument)

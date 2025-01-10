@@ -32,6 +32,7 @@ spec:
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
         - application: testnav-bruker-service-dev
+        - application: testnorge-profil-api-dev
     outbound:
       external:
         - host: platform.tt02.altinn.no

@@ -7,10 +7,10 @@ metadata:
     team: dolly
 spec:
   env:
-    - name: PERSON_ORG_TILGANG_NAME
-      value: testnav-person-organisasjon-tilgang-service
-    - name: PERSON_ORG_TILGANG_URL
-      value: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
+    - name: ALTINN3_TILGANG_NAME
+      value: testnav-altinn3-tilgang-proxy
+    - name: ALTINN3_TILGANG_URL
+      value: https://testnav-altinn3-tilgang-proxy.intern.dev.nav.no
   image: "{{image}}"
   tokenx:
     enabled: true
@@ -35,7 +35,7 @@ spec:
         - application: testnorge-tilbakemelding-api
     outbound:
       rules:
-        - application: testnav-person-organisasjon-tilgang-service
+        - application: testnav-altinn3-tilgang-proxy
   liveness:
     path: /internal/isAlive
     initialDelay: 4

@@ -7,11 +7,13 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
@@ -37,6 +39,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDokarkiv rsDokarkiv, DokarkivRequest dokarkivRequest, MappingContext context) {
 
+                        var dokumenter = (List<Dokument>) context.getProperty("dokumenter");
 
                         dokarkivRequest.setEksternReferanseId(UUID.randomUUID().toString());
                         dokarkivRequest.setTittel(rsDokarkiv.getTittel());
@@ -72,7 +75,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
 
                         dokarkivRequest.getDokumenter()
                                 .addAll(mapperFacade.mapAsList(rsDokarkiv.getDokumenter(), DokarkivRequest.Dokument.class));
-                        fyllDokarkivDokument(dokarkivRequest);
+                        fyllDokarkivDokument(dokarkivRequest, dokumenter);
                         dokarkivRequest.setFerdigstill(rsDokarkiv.getFerdigstill());
                     }
 
@@ -86,7 +89,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private void fyllDokarkivDokument(DokarkivRequest dokarkivRequest) {
+    private void fyllDokarkivDokument(DokarkivRequest dokarkivRequest, List<Dokument> dokumenter) {
 
         if (dokarkivRequest.getDokumenter().isEmpty()) {
             dokarkivRequest.getDokumenter().add(new DokarkivRequest.Dokument());
@@ -100,8 +103,12 @@ public class DokarkivMappingStrategy implements MappingStrategy {
         if (isBlank(dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().getVariantformat())) {
             dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().setVariantformat(ARKIV);
         }
-        if (isBlank(dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().getFysiskDokument())) {
-            dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().setFysiskDokument(PDF_VEDLEGG);
-        }
+        dokarkivRequest.getDokumenter()
+                .forEach(dokument -> dokument.getDokumentvarianter()
+                        .forEach(dokumentVariant ->
+                                dokumentVariant.setFysiskDokument(dokumenter.stream()
+                                        .filter(doku -> doku.getId().equals(dokumentVariant.getDokumentReferanse()))
+                                        .map(Dokument::getContents)
+                                        .findFirst().orElse(PDF_VEDLEGG))));
     }
 }

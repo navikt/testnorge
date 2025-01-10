@@ -28,7 +28,10 @@ export default ({ journalpost, miljoe }: Props) => {
 			<TitleValue title="Tema" value={journalpost.tema} />
 			<TitleValue
 				title="Behandlingstema"
-				value={`${journalpost.behandlingstemanavn || ''} (${journalpost.behandlingstema})`}
+				value={
+					journalpost.behandlingstema &&
+					`${journalpost.behandlingstemanavn || ''} (${journalpost.behandlingstema})`
+				}
 			/>
 			<TitleValue
 				title="Fagsaksystem"

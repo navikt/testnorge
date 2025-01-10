@@ -23,11 +23,11 @@ consumers:
     namespace: dolly
     name: testnav-app-tilgang-analyse-service
     url: http://testnav-app-tilgang-analyse-service.dolly.svc.cluster.local
-  testnav-person-organisasjon-tilgang-service:
+  testnav-altinn3-tilgang-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-organisasjon-tilgang-service-dev
-    url: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
+    name: testnav-altinn3-tilgang-service
+    url: http://testnav-altinn3-tilgang-service.dolly.svc.cluster.local
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly
@@ -39,12 +39,13 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump,health
+      exposure:
+        include: prometheus,health
       path-mapping:
         prometheus: metrics
   endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
+    prometheus:
+      enabled: true
   prometheus:
     metrics:
       export:
