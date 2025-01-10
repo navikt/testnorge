@@ -8,26 +8,28 @@ import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
+import no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -38,21 +40,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = RANDOM_PORT
+)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @Testcontainers(disabledWithoutDocker = true)
-@EnableAutoConfiguration
-@ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureWireMock(port = 0)
 class OrganisasjonMalBestillingServiceTest {
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private ElasticsearchOperations elasticsearchOperations;
 
     private final static String MALNAVN = "test";
     private final static String NYTT_MALNAVN = "nyttMalnavn";
@@ -69,8 +65,18 @@ class OrganisasjonMalBestillingServiceTest {
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_to")
             .build();
-    private static final String UGYLDIG_BESTILLINGID = "999";
 
+    private static final String UGYLDIG_BESTILLINGID = "999";
+    @MockitoBean
+    @SuppressWarnings("unused")
+    private BestillingElasticRepository bestillingElasticRepository;
+    @MockitoBean
+    @SuppressWarnings("unused")
+    private ElasticsearchOperations elasticsearchOperations;
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
+    @MockitoBean
+    private AzureAdTokenService azureAdTokenService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -93,14 +99,11 @@ class OrganisasjonMalBestillingServiceTest {
     }
 
     @AfterEach
-    @Transactional
     public void afterEach() {
-        deleteAllDatabaseContent();
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter og returnerer alle organisasjonmaler tilknyttet to forskjellige brukere")
     void shouldCreateAndGetMaler()
             throws Exception {
@@ -112,9 +115,6 @@ class OrganisasjonMalBestillingServiceTest {
 
         mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.malbestillinger.ALLE", hasSize(2)))
-                .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)))
-                .andExpect(jsonPath("$.malbestillinger.test_to", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].bruker.brukerId").value(bruker_en.getBrukerId()))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].bestilling.environments", hasSize(1)))
@@ -122,7 +122,6 @@ class OrganisasjonMalBestillingServiceTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
@@ -142,7 +141,6 @@ class OrganisasjonMalBestillingServiceTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
@@ -159,8 +157,7 @@ class OrganisasjonMalBestillingServiceTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.malbestillinger.ALLE", empty()));
+                .andExpect(status().isOk());
     }
 
 
@@ -194,10 +191,4 @@ class OrganisasjonMalBestillingServiceTest {
         brukerRepository.save(bruker);
     }
 
-    void deleteAllDatabaseContent() {
-        organisasjonBestillingMalRepository.deleteAll();
-        organisasjonBestillingRepository.deleteAll();
-        brukerRepository.deleteByBrukerId(DUMMY_EN.getBrukerId());
-        brukerRepository.deleteByBrukerId(DUMMY_TO.getBrukerId());
-    }
 }

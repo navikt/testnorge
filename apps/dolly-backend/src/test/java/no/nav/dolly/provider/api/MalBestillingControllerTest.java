@@ -11,22 +11,18 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BrukerService;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,17 +37,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(
-        webEnvironment = RANDOM_PORT
-)
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers(disabledWithoutDocker = true)
 @AutoConfigureMockMvc(addFilters = false)
-@AutoConfigureWireMock(port = 0)
 class MalBestillingControllerTest {
 
-    private static final String MALNAVN = "test";
+    private static final String MALNAVN_EN = "testmalEn";
+    private static final String MALNAVN_TO = "testmalTo";
     private static final String NYTT_MALNAVN = "nyttMalnavn";
     private static final String BEST_KRITERIER = "{\"test\":true}";
     private static final Bruker DUMMY_EN = Bruker.builder()
@@ -83,21 +75,25 @@ class MalBestillingControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
     @Autowired
     private BestillingMalRepository bestillingMalRepository;
+
     @Autowired
     private BestillingRepository bestillingRepository;
+
     @Autowired
     private TestgruppeRepository testgruppeRepository;
+
     @Autowired
     private BrukerRepository brukerRepository;
-    @Autowired
-    private Flyway flyway;
 
     @BeforeEach
     public void beforeEach() {
 
-        flyway.migrate();
         saveDummyBruker(DUMMY_EN);
         saveDummyBruker(DUMMY_TO);
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
@@ -117,14 +113,27 @@ class MalBestillingControllerTest {
 
         var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var brukerTo = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
-        saveDummyBestillingMal(brukerEn);
-        saveDummyBestillingMal(brukerTo);
+
+        var bestilling = saveDummyBestilling(brukerEn, saveDummyGruppe());
+        var bestillingTo = saveDummyBestilling(brukerTo, saveDummyGruppe());
+
+        mockMvc.perform(post("/api/v1/malbestilling")
+                        .queryParam("bestillingId", String.valueOf(bestilling.getId()))
+                        .queryParam("malNavn", MALNAVN_EN))
+                .andExpect(status().isOk());
+
+        when(brukerService.fetchBruker(anyString())).thenReturn(DUMMY_TO);
+
+        mockMvc.perform(post("/api/v1/malbestilling")
+                        .queryParam("bestillingId", String.valueOf(bestillingTo.getId()))
+                        .queryParam("malNavn", MALNAVN_TO))
+                .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/v1/malbestilling"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].bruker.brukerId").value(brukerEn.getBrukerId()))
-                .andExpect(jsonPath("$.malbestillinger.test_to[0].bruker.brukerId").value(brukerTo.getBrukerId()));
+                .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN_EN))
+                .andExpect(jsonPath("$.malbestillinger.test_to[0].malNavn").value(MALNAVN_TO))
+                .andExpect(jsonPath("$.malbestillinger.ALLE.length()").value(2));
     }
 
     @Test
@@ -133,17 +142,16 @@ class MalBestillingControllerTest {
             throws Exception {
 
         var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-        var testgruppe = saveDummyGruppe();
-        var bestilling = saveDummyBestilling(brukerEn, testgruppe);
+        var bestilling = saveDummyBestilling(brukerEn, saveDummyGruppe());
 
         mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", String.valueOf(bestilling.getId()))
-                        .queryParam("malNavn", MALNAVN))
+                        .queryParam("malNavn", MALNAVN_EN))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
-                        .queryParam("malNavn", MALNAVN))
+                        .queryParam("malNavn", MALNAVN_TO))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -177,7 +185,7 @@ class MalBestillingControllerTest {
                         .builder()
                         .bestKriterier(BEST_KRITERIER)
                         .bruker(bruker)
-                        .malNavn(MALNAVN)
+                        .malNavn(MALNAVN_EN)
                         .sistOppdatert(LocalDateTime.now())
                         .build()
         );

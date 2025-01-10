@@ -55,6 +55,7 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
     testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.bitbucket.b_c:jose4j:0.9.6'
 

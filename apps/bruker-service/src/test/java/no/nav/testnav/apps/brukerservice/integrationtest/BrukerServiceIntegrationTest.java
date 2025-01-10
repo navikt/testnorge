@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -29,7 +29,7 @@ class BrukerServiceIntegrationTest {
     private static final String PID = "01810048413";
     private static final String ORGNUMMER = "811306312";
     public static MockWebServer mockBackEnd;
-    @MockBean
+    @MockitoBean
     JwtDecoder jwtDecoder;
 
     private ObjectMapper objectMapper;

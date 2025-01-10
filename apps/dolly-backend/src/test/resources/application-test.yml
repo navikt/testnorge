@@ -79,7 +79,23 @@ sts:
       test: dummy
       preprod: dummy
 
+management:
+  prometheus:
+    metrics:
+      export:
+        enabled: false
+  endpoint:
+    metrics:
+      access: none
+  endpoints:
+    web:
+      exposure:
+        include: none
+
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
   cloud:
     gcp:
       secretmanager:

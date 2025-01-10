@@ -7,11 +7,13 @@ import org.springframework.boot.actuate.health.StatusAggregator;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(HealthContributorAutoConfiguration.class)
+@Profile("!test")
 public class HealthToMeterAutoConfig {
 
     @Bean

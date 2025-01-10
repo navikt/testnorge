@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.helsepersonellservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class ApplicationContextTest {
 
-    @MockBean
+    @MockitoBean
     public JwtDecoder jwtDecoder;
 
     @Test
