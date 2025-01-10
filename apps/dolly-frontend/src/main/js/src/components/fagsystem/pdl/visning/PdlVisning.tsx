@@ -76,6 +76,8 @@ export const PdlVisning = ({
 		(id) => !id.historisk && id.gruppe === 'FOLKEREGISTERIDENT',
 	)
 
+	const erDoed = doedsfall?.find((d) => d.doedsdato)
+
 	return (
 		<ErrorBoundary>
 			<div className={miljoeVisning ? 'boks' : ''}>
@@ -129,7 +131,7 @@ export const PdlVisning = ({
 					erPdlVisning={miljoeVisning}
 				/>
 				<PdlRelasjoner data={hentPerson} />
-				<FullmaktVisning ident={gjeldendeIdent?.ident} />
+				{!erDoed && <FullmaktVisning ident={gjeldendeIdent?.ident} />}
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<KontaktinformasjonForDoedsbo

@@ -198,6 +198,7 @@ public class TransactionHelperService {
             var akkumulert = new AtomicReference<Bestilling>(null);
             bestillingRepository.findByIdAndLock(bestillingId)
                     .ifPresent(best -> {
+                        bestilling.setId(bestillingId);
                         best.setBestKriterier(bestillingService.getBestKriterier(bestilling));
                         akkumulert.set(bestillingRepository.save(best));
                     });

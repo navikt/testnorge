@@ -48,21 +48,6 @@ export const initialJobboenskerVerdier = {
 	workScheduleTypes: ['DAGTID', 'UKEDAGER', 'KVELD'],
 }
 
-export const initialCV = {
-	jobboensker: initialJobboensker,
-	utdanning: [],
-	fagbrev: [],
-	arbeidserfaring: [],
-	annenErfaring: [],
-	kompetanser: [],
-	offentligeGodkjenninger: [],
-	andreGodkjenninger: [],
-	spraak: [],
-	foererkort: [],
-	kurs: [],
-	sammendrag: '',
-}
-
 export const initialArbeidserfaring = {
 	employer: '',
 	jobTitle: '',
@@ -128,7 +113,7 @@ export const initialAnnenErfaring = {
 export const initialAnnenErfaringVerdier = {
 	description: 'Mange års erfaring med trening av sau til utstillinger.',
 	role: 'Sauetrener',
-	fromDate: '2010-05-01T00:00:00+02:00',
+	fromDate: '2010-05-01T00:00:00',
 	toDate: null,
 	ongoing: true,
 }

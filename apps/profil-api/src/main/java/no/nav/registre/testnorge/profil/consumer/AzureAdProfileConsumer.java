@@ -7,7 +7,7 @@ import no.nav.registre.testnorge.profil.domain.Profil;
 import no.nav.registre.testnorge.profil.service.AzureAdTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
@@ -17,8 +17,9 @@ import java.net.URI;
 import java.util.Optional;
 
 @Slf4j
-@Component
+@Service
 public class AzureAdProfileConsumer {
+
     private final WebClient webClient;
     private final AzureAdTokenService azureAdTokenService;
 
@@ -67,7 +68,7 @@ public class AzureAdProfileConsumer {
                     .flatMap(accessToken -> new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call())
                     .block());
         } catch (IllegalStateException e) {
-            log.warn("Finner ikke profil bilde", e);
+            log.warn("Finner ikke profilbilde", e);
             return Optional.empty();
         }
     }

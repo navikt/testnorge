@@ -44,9 +44,9 @@ public class OversiktFrontendApplicationStarter {
                         addAuthenticationHeaderFilterFrom(consumers.getTestnorgeProfilApi())
                 ))
                 .route(createRoute(
-                        "testnav-organisasjon-tilgang-service",
-                        consumers.getTestnavPersonOrganisasjonTilgangService().getUrl(),
-                        addAuthenticationHeaderFilterFrom(consumers.getTestnavPersonOrganisasjonTilgangService())
+                        "testnav-altinn3-tilgang-service",
+                        consumers.getTestnavAltinn3TilgangService().getUrl(),
+                        addAuthenticationHeaderFilterFrom(consumers.getTestnavAltinn3TilgangService())
                 ))
                 .build();
     }

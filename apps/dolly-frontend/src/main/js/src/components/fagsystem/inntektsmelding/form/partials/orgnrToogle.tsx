@@ -48,10 +48,14 @@ export const OrgnrToggle = ({
 	const handleToggleChange = (value: string) => {
 		setInputType(value)
 		formMethods.setValue(virksomhetPath, '')
+		formMethods.clearErrors(`manual.${virksomhetPath}`)
+		formMethods.clearErrors(virksomhetPath)
 	}
 
 	const handleChangeEgne = (value: { orgnr: string }) => {
 		formMethods.setValue(virksomhetPath, value.orgnr)
+		formMethods.clearErrors(`manual.${virksomhetPath}`)
+		formMethods.clearErrors(virksomhetPath)
 	}
 
 	if (fasteOrganisasjonerLoading || brukerOrganisasjonerLoading) {

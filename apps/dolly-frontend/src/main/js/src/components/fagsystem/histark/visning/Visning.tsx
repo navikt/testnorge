@@ -5,7 +5,6 @@ import { Journalpost } from '@/service/services/JoarkDokumentService'
 
 interface Form {
 	data?: Array<MiljoDataListe>
-	bestillingIdListe: Array<string>
 	loading: boolean
 }
 
