@@ -37,7 +37,5 @@ public class DokarkivResponse {
     public static class DokumentInfo {
 
         private String dokumentInfoId;
-        private String brevkode;
-        private String tittel;
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -139,6 +140,7 @@ public class MalBestillingService {
                     .bruker(bruker)
                     .malNavn(malNavn)
                     .miljoer(bestilling.getMiljoer())
+                    .sistOppdatert(LocalDateTime.now())
                     .build());
         } else {
 
@@ -166,6 +168,7 @@ public class MalBestillingService {
                     .bruker(bruker)
                     .malNavn(malNavn)
                     .miljoer(bestilling.getMiljoer())
+                    .sistOppdatert(LocalDateTime.now())
                     .build());
         } else {
             malbestilling = maler.getFirst();

@@ -10,6 +10,8 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Dokument;
+import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -26,6 +28,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
@@ -78,6 +81,7 @@ public class BestillingService {
     private final GetUserInfo getUserInfo;
     private final BestillingElasticRepository elasticRepository;
     private final MiljoerConsumer miljoerConsumer;
+    private final DokumentRepository dokumentRepository;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -181,7 +185,8 @@ public class BestillingService {
                                                     .getMethod("set" + metode.getName().substring(3), String.class);
                                             oppdaterMetode.invoke(progress, DEFAULT_VALUE);
                                         }
-                                    } catch (NoSuchMethodException | IllegalAccessException |
+                                    } catch (NoSuchMethodException |
+                                             IllegalAccessException |
                                              InvocationTargetException e) {
                                         log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}",
                                                 bestilling.getId(), e.getMessage(), e);
@@ -197,44 +202,50 @@ public class BestillingService {
         var bruker = fetchOrCreateBruker();
 
         fixAaregAbstractClassProblem(request.getAareg());
-        var bestilling = Bestilling.builder()
+        var bestilling = saveBestillingToDB(Bestilling.builder()
                 .gruppe(testident.getTestgruppe())
                 .ident(ident)
                 .antallIdenter(1)
                 .navSyntetiskIdent(request.getNavSyntetiskIdent())
                 .sistOppdatert(now())
                 .miljoer(filterAvailable(request.getEnvironments()))
-                .bestKriterier(getBestKriterier(request))
                 .bruker(bruker)
-                .build();
+                .build());
+
+        request.setId(bestilling.getId());
+        bestilling.setBestKriterier(getBestKriterier(request));
 
         if (isNotBlank(request.getMalBestillingNavn())) {
             malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        return saveBestillingToDB(bestilling);
+        return bestilling;
     }
 
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall,
                                      List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        var gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        fixAaregAbstractClassProblem(request.getAareg());
+
         var bruker = fetchOrCreateBruker();
-        Bestilling bestilling = Bestilling.builder()
+        var bestilling = saveBestillingToDB(Bestilling.builder()
                 .gruppe(gruppe)
                 .antallIdenter(antall)
                 .navSyntetiskIdent(navSyntetiskIdent)
                 .sistOppdatert(now())
                 .miljoer(filterAvailable(request.getEnvironments()))
-                .bestKriterier(getBestKriterier(request))
                 .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                 .bruker(bruker)
                 .beskrivelse(beskrivelse)
-                .build();
-        fixAaregAbstractClassProblem(request.getAareg());
+                .build());
+
+        request.setId(bestilling.getId());
+        bestilling.setBestKriterier(getBestKriterier(request));
+
         if (isNotBlank(request.getMalBestillingNavn())) {
             malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        return saveBestillingToDB(bestilling);
+        return bestilling;
     }
 
     @Transactional
@@ -302,24 +313,27 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
 
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        var gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         var bruker = fetchOrCreateBruker();
-        Bestilling bestilling = Bestilling.builder()
+        fixAaregAbstractClassProblem(request.getAareg());
+
+        var bestilling = saveBestillingToDB(Bestilling.builder()
                 .gruppe(gruppe)
                 .kildeMiljoe("PDL")
                 .miljoer(filterAvailable(request.getEnvironments()))
                 .sistOppdatert(now())
                 .bruker(bruker)
                 .antallIdenter(request.getIdenter().size())
-                .bestKriterier(getBestKriterier(request))
                 .pdlImport(join(",", request.getIdenter()))
-                .build();
+                .build());
 
-        fixAaregAbstractClassProblem(request.getAareg());
+        request.setId(bestilling.getId());
+        bestilling.setBestKriterier(getBestKriterier(request));
+
         if (isNotBlank(request.getMalBestillingNavn())) {
             malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        return saveBestillingToDB(bestilling);
+        return bestilling;
     }
 
     @Transactional
@@ -329,7 +343,8 @@ public class BestillingService {
         var size = identRepository.countByTestgruppe(gruppeId);
         log.info("Antall testidenter {} i gruppe {} ", size, gruppeId);
         fixAaregAbstractClassProblem(request.getAareg());
-        return saveBestillingToDB(
+
+        var bestilling = saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
                         .miljoer(filterAvailable(request.getEnvironments()))
@@ -337,8 +352,12 @@ public class BestillingService {
                         .bruker(fetchOrCreateBruker())
                         .antallIdenter(size)
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
-                        .bestKriterier(getBestKriterier(request))
                         .build());
+
+        request.setId(bestilling.getId());
+        bestilling.setBestKriterier(getBestKriterier(request));
+
+        return bestilling;
     }
 
     public void slettBestillingerByGruppeId(Long gruppeId) {
@@ -387,6 +406,8 @@ public class BestillingService {
     }
 
     public String getBestKriterier(RsDollyBestilling request) {
+
+        lagreDokumenter(request);
         return toJson(BestilteKriterier.builder()
                 .aareg(request.getAareg())
                 .krrstub(request.getKrrstub())
@@ -413,6 +434,40 @@ public class BestillingService {
                 .yrkesskader(request.getYrkesskader())
                 .build());
     }
+
+    private void lagreDokumenter(RsDollyBestilling request) {
+
+        if (nonNull(request.getDokarkiv())) {
+            request.getDokarkiv().getDokumenter().forEach(dokument ->
+                    dokument.getDokumentvarianter().forEach(dokumentVariant -> {
+                        if (isNotBlank(dokumentVariant.getFysiskDokument())) {
+                            dokumentVariant.setDokumentReferanse(lagreDokument(dokumentVariant.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_DOKARKIV));
+                            dokumentVariant.setFysiskDokument(null);
+                        }
+                    }));
+        }
+
+        if (nonNull(request.getHistark())) {
+            request.getHistark().getDokumenter().forEach(dokument -> {
+                if (isNotBlank(dokument.getFysiskDokument())) {
+                    dokument.setDokumentReferanse(lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK));
+                    dokument.setFysiskDokument(null);
+                }
+            });
+        }
+    }
+
+    private Long lagreDokument(String dokument, Long bestillingId, DokumentType dokumentType) {
+
+        return dokumentRepository
+                .save(Dokument.builder()
+                        .contents(dokument)
+                        .bestillingId(bestillingId)
+                        .dokumentType(dokumentType)
+                        .build())
+                .getId();
+    }
+
 
     public List<BestillingProgress> getProgressByBestillingId(Long bestillingId) {
 
