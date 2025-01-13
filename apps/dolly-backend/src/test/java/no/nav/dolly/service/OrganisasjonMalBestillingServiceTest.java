@@ -10,7 +10,6 @@ import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -94,17 +92,14 @@ class OrganisasjonMalBestillingServiceTest {
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
-    @BeforeAll
-    static void beforeAll(@Autowired BrukerRepository brukerRepository) {
-        brukerRepository.save(DUMMY_EN);
-        brukerRepository.save(DUMMY_TO);
-    }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter og returnerer alle organisasjonmaler tilknyttet to forskjellige brukere")
     void shouldCreateAndGetMaler()
             throws Exception {
+
+        brukerRepository.save(DUMMY_EN);
+        brukerRepository.save(DUMMY_TO);
 
         var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
@@ -119,10 +114,12 @@ class OrganisasjonMalBestillingServiceTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
+
+        brukerRepository.save(DUMMY_EN);
+        brukerRepository.save(DUMMY_TO);
 
         var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bestilling = saveDummyBestilling(bruker_en);
@@ -139,10 +136,12 @@ class OrganisasjonMalBestillingServiceTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
+
+        brukerRepository.save(DUMMY_EN);
+        brukerRepository.save(DUMMY_TO);
 
         var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
         var bestillingMal = saveDummyBestillingMal(bruker_to);
