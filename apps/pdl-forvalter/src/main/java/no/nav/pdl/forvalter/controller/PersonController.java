@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -71,6 +72,7 @@ public class PersonController {
     private final ArtifactUpdateService artifactUpdateService;
     private final MetadataTidspunkterService metadataTidspunkterService;
 
+    @ResponseBody
     @GetMapping
     @Operation(description = "Hent person(er) med angitt(e) ident(er) eller alle")
     public List<FullPersonDTO> getPerson(@Parameter(description = "Ident(er) på personer som skal hentes")
@@ -94,6 +96,7 @@ public class PersonController {
                 .build());
     }
 
+    @ResponseBody
     @PostMapping
     @Operation(description = "Opprett person basert på angitte informasjonselementer, minimum er {}")
     public String createPerson(@RequestBody BestillingRequestDTO request) {
@@ -101,6 +104,7 @@ public class PersonController {
         return personService.createPerson(request);
     }
 
+    @ResponseBody
     @PutMapping(value = "/{ident}")
     @Operation(description = "Oppdater testperson basert på angitte informasjonselementer")
     public String updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
@@ -115,6 +119,7 @@ public class PersonController {
     }
 
     @Transactional
+    @ResponseBody
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
     public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
@@ -127,6 +132,7 @@ public class PersonController {
         return pdlOrdreService.send(ident, ekskluderEksternePersoner);
     }
 
+    @ResponseBody
     @DeleteMapping(value = "/{ident}")
     @Operation(description = "Slett person")
     public void deletePerson(@Parameter(description = "Slett angitt testperson med relasjoner")
