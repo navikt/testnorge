@@ -116,8 +116,6 @@ class OrganisasjonMalBestillingServiceTest {
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].bestilling.environments", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_to[0].bruker.brukerId").value(bruker_to.getBrukerId()));
-
-        brukerRepository.deleteByBrukerId(bruker_to.getBrukerId());
     }
 
     @Test
@@ -138,8 +136,6 @@ class OrganisasjonMalBestillingServiceTest {
                         .queryParam("bestillingId", "999")
                         .queryParam("malNavn", MALNAVN))
                 .andExpect(status().is4xxClientError());
-
-        brukerRepository.deleteByBrukerId(bruker_en.getBrukerId());
     }
 
     @Test
@@ -161,8 +157,6 @@ class OrganisasjonMalBestillingServiceTest {
 
         mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
                 .andExpect(status().isOk());
-
-        brukerRepository.deleteByBrukerId(bruker_to.getBrukerId());
     }
 
     OrganisasjonBestillingMal saveDummyBestillingMal(Bruker bruker) {
