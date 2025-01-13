@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useContext, useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -14,6 +14,9 @@ import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import Digitalinnsending from './partials/Digitalinnsending'
 import FileUploader from '@/utils/FileUploader/FileUploader'
 import DokumentInfoListe from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useDokumenterFraMal } from '@/utils/hooks/useDokumenter'
+import Loading from '@/components/ui/loading/Loading'
 
 type Skjema = {
 	data: string
@@ -42,6 +45,13 @@ enum Kodeverk {
 const dokarkivAttributt = 'dokarkiv'
 
 const DokarkivForm = () => {
+	const opts = useContext(BestillingsveilederContext)
+	const malId = opts?.mal?.id
+
+	const { dokumenter, loading: loadingDokumenter, error } = useDokumenterFraMal(malId)
+	console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
+	// console.log('opts: ', opts) //TODO - SLETT MEG
+
 	const formMethods = useFormContext()
 	if (!formMethods.watch(dokarkivAttributt)) {
 		return null
@@ -55,6 +65,25 @@ const DokarkivForm = () => {
 	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
 		return null
 	}
+
+	//TODO: proev aa sette dokarkiv.dokumenter.dokumentvarianter.fysiskDokument, for aa faa det til aa funke
+	//TODO: kanskje sette skjema ogsaa
+
+	useEffect(() => {
+		const vedlegg = formMethods.watch('dokarkiv.vedlegg')
+
+		const vedleggFraMal = dokumenter?.map((dokument: any, index: number) => ({
+			id: new Date().getTime(),
+			name: `Testings ${index + 1}`,
+			content: {
+				base64: dokument?.contents,
+			},
+			...vedlegg,
+		}))
+		setFiles(vedleggFraMal)
+		// formMethods.setValue('dokarkiv.vedlegg', vedlegg)
+		formMethods.trigger('dokarkiv')
+	}, [dokumenter])
 
 	useEffect(() => {
 		handleSkjemaChange(skjemaValues)
@@ -104,6 +133,15 @@ const DokarkivForm = () => {
 	}
 
 	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
+
+	console.log('formMethods.watch(dokarkiv.dokumenter): ', formMethods.watch('dokarkiv.dokumenter')) //TODO - SLETT MEG
+
+	// const getDokumenterFraMal = () => {
+	// 	const dokumenter = formMethods.watch('dokarkiv.dokumenter')
+	// 	dokumenter?.forEach((dokument: any) => {
+	//
+	// 	}
+	// }
 
 	return (
 		// @ts-ignore
@@ -180,6 +218,9 @@ const DokarkivForm = () => {
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
 						<FileUploader filer={files} setFiler={setFiles} />
+						{files.length < 1 && loadingDokumenter && malId && (
+							<Loading label="Laster vedlegg fra mal ..." />
+						)}
 						{files.length > 0 && (
 							<DokumentInfoListe
 								handleChange={handleVedleggChange}

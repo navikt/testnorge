@@ -47,8 +47,9 @@ export default ({
 }) => {
 	const handleDrop = (acceptedFiles: File[]) => {
 		const reader = new FileReader()
-
+		console.log('filer: ', filer) //TODO - SLETT MEG
 		acceptedFiles.forEach((file: File) => {
+			console.log('file: ', file) //TODO - SLETT MEG
 			reader.onabort = () => console.warn('file reading was aborted')
 			reader.onerror = () => console.error('file reading has failed')
 			reader.onload = () => {

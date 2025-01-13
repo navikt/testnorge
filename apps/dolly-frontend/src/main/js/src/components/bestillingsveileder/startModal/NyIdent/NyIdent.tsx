@@ -189,6 +189,6 @@ export const getMalOptions = (malbestillinger: [string, Mal[]], bruker: string |
 	return malbestillinger[bruker].map((mal: { id: any; malNavn: any; bestilling: any }) => ({
 		value: mal.id,
 		label: mal.malNavn,
-		data: { bestilling: mal.bestilling, malNavn: mal.malNavn },
+		data: { bestilling: mal.bestilling, malNavn: mal.malNavn, id: mal.id },
 	}))
 }
