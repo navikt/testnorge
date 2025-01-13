@@ -33,8 +33,8 @@ import static org.springframework.util.StringUtils.truncate;
 public class TestnavLogbackEncoder extends LogstashEncoder {
 
     // matches exactly 11 digits (\\d{11}) that are not immediately preceded ((?<!\\d)) or followed ((?!\\d)) by another digit.
-    private final Pattern identNummer = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
-    private final Pattern bearer = Pattern.compile("Bearer [a-zA-Z0-9\\-_.]+");
+    private static final Pattern IDENT = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
+    private static final Pattern BEARER = Pattern.compile("Bearer [a-zA-Z0-9\\-_.]+");
     @Setter
     private int maxStackTraceLength = 480;
 
@@ -113,15 +113,14 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
     }
 
     private String formatMessage(String message) {
-        message = identNummer.matcher(message).replaceAll(match -> {
-            if (match.group().charAt(2) < '4') {
-                return match.group().substring(0, 6) + "xxxxx";
-            }
-            return match.group();
-        });
 
-        message = bearer.matcher(message).replaceAll("REDACTED_BEARER");
+        message = IDENT.matcher(message).replaceAll(match ->
 
-        return message;
+                match.group().charAt(2) < '4' ?
+                        match.group().substring(0, 6) + "xxxxx" :
+                        match.group().substring(0, 11) + "x"
+        );
+
+        return BEARER.matcher(message).replaceAll("Bearer token");
     }
 }
