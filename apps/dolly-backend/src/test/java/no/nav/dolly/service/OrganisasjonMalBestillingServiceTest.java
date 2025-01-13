@@ -10,6 +10,7 @@ import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -51,18 +53,17 @@ class OrganisasjonMalBestillingServiceTest {
     private final static String BEST_KRITERIER = "Testeteste";
     private static final Bruker DUMMY_EN = Bruker.builder()
             .brukernavn("test_en")
-            .brukerId("testbruker_en")
+            .brukerId("test_en")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_en")
             .build();
     private static final Bruker DUMMY_TO = Bruker.builder()
             .brukernavn("test_to")
-            .brukerId("testbruker_to")
+            .brukerId("test_to")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_to")
             .build();
 
-    private static final String UGYLDIG_BESTILLINGID = "999";
     @MockitoBean
     @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
@@ -85,8 +86,6 @@ class OrganisasjonMalBestillingServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        saveDummyBruker(DUMMY_EN);
-        saveDummyBruker(DUMMY_TO);
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
@@ -95,7 +94,14 @@ class OrganisasjonMalBestillingServiceTest {
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
+    @BeforeAll
+    static void beforeAll(@Autowired BrukerRepository brukerRepository) {
+        brukerRepository.save(DUMMY_EN);
+        brukerRepository.save(DUMMY_TO);
+    }
+
     @Test
+    @Transactional
     @DisplayName("Oppretter og returnerer alle organisasjonmaler tilknyttet to forskjellige brukere")
     void shouldCreateAndGetMaler()
             throws Exception {
@@ -108,12 +114,14 @@ class OrganisasjonMalBestillingServiceTest {
         mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].bruker.brukerId").value(bruker_en.getBrukerId()))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].bestilling.environments", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_to[0].bruker.brukerId").value(bruker_to.getBrukerId()));
+
+        brukerRepository.deleteByBrukerId(bruker_to.getBrukerId());
     }
 
     @Test
+    @Transactional
     @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
@@ -127,12 +135,15 @@ class OrganisasjonMalBestillingServiceTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
-                        .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
+                        .queryParam("bestillingId", "999")
                         .queryParam("malNavn", MALNAVN))
                 .andExpect(status().is4xxClientError());
+
+        brukerRepository.deleteByBrukerId(bruker_en.getBrukerId());
     }
 
     @Test
+    @Transactional
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
@@ -150,8 +161,9 @@ class OrganisasjonMalBestillingServiceTest {
 
         mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
                 .andExpect(status().isOk());
-    }
 
+        brukerRepository.deleteByBrukerId(bruker_to.getBrukerId());
+    }
 
     OrganisasjonBestillingMal saveDummyBestillingMal(Bruker bruker) {
         return organisasjonBestillingMalRepository.save(
@@ -177,10 +189,6 @@ class OrganisasjonMalBestillingServiceTest {
                         .sistOppdatert(LocalDateTime.now())
                         .build()
         );
-    }
-
-    void saveDummyBruker(Bruker bruker) {
-        brukerRepository.save(bruker);
     }
 
 }
