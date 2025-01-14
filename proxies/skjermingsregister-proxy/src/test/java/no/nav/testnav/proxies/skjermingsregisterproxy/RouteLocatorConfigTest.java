@@ -15,7 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOAuth2Login;
 
 @SpringBootTest(
@@ -29,6 +32,18 @@ class RouteLocatorConfigTest {
 
     @Autowired
     private WebTestClient webClient;
+
+    @TestConfiguration
+    static class TestAuthenticationConfig {
+
+        @Primary
+        @Bean
+        GatewayFilter getNoopAuthenticationFilter() {
+            return (exchange, chain) -> chain.filter(exchange);
+
+        }
+
+    }
 
     @Test
     void shouldRouteToStub() {
@@ -50,18 +65,6 @@ class RouteLocatorConfigTest {
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.TEXT_PLAIN_VALUE)
                 .expectBody(String.class).isEqualTo("Some content");
-
-    }
-
-    @TestConfiguration
-    static class TestAuthenticationConfig {
-
-        @Primary
-        @Bean
-        GatewayFilter getNoopAuthenticationFilter() {
-            return (exchange, chain) -> chain.filter(exchange);
-
-        }
 
     }
 
