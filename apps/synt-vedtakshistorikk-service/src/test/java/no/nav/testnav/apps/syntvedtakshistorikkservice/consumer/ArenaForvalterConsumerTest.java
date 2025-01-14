@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -39,9 +38,7 @@ import reactor.core.publisher.Mono;
 class ArenaForvalterConsumerTest {
 
     @MockitoBean
-    private JwtDecoder jwtDecoder;
-
-    @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenExchange;
 
     @Autowired
