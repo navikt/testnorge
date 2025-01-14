@@ -45,7 +45,8 @@ public class DoedsfallService implements Validation<DoedsfallDTO> {
 
     private void handle(PersonDTO person) {
 
-        if (!person.getSivilstand().isEmpty() &&
+        if (!person.getDoedsfall().isEmpty() &&
+                !person.getSivilstand().isEmpty() &&
                 isNotBlank(person.getSivilstand().getFirst().getRelatertVedSivilstand()) &&
                 person.getSivilstand().getFirst().isGift()) {
 
