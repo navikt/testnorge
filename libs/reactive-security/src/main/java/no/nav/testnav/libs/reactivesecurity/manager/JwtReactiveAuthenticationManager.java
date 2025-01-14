@@ -3,7 +3,6 @@ package no.nav.testnav.libs.reactivesecurity.manager;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import lombok.SneakyThrows;
-import no.nav.testnav.libs.reactivesecurity.decoder.JwtDecoder;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -40,7 +39,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
                 .stream()
                 .filter(props -> props.getIssuerUri().equals(getIssuer(jwt)))
                 .findFirst()
-                .map(props -> new JwtDecoder(props, proxy).jwtDecoder())
+                .map(props -> new NonBeanJwtDecoder(props, proxy).jwtDecoder())
                 .orElseThrow(() -> new AuthenticationServiceException("Finner ikke støtte for issuer " + getIssuer(jwt)));
     }
 
