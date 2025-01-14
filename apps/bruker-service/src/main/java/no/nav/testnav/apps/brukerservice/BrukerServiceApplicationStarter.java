@@ -20,4 +20,3 @@ public class BrukerServiceApplicationStarter {
         SpringApplication.run(BrukerServiceApplicationStarter.class, args);
     }
 }
- 
