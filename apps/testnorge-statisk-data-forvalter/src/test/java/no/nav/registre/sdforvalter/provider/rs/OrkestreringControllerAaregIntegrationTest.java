@@ -2,7 +2,6 @@ package no.nav.registre.sdforvalter.provider.rs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkResponse;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
@@ -19,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -46,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 0)
-@Import(JwtDecoderConfig.class)
 class OrkestreringControllerAaregIntegrationTest {
 
     private static final String FNR = "01010101010";
@@ -61,6 +59,8 @@ class OrkestreringControllerAaregIntegrationTest {
     private MockMvc mvc;
     @MockitoBean
     private TokenExchange tokenExchange;
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
     @Autowired
     private AaregRepository aaregRepository;
     @Autowired

@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.registre.sdforvalter.consumer.rs.krr.request.KrrRequest;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
 import no.nav.registre.sdforvalter.database.repository.KrrRepository;
@@ -14,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc(addFilters = false)
-@Import(JwtDecoderConfig.class)
 @DirtiesContext
 class OrkestreringControllerKrrIntegrationTest {
 
@@ -47,6 +46,9 @@ class OrkestreringControllerKrrIntegrationTest {
 
     @Autowired
     private KrrRepository repository;
+
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
 
     @AfterEach
     public void cleanUp() {
