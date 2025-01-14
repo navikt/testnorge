@@ -18,6 +18,7 @@ spring:
       secretmanager:
         enabled: false
     vault:
+      token: dummy
       enabled: false
 
 
