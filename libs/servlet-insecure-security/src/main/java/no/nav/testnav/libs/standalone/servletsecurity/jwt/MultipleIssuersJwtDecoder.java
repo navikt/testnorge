@@ -1,7 +1,6 @@
-package no.nav.testnav.libs.standalone.servletsecurity.decoder;
+package no.nav.testnav.libs.standalone.servletsecurity.jwt;
 
 import com.nimbusds.jwt.JWTParser;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.standalone.servletsecurity.properties.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
@@ -9,24 +8,19 @@ import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtDecoders;
-import org.springframework.security.oauth2.jwt.JwtException;
-import org.springframework.security.oauth2.jwt.JwtValidationException;
-import org.springframework.security.oauth2.jwt.JwtValidators;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-@ConditionalOnMissingClass("no.nav.testnav.libs.servletsecurity.decoder.MultipleIssuersJwtDecoder")
-public class MultipleIssuersJwtDecoder implements JwtDecoder {
+class MultipleIssuersJwtDecoder implements JwtDecoder {
+
     private final Map<String, NimbusJwtDecoder> decoderMap;
 
-    public MultipleIssuersJwtDecoder(List<ResourceServerProperties> properties) {
+    MultipleIssuersJwtDecoder(List<ResourceServerProperties> properties) {
         this.decoderMap = properties.stream().collect(Collectors.toMap(
                 ResourceServerProperties::getIssuerUri,
                 props -> {
@@ -37,15 +31,21 @@ public class MultipleIssuersJwtDecoder implements JwtDecoder {
         ));
     }
 
-    @SneakyThrows
     @Override
     public Jwt decode(String token) throws JwtException {
-        var jwt = JWTParser.parse(token);
-
         try {
-            return decoderMap.get(jwt.getJWTClaimsSet().getIssuer()).decode(token);
+            var issuer = JWTParser
+                    .parse(token)
+                    .getJWTClaimsSet()
+                    .getIssuer();
+            return decoderMap
+                    .get(issuer)
+                    .decode(token);
+        } catch (ParseException e) {
+            log.error("Feil ved parsing av token", e);
+            throw new JwtException("Feil ved parsing av token", e);
         } catch (JwtValidationException e) {
-            log.error("Jwt valideringsfeil", e);
+            log.error("Feil ved validering av token", e);
             throw e;
         } catch (Exception e) {
             log.error("Ukjent feil", e);
@@ -67,4 +67,5 @@ public class MultipleIssuersJwtDecoder implements JwtDecoder {
     private OAuth2Error createError(String msg) {
         return new OAuth2Error("invalid_token", msg, null);
     }
+
 }
