@@ -9,8 +9,8 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -18,7 +18,11 @@ import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -27,10 +31,10 @@ class InntektsmeldingClientTest {
     @Autowired
     private InntektsmeldingClient inntektsmeldingClient;
 
-    @MockBean
+    @MockitoBean
     private InntektsmeldingConsumer inntektsmeldingConsumer;
 
-    @MockBean
+    @MockitoBean
     private TransaksjonMappingService transaksjonMappingService;
 
     @Test

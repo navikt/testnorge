@@ -1,7 +1,7 @@
 package no.nav.testnav.identpool;
 
 import no.nav.testnav.identpool.ajourhold.CronJobService;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -10,9 +10,9 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 @ComponentScan(basePackages = "no.nav.testnav.identpool")
 public class ComponentTestConfig {
 
-    @MockBean
+    @MockitoBean
     protected JwtDecoder jwtDecoder;
 
-    @MockBean
+    @MockitoBean
     protected CronJobService cronJobService;
 }

@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@ActiveProfiles({"test", "integrationtest"})
+@ActiveProfiles({ "test", "integrationtest" })
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -61,6 +61,49 @@ class OpensearchControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private List<ElasticBestilling> getTestBestillinger() {
+
+        return List.of(
+                ElasticBestilling.builder()
+                        .id(1L)
+                        .pdldata(PdlPersondata.builder()
+                                .opprettNyPerson(PdlPersondata.PdlPerson.builder()
+                                        .identtype(Identtype.FNR)
+                                        .syntetisk(true)
+                                        .build())
+                                .build())
+                        .bankkonto(BankkontoData.builder()
+                                .utenlandskBankkonto(BankkontonrUtlandDTO.builder()
+                                        .tilfeldigKontonummer(true)
+                                        .build())
+                                .build())
+                        .identer(List.of(IDENT1, IDENT2, IDENT3))
+                        .build(),
+                ElasticBestilling.builder()
+                        .id(2L)
+                        .pdldata(PdlPersondata.builder()
+                                .opprettNyPerson(PdlPersondata.PdlPerson.builder()
+                                        .identtype(Identtype.FNR)
+                                        .syntetisk(true)
+                                        .build())
+                                .build())
+                        .aareg(List.of(RsAareg.builder()
+                                .arbeidsforholdstype("forenkletOppgjoersordning")
+                                .ansettelsesPeriode(RsAnsettelsesPeriode.builder()
+                                        .fom(LocalDateTime.of(2003, 10, 20, 0, 0))
+                                        .build())
+                                .arbeidsavtale(RsArbeidsavtale.builder()
+                                        .yrke("2521106")
+                                        .build())
+                                .arbeidsgiver(RsOrganisasjon.builder()
+                                        .aktoertype("ORG")
+                                        .orgnummer("896929119")
+                                        .build())
+                                .build()))
+                        .identer(List.of(IDENT4, IDENT5))
+                        .build());
+    }
 
     @BeforeEach
     void setup() {
@@ -164,48 +207,5 @@ class OpensearchControllerTest {
 
         var bestillinger = (PageImpl<ElasticBestilling>) bestillingElasticRepository.findAll();
         assertThat(bestillinger.getTotalElements(), is(equalTo(0L)));
-    }
-
-    private List<ElasticBestilling> getTestBestillinger() {
-
-        return List.of(
-                ElasticBestilling.builder()
-                        .id(1L)
-                        .pdldata(PdlPersondata.builder()
-                                .opprettNyPerson(PdlPersondata.PdlPerson.builder()
-                                        .identtype(Identtype.FNR)
-                                        .syntetisk(true)
-                                        .build())
-                                .build())
-                        .bankkonto(BankkontoData.builder()
-                                .utenlandskBankkonto(BankkontonrUtlandDTO.builder()
-                                        .tilfeldigKontonummer(true)
-                                        .build())
-                                .build())
-                        .identer(List.of(IDENT1, IDENT2, IDENT3))
-                        .build(),
-                ElasticBestilling.builder()
-                        .id(2L)
-                        .pdldata(PdlPersondata.builder()
-                                .opprettNyPerson(PdlPersondata.PdlPerson.builder()
-                                        .identtype(Identtype.FNR)
-                                        .syntetisk(true)
-                                        .build())
-                                .build())
-                        .aareg(List.of(RsAareg.builder()
-                                .arbeidsforholdstype("forenkletOppgjoersordning")
-                                .ansettelsesPeriode(RsAnsettelsesPeriode.builder()
-                                        .fom(LocalDateTime.of(2003, 10, 20, 0, 0))
-                                        .build())
-                                .arbeidsavtale(RsArbeidsavtale.builder()
-                                        .yrke("2521106")
-                                        .build())
-                                .arbeidsgiver(RsOrganisasjon.builder()
-                                        .aktoertype("ORG")
-                                        .orgnummer("896929119")
-                                        .build())
-                                .build()))
-                        .identer(List.of(IDENT4, IDENT5))
-                        .build());
     }
 }

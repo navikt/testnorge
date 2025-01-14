@@ -8,6 +8,8 @@ import { NotFoundError } from '@/error'
 import { Navigate } from 'react-router'
 import { Logger } from '@/logger/Logger'
 import logoutBruker from '@/components/utlogging/logoutBruker'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { ErrorModal } from '@/pages/brukerPage/ErrorModal'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -19,6 +21,8 @@ export default () => {
 	const [modalHeight, setModalHeight] = useState(310)
 	const [sessionUpdated, setSessionUpdated] = useState(false)
 
+	const [errorModalIsOpen, openErrorModal, closeErrorModal] = useBoolean(false)
+
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
@@ -28,7 +32,7 @@ export default () => {
 						message: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
 						uuid: window.uuid,
 					})
-					logoutBruker(UNKNOWN_ERROR)
+					openErrorModal()
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
@@ -104,6 +108,11 @@ export default () => {
 			<div className="bruker-modal" style={{ height: modalHeight + 'px', display: 'flexbox' }}>
 				<h1>Velkommen til Dolly</h1>
 				{loading && <Loading label="Loading" />}
+				<ErrorModal
+					closeErrorModal={closeErrorModal}
+					errorModalIsOpen={errorModalIsOpen}
+					error={UNKNOWN_ERROR}
+				/>
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}

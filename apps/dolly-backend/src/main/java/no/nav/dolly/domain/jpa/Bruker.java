@@ -80,6 +80,7 @@ public class Bruker implements Serializable {
     private Bruker eidAv;
 
     @Transient
+    @Builder.Default
     private List<String> grupper = new ArrayList<>();
 
     @OneToMany

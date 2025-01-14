@@ -54,8 +54,6 @@ import static org.mockito.Mockito.when;
 class TestgruppeServiceTest {
 
     private final static String BRUKERID = "123";
-    private final static String BRUKERNAVN = "BRUKER";
-    private final static String EPOST = "@@@@";
 
     private static final long GROUP_ID = 1L;
     private static final String IDENT_ONE = "1";
@@ -125,7 +123,7 @@ class TestgruppeServiceTest {
     }
 
     @Test
-    void fetchTestgruppeById_KasterExceptionHvisGruppeIkkeErFunnet() throws Exception {
+    void fetchTestgruppeById_KasterExceptionHvisGruppeIkkeErFunnet() {
         Optional<Testgruppe> op = Optional.empty();
         when(testgruppeRepository.findById(any())).thenReturn(op);
 
@@ -134,7 +132,7 @@ class TestgruppeServiceTest {
     }
 
     @Test
-    void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() throws Exception {
+    void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() {
         Testgruppe g = mock(Testgruppe.class);
         Optional<Testgruppe> op = Optional.of(g);
         when(testgruppeRepository.findById(any())).thenReturn(op);

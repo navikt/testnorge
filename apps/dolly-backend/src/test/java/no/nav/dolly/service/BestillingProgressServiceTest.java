@@ -26,10 +26,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BestillingProgressServiceTest {
 
-    private final static String BRUKERID = "123";
-    private final static String BRUKERNAVN = "BRUKER";
-    private final static String EPOST = "@@@@";
-
     @Mock
     private BestillingProgressRepository mockRepo;
 

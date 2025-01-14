@@ -8,8 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Collections;
 
@@ -20,7 +20,7 @@ import static wiremock.org.hamcrest.core.Is.is;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class ArenaStatusUtilTest {
 
-    @MockBean
+    @MockitoBean
     private ErrorStatusDecoder errorStatusDecoder;
 
     @Test
