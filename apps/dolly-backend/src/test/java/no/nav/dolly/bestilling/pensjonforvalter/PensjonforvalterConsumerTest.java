@@ -15,11 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -42,13 +42,13 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWireMock(port = 0)
 class PensjonforvalterConsumerTest {
 
-    @MockBean
+    @MockitoBean
     private TokenExchange tokenService;
 
-    @MockBean
+    @MockitoBean
     private BestillingElasticRepository bestillingElasticRepository;
 
-    @MockBean
+    @MockitoBean
     private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired

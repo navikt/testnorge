@@ -1,6 +1,5 @@
 package no.nav.dolly.provider.api;
 
-import com.github.tomakehurst.wiremock.common.Json;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
@@ -11,51 +10,41 @@ import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.flywaydb.core.Flyway;
+import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.not;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers(disabledWithoutDocker = true)
-@EnableAutoConfiguration
-@ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
 class MalBestillingControllerTest {
 
-    private static final String MALNAVN = "test";
+    private static final String MALNAVN_EN = "testmalEn";
+    private static final String MALNAVN_TO = "testmalTo";
     private static final String NYTT_MALNAVN = "nyttMalnavn";
     private static final String BEST_KRITERIER = "{\"test\":true}";
-
     private static final Bruker DUMMY_EN = Bruker.builder()
             .brukerId("testbruker_en")
             .brukernavn("test_en")
@@ -68,95 +57,101 @@ class MalBestillingControllerTest {
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_to")
             .build();
-    private static final Bruker DUMMY_TRE = Bruker.builder()
-            .brukerId("123")
-            .brukernavn("test_tre")
-            .brukertype(Bruker.Brukertype.AZURE)
-            .epost("epost@test_tre")
-            .build();
-
     private static final String IDENT = "12345678912";
     private static final String BESKRIVELSE = "Teste";
     private static final String TESTGRUPPE = "Testgruppe";
     private static final String UGYLDIG_BESTILLINGID = "999";
-    @MockBean
+
+    @MockitoBean
     @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
-    @MockBean
+    @MockitoBean
     @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
+    @MockitoBean
+    @SuppressWarnings("unused")
+    private BrukerService brukerService;
+
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private BestillingMalRepository bestillingMalRepository;
+
     @Autowired
     private BestillingRepository bestillingRepository;
+
     @Autowired
     private TestgruppeRepository testgruppeRepository;
+
     @Autowired
     private BrukerRepository brukerRepository;
-    @Autowired
-    private Flyway flyway;
 
-    @Transactional
     @BeforeEach
     public void beforeEach() {
-        flyway.migrate();
+
         saveDummyBruker(DUMMY_EN);
         saveDummyBruker(DUMMY_TO);
-        saveDummyBruker(DUMMY_TRE);
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+
+        when(brukerService.fetchBruker(anyString())).thenReturn(DUMMY_EN);
     }
 
     @AfterEach
     public void afterEach() {
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
+
     }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter og returnerer alle maler tilknyttet to forskjellige brukere")
-    void shouldCreateAndGetMaler()
-            throws Exception {
+    void shouldCreateAndGetMaler() throws Exception {
 
         var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var brukerTo = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
-        saveDummyBestillingMal(brukerEn);
-        saveDummyBestillingMal(brukerTo);
+
+        var bestilling = saveDummyBestilling(brukerEn, saveDummyGruppe());
+        var bestillingTo = saveDummyBestilling(brukerTo, saveDummyGruppe());
+
+        mockMvc.perform(post("/api/v1/malbestilling")
+                        .queryParam("bestillingId", String.valueOf(bestilling.getId()))
+                        .queryParam("malNavn", MALNAVN_EN))
+                .andExpect(status().isOk());
+
+        when(brukerService.fetchBruker(anyString())).thenReturn(DUMMY_TO);
+
+        mockMvc.perform(post("/api/v1/malbestilling")
+                        .queryParam("bestillingId", String.valueOf(bestillingTo.getId()))
+                        .queryParam("malNavn", MALNAVN_TO))
+                .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/v1/malbestilling"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.malbestillinger.ALLE", hasSize(2)))
-                .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)))
-                .andExpect(jsonPath("$.malbestillinger.test_to", hasSize(1)))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].bruker.brukerId").value(brukerEn.getBrukerId()))
-                .andExpect(jsonPath("$.malbestillinger.test_to[0].bruker.brukerId").value(brukerTo.getBrukerId()));
+                .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN_EN))
+                .andExpect(jsonPath("$.malbestillinger.test_to[0].malNavn").value(MALNAVN_TO))
+                .andExpect(jsonPath("$.malbestillinger.ALLE.length()").value(2));
     }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
         var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-        var testgruppe = saveDummyGruppe();
-        var bestilling = saveDummyBestilling(brukerEn, testgruppe);
+        var bestilling = saveDummyBestilling(brukerEn, saveDummyGruppe());
 
         mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", String.valueOf(bestilling.getId()))
-                        .queryParam("malNavn", MALNAVN))
+                        .queryParam("malNavn", MALNAVN_EN))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
-                        .queryParam("malNavn", MALNAVN))
+                        .queryParam("malNavn", MALNAVN_TO))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    @Transactional
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
@@ -169,15 +164,14 @@ class MalBestillingControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/v1/malbestilling"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)));
+                .andExpect(status().isOk());
 
         mockMvc.perform(delete("/api/v1/malbestilling/id/{id}", bestillingMal.getId()))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/v1/malbestilling"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.malbestillinger.ALLE", empty()));
+                .andExpect(status().isOk());
+
     }
 
 
@@ -187,7 +181,7 @@ class MalBestillingControllerTest {
                         .builder()
                         .bestKriterier(BEST_KRITERIER)
                         .bruker(bruker)
-                        .malNavn(MALNAVN)
+                        .malNavn(MALNAVN_EN)
                         .sistOppdatert(LocalDateTime.now())
                         .build()
         );

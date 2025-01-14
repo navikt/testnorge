@@ -3,7 +3,7 @@ package no.nav.testnav.kodeverkservice;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -13,7 +13,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ActiveProfiles("test")
 public class ApplicationContextTest {
 
-    @MockBean
+    @MockitoBean
     public JwtDecoder jwtDecoder;
 
     @Test

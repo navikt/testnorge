@@ -16,12 +16,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -47,13 +47,13 @@ class SigrunStubConsumerTest {
 
     private static final String IDENT = "111111111";
 
-    @MockBean
+    @MockitoBean
     private TokenExchange tokenService;
 
-    @MockBean
+    @MockitoBean
     private BestillingElasticRepository bestillingElasticRepository;
 
-    @MockBean
+    @MockitoBean
     private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
@@ -62,6 +62,39 @@ class SigrunStubConsumerTest {
     private SigrunstubLignetInntektRequest lignetInntektRequest;
 
     private SigrunstubPensjonsgivendeInntektRequest pensjonsgivendeForFolketrygden;
+
+    private void stubOpprettSkattegrunnlagOK() {
+
+        stubFor(put(urlPathMatching("(.*)/sigrunstub/api/v1/lignetinntekt"))
+                .willReturn(ok()
+                        .withBody("{\"opprettelseTilbakemeldingsListe\":[{\"status\":200}]}")
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubOpprettPensjongivendeOK() {
+
+        stubFor(put(urlPathMatching("(.*)/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden"))
+                .willReturn(ok()
+                        .withBody("{\"opprettelseTilbakemeldingsListe\":[{\"status\":200}]}")
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubOpprettSkattegrunnlagMedBadRequest() throws JsonProcessingException {
+
+        stubFor(put(urlPathMatching("(.*)/sigrunstub/api/v1/lignetinntekt"))
+                .willReturn(badRequest()
+                        .withBody(asJsonString(singletonList(lignetInntektRequest)))
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubDeleteSkattegrunnlagOK() {
+
+        stubFor(delete(urlPathMatching("(.*)/sigrunstub/api/v1/slett"))
+                .withHeader("personidentifikator", matching(IDENT))
+                .willReturn(ok()
+                        .withBody("{}")
+                        .withHeader("Content-Type", "application/json")));
+    }
 
     private static String asJsonString(final Object object) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(object);
@@ -89,13 +122,13 @@ class SigrunStubConsumerTest {
         stubOpprettSkattegrunnlagOK();
 
         StepVerifier.create(sigrunStubConsumer.updateLignetInntekt(singletonList(lignetInntektRequest)))
-                        .expectNext(SigrunstubResponse.builder()
-                                .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
-                                                .inntektsaar("1978")
-                                                .status(200)
-                                        .build()))
-                                .build())
-                                .verifyComplete();
+                .expectNext(SigrunstubResponse.builder()
+                        .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
+                                .inntektsaar("1978")
+                                .status(200)
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test
@@ -137,38 +170,5 @@ class SigrunStubConsumerTest {
                         .ident(IDENT)
                         .build())
                 .verifyComplete();
-    }
-
-    private void stubOpprettSkattegrunnlagOK() {
-
-        stubFor(put(urlPathMatching("(.*)/sigrunstub/api/v1/lignetinntekt"))
-                .willReturn(ok()
-                        .withBody("{\"opprettelseTilbakemeldingsListe\":[{\"status\":200}]}")
-                        .withHeader("Content-Type", "application/json")));
-    }
-
-    private void stubOpprettPensjongivendeOK() {
-
-        stubFor(put(urlPathMatching("(.*)/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden"))
-                .willReturn(ok()
-                        .withBody("{\"opprettelseTilbakemeldingsListe\":[{\"status\":200}]}")
-                        .withHeader("Content-Type", "application/json")));
-    }
-
-    private void stubOpprettSkattegrunnlagMedBadRequest() throws JsonProcessingException {
-
-        stubFor(put(urlPathMatching("(.*)/sigrunstub/api/v1/lignetinntekt"))
-                .willReturn(badRequest()
-                        .withBody(asJsonString(singletonList(lignetInntektRequest)))
-                        .withHeader("Content-Type", "application/json")));
-    }
-
-    private void stubDeleteSkattegrunnlagOK() {
-
-        stubFor(delete(urlPathMatching("(.*)/sigrunstub/api/v1/slett"))
-                .withHeader("personidentifikator", matching(IDENT))
-                .willReturn(ok()
-                        .withBody("{}")
-                        .withHeader("Content-Type", "application/json")));
     }
 }
