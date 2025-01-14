@@ -20,6 +20,8 @@ spring:
     vault:
       token: dummy
       enabled: false
+      kv:
+        enabled: false
 
 
 consumers:
