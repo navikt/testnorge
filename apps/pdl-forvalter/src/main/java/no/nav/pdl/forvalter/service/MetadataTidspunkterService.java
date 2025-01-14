@@ -249,6 +249,7 @@ public class MetadataTidspunkterService {
             var sivilstand = person.getSivilstand().get(i);
             fixFolkeregisterMetadata(sivilstand);
             sivilstand.getFolkeregistermetadata().setAjourholdstidspunkt(sivilstandCopy.get(i).getSivilstandsdato());
+            sivilstand.getFolkeregistermetadata().setGyldighetstidspunkt(sivilstandCopy.get(i).getSivilstandsdato());
         }
     }
 
