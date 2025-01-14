@@ -49,6 +49,9 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
 
     testImplementation "no.nav.testnav.libs:testing"
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+   
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.okhttp"
