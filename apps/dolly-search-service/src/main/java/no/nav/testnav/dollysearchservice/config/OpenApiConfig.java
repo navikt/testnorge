@@ -1,4 +1,4 @@
-package nno.nav.testnav.dollysearchservice.config;
+package no.nav.testnav.dollysearchservice.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
