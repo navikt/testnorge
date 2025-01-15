@@ -113,7 +113,9 @@ const DokarkivForm = () => {
 		setSkjemaValues(skjema)
 		formMethods.setValue('dokarkiv.tittel', skjema.data)
 		formMethods.setValue('dokarkiv.skjema', skjema)
-		formMethods.setValue('dokarkiv.dokumenter[0].brevkode', skjema.value) // TODO sett paa alle?
+		formMethods.watch('dokarkiv.dokumenter')?.forEach((dokument: any, idx: number) => {
+			formMethods.setValue(`dokarkiv.dokumenter[${idx}].brevkode`, skjema.value)
+		})
 		// formMethods.trigger('dokarkiv')
 	}
 
@@ -128,17 +130,17 @@ const DokarkivForm = () => {
 
 	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
 
-	console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
-	console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
-	console.log('skjemaValues: ', skjemaValues) //TODO - SLETT MEG
+	// console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
+	// console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
+	// console.log('skjemaValues: ', skjemaValues) //TODO - SLETT MEG
 
 	const handleSelectFiles = (selectedFiles: File[]) => {
-		const reader = new FileReader()
 		selectedFiles.forEach((file: File, idx: number) => {
+			const reader = new FileReader()
 			// const brevkode = idx === 0 && skjemaValues?.value ? skjemaValues?.value : undefined
 			const erForsteDokument =
 				idx === 0 && dokumenter?.length === 1 && !dokumenter[0]?.dokumentvarianter
-
+			console.log('erForsteDokument: ', erForsteDokument) //TODO - SLETT MEG
 			reader.onabort = () => console.warn('file reading was aborted')
 			reader.onerror = () => console.error('file reading has failed')
 			reader.onload = () => {
@@ -160,14 +162,29 @@ const DokarkivForm = () => {
 							...dokumenter,
 							{
 								tittel: file.name,
-								// brevkode: skjemaValues?.value, //TODO: Sjekk om det gaar aa sette brevkode paa alle
+								brevkode: skjemaValues?.value || '',
 								dokumentvarianter: [dokumentvariant],
 							},
 						])
 			}
+			// formMethods.trigger('dokarkiv.dokumenter')
 			reader.readAsDataURL(file)
+			//TODO: Funker naar man laster opp ett og ett dokument, men ikke flere samtidig
+			// console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
 		})
 	}
+
+	const handleDeleteFile = (file: FileObject) => {
+		setVedlegg(vedlegg.filter((f) => f !== file))
+		setDokumenter(
+			dokumenter.splice(
+				dokumenter.findIndex((d) => d.tittel === file.file.name),
+				1,
+			),
+		)
+	}
+
+	//TODO: Handle error-filer, se aksel-dok
 
 	return (
 		// @ts-ignore
@@ -269,7 +286,8 @@ const DokarkivForm = () => {
 											file={file?.file}
 											button={{
 												action: 'delete',
-												onClick: () => console.log('Delete!'), //TODO - SLETT MEG,
+												onClick: () => handleDeleteFile(file),
+												// onClick: () => console.log('Delete!'), //TODO - SLETT MEG,
 												// onClick: () => setVedlegg(vedlegg.filter((f) => f !== file)),
 												// onClick: () => removeFile(file),
 											}}
