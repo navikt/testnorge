@@ -13,7 +13,11 @@ export const FinnPersonDropdown = () => {
 		location?.pathname === '/tenor/personer/'
 
 	return (
-		<ActionMenuWrapper title="Finn person" isActive={isActive}>
+		<ActionMenuWrapper
+			title="Finn person"
+			isActive={isActive}
+			dataTestId={TestComponentSelectors.BUTTON_HEADER_FINNPERSON}
+		>
 			<PreloadableActionMenuItem
 				route="/dollysoek"
 				dataTestId={TestComponentSelectors.BUTTON_HEADER_DOLLYSOEK}

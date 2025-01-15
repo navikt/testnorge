@@ -9,7 +9,11 @@ export const OrganisasjonDropdown = () => {
 		location?.pathname === '/organisasjoner' || location?.pathname === '/tenor/organisasjoner'
 
 	return (
-		<ActionMenuWrapper title="Organisasjoner" isActive={isActive}>
+		<ActionMenuWrapper
+			title="Organisasjoner"
+			isActive={isActive}
+			dataTestId={TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER}
+		>
 			<PreloadableActionMenuItem
 				route="/organisasjoner"
 				dataTestId={TestComponentSelectors.BUTTON_HEADER_OPPRETT_ORGANISASJONER}

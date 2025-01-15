@@ -24,7 +24,7 @@ test.describe('Naviger til organisasjoner og start en bestilling med alle tilval
 	test('passes', async ({ page }) => {
 		await page.goto('http://localhost:5678/organisasjoner')
 
-		await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER).click()
+		// await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_ORGANISASJON).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
 

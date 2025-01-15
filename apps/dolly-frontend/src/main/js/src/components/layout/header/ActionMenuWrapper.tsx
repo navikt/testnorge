@@ -31,6 +31,7 @@ export const DropdownStyledLink = styled.a`
 `
 
 interface ActionMenuProps {
+	dataTestId?: string
 	title: string
 	children: React.ReactElement | React.ReactElement[]
 	trigger?: React.ReactElement
@@ -40,12 +41,13 @@ interface ActionMenuProps {
 export const ActionMenuWrapper: React.FC<ActionMenuProps> = ({
 	title,
 	isActive = false,
+	dataTestId,
 	children,
 	trigger,
 }) => {
 	return (
 		<div style={{ color: 'white', fontSize: '1.2em', margin: '0 10px' }}>
-			<ActionMenu>
+			<ActionMenu data-testid={dataTestId}>
 				{trigger ? (
 					trigger
 				) : (
@@ -53,7 +55,7 @@ export const ActionMenuWrapper: React.FC<ActionMenuProps> = ({
 						className={isActive ? 'dropdown-toggle active' : 'dropdown-toggle'}
 						style={{ margin: 0, padding: '19px 10px' }}
 					>
-						<InternalHeader.Button>{title}</InternalHeader.Button>
+						<InternalHeader.Button data-testid={dataTestId}>{title}</InternalHeader.Button>
 					</ActionMenu.Trigger>
 				)}
 				<ActionMenu.Content>
