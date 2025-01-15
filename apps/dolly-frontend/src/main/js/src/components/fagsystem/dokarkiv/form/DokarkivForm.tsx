@@ -17,6 +17,14 @@ import DokumentInfoListe from '@/components/fagsystem/dokarkiv/modal/DokumentInf
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useDokumenterFraMal } from '@/utils/hooks/useDokumenter'
 import Loading from '@/components/ui/loading/Loading'
+import {
+	FileObject,
+	FileRejected,
+	FileRejectionReason,
+	FileUpload,
+	Heading,
+	VStack,
+} from '@navikt/ds-react'
 
 type Skjema = {
 	data: string
@@ -47,80 +55,66 @@ const dokarkivAttributt = 'dokarkiv'
 const DokarkivForm = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const malId = opts?.mal?.id
+	const {
+		dokumenter: dokumenterFraMal,
+		loading: loadingDokumenterFraMal,
+		error,
+	} = useDokumenterFraMal(malId)
 
-	const { dokumenter, loading: loadingDokumenter, error } = useDokumenterFraMal(malId)
-	console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
-	// console.log('opts: ', opts) //TODO - SLETT MEG
+	// console.log('dokumenterFraMal: ', dokumenterFraMal) //TODO - SLETT MEG
 
 	const formMethods = useFormContext()
 	if (!formMethods.watch(dokarkivAttributt)) {
 		return null
 	}
-	const sessionDokumenter = formMethods.watch('dokarkiv.vedlegg')
+
 	const digitalInnsending = formMethods.watch('dokarkiv.avsenderMottaker')
-	const [files, setFiles] = useState(sessionDokumenter || [])
+
+	const [vedlegg, setVedlegg] = useState<FileObject[]>(formMethods.watch('dokarkiv.vedlegg'))
+	const [dokumenter, setDokumenter] = useState(formMethods.watch('dokarkiv.dokumenter'))
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
+
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk('Behandlingstema')
+	const { kodeverk: navSkjemaKodeverk } = useKodeverk('NAVSkjema')
 
 	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
 		return null
 	}
 
-	//TODO: proev aa sette dokarkiv.dokumenter.dokumentvarianter.fysiskDokument, for aa faa det til aa funke
-	//TODO: kanskje sette skjema ogsaa
+	// useEffect(() => {
+	// 	const vedlegg = formMethods.watch('dokarkiv.vedlegg')
+	//
+	// 	const vedleggFraMal = dokumenterFraMal?.map((dokument: any, index: number) => ({
+	// 		id: new Date().getTime(),
+	// 		name: `Testings ${index + 1}`,
+	// 		content: {
+	// 			base64: dokument?.contents,
+	// 		},
+	// 		...vedlegg,
+	// 	}))
+	// 	setVedlegg(vedleggFraMal)
+	// 	formMethods.trigger('dokarkiv')
+	// }, [dokumenterFraMal])
 
 	useEffect(() => {
-		const vedlegg = formMethods.watch('dokarkiv.vedlegg')
-
-		const vedleggFraMal = dokumenter?.map((dokument: any, index: number) => ({
-			id: new Date().getTime(),
-			name: `Testings ${index + 1}`,
-			content: {
-				base64: dokument?.contents,
-			},
-			...vedlegg,
-		}))
-		setFiles(vedleggFraMal)
-		// formMethods.setValue('dokarkiv.vedlegg', vedlegg)
-		formMethods.trigger('dokarkiv')
+		formMethods.setValue('dokarkiv.dokumenter', dokumenter)
+		formMethods.trigger('dokarkiv.dokumenter')
 	}, [dokumenter])
 
 	useEffect(() => {
-		handleSkjemaChange(skjemaValues)
-		handleVedleggChange(files)
-	}, [files, skjemaValues])
+		formMethods.setValue('dokarkiv.vedlegg', vedlegg)
+		formMethods.trigger('dokarkiv.vedlegg')
+	}, [vedlegg])
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
 			return
 		}
-
 		setSkjemaValues(skjema)
 		formMethods.setValue('dokarkiv.tittel', skjema.data)
 		formMethods.setValue('dokarkiv.skjema', skjema)
-
-		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
-			tittel: vedl.dokNavn ? vedl.dokNavn : vedl.name,
-			brevkode: (index === 0 && skjema?.value) || undefined,
-			dokumentvarianter: [
-				{
-					filtype: 'PDFA',
-					fysiskDokument: vedl.content.base64,
-					variantformat: 'ARKIV',
-				},
-			],
-		}))
-
-		dokumentVarianter.length > 0
-			? formMethods.setValue('dokarkiv.dokumenter', dokumentVarianter)
-			: formMethods.setValue('dokarkiv.dokumenter[0].tittel', skjema.data)
-		formMethods.trigger('dokarkiv.dokumenter')
-	}
-
-	const handleVedleggChange = (filer: [Vedlegg]) => {
-		setFiles(filer)
-		formMethods.setValue('dokarkiv.vedlegg', filer)
-		formMethods.trigger('dokarkiv.vedlegg')
+		formMethods.setValue('dokarkiv.dokumenter[0].brevkode', skjema.value) // TODO sett paa alle?
+		// formMethods.trigger('dokarkiv')
 	}
 
 	const handleSakstypeChange = (target: Option) => {
@@ -134,14 +128,46 @@ const DokarkivForm = () => {
 
 	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
 
-	console.log('formMethods.watch(dokarkiv.dokumenter): ', formMethods.watch('dokarkiv.dokumenter')) //TODO - SLETT MEG
+	console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
+	console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
+	console.log('skjemaValues: ', skjemaValues) //TODO - SLETT MEG
 
-	// const getDokumenterFraMal = () => {
-	// 	const dokumenter = formMethods.watch('dokarkiv.dokumenter')
-	// 	dokumenter?.forEach((dokument: any) => {
-	//
-	// 	}
-	// }
+	const handleSelectFiles = (selectedFiles: File[]) => {
+		const reader = new FileReader()
+		selectedFiles.forEach((file: File, idx: number) => {
+			// const brevkode = idx === 0 && skjemaValues?.value ? skjemaValues?.value : undefined
+			const erForsteDokument =
+				idx === 0 && dokumenter?.length === 1 && !dokumenter[0]?.dokumentvarianter
+
+			reader.onabort = () => console.warn('file reading was aborted')
+			reader.onerror = () => console.error('file reading has failed')
+			reader.onload = () => {
+				const binaryStr = reader.result?.slice(28)
+				const dokumentvariant = {
+					filtype: 'PDFA',
+					fysiskDokument: binaryStr,
+					variantformat: 'ARKIV',
+				}
+				erForsteDokument
+					? setDokumenter([
+							{
+								tittel: file.name,
+								brevkode: skjemaValues?.value || '',
+								dokumentvarianter: [dokumentvariant],
+							},
+						])
+					: setDokumenter([
+							...dokumenter,
+							{
+								tittel: file.name,
+								// brevkode: skjemaValues?.value, //TODO: Sjekk om det gaar aa sette brevkode paa alle
+								dokumentvarianter: [dokumentvariant],
+							},
+						])
+			}
+			reader.readAsDataURL(file)
+		})
+	}
 
 	return (
 		// @ts-ignore
@@ -216,19 +242,43 @@ const DokarkivForm = () => {
 					</div>
 					<FormCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
 					{digitalInnsending ? <Digitalinnsending /> : null}
-					<Kategori title={'Vedlegg'}>
-						<FileUploader filer={files} setFiler={setFiles} />
-						{files.length < 1 && loadingDokumenter && malId && (
+					<VStack gap="4" style={{ margin: '10px 0 15px 0' }}>
+						<FileUpload.Dropzone
+							label="Last opp vedlegg til dokumentet"
+							description={`Du kan laste opp PDF-filer. Maks 10 filer.`}
+							accept=".pdf"
+							fileLimit={{ max: 10, current: vedlegg?.length }}
+							onSelect={(selectedFiles) => {
+								setVedlegg([...vedlegg, ...selectedFiles])
+								handleSelectFiles(selectedFiles?.map((f) => f.file))
+							}}
+						/>
+						{vedlegg?.length < 1 && loadingDokumenterFraMal && malId && (
 							<Loading label="Laster vedlegg fra mal ..." />
 						)}
-						{files.length > 0 && (
-							<DokumentInfoListe
-								handleChange={handleVedleggChange}
-								path={'dokarkiv.dokumenter'}
-								filer={files}
-							/>
+						{vedlegg?.length > 0 && (
+							<VStack gap="2">
+								<Heading level="3" size="xsmall">
+									{`Vedlegg (${vedlegg?.length})`}
+								</Heading>
+								<VStack as="ul" gap="3">
+									{vedlegg?.map((file, index) => (
+										<FileUpload.Item
+											as="li"
+											key={index}
+											file={file?.file}
+											button={{
+												action: 'delete',
+												onClick: () => console.log('Delete!'), //TODO - SLETT MEG,
+												// onClick: () => setVedlegg(vedlegg.filter((f) => f !== file)),
+												// onClick: () => removeFile(file),
+											}}
+										/>
+									))}
+								</VStack>
+							</VStack>
 						)}
-					</Kategori>
+					</VStack>
 				</Kategori>
 			</Panel>
 		</Vis>
