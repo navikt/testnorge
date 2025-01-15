@@ -160,10 +160,10 @@ export const AlderspensjonForm = () => {
 			adresseUtenTilDato ||
 			_.get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
 				if (
-					!prev.gyldigTilOgMed ||
-					!curr.gyldigTilOgMed ||
-					curr.gyldigTilOgMed?.isValid?.() === false ||
-					prev.gyldigTilOgMed?.isValid?.() === false
+					!prev?.gyldigTilOgMed ||
+					!curr?.gyldigTilOgMed ||
+					curr?.gyldigTilOgMed?.isValid?.() === false ||
+					prev?.gyldigTilOgMed?.isValid?.() === false
 				)
 					return null
 				return isAfter(parseISO(prev.gyldigTilOgMed), parseISO(curr.gyldigTilOgMed)) ? prev : curr
