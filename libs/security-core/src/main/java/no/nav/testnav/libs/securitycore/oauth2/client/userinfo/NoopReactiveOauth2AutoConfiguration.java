@@ -13,12 +13,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public class NoopReactiveOauth2AutoConfiguration {
 
     @Bean
-    public ReactiveOAuth2UserService<OAuth2UserRequest, OAuth2User> reactiveOAuth2UserService() {
+    ReactiveOAuth2UserService<OAuth2UserRequest, OAuth2User> reactiveOAuth2UserService() {
         return new NoopReactiveOAuth2UserService();
     }
 
     @Bean
-    public OidcReactiveOAuth2UserService oidcReactiveOAuth2UserService() {
+    OidcReactiveOAuth2UserService oidcReactiveOAuth2UserService() {
         return new NoopOidcReactiveOAuth2UserService();
     }
 
