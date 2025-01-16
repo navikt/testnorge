@@ -1,15 +1,11 @@
 package no.nav.testnav.libs.securitycore.oauth2.client.userinfo;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.ReactiveOAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import reactor.core.publisher.Mono;
 
-import static lombok.AccessLevel.PACKAGE;
-
-@RequiredArgsConstructor(access = PACKAGE)
 class NoopReactiveOAuth2UserService implements ReactiveOAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     @Override

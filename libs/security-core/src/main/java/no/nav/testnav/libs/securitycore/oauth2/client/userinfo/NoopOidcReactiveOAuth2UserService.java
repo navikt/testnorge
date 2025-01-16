@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.securitycore.oauth2.client.userinfo;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcReactiveOAuth2UserService;
@@ -15,9 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.LinkedHashSet;
 
-import static lombok.AccessLevel.PACKAGE;
-
-@RequiredArgsConstructor(access = PACKAGE)
 class NoopOidcReactiveOAuth2UserService extends OidcReactiveOAuth2UserService {
 
     /**
