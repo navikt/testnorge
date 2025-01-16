@@ -35,7 +35,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 
 	if (!location.state) {
 		location.state = {
-			antall: 1,
+			antall: '1',
 			identtype: 'FNR',
 			mal: null,
 		}
