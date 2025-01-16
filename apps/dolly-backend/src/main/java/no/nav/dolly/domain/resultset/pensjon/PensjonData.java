@@ -103,11 +103,17 @@ public class PensjonData {
     }
 
     public enum TpYtelseType {
-        ALDER,
-        UFORE,
-        GJENLEVENDE,
-        BARN,
         AFP,
+        ALDER,
+        BARN,
+        BETINGET_TP,
+        GJENLEVENDE,
+        LIVSVARIG_AFP,
+        OPPSATT_BTO_PEN,
+        OVERGANGSTILLEGG,
+        PAASLAGSPENSJON,
+        SAERALDER,
+        UFORE,
         UKJENT
     }
 

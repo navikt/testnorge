@@ -20,7 +20,7 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 const initialValues = {
-	antall: 1,
+	antall: '1',
 	identtype: Options('identtype')[0].value,
 	mal: null as unknown as string,
 }
@@ -99,7 +99,13 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 							options={Options('identtype')}
 							isClearable={false}
 						/>
-						<FormTextInput name="antall" label="Antall" type="number" size="medium" />
+						<FormTextInput
+							name="antall"
+							label="Antall"
+							type="number"
+							size="medium"
+							onBlur={(event) => formMethods.setValue('antall', event?.target?.value || '1')}
+						/>
 					</div>
 					<div className="ny-bestilling-form_maler">
 						<div>
