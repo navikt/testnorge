@@ -1,5 +1,5 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+AZURE_APP_CLIENT_ID: ${sm\://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm\://azure-app-client-secret}
 
 dolly:
   client:
@@ -14,7 +14,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/testnav-dolly-backend-local
     username: testnav-dolly-backend-local
-    password: ${sm://testnav-dolly-backend-local}
+    password: ${sm\://testnav-dolly-backend-local}
 
 management:
   endpoints:
@@ -30,8 +30,8 @@ management:
 azure:
   app:
     client:
-      id: ${sm://azure-app-client-id}
-      secret: ${sm://azure-app-client-secret}
+      id: ${sm\://azure-app-client-id}
+      secret: ${sm\://azure-app-client-secret}
 
 open:
   search:
