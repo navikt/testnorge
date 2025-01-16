@@ -477,17 +477,17 @@ const selectOptions = {
 	],
 
 	tjenestepensjonYtelseType: [
-		{ value: 'AFP', label: 'AFP-pensjon' },
 		{ value: 'ALDER', label: 'Alderspensjon' },
-		{ value: 'BARN', label: 'Barnepensjon' },
-		{ value: 'BETINGET_TP', label: 'Betinget TP' },
+		{ value: 'UFORE', label: 'Uførepensjon' },
 		{ value: 'GJENLEVENDE', label: 'Gjenlevendepensjon' },
+		{ value: 'BARN', label: 'Barnepensjon' },
+		{ value: 'AFP', label: 'AFP-pensjon' },
+		{ value: 'BETINGET_TP', label: 'Betinget TP' },
 		{ value: 'LIVSVARIG_AFP ', label: 'Livsvarig AFP' },
-		{ value: 'OPPSATT_BTO_PEN', label: 'Oppsatt BTO PEN' },
+		{ value: 'OPPSATT_BTO_PEN', label: 'Oppsatt bruttopensjon' },
 		{ value: 'OVERGANGSTILLEGG', label: 'Overgangstillegg' },
 		{ value: 'PAASLAGSPENSJON', label: 'Påslagspensjon' },
 		{ value: 'SAERALDER', label: 'Særalder' },
-		{ value: 'UFORE', label: 'Uførepensjon' },
 	],
 
 	tpOrdninger: [],
