@@ -1,24 +1,32 @@
 package no.nav.testnav.dollysearchservice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.consumer.ElasticParamsConsumer;
+import no.nav.testnav.dollysearchservice.consumer.ElasticSearchConsumer;
 import no.nav.testnav.dollysearchservice.domain.ElasticTyper;
 import no.nav.testnav.dollysearchservice.domain.jpa.BestillingElasticRepository;
 import no.nav.testnav.dollysearchservice.dto.Kategori;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.dto.SearchResponse;
+import no.nav.testnav.dollysearchservice.model.HentIdenterModel;
+import no.nav.testnav.dollysearchservice.model.IdenterModel;
+import no.nav.testnav.dollysearchservice.model.Response;
+import no.nav.testnav.dollysearchservice.service.utils.QueryBuilder;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticBestilling;
 import org.opensearch.action.search.MultiSearchRequest;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.common.unit.TimeValue;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -26,6 +34,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -38,17 +48,19 @@ public class OpenSearchService {
     private final RestHighLevelClient restHighLevelClient;
     private final ElasticParamsConsumer elasticParamsConsumer;
     private final BestillingElasticRepository bestillingElasticRepository;
+    private final ElasticSearchConsumer elasticSearchConsumer;
+    private final ObjectMapper objectMapper;
 
     @Value("${open.search.index}")
     private String index;
 
-    public SearchResponse getTyper(ElasticTyper[] typer) {
+    public Mono<SearchResponse> getTyper(ElasticTyper[] typer) {
 
         var query = OpenSearchQueryBuilder.buildTyperQuery(typer);
         return execQuery(query);
     }
 
-    public SearchResponse search(SearchRequest request) {
+    public Mono<SearchResponse> search(SearchRequest request) {
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);
         return execQuery(query);
@@ -57,11 +69,6 @@ public class OpenSearchService {
     public List<ElasticBestilling> search(String ident) {
 
         return bestillingElasticRepository.getAllByIdenterIn(List.of(ident));
-    }
-
-    public Mono<JsonNode> deleteIndex() {
-
-        return elasticParamsConsumer.deleteIndex();
     }
 
     public List<Kategori> getTyper() {
@@ -75,43 +82,33 @@ public class OpenSearchService {
                 .toList();
     }
 
-    private SearchResponse execQuery(BoolQueryBuilder query) {
+    private Mono<SearchResponse> execQuery(BoolQueryBuilder query) {
 
-        var multiSearchRequest = new MultiSearchRequest();
-        multiSearchRequest.
-        var searchRequest = new org.opensearch.action.search.SearchRequest(index);
-        searchRequest.source(new SearchSourceBuilder().query(query)
-                .size(50));
-
-        multiSearchRequest.add(searchRequest);
-
-
-
-        try {
-            var response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-            return getIdenter(response);
-
-        } catch (IOException e) {
-            log.error("OpenSearch feil ved utføring av søk: {}", e.getMessage(), e);
-            return SearchResponse.builder()
-                    .error(e.getLocalizedMessage())
-                    .build();
-        }
+            return Mono.from(elasticSearchConsumer.search(new org.opensearch.action.search.SearchRequest()
+                            .indices("pdl-sok")
+                            .source(new SearchSourceBuilder()
+                                    .query(query)
+                                    .size(1000)
+                                    .timeout(new TimeValue(3, TimeUnit.SECONDS))))
+                    .map(this::getIdenter));
     }
 
-    private static SearchResponse getIdenter(org.opensearch.action.search.SearchResponse response) {
+
+    private SearchResponse getIdenter(no.nav.testnav.dollysearchservice.model.SearchResponse response) {
 
         return SearchResponse.builder()
-                .identer(Arrays.stream(response.getHits().getHits())
-                        .map(SearchHit::getSourceAsMap)
-                        .map(map -> (List<String>) map.get("identer"))
-                        .flatMap(Collection::stream)
-                        .distinct()
-                        .limit(10)
-                        .toList())
-                .totalHits(getTotalHits(response.getHits()))
-                .took(response.getTook().getStringRep())
+                .took(response.getTook().toString())
+                .totalHits(response.getHits().getTotal().getValue())
                 .score(response.getHits().getMaxScore())
+                .identer(response.getHits().getHits().stream()
+                        .map(no.nav.testnav.dollysearchservice.model.SearchResponse.SearchHit::get_source)
+                        .map(result -> objectMapper.convertValue(result, Response.class))
+                        .map(Response::getHentIdenter)
+                        .map(HentIdenterModel::getIdenter)
+                        .flatMap(Collection::stream)
+                        .filter(IdenterModel::isFolkeregisterident)
+                        .map(IdenterModel::getIdent)
+                        .toList())
                 .build();
     }
 

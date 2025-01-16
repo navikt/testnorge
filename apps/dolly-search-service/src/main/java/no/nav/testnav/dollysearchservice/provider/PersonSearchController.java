@@ -30,31 +30,18 @@ public class PersonSearchController {
     @PostMapping("/person")
     public ResponseEntity<List<PersonDTO>> search(@RequestBody PersonSearch search) {
 
-        var personer = personSearchService.search(search)
-                .map(Person::toDTO)
-                .collectList()
-                .block();
-
-        log.info("Fant {} personer i pdl.", nonNull(personer) ? personer.size() : 0);
-
-        return ResponseEntity
-                .ok()
-                .header(NUMBER_OF_ITEMS_HEADER, String.valueOf(nonNull(personer) ? personer.size() : 0))
-                .body(personer);
-    }
-
-    @PostMapping("/pdlPerson")
-    public ResponseEntity<String> searchPdlPerson(@RequestBody PersonSearch search) {
-
-        var jsons = personSearchService.searchPdlPersoner(search)
-                .collectList()
-                .block();
-
-        log.info("Fant {} personer i pdl.", nonNull(jsons) ? jsons.size() : 0);
-
-        return ResponseEntity
-                .ok()
-                .header(NUMBER_OF_ITEMS_HEADER, Integer.toString((nonNull(jsons) ? jsons.size() : 0)))
-                .body(JSONArray.toJSONString(jsons));
+        return null;
+//
+//        var personer = personSearchService.search(search)
+//                .map(Person::toDTO)
+//                .collectList()
+//                .block();
+//
+//        log.info("Fant {} personer i pdl.", nonNull(personer) ? personer.size() : 0);
+//
+//        return ResponseEntity
+//                .ok()
+//                .header(NUMBER_OF_ITEMS_HEADER, String.valueOf(nonNull(personer) ? personer.size() : 0))
+//                .body(personer);
     }
 }

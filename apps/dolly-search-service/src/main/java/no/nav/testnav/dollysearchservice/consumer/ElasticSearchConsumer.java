@@ -6,7 +6,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.config.Consumers;
 import no.nav.testnav.dollysearchservice.consumer.command.ElasticSearchCommand;
-import no.nav.testnav.dollysearchservice.model.Response;
 import no.nav.testnav.dollysearchservice.model.SearchResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -54,9 +53,11 @@ public class ElasticSearchConsumer {
     }
 
     @SneakyThrows
-    public Flux<Response> search(SearchRequest searchRequest) {
-        return getSearchResponse(searchRequest)
-                .map(response -> objectMapper.convertValue(response, Response.class));
+    public Flux<SearchResponse> search(SearchRequest searchRequest) {
+        return tokenExchange.exchange(serverProperties)
+                .flatMapMany(token ->
+                        new ElasticSearchCommand(webClient, searchRequest.indices()[0],
+                                token.getTokenValue(), searchRequest.source().toString()).call());
     }
 
     @SneakyThrows

@@ -5,7 +5,7 @@ import no.nav.testnav.dollysearchservice.model.SearchResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -17,7 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
 @RequiredArgsConstructor
-public class ElasticSearchCommand implements Callable<Flux<SearchResponse>> {
+public class ElasticSearchCommand implements Callable<Mono<SearchResponse>> {
 
     private static final String SEARCH_URL = "/pdl-elastic/{index}/_search";
 
@@ -27,7 +27,7 @@ public class ElasticSearchCommand implements Callable<Flux<SearchResponse>> {
     private final Object body;
 
     @Override
-    public Flux<SearchResponse> call() {
+    public Mono<SearchResponse> call() {
 
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -37,7 +37,7 @@ public class ElasticSearchCommand implements Callable<Flux<SearchResponse>> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromValue(body))
                 .retrieve()
-                .bodyToFlux(SearchResponse.class)
+                .bodyToMono(SearchResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

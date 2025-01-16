@@ -19,6 +19,8 @@ public class PersonRequest {
 
     private Identtype identtype;
     private KjoennDTO.Kjoenn kjoenn;
+    private Integer alderFom;
+    private Integer alderTom;
     private SivilstandDTO.Sivilstand sivilstand;
     private AdressebeskyttelseDTO.AdresseBeskyttelse addressebeskyttelse;
     private Boolean harBarn;

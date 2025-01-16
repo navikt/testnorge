@@ -52,14 +52,16 @@ public class OpensearchController {
     @Operation(description = "Henter identer som matcher søk i request, registre kun")
     public SearchResponse getIdenterMed(@RequestParam ElasticTyper... typer) {
 
-        return openSearchService.getTyper(typer);
+//        return openSearchService.getTyper(typer);
+        return null;
     }
 
     @PostMapping("/identer")
     @Operation(description = "Henter identer som matcher søk i request, både registre og persondetaljer")
     public SearchResponse getIdenterMed(@RequestBody SearchRequest request) {
 
-        return openSearchService.search(request);
+//        return openSearchService.search(request);
+        return null;
     }
 
     @GetMapping("/bestilling/id/{id}")
@@ -68,20 +70,5 @@ public class OpensearchController {
 
         return bestillingElasticRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, format("Bestilling med id: %d finnes ikke", id)));
-    }
-
-    @DeleteMapping("/bestilling/id/{id}")
-    @Operation(description = "Sletter søkbar bestilling, basert på id")
-    public void deleteBestilling(@PathVariable long id) {
-
-        bestillingElasticRepository.deleteById(id);
-    }
-
-    @DeleteMapping()
-    @Operation(description = "Sletter all data inkludert indeks")
-    public Mono<JsonNode> delete() {
-
-        bestillingElasticRepository.deleteAll();
-        return openSearchService.deleteIndex();
     }
 }

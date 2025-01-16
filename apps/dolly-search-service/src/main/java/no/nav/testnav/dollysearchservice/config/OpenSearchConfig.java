@@ -16,7 +16,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import java.time.Duration;
 
 @Slf4j
-@Configuration
+//@Configuration
 @Profile({"prod", "dev"})
 @RequiredArgsConstructor
 @EnableElasticsearchRepositories("no.nav.testnav.dollysearchservice")
@@ -35,14 +35,15 @@ public class OpenSearchConfig extends AbstractOpenSearchConfiguration {
     @SuppressWarnings("java:S2095")
     public RestHighLevelClient opensearchClient() {
 
-        return RestClients.create(ClientConfiguration.builder()
-                        .connectedTo("hostA", "hostB")
-                        .usingSsl()
-                        .withClientConfigurer(ClientConfiguration.ClientConfigurationCallback.)
-                        .withBasicAuth(username, password)
-                        .withConnectTimeout(Duration.ofSeconds(10))
-                        .withSocketTimeout(Duration.ofSeconds(5))
-                        .build(), ClientConfiguration.builder().build())
-                .rest();
+//        return RestClients.create(ClientConfiguration.builder()
+//                        .connectedTo("hostA", "hostB")
+//                        .usingSsl()
+//                        .withClientConfigurer(ClientConfiguration.ClientConfigurationCallback.)
+//                        .withBasicAuth(username, password)
+//                        .withConnectTimeout(Duration.ofSeconds(10))
+//                        .withSocketTimeout(Duration.ofSeconds(5))
+//                        .build(), ClientConfiguration.builder().build())
+//                .rest();
+        return null;
     }
 }

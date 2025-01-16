@@ -8,6 +8,7 @@ import no.nav.testnav.dollysearchservice.domain.Person;
 import no.nav.testnav.dollysearchservice.service.utils.QueryBuilder;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.opensearch.action.search.SearchRequest;
+import org.opensearch.action.search.SearchResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -18,12 +19,11 @@ public class PersonSearchService {
 
     private final ElasticSearchConsumer elasticSearchConsumer;
 
-    @SneakyThrows
-    public Flux<Person> search(PersonSearch search) {
-        var searchRequest = createSearchRequest(search);
-        return elasticSearchConsumer.search(searchRequest)
-                .map(Person::new);
-    }
+//    @SneakyThrows
+//    public Mono<SearchResponse> search(PersonSearch search) {
+//        var searchRequest = createSearchRequest(search);
+//        return elasticSearchConsumer.search(searchRequest)
+//    }
 
     public Flux<String> searchPdlPersoner(PersonSearch search) {
         var searchRequest = createSearchRequest(search);

@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressebeskyttelseQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAlderQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBarnQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedKommuneQuery;
@@ -63,9 +64,9 @@ public class OpenSearchQueryBuilder {
         var queryBuilder = QueryBuilders.boolQuery()
                 .must(getRandomScoreQueryBuilder());
 
-        Arrays.stream(typer)
-                .map(OpenSearchQueryBuilder::getFagsystemQuery)
-                .forEach(queryBuilder::must);
+//        Arrays.stream(typer)
+//                .map(OpenSearchQueryBuilder::getFagsystemQuery)
+//                .forEach(queryBuilder::must);
 
         return queryBuilder;
     }
@@ -74,6 +75,7 @@ public class OpenSearchQueryBuilder {
 
         Optional.ofNullable(request.getPersonRequest())
                 .ifPresent(value -> {
+                    addAlderQuery(queryBuilder, request);
                     addBarnQuery(queryBuilder, request);
                     addForeldreQuery(queryBuilder, request);
                     addSivilstandQuery(queryBuilder, request);
