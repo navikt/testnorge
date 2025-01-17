@@ -2,6 +2,7 @@ import React from 'react'
 import { Navigate } from 'react-router'
 import GruppeConnector from './pages/gruppe/GruppeConnector'
 import { lazyWithPreload } from './utils/lazyWithPreload'
+import { Bestillingsveileder } from '@/components/bestillingsveileder/Bestillingsveileder'
 
 const OrganisasjonTenorSoekPage = lazyWithPreload(
 	() => import('@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'),
@@ -11,9 +12,6 @@ const GruppeOversikt = lazyWithPreload(
 	() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'),
 )
 const Organisasjon = lazyWithPreload(() => import('@/pages/organisasjoner/Organisasjoner'))
-const BestillingsveilederConnector = lazyWithPreload(
-	() => import('@/components/bestillingsveileder/BestillingsveilederConnector'),
-)
 const MinSide = lazyWithPreload(() => import('@/pages/minSide/MinSide'))
 const UI = lazyWithPreload(() => import('@/pages/ui/index'))
 const TestnorgePage = lazyWithPreload(() => import('@/pages/testnorgePage/index'))
@@ -40,12 +38,12 @@ const allRoutes = [
 	{
 		path: '/gruppe/:gruppeId/bestilling/:personId',
 		breadcrumb: 'Legg til/endre',
-		element: BestillingsveilederConnector,
+		element: Bestillingsveileder,
 	},
 	{
 		path: '/gruppe/:gruppeId/bestilling',
 		breadcrumb: 'Opprett personer',
-		element: BestillingsveilederConnector,
+		element: Bestillingsveileder,
 	},
 	{ path: '/organisasjoner', breadcrumb: 'Organisasjoner', element: Organisasjon },
 	{
@@ -56,14 +54,14 @@ const allRoutes = [
 	{
 		path: '/organisasjoner/bestilling',
 		breadcrumb: 'Opprett organisasjon',
-		element: BestillingsveilederConnector,
+		element: Bestillingsveileder,
 	},
 	{ path: '/minside', breadcrumb: 'Min side', element: MinSide },
 	{ path: '/ui', breadcrumb: 'UI demo', element: UI },
 	{ path: '/dollysoek', breadcrumb: 'Søk i Dolly', element: DollySoekPage },
 	{ path: '/testnorge', breadcrumb: 'Søk i Test-Norge', element: TestnorgePage },
 	{ path: '/tenor/personer', breadcrumb: 'Søk i Tenor personer', element: TenorSoekPage },
-	{ path: '/importer', breadcrumb: 'Importer', element: BestillingsveilederConnector },
+	{ path: '/importer', breadcrumb: 'Importer', element: Bestillingsveileder },
 	{ path: '/endringsmelding', breadcrumb: 'Endringsmelding', element: Endringsmelding },
 	{ path: '/admin/orgtilgang', breadcrumb: 'Organisasjon-tilgang', element: OrgtilgangPage },
 	{

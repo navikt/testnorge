@@ -8,10 +8,14 @@ import { useLocation, useNavigate, useParams } from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
+import { sendBestilling } from '@/ducks/bestilling'
+import { useDispatch } from 'react-redux'
 
-export const Bestillingsveileder = ({ error, sendBestilling }) => {
+export const Bestillingsveileder = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
+	const [error, setError] = useState(null)
 	const [showError, setShowError] = useState(false)
 	const [navigateRoot, setNavigateRoot] = useState(false)
 	const { gruppeId } = useParams()
@@ -47,12 +51,17 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	}
 
 	const options = BVOptions(location.state, gruppeId)
-	const handleSubmit = (values) => {
-		sendBestilling(values, options, gruppeId, navigate)
+
+	const handleSubmit = async (values) => {
+		try {
+			await dispatch(sendBestilling(values, options, gruppeId, navigate))
+		} catch (err) {
+			setError(err)
+		}
 	}
 
 	if (error) {
-		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
+		return <AppError title="Det skjedde en feil ved bestilling" message={error?.message} />
 	}
 
 	return (
