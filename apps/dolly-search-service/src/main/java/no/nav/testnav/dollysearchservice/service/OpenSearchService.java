@@ -1,5 +1,7 @@
 package no.nav.testnav.dollysearchservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import no.nav.testnav.dollysearchservice.model.HentIdenterModel;
 import no.nav.testnav.dollysearchservice.model.IdenterModel;
 import no.nav.testnav.dollysearchservice.model.Response;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticBestilling;
+import org.apache.commons.lang3.StringUtils;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.unit.TimeValue;
 import org.opensearch.index.query.BoolQueryBuilder;
@@ -24,11 +27,14 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -37,7 +43,7 @@ public class OpenSearchService {
 
     private final RestHighLevelClient restHighLevelClient;
     private final ElasticParamsConsumer elasticParamsConsumer;
-//    private final BestillingElasticRepository bestillingElasticRepository;
+    //    private final BestillingElasticRepository bestillingElasticRepository;
     private final ElasticSearchConsumer elasticSearchConsumer;
     private final ObjectMapper objectMapper;
 
@@ -75,30 +81,37 @@ public class OpenSearchService {
 
     private Mono<SearchResponse> execQuery(BoolQueryBuilder query) {
 
-            return Mono.from(elasticSearchConsumer.search(new org.opensearch.action.search.SearchRequest()
-                            .indices("pdl-sok")
-                            .source(new SearchSourceBuilder()
-                                    .query(query)
-                                    .size(1000)
-                                    .timeout(new TimeValue(3, TimeUnit.SECONDS))))
-                    .map(this::getIdenter));
+        return Mono.from(elasticSearchConsumer.search(new org.opensearch.action.search.SearchRequest()
+                        .indices("pdl-sok")
+                        .source(new SearchSourceBuilder()
+                                .query(query)
+                                .size(10)
+                                .timeout(new TimeValue(3, TimeUnit.SECONDS))))
+                .map(this::getIdenter));
     }
 
 
     private SearchResponse getIdenter(no.nav.testnav.dollysearchservice.model.SearchResponse response) {
 
+        if (isNotBlank(response.getError())) {
+            return SearchResponse.builder()
+                    .error(response.getError())
+                    .build();
+        }
+
         return SearchResponse.builder()
                 .took(response.getTook().toString())
                 .totalHits(response.getHits().getTotal().getValue())
                 .score(response.getHits().getMaxScore())
-                .identer(response.getHits().getHits().stream()
+                .personer(response.getHits().getHits().stream()
                         .map(no.nav.testnav.dollysearchservice.model.SearchResponse.SearchHit::get_source)
-                        .map(result -> objectMapper.convertValue(result, Response.class))
-                        .map(Response::getHentIdenter)
-                        .map(HentIdenterModel::getIdenter)
-                        .flatMap(Collection::stream)
-                        .filter(IdenterModel::isFolkeregisterident)
-                        .map(IdenterModel::getIdent)
+                        .map(person -> objectMapper.convertValue(person, JsonNode.class))
+//                        .map(result -> objectMapper.convertValue(result, Response.class))
+//                        .map(Response::getHentIdenter)
+//                        .map(HentIdenterModel::getIdenter)
+//                        .flatMap(Collection::stream)
+//                        .filter(IdenterModel::isFolkeregisterident)
+//                        .map(IdenterModel::getIdent)
                         .toList())
                 .build();
     }

@@ -1,12 +1,15 @@
 package no.nav.testnav.dollysearchservice.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchResponse {
@@ -14,6 +17,9 @@ public class SearchResponse {
     private Integer took;
     private Boolean timedOut;
     private SearchHits hits;
+
+    private HttpStatus status;
+    private String error;
 
     @Data
     @NoArgsConstructor

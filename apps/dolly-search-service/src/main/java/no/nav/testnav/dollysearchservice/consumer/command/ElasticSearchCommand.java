@@ -39,6 +39,10 @@ public class ElasticSearchCommand implements Callable<Mono<SearchResponse>> {
                 .retrieve()
                 .bodyToMono(SearchResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> Mono.just(SearchResponse.builder()
+                                .status(WebClientFilter.getStatus(throwable))
+                                .error(WebClientFilter.getMessage(throwable))
+                        .build()));
     }
 }

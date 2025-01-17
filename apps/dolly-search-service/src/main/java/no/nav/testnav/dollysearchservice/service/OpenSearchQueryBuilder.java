@@ -10,13 +10,11 @@ import org.opensearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
 
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressebeskyttelseQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAlderQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBarnQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedKommuneQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedMatrikkelQuery;
@@ -24,11 +22,12 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedUkjentQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedUtlandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addForeldreQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBarnQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarDeltBostedQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarDoedfoedtbarnQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarFalskIdentitetQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarForeldreQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarForeldreansvarQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarInnflyttingQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarKontaktadresseQuery;
@@ -75,9 +74,10 @@ public class OpenSearchQueryBuilder {
 
         Optional.ofNullable(request.getPersonRequest())
                 .ifPresent(value -> {
+
                     addAlderQuery(queryBuilder, request);
-                    addBarnQuery(queryBuilder, request);
-                    addForeldreQuery(queryBuilder, request);
+                    addHarBarnQuery(queryBuilder, request);
+                    addHarForeldreQuery(queryBuilder, request);
                     addSivilstandQuery(queryBuilder, request);
                     addHarDoedfoedtbarnQuery(queryBuilder, request);
                     addHarForeldreansvarQuery(queryBuilder, request);
