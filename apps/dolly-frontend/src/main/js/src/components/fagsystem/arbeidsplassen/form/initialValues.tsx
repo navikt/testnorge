@@ -219,7 +219,7 @@ export const initialDigitalInnsending = {
 			brevkode: '',
 		},
 	],
-	vedlegg: [],
+	// vedlegg: [],
 }
 
 export const initialDokarkiv = {

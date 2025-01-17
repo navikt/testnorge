@@ -61,8 +61,6 @@ const DokarkivForm = () => {
 		error,
 	} = useDokumenterFraMal(malId)
 
-	// console.log('dokumenterFraMal: ', dokumenterFraMal) //TODO - SLETT MEG
-
 	const formMethods = useFormContext()
 	if (!formMethods.watch(dokarkivAttributt)) {
 		return null
@@ -70,7 +68,7 @@ const DokarkivForm = () => {
 
 	const digitalInnsending = formMethods.watch('dokarkiv.avsenderMottaker')
 
-	const [vedlegg, setVedlegg] = useState<FileObject[]>(formMethods.watch('dokarkiv.vedlegg'))
+	const [vedlegg, setVedlegg] = useState<FileObject[]>(formMethods.watch('dokarkiv.vedlegg') || [])
 	const [dokumenter, setDokumenter] = useState(formMethods.watch('dokarkiv.dokumenter'))
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
 
@@ -81,20 +79,33 @@ const DokarkivForm = () => {
 		return null
 	}
 
-	// useEffect(() => {
-	// 	const vedlegg = formMethods.watch('dokarkiv.vedlegg')
-	//
-	// 	const vedleggFraMal = dokumenterFraMal?.map((dokument: any, index: number) => ({
-	// 		id: new Date().getTime(),
-	// 		name: `Testings ${index + 1}`,
-	// 		content: {
-	// 			base64: dokument?.contents,
-	// 		},
-	// 		...vedlegg,
-	// 	}))
-	// 	setVedlegg(vedleggFraMal)
-	// 	formMethods.trigger('dokarkiv')
-	// }, [dokumenterFraMal])
+	useEffect(() => {
+		if (dokumenterFraMal?.length > 0) {
+			dokumenterFraMal.forEach((malDokument: any, idx: number) => {
+				dokumenter?.forEach((dokument: any) => {
+					dokument?.dokumentvarianter?.forEach((variant: any, idy: number) => {
+						if (variant?.dokumentReferanse === malDokument?.id) {
+							formMethods.setValue(
+								`dokarkiv.dokumenter[${idx}].dokumentvarianter[${idy}].fysiskDokument`,
+								malDokument?.contents,
+							)
+						}
+					})
+				})
+				setDokumenter(formMethods.watch('dokarkiv.dokumenter'))
+
+				const fileName = dokumenter?.find((dok) =>
+					dok?.dokumentvarianter?.find((variant) => variant.dokumentReferanse === malDokument.id),
+				)?.tittel
+				const vedleggFraMal = dokumenterFraMal?.map((dokument: any, index: number) => ({
+					file: new File([dokument.contents], fileName, { type: 'application/pdf' }),
+					error: false, //TODO: Test med faila dokument
+					reasons: [], //TODO: Test med faila dokument
+				}))
+				setVedlegg([...vedleggFraMal, ...vedlegg])
+			})
+		}
+	}, [dokumenterFraMal])
 
 	useEffect(() => {
 		formMethods.setValue('dokarkiv.dokumenter', dokumenter)
@@ -116,7 +127,6 @@ const DokarkivForm = () => {
 		formMethods.watch('dokarkiv.dokumenter')?.forEach((dokument: any, idx: number) => {
 			formMethods.setValue(`dokarkiv.dokumenter[${idx}].brevkode`, skjema.value)
 		})
-		// formMethods.trigger('dokarkiv')
 	}
 
 	const handleSakstypeChange = (target: Option) => {
@@ -130,17 +140,15 @@ const DokarkivForm = () => {
 
 	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
 
-	// console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
-	// console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
-	// console.log('skjemaValues: ', skjemaValues) //TODO - SLETT MEG
+	console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
+	console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
+	console.log('dokumenterFraMal: ', dokumenterFraMal) //TODO - SLETT MEG
 
 	const handleSelectFiles = (selectedFiles: File[]) => {
 		selectedFiles.forEach((file: File, idx: number) => {
 			const reader = new FileReader()
-			// const brevkode = idx === 0 && skjemaValues?.value ? skjemaValues?.value : undefined
 			const erForsteDokument =
 				idx === 0 && dokumenter?.length === 1 && !dokumenter[0]?.dokumentvarianter
-			console.log('erForsteDokument: ', erForsteDokument) //TODO - SLETT MEG
 			reader.onabort = () => console.warn('file reading was aborted')
 			reader.onerror = () => console.error('file reading has failed')
 			reader.onload = () => {
@@ -167,10 +175,8 @@ const DokarkivForm = () => {
 							},
 						])
 			}
-			// formMethods.trigger('dokarkiv.dokumenter')
 			reader.readAsDataURL(file)
 			//TODO: Funker naar man laster opp ett og ett dokument, men ikke flere samtidig
-			// console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
 		})
 	}
 
@@ -258,6 +264,7 @@ const DokarkivForm = () => {
 						)}
 					</div>
 					<FormCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
+					{/*TODO: Felter for digital innsending synes ikke ved bruk av mal*/}
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<VStack gap="4" style={{ margin: '10px 0 15px 0' }}>
 						<FileUpload.Dropzone
@@ -287,9 +294,6 @@ const DokarkivForm = () => {
 											button={{
 												action: 'delete',
 												onClick: () => handleDeleteFile(file),
-												// onClick: () => console.log('Delete!'), //TODO - SLETT MEG,
-												// onClick: () => setVedlegg(vedlegg.filter((f) => f !== file)),
-												// onClick: () => removeFile(file),
 											}}
 										/>
 									))}
