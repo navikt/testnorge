@@ -1,6 +1,6 @@
 
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+AZURE_APP_CLIENT_ID: ${sm\://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm\://azure-app-client-secret}
 CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE
 JWT_SECRET: DUMMY SUPER SECRET JWT KEY THAT IS NOT SECURE
 

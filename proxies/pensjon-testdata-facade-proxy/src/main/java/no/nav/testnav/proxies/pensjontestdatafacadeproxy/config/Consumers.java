@@ -36,7 +36,7 @@ public class Consumers {
                     this.getCluster(),
                     this.getNamespace(),
                     this.getName().replace("{miljoe}", env),
-                    this.getUrl().replace("{miljoe}", env + ("q1".equals(env) ? ".very" : ""))
+                    this.getUrl().replace("{miljoe}", env)
             );
         }
     }
