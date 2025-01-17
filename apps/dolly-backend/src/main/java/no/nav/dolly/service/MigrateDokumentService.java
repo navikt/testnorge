@@ -64,6 +64,7 @@ public class MigrateDokumentService {
             lagreDokument.apply(utvidetBestilling, malBestilling.getId(), dokumentType);
             var oppdatertBestilling = toJson(utvidetBestilling, malBestilling.getId());
             malBestilling.setBestKriterier(isNotBlank(oppdatertBestilling) ? oppdatertBestilling : malBestilling.getBestKriterier());
+            bestillingMalRepository.save(malBestilling);
         }
         log.info("Malbestilling med id {} ferdig!", malBestilling.getId());
     }
@@ -89,6 +90,7 @@ public class MigrateDokumentService {
             lagreDokument.apply(utvidetBestilling, bestilling.getId(), dokumentType);
             var oppdatertBestilling = toJson(utvidetBestilling, bestilling.getId());
             bestilling.setBestKriterier(isNotBlank(oppdatertBestilling) ? oppdatertBestilling : bestilling.getBestKriterier());
+            bestillingRepository.save(bestilling);
         }
         log.info("Bestilling med id {} ferdig!", bestilling.getId());
     }
