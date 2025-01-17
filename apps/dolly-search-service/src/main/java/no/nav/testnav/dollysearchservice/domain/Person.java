@@ -21,21 +21,22 @@ import java.util.Optional;
 public class Person {
 
     private final Response response;
-    private final Statsborgerskap statsborgerskap;
-    private final UtfyttingFraNorge utfyttingFraNorge;
-    private final InnflyttingTilNorge innflyttingTilNorge;
-    private final ForelderBarnRelasjon forelderBarnRelasjon;
+//    private final Statsborgerskap statsborgerskap;
+//    private final UtfyttingFraNorge utfyttingFraNorge;
+//    private final InnflyttingTilNorge innflyttingTilNorge;
+//    private final ForelderBarnRelasjon forelderBarnRelasjon;
 
     public Person(Response response) {
         this.response = response;
-        var borgerskap = getAllCurrentStatborgerskap(response.getHentPerson().getStatsborgerskap());
-        this.statsborgerskap = borgerskap != null ? new Statsborgerskap(borgerskap) : null;
-        var utfytting = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
-        this.utfyttingFraNorge = utfytting != null ? new UtfyttingFraNorge(utfytting) : null;
-        var innflytting = getCurrent(response.getHentPerson().getInnflyttingTilNorge()).orElse(null);
-        this.innflyttingTilNorge = innflytting != null ? new InnflyttingTilNorge(innflytting) : null;
-        var relasjoner = response.getHentPerson().getForelderBarnRelasjon();
-        this.forelderBarnRelasjon = relasjoner != null ? new ForelderBarnRelasjon(relasjoner) : null;
+//        var borgerskap = getAllCurrentStatborgerskap(response.getHentPerson().getStatsborgerskap());
+//        this.statsborgerskap = borgerskap != null ? new Statsborgerskap(borgerskap) : null;
+//        var utfytting = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
+//        this.utfyttingFraNorge = utfytting != null ? new UtfyttingFraNorge(utfytting) : null;
+//        var innflytting = getCurrent(response.getHentPerson().getInnflyttingTilNorge()).orElse(null);
+//        this.innflyttingTilNorge = innflytting != null ? new InnflyttingTilNorge(innflytting) : null;
+//        var relasjoner = response.getHentPerson().getForelderBarnRelasjon();
+//        this.forelderBarnRelasjon = relasjoner != null ? new ForelderBarnRelasjon(relasjoner) : null;
+//        return null;
     }
 
     private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
@@ -72,24 +73,28 @@ public class Person {
     }
 
     private LocalDate getFoedselsdato() {
-        return getCurrent(response.getHentPerson().getFoedselsdato()).map(FoedselsdatoModel::getFoedselsdato).orElse(null);
+//        return getCurrent(response.getHentPerson().getFoedselsdato()).map(FoedselsdatoModel::getFoedselsdato).orElse(null);
+        return null;
     }
 
     private LocalDate getDoedsdato() {
-        return getCurrent(response.getHentPerson().getDoedsfall()).map(DoedsfallModel::getDoedsdato).orElse(null);
+//        return getCurrent(response.getHentPerson().getDoedsfall()).map(DoedsfallModel::getDoedsdato).orElse(null);
+        return null;
     }
 
     private String getKjoenn() {
-        return getCurrent(response.getHentPerson().getKjoenn()).map(KjoennModel::getKjoenn).orElse(null);
+//        return getCurrent(response.getHentPerson().getKjoenn()).map(KjoennModel::getKjoenn).orElse(null);
+        return null;
     }
 
     private SivilstandDTO getSivilstand() {
-        return getCurrent(response.getHentPerson().getSivilstand())
-                .map(sivilstand -> SivilstandDTO.builder()
-                        .type(sivilstand.getType())
-                        .relatertVedSivilstand(sivilstand.getRelatertVedSivilstand())
-                        .build())
-                .orElse(new SivilstandDTO());
+//        return getCurrent(response.getHentPerson().getSivilstand())
+//                .map(sivilstand -> SivilstandDTO.builder()
+//                        .type(sivilstand.getType())
+//                        .relatertVedSivilstand(sivilstand.getRelatertVedSivilstand())
+//                        .build())
+//                .orElse(new SivilstandDTO());
+        return null;
     }
 
     private String getIdent() {
@@ -115,17 +120,18 @@ public class Person {
     }
 
     private List<FolkeregisterpersonstatusDTO> getPersonstatus() {
-        return response
-                .getHentPerson()
-                .getFolkeregisterpersonstatus()
-                .stream()
-                .filter(personstatus -> !personstatus.getMetadata().getHistorisk())
-                .map(personstatus -> FolkeregisterpersonstatusDTO.builder()
-                        .status(personstatus.getStatus())
-                        .gyldighetstidspunkt(personstatus.getFolkeregistermetadata().getGyldighetstidspunkt())
-                        .build()
-                )
-                .toList();
+//        return response
+//                .getHentPerson()
+//                .getFolkeregisterpersonstatus()
+//                .stream()
+//                .filter(personstatus -> !personstatus.getMetadata().getHistorisk())
+//                .map(personstatus -> FolkeregisterpersonstatusDTO.builder()
+//                        .status(personstatus.getStatus())
+//                        .gyldighetstidspunkt(personstatus.getFolkeregistermetadata().getGyldighetstidspunkt())
+//                        .build()
+//                )
+//                .toList();
+        return null;
     }
 
     private List<String> getTags() {
@@ -149,10 +155,10 @@ public class Person {
                 .foedselsdato(FoedselsdatoDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .doedsfall(DoedsfallDTO.builder().doedsdato(getDoedsdato()).build())
                 .sivilstand(getSivilstand())
-                .statsborgerskap(toDTO(statsborgerskap))
-                .utfyttingFraNorge(toDTO(utfyttingFraNorge))
-                .innfyttingTilNorge(toDTO(innflyttingTilNorge))
-                .forelderBarnRelasjoner(toDTO(forelderBarnRelasjon))
+//                .statsborgerskap(toDTO(statsborgerskap))
+//                .utfyttingFraNorge(toDTO(utfyttingFraNorge))
+//                .innfyttingTilNorge(toDTO(innflyttingTilNorge))
+//                .forelderBarnRelasjoner(toDTO(forelderBarnRelasjon))
                 .folkeregisterpersonstatus(getPersonstatus())
                 .build();
     }

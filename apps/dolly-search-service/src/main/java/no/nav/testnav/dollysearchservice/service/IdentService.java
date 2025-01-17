@@ -22,14 +22,15 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class IdentService {
 
     private final ElasticSearchConsumer identSearchConsumer;
-    private final MapperFacade mapperFacade;
+//    private final MapperFacade mapperFacade;
 
     @SneakyThrows
     public Flux<IdentdataDTO> getIdenter(String query) {
 
-        var searchRequest = createSearchRequest(getSearchCriteria(query));
-        return identSearchConsumer.search(searchRequest)
-                .map(response -> mapperFacade.map(response, IdentdataDTO.class));
+//        var searchRequest = createSearchRequest(getSearchCriteria(query));
+//        return identSearchConsumer.search(searchRequest)
+//                .map(response -> mapperFacade.map(response, IdentdataDTO.class));
+        return null;
     }
 
     private IdentSearch getSearchCriteria(String query) {

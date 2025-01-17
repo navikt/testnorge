@@ -15,16 +15,10 @@ import java.time.Duration;
 
 @Slf4j
 @Configuration
-@Profile({"prod", "dev"})
+@Profile("local")
 @RequiredArgsConstructor
 @EnableElasticsearchRepositories("no.nav.testnav.dollysearchservice.domain.jpa")
-public class OpenSearchConfig extends AbstractOpenSearchConfiguration {
-
-    @Value("${open.search.username}")
-    private String username;
-
-    @Value("${open.search.password}")
-    private String password;
+public class OpenSearchLocalConfig extends AbstractOpenSearchConfiguration {
 
     @Value("${open.search.uri}")
     private String uri;
@@ -34,9 +28,7 @@ public class OpenSearchConfig extends AbstractOpenSearchConfiguration {
     public RestHighLevelClient opensearchClient() {
 
         return RestClients.create(ClientConfiguration.builder()
-                        .connectedTo(uri.replace("https://", ""))
-                        .usingSsl()
-                        .withBasicAuth(username, password)
+                        .connectedTo(uri.replace("http://", ""))
                         .withConnectTimeout(Duration.ofSeconds(10))
                         .withSocketTimeout(Duration.ofSeconds(5))
                         .build())

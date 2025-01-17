@@ -1,17 +1,14 @@
 package no.nav.testnav.dollysearchservice.provider;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.dollysearchservice.domain.ElasticTyper;
-import no.nav.testnav.dollysearchservice.domain.jpa.BestillingElasticRepository;
 import no.nav.testnav.dollysearchservice.dto.Kategori;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.dto.SearchResponse;
 import no.nav.testnav.dollysearchservice.service.OpenSearchService;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticBestilling;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +29,7 @@ import static java.lang.String.format;
 public class OpensearchController {
 
     private final OpenSearchService openSearchService;
-    private final BestillingElasticRepository bestillingElasticRepository;
+//    private final BestillingElasticRepository bestillingElasticRepository;
 
     @GetMapping("/bestilling/ident/{ident}")
     @Operation(description = "Henter all lagret informasjon basert på ident")
@@ -58,17 +55,17 @@ public class OpensearchController {
 
     @PostMapping("/identer")
     @Operation(description = "Henter identer som matcher søk i request, både registre og persondetaljer")
-    public SearchResponse getIdenterMed(@RequestBody SearchRequest request) {
+    public Mono<SearchResponse> getIdenterMed(@RequestBody SearchRequest request) {
 
-//        return openSearchService.search(request);
-        return null;
+        return openSearchService.search(request);
     }
 
     @GetMapping("/bestilling/id/{id}")
     @Operation(description = "Henter lagret bestilling, basert på id")
     public ElasticBestilling getBestillinger(@PathVariable long id) {
 
-        return bestillingElasticRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, format("Bestilling med id: %d finnes ikke", id)));
+//        return bestillingElasticRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, format("Bestilling med id: %d finnes ikke", id)));
+        return null;
     }
 }

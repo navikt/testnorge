@@ -57,7 +57,8 @@ public class ElasticSearchConsumer {
         return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token ->
                         new ElasticSearchCommand(webClient, searchRequest.indices()[0],
-                                token.getTokenValue(), searchRequest.source().toString()).call());
+                                token.getTokenValue(), searchRequest.source().toString()).call())
+                .doOnNext(result -> log.info("Hentet fra PDL {}", result));
     }
 
     @SneakyThrows

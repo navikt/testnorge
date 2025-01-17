@@ -10,7 +10,7 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 
-@Configuration
+//@Configuration
 public class MapperFacadeConfig {
 
     @Bean
