@@ -54,7 +54,7 @@ export const Bestillingsveileder = () => {
 
 	const handleSubmit = async (values) => {
 		try {
-			await dispatch(sendBestilling(values, options, gruppeId, navigate))
+			dispatch(sendBestilling(values, options, gruppeId, navigate))
 		} catch (err) {
 			setError(err)
 		}
