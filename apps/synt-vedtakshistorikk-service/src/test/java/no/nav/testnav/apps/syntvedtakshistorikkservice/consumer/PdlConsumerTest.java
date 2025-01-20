@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
@@ -38,9 +37,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsServic
 class PdlConsumerTest {
 
     @MockitoBean
-    private JwtDecoder jwtDecoder;
-
-    @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenExchange;
 
     @Autowired

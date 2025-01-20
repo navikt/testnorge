@@ -18,7 +18,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
@@ -41,10 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureWireMock(port = 0)
 class SyntSykemeldingControllerIntegrationTest {
 
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private JwtDecoder jwtDecoder;
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -52,21 +47,27 @@ class SyntSykemeldingControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenExchange;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private PdlProxyConsumer pdlProxyConsumer;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private ArbeidsforholdConsumer arbeidsforholdConsumer;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private OrganisasjonConsumer organisasjonConsumer;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private HelsepersonellConsumer helsepersonellConsumer;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private SykemeldingConsumer sykemeldingConsumer;
 
     @BeforeEach

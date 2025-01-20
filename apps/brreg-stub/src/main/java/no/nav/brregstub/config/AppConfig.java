@@ -12,7 +12,7 @@ import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "no.nav.brregstub.database.repository")
-@Import(value = {
+@Import({
         ApplicationCoreConfig.class,
         VaultHikariConfiguration.class,
         FlywayConfiguration.class,

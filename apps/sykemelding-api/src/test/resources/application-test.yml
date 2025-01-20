@@ -1,3 +1,5 @@
+TOKEN_X_ISSUER: dummy
+
 wiremock:
   server:
     port: 0
