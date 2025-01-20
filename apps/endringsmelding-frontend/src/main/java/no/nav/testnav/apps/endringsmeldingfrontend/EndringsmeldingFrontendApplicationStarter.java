@@ -19,6 +19,7 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 
 import java.util.function.Function;
 
@@ -28,6 +29,7 @@ import java.util.function.Function;
         FrontendConfig.class
 })
 @SpringBootApplication
+@EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class EndringsmeldingFrontendApplicationStarter {
 
