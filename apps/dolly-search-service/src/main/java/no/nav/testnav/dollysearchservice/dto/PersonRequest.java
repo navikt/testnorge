@@ -41,9 +41,10 @@ public class PersonRequest {
     private String statsborgerskap;
     private Boolean harNyIdentitet;
 
-    private BostedAdresseRequest bostedsadresse;
+    private AdresseRequest adresse;
     private Boolean harDeltBosted;
 
+    private Boolean harBostedsadresse;
     private Boolean harKontaktadresse;
     private Boolean harOppholdsadresse;
 
@@ -51,7 +52,7 @@ public class PersonRequest {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor(force = true)
-    public static class BostedAdresseRequest {
+    public static class AdresseRequest {
 
         private String kommunenummer;
         private String postnummer;

@@ -13,17 +13,19 @@ import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.Random;
 
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseKommunenrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressebeskyttelseQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAlderQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedBydelsnrQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedKommuneQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedMatrikkelQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedPostnrQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseBydelsnrQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseMatrikkelQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressePostnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedUkjentQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedUtlandQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseUtlandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDollyIdentifier;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBarnQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedBydelsnrQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarAdresseBydelsnrQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedsadresseQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarDeltBostedQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarDoedfoedtbarnQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarFalskIdentitetQuery;
@@ -61,7 +63,8 @@ public class OpenSearchQueryBuilder {
     public static BoolQueryBuilder buildTyperQuery(ElasticTyper[] typer) {
 
         var queryBuilder = QueryBuilders.boolQuery()
-                .must(getRandomScoreQueryBuilder());
+                .must(getRandomScoreQueryBuilder())
+                .must(addDollyIdentifier());
 
 //        Arrays.stream(typer)
 //                .map(OpenSearchQueryBuilder::getFagsystemQuery)
@@ -86,14 +89,16 @@ public class OpenSearchQueryBuilder {
                     addHarInnflyttingQuery(queryBuilder, request);
                     addHarUtflyttingQuery(queryBuilder, request);
                     addAdressebeskyttelseQuery(queryBuilder, request);
+                    addHarBostedsadresseQuery(queryBuilder, request);
                     addHarOppholdsadresseQuery(queryBuilder, request);
                     addHarKontaktadresseQuery(queryBuilder, request);
-                    addBostedKommuneQuery(queryBuilder, request);
-                    addBostedPostnrQuery(queryBuilder, request);
-                    addBostedBydelsnrQuery(queryBuilder, request);
-                    addHarBostedBydelsnrQuery(queryBuilder, request);
-                    addBostedUtlandQuery(queryBuilder, request);
-                    addBostedMatrikkelQuery(queryBuilder, request);
+                    addAdressebeskyttelseQuery(queryBuilder, request);
+                    addAdresseKommunenrQuery(queryBuilder, request);
+                    addAdressePostnrQuery(queryBuilder, request);
+                    addAdresseBydelsnrQuery(queryBuilder, request);
+                    addHarAdresseBydelsnrQuery(queryBuilder, request);
+                    addAdresseUtlandQuery(queryBuilder, request);
+                    addAdresseMatrikkelQuery(queryBuilder, request);
                     addBostedUkjentQuery(queryBuilder, request);
                     addHarDeltBostedQuery(queryBuilder, request);
                     addHarKontaktinformasjonForDoedsboQuery(queryBuilder, request);
