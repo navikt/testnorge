@@ -162,25 +162,16 @@ const DokarkivForm = () => {
 					fysiskDokument: binaryStr,
 					variantformat: 'ARKIV',
 				}
-				erForsteDokument
-					? setDokumenter([
-							{
-								tittel: file.name,
-								brevkode: skjemaValues?.value || '',
-								dokumentvarianter: [dokumentvariant],
-							},
-						])
-					: setDokumenter([
-							...dokumenter,
-							{
-								tittel: file.name,
-								brevkode: skjemaValues?.value || '',
-								dokumentvarianter: [dokumentvariant],
-							},
-						])
+				setDokumenter((prevDokumenter) => {
+					const newDokument = {
+						tittel: file.name,
+						brevkode: skjemaValues?.value || '',
+						dokumentvarianter: [dokumentvariant],
+					}
+					return erForsteDokument ? [newDokument] : [...prevDokumenter, newDokument]
+				})
 			}
 			reader.readAsDataURL(file)
-			//TODO: Funker naar man laster opp ett og ett dokument, men ikke flere samtidig
 		})
 	}
 
@@ -193,6 +184,9 @@ const DokarkivForm = () => {
 		formMethods.setValue('dokarkiv.dokumenter', filtrerteDokumenter)
 		formMethods.trigger('dokarkiv.dokumenter')
 	}
+
+	console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
+	console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
 
 	//TODO: Handle error-filer, se aksel-dok
 
