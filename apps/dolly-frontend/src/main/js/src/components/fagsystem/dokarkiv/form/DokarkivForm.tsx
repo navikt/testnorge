@@ -107,8 +107,8 @@ const DokarkivForm = () => {
 				)?.tittel
 				vedleggFraMal.push({
 					file: new File([malDokument.contents], fileName, { type: 'application/pdf' }),
-					error: false, //TODO: Test med faila dokument
-					reasons: [], //TODO: Test med faila dokument
+					error: false,
+					reasons: [],
 				})
 			})
 			setVedlegg([...vedleggFraMal, ...vedlegg])
@@ -134,6 +134,9 @@ const DokarkivForm = () => {
 		formMethods.setValue('dokarkiv.skjema', skjema)
 		formMethods.watch('dokarkiv.dokumenter')?.forEach((dokument: any, idx: number) => {
 			formMethods.setValue(`dokarkiv.dokumenter[${idx}].brevkode`, skjema.value)
+			if (!dokument?.tittel) {
+				formMethods.setValue(`dokarkiv.dokumenter[${idx}].tittel`, skjema.data)
+			}
 		})
 	}
 
@@ -185,10 +188,8 @@ const DokarkivForm = () => {
 		formMethods.trigger('dokarkiv.dokumenter')
 	}
 
-	console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
-	console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
-
-	//TODO: Handle error-filer, se aksel-dok
+	// console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
+	// console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
 
 	return (
 		// @ts-ignore
@@ -262,7 +263,6 @@ const DokarkivForm = () => {
 						)}
 					</div>
 					<FormCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
-					{/*TODO: Felter for digital innsending synes ikke ved bruk av mal*/}
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<VStack gap="4" style={{ margin: '10px 0 15px 0' }}>
 						<FileUpload.Dropzone

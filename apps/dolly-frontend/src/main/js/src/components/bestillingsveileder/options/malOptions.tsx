@@ -91,6 +91,9 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 		)
 		delete initialValuesMal.tpsMessaging.utenlandskBankkonto
 	}
+	if (initialValuesMal.dokarkiv) {
+		initialValuesMal.dokarkiv = getUpdatedDokarkiv(initialValuesMal.dokarkiv)
+	}
 
 	initialValuesMal.environments = filterMiljoe(environments, mal.bestilling?.environments)
 	return initialValuesMal
@@ -446,6 +449,18 @@ const updateKontaktType = (kontaktinfo: any) => {
 	}
 
 	return kontaktinfo
+}
+
+const getUpdatedDokarkiv = (dokarkiv: any) => {
+	let newDokarkiv = Object.assign({}, dokarkiv)
+	if (newDokarkiv.avsenderMottaker) {
+		newDokarkiv.avsenderMottaker = {
+			id: newDokarkiv.avsenderMottaker?.id || '',
+			navn: newDokarkiv.avsenderMottaker?.navn || '',
+			idType: newDokarkiv.avsenderMottaker?.idType || '',
+		}
+	}
+	return newDokarkiv
 }
 
 const updateData = (data: any, initalValues: any) => {
