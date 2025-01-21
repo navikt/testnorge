@@ -20,23 +20,28 @@ public class OpenSearchPersonQueryUtils {
 
     private static final String FAMILIE_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
     private static final String FOLKEREGISTER_METADATA_FIELD = "folkeregistermetadata";
-    private static final String BOSTEDSADRESSE = "hentPerson.bostedsadresse.%s";
-    private static final String OPPHOLDSADRESSE = "hentPerson.oppholdsadresse.%s";
-    private static final String KONTAKTADRESSE = "hentPerson.kontaktadresse.%s";
+    private static final String BOSTEDSADRESSE = "hentPerson.bostedsadresse";
+    private static final String OPPHOLDSADRESSE = "hentPerson.oppholdsadresse";
+    private static final String KONTAKTADRESSE = "hentPerson.kontaktadresse";
     private static final String VEGADRESSE = "vegadresse";
     private static final String MATRIKKELADRESSE = "matrikkeladresse";
-    private static final String KOMMUNENR = "kommunenummer";
-    private static final String POSTNR = "postnummer";
+    private static final String KOMMUNENUMMER = "kommunenummer";
+    private static final String POSTNUMMER = "postnummer";
+    private static final String FOLKEREGISTERIDENTIFIKATOR = "hentPerson.folkeregisteridentifikator";
+    private static final String NAVSPERSONIDENTIFIKATOR = "hentPerson.navspersonidentifikator";
+    private static final String CONCAT = "%s.%s";
+
 
     public static BoolQueryBuilder addDollyIdentifier() {
 
         return QueryBuilders.boolQuery()
                 .should(matchQuery("tags", "DOLLY"))
                 .should(QueryBuilders.boolQuery()
-                        .must(regexpQuery("hentIdenter.ident", "\\d{2}[4-9]\\d{8}"))
-                        .must(matchQuery("hentIdenter.historisk", false))
-                        .must(matchQuery("hentIdenter.gruppe", "FOLKEREGISTERIDENT"))
-                );
+                        .must(nestedRegexpQuery(FOLKEREGISTERIDENTIFIKATOR, "identifikasjonsnummer", "\\d{2}[4-5]\\d{8}"))
+                        .must(nestedMatchQuery(FOLKEREGISTERIDENTIFIKATOR, "status", "I_BRUK")))
+                .should(QueryBuilders.boolQuery()
+                        .must(nestedRegexpQuery(NAVSPERSONIDENTIFIKATOR, "identifikasjonsnummer", "\\d{2}[6-7]\\d{8}"))
+                        .must(nestedMatchQuery(NAVSPERSONIDENTIFIKATOR, "metadata.historisk", "false")));
     }
 
 
@@ -154,19 +159,19 @@ public class OpenSearchPersonQueryUtils {
         Optional.ofNullable(request.getPersonRequest().getAdresse())
                 .filter(adresse -> isNotBlank(adresse.getKommunenummer()))
                 .ifPresent(adresse ->
-                        queryBuilder.must(addAdresseQuery(KOMMUNENR, adresse.getKommunenummer())
-                                .should(nestedMatchQuery(BOSTEDSADRESSE.formatted("ukjentbosted"), "bostedskommune", adresse.getKommunenummer()))
+                        queryBuilder.must(addAdresseQuery(KOMMUNENUMMER, adresse.getKommunenummer())
+                                .should(nestedMatchQuery(BOSTEDSADRESSE, "ukjentbosted.bostedskommune", adresse.getKommunenummer()))
                         ));
     }
 
-    public static BoolQueryBuilder addAdresseQuery( String field, String value) {
+    public static BoolQueryBuilder addAdresseQuery(String field, String value) {
 
         return QueryBuilders.boolQuery()
-                .should(nestedMatchQuery(BOSTEDSADRESSE.formatted(VEGADRESSE), field, value))
-                .should(nestedMatchQuery(BOSTEDSADRESSE.formatted(MATRIKKELADRESSE), field, value))
-                .should(nestedMatchQuery(OPPHOLDSADRESSE.formatted(VEGADRESSE), field, value))
-                .should(nestedMatchQuery(OPPHOLDSADRESSE.formatted(MATRIKKELADRESSE), field, value))
-                .should(nestedMatchQuery(KONTAKTADRESSE.formatted(VEGADRESSE), field, value));
+                .should(nestedMatchQuery(BOSTEDSADRESSE, CONCAT.formatted(VEGADRESSE, field), value))
+                .should(nestedMatchQuery(BOSTEDSADRESSE, CONCAT.formatted(MATRIKKELADRESSE, field), value))
+                .should(nestedMatchQuery(OPPHOLDSADRESSE, CONCAT.formatted(VEGADRESSE, field), value))
+                .should(nestedMatchQuery(OPPHOLDSADRESSE, CONCAT.formatted(MATRIKKELADRESSE, field), value))
+                .should(nestedMatchQuery(KONTAKTADRESSE, CONCAT.formatted(VEGADRESSE, field), value));
     }
 
 
@@ -175,8 +180,8 @@ public class OpenSearchPersonQueryUtils {
         Optional.ofNullable(request.getPersonRequest().getAdresse())
                 .filter(adresse -> isNotBlank(adresse.getPostnummer()))
                 .ifPresent(adresse ->
-                        queryBuilder.must(addAdresseQuery(POSTNR, adresse.getPostnummer())
-                                .should(nestedMatchQuery(KONTAKTADRESSE.formatted("postboksadresse"), POSTNR, adresse.getPostnummer()))
+                        queryBuilder.must(addAdresseQuery(POSTNUMMER, adresse.getPostnummer())
+                                .should(nestedMatchQuery(KONTAKTADRESSE,"postboksadresse." + POSTNUMMER, adresse.getPostnummer()))
                         ));
     }
 
@@ -329,6 +334,11 @@ public class OpenSearchPersonQueryUtils {
     private QueryBuilder regexpQuery(String field, String value) {
 
         return QueryBuilders.regexpQuery(field, value);
+    }
+
+    private QueryBuilder nestedRegexpQuery(String path, String field, String value) {
+
+        return QueryBuilders.nestedQuery(path, regexpQuery("%s.%s".formatted(path, field), value), ScoreMode.Avg);
     }
 
     private QueryBuilder nestedMatchQuery(String path, String field, String value) {
