@@ -6,7 +6,7 @@ import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/ste
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
-import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import {useBrukerProfil, useCurrentBruker} from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 import { useFormContext } from 'react-hook-form'
@@ -23,6 +23,8 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
+	const {brukerProfil } = useBrukerProfil()
+	console.log("brukerProfil", brukerProfil)
 	const { organisasjonMiljoe, loading } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 

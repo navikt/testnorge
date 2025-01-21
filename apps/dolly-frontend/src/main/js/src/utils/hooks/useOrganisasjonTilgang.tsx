@@ -21,7 +21,7 @@ type OrganisasjonTilgang = {
 	miljoe: string
 }
 
-export const useOrganisasjonMiljoe = () => {
+export const useOrganisasjonMiljoe = (orgnummer: string) => {
 	const { brukerProfil } = useBrukerProfil()
 	const orgnummer = brukerProfil?.orgnummer
 

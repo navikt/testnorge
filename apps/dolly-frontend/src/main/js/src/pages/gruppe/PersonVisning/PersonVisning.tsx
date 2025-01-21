@@ -107,6 +107,7 @@ import { UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
 
 import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
+import {useBrukerProfil} from "@/utils/hooks/useBruker";
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -134,6 +135,8 @@ export default ({
 
 	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
+	const {brukerProfil } = useBrukerProfil()
+	console.log("brukerProfil", brukerProfil)
 	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 

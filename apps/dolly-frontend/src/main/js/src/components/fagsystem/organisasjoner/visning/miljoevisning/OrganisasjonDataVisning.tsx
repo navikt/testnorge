@@ -8,6 +8,7 @@ import { Enhetstre, OrgTree } from '@/components/enhetstre'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
+import {useBrukerProfil} from "@/utils/hooks/useBruker";
 
 // @ts-ignore
 const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
@@ -25,6 +26,8 @@ const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
 export const OrganisasjonDataVisning = ({ data }) => {
 	const [selectedId, setSelectedId] = useState('0')
 
+	const {brukerProfil } = useBrukerProfil()
+	console.log("brukerProfil", brukerProfil)
 	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
