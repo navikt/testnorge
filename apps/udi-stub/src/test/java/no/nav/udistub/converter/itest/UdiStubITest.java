@@ -14,7 +14,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -54,16 +53,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 class UdiStubITest {
 
     protected static final UdiPerson TESTPERSON_UDI = createPersonTo();
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private JwtDecoder jwtDecoder;
+
     @Autowired
     private PersonRepository personRepository;
+
     @Autowired
     private MapperFacade mapperFacade;
+
     @Autowired
     private MockMvc mockMvc;
+
     @MockitoBean
+    @SuppressWarnings("unused")
     private Flyway flyway;
 
     @BeforeEach

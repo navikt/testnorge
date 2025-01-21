@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,9 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HelsepersonellConsumerTest {
 
     @MockitoBean
-    private JwtDecoder jwtDecoder;
-
-    @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     @Autowired
@@ -48,7 +45,7 @@ public class HelsepersonellConsumerTest {
     @Autowired
     private HelsepersonellConsumer helsepersonellConsumer;
 
-    private static final String helsepersonellUrl = "(.*)/testnav-helsepersonell/api/v1/helsepersonell";
+    private static final String HELSEPERSONELL_URL = "(.*)/testnav-helsepersonell/api/v1/helsepersonell";
 
     private HelsepersonellListeDTO helsepersonellResponse;
 
@@ -71,7 +68,7 @@ public class HelsepersonellConsumerTest {
     }
 
     private void stubHelsepersonell() throws JsonProcessingException {
-        stubFor(get(urlPathMatching(helsepersonellUrl))
+        stubFor(get(urlPathMatching(HELSEPERSONELL_URL))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(objectMapper.writeValueAsString(helsepersonellResponse))));

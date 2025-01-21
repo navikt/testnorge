@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.decoder;
+package no.nav.testnav.libs.reactivesecurity.manager;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
@@ -18,12 +18,12 @@ import reactor.netty.transport.ProxyProvider;
 import java.net.URI;
 
 @Slf4j
-public class JwtDecoder {
+class NonBeanJwtDecoder {
 
     private final ResourceServerProperties resourceServerProperties;
     private final WebClient proxyWebClient;
 
-    public JwtDecoder(ResourceServerProperties resourceServerProperties, String proxyHost) {
+    NonBeanJwtDecoder(ResourceServerProperties resourceServerProperties, String proxyHost) {
         this.resourceServerProperties = resourceServerProperties;
         this.proxyWebClient = buildProxyWebClient(proxyHost);
     }

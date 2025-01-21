@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,9 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrganisasjonConsumerTest {
 
     @MockitoBean
-    private JwtDecoder jwtDecoder;
-
-    @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     @Autowired
@@ -48,28 +45,28 @@ public class OrganisasjonConsumerTest {
     @Autowired
     private OrganisasjonConsumer organisasjonConsumer;
 
-    private static final String orgnr = "123456789";
-    private static final String organisasjonUrl = "(.*)/organisasjon/api/v1/organisasjoner/" + orgnr;
+    private static final String ORGNR = "123456789";
+    private static final String ORGANISASJON_URL = "(.*)/organisasjon/api/v1/organisasjoner/" + ORGNR;
     private OrganisasjonDTO organisasjonResponse;
 
     @Before
     public void before() {
         WireMock.reset();
         when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-        organisasjonResponse = getTestOrganisasjonDTO(orgnr);
+        organisasjonResponse = getTestOrganisasjonDTO(ORGNR);
     }
 
     @Test
     public void shouldGetOrgansiasjon() throws JsonProcessingException {
         stubOrgansisasjon();
 
-        var response = organisasjonConsumer.getOrganisasjon(orgnr);
+        var response = organisasjonConsumer.getOrganisasjon(ORGNR);
 
         assertThat(response).isNotNull().isEqualTo(organisasjonResponse);
     }
 
     private void stubOrgansisasjon() throws JsonProcessingException {
-        stubFor(get(urlPathMatching(organisasjonUrl))
+        stubFor(get(urlPathMatching(ORGANISASJON_URL))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(objectMapper.writeValueAsString(organisasjonResponse))));

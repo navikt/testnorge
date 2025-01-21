@@ -6,14 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 
 @Slf4j
 @Configuration
-@Import(value = {
-        ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
-})
+@Import({ApplicationCoreConfig.class})
 @RequiredArgsConstructor
 public class ApplicationConfig {
 }

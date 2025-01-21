@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -32,9 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PersonSearchConsumerTest {
 
     @MockitoBean
-    private JwtDecoder jwtDecoder;
-
-    @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenExchange;
 
     @Autowired
