@@ -66,6 +66,11 @@ class BestillingServiceTest {
     @InjectMocks
     private BestillingService bestillingService;
 
+    @BeforeEach
+    public void setup() {
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+    }
+
     @Test
     void fetchBestillingByIdKasterExceptionHvisBestillingIkkeFunnet() {
         Optional<Bestilling> bes = Optional.empty();
@@ -176,10 +181,5 @@ class BestillingServiceTest {
 
         Assertions.assertThrows(NotFoundException.class, () ->
                 bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, "u1"));
-    }
-
-    @BeforeEach
-    public void setup() {
-        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

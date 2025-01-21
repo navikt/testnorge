@@ -1,4 +1,4 @@
-TOKEN_X_ISSUER: placeholder
+TOKEN_X_ISSUER: dummy
 
 app:
   elastic:

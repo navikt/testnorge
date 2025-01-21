@@ -14,11 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
@@ -48,16 +48,16 @@ class TpsMessagingConsumerTest {
     private static final String IDENT = "12345678901";
     private static final List<String> MILJOER = List.of("q1", "q2");
 
-    @MockBean
+    @MockitoBean
     private TokenExchange tokenService;
 
-    @MockBean
+    @MockitoBean
     private AccessToken accessToken;
 
-    @MockBean
+    @MockitoBean
     private BestillingElasticRepository bestillingElasticRepository;
 
-    @MockBean
+    @MockitoBean
     private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired

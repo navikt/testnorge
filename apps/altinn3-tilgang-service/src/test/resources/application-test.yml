@@ -5,3 +5,9 @@ MASKINPORTEN_CLIENT_JWK: dummy
 MASKINPORTEN_SCOPES: dummy
 MASKINPORTEN_WELL_KNOWN_URL: http://localhost:8080
 TOKEN_X_ISSUER: dummy
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false

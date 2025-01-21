@@ -55,6 +55,7 @@ public class PersonArtifactService {
         person.setUtflytting(utflyttingService.convert(person));
         person.setOpphold(oppholdService.convert(person.getOpphold()));
         person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
+        person.setSivilstand(sivilstandService.convert(person));
         person.setDoedsfall(doedsfallService.convert(person));
         person.setFullmakt(fullmaktService.convert(person));
         person.setKontaktadresse(kontaktAdresseService.convert(person, relaxed));
@@ -62,7 +63,6 @@ public class PersonArtifactService {
         person.setVergemaal(vergemaalService.convert(person));
         person.setFalskIdentitet(falskIdentitetService.convert(person));
         person.setKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person));
-        person.setSivilstand(sivilstandService.convert(person));
         person.setForelderBarnRelasjon(forelderBarnRelasjonService.convert(person));
         person.setForeldreansvar(foreldreansvarService.convert(person));
         person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));

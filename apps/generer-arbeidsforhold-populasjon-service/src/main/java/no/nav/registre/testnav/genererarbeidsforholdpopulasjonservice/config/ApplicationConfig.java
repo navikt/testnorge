@@ -1,7 +1,6 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.config;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -10,10 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 @Configuration
-@Import({
-        ApplicationCoreConfig.class,
-        InsecureJwtServerToServerConfiguration.class
-})
+@Import({ApplicationCoreConfig.class})
 public class ApplicationConfig {
 
     @Bean

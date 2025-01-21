@@ -51,16 +51,15 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
     public List<OppholdsadresseDTO> convert(PersonDTO person) {
 
-        for (var adresse : person.getOppholdsadresse()) {
+        person.getOppholdsadresse().stream()
+                .filter(adresse -> isTrue(adresse.getIsNew()))
+                .forEach(adresse -> {
+                    handle(adresse, person);
+                    adresse.setKilde(getKilde(adresse));
+                    adresse.setMaster(getMaster(adresse, person));
+                });
 
-            if (isTrue(adresse.getIsNew())) {
-
-                adresse.setKilde(getKilde(adresse));
-                adresse.setMaster(getMaster(adresse, person));
-                handle(adresse, person);
-            }
-        }
-
+        oppdaterAdressedatoer(person.getBostedsadresse(), person);
         return person.getOppholdsadresse();
     }
 
