@@ -12,19 +12,10 @@ import { useFormContext } from 'react-hook-form'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import Digitalinnsending from './partials/Digitalinnsending'
-import FileUploader from '@/utils/FileUploader/FileUploader'
-import DokumentInfoListe from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useDokumenterFraMal } from '@/utils/hooks/useDokumenter'
 import Loading from '@/components/ui/loading/Loading'
-import {
-	FileObject,
-	FileRejected,
-	FileRejectionReason,
-	FileUpload,
-	Heading,
-	VStack,
-} from '@navikt/ds-react'
+import { FileObject, FileUpload, Heading, VStack } from '@navikt/ds-react'
 
 type Skjema = {
 	data: string
@@ -55,11 +46,8 @@ const dokarkivAttributt = 'dokarkiv'
 const DokarkivForm = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const malId = opts?.mal?.id
-	const {
-		dokumenter: dokumenterFraMal,
-		loading: loadingDokumenterFraMal,
-		error,
-	} = useDokumenterFraMal(malId)
+	const { dokumenter: dokumenterFraMal, loading: loadingDokumenterFraMal } =
+		useDokumenterFraMal(malId)
 
 	const prevDokumenterFraMalRef = useRef(dokumenterFraMal)
 	const prevDokumenterFraMal = prevDokumenterFraMalRef.current
@@ -79,8 +67,7 @@ const DokarkivForm = () => {
 	const [dokumenter, setDokumenter] = useState(formMethods.watch('dokarkiv.dokumenter'))
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
 
-	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk('Behandlingstema')
-	// const { kodeverk: navSkjemaKodeverk } = useKodeverk('NAVSkjema')
+	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk(Kodeverk.BEHANDLINGSTEMA)
 
 	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
 		return null
@@ -149,8 +136,6 @@ const DokarkivForm = () => {
 		formMethods.trigger('dokarkiv.sak')
 	}
 
-	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
-
 	const handleSelectFiles = (selectedFiles: File[]) => {
 		selectedFiles.forEach((file: File, idx: number) => {
 			const reader = new FileReader()
@@ -188,8 +173,7 @@ const DokarkivForm = () => {
 		formMethods.trigger('dokarkiv.dokumenter')
 	}
 
-	// console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
-	// console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
+	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
 
 	return (
 		// @ts-ignore
