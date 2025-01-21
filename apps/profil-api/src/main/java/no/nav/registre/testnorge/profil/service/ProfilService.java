@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.profil.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.AzureAdProfileConsumer;
 import no.nav.registre.testnorge.profil.consumer.PersonOrganisasjonTilgangConsumer;
 import no.nav.registre.testnorge.profil.domain.Profil;
@@ -12,7 +13,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProfilService {
@@ -57,6 +60,13 @@ public class ProfilService {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(JwtAuthenticationToken.class::isInstance)
                 .map(JwtAuthenticationToken.class::cast)
+                .map(t -> {
+                    log.info("JwtAuthenticationToken, attributes: {}",
+                            t.getTokenAttributes().entrySet().stream()
+                            .map(entry -> entry.getKey() + ":" + entry.getValue())
+                            .collect(Collectors.joining(",")));
+                    return t;
+                })
                 .orElseThrow();
     }
 
