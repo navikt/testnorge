@@ -19,16 +19,13 @@ public class AddAuthenticationRequestGatewayFilterFactory {
             var httpRequest = exchange.getRequest();
             var ident = httpRequest.getHeaders().getFirst("fnr");
             return fakedingsConsumer.getFakeToken(ident)
-                    .flatMap(faketoken -> {
-                        log.info("Fakedings generert token: {}", faketoken);
-                        return tokenXService.exchange(serverProperties, faketoken)
-                                .flatMap(tokenX -> {
-                                    exchange.mutate()
-                                            .request(builder -> builder.header(HttpHeaders.AUTHORIZATION,
-                                                    "Bearer " + tokenX.getTokenValue()).build());
-                                    return chain.filter(exchange);
-                                });
-                    });
+                    .flatMap(faketoken -> tokenXService.exchange(serverProperties, faketoken)
+                            .flatMap(tokenX -> {
+                                exchange.mutate()
+                                        .request(builder -> builder.header(HttpHeaders.AUTHORIZATION,
+                                                "Bearer " + tokenX.getTokenValue()).build());
+                                return chain.filter(exchange);
+                            }));
         };
     }
 }
