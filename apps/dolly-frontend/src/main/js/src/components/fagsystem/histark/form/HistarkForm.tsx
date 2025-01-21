@@ -133,6 +133,7 @@ const HistarkForm = () => {
 										visHvisAvhuket={false}
 										size={'xsmall'}
 									/>
+									{/*TODO: Skriv om denne ogsaa til aa bruke Aksel FileUpload*/}
 									<Kategori title={'Vedlegg'}>
 										<FileUploader filer={files} setFiler={setFiles} isMultiple={false} />
 										{files.length > 0 && (

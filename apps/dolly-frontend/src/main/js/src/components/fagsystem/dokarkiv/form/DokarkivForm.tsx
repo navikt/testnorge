@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useContext, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -61,6 +61,13 @@ const DokarkivForm = () => {
 		error,
 	} = useDokumenterFraMal(malId)
 
+	const prevDokumenterFraMalRef = useRef(dokumenterFraMal)
+	const prevDokumenterFraMal = prevDokumenterFraMalRef.current
+
+	useEffect(() => {
+		prevDokumenterFraMalRef.current = dokumenterFraMal
+	}, [dokumenterFraMal])
+
 	const formMethods = useFormContext()
 	if (!formMethods.watch(dokarkivAttributt)) {
 		return null
@@ -73,14 +80,15 @@ const DokarkivForm = () => {
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
 
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk('Behandlingstema')
-	const { kodeverk: navSkjemaKodeverk } = useKodeverk('NAVSkjema')
+	// const { kodeverk: navSkjemaKodeverk } = useKodeverk('NAVSkjema')
 
 	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
 		return null
 	}
 
 	useEffect(() => {
-		if (dokumenterFraMal?.length > 0) {
+		if (dokumenterFraMal !== prevDokumenterFraMal && dokumenterFraMal?.length > 0) {
+			const vedleggFraMal = []
 			dokumenterFraMal.forEach((malDokument: any, idx: number) => {
 				dokumenter?.forEach((dokument: any) => {
 					dokument?.dokumentvarianter?.forEach((variant: any, idy: number) => {
@@ -97,15 +105,15 @@ const DokarkivForm = () => {
 				const fileName = dokumenter?.find((dok) =>
 					dok?.dokumentvarianter?.find((variant) => variant.dokumentReferanse === malDokument.id),
 				)?.tittel
-				const vedleggFraMal = dokumenterFraMal?.map((dokument: any, index: number) => ({
-					file: new File([dokument.contents], fileName, { type: 'application/pdf' }),
+				vedleggFraMal.push({
+					file: new File([malDokument.contents], fileName, { type: 'application/pdf' }),
 					error: false, //TODO: Test med faila dokument
 					reasons: [], //TODO: Test med faila dokument
-				}))
-				setVedlegg([...vedleggFraMal, ...vedlegg])
+				})
 			})
+			setVedlegg([...vedleggFraMal, ...vedlegg])
 		}
-	}, [dokumenterFraMal])
+	}, [dokumenterFraMal, prevDokumenterFraMal])
 
 	useEffect(() => {
 		formMethods.setValue('dokarkiv.dokumenter', dokumenter)
@@ -139,10 +147,6 @@ const DokarkivForm = () => {
 	}
 
 	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
-
-	console.log('vedlegg: ', vedlegg) //TODO - SLETT MEG
-	console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
-	console.log('dokumenterFraMal: ', dokumenterFraMal) //TODO - SLETT MEG
 
 	const handleSelectFiles = (selectedFiles: File[]) => {
 		selectedFiles.forEach((file: File, idx: number) => {
@@ -182,12 +186,12 @@ const DokarkivForm = () => {
 
 	const handleDeleteFile = (file: FileObject) => {
 		setVedlegg(vedlegg.filter((f) => f !== file))
-		setDokumenter(
-			dokumenter.splice(
-				dokumenter.findIndex((d) => d.tittel === file.file.name),
-				1,
-			),
-		)
+		const filtrerteDokumenter = dokumenter
+		const index = filtrerteDokumenter.findIndex((d) => d.tittel === file.file.name)
+		filtrerteDokumenter.splice(index, 1)
+		setDokumenter(filtrerteDokumenter)
+		formMethods.setValue('dokarkiv.dokumenter', filtrerteDokumenter)
+		formMethods.trigger('dokarkiv.dokumenter')
 	}
 
 	//TODO: Handle error-filer, se aksel-dok
