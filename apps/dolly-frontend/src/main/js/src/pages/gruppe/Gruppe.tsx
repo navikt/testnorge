@@ -1,28 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Loading from '@/components/ui/loading/Loading'
 import { useLocation, useNavigate, useParams } from 'react-router'
-import { useDispatch } from 'react-redux'
-import { resetNavigering, resetPaginering } from '@/ducks/finnPerson'
+import { useDispatch, useSelector } from 'react-redux'
+import { resetNavigering, resetPaginering, setVisning } from '@/ducks/finnPerson'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { useIkkeFerdigBestillingerGruppe } from '@/utils/hooks/useBestilling'
-import { ToggleGroup } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import './Gruppe.less'
 import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
 import GruppeHeaderConnector from '@/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import Icon from '@/components/ui/icon/Icon'
-import PersonListeConnector from '@/pages/gruppe/PersonListe/PersonListeConnector'
-import BestillingListeConnector from '@/pages/gruppe/BestillingListe/BestillingListeConnector'
 import StatusListeConnector from '@/components/bestilling/statusListe/StatusListeConnector'
 import BestillingsveilederModal from '@/components/bestillingsveileder/startModal/StartModal'
 import FinnPersonBestillingConnector from '@/pages/gruppeOversikt/FinnPersonBestillingConnector'
+import { GruppeToggle } from '@/pages/gruppe/GruppeToggle'
+import { GruppeVisning } from '@/pages/gruppe/GruppeVisning'
 
 export type GruppeProps = {
-	visning: string
-	setVisning: (value: VisningType) => void
 	sidetall: number
 	sideStoerrelse: number
 	sorting: { kolonne: string; retning: string }
@@ -34,19 +30,17 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({
-	visning,
-	setVisning,
-	sidetall,
-	sideStoerrelse,
-	sorting,
-	update,
-}: GruppeProps) => {
+export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 	const { gruppeId } = useParams<{ gruppeId: string }>()
 	const { currentBruker, loading: loadingBruker } = useCurrentBruker()
 	const location = useLocation()
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const visning = useSelector((state: any) => state.finnPerson.visning)
+
+	useEffect(() => {
+		dispatch(resetNavigering())
+	}, [])
 
 	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
 		gruppeId!,
@@ -81,7 +75,7 @@ export default ({
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
-	if (loadingBruker || loadingGruppe || loadingBestillinger) {
+	if (loadingBruker || loadingGruppe) {
 		return <Loading label="Laster personer" panel />
 	}
 
@@ -94,9 +88,8 @@ export default ({
 	}
 
 	const byttVisning = (value: VisningType) => {
-		dispatch(resetNavigering())
 		dispatch(resetPaginering())
-		setVisning(value)
+		dispatch(setVisning(value))
 	}
 
 	const startBestilling = (values: Record<string, unknown>) =>
@@ -149,38 +142,12 @@ export default ({
 					{!bankIdBruker && <FinnPersonBestillingConnector />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
-					<ToggleGroup
-						value={visning}
-						onChange={byttVisning}
-						style={{ backgroundColor: '#ffffff' }}
-					>
-						<ToggleGroup.Item
-							data-testid={TestComponentSelectors.TOGGLE_VISNING_PERSONER}
-							key={VisningType.VISNING_PERSONER}
-							value={VisningType.VISNING_PERSONER}
-						>
-							<Icon
-								key={VisningType.VISNING_PERSONER}
-								size={13}
-								kind={visning === VisningType.VISNING_PERSONER ? 'man-light' : 'man'}
-							/>
-							{`Personer (${gruppe.antallIdenter || 0})`}
-						</ToggleGroup.Item>
-						<ToggleGroup.Item
-							data-testid={TestComponentSelectors.TOGGLE_VISNING_BESTILLINGER}
-							key={VisningType.VISNING_BESTILLING}
-							value={VisningType.VISNING_BESTILLING}
-						>
-							<Icon
-								key={VisningType.VISNING_BESTILLING}
-								size={13}
-								kind={
-									visning === VisningType.VISNING_BESTILLING ? 'bestilling-light' : 'bestilling'
-								}
-							/>
-							{`Bestillinger (${gruppe.antallBestillinger || 0})`}
-						</ToggleGroup.Item>
-					</ToggleGroup>
+					<GruppeToggle
+						visning={visning}
+						byttVisning={byttVisning}
+						antallIdenter={gruppe.antallIdenter || 0}
+						antallBestillinger={gruppe.antallBestillinger || 0}
+					/>
 				</div>
 			</div>
 			{startBestillingAktiv && (
@@ -190,23 +157,15 @@ export default ({
 					brukernavn={currentBruker?.brukernavn}
 				/>
 			)}
-			{visning === VisningType.VISNING_PERSONER && (
-				<PersonListeConnector
-					iLaastGruppe={erLaast}
-					brukertype={currentBruker?.brukertype}
-					gruppeId={gruppeId!}
-					identer={identer}
-					bestillingerById={bestillingerById}
-				/>
-			)}
-			{visning === VisningType.VISNING_BESTILLING && (
-				<BestillingListeConnector
-					iLaastGruppe={erLaast}
-					brukertype={currentBruker?.brukertype}
-					bestillingerById={bestillingerById}
-					gruppeId={gruppeId!}
-				/>
-			)}
+			<GruppeVisning
+				visning={visning}
+				erLaast={erLaast}
+				brukertype={currentBruker?.brukertype}
+				gruppeId={gruppeId!}
+				identer={identer}
+				bestillingerById={bestillingerById}
+				lasterBestillinger={loadingBestillinger}
+			/>
 		</div>
 	)
 }

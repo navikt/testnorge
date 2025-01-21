@@ -50,7 +50,7 @@ const RedigerGruppe = ({
 	}
 	const mutate = useMatchMutate()
 	const formMethods = useForm({
-		mode: 'onBlur',
+		mode: 'onChange',
 		defaultValues: initialValues,
 		resolver: yupResolver(validation()),
 	})

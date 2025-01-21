@@ -78,6 +78,7 @@ export const TextInput = React.forwardRef(
 			icon,
 			isDisabled,
 			datepickerOnclick,
+			autoFocus,
 			...props
 		}: TextInputProps,
 		forwardRef,
@@ -113,6 +114,7 @@ export const TextInput = React.forwardRef(
 			<>
 				<input
 					value={fieldValue}
+					autoFocus={autoFocus}
 					disabled={isDisabled}
 					id={name}
 					name={name}

@@ -139,6 +139,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 							options={malOptions}
 							size="grow"
 							isDisabled={!malAktiv}
+							autoFocus={malAktiv}
 						/>
 					</InputDiv>
 					{erGammelFullmaktMal && (

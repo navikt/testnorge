@@ -14,7 +14,7 @@ import {
 	NyBestillingProps,
 } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Form, FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 
 const initialValues = {
 	mal: null as unknown as string,
@@ -52,57 +52,56 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 
 	return (
 		<FormProvider {...formMethods}>
-			<Form control={formMethods.control} onSubmit={() => preSubmit(formMethods.getValues())}>
-				<div className="ny-bestilling-form">
-					<div className="ny-bestilling-form_maler">
-						<div>
-							<DollyCheckbox
-								name="aktiver-maler"
-								onChange={() => handleMalChange()}
-								label="Opprett fra mal"
-								wrapperSize={'none'}
-								size={'small'}
-								isSwitch
-							/>
-						</div>
-
-						<InputDiv>
-							<DollySelect
-								name="zIdent"
-								label="Bruker"
-								isLoading={loading}
-								options={brukerOptions}
-								size="medium"
-								onChange={(e: { value: any }) => handleBrukerChange(e)}
-								value={bruker}
-								isClearable={false}
-								isDisabled={!malAktiv}
-							/>
-							<FormSelect
-								name="mal"
-								label="Maler"
-								isLoading={loading}
-								options={malOptions}
-								size="grow"
-								isDisabled={!malAktiv}
-							/>
-						</InputDiv>
-						<div className="mal-admin">
-							<Button kind="maler" fontSize={'1.2rem'}>
-								<NavLink to="/minside">Administrer maler</NavLink>
-							</Button>
-						</div>
+			<div className="ny-bestilling-form">
+				<div className="ny-bestilling-form_maler">
+					<div>
+						<DollyCheckbox
+							name="aktiver-maler"
+							onChange={() => handleMalChange()}
+							label="Opprett fra mal"
+							wrapperSize={'none'}
+							size={'small'}
+							isSwitch
+						/>
 					</div>
-					<ModalActionKnapper
-						data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
-						submitknapp="Start bestilling"
-						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-						onSubmit={() => preSubmit(formMethods.getValues())}
-						onAvbryt={onAvbryt}
-						center
-					/>
+
+					<InputDiv>
+						<DollySelect
+							name="zIdent"
+							label="Bruker"
+							isLoading={loading}
+							options={brukerOptions}
+							size="medium"
+							onChange={(e: { value: any }) => handleBrukerChange(e)}
+							value={bruker}
+							isClearable={false}
+							isDisabled={!malAktiv}
+						/>
+						<FormSelect
+							name="mal"
+							label="Maler"
+							isLoading={loading}
+							options={malOptions}
+							size="grow"
+							isDisabled={!malAktiv}
+							autoFocus={malAktiv}
+						/>
+					</InputDiv>
+					<div className="mal-admin">
+						<Button kind="maler" fontSize={'1.2rem'}>
+							<NavLink to="/minside">Administrer maler</NavLink>
+						</Button>
+					</div>
 				</div>
-			</Form>
+				<ModalActionKnapper
+					data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
+					submitknapp="Start bestilling"
+					disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+					onSubmit={() => preSubmit(formMethods.getValues())}
+					onAvbryt={onAvbryt}
+					center
+				/>
+			</div>
 		</FormProvider>
 	)
 }

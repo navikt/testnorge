@@ -99,7 +99,6 @@ export default () => {
 					<NavButton
 						data-testid={TestComponentSelectors.BUTTON_OPPRETT_ORGANISASJON}
 						variant={'primary'}
-						// onClick={() => startBestilling(BestillingType.NY)}
 						onClick={visStartBestilling}
 					>
 						Opprett organisasjon
