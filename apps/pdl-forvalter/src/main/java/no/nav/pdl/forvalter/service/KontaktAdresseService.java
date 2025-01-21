@@ -63,18 +63,16 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
     public List<KontaktadresseDTO> convert(PersonDTO person, Boolean relaxed) {
 
-        for (var adresse : person.getKontaktadresse()) {
-
-            if (isTrue(adresse.getIsNew())) {
-
-                adresse.setKilde(getKilde(adresse));
-                adresse.setMaster(getMaster(adresse, person));
-
-                if (isNotTrue(relaxed)) {
+        person.getKontaktadresse().stream()
+                .filter(adresse -> isTrue(adresse.getIsNew()) && (isNotTrue(relaxed)))
+                .forEach(adresse -> {
                     handle(adresse, person);
-                }
-            }
-        }
+                    adresse.setKilde(getKilde(adresse));
+                    adresse.setMaster(getMaster(adresse, person));
+                });
+
+        oppdaterAdressedatoer(person.getBostedsadresse(), person);
+
         return person.getKontaktadresse();
     }
 
