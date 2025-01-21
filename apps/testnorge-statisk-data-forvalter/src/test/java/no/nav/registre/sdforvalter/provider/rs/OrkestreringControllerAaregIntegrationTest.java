@@ -3,7 +3,6 @@ package no.nav.registre.sdforvalter.provider.rs;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
-import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkResponse;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -19,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -51,18 +49,19 @@ class OrkestreringControllerAaregIntegrationTest {
     private static final String ORGNR = "999999999";
     private static final String MILJOE = "test";
     private static String syntString;
-    private final KodeverkResponse kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
     private final TypeReference<List<RsAaregSyntetiseringsRequest>> syntResponse = new TypeReference<>() {
     };
 
     @Autowired
     private MockMvc mvc;
+
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenExchange;
-    @MockitoBean
-    private JwtDecoder jwtDecoder;
+
     @Autowired
     private AaregRepository aaregRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
 

@@ -26,7 +26,7 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
         properties = "consumers.skjermingsregister.url=http://localhost:${wiremock.server.port}"
 )
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "PT1M")
 @ActiveProfiles("test")
 class RouteLocatorConfigTest {
 

@@ -8,14 +8,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 
 @Configuration
-@Import({
-        ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
-
-})
+@Import({ApplicationCoreConfig.class})
 public class ApplicationConfig {
 
     @Bean

@@ -91,20 +91,4 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
                     where b.ferdig = false
             """)
     int stopAllUnfinished();
-
-    @Query(value = """
-            from Bestilling b
-            where b.bestKriterier like '%dokarkiv%'
-            and length(b.bestKriterier) > 10000
-            order by b.id
-            """)
-    Iterable<Bestilling> findAllByDokumentArkiv();
-
-    @Query(value = """
-            from Bestilling b
-            where b.bestKriterier like '%histark%'
-            and length(b.bestKriterier) > 10000
-            order by b.id
-            """)
-    Iterable<Bestilling> findAllByHistArk();
 }

@@ -4,8 +4,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -17,8 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @EnableRetry
 @Import({
         ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class,
-        InsecureJwtServerToServerConfiguration.class,
         CoreConfig.class
 })
 public class ApplicationConfig {

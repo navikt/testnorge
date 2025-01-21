@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.tilbakemeldingapi.config;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
-import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,10 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-@Import({
-        ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
-})
+@Import({ApplicationCoreConfig.class})
 public class AppConfig {
 
     @Bean
