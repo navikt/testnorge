@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,7 +27,23 @@ public class ProfilService {
 
     public Profil getProfile() {
         if (isTokenX()) {
-            return getTokenXAttributes();
+            return getUserInfo.call()
+                    .map(userInfo -> new Profil(
+                            userInfo.brukernavn(),
+                            UKJENT,
+                            UKJENT,
+                            UKJENT,
+                            userInfo.organisasjonsnummer(),
+                            BANK_ID)
+                    )
+                    .orElse(new Profil(
+                            BANK_ID,
+                            UKJENT,
+                            UKJENT,
+                            UKJENT,
+                            UKJENT,
+                            BANK_ID
+                    ));
         }
         return azureAdProfileConsumer.getProfil();
     }
@@ -37,40 +52,18 @@ public class ProfilService {
         return isTokenX() ? Optional.empty() : azureAdProfileConsumer.getProfilImage();
     }
 
-    private Optional<JwtAuthenticationToken> getJwtAuthenticationToken() {
+    private JwtAuthenticationToken getJwtAuthenticationToken() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(JwtAuthenticationToken.class::isInstance)
                 .map(JwtAuthenticationToken.class::cast)
-                .map(t -> {
-                    log.info("JwtAuthenticationToken, attributes: {}",
-                            t.getTokenAttributes().entrySet().stream()
-                                    .map(entry -> entry.getKey() + ":" + entry.getValue())
-                                    .collect(Collectors.joining(",")));
-                    return t;
-                });
+                .orElseThrow();
     }
 
     private boolean isTokenX() {
 
         return getJwtAuthenticationToken()
-                .map(token -> token
-                        .getTokenAttributes()
-                        .get(JwtClaimNames.ISS)
-                        .equals(tokenXResourceServerProperties.getIssuerUri()))
-                .orElseThrow();
-    }
-
-    private Profil getTokenXAttributes() {
-
-        return getJwtAuthenticationToken()
-                .map(JwtAuthenticationToken::getTokenAttributes)
-                .map(attribs -> new Profil(
-                        (String) attribs.get("brukernavn"),
-                        UKJENT,
-                        UKJENT,
-                        UKJENT,
-                        (String) attribs.get("org"),
-                        BANK_ID))
-                .orElseThrow();
+                .getTokenAttributes()
+                .get(JwtClaimNames.ISS)
+                .equals(tokenXResourceServerProperties.getIssuerUri());
     }
 }
