@@ -8,6 +8,8 @@ import no.nav.testnav.proxies.fullmaktproxy.consumer.FakedingsConsumer;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.http.HttpHeaders;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @UtilityClass
 public class AddAuthenticationRequestGatewayFilterFactory {
@@ -28,9 +30,12 @@ public class AddAuthenticationRequestGatewayFilterFactory {
 
                                 // Log the outgoing request details
                                 var modifiedRequest = exchange.getRequest();
-                                log.info("Outgoing request with fakedings tokenx: method={}, uri={}, headers={}",
+                                var bearer = modifiedRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+                                log.info("Outgoing request: method={}, uri={}, headers={}",
                                         modifiedRequest.getMethod(), modifiedRequest.getURI(), modifiedRequest.getHeaders());
-                                log.info("Fake generated bearer: {}", modifiedRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
+                                if (nonNull(bearer)) {
+                                    log.info("Fakedings tokenx auth header: {}", bearer.replaceAll("Bearer ", ""));
+                                }
 
                                 return chain.filter(exchange);
                             }));
