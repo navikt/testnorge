@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -25,25 +26,28 @@ public class ProfilService {
     private final PersonOrganisasjonTilgangConsumer organisasjonTilgangConsumer;
     private final GetUserInfo getUserInfo;
 
-    public Profil getProfile() {
+    public Mono<Profil> getProfile() {
+
         if (isTokenX()) {
             return getUserInfo.call()
-                    .map(userInfo -> new Profil(
-                            userInfo.brukernavn(),
-                            UKJENT,
-                            UKJENT,
-                            UKJENT,
-                            userInfo.organisasjonsnummer(),
-                            BANK_ID)
-                    )
-                    .orElse(new Profil(
-                            BANK_ID,
-                            UKJENT,
-                            UKJENT,
-                            UKJENT,
-                            UKJENT,
-                            BANK_ID
-                    ));
+                    .map(userInfo -> organisasjonTilgangConsumer
+                            .getOrganisasjon(getIdent(), userInfo.organisasjonsnummer())
+                            .map(organisasjon -> new Profil(
+                                    userInfo.brukernavn(),
+                                    UKJENT,
+                                    UKJENT,
+                                    organisasjon.getNavn(),
+                                    userInfo.organisasjonsnummer(),
+                                    BANK_ID)
+                            ))
+                            .orElse(Mono.just(new Profil(
+                                    BANK_ID,
+                                    UKJENT,
+                                    UKJENT,
+                                    UKJENT,
+                                    UKJENT,
+                                    BANK_ID
+                            )));
         }
         return azureAdProfileConsumer.getProfil();
     }
@@ -52,18 +56,29 @@ public class ProfilService {
         return isTokenX() ? Optional.empty() : azureAdProfileConsumer.getProfilImage();
     }
 
-    private JwtAuthenticationToken getJwtAuthenticationToken() {
+    private Optional<JwtAuthenticationToken> getJwtAuthenticationToken() {
+
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(JwtAuthenticationToken.class::isInstance)
-                .map(JwtAuthenticationToken.class::cast)
-                .orElseThrow();
+                .map(JwtAuthenticationToken.class::cast);
     }
 
     private boolean isTokenX() {
 
         return getJwtAuthenticationToken()
-                .getTokenAttributes()
-                .get(JwtClaimNames.ISS)
-                .equals(tokenXResourceServerProperties.getIssuerUri());
+                .map(token -> token
+                        .getTokenAttributes()
+                        .get(JwtClaimNames.ISS)
+                        .equals(tokenXResourceServerProperties.getIssuerUri()))
+                .orElseThrow();
+    }
+
+    private String getIdent() {
+
+        return getJwtAuthenticationToken()
+                .map(JwtAuthenticationToken::getTokenAttributes)
+                .map(attribs -> attribs.get("pid"))
+                .map(ident -> (String) ident)
+                .orElseThrow();
     }
 }

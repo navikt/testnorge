@@ -35,7 +35,6 @@ public class GetUserInfo implements Callable<Optional<UserInfo>> {
             var jwt = JWT.decode(token);
             var verifier = JWT.require(Algorithm.HMAC256(secret)).build();
             verifier.verify(jwt);
-            log.info("jwt ---> {}", jwt.getToken());
             return new UserInfo(
                     jwt.getClaim(UserConstant.USER_CLAIM_ID).asString(),
                     jwt.getClaim(UserConstant.USER_CLAIM_ORG).asString(),
