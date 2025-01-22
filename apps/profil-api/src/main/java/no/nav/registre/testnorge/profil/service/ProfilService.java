@@ -28,26 +28,7 @@ public class ProfilService {
 
     public Profil getProfile() {
         if (isTokenX()) {
-            return getUserInfo.call()
-                    .map(userInfo ->
-                    organisasjonTilgangConsumer
-                            .getOrganisasjon(userInfo.organisasjonsnummer())
-                            .map(dto -> new Profil(
-                                    userInfo.brukernavn(),
-                                    UKJENT,
-                                    UKJENT,
-                                    dto.getNavn(),
-                                    dto.getOrganisasjonsnummer(),
-                                    BANK_ID)
-                            ).block()
-            ).orElse(new Profil(
-                    BANK_ID,
-                    UKJENT,
-                    UKJENT,
-                    UKJENT,
-                    UKJENT,
-                    BANK_ID
-            ));
+            return getTokenXAttributes();
         }
         return azureAdProfileConsumer.getProfil();
     }
@@ -56,25 +37,40 @@ public class ProfilService {
         return isTokenX() ? Optional.empty() : azureAdProfileConsumer.getProfilImage();
     }
 
-    private JwtAuthenticationToken getJwtAuthenticationToken() {
+    private Optional<JwtAuthenticationToken> getJwtAuthenticationToken() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(JwtAuthenticationToken.class::isInstance)
                 .map(JwtAuthenticationToken.class::cast)
                 .map(t -> {
                     log.info("JwtAuthenticationToken, attributes: {}",
                             t.getTokenAttributes().entrySet().stream()
-                            .map(entry -> entry.getKey() + ":" + entry.getValue())
-                            .collect(Collectors.joining(",")));
+                                    .map(entry -> entry.getKey() + ":" + entry.getValue())
+                                    .collect(Collectors.joining(",")));
                     return t;
-                })
-                .orElseThrow();
+                });
     }
 
     private boolean isTokenX() {
+
         return getJwtAuthenticationToken()
-                .getTokenAttributes()
-                .get(JwtClaimNames.ISS)
-                .equals(tokenXResourceServerProperties.getIssuerUri());
+                .map(token -> token
+                        .getTokenAttributes()
+                        .get(JwtClaimNames.ISS)
+                        .equals(tokenXResourceServerProperties.getIssuerUri()))
+                .orElseThrow();
     }
 
+    private Profil getTokenXAttributes() {
+
+        return getJwtAuthenticationToken()
+                .map(JwtAuthenticationToken::getTokenAttributes)
+                .map(attribs -> new Profil(
+                        (String) attribs.get("brukernavn"),
+                        UKJENT,
+                        UKJENT,
+                        UKJENT,
+                        (String) attribs.get("org"),
+                        BANK_ID))
+                .orElseThrow();
+    }
 }
