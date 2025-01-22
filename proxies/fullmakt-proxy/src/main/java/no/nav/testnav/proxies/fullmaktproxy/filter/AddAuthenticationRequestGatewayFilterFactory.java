@@ -9,8 +9,6 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
 @UtilityClass
 public class AddAuthenticationRequestGatewayFilterFactory {
@@ -29,15 +27,6 @@ public class AddAuthenticationRequestGatewayFilterFactory {
                                         .request(builder -> builder.header(HttpHeaders.AUTHORIZATION,
                                                 "Bearer " + tokenX.getTokenValue()).build())
                                         .build();
-
-                                // Log the outgoing request details
-                                var modifiedRequest = mutatedExchange.getRequest();
-                                var bearer = modifiedRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-                                log.info("Outgoing request: method={}, uri={}, headers={}",
-                                        modifiedRequest.getMethod(), modifiedRequest.getURI(), modifiedRequest.getHeaders());
-                                if (nonNull(bearer)) {
-                                    log.info("Fakedings tokenx auth header: {}", bearer.replaceAll("Bearer ", ""));
-                                }
 
                                 return chain.filter(mutatedExchange);
                             }));
