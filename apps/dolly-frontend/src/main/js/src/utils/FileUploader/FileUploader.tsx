@@ -34,6 +34,8 @@ const Container = styled.div`
 	outline: none;
 	transition: border 0.24s ease-in-out;
 `
+
+//TODO: Kan slettes
 export default ({
 	filer,
 	setFiler,

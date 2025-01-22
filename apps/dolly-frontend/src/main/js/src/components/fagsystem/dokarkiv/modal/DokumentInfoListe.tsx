@@ -30,6 +30,8 @@ const PdfDocument = styled(Document)`
 	max-height: 90px;
 	margin-right: 10px;
 `
+
+//TODO: Kan slettes
 export default ({ filer, handleChange, path, isMultiple = true }: Data) => {
 	const formMethods = useFormContext()
 	if (!filer || filer.length < 1) {

@@ -4,7 +4,6 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import * as _ from 'lodash-es'
@@ -15,8 +14,13 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
-import FileUploader from '@/utils/FileUploader/FileUploader'
-import DokumentInfoListe from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
+import { FileUpload, VStack } from '@navikt/ds-react'
+
+type Vedlegg = {
+	file: File
+	error: boolean
+	reasons: string[]
+}
 
 enum Kodeverk {
 	TEMA = 'Tema',
@@ -41,7 +45,8 @@ const HistarkForm = () => {
 	useEffect(() => {
 		handleVedleggChange(files)
 	}, [files])
-	const handleVedleggChange = (filer: [Vedlegg]) => {
+
+	const handleVedleggChange = (filer: Vedlegg[]) => {
 		setFiles(filer)
 		formMethods.setValue('histark.vedlegg', filer)
 		formMethods.setValue('histark.dokumenter.0.tittel', null)
@@ -49,9 +54,16 @@ const HistarkForm = () => {
 		formMethods.setValue('histark.dokumenter.0.fysiskDokument', null)
 
 		filer.forEach((fil: Vedlegg, index: number) => {
-			formMethods.setValue(`histark.dokumenter.${index}.tittel`, fil.dokNavn || fil.name)
-			formMethods.setValue(`histark.dokumenter.${index}.antallSider`, 1)
-			formMethods.setValue(`histark.dokumenter.${index}.fysiskDokument`, fil.content?.base64)
+			const reader = new FileReader()
+			reader.onabort = () => console.warn('file reading was aborted')
+			reader.onerror = () => console.error('file reading has failed')
+			reader.onload = () => {
+				const binaryStr = reader.result?.slice(28)
+				formMethods.setValue(`histark.dokumenter.${index}.tittel`, fil.file?.name)
+				formMethods.setValue(`histark.dokumenter.${index}.antallSider`, 1)
+				formMethods.setValue(`histark.dokumenter.${index}.fysiskDokument`, binaryStr)
+			}
+			reader.readAsDataURL(fil.file)
 		})
 		formMethods.trigger('histark.dokumenter')
 		formMethods.trigger('histark.vedlegg')
@@ -133,18 +145,27 @@ const HistarkForm = () => {
 										visHvisAvhuket={false}
 										size={'xsmall'}
 									/>
-									{/*TODO: Skriv om denne ogsaa til aa bruke Aksel FileUpload*/}
-									<Kategori title={'Vedlegg'}>
-										<FileUploader filer={files} setFiler={setFiles} isMultiple={false} />
-										{files.length > 0 && (
-											<DokumentInfoListe
-												path={'histark.dokumenter'}
-												handleChange={handleVedleggChange}
-												filer={files}
-												isMultiple={false}
+									<div className="flexbox--full-width">
+										<VStack gap="4" style={{ marginTop: '10px' }}>
+											<FileUpload.Dropzone
+												label="Last opp vedlegg til dokumentet"
+												accept=".pdf"
+												fileLimit={{ max: 1, current: files.length }}
+												multiple={false}
+												onSelect={setFiles}
 											/>
-										)}
-									</Kategori>
+											{files.map((file: Vedlegg) => (
+												<FileUpload.Item
+													key={file.file?.name}
+													file={file.file}
+													button={{
+														action: 'delete',
+														onClick: () => setFiles([]),
+													}}
+												/>
+											))}
+										</VStack>
+									</div>
 									<DisplayFormError path={`${path}.tittel`} errorMessage={'Vedlegg er påkrevd'} />
 								</div>
 							</div>
