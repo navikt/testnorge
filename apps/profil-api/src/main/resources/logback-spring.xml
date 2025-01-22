@@ -17,7 +17,7 @@
                 </throwableConverter>
             </encoder>
         </appender>
-        <root level="INFO">
+        <root level="TRACE">
             <appender-ref ref="stdout_json"/>
         </root>
     </springProfile>
