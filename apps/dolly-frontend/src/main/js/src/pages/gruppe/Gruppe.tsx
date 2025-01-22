@@ -43,7 +43,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 	}, [])
 
 	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
-		gruppeId!,
+		gruppeId,
 		'personer',
 		sidetall,
 		sideStoerrelse,
@@ -51,7 +51,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 	)
 
 	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
-		gruppeId!,
+		gruppeId,
 		visning,
 		sidetall,
 		sideStoerrelse,
@@ -63,7 +63,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 		identer,
 		loading: loadingGruppe,
 	} = useGruppeById(
-		gruppeId!,
+		gruppeId,
 		location?.state?.sidetall || sidetall,
 		sideStoerrelse,
 		false,

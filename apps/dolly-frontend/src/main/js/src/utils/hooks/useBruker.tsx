@@ -3,7 +3,7 @@ import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '@/api'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
-import { ERROR_ACTIVE_USER } from '../../ducks/errors/ErrorMessages'
+import { ERROR_ACTIVE_USER } from '@/ducks/errors/ErrorMessages'
 
 const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`

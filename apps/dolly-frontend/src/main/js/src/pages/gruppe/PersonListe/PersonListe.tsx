@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
@@ -57,10 +57,7 @@ export default function PersonListe({
 
 	const location = useLocation()
 
-	const personListe = useMemo(
-		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem, bestillingStatuser, visPerson],
-	)
+	const personListe = sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search)
 
 	useEffect(() => {
 		const idents =

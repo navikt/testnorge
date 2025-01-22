@@ -13,13 +13,12 @@ import styled from 'styled-components'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/ducks/finnPerson'
+import { useDispatch } from 'react-redux'
 
 type FinnPersonProps = {
 	feilmelding: string
 	gruppe: number
-	resetFeilmelding: Function
-	navigerTilPerson: Function
-	navigerTilBestilling: Function
 }
 
 type Person = {
@@ -44,17 +43,14 @@ const StyledAsyncSelect = styled(AsyncSelect)`
 	margin-top: 2px;
 `
 
-const FinnPersonBestilling = ({
-	feilmelding,
-	gruppe,
-	resetFeilmelding,
-	navigerTilPerson,
-	navigerTilBestilling,
-}: FinnPersonProps) => {
+const FinnPersonBestilling = ({ feilmelding, gruppe }: FinnPersonProps) => {
+	const dispatch = useDispatch()
+
 	const [soekType, setSoekType] = useState(SoekTypeValg.PERSON)
 	const [searchQuery, setSearchQuery] = useState(null)
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
+	const [value, setValue] = useState(null)
 
 	const [pdlfIdenter, setPdlfIdenter] = useState([])
 	const [pdlIdenter, setPdlIdenter] = useState([])
@@ -106,19 +102,19 @@ const FinnPersonBestilling = ({
 	}, [feilmelding])
 
 	useEffect(() => {
-		resetFeilmelding()
+		dispatch(resetFeilmelding())
 		if (!searchQuery) {
 			return
 		}
 		soekType === SoekTypeValg.PERSON
-			? navigerTilPerson(searchQuery)
-			: navigerTilBestilling(searchQuery)
+			? dispatch(navigerTilPerson(searchQuery))
+			: dispatch(navigerTilBestilling(searchQuery))
 		return setSearchQuery(null)
 	}, [searchQuery])
 
 	useEffect(() => {
 		if (fragment && !feilmelding) {
-			resetFeilmelding()
+			dispatch(resetFeilmelding())
 		}
 	}, [fragment])
 
@@ -268,8 +264,11 @@ const FinnPersonBestilling = ({
 						}}
 						isClearable={true}
 						options={options}
-						value={null}
-						onChange={(e: Option) => setSearchQuery(e?.value)}
+						value={value}
+						onChange={(e: Option) => {
+							setValue(e.value)
+							setSearchQuery(e?.value)
+						}}
 						backspaceRemovesValue={true}
 						label="Person"
 						placeholder={
