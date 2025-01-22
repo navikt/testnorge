@@ -1,36 +1,21 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import Button from '@/components/ui/button/Button'
-import {
-	TidligereBestillinger
-} from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
-import {
-	PersonMiljoeinfo
-} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
+import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
+import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
 import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
-import {SlettButton} from '@/components/ui/button/SlettButton/SlettButton'
-import {
-	BestillingSammendragModal
-} from '@/components/bestilling/sammendrag/BestillingSammendragModal'
+import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
-import {
-	PdlPersonMiljoeInfo
-} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
-import PdlfVisningConnector
-	from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
-import {ErrorBoundary} from '@/components/ui/appError/ErrorBoundary'
-import {
-	FrigjoerButton
-} from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
-import {useNavigate} from 'react-router-dom'
-import {getBestillingsListe} from '@/ducks/bestillingStatus'
-import {
-	RelatertPersonImportButton
-} from '@/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
-import {useAsync} from 'react-use'
-import {DollyApi} from '@/service/Api'
-import {
-	GjenopprettPerson
-} from '@/components/bestilling/gjenopprett/GjenopprettPerson'
+import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
+import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
+import { useNavigate } from 'react-router-dom'
+import { getBestillingsListe } from '@/ducks/bestillingStatus'
+import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
+import { useAsync } from 'react-use'
+import { DollyApi } from '@/service/Api'
+import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/GjenopprettPerson'
 import {
 	BrregVisning,
 	sjekkManglerBrregData,
@@ -39,11 +24,8 @@ import {
 	PensjonVisning,
 	sjekkManglerPensjonData,
 } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
-import {
-	AaregVisning,
-	sjekkManglerAaregData
-} from '@/components/fagsystem/aareg/visning/Visning'
-import {useArbeidsforhold} from '@/utils/hooks/useOrganisasjoner'
+import { AaregVisning, sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
+import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
 	useArbeidsplassencvData,
 	useArenaData,
@@ -59,10 +41,7 @@ import {
 	sjekkManglerTpData,
 	TpVisning,
 } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
-import {
-	InstVisning,
-	sjekkManglerInstData
-} from '@/components/fagsystem/inst/visning/InstVisning'
+import { InstVisning, sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
 	harAfpOffentligBestilling,
@@ -87,12 +66,10 @@ import {
 	AlderspensjonVisning,
 	sjekkManglerApData,
 } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
-import {
-	ArbeidsplassenVisning
-} from '@/components/fagsystem/arbeidsplassen/visning/Visning'
+import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import * as _ from 'lodash-es'
-import {MedlVisning} from '@/components/fagsystem/medl/visning'
-import {useMedlPerson} from '@/utils/hooks/useMedl'
+import { MedlVisning } from '@/components/fagsystem/medl/visning'
+import { useMedlPerson } from '@/utils/hooks/useMedl'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import {
 	sjekkManglerSykemeldingBestilling,
@@ -103,47 +80,30 @@ import {
 	sjekkManglerUforetrygdData,
 	UforetrygdVisning,
 } from '@/components/fagsystem/uforetrygd/visning/UforetrygdVisning'
-import {usePensjonEnvironments} from '@/utils/hooks/useEnvironments'
-import {
-	SigrunstubPensjonsgivendeVisning
-} from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
-import {useUdistub} from '@/utils/hooks/useUdistub'
+import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
+import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
+import { useUdistub } from '@/utils/hooks/useUdistub'
 import useBoolean from '@/utils/hooks/useBoolean'
-import {MalModal, malTyper} from '@/pages/minSide/maler/MalModal'
-import {useTenorIdent} from '@/utils/hooks/useTenorSoek'
-import {
-	SkatteetatenVisning
-} from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
-import PdlVisningConnector
-	from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
-import {useOrganisasjonMiljoe} from '@/utils/hooks/useOrganisasjonTilgang'
-import {useSkattekort} from '@/utils/hooks/useSkattekort'
-import {
-	SkattekortVisning
-} from '@/components/fagsystem/skattekort/visning/Visning'
-import {
-	PensjonsavtaleVisning
-} from '@/components/fagsystem/pensjonsavtale/visning/PensjonsavtaleVisning'
-import {useMockOppsett} from '@/utils/hooks/usePensjon'
-import {
-	AfpOffentligVisning
-} from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
+import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
+import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
+import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
+import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
+import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
+import { useSkattekort } from '@/utils/hooks/useSkattekort'
+import { SkattekortVisning } from '@/components/fagsystem/skattekort/visning/Visning'
+import { PensjonsavtaleVisning } from '@/components/fagsystem/pensjonsavtale/visning/PensjonsavtaleVisning'
+import { useMockOppsett } from '@/utils/hooks/usePensjon'
+import { AfpOffentligVisning } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
 import {
 	sjekkManglerYrkesskadeData,
 	YrkesskaderVisning,
 } from '@/components/fagsystem/yrkesskader/visning/YrkesskaderVisning'
-import {
-	InntektsmeldingVisning
-} from '@/components/fagsystem/inntektsmelding/visning/Visning'
-import {
-	SigrunstubVisning
-} from '@/components/fagsystem/sigrunstub/visning/Visning'
-import {
-	InntektstubVisning
-} from '@/components/fagsystem/inntektstub/visning/Visning'
-import {ArenaVisning} from '@/components/fagsystem/arena/visning/ArenaVisning'
-import {KrrVisning} from '@/components/fagsystem/krrstub/visning/KrrVisning'
-import {UdiVisning} from '@/components/fagsystem/udistub/visning/UdiVisning'
+import { InntektsmeldingVisning } from '@/components/fagsystem/inntektsmelding/visning/Visning'
+import { SigrunstubVisning } from '@/components/fagsystem/sigrunstub/visning/Visning'
+import { InntektstubVisning } from '@/components/fagsystem/inntektstub/visning/Visning'
+import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
+import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
+import { UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
 
 import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
