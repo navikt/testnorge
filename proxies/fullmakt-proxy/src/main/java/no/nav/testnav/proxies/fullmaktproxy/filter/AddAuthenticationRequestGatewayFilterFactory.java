@@ -7,6 +7,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.fullmaktproxy.consumer.FakedingsConsumer;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.server.ServerWebExchange;
 
 import static java.util.Objects.nonNull;
 
@@ -24,12 +25,13 @@ public class AddAuthenticationRequestGatewayFilterFactory {
             return fakedingsConsumer.getFakeToken(ident)
                     .flatMap(faketoken -> tokenXService.exchange(serverProperties, faketoken)
                             .flatMap(tokenX -> {
-                                exchange.mutate()
+                                ServerWebExchange mutatedExchange = exchange.mutate()
                                         .request(builder -> builder.header(HttpHeaders.AUTHORIZATION,
-                                                "Bearer " + tokenX.getTokenValue()).build());
+                                                "Bearer " + tokenX.getTokenValue()).build())
+                                        .build();
 
                                 // Log the outgoing request details
-                                var modifiedRequest = exchange.getRequest();
+                                var modifiedRequest = mutatedExchange.getRequest();
                                 var bearer = modifiedRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
                                 log.info("Outgoing request: method={}, uri={}, headers={}",
                                         modifiedRequest.getMethod(), modifiedRequest.getURI(), modifiedRequest.getHeaders());
@@ -37,7 +39,7 @@ public class AddAuthenticationRequestGatewayFilterFactory {
                                     log.info("Fakedings tokenx auth header: {}", bearer.replaceAll("Bearer ", ""));
                                 }
 
-                                return chain.filter(exchange);
+                                return chain.filter(mutatedExchange);
                             }));
         };
     }
