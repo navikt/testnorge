@@ -30,6 +30,7 @@ public class AddAuthenticationRequestGatewayFilterFactory {
                                 var modifiedRequest = exchange.getRequest();
                                 log.info("Outgoing request with fakedings tokenx: method={}, uri={}, headers={}",
                                         modifiedRequest.getMethod(), modifiedRequest.getURI(), modifiedRequest.getHeaders());
+                                log.info("Fake generated bearer: {}", modifiedRequest.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
 
                                 return chain.filter(exchange);
                             }));
