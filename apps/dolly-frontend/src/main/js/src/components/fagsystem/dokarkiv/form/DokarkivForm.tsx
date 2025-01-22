@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { BaseSyntheticEvent, useContext, useEffect, useRef, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -57,9 +57,6 @@ const DokarkivForm = () => {
 	}, [dokumenterFraMal])
 
 	const formMethods = useFormContext()
-	if (!formMethods.watch(dokarkivAttributt)) {
-		return null
-	}
 
 	const digitalInnsending = formMethods.watch('dokarkiv.avsenderMottaker')
 
@@ -68,10 +65,6 @@ const DokarkivForm = () => {
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
 
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk(Kodeverk.BEHANDLINGSTEMA)
-
-	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
-		return null
-	}
 
 	useEffect(() => {
 		if (dokumenterFraMal !== prevDokumenterFraMal && dokumenterFraMal?.length > 0) {
@@ -111,6 +104,10 @@ const DokarkivForm = () => {
 		formMethods.setValue('dokarkiv.vedlegg', vedlegg)
 		formMethods.trigger('dokarkiv.vedlegg')
 	}, [vedlegg])
+
+	if (!formMethods.watch(dokarkivAttributt)) {
+		return null
+	}
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
@@ -268,10 +265,10 @@ const DokarkivForm = () => {
 									{`Vedlegg (${vedlegg?.length})`}
 								</Heading>
 								<VStack as="ul" gap="3">
-									{vedlegg?.map((file, index) => (
+									{vedlegg?.map((file) => (
 										<FileUpload.Item
 											as="li"
-											key={index}
+											key={file?.file?.name}
 											file={file?.file}
 											button={{
 												action: 'delete',

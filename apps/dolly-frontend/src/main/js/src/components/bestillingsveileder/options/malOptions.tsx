@@ -452,7 +452,7 @@ const updateKontaktType = (kontaktinfo: any) => {
 }
 
 const getUpdatedDokarkiv = (dokarkiv: any) => {
-	let newDokarkiv = Object.assign({}, dokarkiv)
+	let newDokarkiv = { ...dokarkiv }
 	if (newDokarkiv.avsenderMottaker) {
 		newDokarkiv.avsenderMottaker = {
 			id: newDokarkiv.avsenderMottaker?.id || '',
