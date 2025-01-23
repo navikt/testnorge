@@ -95,13 +95,17 @@ const DokarkivForm = () => {
 	}, [dokumenterFraMal, prevDokumenterFraMal])
 
 	useEffect(() => {
-		formMethods.setValue('dokarkiv.dokumenter', dokumenter)
-		formMethods.trigger('dokarkiv.dokumenter')
+		if (formMethods.watch(dokarkivAttributt)) {
+			formMethods.setValue('dokarkiv.dokumenter', dokumenter)
+			formMethods.trigger('dokarkiv.dokumenter')
+		}
 	}, [dokumenter])
 
 	useEffect(() => {
-		formMethods.setValue('dokarkiv.vedlegg', vedlegg)
-		formMethods.trigger('dokarkiv.vedlegg')
+		if (formMethods.watch(dokarkivAttributt)) {
+			formMethods.setValue('dokarkiv.vedlegg', vedlegg)
+			formMethods.trigger('dokarkiv.vedlegg')
+		}
 	}, [vedlegg])
 
 	if (!formMethods.watch(dokarkivAttributt)) {
