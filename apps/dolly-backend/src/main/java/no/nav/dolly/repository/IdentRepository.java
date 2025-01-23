@@ -4,16 +4,16 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface IdentRepository extends JpaRepository<Testident, Long> {
+public interface IdentRepository extends PagingAndSortingRepository<Testident, Long> {
 
     Optional<Testident> findByIdent(String ident);
 
@@ -50,8 +50,7 @@ public interface IdentRepository extends JpaRepository<Testident, Long> {
     List<GruppeBestillingIdent> getBestillingerByIdent(@Param(value = "ident") String ident);
 
     @Query("select ti from Testident ti " +
-            "where ti.testgruppe.id = :gruppeId " +
-            "and ti.master <> 'TPSF'")
+            "where ti.testgruppe.id = :gruppeId ")
     Page<Testident> getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
     @Query(value = "select position-1 " +
