@@ -146,6 +146,7 @@ public class TestgruppeService {
         }
     }
 
+    @Transactional
     public Long deleteGruppeById(Long gruppeId) {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
         var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
@@ -157,7 +158,7 @@ public class TestgruppeService {
 
         personService.recyclePersoner(testIdenter);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
-        testgruppeRepository.deleteTestgruppeById(gruppeId);
+        testgruppeRepository.deleteAllById(gruppeId);
 
         return gruppeId;
     }

@@ -31,7 +31,8 @@ public interface IdentRepository extends JpaRepository<Testident, Long> {
     void deleteById(@Param("id") Long id);
 
     @Modifying
-    int deleteTestidentByTestgruppeId(Long gruppeId);
+    @Query(value = "delete from Testident ti where ti.testgruppe.id = :gruppeId")
+    int deleteAllByTestgruppeId(@Param("gruppeId") Long gruppeId);
 
     @Modifying
     @Query(value = "update Testident ti set ti.ident = :newIdent where ti.ident = :oldIdent")

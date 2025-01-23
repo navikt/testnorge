@@ -7,6 +7,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -38,11 +39,11 @@ public class ArbeidsplassenDeleteCVCommand implements Callable<Mono<Arbeidsplass
                 .retrieve()
                 .toBodilessEntity()
                 .map(status -> ArbeidsplassenCVStatusDTO.builder()
-                                .status(HttpStatus.valueOf(status.getStatusCode().value()))
-                                .build())
-                .doOnError(WebClientFilter::logErrorMessage)
-                .doOnError(throwable -> Mono.empty())
+                        .status(HttpStatus.valueOf(status.getStatusCode().value()))
+                        .build())
+                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound), WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Mono.empty());
     }
 }
