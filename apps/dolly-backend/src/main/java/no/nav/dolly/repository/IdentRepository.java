@@ -53,7 +53,7 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
 
     @Query("select ti from Testident ti " +
             "where ti.testgruppe.id = :gruppeId ")
-    Page<Testident> getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
+    Page<Testident> findAllByTestgruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
     @Query(value = "select position-1 " +
             "from ( " +

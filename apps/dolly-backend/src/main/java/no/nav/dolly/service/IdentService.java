@@ -114,7 +114,7 @@ public class IdentService {
                 )
         );
         return identRepository
-                .getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, page);
+                .findAllByTestgruppeId(gruppeId, page);
     }
 
     public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {
