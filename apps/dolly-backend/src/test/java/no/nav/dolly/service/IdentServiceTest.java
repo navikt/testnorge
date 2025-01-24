@@ -76,6 +76,6 @@ class IdentServiceTest {
 
         identService.slettTestidenterByGruppeId(gruppeId);
 
-        verify(identRepository).deleteTestidentByTestgruppeId(gruppeId);
+        verify(identRepository).deleteAllByTestgruppeId(gruppeId);
     }
 }
