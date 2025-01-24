@@ -1,5 +1,5 @@
 import BlankHeader from '@/components/layout/blankHeader/BlankHeader'
-import BrukerModal from '@/pages/brukerPage/BrukerModel'
+import BrukerModal from '@/pages/brukerPage/BrukerModal'
 import './BrukerPage.less'
 import { Background } from '@/components/ui/background/Background'
 

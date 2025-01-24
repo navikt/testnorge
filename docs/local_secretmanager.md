@@ -18,10 +18,10 @@ Alternativt kan man installere [NAIS CLI](https://doc.nais.io/operate/cli/), som
 ```
 Applikasjonen må ha en dependency på `com.google.cloud:spring-cloud-gcp-starter-secretmanager`. Denne er inkludert ved bruk av plugins [dolly-apps](../plugins/java/src/main/groovy/dolly-apps.gradle) eller [dolly-proxies](../plugins/java/src/main/groovy/dolly-proxies.gradle).
 
-La Spring Boot-config'en din importere namespace `sm://` og referer til secrets med `${sm://SECRET_NAME}`. Eks. fra en `application-local.yml`:
+La Spring Boot-config'en din importere namespace `sm\://` og referer til secrets med `${sm\://SECRET_NAME}`. Eks. fra en `application-local.yml`:
 ```yaml
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+AZURE_APP_CLIENT_ID: ${sm\://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm\://azure-app-client-secret}
 
 spring:
   config:

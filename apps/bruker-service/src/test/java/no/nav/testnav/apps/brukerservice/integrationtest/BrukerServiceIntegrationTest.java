@@ -14,10 +14,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -29,8 +27,6 @@ class BrukerServiceIntegrationTest {
     private static final String PID = "01810048413";
     private static final String ORGNUMMER = "811306312";
     public static MockWebServer mockBackEnd;
-    @MockBean
-    JwtDecoder jwtDecoder;
 
     private ObjectMapper objectMapper;
     private WebClient webClient;

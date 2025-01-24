@@ -1,5 +1,5 @@
-AZURE_APP_CLIENT_ID: ${sm://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm://azure-app-client-secret}
+AZURE_APP_CLIENT_ID: ${sm\://azure-app-client-id}
+AZURE_APP_CLIENT_SECRET: ${sm\://azure-app-client-secret}
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 REDIS_HOST: localhost
 TOKEN_X_ISSUER: dummy
@@ -17,14 +17,12 @@ spring:
           aad:
             authorization-grant-type: authorization_code
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
-            scope: openid, offline_access,  ${sm://azure-app-client-id}/.default
+            scope: openid, offline_access,  ${sm\://azure-app-client-id}/.default
             client-id: ${AZURE_APP_CLIENT_ID}
             client-secret: ${AZURE_APP_CLIENT_SECRET}
         provider:
           aad:
-            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
-            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
-            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+            issuer-uri: ${sm\://azure-openid-config-issuer}
 
 consumers:
   testnav-altinn3-tilgang-service:

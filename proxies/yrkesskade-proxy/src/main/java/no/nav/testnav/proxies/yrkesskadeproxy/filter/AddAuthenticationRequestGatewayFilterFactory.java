@@ -7,6 +7,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.yrkesskadeproxy.consumer.FakedingsConsumer;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.server.ServerWebExchange;
 
 @Slf4j
 @UtilityClass
@@ -18,14 +19,16 @@ public class AddAuthenticationRequestGatewayFilterFactory {
         return (exchange, chain) -> {
             var httpRequest = exchange.getRequest();
             var ident = httpRequest.getHeaders().getFirst("ident");
+
             return fakedingsConsumer.getFakeToken(ident)
                     .flatMap(faketoken -> tokenXService.exchange(serverProperties, faketoken)
                             .flatMap(tokenX -> {
-                                exchange.mutate()
+                                ServerWebExchange mutatedExchange = exchange.mutate()
                                         .request(builder -> builder.header(HttpHeaders.AUTHORIZATION,
-                                                "Bearer " + tokenX.getTokenValue()).build());
-                                log.info("TokenX {}", tokenX.getTokenValue());
-                                return chain.filter(exchange);
+                                                "Bearer " + tokenX.getTokenValue()).build())
+                                        .build();
+
+                                return chain.filter(mutatedExchange);
                             }));
         };
     }

@@ -2,7 +2,6 @@ package no.nav.testnav.levendearbeidsforholdansettelse;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -18,8 +17,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableWebFlux
 @Import({
         CoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class,
-        InsecureJwtServerToServerConfiguration.class
+        SecureOAuth2ServerToServerConfiguration.class
 })
 public class LevendeArbeidsforholdAnsettelseApplication {
 

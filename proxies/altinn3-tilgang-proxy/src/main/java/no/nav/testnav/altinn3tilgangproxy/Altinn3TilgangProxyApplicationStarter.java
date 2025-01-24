@@ -5,7 +5,6 @@ import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,8 +15,7 @@ import org.springframework.context.annotation.Import;
 
 @Import({
         CoreConfig.class,
-        SecurityConfig.class,
-        InsecureJwtServerToServerConfiguration.class
+        SecurityConfig.class
 })
 @SpringBootApplication
 public class Altinn3TilgangProxyApplicationStarter {

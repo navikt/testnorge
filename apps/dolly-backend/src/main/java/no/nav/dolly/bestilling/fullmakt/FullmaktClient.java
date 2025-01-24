@@ -70,10 +70,14 @@ public class FullmaktClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(ident -> fullmaktConsumer.getFullmaktData(List.of(ident)).subscribe(
-                fullmakter -> fullmakter.getFullmakt()
-                        .forEach(fullmakt -> fullmaktConsumer
-                                .deleteFullmaktData(ident, fullmakt.getFullmaktId()).subscribe())));
+        Flux.fromIterable(identer)
+                .flatMap(ident -> fullmaktConsumer.getFullmaktData(List.of(ident))
+                        .map(FullmaktResponse::getFullmakt)
+                        .flatMap(Flux::fromIterable)
+                        .map(FullmaktResponse.Fullmakt::getFullmaktId)
+                        .flatMap(fullmaktsId -> fullmaktConsumer.deleteFullmaktData(ident, fullmaktsId)))
+                .collectList()
+                .subscribe(result -> log.info("Fullmakt, slettet {} identer", identer.size()));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
