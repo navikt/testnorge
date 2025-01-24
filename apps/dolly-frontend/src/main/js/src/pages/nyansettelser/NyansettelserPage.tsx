@@ -13,7 +13,7 @@ export default () => {
 	const [orgnummerSoekData, setOrgnummerSoekData] = useState(null)
 
 	const [page, setPage] = useState(1)
-	const [sortData, setSortData] = useState(null)
+	const [sortData, setSortData] = useState(null as any)
 	const { loggData, loading, error } = useLevendeArbeidsforholdLogg(page - 1, 10, 'id')
 	const { kodeverk } = useKodeverk(ArbeidKodeverk.Arbeidsforholdstyper)
 
@@ -59,6 +59,9 @@ export default () => {
 								</Table.Header>
 								<Table.Body>
 									{sortData?.map((row: any, idx: number) => {
+										const ansattFra =
+											row.ansattfra?.length === 3 &&
+											new Date(row.ansattfra[0], row.ansattfra[1] - 1, row.ansattfra[2])
 										return (
 											<Table.Row key={`${row.id} - ${idx}`}>
 												<Table.DataCell width={'20%'}>
@@ -79,7 +82,7 @@ export default () => {
 														/>
 													}
 												</Table.DataCell>
-												<Table.DataCell width={'15%'}>{formatDate(row.ansattfra)}</Table.DataCell>
+												<Table.DataCell width={'15%'}>{formatDate(ansattFra)}</Table.DataCell>
 												<Table.DataCell width={'30%'}>
 													{kodeverk?.length > 0
 														? kodeverk?.find((kode: any) => kode?.value === row.arbeidsforholdType)
