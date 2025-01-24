@@ -24,18 +24,8 @@ export const KursForm = ({ formMethods }) => {
 					return (
 						<>
 							<div key={idx} className="flexbox--flex-wrap">
-								<FormTextInput
-									name={`${kursPath}.title`}
-									label="Kursnavn"
-									size="xlarge"
-									key={`title_${_.get(formMethods.getValues(), `${kursPath}.title`)}`}
-								/>
-								<FormTextInput
-									name={`${kursPath}.issuer`}
-									label="Kursholder"
-									size="xlarge"
-									key={`issuer_${_.get(formMethods.getValues(), `${kursPath}.issuer`)}`}
-								/>
+								<FormTextInput name={`${kursPath}.title`} label="Kursnavn" size="xlarge" />
+								<FormTextInput name={`${kursPath}.issuer`} label="Kursholder" size="xlarge" />
 								<FormDatepicker name={`${kursPath}.date`} label="Fullført" />
 								<FormSelect
 									name={`${kursPath}.durationUnit`}
@@ -52,7 +42,6 @@ export const KursForm = ({ formMethods }) => {
 									}`}
 									size="small"
 									type="number"
-									key={`duration_${_.get(formMethods.getValues(), `${kursPath}.duration`)}`}
 								/>
 							</div>
 							<EraseFillButtons
