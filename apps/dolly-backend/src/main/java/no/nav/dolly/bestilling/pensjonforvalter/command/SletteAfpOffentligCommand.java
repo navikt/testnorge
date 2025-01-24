@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -19,7 +18,6 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Slf4j
 @RequiredArgsConstructor
 public class SletteAfpOffentligCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
@@ -30,11 +28,7 @@ public class SletteAfpOffentligCommand implements Callable<Mono<Pensjonforvalter
     private final String miljoe;
     private final String token;
 
-
     public Mono<PensjonforvalterResponse> call() {
-
-        var callId = generateCallId();
-        log.info("Pensjon slette AFP-Offentlig callId: {}", callId);
 
         return webClient
                 .delete()
@@ -43,7 +37,7 @@ public class SletteAfpOffentligCommand implements Callable<Mono<Pensjonforvalter
                         .build(miljoe, ident))
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .toBodilessEntity()
