@@ -58,7 +58,7 @@ public class IdentService {
 
     public int slettTestidenterByGruppeId(Long gruppeId) {
 
-        return identRepository.deleteTestidentByTestgruppeId(gruppeId);
+        return identRepository.deleteAllByTestgruppeId(gruppeId);
     }
 
     @Transactional

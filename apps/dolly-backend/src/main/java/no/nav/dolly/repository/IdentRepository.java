@@ -24,14 +24,16 @@ public interface IdentRepository extends JpaRepository<Testident, Long> {
     boolean existsByIdent(String ident);
 
     @Modifying
-    int deleteTestidentByIdent(String testident);
+    @Query(value = "delete from Testident ti where ti.ident = :testident")
+    int deleteTestidentByIdent(@Param("testident") String testident);
 
     @Modifying
     @Query(value = "delete from Testident ti where ti.id = :id")
     void deleteById(@Param("id") Long id);
 
     @Modifying
-    int deleteTestidentByTestgruppeId(Long gruppeId);
+    @Query(value = "delete from Testident ti where ti.testgruppe.id = :gruppeId")
+    int deleteAllByTestgruppeId(@Param("gruppeId") Long gruppeId);
 
     @Modifying
     @Query(value = "update Testident ti set ti.ident = :newIdent where ti.ident = :oldIdent")

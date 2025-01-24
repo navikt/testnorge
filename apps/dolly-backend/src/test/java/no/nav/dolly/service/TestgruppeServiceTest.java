@@ -177,7 +177,7 @@ class TestgruppeServiceTest {
         when(testgruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(testGruppe));
         testgruppeService.deleteGruppeById(GROUP_ID);
         verify(brukerService).sletteBrukerFavoritterByGroupId(GROUP_ID);
-        verify(testgruppeRepository).deleteTestgruppeById(GROUP_ID);
+        verify(testgruppeRepository).deleteAllById(GROUP_ID);
     }
 
     @Test

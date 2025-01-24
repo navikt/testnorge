@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.jpa;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -97,17 +98,17 @@ public class Bestilling implements Serializable {
     @Column(name = "NAV_SYNTETISK_IDENT")
     private Boolean navSyntetiskIdent;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "bestilling_id", updatable = false)
     @Builder.Default
     private List<BestillingProgress> progresser = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "bestilling_id", updatable = false)
     @Builder.Default
     private List<BestillingKontroll> kontroller = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "bestilling_id", updatable = false)
     @Builder.Default
     private List<TransaksjonMapping> transaksjonmapping = new ArrayList<>();
