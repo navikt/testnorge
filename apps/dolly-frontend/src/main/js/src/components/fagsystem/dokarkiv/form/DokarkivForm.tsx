@@ -268,10 +268,10 @@ const DokarkivForm = () => {
 									{`Vedlegg (${vedlegg?.length})`}
 								</Heading>
 								<VStack as="ul" gap="3">
-									{vedlegg?.map((file) => (
+									{vedlegg?.map((file, idx) => (
 										<FileUpload.Item
 											as="li"
-											key={file?.file?.name}
+											key={file?.file?.name + idx}
 											file={file?.file}
 											button={{
 												action: 'delete',
