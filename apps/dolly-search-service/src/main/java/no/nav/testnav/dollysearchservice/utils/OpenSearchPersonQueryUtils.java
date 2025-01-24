@@ -27,6 +27,7 @@ public class OpenSearchPersonQueryUtils {
     private static final String MATRIKKELADRESSE = "matrikkeladresse";
     private static final String KOMMUNENUMMER = "kommunenummer";
     private static final String POSTNUMMER = "postnummer";
+    private static final String BYDELSNUMMER = "bydelsnummer";
     private static final String FOLKEREGISTERIDENTIFIKATOR = "hentPerson.folkeregisteridentifikator";
     private static final String NAVSPERSONIDENTIFIKATOR = "hentPerson.navspersonidentifikator";
     private static final String CONCAT = "%s.%s";
@@ -174,7 +175,6 @@ public class OpenSearchPersonQueryUtils {
                 .should(nestedMatchQuery(KONTAKTADRESSE, CONCAT.formatted(VEGADRESSE, field), value));
     }
 
-
     public static void addAdressePostnrQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest().getAdresse())
@@ -188,11 +188,10 @@ public class OpenSearchPersonQueryUtils {
     public static void addAdresseBydelsnrQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest().getAdresse())
-                .filter(boadresse -> isNotBlank(boadresse.getBydelsnummer()))
-                .ifPresent(boadresse ->
-                        queryBuilder.must(QueryBuilders.nestedQuery("hentPerson.bostedsadresse.vegadresse",
-                                QueryBuilders.boolQuery().must(matchQuery("hentPerson.bostedsadresse.vegadresse.bydelsnummer",
-                                        boadresse.getBydelsnummer())), ScoreMode.Avg)));
+                .filter(adresse -> isNotBlank(adresse.getBydelsnummer()))
+                .ifPresent(adresse ->
+                                queryBuilder.must(addAdresseQuery(BYDELSNUMMER, adresse.getBydelsnummer())
+                                ));
     }
 
     public static void addHarAdresseBydelsnrQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
