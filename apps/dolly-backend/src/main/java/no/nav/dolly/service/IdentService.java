@@ -46,6 +46,7 @@ public class IdentService {
         testident.setTestgruppe(testgruppe);
         testident.setMaster(master);
         testident.setBeskrivelse(beskrivelse);
+        testident.setIBruk(false);
 
         return identRepository.save(testident);
     }
