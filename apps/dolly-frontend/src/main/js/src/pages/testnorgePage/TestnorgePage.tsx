@@ -1,4 +1,4 @@
-import React, { Fragment, lazy, Suspense, useState } from 'react'
+import React, { Fragment, Suspense, useState } from 'react'
 import Title from '@/components/Title'
 import SearchContainer from './search/searchContainer/SearchContainer'
 import { SearchOptions } from './search/SearchOptions'
@@ -17,15 +17,14 @@ import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import Loading from '@/components/ui/loading/Loading'
+import DisplayFormState from '@/utils/DisplayFormState'
+import DisplayFormErrors from '@/utils/DisplayFormErrors'
 
 type TestnorgePageProps = {
 	gruppe?: Gruppe
 }
 
 export default ({ gruppe }: TestnorgePageProps) => {
-	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
-	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
-
 	const [items, setItems] = useState<PdlData[]>([])
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])

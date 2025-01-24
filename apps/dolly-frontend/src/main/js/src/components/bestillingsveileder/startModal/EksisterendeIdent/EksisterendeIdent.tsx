@@ -48,6 +48,7 @@ export const EksisterendeIdent = ({
 						placeholder="fnr/dnr/npid"
 						value={text}
 						onChange={(e: BaseSyntheticEvent) => setText(e.target?.value)}
+						autoFocus
 					/>
 
 					<Alert variant="info">

@@ -3,7 +3,7 @@ import {
 	initialAnnenErfaring,
 	initialAnnenErfaringVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import * as _ from 'lodash-es'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -27,12 +27,7 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 				{(annenErfaringPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<FormTextInput
-								name={`${annenErfaringPath}.role`}
-								label="Rolle"
-								size="xlarge"
-								key={`role_${_.get(formMethods.getValues(), `${annenErfaringPath}.role`)}`}
-							/>
+							<DollyTextInput name={`${annenErfaringPath}.role`} label="Rolle" size="xlarge" />
 							<Fritekstfelt
 								label="Beskrivelse"
 								placeholder="Beskrivelse av annen erfaring"
@@ -44,10 +39,6 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 									)
 								}
 								size="small"
-								key={`description_${_.get(
-									formMethods.getValues(),
-									`${annenErfaringPath}.description`,
-								)}`}
 								resize
 							/>
 							<FormDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />

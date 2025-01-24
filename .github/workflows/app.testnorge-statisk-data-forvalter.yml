@@ -24,7 +24,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "apps/testnorge-statisk-data-forvalter"
-      deploy-tag: "#deploy-testnorge-statisk-data-forvalter"
+      deploy-tag: "#deploy-statisk-data-forvalter"
     permissions:
       contents: read
       id-token: write

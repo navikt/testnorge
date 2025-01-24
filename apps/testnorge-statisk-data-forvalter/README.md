@@ -27,7 +27,7 @@ osv. Disse verdiene blir automatisk satt av applikasjonene som er gitt som avhen
  
 ## API
 Apiet inneholder endepunkter for å individuelt legge inn all statisk data i et miljø gitt hvilken type (SAM, TP, SKD, EREG).
-Swagger finnes under [/swagger](https://testnorge-statisk-data-forvalter.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-statisk-data-forvalter.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 For å legge til data kan man enten gå rett på databasen og fylle ut feltene, eller bruke APIet. 
 

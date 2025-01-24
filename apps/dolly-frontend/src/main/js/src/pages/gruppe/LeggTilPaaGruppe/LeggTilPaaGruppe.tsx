@@ -1,6 +1,6 @@
 import Button from '@/components/ui/button/Button'
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type LeggTilProps = {

@@ -12,5 +12,4 @@ public class StatiskDataForvalterApplicationStarter {
         SpringApplication.run(StatiskDataForvalterApplicationStarter.class, args);
 
     }
-
 }
