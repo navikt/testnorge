@@ -10,6 +10,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -49,7 +50,7 @@ public class KontaktadataDeleteCommand implements Callable<Mono<DigitalKontaktda
                 .map(response -> DigitalKontaktdataResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound), WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(DigitalKontaktdataResponse.builder()
                         .status(WebClientFilter.getStatus(error))
                         .melding(WebClientFilter.getMessage(error))

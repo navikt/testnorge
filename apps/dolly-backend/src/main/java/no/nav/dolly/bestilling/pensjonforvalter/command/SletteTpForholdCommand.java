@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -21,7 +20,6 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Slf4j
 @RequiredArgsConstructor
 public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
@@ -35,9 +33,6 @@ public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterRes
 
     public Flux<PensjonforvalterResponse> call() {
 
-        var callId = generateCallId();
-        log.info("Pensjon slette TP-forhold callId: {}", callId);
-
         return webClient
                 .delete()
                 .uri(uriBuilder -> uriBuilder
@@ -46,7 +41,7 @@ public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterRes
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("pid", ident)
                 .retrieve()
