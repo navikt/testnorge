@@ -20,11 +20,13 @@ public class OpenSearchPersonQueryUtils {
 
     private static final String FAMILIE_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
     private static final String FOLKEREGISTER_METADATA_FIELD = "folkeregistermetadata";
+    private static final String METADATA_HISTORISK = "metadata.historisk";
     private static final String BOSTEDSADRESSE = "hentPerson.bostedsadresse";
     private static final String OPPHOLDSADRESSE = "hentPerson.oppholdsadresse";
     private static final String KONTAKTADRESSE = "hentPerson.kontaktadresse";
     private static final String VEGADRESSE = "vegadresse";
     private static final String MATRIKKELADRESSE = "matrikkeladresse";
+    private static final String UTENLANDSKADRESSE = "utenlandskAdresse";
     private static final String KOMMUNENUMMER = "kommunenummer";
     private static final String POSTNUMMER = "postnummer";
     private static final String BYDELSNUMMER = "bydelsnummer";
@@ -155,16 +157,6 @@ public class OpenSearchPersonQueryUtils {
         }
     }
 
-    public static void addAdresseKommunenrQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
-
-        Optional.ofNullable(request.getPersonRequest().getAdresse())
-                .filter(adresse -> isNotBlank(adresse.getKommunenummer()))
-                .ifPresent(adresse ->
-                        queryBuilder.must(addAdresseQuery(KOMMUNENUMMER, adresse.getKommunenummer())
-                                .should(nestedMatchQuery(BOSTEDSADRESSE, "ukjentbosted.bostedskommune", adresse.getKommunenummer()))
-                        ));
-    }
-
     public static BoolQueryBuilder addAdresseQuery(String field, String value) {
 
         return QueryBuilders.boolQuery()
@@ -175,13 +167,23 @@ public class OpenSearchPersonQueryUtils {
                 .should(nestedMatchQuery(KONTAKTADRESSE, CONCAT.formatted(VEGADRESSE, field), value));
     }
 
+    public static void addAdresseKommunenrQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getAdresse())
+                .filter(adresse -> isNotBlank(adresse.getKommunenummer()))
+                .ifPresent(adresse ->
+                        queryBuilder.must(addAdresseQuery(KOMMUNENUMMER, adresse.getKommunenummer())
+                                .should(nestedMatchQuery(BOSTEDSADRESSE, "ukjentbosted.bostedskommune", adresse.getKommunenummer()))
+                        ));
+    }
+
     public static void addAdressePostnrQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest().getAdresse())
                 .filter(adresse -> isNotBlank(adresse.getPostnummer()))
                 .ifPresent(adresse ->
                         queryBuilder.must(addAdresseQuery(POSTNUMMER, adresse.getPostnummer())
-                                .should(nestedMatchQuery(KONTAKTADRESSE,"postboksadresse." + POSTNUMMER, adresse.getPostnummer()))
+                                .should(nestedMatchQuery(KONTAKTADRESSE, "postboksadresse." + POSTNUMMER, adresse.getPostnummer()))
                         ));
     }
 
@@ -190,17 +192,22 @@ public class OpenSearchPersonQueryUtils {
         Optional.ofNullable(request.getPersonRequest().getAdresse())
                 .filter(adresse -> isNotBlank(adresse.getBydelsnummer()))
                 .ifPresent(adresse ->
-                                queryBuilder.must(addAdresseQuery(BYDELSNUMMER, adresse.getBydelsnummer())
-                                ));
+                        queryBuilder.must(addAdresseQuery(BYDELSNUMMER, adresse.getBydelsnummer())
+                        ));
     }
 
-    public static void addHarAdresseBydelsnrQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+    public static void addHarAdresseBydelsnummerQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest().getAdresse())
-                .filter(boadresse -> isTrue(boadresse.getHarBydelsnummer()))
-                .ifPresent(boadresse ->
-                        queryBuilder.must(QueryBuilders.nestedQuery("hentPerson.bostedsadresse.vegadresse",
-                                QueryBuilders.boolQuery().must(existQuery("hentPerson.bostedsadresse.vegadresse.bydelsnummer")), ScoreMode.Avg)));
+                .filter(adresse -> isTrue(adresse.getHarBydelsnummer()))
+                .ifPresent(adresse ->
+                        queryBuilder.must(QueryBuilders.boolQuery()
+                                .should(nestedExistQuery(BOSTEDSADRESSE, CONCAT.formatted(VEGADRESSE, BYDELSNUMMER)))
+                                .should(nestedExistQuery(BOSTEDSADRESSE, CONCAT.formatted(MATRIKKELADRESSE, BYDELSNUMMER)))
+                                .should(nestedExistQuery(OPPHOLDSADRESSE, CONCAT.formatted(VEGADRESSE, BYDELSNUMMER)))
+                                .should(nestedExistQuery(OPPHOLDSADRESSE, CONCAT.formatted(MATRIKKELADRESSE, BYDELSNUMMER)))
+                                .should(nestedExistQuery(KONTAKTADRESSE, CONCAT.formatted(VEGADRESSE, BYDELSNUMMER)))
+                        ));
     }
 
     public static void addAdresseUtlandQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
@@ -208,8 +215,17 @@ public class OpenSearchPersonQueryUtils {
         Optional.ofNullable(request.getPersonRequest().getAdresse())
                 .filter(boadresse -> isTrue(boadresse.getHarUtenlandsadresse()))
                 .ifPresent(boadresse ->
-                        queryBuilder.must(QueryBuilders.nestedQuery("hentPerson.bostedsadresse",
-                                QueryBuilders.boolQuery().must(existQuery("hentPerson.bostedsadresse.utenlandskAdresse")), ScoreMode.Avg)));
+                        queryBuilder.must(QueryBuilders.boolQuery()
+                                .should(QueryBuilders.boolQuery()
+                                        .must(nestedExistQuery(BOSTEDSADRESSE, UTENLANDSKADRESSE))
+                                        .must(nestedMatchQuery(BOSTEDSADRESSE, METADATA_HISTORISK, false)))
+                                .should(QueryBuilders.boolQuery()
+                                        .must(nestedExistQuery(OPPHOLDSADRESSE, UTENLANDSKADRESSE))
+                                        .must(nestedMatchQuery(OPPHOLDSADRESSE, METADATA_HISTORISK, false)))
+                                .should(QueryBuilders.boolQuery()
+                                        .must(nestedExistQuery(KONTAKTADRESSE, UTENLANDSKADRESSE))
+                                        .must(nestedMatchQuery(KONTAKTADRESSE, METADATA_HISTORISK, false))
+                                )));
     }
 
     public static void addAdresseMatrikkelQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
@@ -340,7 +356,7 @@ public class OpenSearchPersonQueryUtils {
         return QueryBuilders.nestedQuery(path, regexpQuery("%s.%s".formatted(path, field), value), ScoreMode.Avg);
     }
 
-    private QueryBuilder nestedMatchQuery(String path, String field, String value) {
+    private QueryBuilder nestedMatchQuery(String path, String field, Object value) {
 
         return QueryBuilders.nestedQuery(path, matchQuery("%s.%s".formatted(path, field), value), ScoreMode.Avg);
     }

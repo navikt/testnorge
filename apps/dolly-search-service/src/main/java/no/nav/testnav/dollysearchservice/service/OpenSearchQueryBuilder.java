@@ -24,7 +24,6 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDollyIdentifier;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBarnQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarAdresseBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedsadresseQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarDeltBostedQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarDoedfoedtbarnQuery;
@@ -46,6 +45,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addSivilstandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addStatsborgerskapQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addVergemaalQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarAdresseBydelsnummerQuery;
 
 @UtilityClass
 public class OpenSearchQueryBuilder {
@@ -96,7 +96,7 @@ public class OpenSearchQueryBuilder {
                     addAdresseKommunenrQuery(queryBuilder, request);
                     addAdressePostnrQuery(queryBuilder, request);
                     addAdresseBydelsnrQuery(queryBuilder, request);
-                    addHarAdresseBydelsnrQuery(queryBuilder, request);
+                    addHarAdresseBydelsnummerQuery(queryBuilder, request);
                     addAdresseUtlandQuery(queryBuilder, request);
                     addAdresseMatrikkelQuery(queryBuilder, request);
                     addBostedUkjentQuery(queryBuilder, request);
