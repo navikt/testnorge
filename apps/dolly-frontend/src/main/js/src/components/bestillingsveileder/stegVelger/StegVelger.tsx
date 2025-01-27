@@ -91,6 +91,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 				}
 				validateForm()
 			})
+			// 	TODO: Maa sette mutateLoading til false om validate feiler
 		} else {
 			validateForm()
 		}
@@ -119,7 +120,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	}
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
-
+	console.log('mutateLoading: ', mutateLoading) //TODO - SLETT MEG
 	return (
 		<SwrMutateContext.Provider value={setFormMutate}>
 			<FormProvider {...formMethods}>

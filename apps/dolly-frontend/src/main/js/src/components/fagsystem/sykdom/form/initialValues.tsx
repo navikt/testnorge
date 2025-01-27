@@ -1,9 +1,9 @@
 import { Diagnose } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { addDays } from 'date-fns'
 import { getRandomValue } from '@/components/fagsystem/utils'
-import { SelectOptionsDiagnoser } from '@/components/fagsystem/sykdom/form/partials/SelectOptionsDiagnoser'
+import { SelectOptionsGyldigeDiagnoser } from '@/components/fagsystem/sykdom/form/partials/SelectOptionsDiagnoser'
 
-const randomDiagnose = getRandomValue(SelectOptionsDiagnoser())
+const randomDiagnose = getRandomValue(SelectOptionsGyldigeDiagnoser())
 
 export const initialValuesDetaljertSykemelding = {
 	detaljertSykemelding: {
@@ -57,7 +57,7 @@ export const initialValuesDetaljertSykemelding = {
 		],
 		kontaktMedPasient: {
 			kontaktDato: null,
-			begrunnelseIkkeKontakt: '',
+			begrunnelseIkkeKontakt: 'Ikke behov for kontakt',
 		},
 		startDato: new Date(),
 		umiddelbarBistand: false,
