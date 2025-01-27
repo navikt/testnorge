@@ -84,14 +84,19 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 			formMethods.clearErrors(manualMutateFields)
 			errorContext?.setShowError(true)
 			setMutateLoading(true)
-			formMutate?.().then((response) => {
-				setMutateLoading(false)
-				if (response.status === 'INVALID') {
-					return
-				}
-				validateForm()
-			})
-			// 	TODO: Maa sette mutateLoading til false om validate feiler
+			formMutate?.()
+				.then((response) => {
+					setMutateLoading(false)
+					if (response.status === 'INVALID') {
+						return
+					}
+					validateForm()
+				})
+				.catch(() => {
+					setMutateLoading(false)
+					validateForm()
+				})
+			// 	TODO: Test om denne catchen funker om validate feiler
 		} else {
 			validateForm()
 		}
