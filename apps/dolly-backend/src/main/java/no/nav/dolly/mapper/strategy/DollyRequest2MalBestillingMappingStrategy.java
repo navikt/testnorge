@@ -30,10 +30,8 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("arenaforvalter", "arenaforvalter")
                 .field("bankkonto", "bankkonto")
                 .field("brregstub", "brregstub")
-                .field("dokarkiv", "dokarkiv")
                 .field("fullmakt", "fullmakt")
                 .field("environments", "environments")
-                .field("histark", "histark")
                 .field("inntektsmelding", "inntektsmelding")
                 .field("inntektstub", "inntektstub")
                 .field("krrstub", "krrstub")
@@ -58,6 +56,8 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getSigrunstub().addAll(request.getSigrunstub());
                         akkumulert.getSigrunstubPensjonsgivende().addAll(request.getSigrunstubPensjonsgivende());
                         akkumulert.getYrkesskader().addAll(request.getYrkesskader());
+                        akkumulert.getDokarkiv().addAll(request.getDokarkiv());
+                        akkumulert.getHistark().addAll(request.getHistark());
                         if (nonNull(akkumulert.getSkattekort())) {
                             akkumulert.getSkattekort().getArbeidsgiverSkatt()
                                     .addAll(request.getSkattekort().getArbeidsgiverSkatt());

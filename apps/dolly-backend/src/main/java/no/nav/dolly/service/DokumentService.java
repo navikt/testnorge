@@ -17,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,17 +39,14 @@ public class DokumentService {
 
         return bestillingMalRepository.findById(malId)
                 .map(malBestilling -> fromJson(malBestilling.getBestKriterier()))
-                .map(kriterier -> Stream.concat(
-                                        Optional.ofNullable(kriterier.getDokarkiv())
+                .map(kriterier -> Stream.concat(kriterier.getDokarkiv().stream()
                                                 .map(RsDokarkiv::getDokumenter)
-                                                .stream()
                                                 .flatMap(Collection::stream)
                                                 .map(RsDokarkiv.Dokument::getDokumentvarianter)
                                                 .flatMap(Collection::stream)
                                                 .map(RsDokarkiv.Dokument.DokumentVariant::getDokumentReferanse),
-                                        Optional.ofNullable(kriterier.getHistark())
+                                        kriterier.getHistark().stream()
                                                 .map(RsHistark::getDokumenter)
-                                                .stream()
                                                 .flatMap(Collection::stream)
                                                 .map(RsHistark.RsHistarkDokument::getDokumentReferanse)
                                 )

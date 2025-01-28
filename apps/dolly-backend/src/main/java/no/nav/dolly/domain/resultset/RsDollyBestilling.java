@@ -72,8 +72,8 @@ public class RsDollyBestilling {
     private PensjonData pensjonforvalter;
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
-    private RsDokarkiv dokarkiv;
-    private RsHistark histark;
+    private List<RsDokarkiv> dokarkiv;
+    private List<RsHistark> histark;
     private RsSykemelding sykemelding;
     private RsTpsMessaging tpsMessaging;
     private BankkontoData bankkonto;
@@ -129,6 +129,20 @@ public class RsDollyBestilling {
             yrkesskader = new ArrayList<>();
         }
         return yrkesskader;
+    }
+
+    public List<RsDokarkiv> getDokarkiv() {
+        if (isNull(dokarkiv)) {
+            dokarkiv = new ArrayList<>();
+        }
+        return dokarkiv;
+    }
+
+    public List<RsHistark> getHistark() {
+        if (isNull(histark)) {
+            histark = new ArrayList<>();
+        }
+        return histark;
     }
 
     @JsonIgnore
