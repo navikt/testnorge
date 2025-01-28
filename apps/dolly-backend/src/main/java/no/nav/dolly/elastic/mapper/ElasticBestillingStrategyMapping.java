@@ -49,7 +49,8 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                                    .toList());
                                        }
 
-                                   } catch (JsonProcessingException | IllegalArgumentException e) {
+                                   } catch (JsonProcessingException |
+                                            IllegalArgumentException e) {
 
                                        elasticBestilling.setIgnore(true);
                                        log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={}", bestilling.getId());
@@ -70,14 +71,16 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                public void mapAtoB(RsDollyBestilling bestilling, ElasticBestilling elasticBestilling, MappingContext context) {
 
                                    if (nonNull(elasticBestilling.getDokarkiv())) {
-                                        elasticBestilling.getDokarkiv().getDokumenter()
-                                                .forEach(dokument -> dokument.getDokumentvarianter()
-                                                        .forEach(dokumentVariant -> dokumentVariant.setFysiskDokument(null)));
+                                       elasticBestilling.getDokarkiv()
+                                               .forEach(arkiv -> arkiv.getDokumenter()
+                                                       .forEach(dokument -> dokument.getDokumentvarianter()
+                                                               .forEach(dokumentVariant -> dokumentVariant.setFysiskDokument(null))));
                                    }
 
                                    if (nonNull(elasticBestilling.getHistark())) {
-                                       elasticBestilling.getHistark().getDokumenter()
-                                               .forEach(dokument -> dokument.setFysiskDokument(null));
+                                       elasticBestilling.getHistark()
+                                               .forEach(arkiv -> arkiv.getDokumenter()
+                                                       .forEach(dokument -> dokument.setFysiskDokument(null)));
                                    }
                                }
                            }
