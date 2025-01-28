@@ -82,7 +82,7 @@ const HistarkForm = () => {
 				<Kategori title={`Oppretting av saksmappe for histark`} vis={histarkAttributt}>
 					<FormDollyFieldArray
 						name="histark.dokumenter"
-						header="Dokumenter"
+						header="Dokument"
 						newEntry={initialHistark}
 						maxEntries={1} //Foreløpig er bare 1 innsending støttet, backend har mulighet for flere
 						canBeEmpty={false}

@@ -2242,21 +2242,22 @@ const mapDokarkiv = (bestillingData, data) => {
 	if (dokarkivKriterier) {
 		const dokarkiv = {
 			header: 'Dokumenter (Joark)',
-			items: [
-				obj('Brevkode', dokarkivKriterier.dokumenter[0].brevkode),
-				obj('Tittel', dokarkivKriterier.tittel),
-				obj('Avsender type', dokarkivKriterier.avsenderMottaker?.idType),
-				obj('Avsender ID', dokarkivKriterier.avsenderMottaker?.id),
-				obj('Avsender navn', dokarkivKriterier.avsenderMottaker?.navn),
-				obj('Tema', dokarkivKriterier.tema),
-				obj('Behandlingstema', dokarkivKriterier.behandlingstema),
-				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
-				obj('Ferdigstill journalpost', oversettBoolean(dokarkivKriterier.ferdigstill)),
-				obj('Sakstype', showLabel('sakstype', dokarkivKriterier.sak?.sakstype)),
-				obj('Fagsaksystem', showLabel('fagsaksystem', dokarkivKriterier.sak?.fagsaksystem)),
-				obj('Fagsak-ID', dokarkivKriterier.sak?.fagsakId),
-				obj('Antall vedlegg', dokarkivKriterier.dokumenter?.length),
-			],
+			itemRows: dokarkivKriterier?.map((dokument, i) => [
+				{ numberHeader: `Dokument ${i + 1}` },
+				obj('Brevkode', dokument.dokumenter[0].brevkode),
+				obj('Tittel', dokument.tittel),
+				obj('Avsender type', dokument.avsenderMottaker?.idType),
+				obj('Avsender ID', dokument.avsenderMottaker?.id),
+				obj('Avsender navn', dokument.avsenderMottaker?.navn),
+				obj('Tema', dokument.tema),
+				obj('Behandlingstema', dokument.behandlingstema),
+				obj('Journalførende enhet', dokument.journalfoerendeEnhet),
+				obj('Ferdigstill journalpost', oversettBoolean(dokument.ferdigstill)),
+				obj('Sakstype', showLabel('sakstype', dokument.sak?.sakstype)),
+				obj('Fagsaksystem', showLabel('fagsaksystem', dokument.sak?.fagsaksystem)),
+				obj('Fagsak-ID', dokument.sak?.fagsakId),
+				obj('Antall vedlegg', dokument.dokumenter?.length),
+			]),
 		}
 
 		data.push(dokarkiv)
