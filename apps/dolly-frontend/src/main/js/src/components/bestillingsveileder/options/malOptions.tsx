@@ -452,14 +452,17 @@ const updateKontaktType = (kontaktinfo: any) => {
 }
 
 const getUpdatedDokarkiv = (dokarkiv: any) => {
-	let newDokarkiv = { ...dokarkiv }
-	if (newDokarkiv.avsenderMottaker) {
-		newDokarkiv.avsenderMottaker = {
-			id: newDokarkiv.avsenderMottaker?.id || '',
-			navn: newDokarkiv.avsenderMottaker?.navn || '',
-			idType: newDokarkiv.avsenderMottaker?.idType || '',
+	let newDokarkiv = dokarkiv?.map((dok) => {
+		let newDok = { ...dok }
+		if (newDok.avsenderMottaker) {
+			newDok.avsenderMottaker = {
+				id: newDok.avsenderMottaker?.id || '',
+				navn: newDok.avsenderMottaker?.navn || '',
+				idType: newDok.avsenderMottaker?.idType || '',
+			}
 		}
-	}
+		return newDok
+	})
 	return newDokarkiv
 }
 

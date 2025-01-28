@@ -195,6 +195,7 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 export const useHistarkData = (ident, harHistarkbestilling) => {
 	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
 
+	//TODO: Sjekk om transaksjonsid maa tilpasses som paa dokarkiv
 	const histarkId = transaksjonsid?.[0]?.transaksjonId?.dokumentInfoId
 
 	const { data, isLoading, error } = useSWR<any, Error>(
