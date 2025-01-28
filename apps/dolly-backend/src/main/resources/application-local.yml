@@ -27,12 +27,6 @@ management:
     elasticsearch:
       enabled: false
 
-azure:
-  app:
-    client:
-      id: ${sm\://azure-app-client-id}
-      secret: ${sm\://azure-app-client-secret}
-
 open:
   search:
     uri: http://localhost:9200
