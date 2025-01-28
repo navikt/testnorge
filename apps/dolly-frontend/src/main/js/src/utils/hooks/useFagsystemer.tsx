@@ -51,7 +51,7 @@ const journalpostUrl = (transaksjonsid, miljoer) => {
 	miljoer.forEach((miljoe) => {
 		const journalpostId = transaksjonsid
 			?.filter((id) => id.miljoe === miljoe)
-			?.map((filtrertId) => filtrertId?.transaksjonId?.journalpostId)
+			?.flatMap((filtrertId) => filtrertId?.transaksjonId?.map((item) => item?.journalpostId))
 		if (journalpostId && journalpostId?.length > 0) {
 			journalpostId?.forEach((journalpost) => {
 				urlListe.push({
