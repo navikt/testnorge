@@ -6,7 +6,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 export default ({ path }: { path: string }) => {
 	return (
 		// @ts-ignore
-		<div className="flexbox--space">
+		<div className="flexbox--full-width">
 			<Kategori title={'Avsender'}>
 				<div className="flexbox--flex-wrap">
 					<FormSelect

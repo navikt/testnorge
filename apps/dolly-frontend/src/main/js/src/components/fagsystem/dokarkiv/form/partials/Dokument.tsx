@@ -150,7 +150,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 	const harFagsak = formMethods.watch(`${path}.sak.sakstype`) === 'FAGSAK'
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<>
 			<div className="flexbox--full-width">
 				<FormSelect
 					name={`${path}.dokumenter[0].brevkode`}
@@ -173,7 +173,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 				<FormSelect
 					name={`${path}.behandlingstema`}
 					label="Behandlingstema"
-					size={'xxlarge'}
+					size={'xlarge'}
 					options={!loading && behandlingstemaKodeverk}
 					isClearable={true}
 				/>
@@ -210,7 +210,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 			</div>
 			<FormCheckbox name={`${path}.ferdigstill`} label="Ferdigstill journalpost" />
 			{digitalInnsending ? <Digitalinnsending path={path} /> : null}
-			<VStack gap="4" style={{ margin: '10px 0 15px 0' }}>
+			<VStack gap="4" style={{ margin: '10px 0 15px 0', width: '100%' }}>
 				<FileUpload.Dropzone
 					label="Last opp vedlegg til dokumentet"
 					description={`Du kan laste opp PDF-filer. Maks 10 filer.`}
@@ -245,6 +245,6 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 					</VStack>
 				)}
 			</VStack>
-		</div>
+		</>
 	)
 }
