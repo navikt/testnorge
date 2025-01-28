@@ -31,9 +31,8 @@ public class AzureAdTokenService implements TokenService {
     private final ClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
 
-    public AzureAdTokenService(
+    AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
@@ -41,7 +40,7 @@ public class AzureAdTokenService implements TokenService {
         this.getAuthenticatedToken = getAuthenticatedToken;
         WebClient.Builder builder = WebClient
                 .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+                .baseUrl(clientCredential.getTokenEndpoint())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {
