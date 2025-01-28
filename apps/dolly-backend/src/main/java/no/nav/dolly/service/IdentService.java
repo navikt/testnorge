@@ -46,6 +46,7 @@ public class IdentService {
         testident.setTestgruppe(testgruppe);
         testident.setMaster(master);
         testident.setBeskrivelse(beskrivelse);
+        testident.setIBruk(false);
 
         return identRepository.save(testident);
     }
@@ -58,7 +59,7 @@ public class IdentService {
 
     public int slettTestidenterByGruppeId(Long gruppeId) {
 
-        return identRepository.deleteTestidentByTestgruppeId(gruppeId);
+        return identRepository.deleteAllByTestgruppeId(gruppeId);
     }
 
     @Transactional
@@ -114,7 +115,7 @@ public class IdentService {
                 )
         );
         return identRepository
-                .getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, page);
+                .findAllByTestgruppeId(gruppeId, page);
     }
 
     public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {

@@ -8,6 +8,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -45,7 +46,8 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
                         .ident(ident)
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.BadRequest),
+                        WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(DeleteResponse.builder()
                         .ident(ident)
                         .status(WebClientFilter.getStatus(error))

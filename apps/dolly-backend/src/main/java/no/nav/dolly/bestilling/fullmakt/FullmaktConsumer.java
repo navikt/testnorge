@@ -12,7 +12,7 @@ import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -67,7 +67,7 @@ public class FullmaktConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
-    public Mono<ResponseEntity<Void>> deleteFullmaktData(String ident, Integer fullmaktId) {
+    public Mono<HttpStatusCode> deleteFullmaktData(String ident, Integer fullmaktId) {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new DeleteFullmaktDataCommand(webClient, ident, fullmaktId,

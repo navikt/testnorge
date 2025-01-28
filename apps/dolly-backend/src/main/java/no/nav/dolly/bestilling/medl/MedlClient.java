@@ -59,15 +59,16 @@ public class MedlClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        Flux<MedlData> medlemskapAvvisRequests = medlConsumer.getMedlemskapsperioder(identer).map(medlDataResponse -> {
-            var gjeldendeMedlemskapsperiode = mapperFacade.map(medlDataResponse, MedlData.class);
-            gjeldendeMedlemskapsperiode.setStatus(STATUS_AVVIST);
-            gjeldendeMedlemskapsperiode.setStatusaarsak(STATUSAARSAK_FEILREGISTRERT);
+        medlConsumer.getMedlemskapsperioder(identer)
+                .map(medlDataResponse -> {
 
-            return gjeldendeMedlemskapsperiode;
-        });
+                    var gjeldendeMedlemskapsperiode = mapperFacade.map(medlDataResponse, MedlData.class);
+                    gjeldendeMedlemskapsperiode.setStatus(STATUS_AVVIST);
+                    gjeldendeMedlemskapsperiode.setStatusaarsak(STATUSAARSAK_FEILREGISTRERT);
 
-        medlConsumer.deleteMedlemskapsperioder(medlemskapAvvisRequests)
+                    return gjeldendeMedlemskapsperiode;
+                })
+                .flatMap(medlConsumer::deleteMedlemskapsperioder)
                 .collectList()
                 .subscribe(response -> log.info("Sletting utført mot Medl"));
     }
