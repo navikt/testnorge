@@ -28,4 +28,20 @@ public interface TransaksjonMappingRepository extends CrudRepository<Transaksjon
     @Query(value = "delete from TransaksjonMapping tm where tm.bestillingId in " +
             "(select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
     int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+
+    @Query(value = """
+            from TransaksjonMapping tm
+            where tm.system = 'DOKARKIV'
+            AND tm.transaksjonId like '{%'
+            order by tm.id
+            """)
+    Iterable<TransaksjonMapping> findAllByDokarkiv();
+
+    @Query(value = """
+            from TransaksjonMapping tm
+            where tm.system = 'HISTARK'
+            AND tm.transaksjonId like '{%'
+            order by tm.id
+            """)
+    Iterable<TransaksjonMapping> findAllByHistark();
 }

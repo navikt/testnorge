@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JoarkHistarkTransaksjon {
+public class HistarkTransaksjon {
 
     private String dokumentInfoId;
 }

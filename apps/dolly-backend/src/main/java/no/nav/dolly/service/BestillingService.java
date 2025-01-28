@@ -438,22 +438,26 @@ public class BestillingService {
     private void lagreDokumenter(RsDollyBestilling request) {
 
         if (nonNull(request.getDokarkiv())) {
-            request.getDokarkiv().getDokumenter().forEach(dokument ->
-                    dokument.getDokumentvarianter().forEach(dokumentVariant -> {
-                        if (isNotBlank(dokumentVariant.getFysiskDokument())) {
-                            dokumentVariant.setDokumentReferanse(lagreDokument(dokumentVariant.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_DOKARKIV));
-                            dokumentVariant.setFysiskDokument(null);
-                        }
-                    }));
+            request.getDokarkiv()
+                    .forEach(tema -> tema
+                            .getDokumenter().forEach(dokument ->
+                                    dokument.getDokumentvarianter().forEach(dokumentVariant -> {
+                                        if (isNotBlank(dokumentVariant.getFysiskDokument())) {
+                                            dokumentVariant.setDokumentReferanse(lagreDokument(dokumentVariant.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_DOKARKIV));
+                                            dokumentVariant.setFysiskDokument(null);
+                                        }
+                                    })));
         }
 
         if (nonNull(request.getHistark())) {
-            request.getHistark().getDokumenter().forEach(dokument -> {
-                if (isNotBlank(dokument.getFysiskDokument())) {
-                    dokument.setDokumentReferanse(lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK));
-                    dokument.setFysiskDokument(null);
-                }
-            });
+            request.getHistark()
+                    .forEach(tema -> tema
+                            .getDokumenter().forEach(dokument -> {
+                                if (isNotBlank(dokument.getFysiskDokument())) {
+                                    dokument.setDokumentReferanse(lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK));
+                                    dokument.setFysiskDokument(null);
+                                }
+                            }));
         }
     }
 
