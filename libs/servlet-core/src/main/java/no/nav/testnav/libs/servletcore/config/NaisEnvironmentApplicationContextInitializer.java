@@ -37,7 +37,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm\\://azure-openid-config-issuer}");
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_JWKS_URI", "${sm\\://azure-openid-config-jwks-uri}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-openid-config-token-endpoint}");
         properties.putIfAbsent("TOKEN_X_ISSUER", "${sm\\://token-x-issuer}");
         properties.putIfAbsent("TOKEN_X_JWKS_URI", "${sm\\://token-x-jwks-uri}");
