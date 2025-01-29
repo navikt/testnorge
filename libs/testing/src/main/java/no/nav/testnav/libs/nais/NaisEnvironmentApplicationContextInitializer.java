@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.servletcore.config;
+package no.nav.testnav.libs.nais;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContextInitializer;

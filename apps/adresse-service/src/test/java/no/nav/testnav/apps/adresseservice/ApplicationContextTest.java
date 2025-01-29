@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.adresseservice;
 
-import no.nav.testnav.libs.servletcore.config.NaisEnvironmentApplicationContextInitializer;
+import no.nav.testnav.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
