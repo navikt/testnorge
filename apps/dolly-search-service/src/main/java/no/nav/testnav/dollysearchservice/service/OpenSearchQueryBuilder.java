@@ -19,7 +19,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseMatrikkelQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressePostnrQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addBostedUkjentQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedUkjentQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseUtlandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDollyIdentifier;
@@ -99,7 +99,7 @@ public class OpenSearchQueryBuilder {
                     addHarAdresseBydelsnummerQuery(queryBuilder, request);
                     addAdresseUtlandQuery(queryBuilder, request);
                     addAdresseMatrikkelQuery(queryBuilder, request);
-                    addBostedUkjentQuery(queryBuilder, request);
+                    addHarBostedUkjentQuery(queryBuilder, request);
                     addHarDeltBostedQuery(queryBuilder, request);
                     addHarKontaktinformasjonForDoedsboQuery(queryBuilder, request);
                     addHarUtenlandskIdentifikasjonsnummerQuery(queryBuilder, request);

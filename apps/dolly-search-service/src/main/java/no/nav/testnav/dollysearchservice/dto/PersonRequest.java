@@ -22,7 +22,7 @@ public class PersonRequest {
     private Integer alderFom;
     private Integer alderTom;
     private SivilstandDTO.Sivilstand sivilstand;
-    private AdressebeskyttelseDTO.AdresseBeskyttelse addressebeskyttelse;
+
     private Boolean harBarn;
     private Boolean harForeldre;
     private Boolean harDoedfoedtBarn;
@@ -42,11 +42,7 @@ public class PersonRequest {
     private Boolean harNyIdentitet;
 
     private AdresseRequest adresse;
-    private Boolean harDeltBosted;
 
-    private Boolean harBostedsadresse;
-    private Boolean harKontaktadresse;
-    private Boolean harOppholdsadresse;
 
     @Data
     @Builder
@@ -54,12 +50,20 @@ public class PersonRequest {
     @NoArgsConstructor(force = true)
     public static class AdresseRequest {
 
+        private AdressebeskyttelseDTO.AdresseBeskyttelse addressebeskyttelse;
+
         private String kommunenummer;
         private String postnummer;
         private String bydelsnummer;
+
         private Boolean harBydelsnummer;
         private Boolean harUtenlandsadresse;
-        private Boolean harMatrikkelAdresse;
+        private Boolean harMatrikkeladresse;
         private Boolean harUkjentAdresse;
+        private Boolean harDeltBosted;
+
+        private Boolean harBostedsadresse;
+        private Boolean harKontaktadresse;
+        private Boolean harOppholdsadresse;
     }
 }
