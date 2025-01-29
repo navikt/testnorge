@@ -42,7 +42,8 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch(`${path}.skjema`))
 
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk(Kodeverk.BEHANDLINGSTEMA)
-
+	console.log('dokumenterFraMal: ', dokumenterFraMal) //TODO - SLETT MEG
+	//TODO: Dokumenter fra mal funker ikke alltid??
 	useEffect(() => {
 		if (dokumenterFraMal !== prevDokumenterFraMal && dokumenterFraMal?.length > 0) {
 			const vedleggFraMal = []
