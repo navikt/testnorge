@@ -3,6 +3,7 @@ package no.nav.testnav.apps.syntsykemeldingapi.provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.*;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
+import no.nav.testnav.libs.DollySpringBootTest;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -13,12 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
 
@@ -30,12 +29,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@ActiveProfiles("test")
+@DollySpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureWireMock(port = 0)
 class SyntSykemeldingControllerIntegrationTest {
@@ -71,7 +68,7 @@ class SyntSykemeldingControllerIntegrationTest {
     private SykemeldingConsumer sykemeldingConsumer;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         when(tokenExchange.exchange(any(ServerProperties.class)))
                 .thenReturn(Mono.just(new AccessToken()));
     }

@@ -9,8 +9,6 @@ includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/servlet-insecure-security'
-includeBuild '../../libs/testing'
-includeBuild '../../.github/workflows'
 
 develocity {
     buildScan {

@@ -9,43 +9,34 @@ import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.testnav.libs.DollySpringBootTest;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Slf4j
+@DollySpringBootTest
 @ActiveProfiles({ "test", "integrationtest" })
-@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@Slf4j
 class OpensearchControllerTest {
 
     private static final String BASE_URL = "/api/v1/elastic";

@@ -1,13 +1,11 @@
 package no.nav.testnav.proxies.fullmaktproxy;
 
+import no.nav.testnav.libs.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@DollySpringBootTest
 class ApplicationContextTest {
 
     @Test

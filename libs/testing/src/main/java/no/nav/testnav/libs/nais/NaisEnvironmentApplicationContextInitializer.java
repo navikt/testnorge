@@ -51,9 +51,25 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false");
 
         // Setting dummy placeholders.
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", DUMMY);
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", DUMMY);
-        properties.putIfAbsent("TOKEN_X_ISSUER", DUMMY);
+        Stream
+                .of(
+                        "ALTINN_API_KEY",
+                        "ALTINN_URL",
+                        "AZURE_OPENID_CONFIG_ISSUER",
+                        "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", // CATO: Remove?
+                        "CRYPTOGRAPHY_SECRET", // Used by bruker-service only.
+                        "IDPORTEN_CLIENT_ID", // Used by dolly-frontend only.
+                        "IDPORTEN_CLIENT_JWK", // Used by dolly-frontend only.
+                        "JWT_SECRET", // Used by bruker-service only.
+                        "MASKINPORTEN_CLIENT_ID",
+                        "MASKINPORTEN_CLIENT_JWK",
+                        "MASKINPORTEN_SCOPES",
+                        "MASKINPORTEN_WELL_KNOWN_URL",
+                        "TOKEN_X_CLIENT_ID",
+                        "TOKEN_X_ISSUER",
+                        "spring.cloud.vault.token" // For apps using no.nav.testnav.libs:vault.
+                )
+                .forEach(key -> properties.putIfAbsent(key, DUMMY));
 
     }
 

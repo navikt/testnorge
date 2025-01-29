@@ -1,32 +1,27 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
+import no.nav.testnav.libs.DollySpringBootTest;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.AlderSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.mockito.Mockito.when;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
 class PersonSearchConsumerTest {
 
@@ -52,7 +47,7 @@ class PersonSearchConsumerTest {
 
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         when(tokenExchange.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
@@ -97,7 +92,7 @@ class PersonSearchConsumerTest {
     }
 
     @Test
-    void shouldHandleErrorResponse(){
+    void shouldHandleErrorResponse() {
         stubPdlPersonErrorResponse();
         var response = personSearchConsumer.search(REQUEST);
         assertThat(response).isNull();

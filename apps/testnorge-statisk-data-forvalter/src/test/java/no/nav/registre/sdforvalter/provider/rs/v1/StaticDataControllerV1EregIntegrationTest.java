@@ -3,7 +3,6 @@ package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.registre.sdforvalter.database.model.EregModel;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
@@ -14,40 +13,33 @@ import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.Gruppe;
 import no.nav.registre.sdforvalter.domain.Opprinnelse;
+import no.nav.testnav.libs.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(
-        webEnvironment = RANDOM_PORT
-)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
+@DollySpringBootTest
 @AutoConfigureMockMvc()
 @AutoConfigureWireMock(port = 0)
-@Import(JwtDecoderConfig.class)
+//@Import(JwtDecoderConfig.class)
 class StaticDataControllerV1EregIntegrationTest {
+
     private static final String EREG_API = "/api/v1/faste-data/ereg";
+
     @Autowired
     private MockMvc mvc;
 
@@ -64,7 +56,7 @@ class StaticDataControllerV1EregIntegrationTest {
     private GruppeRepository gruppeRepository;
 
     @AfterEach
-    public void cleanUp() {
+    void cleanUp() {
         eregRepository.deleteAll();
         gruppeRepository.deleteAll();
         opprinnelseRepository.deleteAll();
@@ -300,4 +292,5 @@ class StaticDataControllerV1EregIntegrationTest {
                 .comparingOnlyFields("navn")
                 .isEqualTo(new OpprinnelseModel(altinn));
     }
+
 }

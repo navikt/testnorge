@@ -1,9 +1,9 @@
 package no.nav.testnav.proxies.sykemeldingproxy;
 
+import no.nav.testnav.libs.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -12,19 +12,16 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOAuth2Login;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@DollySpringBootTest(
         properties = "consumers.sykemelding.url=http://localhost:${wiremock.server.port}"
 )
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureWebTestClient(timeout = "PT1M")
-@ActiveProfiles("test")
 class RouteLocatorConfigTest {
 
     @Autowired

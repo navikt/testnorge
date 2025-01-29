@@ -1,43 +1,29 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.*;
 import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.testnav.libs.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
 import java.util.Set;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DollySpringBootTest
 @TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWireMock(port = 0)
 class PensjonforvalterConsumerTest {

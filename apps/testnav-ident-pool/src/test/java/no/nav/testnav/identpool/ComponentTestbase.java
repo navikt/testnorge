@@ -7,19 +7,16 @@ import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.repository.IdentRepository;
+import no.nav.testnav.libs.DollySpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -29,9 +26,7 @@ import java.time.LocalDate;
 
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {ComponentTestConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DollySpringBootTest(classes = {ComponentTestConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class ComponentTestbase {
     protected static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
@@ -55,7 +50,7 @@ public abstract class ComponentTestbase {
     private HttpEntityBuilder httpEntityBuilder;
 
     @BeforeEach
-    public void initEntityBuilder() {
+    void initEntityBuilder() {
         httpEntityBuilder = new HttpEntityBuilder();
     }
 
@@ -71,28 +66,28 @@ public abstract class ComponentTestbase {
                 .build();
     }
 
-    protected <T> ResponseEntity<T> doGetRequest(URI uri, HttpEntity httpEntity, Class<T> responseEntity) {
+    protected <T> ResponseEntity<T> doGetRequest(URI uri, HttpEntity<?> httpEntity, Class<T> responseEntity) {
         return doRequest(uri, HttpMethod.GET, httpEntity, responseEntity);
     }
 
-    protected HttpEntity createBodyEntity(String body) {
+    protected HttpEntity<?> createBodyEntity(String body) {
         return httpEntityBuilder.withBody(body).build();
     }
 
-    private <T> ResponseEntity<T> doRequest(URI uri, HttpMethod method, HttpEntity httpEntity, Class<T> responseEntity) {
+    private <T> ResponseEntity<T> doRequest(URI uri, HttpMethod method, HttpEntity<?> httpEntity, Class<T> responseEntity) {
         return testRestTemplate.exchange(uri, method, httpEntity, responseEntity);
     }
 
-    private class HttpEntityBuilder {
+    private static class HttpEntityBuilder {
         private Object body;
-        private MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        private final MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 
         HttpEntityBuilder withBody(Object body) {
             this.body = body;
             return this;
         }
 
-        HttpEntity build() {
+        HttpEntity<?> build() {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
@@ -106,4 +101,5 @@ public abstract class ComponentTestbase {
             return new HttpEntity<>(httpHeaders);
         }
     }
+
 }

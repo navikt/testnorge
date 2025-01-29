@@ -13,16 +13,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   flyway:
     enabled: true
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-    vault:
-      token: dummy
-      enabled: false
-      kv:
-        enabled: false
-
 
 consumers:
   generer-navn-service:
@@ -65,9 +55,6 @@ aareg:
   pageSize: 2
 
 controller.staticdata.cache.hours: 24
-AZURE_APP_CLIENT_ID: dummy
 
 KAFKA_SCHEMA_REGISTRY: http://localhost:9009
 kafka.groupid: organisasjon-forvalter-v1
-
-TOKEN_X_ISSUER: dummy
