@@ -47,10 +47,9 @@ public class OpensearchController {
 
     @GetMapping("/identer")
     @Operation(description = "Henter identer som matcher søk i request, registre kun")
-    public SearchResponse getIdenterMed(@RequestParam ElasticTyper... typer) {
+    public Mono<SearchResponse> getIdenterMed(@RequestParam ElasticTyper... typer) {
 
-//        return openSearchService.getTyper(typer);
-        return null;
+        return openSearchService.getTyper(typer);
     }
 
     @PostMapping("/identer")

@@ -1,6 +1,5 @@
 package no.nav.testnav.dollysearchservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,8 @@ import no.nav.testnav.dollysearchservice.domain.ElasticTyper;
 import no.nav.testnav.dollysearchservice.dto.Kategori;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.dto.SearchResponse;
+import no.nav.testnav.dollysearchservice.model.BestillingElasticRepository;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticBestilling;
-import org.apache.commons.lang3.StringUtils;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.unit.TimeValue;
 import org.opensearch.index.query.BoolQueryBuilder;
@@ -22,11 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -40,7 +36,7 @@ public class OpenSearchService {
 
     private final RestHighLevelClient restHighLevelClient;
     private final ElasticParamsConsumer elasticParamsConsumer;
-    //    private final BestillingElasticRepository bestillingElasticRepository;
+    private final BestillingElasticRepository bestillingElasticRepository;
     private final ElasticSearchConsumer elasticSearchConsumer;
     private final ObjectMapper objectMapper;
 
@@ -61,8 +57,7 @@ public class OpenSearchService {
 
     public List<ElasticBestilling> search(String ident) {
 
-//        return bestillingElasticRepository.getAllByIdenterIn(List.of(ident));
-        return List.of();
+        return bestillingElasticRepository.getAllByIdenterIn(List.of(ident));
     }
 
     public List<Kategori> getTyper() {

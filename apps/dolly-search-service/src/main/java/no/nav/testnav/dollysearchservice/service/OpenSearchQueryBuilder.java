@@ -10,6 +10,7 @@ import org.opensearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
 
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
@@ -66,9 +67,9 @@ public class OpenSearchQueryBuilder {
                 .must(getRandomScoreQueryBuilder())
                 .must(addDollyIdentifier());
 
-//        Arrays.stream(typer)
-//                .map(OpenSearchQueryBuilder::getFagsystemQuery)
-//                .forEach(queryBuilder::must);
+        Arrays.stream(typer)
+                .map(OpenSearchQueryBuilder::getFagsystemQuery)
+                .forEach(queryBuilder::must);
 
         return queryBuilder;
     }
