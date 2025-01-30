@@ -61,11 +61,21 @@ public class OpenSearchQueryBuilder {
         return queryBuilder;
     }
 
-    public static BoolQueryBuilder buildTyperQuery(ElasticTyper[] typer) {
+    public static BoolQueryBuilder buildPersonQuery(SearchRequest request) {
 
         var queryBuilder = QueryBuilders.boolQuery()
                 .must(getRandomScoreQueryBuilder())
                 .must(addDollyIdentifier());
+
+            setPersonQuery(queryBuilder, request);
+
+        return queryBuilder;
+    }
+
+    public static BoolQueryBuilder buildTyperQuery(ElasticTyper[] typer) {
+
+        var queryBuilder = QueryBuilders.boolQuery()
+                .must(getRandomScoreQueryBuilder());
 
         Arrays.stream(typer)
                 .map(OpenSearchQueryBuilder::getFagsystemQuery)
