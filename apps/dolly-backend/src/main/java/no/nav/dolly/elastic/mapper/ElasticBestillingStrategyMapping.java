@@ -70,17 +70,14 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                @Override
                                public void mapAtoB(RsDollyBestilling bestilling, ElasticBestilling elasticBestilling, MappingContext context) {
 
-                                   if (nonNull(elasticBestilling.getDokarkiv())) {
-                                       elasticBestilling.getDokarkiv()
-                                               .forEach(arkiv -> arkiv.getDokumenter()
-                                                       .forEach(dokument -> dokument.getDokumentvarianter()
-                                                               .forEach(dokumentVariant -> dokumentVariant.setFysiskDokument(null))));
-                                   }
+                                   elasticBestilling.getDokarkiv()
+                                           .forEach(arkiv -> arkiv.getDokumenter()
+                                                   .forEach(dokument -> dokument.getDokumentvarianter()
+                                                           .forEach(dokumentVariant -> dokumentVariant.setFysiskDokument(null))));
 
                                    if (nonNull(elasticBestilling.getHistark())) {
-                                       elasticBestilling.getHistark()
-                                               .forEach(arkiv -> arkiv.getDokumenter()
-                                                       .forEach(dokument -> dokument.setFysiskDokument(null)));
+                                       elasticBestilling.getHistark().getDokumenter()
+                                               .forEach(dokument -> dokument.setFysiskDokument(null));
                                    }
                                }
                            }

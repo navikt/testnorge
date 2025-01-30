@@ -437,7 +437,6 @@ public class BestillingService {
 
     private void lagreDokumenter(RsDollyBestilling request) {
 
-        if (nonNull(request.getDokarkiv())) {
             request.getDokarkiv()
                     .forEach(tema -> tema
                             .getDokumenter().forEach(dokument ->
@@ -447,17 +446,15 @@ public class BestillingService {
                                             dokumentVariant.setFysiskDokument(null);
                                         }
                                     })));
-        }
 
         if (nonNull(request.getHistark())) {
-            request.getHistark()
-                    .forEach(tema -> tema
-                            .getDokumenter().forEach(dokument -> {
+            request.getHistark().getDokumenter()
+                    .forEach(dokument -> {
                                 if (isNotBlank(dokument.getFysiskDokument())) {
                                     dokument.setDokumentReferanse(lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK));
                                     dokument.setFysiskDokument(null);
                                 }
-                            }));
+                            });
         }
     }
 

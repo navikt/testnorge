@@ -73,7 +73,7 @@ public class RsDollyBestilling {
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
     private List<RsDokarkiv> dokarkiv;
-    private List<RsHistark> histark;
+    private RsHistark histark;
     private RsSykemelding sykemelding;
     private RsTpsMessaging tpsMessaging;
     private BankkontoData bankkonto;
@@ -136,13 +136,6 @@ public class RsDollyBestilling {
             dokarkiv = new ArrayList<>();
         }
         return dokarkiv;
-    }
-
-    public List<RsHistark> getHistark() {
-        if (isNull(histark)) {
-            histark = new ArrayList<>();
-        }
-        return histark;
     }
 
     @JsonIgnore

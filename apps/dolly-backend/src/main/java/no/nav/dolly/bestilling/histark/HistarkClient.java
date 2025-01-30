@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.HISTARK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
@@ -54,7 +55,7 @@ public class HistarkClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (!bestilling.getHistark().isEmpty()) {
+        if (nonNull(bestilling.getHistark())) {
 
             updateProgress(progress);
 
@@ -62,8 +63,8 @@ public class HistarkClient implements ClientRegister {
                             dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre)
                     .flatMap(exists -> {
                         if ((!exists)) {
-                            return Flux.fromIterable(bestilling.getHistark())
-                                    .flatMap(arkiv -> Mono.just(buildRequest(arkiv, dollyPerson.getIdent(), progress.getBestilling().getId()))
+                            return Flux.fromIterable(bestilling.getHistark().getDokumenter())
+                                    .flatMap(dokument -> Mono.just(buildRequest(dokument, dollyPerson.getIdent(), progress.getBestilling().getId()))
                                             .flatMapMany(request -> histarkConsumer.postHistark(request)
                                                     .collectList()
                                                     .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))));
@@ -130,13 +131,13 @@ public class HistarkClient implements ClientRegister {
         }
     }
 
-    private HistarkRequest buildRequest(RsHistark rsHistark, String ident, Long bestillingId) {
+    private HistarkRequest buildRequest(RsHistark.RsHistarkDokument dokument, String ident, Long bestillingId) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personIdent", ident);
         context.setProperty("dokumenter", dokumentService.getDokumenterByBestilling(bestillingId));
 
-        return mapperFacade.map(rsHistark, HistarkRequest.class, context);
+        return mapperFacade.map(dokument, HistarkRequest.class, context);
     }
 
     private void saveTransaksjonId(List<HistarkResponse> histarkIds, String ident, Long bestillingId) {

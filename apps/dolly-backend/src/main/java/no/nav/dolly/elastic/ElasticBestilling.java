@@ -80,7 +80,7 @@ public class ElasticBestilling implements Persistable<Long> {
     @Field
     private List<RsDokarkiv> dokarkiv;
     @Field
-    private List<RsHistark> histark;
+    private RsHistark histark;
     @Field
     private RsSykemelding sykemelding;
     @Field

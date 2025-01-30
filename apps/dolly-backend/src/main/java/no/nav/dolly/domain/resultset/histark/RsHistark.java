@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,8 +28,15 @@ public class RsHistark {
 
 
     @Schema(description = "Dokumenter som skal sendes for identen til histark")
-    @Builder.Default
-    private List<RsHistarkDokument> dokumenter = new ArrayList<>();
+    private List<RsHistarkDokument> dokumenter;
+
+    public List<RsHistarkDokument> getDokumenter() {
+
+        if (isNull(dokumenter)) {
+            dokumenter = new ArrayList<>();
+        }
+        return dokumenter;
+    }
 
     @Getter
     @Setter

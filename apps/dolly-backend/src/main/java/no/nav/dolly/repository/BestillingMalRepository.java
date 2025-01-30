@@ -21,7 +21,6 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
     @Query(value = """
             from BestillingMal b
             where b.bestKriterier like '%"dokarkiv":{%'
-            or b.bestKriterier like '%"histark":{%'
             order by b.id
             """)
     Iterable<BestillingMal> findAllByDokument();

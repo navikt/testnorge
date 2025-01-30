@@ -17,6 +17,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Component
@@ -57,8 +58,18 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getSigrunstubPensjonsgivende().addAll(request.getSigrunstubPensjonsgivende());
                         akkumulert.getYrkesskader().addAll(request.getYrkesskader());
                         akkumulert.getDokarkiv().addAll(request.getDokarkiv());
-                        akkumulert.getHistark().addAll(request.getHistark());
-                        if (nonNull(akkumulert.getSkattekort())) {
+                        if (nonNull(request.getHistark())) {
+                            if (isNull(akkumulert.getHistark())) {
+                                akkumulert.setHistark(request.getHistark());
+                            } else {
+                                akkumulert.getHistark().getDokumenter()
+                                        .addAll(request.getHistark().getDokumenter());
+                            }
+                        }
+                        if (nonNull(request.getSkattekort())) {
+                            if(isNull(akkumulert.getSkattekort())) {
+                                akkumulert.setSkattekort(request.getSkattekort());
+                            }
                             akkumulert.getSkattekort().getArbeidsgiverSkatt()
                                     .addAll(request.getSkattekort().getArbeidsgiverSkatt());
                         }

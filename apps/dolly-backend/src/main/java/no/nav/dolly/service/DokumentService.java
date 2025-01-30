@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
+
 @Service
 @RequiredArgsConstructor
 public class DokumentService {
@@ -45,10 +47,9 @@ public class DokumentService {
                                                 .map(RsDokarkiv.Dokument::getDokumentvarianter)
                                                 .flatMap(Collection::stream)
                                                 .map(RsDokarkiv.Dokument.DokumentVariant::getDokumentReferanse),
-                                        kriterier.getHistark().stream()
-                                                .map(RsHistark::getDokumenter)
-                                                .flatMap(Collection::stream)
-                                                .map(RsHistark.RsHistarkDokument::getDokumentReferanse)
+                                        nonNull(kriterier.getHistark()) ?
+                                                kriterier.getHistark().getDokumenter().stream()
+                                                        .map(RsHistark.RsHistarkDokument::getDokumentReferanse) : Stream.empty()
                                 )
                                 .collect(Collectors.toSet())
                 )

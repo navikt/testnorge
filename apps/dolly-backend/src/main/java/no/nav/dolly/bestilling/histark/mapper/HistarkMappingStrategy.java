@@ -32,14 +32,12 @@ public class HistarkMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(RsHistark.class, HistarkRequest.class)
+        factory.classMap(RsHistark.RsHistarkDokument.class, HistarkRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsHistark histark, HistarkRequest histarkRequest, MappingContext context) {
+                    public void mapAtoB(RsHistark.RsHistarkDokument dokument, HistarkRequest histarkRequest, MappingContext context) {
 
                         var dokumenter = (List<Dokument>) context.getProperty("dokumenter");
-
-                        histark.getDokumenter().forEach(dokument -> {
 
                             var fysiskDokument = dokumenter.stream()
                                     .filter(dok -> dokument.getDokumentReferanse().equals(dok.getId()))
@@ -69,7 +67,6 @@ public class HistarkMappingStrategy implements MappingStrategy {
                                             .temakoder(String.join(",", dokument.getTemakoder()))
                                             .build())
                                     .build());
-                        });
                     }
                 })
                 .register();

@@ -57,7 +57,7 @@ public class BestilteKriterier {
     private List<RsDokarkiv> dokarkiv;
     private List<RsFullmakt> fullmakt;
     private RsMedl medl;
-    private List<RsHistark> histark;
+    private RsHistark histark;
     private RsTpsMessaging tpsMessaging;
     private BankkontoData bankkonto;
     private RsSkjerming skjerming;
