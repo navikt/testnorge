@@ -35,6 +35,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.HISTARK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -61,8 +62,8 @@ public class HistarkClient implements ClientRegister {
 
             return Flux.just(!transaksjonMappingService.existAlready(HISTARK,
                             dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre)
-                    .flatMap(exists -> {
-                        if ((!exists)) {
+                    .flatMap(isSendInn -> {
+                        if (isTrue(isSendInn)) {
                             return Flux.fromIterable(bestilling.getHistark().getDokumenter())
                                     .flatMap(dokument -> Mono.just(buildRequest(dokument, dollyPerson.getIdent(), progress.getBestilling().getId()))
                                             .flatMapMany(request -> histarkConsumer.postHistark(request)
