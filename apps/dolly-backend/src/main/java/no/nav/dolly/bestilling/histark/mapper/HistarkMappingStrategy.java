@@ -45,9 +45,10 @@ public class HistarkMappingStrategy implements MappingStrategy {
                                     .findFirst()
                                     .orElse(PDF_VEDLEGG);
 
-                            histarkRequest.getHistarkDokumenter().add(HistarkRequest.HistarkDokument.builder()
-                                    .file(fysiskDokument)
-                                    .metadata(HistarkRequest.HistarkDokument.HistarkMetadata.builder()
+                            histarkRequest
+                                    .setFile(fysiskDokument)
+                                    .setMetadata(
+                                            HistarkRequest.HistarkMetadata.builder()
                                             .antallSider(String.valueOf(dokument.getAntallSider()))
                                             .brukerident(((String) context.getProperty(PERSON_IDENT)))
                                             .enhetsnavn(dokument.getEnhetsnavn())
@@ -58,15 +59,11 @@ public class HistarkMappingStrategy implements MappingStrategy {
                                             .klage("")
                                             .sjekksum(calculateBinaryChecksum(fysiskDokument))
                                             .skanningstidspunkt(dokument.getSkanningsTidspunkt().format(dateTimeFormatter))
-                                            .startAar(Optional.ofNullable(dokument.getStartYear())
-                                                    .map(String::valueOf)
-                                                    .orElseGet(() -> String.valueOf(dokument.getStartAar().getYear())))
-                                            .sluttAar(Optional.ofNullable(dokument.getSluttAar())
-                                                    .map(year -> String.valueOf(year.getYear()))
-                                                    .orElse(""))
+                                            .startAar(String.valueOf(dokument.getStartYear()))
+                                            .sluttAar(String.valueOf(dokument.getEndYear()))
                                             .temakoder(String.join(",", dokument.getTemakoder()))
                                             .build())
-                                    .build());
+                                    .build();
                     }
                 })
                 .register();

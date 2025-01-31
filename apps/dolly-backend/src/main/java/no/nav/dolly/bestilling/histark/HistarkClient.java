@@ -66,9 +66,9 @@ public class HistarkClient implements ClientRegister {
                         if (isTrue(isSendInn)) {
                             return Flux.fromIterable(bestilling.getHistark().getDokumenter())
                                     .flatMap(dokument -> Mono.just(buildRequest(dokument, dollyPerson.getIdent(), progress.getBestilling().getId()))
-                                            .flatMapMany(request -> histarkConsumer.postHistark(request)
-                                                    .collectList()
-                                                    .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))));
+                                            .flatMap(histarkConsumer::postHistark))
+                                    .collectList()
+                                    .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status));
                         } else {
                             return Mono.just("OK");
                         }

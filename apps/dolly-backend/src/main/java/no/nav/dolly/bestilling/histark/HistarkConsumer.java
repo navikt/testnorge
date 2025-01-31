@@ -11,7 +11,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -40,14 +40,14 @@ public class HistarkConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "histark-opprett" })
-    public Flux<HistarkResponse> postHistark(HistarkRequest histarkRequest) {
+    @Timed(name = "providers", tags = {"operation", "histark-opprett"})
+    public Mono<HistarkResponse> postHistark(HistarkRequest histarkRequest) {
 
         var callId = getNavCallId();
         log.info("Sender histark melding: callId: {}, consumerId: {}\n{}", callId, CONSUMER, histarkRequest);
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new HistarkPostCommand(webClient, histarkRequest,
+                .flatMap(token -> new HistarkPostCommand(webClient, histarkRequest,
                         token.getTokenValue()).call());
     }
 

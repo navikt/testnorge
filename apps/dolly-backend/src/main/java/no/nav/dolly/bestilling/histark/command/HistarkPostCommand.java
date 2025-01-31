@@ -21,28 +21,25 @@ import static org.springframework.web.reactive.function.BodyInserters.fromFormDa
 
 @Slf4j
 @RequiredArgsConstructor
-public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
+public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
 
     private final WebClient webClient;
     private final HistarkRequest histarkRequest;
     private final String token;
 
-
     @Override
-    public Flux<HistarkResponse> call() {
+    public Mono<HistarkResponse> call() {
 
-        return Flux.fromIterable(histarkRequest.getHistarkDokumenter())
-                .flatMap(histarkDokument -> {
-                    log.info("Sender metadata: {}", histarkDokument.getMetadata().toString());
+                    log.info("Sender metadata: {}", histarkRequest.getMetadata().toString());
                     return webClient.post()
                             .uri(builder ->
                                     builder.path("/api/saksmapper/import")
-                                            .queryParam("metadata", histarkDokument.getMetadata().toString())
+                                            .queryParam("metadata", histarkRequest.getMetadata().toString())
                                             .build())
                             .header(AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.MULTIPART_FORM_DATA)
-                            .body(fromFormData("metadata", histarkDokument.getMetadata().toString())
-                                    .with("file", Arrays.toString(histarkDokument.getFile().getBytes(StandardCharsets.UTF_8))))
+                            .body(fromFormData("metadata", histarkRequest.getMetadata().toString())
+                                    .with("file", Arrays.toString(histarkRequest.getFile().getBytes(StandardCharsets.UTF_8))))
                             .exchangeToMono(clientResponse -> {
                                 log.info("Status fra histark: {}", clientResponse.statusCode());
                                 log.info("Responseheaders fra histark: {}", clientResponse.headers().asHttpHeaders());
@@ -58,6 +55,5 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                                     .filter(WebClientFilter::is5xxException))
                             .doOnError(WebClientFilter::logErrorMessage)
                             .onErrorResume(throwable -> Mono.empty());
-                });
     }
 }

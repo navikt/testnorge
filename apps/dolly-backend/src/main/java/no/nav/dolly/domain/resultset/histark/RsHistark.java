@@ -72,16 +72,6 @@ public class RsHistark {
                 Konsument må sette journalfoerendeEnhet dersom tjenesten skal ferdigstille journalføringen.""")
         private String enhetsnummer;
 
-        @Schema(description = "Deprecated, bruk startYear")
-        @Deprecated
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
-        private LocalDate startAar;
-
-        @Schema(description = "Deprecated, bruk endYear")
-        @Deprecated
-        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
-        private LocalDate sluttAar;
-
         @Schema(description = "Startåret for saksmappen, for eksempel 2010")
         private Integer startYear;
 
