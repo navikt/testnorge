@@ -45,25 +45,22 @@ public class HistarkMappingStrategy implements MappingStrategy {
                                     .findFirst()
                                     .orElse(PDF_VEDLEGG);
 
-                            histarkRequest
-                                    .setFile(fysiskDokument)
-                                    .setMetadata(
-                                            HistarkRequest.HistarkMetadata.builder()
-                                            .antallSider(String.valueOf(dokument.getAntallSider()))
-                                            .brukerident(((String) context.getProperty(PERSON_IDENT)))
-                                            .enhetsnavn(dokument.getEnhetsnavn())
-                                            .enhetsnummer(dokument.getEnhetsnummer())
-                                            .filnavn(dokument.getTittel())
-                                            .skanner(dokument.getSkanner())
-                                            .skannested(dokument.getSkannested())
-                                            .klage("")
-                                            .sjekksum(calculateBinaryChecksum(fysiskDokument))
-                                            .skanningstidspunkt(dokument.getSkanningsTidspunkt().format(dateTimeFormatter))
-                                            .startAar(String.valueOf(dokument.getStartYear()))
-                                            .sluttAar(String.valueOf(dokument.getEndYear()))
-                                            .temakoder(String.join(",", dokument.getTemakoder()))
-                                            .build())
-                                    .build();
+                            histarkRequest.setFile(fysiskDokument);
+                            histarkRequest.setMetadata(HistarkRequest.HistarkMetadata.builder()
+                                    .antallSider(String.valueOf(dokument.getAntallSider()))
+                                    .brukerident(((String) context.getProperty(PERSON_IDENT)))
+                                    .enhetsnavn(dokument.getEnhetsnavn())
+                                    .enhetsnummer(dokument.getEnhetsnummer())
+                                    .filnavn(dokument.getTittel())
+                                    .skanner(dokument.getSkanner())
+                                    .skannested(dokument.getSkannested())
+                                    .klage("")
+                                    .sjekksum(calculateBinaryChecksum(fysiskDokument))
+                                    .skanningstidspunkt(dokument.getSkanningsTidspunkt().format(dateTimeFormatter))
+                                    .startAar(String.valueOf(dokument.getStartYear()))
+                                    .sluttAar(String.valueOf(dokument.getEndYear()))
+                                    .temakoder(String.join(",", dokument.getTemakoder()))
+                                    .build());
                     }
                 })
                 .register();
