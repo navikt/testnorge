@@ -150,7 +150,7 @@ public class HistarkClient implements ClientRegister {
                         .ident(ident)
                         .bestillingId(bestillingId)
                         .transaksjonId(toJson(histarkIds.stream()
-                                .map(HistarkResponse::getHistarkId)
+                                .map(HistarkResponse::getId)
                                 .map(histarkId -> HistarkTransaksjon.builder()
                                         .dokumentInfoId(histarkId)
                                         .build())

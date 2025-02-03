@@ -39,20 +39,15 @@ public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(fromMultipartData(body))
-                .exchangeToMono(clientResponse -> {
-                    log.info("Status fra histark: {}", clientResponse.statusCode());
-                    log.info("Responseheaders fra histark: {}", clientResponse.headers().asHttpHeaders());
-                    if (clientResponse.statusCode().isError()) {
-                        return Mono.just(HistarkResponse.builder()
-                                .feilmelding("Feil ved opprettelse av saksmappe, status: " + clientResponse.statusCode())
-                                .build());
-                    }
-                    return clientResponse.bodyToMono(HistarkResponse.class);
-                })
+                .retrieve()
+                .bodyToMono(HistarkResponse.class)
                 .doOnNext(response -> log.info("Responsebody fra histark: {}", response))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(throwable -> Mono.empty());
+                .onErrorResume(throwable -> Mono.just(HistarkResponse.builder()
+                        .status(WebClientFilter.getStatus(throwable))
+                        .feilmelding(WebClientFilter.getMessage(throwable))
+                        .build()));
     }
 }
