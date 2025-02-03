@@ -14,13 +14,14 @@ import {
 	SivilstandData,
 	VergemaalValues,
 } from '@/components/fagsystem/pdlf/PdlTypes'
-import { addMonths, isAfter, setDate } from 'date-fns'
+import { addDays, addMonths, isAfter, setDate } from 'date-fns'
 import subYears from 'date-fns/subYears'
 import {
 	initialArbeidsavtale,
 	initialArbeidsgiverOrg,
 	initialFartoy,
 } from '@/components/fagsystem/aareg/form/initialValues'
+import { initialValuesDetaljertSykemelding } from '@/components/fagsystem/sykdom/form/initialValues'
 
 export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	const initialValuesMal = Object.assign({}, mal.bestilling)
@@ -90,6 +91,11 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 			initialValuesMal.tpsMessaging.utenlandskBankkonto,
 		)
 		delete initialValuesMal.tpsMessaging.utenlandskBankkonto
+	}
+	if (initialValuesMal.sykemelding?.syntSykemelding) {
+		initialValuesMal.sykemelding = getUpdatedSykemelding(
+			initialValuesMal.sykemelding.syntSykemelding,
+		)
 	}
 
 	initialValuesMal.environments = filterMiljoe(environments, mal.bestilling?.environments)
@@ -417,6 +423,15 @@ const getUpdatedBankkonto = (bankkonto: any) => {
 		}
 	}
 	return bankkonto
+}
+
+const getUpdatedSykemelding = (syntSykemelding: any) => {
+	let updatedSykemelding = initialValuesDetaljertSykemelding
+	updatedSykemelding.detaljertSykemelding.startDato = new Date()
+	updatedSykemelding.detaljertSykemelding.mottaker.orgNr = syntSykemelding.orgnummer
+	updatedSykemelding.detaljertSykemelding.perioder[0].fom = addDays(syntSykemelding.startDato, -7)
+	updatedSykemelding.detaljertSykemelding.perioder[0].tom = addDays(syntSykemelding.startDato, -1)
+	return updatedSykemelding
 }
 
 const updateKontaktType = (kontaktinfo: any) => {
