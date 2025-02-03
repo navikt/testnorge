@@ -14,7 +14,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
-import { FileUpload, VStack } from '@navikt/ds-react'
+import { FileUpload, Heading, VStack } from '@navikt/ds-react'
 
 type Vedlegg = {
 	file: File
@@ -46,6 +46,7 @@ const HistarkForm = () => {
 		handleVedleggChange(files)
 	}, [files])
 
+	//TODO: Tilpasses for flere vedlegg? Eller gaa tilbake til ett vedlegg per histark?
 	const handleVedleggChange = (filer: Vedlegg[]) => {
 		setFiles(filer)
 		formMethods.setValue('histark.vedlegg', filer)
@@ -84,7 +85,6 @@ const HistarkForm = () => {
 						name="histark.dokumenter"
 						header="Dokument"
 						newEntry={initialHistark}
-						maxEntries={1} //Foreløpig er bare 1 innsending støttet, backend har mulighet for flere
 						canBeEmpty={false}
 					>
 						{(path: string) => (
@@ -118,13 +118,13 @@ const HistarkForm = () => {
 									<FormSelect
 										name={`${path}.startYear`}
 										label="Startår"
-										options={getYearRangeOptions(1980, 2019)}
+										options={getYearRangeOptions(1980, 2025)}
 										afterChange={() => formMethods.trigger(path)}
 									/>
 									<FormSelect
 										name={`${path}.endYear`}
 										label="Sluttår"
-										options={getYearRangeOptions(1980, 2019)}
+										options={getYearRangeOptions(1980, 2025)}
 										afterChange={() => formMethods.trigger(path)}
 									/>
 									<FormDatepicker
@@ -149,21 +149,32 @@ const HistarkForm = () => {
 										<VStack gap="4" style={{ marginTop: '10px' }}>
 											<FileUpload.Dropzone
 												label="Last opp vedlegg til dokumentet"
+												// description={`Du kan laste opp PDF-filer. Maks 10 filer.`}
 												accept=".pdf"
-												fileLimit={{ max: 1, current: files.length }}
+												// fileLimit={{ max: 10, current: files.length }}
 												multiple={false}
 												onSelect={setFiles}
 											/>
-											{files.map((file: Vedlegg) => (
-												<FileUpload.Item
-													key={file.file?.name}
-													file={file.file}
-													button={{
-														action: 'delete',
-														onClick: () => setFiles([]),
-													}}
-												/>
-											))}
+											{files?.length > 0 && (
+												<VStack gap="2">
+													<Heading level="3" size="xsmall">
+														{`Vedlegg (${files?.length})`}
+													</Heading>
+													<VStack as="ul" gap="3">
+														{files.map((file: Vedlegg) => (
+															<FileUpload.Item
+																as="li"
+																key={file.file?.name}
+																file={file.file}
+																button={{
+																	action: 'delete',
+																	onClick: () => setFiles([]),
+																}}
+															/>
+														))}
+													</VStack>
+												</VStack>
+											)}
 										</VStack>
 									</div>
 									<DisplayFormError path={`${path}.tittel`} errorMessage={'Vedlegg er påkrevd'} />

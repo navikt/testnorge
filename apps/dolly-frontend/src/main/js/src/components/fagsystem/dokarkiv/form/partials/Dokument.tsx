@@ -4,7 +4,7 @@ import React, { BaseSyntheticEvent, useContext, useEffect, useRef, useState } fr
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import Digitalinnsending from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
-import { FileObject, FileUpload, Heading, VStack } from '@navikt/ds-react'
+import { Alert, FileObject, FileUpload, Heading, VStack } from '@navikt/ds-react'
 import Loading from '@/components/ui/loading/Loading'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
@@ -27,8 +27,11 @@ enum Kodeverk {
 export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const malId = opts?.mal?.id
-	const { dokumenter: dokumenterFraMal, loading: loadingDokumenterFraMal } =
-		useDokumenterFraMal(malId)
+	const {
+		dokumenter: dokumenterFraMal,
+		loading: loadingDokumenterFraMal,
+		error: errorDokumenterFraMal,
+	} = useDokumenterFraMal(malId)
 
 	const prevDokumenterFraMalRef = useRef(dokumenterFraMal)
 	const prevDokumenterFraMal = prevDokumenterFraMalRef.current
@@ -42,13 +45,12 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch(`${path}.skjema`))
 
 	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk(Kodeverk.BEHANDLINGSTEMA)
-	console.log('dokumenterFraMal: ', dokumenterFraMal) //TODO - SLETT MEG
-	//TODO: Dokumenter fra mal funker ikke alltid??
+
 	useEffect(() => {
 		if (dokumenterFraMal !== prevDokumenterFraMal && dokumenterFraMal?.length > 0) {
 			const vedleggFraMal = []
-			dokumenterFraMal.forEach((malDokument: any, idx: number) => {
-				dokumenter?.forEach((dokument: any) => {
+			dokumenterFraMal.forEach((malDokument: any) => {
+				dokumenter?.forEach((dokument: any, idx: number) => {
 					dokument?.dokumentvarianter?.forEach((variant: any, idy: number) => {
 						if (variant?.dokumentReferanse === malDokument?.id) {
 							formMethods.setValue(
@@ -63,11 +65,13 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 				const fileName = dokumenter?.find((dok) =>
 					dok?.dokumentvarianter?.find((variant) => variant.dokumentReferanse === malDokument.id),
 				)?.tittel
-				vedleggFraMal.push({
-					file: new File([malDokument.contents], fileName, { type: 'application/pdf' }),
-					error: false,
-					reasons: [],
-				})
+				if (fileName) {
+					vedleggFraMal.push({
+						file: new File([malDokument.contents], fileName, { type: 'application/pdf' }),
+						error: false,
+						reasons: [],
+					})
+				}
 			})
 			setVedlegg([...vedleggFraMal, ...vedlegg])
 		}
@@ -224,6 +228,11 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 				/>
 				{vedlegg?.length < 1 && loadingDokumenterFraMal && malId && (
 					<Loading label="Laster vedlegg fra mal ..." />
+				)}
+				{errorDokumenterFraMal && malId && (
+					<Alert variant="error" size="small">
+						{errorDokumenterFraMal.message}
+					</Alert>
 				)}
 				{vedlegg?.length > 0 && (
 					<VStack gap="2">

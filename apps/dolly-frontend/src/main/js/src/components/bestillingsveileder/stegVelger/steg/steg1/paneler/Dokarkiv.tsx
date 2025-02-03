@@ -64,7 +64,7 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 		label: 'Histark',
 		checked: has('histark'),
 		add() {
-			set('histark', initialHistark)
+			set('histark', { dokumenter: [initialHistark] })
 		},
 		remove() {
 			del('histark')

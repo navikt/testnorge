@@ -194,9 +194,9 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 
 export const useHistarkData = (ident, harHistarkbestilling) => {
 	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
-
-	//TODO: Sjekk om transaksjonsid maa tilpasses som paa dokarkiv
-	const histarkId = transaksjonsid?.[0]?.transaksjonId?.dokumentInfoId
+	console.log('transaksjonsid: ', transaksjonsid) //TODO - SLETT MEG
+	//TODO: Maa sannsynligvis ha muligheten til aa hente ut liste som paa dokarkiv
+	const histarkId = transaksjonsid?.[0]?.transaksjonId?.[0].dokumentInfoId
 
 	const { data, isLoading, error } = useSWR<any, Error>(
 		harHistarkbestilling ? histarkUrl(histarkId) : null,

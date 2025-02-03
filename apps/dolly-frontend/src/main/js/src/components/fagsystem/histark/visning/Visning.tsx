@@ -23,7 +23,7 @@ export default ({ data, loading }: Form) => {
 	if (loading) {
 		return <Loading label="Laster dokument-data" />
 	}
-
+	console.log('data: ', data) //TODO - SLETT MEG
 	if (!data) {
 		return null
 	}
