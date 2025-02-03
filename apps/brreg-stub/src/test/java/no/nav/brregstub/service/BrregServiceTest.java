@@ -67,7 +67,7 @@ class BrregServiceTest {
     }
 
     private void assertPerson(Grunndata.Melding.Eierkommune.Samendring.Rolle.Person person) {
-        assertThat(person.getFodselsnr()).isEqualTo("010176100000");
+        assertThat(person.getFodselsnr()).isEqualTo("FAILURE");
         assertThat(person.getFornavn()).isEqualTo("Navn");
         assertThat(person.getSlektsnavn()).isEqualTo("Navnesen");
         assertThat(person.getAdresse1()).isEqualTo("Navneveien 12");
