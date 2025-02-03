@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -33,25 +32,27 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWireMock(port = 0)
 class KontoregisterConsumerTest {
     private static final String IDENT = "12345678901";
     private static final String KONTONUMMER = "1234567890";
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setup() {
@@ -61,8 +62,9 @@ class KontoregisterConsumerTest {
 
     @AfterEach
     void cleanUp() {
-        WireMock.getAllServeEvents()
-                .stream().forEach(e -> WireMock.removeServeEvent(e.getId()));
+        WireMock
+                .getAllServeEvents()
+                .forEach(e -> WireMock.removeServeEvent(e.getId()));
     }
 
     private String hentKontoResponse() {
@@ -97,7 +99,7 @@ class KontoregisterConsumerTest {
                 .expectNext(KontoregisterResponseDTO.builder()
                         .status(HttpStatus.OK)
                         .build())
-                        .verifyComplete();
+                .verifyComplete();
     }
 
     @Test
@@ -156,7 +158,7 @@ class KontoregisterConsumerTest {
                 })
                 .toList();
 
-        hentBankkontoer.stream()
+        hentBankkontoer
                 .forEach(b -> {
                     assertThat("sendt ident er riktig", IDENT.equals(b.getKontohaver()));
                 });

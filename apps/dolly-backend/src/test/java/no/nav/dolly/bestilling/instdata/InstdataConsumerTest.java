@@ -13,7 +13,6 @@ import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -26,7 +25,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWireMock(port = 0)
 class InstdataConsumerTest {
 
@@ -34,18 +32,22 @@ class InstdataConsumerTest {
     private static final String ENVIRONMENT = "U2";
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private ErrorStatusDecoder errorStatusDecoder;
 
     @Autowired
     private InstdataConsumer instdataConsumer;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     @BeforeEach

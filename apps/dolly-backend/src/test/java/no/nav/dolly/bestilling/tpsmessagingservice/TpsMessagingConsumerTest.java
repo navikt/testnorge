@@ -9,13 +9,13 @@ import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
@@ -24,15 +24,12 @@ import java.util.List;
 import java.util.Random;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWireMock(port = 0)
 class TpsMessagingConsumerTest {
 
@@ -40,22 +37,26 @@ class TpsMessagingConsumerTest {
     private static final List<String> MILJOER = List.of("q1", "q2");
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private AccessToken accessToken;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private TpsMessagingConsumer tpsMessagingConsumer;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private Random randomKontonummer = new SecureRandom();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Random randomKontonummer = new SecureRandom();
 
     @BeforeEach
     void setup() {
@@ -82,7 +83,10 @@ class TpsMessagingConsumerTest {
                 .collectList()
                 .block();
 
-        assertThat(response.get(0).getMiljoe(), is(equalTo("q1")));
+        assertThat(response)
+                .isNotNull()
+                .extracting(list -> list.getFirst().getMiljoe())
+                .isEqualTo("q1");
     }
 
     @Test
@@ -136,6 +140,8 @@ class TpsMessagingConsumerTest {
 
         var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().toList();
 
-        assertThat(forskjelligeBankkontoer.size(), is(equalTo(sendtBankkontoer.size())));
+        AssertionsForInterfaceTypes
+                .assertThat(forskjelligeBankkontoer)
+                .hasSameSizeAs(sendtBankkontoer);
     }
 }

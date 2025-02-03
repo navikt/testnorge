@@ -15,7 +15,6 @@ import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
 
@@ -30,7 +29,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWireMock(port = 0)
 class ArenaForvalterConsumerTest {
 
@@ -63,7 +61,8 @@ class ArenaForvalterConsumerTest {
 
         stubDeleteArenaForvalterBruker();
 
-        /*var response = */arenaForvalterConsumer.deleteIdenter(List.of(IDENT)).collectList().block();
+        /*var response = */
+        arenaForvalterConsumer.deleteIdenter(List.of(IDENT)).collectList().block();
 
         verify(tokenService).exchange(ArgumentMatchers.any(ServerProperties.class));
     }
@@ -80,8 +79,8 @@ class ArenaForvalterConsumerTest {
                         .collectList()
                         .block();
 
-        assertThat(response.get(0).getArbeidsokerList().get(0).getStatus(), is(CoreMatchers.equalTo(ArenaBruker.BrukerStatus.OK)));
-        assertThat(response.get(0).getNyBrukerFeilList(), is(emptyList()));
+        assertThat(response.getFirst().getArbeidsokerList().getFirst().getStatus(), is(CoreMatchers.equalTo(ArenaBruker.BrukerStatus.OK)));
+        assertThat(response.getFirst().getNyBrukerFeilList(), is(emptyList()));
     }
 
     @Test

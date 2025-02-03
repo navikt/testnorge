@@ -14,20 +14,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWireMock(port = 0)
 class AaregConsumerTest {
 
@@ -37,12 +35,14 @@ class AaregConsumerTest {
     private static final String MILJOE = "t0";
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private AccessToken accessToken;
 
     @Autowired
     private AaregConsumer aaregConsumer;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     private Arbeidsforhold opprettRequest;
@@ -79,39 +79,39 @@ class AaregConsumerTest {
 
     @Test
     void opprettArbeidsforhold() throws JsonProcessingException {
-
         stubOpprettArbeidsforhold(arbeidsforholdRespons);
-
         var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE, accessToken)
                 .collectList()
                 .block();
-
-        assertThat(response.getFirst().getArbeidsforholdId(), is(equalTo("1")));
-        assertThat(response.getFirst().getMiljo(), is(equalTo(MILJOE)));
+        assertThat(response)
+                .isNotNull()
+                .extracting(List::getFirst)
+                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
+                .containsExactly("1", MILJOE);
     }
 
     @Test
     void oppdaterArbeidsforhold() throws JsonProcessingException {
-
         stubOppdaterArbeidsforhold(arbeidsforholdRespons);
-
         var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE, accessToken)
                 .collectList()
                 .block();
-
-        assertThat(response.getFirst().getArbeidsforholdId(), is(equalTo("1")));
-        assertThat(response.getFirst().getMiljo(), is(equalTo(MILJOE)));
+        assertThat(response)
+                .isNotNull()
+                .extracting(List::getFirst)
+                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
+                .containsExactly("1", MILJOE);
     }
 
     @Test
     void hentArbeidsforhold() throws JsonProcessingException {
-
         stubHentArbeidsforhold(arbeidsforholdRespons);
-
         var arbeidsforholdResponses = aaregConsumer.hentArbeidsforhold(IDENT, MILJOE, accessToken)
                 .block();
-
-        assertThat(arbeidsforholdResponses.getEksisterendeArbeidsforhold(), is(emptyList()));
+        assertThat(arbeidsforholdResponses)
+                .isNotNull()
+                .extracting(ArbeidsforholdRespons::getEksisterendeArbeidsforhold)
+                .isEqualTo(emptyList());
     }
 
     private void stubOpprettArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
