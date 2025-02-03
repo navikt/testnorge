@@ -1,20 +1,17 @@
 package no.nav.dolly.bestilling.kontoregisterservice.util;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.stream.IntStream;
 
 import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
-@ExtendWith(SpringExtension.class)
 class BankkontoGeneratorTest {
 
     @Test
     void generateDifferentBankkonto() {
         var kontoer = IntStream.range(1, 100).boxed()
-                .map((i) -> BankkontoGenerator.tilfeldigUtlandskBankkonto(KontoregisterLandkode.SE.name()))
+                .map(i -> BankkontoGenerator.tilfeldigUtlandskBankkonto(KontoregisterLandkode.SE.name()))
                 .sorted()
                 .toList();
 
@@ -39,7 +36,7 @@ class BankkontoGeneratorTest {
     @Test
     void testTilfeldigNorskkonto() {
         var test = "3654737113";
-        var digit = BankkontoGenerator.getCheckDigit(test);
+        /*var digit = */BankkontoGenerator.getCheckDigit(test);
 
         IntStream.range(0, 100).forEach(i -> {
             var norskKonto = BankkontoGenerator.tilfeldigNorskBankkonto();
