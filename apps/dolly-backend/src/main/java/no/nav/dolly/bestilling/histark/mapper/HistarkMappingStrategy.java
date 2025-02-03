@@ -11,14 +11,15 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 import static no.nav.dolly.bestilling.dokarkiv.mapper.PdfVedlegg.PDF_VEDLEGG;
 
@@ -45,7 +46,12 @@ public class HistarkMappingStrategy implements MappingStrategy {
                                     .findFirst()
                                     .orElse(PDF_VEDLEGG);
 
-                            histarkRequest.setFile(fysiskDokument);
+                            histarkRequest.setFile(new ByteArrayResource(fysiskDokument.getBytes(StandardCharsets.UTF_8)) {
+                                @Override
+                                public String getFilename() {
+                                    return dokument.getTittel();
+                                }
+                            });
                             histarkRequest.setMetadata(HistarkRequest.HistarkMetadata.builder()
                                     .antallSider(String.valueOf(dokument.getAntallSider()))
                                     .brukerident(((String) context.getProperty(PERSON_IDENT)))

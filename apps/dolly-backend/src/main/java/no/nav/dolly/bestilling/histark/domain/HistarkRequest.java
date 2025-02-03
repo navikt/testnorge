@@ -6,7 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+@Slf4j
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,14 +22,20 @@ import lombok.NoArgsConstructor;
 public class HistarkRequest {
 
     @Schema(description = "PDF dokument som skal importeres")
-    private String file;
-    /**/
+    private ByteArrayResource file;
+
     @Schema(description = "Metadata tilhørende filen som sendes")
     private HistarkMetadata metadata;
 
     @Override
     public String toString() {
-        return "HistarkDokument{file='%s...', metadata=%s}".formatted(file.substring(file.length() - 21, file.length() - 1), metadata);
+        try {
+            var contents = file.getContentAsString(StandardCharsets.UTF_8);
+            return "HistarkDokument{file='%s...', metadata=%s}".formatted(contents.substring(contents.length() - 21, contents.length() - 1), metadata);
+        } catch (IOException e) {
+            log.error("Kunne ikke hente filinnhold", e);
+            return "HistarkDokument{file='kunne ikke hente filinnhold', metadata=%s}".formatted(metadata);
+        }
     }
 
     @Data
