@@ -34,5 +34,5 @@ consumers:
   arbeidssoekerregisteret:
     name: paw-arbeidssoekerregisteret-api-dolly
     namespace: paw
-    url: http://paw-arbeidssoekerregisteret-api-dolly.paw.svc.cluster.local
+    url: http://dolly-arbeidssoekerregisteret.paw.svc.cluster.local
     cluster: dev-gcp
