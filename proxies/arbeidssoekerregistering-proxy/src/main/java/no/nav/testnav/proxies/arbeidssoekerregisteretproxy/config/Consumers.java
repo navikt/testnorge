@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.arbeidssoekerregistreringproxy.config;
+package no.nav.testnav.proxies.arbeidssoekerregisteretproxy.config;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +16,5 @@ import static lombok.AccessLevel.PACKAGE;
 @Setter(PACKAGE)
 public class Consumers {
 
-    private ServerProperties arbeidssoekerregistrering;
+    private ServerProperties arbeidssoekerregisteret;
 }

@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.arbeidssoekerregistreringproxy;
+package no.nav.testnav.proxies.arbeidssoekerregisteretproxy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

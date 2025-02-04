@@ -2,11 +2,10 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = "arbeidssoekerregistrering-proxy"
+rootProject.name = "arbeidssoekerregisteret-proxy"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/reactive-security'

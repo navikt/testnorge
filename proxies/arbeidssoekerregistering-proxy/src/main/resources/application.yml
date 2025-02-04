@@ -2,8 +2,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: testnav-arbeidssoekerregistrering-proxy
-    description: Proxy for arbeidssoekerregistrering som fikser tenant=trygdeetaten.no.
+    name: testnav-arbeidssoekerregisteret-proxy
+    description: Proxy for arbeidssoekerregisteret som fikser tenant=trygdeetaten.no.
   security:
     oauth2:
       resourceserver:
@@ -31,7 +31,7 @@ server:
     include-message: always
 
 consumers:
-  arbeidssoekerregistrering:
+  arbeidssoekerregisteret:
     name: paw-arbeidssoekerregisteret-api-dolly
     namespace: paw
     url: http://paw-arbeidssoekerregisteret-api-dolly.paw.svc.cluster.local
