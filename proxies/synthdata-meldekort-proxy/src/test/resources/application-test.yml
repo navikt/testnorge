@@ -1,4 +1,1 @@
-azure:
-  openid:
-    config:
-      issuer: dummy
+AZURE_OPENID_CONFIG_ISSUER: dummy
