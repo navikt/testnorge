@@ -52,6 +52,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 		formMethods.setValue(`${path}.diagnose`, v.diagnoseNavn)
 		formMethods.setValue(`${path}.system`, KODESYSTEM)
 	}
+
 	const detaljertSykemelding = useWatch({
 		name: 'sykemelding.detaljertSykemelding',
 		control: formMethods.control,
@@ -107,6 +108,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 		const yrkePath = 'sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse'
 		if (formMethods.watch(yrkePath) === '') {
 			formMethods.setValue(yrkePath, randomYrke?.value || '')
+			formMethods.trigger(yrkePath)
 		}
 	}, [randomYrke])
 
@@ -119,6 +121,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 			randomHelsepersonell
 		) {
 			handleLegeChange(randomHelsepersonell)
+			formMethods.trigger('sykemelding.detaljertSykemelding.helsepersonell')
 		}
 	}, [randomHelsepersonell])
 

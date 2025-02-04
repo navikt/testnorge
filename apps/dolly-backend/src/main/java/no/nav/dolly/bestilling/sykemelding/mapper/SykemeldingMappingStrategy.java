@@ -7,11 +7,9 @@ import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Adresse;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Organisasjon;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Pasient;
-import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
-import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
@@ -24,39 +22,12 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class SykemeldingMappingStrategy implements MappingStrategy {
 
-    private static final String STANDARD_ARBEIDSFORHOLD_ID = "1";
-
     @Override
     public void register(MapperFactory factory) {
-
-        factory.classMap(RsSykemelding.RsSyntSykemelding.class, SyntSykemeldingRequest.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(RsSykemelding.RsSyntSykemelding kilde,
-                                        SyntSykemeldingRequest destinasjon, MappingContext context) {
-
-                        var person = ((PdlPersonBolk.Data) context.getProperty("persondata"))
-                                .getHentPersonBolk().stream()
-                                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                                .findFirst().orElse(PdlPersonBolk.PersonBolk.builder()
-                                        .person(new PdlPerson.Person())
-                                        .build());
-
-                        destinasjon.setIdent(person.getIdent());
-
-                        if (isNotBlank(destinasjon.getOrgnummer()) && isBlank(destinasjon.getArbeidsforholdId())) {
-                            destinasjon.setArbeidsforholdId(STANDARD_ARBEIDSFORHOLD_ID);
-                        }
-                    }
-                })
-                .byDefault()
-                .register();
 
         factory.classMap(RsDetaljertSykemelding.class, DetaljertSykemeldingRequest.class)
                 .customize(new CustomMapper<>() {
