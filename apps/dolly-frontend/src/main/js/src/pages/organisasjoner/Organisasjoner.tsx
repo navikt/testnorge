@@ -9,7 +9,7 @@ import StatusListeConnector from '@/components/bestilling/statusListe/StatusList
 import OrganisasjonListe from './OrganisasjonListe'
 import { dollySlack } from '@/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useOrganisasjonBestilling } from '@/utils/hooks/useOrganisasjoner'
 import { sokSelector } from '@/ducks/bestillingStatus'
@@ -99,7 +99,6 @@ export default () => {
 					<NavButton
 						data-testid={TestComponentSelectors.BUTTON_OPPRETT_ORGANISASJON}
 						variant={'primary'}
-						// onClick={() => startBestilling(BestillingType.NY)}
 						onClick={visStartBestilling}
 					>
 						Opprett organisasjon

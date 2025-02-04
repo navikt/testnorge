@@ -1,23 +1,27 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Alert, Box, Pagination, Table, VStack } from '@navikt/ds-react'
 import { useLevendeArbeidsforholdLogg } from '@/utils/hooks/useLevendeArbeidsforhold'
 import { formatDate } from '@/utils/DataFormatter'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { NyansettelserSoek } from '@/pages/nyansettelser/NyansettelserSoek'
-import Loading from '@/components/ui/loading/Loading'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
+import Loading from '@/components/ui/loading/Loading'
 
 export default () => {
-	const { loggData, loading, error } = useLevendeArbeidsforholdLogg(0, 1000, 'id')
-
 	const [identSoekData, setIdentSoekData] = useState(null)
 	const [orgnummerSoekData, setOrgnummerSoekData] = useState(null)
 
 	const [page, setPage] = useState(1)
-	const rowsPerPage = 10
+	const [sortData, setSortData] = useState(null as any)
+	const { loggData, loading, error } = useLevendeArbeidsforholdLogg(page - 1, 10, 'id')
+	const { kodeverk } = useKodeverk(ArbeidKodeverk.Arbeidsforholdstyper)
 
-	const visData = () => {
+	useEffect(() => {
+		setSortData(() => visData())
+	}, [loggData])
+
+	const visData = useCallback(() => {
 		if (identSoekData) {
 			return identSoekData
 		} else if (orgnummerSoekData) {
@@ -25,12 +29,7 @@ export default () => {
 		} else {
 			return loggData?.content
 		}
-	}
-
-	let sortData = visData()
-	sortData = sortData?.slice((page - 1) * rowsPerPage, page * rowsPerPage)
-
-	const { kodeverk } = useKodeverk(ArbeidKodeverk.Arbeidsforholdstyper)
+	}, [loggData, identSoekData, orgnummerSoekData])
 
 	return (
 		<>
@@ -50,14 +49,19 @@ export default () => {
 						<div>
 							<Table>
 								<Table.Header>
-									<Table.HeaderCell>Ident</Table.HeaderCell>
-									<Table.HeaderCell>Org.nr.</Table.HeaderCell>
-									<Table.HeaderCell>Ansatt fra</Table.HeaderCell>
-									<Table.HeaderCell>Arbeidsforholdtype</Table.HeaderCell>
-									<Table.HeaderCell>Stillingsprosent</Table.HeaderCell>
+									<tr>
+										<Table.HeaderCell>Ident</Table.HeaderCell>
+										<Table.HeaderCell>Org.nr.</Table.HeaderCell>
+										<Table.HeaderCell>Ansatt fra</Table.HeaderCell>
+										<Table.HeaderCell>Arbeidsforholdtype</Table.HeaderCell>
+										<Table.HeaderCell>Stillingsprosent</Table.HeaderCell>
+									</tr>
 								</Table.Header>
 								<Table.Body>
 									{sortData?.map((row: any, idx: number) => {
+										const ansattFra =
+											row.ansattfra?.length === 3 &&
+											new Date(row.ansattfra[0], row.ansattfra[1] - 1, row.ansattfra[2])
 										return (
 											<Table.Row key={`${row.id} - ${idx}`}>
 												<Table.DataCell width={'20%'}>
@@ -78,7 +82,7 @@ export default () => {
 														/>
 													}
 												</Table.DataCell>
-												<Table.DataCell width={'15%'}>{formatDate(row.ansattfra)}</Table.DataCell>
+												<Table.DataCell width={'15%'}>{formatDate(ansattFra)}</Table.DataCell>
 												<Table.DataCell width={'30%'}>
 													{kodeverk?.length > 0
 														? kodeverk?.find((kode: any) => kode?.value === row.arbeidsforholdType)
@@ -91,15 +95,13 @@ export default () => {
 									})}
 								</Table.Body>
 							</Table>
-							{loggData?.content?.length > rowsPerPage && (
-								<Pagination
-									page={page}
-									onPageChange={setPage}
-									count={Math.ceil(visData()?.length / rowsPerPage)}
-									size="small"
-									style={{ marginTop: '20px' }}
-								/>
-							)}
+							<Pagination
+								page={page}
+								onPageChange={setPage}
+								count={loggData?.totalPages}
+								size="small"
+								style={{ marginTop: '20px' }}
+							/>
 						</div>
 					)}
 				</Box>

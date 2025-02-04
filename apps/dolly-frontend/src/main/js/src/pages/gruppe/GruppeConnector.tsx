@@ -1,7 +1,5 @@
 import { connect } from 'react-redux'
-import Gruppe, { VisningType } from './Gruppe'
-import { Dispatch } from 'redux'
-import { setVisning } from '@/ducks/finnPerson'
+import Gruppe from './Gruppe'
 
 const mapStateToProps = (
 	state: {
@@ -24,9 +22,5 @@ const mapStateToProps = (
 	update: state.finnPerson.update,
 })
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-	setVisning: (visning: VisningType) => dispatch(setVisning(visning)),
-})
-
 // @ts-ignore
-export default connect(mapStateToProps, mapDispatchToProps)(Gruppe)
+export default connect(mapStateToProps)(Gruppe)

@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
@@ -18,7 +18,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
@@ -57,10 +57,7 @@ export default function PersonListe({
 
 	const location = useLocation()
 
-	const personListe = useMemo(
-		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem, bestillingStatuser, visPerson],
-	)
+	const personListe = sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search)
 
 	useEffect(() => {
 		const idents =

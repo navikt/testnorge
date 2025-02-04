@@ -63,7 +63,10 @@ export const DollyDatepicker = (props: any) => {
 	}
 
 	const setFormDate = (date) => {
-		const formDate = date.isValid?.() ? date.toDate() : date
+		if (date === '') {
+			date = null
+		}
+		let formDate = date?.isValid?.() ? date?.toDate() : date
 		onChange?.(formDate)
 		const dateStr = formDate?.toISOString?.().substring?.(0, 19)
 		formMethods.setValue(name, dateStr || date, {

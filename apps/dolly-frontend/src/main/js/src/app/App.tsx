@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router'
 import Header from '@/components/layout/header/Header'
 import Loading from '@/components/ui/loading/Loading'
 import allRoutes from '@/allRoutes'
@@ -16,7 +16,6 @@ import {
 } from '@/utils/hooks/useMaler'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
-import { FaroErrorBoundary } from '@grafana/faro-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
 
@@ -54,7 +53,7 @@ export const App = () => {
 	}
 
 	return (
-		<FaroErrorBoundary>
+		<ErrorBoundary>
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
@@ -76,6 +75,6 @@ export const App = () => {
 			</main>
 			<Forbedring />
 			<ToastConnector />
-		</FaroErrorBoundary>
+		</ErrorBoundary>
 	)
 }

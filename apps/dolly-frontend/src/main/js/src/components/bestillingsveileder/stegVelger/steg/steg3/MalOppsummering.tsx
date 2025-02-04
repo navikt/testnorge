@@ -72,6 +72,7 @@ export const MalOppsummering = ({
 						size={'xlarge'}
 						label="Malnavn"
 						options={getMalOptions(malbestillinger)}
+						autoFocus
 					/>
 				) : (
 					<FormTextInput
@@ -79,6 +80,7 @@ export const MalOppsummering = ({
 						name="malBestillingNavn"
 						size={'xlarge'}
 						label="Malnavn"
+						autoFocus
 					/>
 				)}
 			</span>

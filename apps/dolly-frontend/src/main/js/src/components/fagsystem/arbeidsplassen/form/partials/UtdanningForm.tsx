@@ -14,7 +14,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
-export const UtdanningForm = ({ formMethods }) => {
+export const UtdanningForm = ({ formMethods }: any) => {
 	const utdanningListePath = 'arbeidsplassenCV.utdanning'
 
 	return (
@@ -26,67 +26,59 @@ export const UtdanningForm = ({ formMethods }) => {
 				buttonText="Utdanning"
 				nested
 			>
-				{(utdanningPath, idx) => {
-					const fieldPath = formMethods.watch(`${utdanningPath}.field`)
-					const institutionPath = formMethods.watch(`${utdanningPath}.institution`)
-					const beskrivelsePath = formMethods.watch(`${utdanningPath}.description`)
-					return (
-						<>
-							<div key={idx} className="flexbox--flex-wrap">
-								<FormSelect
-									name={`${utdanningPath}.nuskode`}
-									label="Utdanningsnivå"
-									options={Options('nusKoder')}
-									size="large"
-									isClearable={false}
-								/>
-								<FormTextInput
-									name={`${utdanningPath}.field`}
-									label="Grad og utdanningsretning"
-									size="medium"
-									key={`field_${fieldPath}`}
-								/>
-								<FormTextInput
-									name={`${utdanningPath}.institution`}
-									label="Skole/studiested"
-									size="medium"
-									key={`institution_${institutionPath}`}
-								/>
-								<Fritekstfelt
-									label="Beskrivelse"
-									placeholder="Beskrivelse av utdanning"
-									defaultValue={_.get(formMethods.getValues(), `${utdanningPath}.description`)}
-									onBlur={(beskrivelse) =>
-										formMethods.setValue(`${utdanningPath}.description`, beskrivelse?.target?.value)
-									}
-									size="small"
-									key={`description_${beskrivelsePath}`}
-									resize
-								/>
-								<FormDatepicker name={`${utdanningPath}.startDate`} label="Startdato" />
-								<FormDatepicker
-									name={`${utdanningPath}.endDate`}
-									label="Sluttdato"
-									disabled={_.get(formMethods.getValues(), `${utdanningPath}.ongoing`)}
-								/>
-								<FormCheckbox
-									id={`${utdanningPath}.ongoing`}
-									name={`${utdanningPath}.ongoing`}
-									label="Pågående utdanning"
-									wrapperSize="inherit"
-									isDisabled={_.get(formMethods.getValues(), `${utdanningPath}.endDate`)}
-									checkboxMargin
-								/>
-							</div>
-							<EraseFillButtons
-								formMethods={formMethods}
-								path={utdanningPath}
-								initialErase={initialUtdanning}
-								initialFill={initialUtdanningVerdier}
+				{(utdanningPath: string, idx: number) => (
+					<>
+						<div key={idx} className="flexbox--flex-wrap">
+							<FormSelect
+								name={`${utdanningPath}.nuskode`}
+								label="Utdanningsnivå"
+								options={Options('nusKoder')}
+								size="large"
+								isClearable={false}
 							/>
-						</>
-					)
-				}}
+							<FormTextInput
+								name={`${utdanningPath}.field`}
+								label="Grad og utdanningsretning"
+								size="medium"
+							/>
+							<FormTextInput
+								name={`${utdanningPath}.institution`}
+								label="Skole/studiested"
+								size="medium"
+							/>
+							<Fritekstfelt
+								label="Beskrivelse"
+								placeholder="Beskrivelse av utdanning"
+								defaultValue={_.get(formMethods.getValues(), `${utdanningPath}.description`)}
+								onBlur={(beskrivelse) =>
+									formMethods.setValue(`${utdanningPath}.description`, beskrivelse?.target?.value)
+								}
+								size="small"
+								resize
+							/>
+							<FormDatepicker name={`${utdanningPath}.startDate`} label="Startdato" />
+							<FormDatepicker
+								name={`${utdanningPath}.endDate`}
+								label="Sluttdato"
+								disabled={_.get(formMethods.getValues(), `${utdanningPath}.ongoing`)}
+							/>
+							<FormCheckbox
+								id={`${utdanningPath}.ongoing`}
+								name={`${utdanningPath}.ongoing`}
+								label="Pågående utdanning"
+								wrapperSize="inherit"
+								isDisabled={_.get(formMethods.getValues(), `${utdanningPath}.endDate`)}
+								checkboxMargin
+							/>
+						</div>
+						<EraseFillButtons
+							formMethods={formMethods}
+							path={utdanningPath}
+							initialErase={initialUtdanning}
+							initialFill={initialUtdanningVerdier}
+						/>
+					</>
+				)}
 			</FormDollyFieldArray>
 		</Vis>
 	)

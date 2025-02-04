@@ -46,23 +46,9 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 								name={`${arbeidsforholdPath}.alternativeJobTitle`}
 								label="Alternativ tittel"
 								size="large"
-								key={`alternativeJobTitle_${_.get(
-									formMethods.getValues(),
-									`${arbeidsforholdPath}.alternativeJobTitle`,
-								)}`}
 							/>
-							<FormTextInput
-								name={`${arbeidsforholdPath}.employer`}
-								label="Bedrift"
-								size="large"
-								key={`employer_${_.get(formMethods.getValues(), `${arbeidsforholdPath}.employer`)}`}
-							/>
-							<FormTextInput
-								name={`${arbeidsforholdPath}.location`}
-								label="Sted"
-								size="large"
-								key={`location_${_.get(formMethods.getValues(), `${arbeidsforholdPath}.location`)}`}
-							/>
+							<FormTextInput name={`${arbeidsforholdPath}.employer`} label="Bedrift" size="large" />
+							<FormTextInput name={`${arbeidsforholdPath}.location`} label="Sted" size="large" />
 							<Fritekstfelt
 								label="Arbeidsoppgaver"
 								placeholder="Beskrivelse av arbeidsoppgaver"
@@ -74,10 +60,6 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 									)
 								}
 								size="small"
-								key={`description_${_.get(
-									formMethods.getValues(),
-									`${arbeidsforholdPath}.description`,
-								)}`}
 								resize
 							/>
 							<FormDatepicker name={`${arbeidsforholdPath}.fromDate`} label="Ansatt fra" />
