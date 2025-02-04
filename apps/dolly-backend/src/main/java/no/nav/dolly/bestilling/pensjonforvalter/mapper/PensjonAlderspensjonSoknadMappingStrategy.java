@@ -52,9 +52,9 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                 sivilstandType == GJENLEVENDE_PARTNER;
     }
 
-    private static boolean isVarigAdskilt() {
+    private static boolean isVarigAdskilt(PdlPerson.SivilstandType sivilstandType) {
 
-        return RANDOM.nextBoolean();
+        return isHarVaertGift(sivilstandType) && RANDOM.nextBoolean();
     }
 
     private static LocalDate getSamlovsbruddDato(PdlPerson.SivilstandType sivilstandType, LocalDate sivilstandFomDato) {
@@ -119,7 +119,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                                                     request.getRelasjonListe().getFirst().setRelasjonType(getRelasjonType(sivilstand.getType()));
                                                     request.getRelasjonListe().getFirst().setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
                                                     request.getRelasjonListe().getFirst().setHarVaertGift(isHarVaertGift(sivilstand.getType()));
-                                                    request.getRelasjonListe().getFirst().setVarigAdskilt(isVarigAdskilt());
+                                                    request.getRelasjonListe().getFirst().setVarigAdskilt(isVarigAdskilt(sivilstand.getType()));
                                                     request.getRelasjonListe().getFirst().setSamlivsbruddDato(
                                                             getSamlovsbruddDato(sivilstand.getType(), sivilstand.getGyldigFraOgMed()));
                                                 });
