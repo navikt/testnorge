@@ -28,7 +28,10 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 		<Panel
 			heading={ArbeidInntektPanel.heading}
 			informasjonstekst={infoTekst}
-			checkAttributeArray={sm.batchAdd}
+			// ignoreKey 'aareg' kan fjernes naar oppretting til Aareg er tilgjengelig igjen
+			checkAttributeArray={() => {
+				sm.batchAdd(['aareg'])
+			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
 			startOpen={harValgtAttributt(formValues, [
@@ -40,8 +43,13 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 				skattekortAttributt,
 			])}
 		>
-			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.aareg} />
+			{/*Valg av Aareg er foreloepig disabled fram til Team Arbeidsforhold har gjort noedvendige tilpasninger*/}
+			<AttributtKategori title="Arbeidsforhold (Aareg, foreløpig utilgjengelig)" attr={sm.attrs}>
+				<Attributt
+					attr={sm.attrs.aareg}
+					disabled={true}
+					title="Oppretting til Aareg er foreløpig utilgjengelig."
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Inntekt (Sigrun)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sigrunstub} />

@@ -87,6 +87,9 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 		) !== undefined
 	const erGammelSyntSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.syntSykemelding')
 
+	// Sjekk av Aareg-mal kan fjernes naar oppretting til Aareg er tilgjengelig igjen
+	const erAaregMal = _.has(valgtMal, 'data.bestilling.aareg')
+
 	return (
 		<FormProvider {...formMethods}>
 			<form onSubmit={() => preSubmit(formMethods.getValues())}>
@@ -174,6 +177,18 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 								Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den
 								inneholder arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at
 								du sletter denne malen og oppretter en ny.
+							</Alert>
+						)}
+						{/*Varsel om Aareg-mal kan fjernes naar oppretting til Aareg er tilgjengelig igjen*/}
+						{erAaregMal && !erGammelAmeldingMal && (
+							<Alert
+								variant={'warning'}
+								size={'small'}
+								style={{ width: '97%', marginBottom: '10px' }}
+							>
+								Bestillinger med denne malen vil ikke fungere som de skal, da den inneholder
+								Aareg-data, og oppretting til Aareg for øyeblikket er utilgjengelig. Malen vil kunne
+								brukes som før når oppretting til Aareg er tilgjengelig igjen, medio mars 2025.
 							</Alert>
 						)}
 						{erGammelSyntSykemeldingMal && (
