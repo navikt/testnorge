@@ -147,7 +147,6 @@ public class TestgruppeController {
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @Transactional
     @DeleteMapping("/{gruppeId}")
     @Operation(description = "Slett gruppe")
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {

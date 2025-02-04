@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.jpa;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -73,7 +74,7 @@ public class Testgruppe implements Serializable {
     @Column(name = "DATO_ENDRET", nullable = false)
     private LocalDate datoEndret;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "tilhoerer_gruppe")
     @Column(unique = true)
     @Builder.Default

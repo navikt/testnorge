@@ -28,19 +28,17 @@ public class TokenServiceAutoConfiguration {
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
-        return new AzureTokenService(null, null, clientCredential, getAuthenticatedToken);
+        return new AzureTokenService(null, clientCredential, getAuthenticatedToken);
     }
 
     @Bean
     @ConditionalOnDollyApplicationConfiguredForAzure
     @ConditionalOnMissingBean(AzureTokenService.class)
     AzureTokenService azureAdTokenService(
-            @Value("${AAD_ISSUER_URI:#{null}}") String issuerUrl,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
-        Assert.notNull(issuerUrl, "AAD_ISSUER_URI must be set");
-        return new AzureTokenService(httpProxy, issuerUrl, clientCredential, getAuthenticatedToken);
+        return new AzureTokenService(httpProxy, clientCredential, getAuthenticatedToken);
     }
 
     @Primary

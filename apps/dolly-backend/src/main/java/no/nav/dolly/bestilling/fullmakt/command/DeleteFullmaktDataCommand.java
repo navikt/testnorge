@@ -6,6 +6,7 @@ import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -21,7 +22,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DeleteFullmaktDataCommand implements Callable<Mono<ResponseEntity<Void>>> {
+public class DeleteFullmaktDataCommand implements Callable<Mono<HttpStatusCode>> {
 
     private static final String DELETE_FULLMAKT_URL = "/api/fullmakt/{fullmaktId}";
 
@@ -30,7 +31,7 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<ResponseEntity<V
     private final Integer fullmaktId;
     private final String token;
 
-    public Mono<ResponseEntity<Void>> call() {
+    public Mono<HttpStatusCode> call() {
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -43,6 +44,7 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<ResponseEntity<V
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .toBodilessEntity()
+                .map(ResponseEntity::getStatusCode)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .doOnSuccess(response -> log.info("Fullmakt with id {} deleted for person with ident {}", fullmaktId, ident))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
