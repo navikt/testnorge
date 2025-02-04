@@ -1,0 +1,74 @@
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-arbeidssoekerregistrering-proxy-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-trygdeetaten-testnav-arbeidssoekerregistrering-proxy-trygdeetaten
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-arbeidssoekerregistrering-proxy
+  namespace: dolly
+  labels:
+    team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+spec:
+  image: "{{image}}"
+  port: 8080
+  webproxy: true
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-backend
+        - application: dolly-backend-dev
+        - application: testnav-oversikt-frontend
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      memory: 2048Mi
+  envFrom:
+    - secret: azure-trygdeetaten-testnav-arbeidssoekerregistrering-proxy-trygdeetaten
+  ingresses:
+    - "https://testnav-arbeidssoekerregistrering-proxy.intern.dev.nav.no"
