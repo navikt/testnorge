@@ -10,7 +10,6 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
@@ -48,7 +47,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class SykemeldingClient implements ClientRegister {
 
     private final SykemeldingConsumer sykemeldingConsumer;
-    private final SyntSykemeldingConsumer syntSykemeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransaksjonMappingService transaksjonMappingService;
     private final MapperFacade mapperFacade;
@@ -75,14 +73,12 @@ public class SykemeldingClient implements ClientRegister {
                         setProgress(progress, getGenereringStartet());
 
                         return getPerson(dollyPerson.getIdent())
-                                .flatMap(persondata -> Flux.concat(postSyntSykemelding(sykemelding, persondata),
-                                                postDetaljertSykemelding(sykemelding, persondata))
+                                .flatMap(persondata ->
+                                                postDetaljertSykemelding(sykemelding, persondata)
                                         .filter(Objects::nonNull)
                                         .doOnNext(status -> saveTransaksjonId(status, bestilling.getId()))
-                                        .map(this::getStatus)
-                                        .collect(Collectors.joining()))
-                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout() *
-                                        (sykemelding.hasSyntSykemelding() ? 3 : 1)))
+                                        .map(this::getStatus))
+                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                                 .onErrorResume(error -> Mono.just(encodeStatus(WebClientFilter.getMessage(error))))
                                 .collect(Collectors.joining())
                                 .map(status -> futurePersist(progress, status));
@@ -164,22 +160,6 @@ public class SykemeldingClient implements ClientRegister {
 
                                     return sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
                                 }));
-    }
-
-    private Mono<SykemeldingResponse> postSyntSykemelding(RsSykemelding sykemelding, PdlPersonBolk.Data persondata) {
-
-        return Mono.just(sykemelding)
-                .filter(RsSykemelding::hasSyntSykemelding)
-                .map(RsSykemelding::getSyntSykemelding)
-                .flatMap(syntmelding -> {
-
-                    var context = new MappingContext.Factory().getContext();
-                    context.setProperty("persondata", persondata);
-                    var syntSykemeldingRequest =
-                            mapperFacade.map(syntmelding, SyntSykemeldingRequest.class, context);
-
-                    return syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
-                });
     }
 
     private void saveTransaksjonId(SykemeldingResponse sykemelding, Long bestillingId) {
