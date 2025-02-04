@@ -12,10 +12,12 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
@@ -27,6 +29,8 @@ import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
 
 @Component
 public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrategy {
+
+    private static final Random RANDOM = new SecureRandom();
 
     private static RelasjonType getRelasjonType(PdlPerson.SivilstandType sivilstandType) {
 
@@ -48,12 +52,9 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                 sivilstandType == GJENLEVENDE_PARTNER;
     }
 
-    private static boolean isVarigAdskilt(PdlPerson.SivilstandType sivilstandType) {
+    private static boolean isVarigAdskilt() {
 
-        return sivilstandType == ENKE_ELLER_ENKEMANN ||
-                sivilstandType == GJENLEVENDE_PARTNER ||
-                sivilstandType == SKILT ||
-                sivilstandType == SKILT_PARTNER;
+        return RANDOM.nextBoolean();
     }
 
     private static LocalDate getSamlovsbruddDato(PdlPerson.SivilstandType sivilstandType, LocalDate sivilstandFomDato) {
@@ -118,7 +119,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                                                     request.getRelasjonListe().getFirst().setRelasjonType(getRelasjonType(sivilstand.getType()));
                                                     request.getRelasjonListe().getFirst().setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
                                                     request.getRelasjonListe().getFirst().setHarVaertGift(isHarVaertGift(sivilstand.getType()));
-                                                    request.getRelasjonListe().getFirst().setVarigAdskilt(isVarigAdskilt(sivilstand.getType()));
+                                                    request.getRelasjonListe().getFirst().setVarigAdskilt(isVarigAdskilt());
                                                     request.getRelasjonListe().getFirst().setSamlivsbruddDato(
                                                             getSamlovsbruddDato(sivilstand.getType(), sivilstand.getGyldigFraOgMed()));
                                                 });
