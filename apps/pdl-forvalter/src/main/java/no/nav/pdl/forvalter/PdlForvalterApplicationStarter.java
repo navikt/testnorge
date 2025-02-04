@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter;
 
-import no.nav.testnav.libs.servletcore.config.NaisEnvironmentApplicationContextInitializer;
+import no.nav.testnav.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 

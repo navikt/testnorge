@@ -2,13 +2,14 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'levende-arbeidsforhold-scheduler'
+rootProject.name = "levende-arbeidsforhold-scheduler"
 
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/servlet-insecure-security'
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/servlet-insecure-security"
+includeBuild "../../libs/servlet-security"
+includeBuild "../../libs/testing"
 
 develocity {
     buildScan {
