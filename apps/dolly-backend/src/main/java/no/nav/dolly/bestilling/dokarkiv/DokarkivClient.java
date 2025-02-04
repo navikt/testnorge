@@ -38,6 +38,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -59,27 +60,46 @@ public class DokarkivClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.just(bestilling)
-                .filter(bestilling1 -> nonNull(bestilling1.getDokarkiv()))
-                .map(RsDollyUtvidetBestilling::getDokarkiv)
-                .flatMap(dokarkiv -> Flux.from(getPersonData(dollyPerson.getIdent())
-                                .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
-                                        .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
-                                                .flatMap(env -> buildRequest(dokarkiv, person, progress.getBestilling().getId())
-                                                        .flatMap(request ->
-                                                                !transaksjonMappingService.existAlready(DOKARKIV,
-                                                                        dollyPerson.getIdent(), env, bestilling.getId()) || isOpprettEndre ?
-                                                                        dokarkivConsumer.postDokarkiv(env, request)
-                                                                                .map(status ->
-                                                                                        getStatus(dollyPerson.getIdent(),
-                                                                                                bestilling.getId(), status)) :
-                                                                        Mono.just(env + ":OK")
-                                                        ))
-                                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                                                .onErrorResume(error -> getErrors(error, miljoer))
-                                        )))
-                        .collect(Collectors.joining(","))
-                        .map(status -> futurePersist(progress, status)));
+        if (!bestilling.getDokarkiv().isEmpty()) {
+
+            updateProgress(progress, bestilling.getEnvironments());
+
+            return Flux.from(getPersonData(dollyPerson.getIdent())
+                    .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
+                            .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
+                                    .flatMap(miljoe -> {
+                                        if (!transaksjonMappingService.existAlready(DOKARKIV,
+                                                dollyPerson.getIdent(), miljoe, bestilling.getId()) || isOpprettEndre) {
+
+                                            return Flux.fromIterable(bestilling.getDokarkiv())
+                                                    .flatMap(dokarkiv ->
+                                                            buildRequest(dokarkiv, person, progress.getBestilling().getId())
+                                                                    .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
+                                                    .collectList()
+                                                    .map(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status));
+
+                                        } else {
+                                            return Mono.just(miljoe + ":OK");
+                                        }
+                                    })
+                                    .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                    .onErrorResume(error -> getErrors(error, miljoer))
+                            ))
+                    .collect(Collectors.joining(","))
+                    .map(status -> futurePersist(progress, status)));
+        } else {
+            return Flux.empty();
+        }
+    }
+
+    private void updateProgress(BestillingProgress progress, Set<String> miljoer) {
+
+        transactionHelperService.persister(progress,
+                BestillingProgress::getDokarkivStatus,
+                BestillingProgress::setDokarkivStatus,
+                miljoer.stream()
+                        .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(DOKARKIV.name())))
+                        .collect(Collectors.joining(",")));
     }
 
     private Flux<String> getErrors(Throwable error, List<String> miljoer) {
@@ -106,7 +126,7 @@ public class DokarkivClient implements ClientRegister {
                 .collectList();
     }
 
-    private String getStatus(String ident, Long bestillingId, DokarkivResponse response) {
+    private String getStatus(String ident, Long bestillingId, List<DokarkivResponse> response) {
 
         log.info("Dokarkiv response {} for ident {}", response, ident);
 
@@ -114,17 +134,20 @@ public class DokarkivClient implements ClientRegister {
             return "UKJENT:Intet svar";
         }
 
-        if (isBlank(response.getFeilmelding())) {
+        if (response.stream().allMatch(arkiv -> isBlank(arkiv.getFeilmelding()))) {
 
-            saveTransaksjonId(response, ident, bestillingId, response.getMiljoe());
-            return response.getMiljoe() + ":OK";
+            saveTransaksjonId(response, ident, bestillingId, response.getFirst().getMiljoe());
+            return response.getFirst().getMiljoe() + ":OK";
 
         } else {
 
-            return String.format("%s:FEIL=Teknisk feil se logg! %s", response.getMiljoe(),
-                    isNotBlank(response.getFeilmelding()) ?
-                            encodeStatus(errorStatusDecoder.getStatusMessage(response.getFeilmelding())) :
-                            "UKJENT");
+            return String.format("%s:FEIL=Teknisk feil se logg! %s", response.getFirst().getMiljoe(),
+
+                    response.stream()
+                            .filter(arkiv -> isNotBlank(arkiv.getFeilmelding()) )
+                            .map(arkiv -> encodeStatus(errorStatusDecoder.getStatusMessage(arkiv.getFeilmelding())))
+                            .findFirst()
+                            .orElse("UKJENT"));
         }
     }
 
@@ -153,7 +176,7 @@ public class DokarkivClient implements ClientRegister {
         return Mono.just(mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context));
     }
 
-    private void saveTransaksjonId(DokarkivResponse response, String ident, Long bestillingId, String miljoe) {
+    private void saveTransaksjonId(List<DokarkivResponse> response, String ident, Long bestillingId, String miljoe) {
 
         log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
 
@@ -161,10 +184,12 @@ public class DokarkivClient implements ClientRegister {
                 TransaksjonMapping.builder()
                         .ident(ident)
                         .bestillingId(bestillingId)
-                        .transaksjonId(toJson(JoarkTransaksjon.builder()
-                                .journalpostId(response.getJournalpostId())
-                                .dokumentInfoId(response.getDokumenter().getFirst().getDokumentInfoId())
-                                .build()))
+                        .transaksjonId(toJson(response.stream()
+                                .map(arkiv -> JoarkTransaksjon.builder()
+                                        .journalpostId(arkiv.getJournalpostId())
+                                        .dokumentInfoId(arkiv.getDokumenter().getFirst().getDokumentInfoId())
+                                        .build())
+                                .toList()))
                         .datoEndret(LocalDateTime.now())
                         .miljoe(miljoe)
                         .system(DOKARKIV.name())
@@ -180,5 +205,4 @@ public class DokarkivClient implements ClientRegister {
         }
         return null;
     }
-
 }

@@ -78,7 +78,7 @@ public class ElasticBestilling implements Persistable<Long> {
     @Field
     private RsBregdata brregstub;
     @Field
-    private RsDokarkiv dokarkiv;
+    private List<RsDokarkiv> dokarkiv;
     @Field
     private RsHistark histark;
     @Field

@@ -10,7 +10,8 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
-import no.nav.dolly.bestilling.histark.domain.JoarkHistarkTransaksjon;
+import no.nav.dolly.bestilling.histark.domain.HistarkTransaksjon;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -20,16 +21,21 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DokumentService;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.HISTARK;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -38,6 +44,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class HistarkClient implements ClientRegister {
 
+    private final ApplicationConfig applicationConfig;
     private final HistarkConsumer histarkConsumer;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -51,19 +58,34 @@ public class HistarkClient implements ClientRegister {
 
         if (nonNull(bestilling.getHistark())) {
 
-            return Flux.just(dollyPerson.getIdent())
-                    .map(person -> buildRequest(bestilling.getHistark(), person, progress.getBestilling().getId()))
-                    .flatMap(request -> !transaksjonMappingService.existAlready(HISTARK,
-                            dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre ?
+            updateProgress(progress);
 
-                            histarkConsumer.postHistark(request)
-                                    .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status)) :
-                            Mono.just("OK")
-                    )
+            return Flux.just(!transaksjonMappingService.existAlready(HISTARK,
+                            dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre)
+                    .flatMap(isSendInn -> {
+                        if (isTrue(isSendInn)) {
+                            return Flux.fromIterable(bestilling.getHistark().getDokumenter())
+                                    .flatMap(dokument -> Mono.just(buildRequest(dokument, dollyPerson.getIdent(), progress.getBestilling().getId()))
+                                            .flatMap(histarkConsumer::postHistark))
+                                    .collectList()
+                                    .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status));
+                        } else {
+                            return Mono.just("OK");
+                        }
+                    })
+                    .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                    .onErrorResume(this::getErrors)
                     .map(status -> futurePersist(progress, status));
         }
-
         return Flux.empty();
+    }
+
+    private void updateProgress(BestillingProgress progress) {
+
+        transactionHelperService.persister(progress,
+                BestillingProgress::getHistarkStatus,
+                BestillingProgress::setHistarkStatus,
+                getInfoVenter(HISTARK.name()));
     }
 
     @Override
@@ -80,7 +102,12 @@ public class HistarkClient implements ClientRegister {
         };
     }
 
-    private String getStatus(String ident, Long bestillingId, HistarkResponse response) {
+    private Mono<String> getErrors(Throwable error) {
+
+        return Mono.just(encodeStatus(WebClientFilter.getMessage(error)));
+    }
+
+    private String getStatus(String ident, Long bestillingId, List<HistarkResponse> response) {
 
         log.info("Histark response {} mottatt for ident {}", response, ident);
 
@@ -88,30 +115,33 @@ public class HistarkClient implements ClientRegister {
             return null;
         }
 
-        if (isBlank(response.getFeilmelding())) {
+        if (response.stream().allMatch(arkiv -> isBlank(arkiv.getFeilmelding()))) {
 
-            saveTransaksjonId(response.getHistarkId(), ident, bestillingId);
+            saveTransaksjonId(response, ident, bestillingId);
             return "OK";
 
         } else {
 
             return String.format("FEIL=Teknisk feil se logg! %s",
-                    isNotBlank(response.getFeilmelding()) ?
-                            ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(response.getFeilmelding())) :
-                            "UKJENT");
+                    response.stream()
+                            .filter(arkiv -> isNotBlank(arkiv.getFeilmelding()))
+                            .map(arkiv ->
+                                    ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(arkiv.getFeilmelding())))
+                            .findFirst()
+                            .orElse("UKJENT"));
         }
     }
 
-    private HistarkRequest buildRequest(RsHistark rsHistark, String ident, Long bestillingId) {
+    private HistarkRequest buildRequest(RsHistark.RsHistarkDokument dokument, String ident, Long bestillingId) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personIdent", ident);
         context.setProperty("dokumenter", dokumentService.getDokumenterByBestilling(bestillingId));
 
-        return mapperFacade.map(rsHistark, HistarkRequest.class, context);
+        return mapperFacade.map(dokument, HistarkRequest.class, context);
     }
 
-    private void saveTransaksjonId(String histarkId, String ident, Long bestillingId) {
+    private void saveTransaksjonId(List<HistarkResponse> histarkIds, String ident, Long bestillingId) {
 
         log.info("Lagrer transaksjon for ident {}", ident);
 
@@ -119,9 +149,12 @@ public class HistarkClient implements ClientRegister {
                 TransaksjonMapping.builder()
                         .ident(ident)
                         .bestillingId(bestillingId)
-                        .transaksjonId(toJson(JoarkHistarkTransaksjon.builder()
-                                .dokumentInfoId(histarkId)
-                                .build()))
+                        .transaksjonId(toJson(histarkIds.stream()
+                                .map(HistarkResponse::getId)
+                                .map(histarkId -> HistarkTransaksjon.builder()
+                                        .dokumentInfoId(histarkId)
+                                        .build())
+                                .toList()))
                         .datoEndret(LocalDateTime.now())
                         .miljoe("NA")
                         .system(HISTARK.name())
