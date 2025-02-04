@@ -41,7 +41,6 @@ dependencies {
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
     testImplementation "org.springframework.security:spring-security-test"
-    testImplementation "no.nav.testnav.libs:testing"
 }
 
 description = "testnav-ident-pool"

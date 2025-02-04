@@ -1,5 +1,3 @@
-TOKEN_X_ISSUER: dummy
-
 consumers:
   saf:
     url: http://saf-dummy.dummy.no

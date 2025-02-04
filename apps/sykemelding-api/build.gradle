@@ -30,7 +30,6 @@ dependencies {
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    testImplementation "no.nav.testnav.libs:testing"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

@@ -1,12 +1,4 @@
-TOKEN_X_ISSUER: dummy
-
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-    vault:
-      enabled: false
   datasource:
     url: jdbc:tc:postgresql:15:///test?TC_REUSABLE=true
     username: user

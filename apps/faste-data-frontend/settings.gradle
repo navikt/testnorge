@@ -2,14 +2,15 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'faste-data-frontend'
+rootProject.name = "faste-data-frontend"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-frontend'
-includeBuild '../../libs/reactive-session-security'
-includeBuild '../../libs/security-core'
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/reactive-frontend"
+includeBuild "../../libs/reactive-session-security"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/testing"
 
 develocity {
     buildScan {

@@ -1,11 +1,3 @@
-TOKEN_X_ISSUER: dummy
-
-spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
-
 kafka:
   bootstrapservers: dummy
   schemaregistryservers: dummy

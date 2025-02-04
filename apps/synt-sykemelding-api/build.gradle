@@ -23,7 +23,5 @@ dependencies {
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
-    testImplementation "no.nav.testnav.libs:testing"
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
-    testImplementation "junit:junit:4.13.2" //TODO upgrade to JUnit5
 }

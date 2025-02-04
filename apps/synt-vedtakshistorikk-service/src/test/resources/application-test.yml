@@ -1,11 +1,4 @@
 AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
-TOKEN_X_ISSUER: dummy
-
-spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
 
 consumers:
   synt-vedtakshistorikk:
