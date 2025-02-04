@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.*;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;

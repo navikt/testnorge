@@ -6,7 +6,7 @@ import no.nav.registre.sdforvalter.database.model.KrrModel;
 import no.nav.registre.sdforvalter.database.repository.KrrRepository;
 import no.nav.registre.sdforvalter.domain.Krr;
 import no.nav.registre.sdforvalter.domain.KrrListe;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

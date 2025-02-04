@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.generersyntameldingservice.consumer;
 
 import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;

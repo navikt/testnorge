@@ -3,7 +3,7 @@ package no.nav.testnav.apps.syntsykemeldingapi.provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.*;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;

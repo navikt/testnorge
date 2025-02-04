@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.brukerservice;
 
 import no.nav.testnav.apps.brukerservice.initializer.WireMockInitializer;
-import no.nav.testnav.libs.DollySpringBootTest;
-import no.nav.testnav.libs.nais.NaisEnvironmentApplicationContextInitializer;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

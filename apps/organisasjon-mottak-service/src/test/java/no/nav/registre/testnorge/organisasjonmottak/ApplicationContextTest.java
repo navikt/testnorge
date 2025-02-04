@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.organisasjonmottak;
 
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

@@ -7,7 +7,7 @@ import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.registre.sdforvalter.domain.Aareg;
 import no.nav.registre.sdforvalter.domain.AaregListe;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package no.nav.brregstub.endpoint.ws;
 
 import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
 import no.nav.common.cxf.CXFClient;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -7,7 +7,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.domain.Helsepersonell;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Person;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;

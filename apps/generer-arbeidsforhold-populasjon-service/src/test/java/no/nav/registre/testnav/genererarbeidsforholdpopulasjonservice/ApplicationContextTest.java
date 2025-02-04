@@ -1,7 +1,7 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice;
 
 
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 
 import no.nav.dolly.bestilling.pensjonforvalter.domain.*;
 import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;

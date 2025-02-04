@@ -1,7 +1,7 @@
 package no.nav.udistub.converter.itest;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.testnav.libs.DollySpringBootTest;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.udistub.database.model.Person;
 import no.nav.udistub.database.repository.PersonRepository;
 import no.nav.udistub.service.dto.UdiPerson;
