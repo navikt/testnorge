@@ -287,6 +287,12 @@ public class PensjonData {
     @AllArgsConstructor
     public static class Alderspensjon {
 
+        public enum AfpPrivatResultat{
+            INNVILGET,
+            AVSLATT,
+            TRUKKET
+        }
+
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate iverksettelsesdato;
 
@@ -301,6 +307,9 @@ public class PensjonData {
         private Integer uttaksgrad;
 
         private Boolean soknad;
+
+        private Boolean inkluderAfpPrivat;
+        private AfpPrivatResultat afpPrivatResultat;
 
         @Schema
         private List<SkjemaRelasjon> relasjoner;

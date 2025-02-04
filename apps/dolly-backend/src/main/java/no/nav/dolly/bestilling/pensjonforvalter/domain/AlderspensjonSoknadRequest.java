@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class AlderspensjonSoknadRequest extends AlderspensjonRequest {
     private String statsborgerskap;
     private SivilstandType sivilstand;
     private LocalDate sivilstandDatoFom;
+    private Boolean inkluderAfpPrivat;
+    private PensjonData.Alderspensjon.AfpPrivatResultat afpPrivatResultat;
 
     private List<SkjemaRelasjon> relasjonListe;
 
