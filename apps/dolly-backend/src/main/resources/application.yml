@@ -218,11 +218,6 @@ consumers:
     namespace: dolly
     url: http://testnav-sykemelding-api.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-synt-sykemelding-api:
-    name: testnav-synt-sykemelding-api
-    namespace: dolly
-    url: http://testnav-synt-sykemelding-api.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-organisasjon-service:
     name: testnav-organisasjon-service
     namespace: dolly

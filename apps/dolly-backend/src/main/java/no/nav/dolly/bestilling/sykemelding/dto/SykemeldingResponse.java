@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import org.springframework.http.HttpStatus;
 
 @Data
@@ -29,7 +28,6 @@ public class SykemeldingResponse {
     public static class SykemeldingRequest {
 
         private String sykemeldingId;
-        private SyntSykemeldingRequest syntSykemeldingRequest;
         private DetaljertSykemeldingRequest detaljertSykemeldingRequest;
     }
 }
