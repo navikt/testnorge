@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.arbeidssoekerregistrering.dto;
+package no.nav.dolly.bestilling.arbeidssoekerregisteret.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArbeidssokerregistreringRequest {
+public class ArbeidssokerregisteretRequest {
 
     private String identitetsnummer;
     private String utfoertAv; // Enum: [ UKJENT_VERDI, UDEFINERT, VEILEDER, SYSTEM, SLUTTBRUKER ]

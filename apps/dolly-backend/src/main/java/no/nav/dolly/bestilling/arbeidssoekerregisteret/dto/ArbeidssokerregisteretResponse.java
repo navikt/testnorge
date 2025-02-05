@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.arbeidssoekerregistrering.dto;
+package no.nav.dolly.bestilling.arbeidssoekerregisteret.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArbeidssokerregistreringResponse {
+public class ArbeidssokerregisteretResponse {
 
             private String id;
             private String type;
