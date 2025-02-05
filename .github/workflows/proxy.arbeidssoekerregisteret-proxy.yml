@@ -1,0 +1,24 @@
+name: arbeidssoekerregisteret-proxy
+
+on:
+  push:
+    paths:
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/arbeidssoekerregisteret-proxy/**"
+      - ".github/workflows/proxy.arbeidssoekerregisteret-proxy.yml"
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      cluster: "dev-gcp"
+      working-directory: "proxies/arbeidssoekerregisteret-proxy"
+      deploy-tag: "#deploy-proxy-arbeidssoekerregisteret"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
