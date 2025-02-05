@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
-import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssokerregistrering;
+import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssokerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
@@ -82,7 +82,7 @@ public class RsDollyBestilling {
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     private SkattekortRequestDTO skattekort;
     private List<YrkesskadeRequest> yrkesskader;
-    private RsArbeidssokerregistrering arbeidssokerregistrering;
+    private RsArbeidssokerregisteret arbeidssokerregisteret;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {

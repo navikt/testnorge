@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.arbeidssoekerregisteret.dto.Arbeidssokerregistere
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -37,18 +38,17 @@ public class LagreTilArbeidsoekerregisteret implements Callable<Mono<Arbeidssoke
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(ArbeidssokerregisteretResponse.class)
-                .map(response -> {
-                    response.setMiljoe(environment);
-                    return response;
-                })
+                .toBodilessEntity()
+                .map(response -> ArbeidssokerregisteretResponse.builder()
+                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                        .build())
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(.builder()
-                        .feilmelding(WebClientFilter.getMessage(error))
-                        .miljoe(environment)
-                        .build()));
+                .onErrorResume(error -> Mono.just(
+                        ArbeidssokerregisteretResponse.builder()
+                                .status(WebClientFilter.getStatus(error))
+                                .feilmelding(WebClientFilter.getMessage(error))
+                                .build()));
     }
-}
 }

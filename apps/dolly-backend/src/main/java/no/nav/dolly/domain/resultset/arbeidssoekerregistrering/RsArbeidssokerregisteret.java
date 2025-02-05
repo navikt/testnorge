@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsArbeidssokerregistrering {
+public class RsArbeidssokerregisteret {
 
     private String utfoertAv; // Enum: [ UKJENT_VERDI, UDEFINERT, VEILEDER, SYSTEM, SLUTTBRUKER ]
     private String kilde;
