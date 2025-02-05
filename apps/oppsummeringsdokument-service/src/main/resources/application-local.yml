@@ -1,3 +1,7 @@
+spring:
+  config:
+    import: "sm://"
+
 open:
   search:
     index: local

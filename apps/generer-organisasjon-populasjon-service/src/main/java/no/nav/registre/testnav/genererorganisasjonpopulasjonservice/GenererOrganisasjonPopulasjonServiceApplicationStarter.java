@@ -1,12 +1,14 @@
 package no.nav.registre.testnav.genererorganisasjonpopulasjonservice;
 
-import org.springframework.boot.SpringApplication;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class GenererOrganisasjonPopulasjonServiceApplicationStarter {
-
     public static void main(String[] args) {
-        SpringApplication.run(GenererOrganisasjonPopulasjonServiceApplicationStarter.class, args);
+        new SpringApplicationBuilder(GenererOrganisasjonPopulasjonServiceApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

@@ -1,13 +1,14 @@
 package no.nav.registre.testnorge.personsearchservice;
 
-import org.springframework.boot.SpringApplication;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
-public class
-PersonSearchServiceApplicationStarter {
+public class PersonSearchServiceApplicationStarter {
     public static void main(String[] args) {
-
-        SpringApplication.run(PersonSearchServiceApplicationStarter.class, args);
+        new SpringApplicationBuilder(PersonSearchServiceApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

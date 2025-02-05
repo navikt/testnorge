@@ -21,9 +21,9 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
                 .of(environment.getActiveProfiles())
                 .forEach(profile -> {
                     switch (profile) {
-                        case "local" -> configureForLocalProfile(environment.getSystemProperties());
+                        case "local", "localdb" -> configureForLocalProfile(environment.getSystemProperties());
                         case "test" -> configureForTestProfile(environment.getSystemProperties());
-                        default -> { /* Do nothing. */ }
+                        default -> configureForOtherProfiles(environment.getSystemProperties());
                     }
                 });
 
@@ -38,6 +38,14 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm\\://azure-openid-config-issuer}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-openid-config-token-endpoint}");
+        properties.putIfAbsent("CRYPTOGRAPHY_SECRET", DUMMY); // Used by bruker-service only.
+        properties.putIfAbsent("JWT_SECRET", DUMMY); // Used by bruker-service only.
+        properties.putIfAbsent("MASKINPORTEN_CLIENT_ID", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
+        properties.putIfAbsent("MASKINPORTEN_CLIENT_JWK", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
+        properties.putIfAbsent("MASKINPORTEN_SCOPES", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
+        properties.putIfAbsent("MASKINPORTEN_WELL_KNOWN_URL", "${sm\\://maskinporten-well-known-url}"); // Used by tenor-search-service and altinn3-tilgang-service only.
+        properties.putIfAbsent("SLACK_CHANNEL", DUMMY); // Used by tilbakemelding-api only.
+        properties.putIfAbsent("SLACK_TOKEN", DUMMY); // Used by tilbakemelding-api only.
         properties.putIfAbsent("TOKEN_X_ISSUER", "${sm\\://token-x-issuer}");
         properties.putIfAbsent("TOKEN_X_JWKS_URI", "${sm\\://token-x-jwks-uri}");
 
@@ -70,6 +78,14 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
                         "spring.cloud.vault.token" // For apps using no.nav.testnav.libs:vault.
                 )
                 .forEach(key -> properties.putIfAbsent(key, DUMMY));
+
+    }
+
+    private static void configureForOtherProfiles(Map<String, Object> properties) {
+
+        log.info("Configuring environment for non-test, non-local profiles");
+
+        properties.putIfAbsent("spring.main.banner-mode", "off");
 
     }
 

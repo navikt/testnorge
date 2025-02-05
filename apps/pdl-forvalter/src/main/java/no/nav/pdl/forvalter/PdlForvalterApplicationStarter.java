@@ -6,9 +6,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class PdlForvalterApplicationStarter {
-
     public static void main(String[] args) {
-
         new SpringApplicationBuilder(PdlForvalterApplicationStarter.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
