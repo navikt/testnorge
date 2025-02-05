@@ -29,12 +29,12 @@ public class ArbeidssokerregisteretRequest {
     
     public static class JobbsituasjonDetaljer {
 
-        private String gjelderFraDatoIso8601;
-        private String gjelderTilDatoIso8601;
-        private String stillingStyrk08;
+        private LocalDate gjelderFraDato;
+        private LocalDate gjelderTilDato;
+        private Integer stillingStyrk08;
         private String stilling;
         private Integer prosent;
-        private LocalDate sisteDagMedLoennIso8601;
-        private LocalDate sisteArbeidsdagIso8601;
+        private LocalDate sisteDagMedLoenn;
+        private LocalDate sisteArbeidsdag;
     }
 }
