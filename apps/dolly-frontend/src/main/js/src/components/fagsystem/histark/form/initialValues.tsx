@@ -9,7 +9,7 @@ export const initialHistark = {
 	temakoder: [],
 	enhetsnavn: '',
 	enhetsnummer: '',
-	startYear: getYear(new Date()) - 1,
-	endYear: getYear(new Date()),
+	startYear: 2018,
+	endYear: 2019,
 	fysiskDokument: '',
 }

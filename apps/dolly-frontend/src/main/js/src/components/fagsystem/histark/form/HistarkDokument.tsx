@@ -87,13 +87,13 @@ export const HistarkDokument = ({ path, formMethods }) => {
 				<FormSelect
 					name={`${path}.startYear`}
 					label="Startår"
-					options={getYearRangeOptions(1980, 2025)}
+					options={getYearRangeOptions(1980, 2019)}
 					afterChange={() => formMethods.trigger(path)}
 				/>
 				<FormSelect
 					name={`${path}.endYear`}
 					label="Sluttår"
-					options={getYearRangeOptions(1980, 2025)}
+					options={getYearRangeOptions(1980, 2019)}
 					afterChange={() => formMethods.trigger(path)}
 				/>
 				<FormDatepicker

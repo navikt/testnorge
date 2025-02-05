@@ -2,6 +2,7 @@ import useSWR from 'swr'
 import {
 	cvFetcher,
 	fetcher,
+	multiFetcherAll,
 	multiFetcherArena,
 	multiFetcherDokarkiv,
 	multiFetcherInst,
@@ -69,8 +70,15 @@ const journalpostUrl = (transaksjonsid, miljoer) => {
 	return urlListe
 }
 
-const histarkUrl = (transaksjonsid: string) =>
-	transaksjonsid ? `/testnav-histark-proxy/api/saksmapper/${transaksjonsid}` : null
+const histarkUrl = (transaksjonsid: any) => {
+	const urlListe: Array<string> = []
+	transaksjonsid?.[0]?.transaksjonId?.forEach(
+		(id) =>
+			id?.dokumentInfoId &&
+			urlListe.push(`/testnav-histark-proxy/api/saksmapper/${id?.dokumentInfoId}`),
+	)
+	return urlListe
+}
 
 const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v3/cv'
 const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
@@ -194,13 +202,9 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 
 export const useHistarkData = (ident, harHistarkbestilling) => {
 	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
-	console.log('transaksjonsid: ', transaksjonsid) //TODO - SLETT MEG
-	//TODO: Maa sannsynligvis ha muligheten til aa hente ut liste som paa dokarkiv
-	const histarkId = transaksjonsid?.[0]?.transaksjonId?.[0].dokumentInfoId
-
 	const { data, isLoading, error } = useSWR<any, Error>(
-		harHistarkbestilling ? histarkUrl(histarkId) : null,
-		fetcher,
+		harHistarkbestilling ? histarkUrl(transaksjonsid) : null,
+		multiFetcherAll,
 	)
 
 	return {

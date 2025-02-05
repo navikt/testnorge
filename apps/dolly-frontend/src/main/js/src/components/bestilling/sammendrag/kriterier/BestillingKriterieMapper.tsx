@@ -2283,7 +2283,7 @@ const mapHistark = (bestillingData, data) => {
 				),
 				obj('Skanner', dokument?.skanner),
 				obj('Skannested', dokument?.skannested),
-				obj('Tittel', dokument?.tittel),
+				obj('Filnavn', dokument?.tittel),
 			]),
 		}
 
