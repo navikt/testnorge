@@ -34,11 +34,14 @@ export const HistarkDokument = ({ path, formMethods }) => {
 	const handleVedleggChange = (filer: Vedlegg[]) => {
 		setVedlegg(filer)
 		formMethods.setValue(`${path}.vedlegg`, filer)
-		formMethods.setValue(`${path}.tittel`, null)
-		formMethods.setValue(`${path}.antallSider`, null)
-		formMethods.setValue(`${path}.fysiskDokument`, null)
 
-		filer.forEach((fil: Vedlegg, index: number) => {
+		if (!filer || filer.length < 1) {
+			formMethods.setValue(`${path}.tittel`, null)
+			formMethods.setValue(`${path}.antallSider`, null)
+			formMethods.setValue(`${path}.fysiskDokument`, null)
+		}
+
+		filer?.forEach((fil: Vedlegg) => {
 			const reader = new FileReader()
 			reader.onabort = () => console.warn('file reading was aborted')
 			reader.onerror = () => console.error('file reading has failed')

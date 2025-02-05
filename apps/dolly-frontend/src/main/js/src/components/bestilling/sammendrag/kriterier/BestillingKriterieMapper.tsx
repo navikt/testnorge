@@ -2265,30 +2265,26 @@ const mapDokarkiv = (bestillingData, data) => {
 }
 
 const mapHistark = (bestillingData, data) => {
-	const histarkKriterier = bestillingData.histark
+	const histarkKriterier = bestillingData.histark?.dokumenter
 
 	if (histarkKriterier) {
 		const histark = {
 			header: 'Dokumenter (Histark)',
-			items: [
-				obj('Tittel', histarkKriterier.dokumenter?.[0]?.tittel),
-				obj('Skanner', histarkKriterier.dokumenter?.[0]?.skanner),
-				obj('Skannested', histarkKriterier.dokumenter?.[0]?.skannested),
+			itemRows: histarkKriterier?.map((dokument, i) => [
+				{ numberHeader: `Dokument ${i + 1}` },
+				obj('Temakoder', dokument?.temakoder && arrayToString(dokument?.temakoder)),
+				obj('Enhetsnavn', dokument?.enhetsnavn),
+				obj('Enhetsnummer', dokument?.enhetsnummer),
+				obj('Startår', dokument?.startYear),
+				obj('Sluttår', dokument?.endYear),
 				obj(
 					'Skanningstidspunkt',
-					histarkKriterier.dokumenter?.[0]?.skanningstidspunkt &&
-						formatDate(histarkKriterier.dokumenter?.[0]?.skanningstidspunkt),
+					dokument?.skanningstidspunkt && formatDate(dokument?.skanningstidspunkt),
 				),
-				obj(
-					'Temakoder',
-					histarkKriterier.dokumenter?.[0]?.temakoder &&
-						arrayToString(histarkKriterier.dokumenter?.[0]?.temakoder),
-				),
-				obj('Enhetsnavn', histarkKriterier.dokumenter?.[0]?.enhetsnavn),
-				obj('Enhetsnummer', histarkKriterier.dokumenter?.[0]?.enhetsnummer),
-				obj('Startår', histarkKriterier.dokumenter?.[0]?.startYear),
-				obj('Sluttår', histarkKriterier.dokumenter?.[0]?.endYear),
-			],
+				obj('Skanner', dokument?.skanner),
+				obj('Skannested', dokument?.skannested),
+				obj('Tittel', dokument?.tittel),
+			]),
 		}
 
 		data.push(histark)
