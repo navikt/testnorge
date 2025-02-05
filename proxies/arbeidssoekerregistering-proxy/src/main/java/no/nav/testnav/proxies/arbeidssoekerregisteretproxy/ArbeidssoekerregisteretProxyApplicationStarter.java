@@ -22,10 +22,6 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 public class ArbeidssoekerregisteretProxyApplicationStarter {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ArbeidssoekerregisteretProxyApplicationStarter.class, args);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            AzureTrygdeetatenTokenService tokenService,
@@ -33,12 +29,17 @@ public class ArbeidssoekerregisteretProxyApplicationStarter {
 
         return builder.routes()
                 .route(spec -> spec.path("/**")
-                        .filters(filterSpec -> filterSpec.filters(AddAuthenticationRequestGatewayFilterFactory.bearerAuthenticationHeaderFilter(
+                        .filters(filterSpec -> filterSpec.filters(
+                                AddAuthenticationRequestGatewayFilterFactory.bearerAuthenticationHeaderFilter(
                                 () -> tokenService.exchange(consumers.getArbeidssoekerregisteret())
                                         .map(AccessToken::getTokenValue)
                         )))
                         .uri(consumers.getArbeidssoekerregisteret().getUrl())
                 )
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(ArbeidssoekerregisteretProxyApplicationStarter.class, args);
     }
 }
