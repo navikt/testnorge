@@ -28,8 +28,8 @@ public class RsArbeidssokerregisteret {
 
     public static class JobbsituasjonDetaljer {
 
-        private String gjelderFraDato;
-        private String gjelderTilDato;
+        private LocalDate gjelderFraDato;
+        private LocalDate gjelderTilDato;
         private String stillingStyrk;
         private String stilling;
         private Integer prosent;

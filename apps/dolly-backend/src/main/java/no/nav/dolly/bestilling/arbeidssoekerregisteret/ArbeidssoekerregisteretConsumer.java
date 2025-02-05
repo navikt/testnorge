@@ -25,9 +25,8 @@ public class ArbeidssoekerregisteretConsumer {
          this.tokenExchange = tokenExchange;
     }
 
-    public Mono<ArbeidssokerregisteretResponse> getArbeidssokerregisteret(ArbeidssokerregisteretRequest request) {
+    public Mono<ArbeidssokerregisteretResponse> postArbeidssokerregisteret(ArbeidssokerregisteretRequest request) {
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new LagreTilArbeidsoekerregisteret(webClient, request, token.getTokenValue()).call());
-
     }
 }

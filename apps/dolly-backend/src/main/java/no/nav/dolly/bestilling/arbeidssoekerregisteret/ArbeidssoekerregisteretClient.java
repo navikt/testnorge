@@ -1,8 +1,12 @@
 package no.nav.dolly.bestilling.arbeidssoekerregisteret;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.Mapper;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.arbeidssoekerregisteret.dto.ArbeidssokerregisteretRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -19,6 +23,7 @@ import static java.util.Objects.nonNull;
 public class ArbeidssoekerregisteretClient implements ClientRegister {
 
     private final ArbeidssoekerregisteretConsumer arbeidssoekerregisteretConsumer;
+    private final MapperFacade mapperFacade;
 
 
     @Override
@@ -26,10 +31,19 @@ public class ArbeidssoekerregisteretClient implements ClientRegister {
 
         var test = Flux.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getArbeidssokerregisteret()))
-                .map()
-            return Flux.just(dollyPerson.getIdent())
-                    .map(person -> buildRequest(bestilling.getArbeidssokerregisteret(), person
-        return null;
+                .map(soknad -> {
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty("ident", dollyPerson.getIdent());
+                    return mapperFacade.map(soknad, ArbeidssokerregisteretRequest.class, context);
+                })
+                .map(arbeidssoekerregisteretConsumer::postArbeidssokerregisteret)
+                .flatMap(response -> response.map(arbeidssokerregisteretResponse -> {
+                    if (arbeidssokerregisteretResponse.getStatus().is2xxSuccessful()) {
+                        return "OK";
+                    } else {
+                        return "Feil";
+                    }
+                }));
     }
 
     @Override
