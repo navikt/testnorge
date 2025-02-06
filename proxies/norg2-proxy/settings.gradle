@@ -9,6 +9,7 @@ includeBuild "../../plugins/java"
 includeBuild "../../libs/data-transfer-objects"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/reactive-proxy"
+includeBuild "../../libs/testing"
 
 develocity {
     buildScan {

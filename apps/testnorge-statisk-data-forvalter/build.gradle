@@ -47,7 +47,6 @@ dependencies {
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
 
-    testImplementation "no.nav.testnav.libs:testing"
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 

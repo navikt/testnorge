@@ -6,10 +6,11 @@ rootProject.name = "altinn3-tilgang-proxy"
 
 includeBuild "../../plugins/java"
 
-includeBuild "../../libs/security-core"
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/reactive-proxy"
+includeBuild "../../libs/security-core"
 includeBuild "../../libs/servlet-insecure-security"
+includeBuild "../../libs/testing"
 
 develocity {
     buildScan {

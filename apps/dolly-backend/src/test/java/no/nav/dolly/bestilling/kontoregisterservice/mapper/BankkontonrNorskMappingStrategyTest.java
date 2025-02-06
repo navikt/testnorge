@@ -7,17 +7,11 @@ import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.blankOrNullString;
 
-@ExtendWith(SpringExtension.class)
 class BankkontonrNorskMappingStrategyTest {
 
     private static final String IDENT = "12345678901";

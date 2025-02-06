@@ -10,12 +10,11 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
@@ -25,11 +24,10 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@ActiveProfiles("test")
-@SpringBootTest
+@DollySpringBootTest
 class TestgruppeMappingStrategyTest {
 
-    private final static String BRUKERID = "123";
+    private static final String BRUKERID = "123";
     @MockitoBean
     private BestillingElasticRepository bestillingElasticRepository;
     @MockitoBean

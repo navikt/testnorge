@@ -1,11 +1,6 @@
 DOLLY_READER_TOKEN: test
-TOKEN_X_ISSUER: dummy
 
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
   flyway:
     url: jdbc:h2:mem:testdb
     username: sa

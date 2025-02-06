@@ -4,17 +4,14 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
-@ExtendWith(SpringExtension.class)
 class AaaregUtilityTest {
 
     private static final String ORGNUMMER = "999999999";
@@ -36,10 +33,10 @@ class AaaregUtilityTest {
     }
 
     @ParameterizedTest
-    @CsvSource({ "1, false, 1, 0, 1",
+    @CsvSource({"1, false, 1, 0, 1",
             "1, true, 1, 1, 0",
             "2, false, 1, 0, 1",
-            "2, true, 1, 0, 1" })
+            "2, true, 1, 0, 1"})
     void arbeidsforholdEksistens_eksisterIkke(String reqArbForholdId, Boolean isOppdatering, String respArbForholdId,
                                               int antallEksisterende, int antallNye) {
 

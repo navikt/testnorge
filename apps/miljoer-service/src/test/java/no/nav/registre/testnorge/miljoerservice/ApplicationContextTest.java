@@ -1,13 +1,11 @@
 package no.nav.registre.testnorge.miljoerservice;
 
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@ActiveProfiles("test")
-@SpringBootTest
+@DollySpringBootTest
 class ApplicationContextTest {
 
     @Test

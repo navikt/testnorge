@@ -26,5 +26,4 @@ dependencies {
     implementation "com.google.guava:guava:$versions.guava"
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
-    testImplementation "junit:junit:4.13.2" //TODO upgrade to JUnit5
 }

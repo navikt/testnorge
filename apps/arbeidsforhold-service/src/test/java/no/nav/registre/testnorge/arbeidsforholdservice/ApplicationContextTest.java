@@ -1,18 +1,14 @@
 package no.nav.registre.testnorge.arbeidsforholdservice;
 
-import org.junit.jupiter.api.DisplayName;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@DollySpringBootTest
 class ApplicationContextTest {
 
     @Test
-    @DisplayName("Application context should load")
     void load_app_context() {
         assertThat(true).isTrue();
     }

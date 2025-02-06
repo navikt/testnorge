@@ -23,6 +23,7 @@ dependencies {
 
     implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
+    implementation "no.nav.testnav.libs:testing"
     implementation "org.hibernate.validator:hibernate-validator"
     implementation "org.projectlombok:lombok"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
@@ -79,4 +80,27 @@ tasks.bootJar {
 tasks.test {
     useJUnitPlatform()
     jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+}
+
+/**
+ * Automatically add includeBuild in settings.gradle if we have a dependency on anything in no.nav.testnav.libs.
+ */
+gradle.settingsEvaluated { settings ->
+    println "DEBUG: Settings evaluated for ${settings.gradle.rootProject.name}"
+    def projectDir = (String) settings.gradle.startParameter.currentDir
+    def buildGradle = new File(projectDir, "build.gradle")
+    if (buildGradle.exists()) {
+        def config = new ConfigSlurper().parse(buildGradle.toURI().toURL())
+        config.dependencies.each { dependency ->
+            if (dependency instanceof ProjectDependency && dependency.group == 'no.nav.testnav.libs') {
+                def includeBuildPath = "../../libs/${dependency.name}"
+                if (settings.includes.any { it.name == dependency.name }) {
+                    println "DEBUG: includeBuild '$includeBuildPath' already exists for ${settings.gradle.rootProject.name} - you might want to remove this from your settings.gradle"
+                } else {
+                    settings.includeBuild(includeBuildPath)
+                    println "DEBUG: Added includeBuild '$includeBuildPath' to ${settings.gradle.rootProject.name}"
+                }cd
+            }
+        }
+    }
 }

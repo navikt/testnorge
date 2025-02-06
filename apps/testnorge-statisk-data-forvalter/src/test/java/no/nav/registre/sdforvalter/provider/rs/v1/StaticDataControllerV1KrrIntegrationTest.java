@@ -1,44 +1,35 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.sdforvalter.JwtDecoderConfig;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
 import no.nav.registre.sdforvalter.database.repository.KrrRepository;
 import no.nav.registre.sdforvalter.domain.Krr;
 import no.nav.registre.sdforvalter.domain.KrrListe;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(
-        webEnvironment = RANDOM_PORT
-)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
+@DollySpringBootTest
 @AutoConfigureMockMvc()
 @AutoConfigureWireMock(port = 0)
-@Import(JwtDecoderConfig.class)
+//@Import(JwtDecoderConfig.class)
 class StaticDataControllerV1KrrIntegrationTest {
+
     @Autowired
     private MockMvc mvc;
 
@@ -49,7 +40,7 @@ class StaticDataControllerV1KrrIntegrationTest {
     private KrrRepository repository;
 
     @AfterEach
-    public void cleanUp() {
+    void cleanUp() {
         reset();
         repository.deleteAll();
     }
