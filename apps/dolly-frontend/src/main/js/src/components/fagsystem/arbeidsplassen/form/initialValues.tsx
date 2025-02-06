@@ -1,5 +1,3 @@
-import { runningE2ETest } from '@/service/services/Request'
-
 export const initialJobboensker = {
 	startOption: null,
 	occupations: [],
