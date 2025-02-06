@@ -17,13 +17,4 @@ public class FilterUtility {
             return kodeverk;
         }
     }
-
-    public static KodeverkBetydningerResponse filterKodeverk(String kodeverk, KodeverkBetydningerResponse response) {
-
-        if (KOMMUNER2024.equals(kodeverk)) {
-            return KommunerUtility.filterKommuner2024(response);
-        } else {
-            return response;
-        }
-    }
 }

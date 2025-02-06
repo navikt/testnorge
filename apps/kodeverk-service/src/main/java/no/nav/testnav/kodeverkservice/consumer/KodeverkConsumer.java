@@ -21,8 +21,8 @@ public class KodeverkConsumer {
     public KodeverkConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient.Builder webClientBuilder) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getKodeverkApi();
         this.webClient = webClientBuilder
@@ -42,7 +42,6 @@ public class KodeverkConsumer {
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new KodeverkGetCommand(webClient,
                         FilterUtility.hentKodeverk(kodeverk),
-                        token.getTokenValue()).call())
-                .map(response -> FilterUtility.filterKodeverk(kodeverk, response));
+                        token.getTokenValue()).call());
     }
 }
