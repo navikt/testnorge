@@ -58,6 +58,7 @@ export const rootPaths = [
 	'pdlforvalter',
 	'aareg',
 	'fullmakt',
+	'arbeidssoekerregisteret',
 	'arbeidsplassenCV',
 	'skjerming',
 	'sigrunstub',

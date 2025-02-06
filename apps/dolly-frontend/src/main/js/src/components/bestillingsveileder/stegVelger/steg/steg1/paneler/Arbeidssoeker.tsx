@@ -19,19 +19,23 @@ import {
 	initialUtdanningVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import * as _ from 'lodash-es'
+import { initialValuesArbeidssoekerregisteret } from '@/components/fagsystem/arbeidssoekerregisteret/form/initialValues'
 
-export const ArbeidsplassenPanel = ({ stateModifier, formValues }) => {
-	const sm = stateModifier(ArbeidsplassenPanel.initialValues)
+export const ArbeidssoekerPanel = ({ stateModifier, formValues }) => {
+	const sm = stateModifier(ArbeidssoekerPanel.initialValues)
 
 	return (
 		<Panel
-			heading={ArbeidsplassenPanel.heading}
+			heading={ArbeidssoekerPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="cv"
-			startOpen={harValgtAttributt(formValues, ['arbeidsplassenCV'])}
+			startOpen={harValgtAttributt(formValues, ['arbeidsplassenCV', 'arbeidssoekerregisteret'])}
 		>
-			<AttributtKategori title={null} attr={sm.attrs}>
+			<AttributtKategori title="Arbeidssøkerregisteret" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.arbeidssoekerregisteret} />
+			</AttributtKategori>
+			<AttributtKategori title="Arbeidsplassen (CV)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.jobboensker} />
 				<Attributt attr={sm.attrs.utdanning} />
 				<Attributt attr={sm.attrs.fagbrev} />
@@ -49,9 +53,9 @@ export const ArbeidsplassenPanel = ({ stateModifier, formValues }) => {
 	)
 }
 
-ArbeidsplassenPanel.heading = 'Arbeidsplassen (CV)'
+ArbeidssoekerPanel.heading = 'Arbeidssøker'
 
-ArbeidsplassenPanel.initialValues = ({ setMulti, opts, del, has, values }) => {
+ArbeidssoekerPanel.initialValues = ({ set, setMulti, opts, del, has, values }) => {
 	const { personFoerLeggTil } = opts
 	const personFoerLeggTilHarHjemmel = personFoerLeggTil?.arbeidsplassenCV?.harHjemmel
 
@@ -78,6 +82,16 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, opts, del, has, values }) => {
 	}
 
 	return {
+		arbeidssoekerregisteret: {
+			label: 'Er arbeidssøker',
+			checked: has('arbeidssoekerregisteret'),
+			add() {
+				set('arbeidssoekerregisteret', initialValuesArbeidssoekerregisteret)
+			},
+			remove() {
+				del('arbeidssoekerregisteret')
+			},
+		},
 		jobboensker: {
 			label: 'Har jobbønsker',
 			checked: has('arbeidsplassenCV.jobboensker'),
