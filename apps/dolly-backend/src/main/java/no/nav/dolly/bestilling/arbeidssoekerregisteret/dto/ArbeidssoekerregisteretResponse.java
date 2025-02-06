@@ -10,9 +10,8 @@ import org.springframework.http.HttpStatus;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArbeidssokerregisteretResponse {
+public class ArbeidssoekerregisteretResponse {
 
      private HttpStatus status;
      private String feilmelding;
 }
-

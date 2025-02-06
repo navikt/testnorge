@@ -32,6 +32,7 @@ spec:
         - application: testnav-amelding-service
         - application: testnav-arbeidsforhold-service
         - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-inntektsmelding-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
@@ -43,21 +44,21 @@ spec:
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
         - application: testnav-tps-messaging-service
-        - application: testnorge-profil-api
         - application: testnav-yrkesskade-proxy
+        - application: testnorge-profil-api
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-        - host: testnav-medl-proxy.dev-fss-pub.nais.io
         - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-medl-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io

@@ -248,7 +248,7 @@ consumers:
     namespace: dolly
     url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
-  arbeidssoekerregisteret:
+  arbeidssoekerregisteret-proxy:
     name: testnav-arbeidssoekerregisteret-proxy
     namespace: dolly
     url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
