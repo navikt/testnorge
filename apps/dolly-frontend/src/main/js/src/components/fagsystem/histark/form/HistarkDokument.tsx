@@ -102,7 +102,6 @@ export const HistarkDokument = ({ path, formMethods }) => {
 					label="Skanningstidspunkt"
 					visHvisAvhuket={false}
 				/>
-				{/*//TODO: Maa denne vaere en enum? Funka feks med 'NAV_NO'. Se kodeverk Mottakskanaler*/}
 				<FormTextInput
 					name={`${path}.skanner`}
 					label="Skanner"
