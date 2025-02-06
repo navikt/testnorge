@@ -1,11 +1,11 @@
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
 import {
 	initialDigitalInnsending,
 	initialDokarkiv,
-} from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { initialHistark } from '@/components/fagsystem/histark/form/initialValues'
+} from '@/components/fagsystem/dokarkiv/form/initialValues'
 
 export const DokarkivPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(DokarkivPanel.initialValues)
@@ -42,9 +42,9 @@ DokarkivPanel.heading = 'Dokumenter'
 DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 	dokarkiv: {
 		label: 'Skanning',
-		checked: has('dokarkiv') && !has('dokarkiv.avsenderMottaker'),
+		checked: has('dokarkiv') && !has('dokarkiv[0].avsenderMottaker'),
 		add() {
-			set('dokarkiv', initialDokarkiv)
+			set('dokarkiv', [initialDokarkiv])
 		},
 		remove() {
 			del('dokarkiv')
@@ -52,9 +52,9 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 	},
 	digitalInnsending: {
 		label: 'Digital innsending',
-		checked: has('dokarkiv.avsenderMottaker'),
+		checked: has('dokarkiv[0].avsenderMottaker'),
 		add() {
-			set('dokarkiv', initialDigitalInnsending)
+			set('dokarkiv', [initialDigitalInnsending])
 		},
 		remove() {
 			del('dokarkiv')
@@ -64,7 +64,7 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 		label: 'Histark',
 		checked: has('histark'),
 		add() {
-			set('histark', initialHistark)
+			set('histark', { dokumenter: [initialHistark] })
 		},
 		remove() {
 			del('histark')
