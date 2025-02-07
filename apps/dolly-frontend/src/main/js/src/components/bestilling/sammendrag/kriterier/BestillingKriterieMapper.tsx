@@ -28,6 +28,7 @@ import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
+import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1462,13 +1463,16 @@ const mapArbeidssoekerregisteret = (bestillingData, data) => {
 		const arbeidssoekerregisteret = {
 			header: 'Arbeidssøkerregisteret',
 			items: [
-				obj('Utført av', codeToNorskLabel(arbeidssoekerregisteretKriterier.utfoertAv)),
+				obj('Utført av', showTyperLabel('BRUKERTYPE', arbeidssoekerregisteretKriterier.utfoertAv)),
 				obj('Kilde', arbeidssoekerregisteretKriterier.kilde),
 				obj('Årsak', arbeidssoekerregisteretKriterier.aarsak),
-				obj('Utdanningsnivå (NUS-kode)', arbeidssoekerregisteretKriterier.nuskode),
+				obj('Utdanningsnivå', showTyperLabel('NUSKODE', arbeidssoekerregisteretKriterier.nuskode)),
 				obj(
 					'Beskrivelse av jobbsituasjonen',
-					codeToNorskLabel(arbeidssoekerregisteretKriterier.jobbsituasjonsbeskrivelse),
+					showTyperLabel(
+						'JOBBSITUASJONSBESKRIVELSE',
+						arbeidssoekerregisteretKriterier.jobbsituasjonsbeskrivelse,
+					),
 				),
 				obj(
 					'Utdanning bestått',
@@ -1494,14 +1498,7 @@ const mapArbeidssoekerregisteret = (bestillingData, data) => {
 					'Gjelder til dato',
 					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.gjelderTilDato),
 				),
-				obj(
-					'Stillingskode',
-					arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.stillingStyrk08,
-				),
-				obj(
-					'Stillingstittel',
-					arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.stillingstittel,
-				),
+				obj('Stilling', arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.stillingstittel),
 				obj(
 					'Stillingsprosent',
 					arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.stillingsprosent,
