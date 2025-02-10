@@ -28,6 +28,7 @@ import static org.springframework.util.StringUtils.truncate;
  *
  * @see StringUtils#truncate(CharSequence, int)
  */
+@Setter
 @Slf4j
 @SuppressWarnings("java:S110")
 public class TestnavLogbackEncoder extends LogstashEncoder {
@@ -36,13 +37,8 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
     private static final Pattern IDENT = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
     private static final Pattern BEARER = Pattern.compile("Bearer [a-zA-Z0-9\\-_.]+");
 
-    @Setter
     private int maxStackTraceLength = 480;
-
-    @Setter
     private boolean addCauses = false;
-
-    @Setter
     private String stackTraceIncludePrefix = null;
 
     @SneakyThrows

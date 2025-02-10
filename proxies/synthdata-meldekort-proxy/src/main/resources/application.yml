@@ -6,8 +6,8 @@ spring:
     oauth2:
       resourceserver:
         trygdeetaten:
-          issuer-uri: ${azure.openid.config.issuer}
-          jwk-set-uri: ${azure.openid.config.jwks.uri}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          jwk-set-uri: ${AZURE_OPENID_CONFIG_JWKS_URI}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
   codec:
     max-in-memory-size: 15MB

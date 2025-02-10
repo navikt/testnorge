@@ -54,7 +54,7 @@ public class BestilteKriterier {
     private PensjonData pensjonforvalter;
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
-    private RsDokarkiv dokarkiv;
+    private List<RsDokarkiv> dokarkiv;
     private List<RsFullmakt> fullmakt;
     private RsMedl medl;
     private RsHistark histark;

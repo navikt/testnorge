@@ -85,6 +85,10 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 		_.get(valgtMal, 'data.bestilling.aareg')?.find(
 			(arbforh: any) => arbforh?.amelding?.length > 0,
 		) !== undefined
+	const erGammelSyntSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.syntSykemelding')
+
+	// Sjekk av Aareg-mal kan fjernes naar oppretting til Aareg er tilgjengelig igjen
+	const erAaregMal = _.has(valgtMal, 'data.bestilling.aareg')
 
 	return (
 		<FormProvider {...formMethods}>
@@ -143,23 +147,58 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 						/>
 					</InputDiv>
 					{erGammelFullmaktMal && (
-						<Alert variant={'warning'} size={'small'} style={{ width: '97%' }}>
+						<Alert
+								variant={'warning'}
+								size={'small'}
+								style={{ width: '97%', marginBottom: '10px' }}
+							>
 							Denne malen er utdatert, og vil muligens ikke fungere som den skal. Dette fordi master
 							for fullmakt er endret til Representasjon. Vi anbefaler at du oppretter en ny mal og
 							sletter denne malen.
 						</Alert>
 					)}
 					{erTpsfMal && (
-						<Alert variant={'warning'} size={'small'} style={{ width: '97%' }}>
+						<Alert
+								variant={'warning'}
+								size={'small'}
+								style={{ width: '97%', marginBottom: '10px' }}
+							>
 							Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
 							master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en ny
 							mal og sletter denne malen.
 						</Alert>
 					)}
 					{erGammelAmeldingMal && (
-						<Alert variant={'warning'} size={'small'} style={{ width: '97%' }}>
+						<Alert
+								variant={'warning'}
+								size={'small'}
+								style={{ width: '97%', marginBottom: '10px' }}
+							>
 							Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder
-							arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at du sletter
+							arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.
+							</Alert>
+						)}
+						{/*Varsel om Aareg-mal kan fjernes naar oppretting til Aareg er tilgjengelig igjen*/}
+						{erAaregMal && !erGammelAmeldingMal && (
+							<Alert
+								variant={'warning'}
+								size={'small'}
+								style={{ width: '97%', marginBottom: '10px' }}
+							>
+								Bestillinger med denne malen vil ikke fungere som de skal, da den inneholder
+								Aareg-data, og oppretting til Aareg for øyeblikket er utilgjengelig. Malen vil kunne
+								brukes som før når oppretting til Aareg er tilgjengelig igjen, medio mars 2025.
+							</Alert>
+						)}
+						{erGammelSyntSykemeldingMal && (
+							<Alert
+								variant={'warning'}
+								size={'small'}
+								style={{ width: '97%', marginBottom: '10px' }}
+							>
+								Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den
+								inneholder syntetisk sykemelding, som ikke lenger er støttet. Vi anbefaler at du
+								sletter
 							denne malen og oppretter en ny.
 						</Alert>
 					)}

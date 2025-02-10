@@ -25,6 +25,3 @@ consumers:
   testnav-sykemelding-api:
     name: testnav-sykemelding-api-dev
     url: http://testnav-sykemelding-api-dev.dolly.svc.cluster.local
-  testnav-synt-sykemelding-api:
-    name: testnav-synt-sykemelding-api-dev
-    url: http://testnav-synt-sykemelding-api-dev.dolly.svc.cluster.local

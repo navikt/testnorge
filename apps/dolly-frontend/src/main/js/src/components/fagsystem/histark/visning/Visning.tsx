@@ -2,6 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import HistarkVisning from './HistarkVisning'
 import Loading from '@/components/ui/loading/Loading'
 import { Journalpost } from '@/service/services/JoarkDokumentService'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 interface Form {
 	data?: Array<MiljoDataListe>
@@ -31,7 +32,15 @@ export default ({ data, loading }: Form) => {
 	return (
 		<>
 			<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
-			<Histark data={data} />
+			{data.length === 1 ? (
+				<Histark data={data[0]} />
+			) : (
+				<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
+					{(dokument) => {
+						return <Histark data={dokument} />
+					}}
+				</DollyFieldArray>
+			)}
 		</>
 	)
 }
