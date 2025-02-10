@@ -7,6 +7,7 @@ import { useArbeidssoekerTyper } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { validation } from '@/components/fagsystem/arbeidssoekerregisteret/form/validation'
 
 export const arbeidssoekerregisteretAttributt = 'arbeidssoekerregisteret'
 
@@ -126,5 +127,7 @@ export const ArbeidssoekerregisteretForm = () => {
 		</Vis>
 	)
 }
+
+ArbeidssoekerregisteretForm.validation = validation
 
 //TODO: Kodeverk Yrkesklassifisering brukes til stillingStyrk08 og stillingstittel
