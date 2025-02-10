@@ -2,11 +2,11 @@
   "name": "@navikt/dolly-assets",
   "version": "1.2.24",
   "description": "Dolly assets",
+  "type": "module",
   "main": "lib/index.js",
   "scripts": {
     "build": "vite build"
   },
-  "types": "lib",
   "author": {
     "name": "Team dolly",
     "email": "dolly@nav.no"
