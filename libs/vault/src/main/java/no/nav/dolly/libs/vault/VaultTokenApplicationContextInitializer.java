@@ -1,19 +1,34 @@
-package no.nav.testnav.libs.vault;
+package no.nav.dolly.libs.vault;
 
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import static lombok.AccessLevel.PRIVATE;
+/**
+ * Will set a system property {@code VAULT_TOKEN} if the Spring profile is set to {@link #PROFILE}.
+ * Will only work for applications in {@code dev-fss}.
+ */
+public class VaultTokenApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-@NoArgsConstructor(access = PRIVATE)
-@Slf4j
-public final class VaultUtils {
+    private static final String PROFILE = "prod";
+
+    @Override
+    public void initialize(@NonNull ConfigurableApplicationContext context) {
+
+        Stream
+                .of(context.getEnvironment().getActiveProfiles())
+                .filter(profile -> profile.equals(PROFILE))
+                .findAny()
+                .ifPresent(profile -> System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken()));
+
+    }
 
     private static final String NAIS_CLUSTER_SYSTEM_PROPERTY = "NAIS_CLUSTER_NAME";
     private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
@@ -47,12 +62,6 @@ public final class VaultUtils {
             throw new VaultException("Unable to read vault token from existing file %s".formatted(path.toString()), e);
         }
 
-    }
-
-    public static void initCloudVaultToken(String ifProfileIs) {
-        if (ifProfileIs.equals(System.getProperty("spring.profiles.active"))) {
-            System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken());
-        }
     }
 
 }
