@@ -4,6 +4,12 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, formatDateTime, oversettBoolean } from '@/utils/DataFormatter'
 import { useArbeidssoekerTyper } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { ArbeidssoekerregisteretTypes } from '@/components/fagsystem/arbeidssoekerregisteret/arbeidssoekerregisteretTypes'
+
+type ArbeidssoekerregisteretVisning = {
+	data?: ArbeidssoekerregisteretTypes
+	loading?: boolean
+}
 
 export const showTyperLabel = (type: string, value: string) => {
 	const { data, loading, error } = useArbeidssoekerTyper(type)
@@ -13,7 +19,10 @@ export const showTyperLabel = (type: string, value: string) => {
 	return data?.find((item: any) => item?.value === value)?.label || value
 }
 
-export const ArbeidssoekerregisteretVisning = ({ data, loading }) => {
+export const ArbeidssoekerregisteretVisning = ({
+	data,
+	loading,
+}: ArbeidssoekerregisteretVisning) => {
 	if (loading) {
 		return <Loading label="Laster arbeidssøkerregisteret-data" />
 	}

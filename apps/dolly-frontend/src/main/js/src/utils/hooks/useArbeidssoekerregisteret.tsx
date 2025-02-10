@@ -2,13 +2,13 @@ import useSWR from 'swr'
 import { fetcher } from '@/api'
 
 const baseUrl = '/testnav-arbeidssoekerregisteret-proxy'
-const getTyperUrl = (type) => `${baseUrl}/api/v1/typer/${type}`
-const getRegistreringUrl = (ident) => `${baseUrl}/api/v1/arbeidssoekerregistrering/${ident}`
+const getTyperUrl = (type: string) => `${baseUrl}/api/v1/typer/${type}`
+const getRegistreringUrl = (ident: string) => `${baseUrl}/api/v1/arbeidssoekerregistrering/${ident}`
 
-export const useArbeidssoekerTyper = (type) => {
+export const useArbeidssoekerTyper = (type: string) => {
 	const { data, isLoading, error } = useSWR<any, Error>(getTyperUrl(type), fetcher)
 
-	const options = data?.map((option) => ({
+	const options = data?.map((option: any) => ({
 		value: option.key,
 		label: option.value,
 	}))
@@ -20,7 +20,7 @@ export const useArbeidssoekerTyper = (type) => {
 	}
 }
 
-export const useArbeidssoekerregistrering = (ident, harBestilling) => {
+export const useArbeidssoekerregistrering = (ident: string, harBestilling: boolean) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		harBestilling ? getRegistreringUrl(ident) : null,
 		fetcher,

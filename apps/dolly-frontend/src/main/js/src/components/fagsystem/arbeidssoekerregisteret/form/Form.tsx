@@ -23,7 +23,7 @@ export const ArbeidssoekerregisteretForm = () => {
 		'JOBBSITUASJONSBESKRIVELSE',
 	)
 
-	const handleStillingChange = (option) => {
+	const handleStillingChange = (option: any) => {
 		formMethods.setValue(
 			'arbeidssoekerregisteret.jobbsituasjonsdetaljer.stillingStyrk08',
 			option?.value || null,
@@ -102,7 +102,7 @@ export const ArbeidssoekerregisteretForm = () => {
 						<FormSelect
 							name="arbeidssoekerregisteret.jobbsituasjonsdetaljer.stillingStyrk08"
 							label={'Stilling'}
-							kodeverk="Yrkesklassifisering" //TODO: Felier ved kall mot kodeverk
+							kodeverk="Yrkesklassifisering" //TODO: Felier ved kall mot kodeverk Yrkesklassifisering
 							value={formMethods.watch(
 								'arbeidssoekerregisteret.jobbsituasjonsdetaljer.stillingStyrk08',
 							)}
@@ -129,5 +129,3 @@ export const ArbeidssoekerregisteretForm = () => {
 }
 
 ArbeidssoekerregisteretForm.validation = validation
-
-//TODO: Kodeverk Yrkesklassifisering brukes til stillingStyrk08 og stillingstittel

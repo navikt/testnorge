@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent, messages } from '@/utils/YupValidations'
+import { ifPresent } from '@/utils/YupValidations'
 
 const dato = Yup.date()
 	.transform((i, j) => (j === '' ? null : i))
