@@ -34,8 +34,8 @@ public class ArbeidssoekerregisteretRequest {
 
         private LocalDate gjelderFraDato;
         private LocalDate gjelderTilDato;
-        private Integer stillingStyrk08;
-        private String stillingstittel;
+        private Integer stillingStyrk08; // Stillingskode i STYRK08 fra kodeverk "Yrkesklassifisering"
+        private String stillingstittel; // Stillingstittel beskrivelse i STYRK08 fra kodeverk "Yrkesklassifisering"
         private Integer stillingsprosent;
         private LocalDate sisteDagMedLoenn;
         private LocalDate sisteArbeidsdag;
