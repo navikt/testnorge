@@ -128,6 +128,16 @@ export const harHistarkBestilling = (bestillingerFagsystemer) => {
 	return histark
 }
 
+export const harArbeidssoekerregisteretBestilling = (bestillingerFagsystemer) => {
+	let arbeidssoekerregisteret = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i?.arbeidssoekerregisteret) {
+			arbeidssoekerregisteret = true
+		}
+	})
+	return arbeidssoekerregisteret
+}
+
 export const harArbeidsplassenBestilling = (bestillingerFagsystemer) => {
 	let arbeidsplassen = false
 	bestillingerFagsystemer?.forEach((i) => {
