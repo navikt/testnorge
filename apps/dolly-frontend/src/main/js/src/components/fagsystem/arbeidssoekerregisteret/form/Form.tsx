@@ -102,11 +102,12 @@ export const ArbeidssoekerregisteretForm = () => {
 						<FormSelect
 							name="arbeidssoekerregisteret.jobbsituasjonsdetaljer.stillingStyrk08"
 							label={'Stilling'}
-							kodeverk="Yrkesklassifisering" //TODO: Felier ved kall mot kodeverk Yrkesklassifisering
+							kodeverk="Yrkesklassifisering"
 							value={formMethods.watch(
 								'arbeidssoekerregisteret.jobbsituasjonsdetaljer.stillingStyrk08',
 							)}
 							onChange={handleStillingChange}
+							size="xlarge"
 						/>
 						<FormTextInput
 							name="arbeidssoekerregisteret.jobbsituasjonsdetaljer.stillingsprosent"
