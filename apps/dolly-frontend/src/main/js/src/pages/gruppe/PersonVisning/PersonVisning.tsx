@@ -47,6 +47,7 @@ import {
 	harAfpOffentligBestilling,
 	harApBestilling,
 	harArbeidsplassenBestilling,
+	harArbeidssoekerregisteretBestilling,
 	harArenaBestilling,
 	harDokarkivBestilling,
 	harHistarkBestilling,
@@ -107,6 +108,8 @@ import { UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
 
 import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
+import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
+import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -205,6 +208,12 @@ export default ({
 		ident.ident,
 		harInstBestilling(bestillingerFagsystemer),
 	)
+
+	const { loading: loadingArbeidssoekerregisteret, data: arbeidssoekerregisteretData } =
+		useArbeidssoekerregistrering(
+			ident.ident,
+			harArbeidssoekerregisteretBestilling(bestillingerFagsystemer),
+		)
 
 	const {
 		loading: loadingArbeidsplassencvData,
@@ -490,6 +499,10 @@ export default ({
 					}
 				/>
 				<SkattekortVisning liste={skattekortData} loading={loadingSkattekort} />
+				<ArbeidssoekerregisteretVisning
+					data={arbeidssoekerregisteretData}
+					loading={loadingArbeidssoekerregisteret}
+				/>
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
 					loading={loadingArbeidsplassencvData}

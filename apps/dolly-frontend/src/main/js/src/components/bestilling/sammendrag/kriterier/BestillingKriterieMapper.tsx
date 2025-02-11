@@ -28,6 +28,7 @@ import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
+import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1454,6 +1455,68 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 		data.push(arbeidsplassenCV)
 	}
 }
+
+const mapArbeidssoekerregisteret = (bestillingData, data) => {
+	const arbeidssoekerregisteretKriterier = _.get(bestillingData, 'arbeidssoekerregisteret')
+
+	if (arbeidssoekerregisteretKriterier) {
+		const arbeidssoekerregisteret = {
+			header: 'Arbeidssøkerregisteret',
+			items: [
+				obj('Utført av', showTyperLabel('BRUKERTYPE', arbeidssoekerregisteretKriterier.utfoertAv)),
+				obj('Kilde', arbeidssoekerregisteretKriterier.kilde),
+				obj('Årsak', arbeidssoekerregisteretKriterier.aarsak),
+				obj('Utdanningsnivå', showTyperLabel('NUSKODE', arbeidssoekerregisteretKriterier.nuskode)),
+				obj(
+					'Beskrivelse av jobbsituasjonen',
+					showTyperLabel(
+						'JOBBSITUASJONSBESKRIVELSE',
+						arbeidssoekerregisteretKriterier.jobbsituasjonsbeskrivelse,
+					),
+				),
+				obj(
+					'Utdanning bestått',
+					oversettBoolean(arbeidssoekerregisteretKriterier.utdanningBestaatt),
+				),
+				obj(
+					'Utdanning godkjent',
+					oversettBoolean(arbeidssoekerregisteretKriterier.utdanningGodkjent),
+				),
+				obj(
+					'Helsetilstand hindrer arbeid',
+					oversettBoolean(arbeidssoekerregisteretKriterier.helsetilstandHindrerArbeid),
+				),
+				obj(
+					'Andre forhold hindrer arbeid',
+					oversettBoolean(arbeidssoekerregisteretKriterier.andreForholdHindrerArbeid),
+				),
+				obj(
+					'Gjelder fra dato',
+					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.gjelderFraDato),
+				),
+				obj(
+					'Gjelder til dato',
+					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.gjelderTilDato),
+				),
+				obj('Stilling', arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.stillingstittel),
+				obj(
+					'Stillingsprosent',
+					arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.stillingsprosent,
+				),
+				obj(
+					'Siste dag med lønn',
+					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.sisteDagMedLoenn),
+				),
+				obj(
+					'Siste arbeidsdag',
+					formatDate(arbeidssoekerregisteretKriterier.jobbsituasjonsdetaljer?.sisteArbeidsdag),
+				),
+			],
+		}
+		data.push(arbeidssoekerregisteret)
+	}
+}
+
 const mapSykemelding = (bestillingData, data) => {
 	const sykemeldingKriterier = _.get(bestillingData, 'sykemelding')
 
@@ -2426,6 +2489,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapInntektStub(bestillingData, data)
 	mapInntektsmelding(bestillingData, data)
 	mapSkattekort(bestillingData, data)
+	mapArbeidssoekerregisteret(bestillingData, data)
 	mapArbeidsplassenCV(bestillingData, data)
 	mapPensjon(bestillingData, data, navEnheter)
 	mapArena(bestillingData, data)

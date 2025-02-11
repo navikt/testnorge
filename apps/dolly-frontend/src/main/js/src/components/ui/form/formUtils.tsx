@@ -85,6 +85,7 @@ const getValgteAttributter = (values) => {
 		'inntektstub',
 		'inntektsmelding',
 		'skattekort',
+		'arbeidssoekerregisteret',
 		'arbeidsplassenCV',
 		'pensjonforvalter.inntekt',
 		'pensjonforvalter.pensjonsavtale',

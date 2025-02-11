@@ -1,11 +1,15 @@
 package no.nav.testnav.kodeverkservice;
 
-import org.springframework.boot.SpringApplication;
+import no.nav.testnav.libs.reactivecore.config.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class KodeverkServiceApplicationStarter {
+
     public static void main(String[] args) {
-        SpringApplication.run(KodeverkServiceApplicationStarter.class, args);
+        new SpringApplicationBuilder(KodeverkServiceApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

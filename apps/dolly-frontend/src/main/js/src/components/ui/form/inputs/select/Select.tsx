@@ -149,6 +149,12 @@ export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: Selec
 			kodeverkClone?.splice(0, 0, ukjentBosted)
 			return kodeverkClone
 		}
+		if (kodeverk === 'Yrkesklassifisering') {
+			return kodeverkVerdier?.map((item) => ({
+				label: item.value,
+				value: item.label,
+			}))
+		}
 		return kodeverkVerdier
 	}
 
