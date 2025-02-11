@@ -46,9 +46,9 @@ public class RsArbeidssoekerregisteret {
         private LocalDate gjelderFraDato;
         @Schema(description = "Dato til når jobbsituasjonen gjelder")
         private LocalDate gjelderTilDato;
-        @Schema(description = "Stillingskode (enum) i STYRK08")
+        @Schema(description = "Stillingskode i STYRK08 fra kodeverk \"Yrkesklassifisering\"")
         private Integer stillingStyrk08;
-        @Schema(description = "Stillingstittel beskrivelse (enum) i STYRK08")
+        @Schema(description = "Stillingstittel beskrivelse i STYRK08 fra kodeverk \"Yrkesklassifisering\"")
         private String stillingstittel;
         @Schema(description = "Stillingsprosent")
         private Integer stillingsprosent;
