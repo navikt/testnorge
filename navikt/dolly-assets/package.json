@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-assets",
-  "version": "1.2.24",
+  "version": "1.2.25",
   "description": "Dolly assets",
   "type": "module",
   "main": "lib/index.js",
@@ -17,7 +17,8 @@
     "prettier": "^3.1.1",
     "vite": "^6.1.0",
     "vite-plugin-svgr": "^4.2.0",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "esbuild": ">=0.25.0"
   },
   "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {
