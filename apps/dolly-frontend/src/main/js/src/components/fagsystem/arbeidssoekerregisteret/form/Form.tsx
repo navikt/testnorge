@@ -40,6 +40,7 @@ export const ArbeidssoekerregisteretForm = () => {
 				heading="Arbeidssøkerregisteret"
 				hasErrors={panelError(arbeidssoekerregisteretAttributt)}
 				iconType="cv"
+				informasjonstekst="Informasjonen i arbeidssøkerregisteret har en levetid på 21 dager fra innsending. Denne kan fornyes ved innsending på ny (gjenopprett)."
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidssoekerregisteretAttributt])}
 			>
 				<div className="flexbox--flex-wrap">

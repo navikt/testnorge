@@ -244,7 +244,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-arbeidssoekerregisteret-proxy
-    url: http://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no
+    url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
 
 management:
   endpoints:
