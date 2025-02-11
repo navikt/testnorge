@@ -161,5 +161,8 @@
   },
   "/testnav-yrkesskade-proxy": {
     "changeOrigin": true
+  },
+  "/testnav-arbeidssoekerregisteret-proxy": {
+    "changeOrigin": true
   }
 }

@@ -24,11 +24,13 @@ import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 import { dokarkivValidation } from '@/components/fagsystem/dokarkiv/form/DokarkivValidation'
 import { histarkValidation } from '@/components/fagsystem/histark/form/HistarkValidation'
+import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
 
 export const DollyValidation = Yup.object({
 	...PdlfForm.validation,
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,
+	...ArbeidssoekerregisteretForm.validation,
 	...SigrunstubForm.validation,
 	...SigrunstubPensjonsgivendeForm.validation,
 	...InntektstubForm.validation,

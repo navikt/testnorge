@@ -15,7 +15,7 @@ import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
-import { ArbeidsplassenPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidsplassen'
+import { ArbeidssoekerPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidssoeker'
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
 
@@ -38,7 +38,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
-		ArbeidsplassenPanel,
+		ArbeidssoekerPanel,
 		SykdomPanel,
 		MedlPanel,
 		BrregPanel,
@@ -74,7 +74,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 				</>
 			)}
 			<ArbeidInntektPanel stateModifier={stateModifier} formValues={formValues} />
-			<ArbeidsplassenPanel stateModifier={stateModifier} formValues={formValues} />
+			<ArbeidssoekerPanel stateModifier={stateModifier} formValues={formValues} />
 			<PensjonPanel stateModifier={stateModifier} formValues={formValues} />
 			<ArenaPanel stateModifier={stateModifier} formValues={formValues} />
 			<SykdomPanel stateModifier={stateModifier} formValues={formValues} />
