@@ -17,9 +17,9 @@ Applikasjonene har en noe annen konfigurasjon for kjøring lokalt, og bruker [gc
 ```
 > gcloud auth login --update-adc
 ```
-* Du må starte `cloud_sql_proxy` med rett `APP_NAME` (se over).
+* Du må starte `cloud-sql-proxy` med rett `APP_NAME` (se over).
 ```
-> cloud_sql_proxy -instances=dolly-dev-ff83:europe-north1:testnav-APP_NAME-local=tcp:5432
+> cloud-sql-proxy dolly-dev-ff83:europe-north1:testnav-APP_NAME-local -p 5432
 ```
 
 Etter at proxy'en er startet kan du da kjøre den aktuelle applikasjonen lokalt. Applikasjonen henter selv passord vha. [Spring Cloud GCP](https://spring.io/projects/spring-cloud-gcp) ved oppstart.

@@ -289,10 +289,12 @@ export const backendTransaksjonMock = [
 		ident: '12345678912',
 		system: 'INNTKMELD',
 		miljoe: 'q1',
-		transaksjonId: {
-			journalpostId: '999999999',
-			dokumentInfoId: '888888888',
-		},
+		transaksjonId: [
+			{
+				journalpostId: '999999999',
+				dokumentInfoId: '888888888',
+			},
+		],
 		datoEndret: '2022-01-01T11:58:58.227916',
 	},
 	{
@@ -301,10 +303,12 @@ export const backendTransaksjonMock = [
 		ident: '12345678912',
 		system: 'INNTKMELD',
 		miljoe: 'q2',
-		transaksjonId: {
-			journalpostId: '999999999',
-			dokumentInfoId: '888888888',
-		},
+		transaksjonId: [
+			{
+				journalpostId: '999999999',
+				dokumentInfoId: '888888888',
+			},
+		],
 		datoEndret: '2022-01-01T11:58:59.289252',
 	},
 ]
@@ -1692,21 +1696,23 @@ export const backendBestillingerMock = [
 				],
 				understatuser: [0],
 			},
-			dokarkiv: {
-				tittel: 'Anke',
-				tema: 'AGR',
-				kanal: 'NAV_NO',
-				avsenderMottaker: {
-					id: '12345678912',
-					idType: 'FNR',
-				},
-				dokumenter: [
-					{
-						tittel: 'Anke',
-						brevkode: 'NAV 90-00.08 A',
+			dokarkiv: [
+				{
+					tittel: 'Anke',
+					tema: 'AGR',
+					kanal: 'NAV_NO',
+					avsenderMottaker: {
+						id: '12345678912',
+						idType: 'FNR',
 					},
-				],
-			},
+					dokumenter: [
+						{
+							tittel: 'Anke',
+							brevkode: 'NAV 90-00.08 A',
+						},
+					],
+				},
+			],
 			histark: {},
 			medl: {},
 			sykemelding: {
