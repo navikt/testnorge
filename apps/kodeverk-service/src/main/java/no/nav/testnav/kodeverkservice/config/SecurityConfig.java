@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
-@Profile({ "prod", "dev" })
+@Profile({"prod", "local"})
 public class SecurityConfig {
 
     @Bean
@@ -21,15 +21,17 @@ public class SecurityConfig {
         httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
-                        "/internal/**",
-                        "/webjars/**",
-                        "/swagger-resources/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger",
-                        "/error",
-                        "/swagger-ui.html"
-                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
+                                "/internal/**",
+                                "/webjars/**",
+                                "/swagger-resources/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger",
+                                "/error",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers("/api/**")
+                        .fullyAuthenticated())
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
 
         return httpSecurity.build();

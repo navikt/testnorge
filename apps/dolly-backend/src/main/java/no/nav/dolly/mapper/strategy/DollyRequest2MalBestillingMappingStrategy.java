@@ -46,6 +46,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("sykemelding", "sykemelding")
                 .field("tpsMessaging", "tpsMessaging")
                 .field("udistub", "udistub")
+                .field("arbeidssoekerregisteret", "arbeidssoekerregisteret")
 
                 .customize(new CustomMapper<>() {
                     @Override
