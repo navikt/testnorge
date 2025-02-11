@@ -21,6 +21,7 @@ import {
 	genInitialAlderspensjonVedtak,
 } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { useFormContext } from 'react-hook-form'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -195,6 +196,17 @@ export const AlderspensjonForm = () => {
 		return opts?.identtype === 'FNR' && valgtAdresseType() !== adressetyper.utland
 	}
 
+	const manglerPoppOpptjening = () => {
+		const harApfPrivat =
+			formMethods.watch(`${alderspensjonPath}.inkluderAfpPrivat`) ||
+			formMethods.watch(`${alderspensjonPath}.afpPrivatResultat`)
+		const poppOpptjeningFom = formMethods.watch('pensjonforvalter.inntekt.fomAar')
+		const poppOpptjeningTom = formMethods.watch('pensjonforvalter.inntekt.tomAar')
+		const poppOpptjeningAntallAar = poppOpptjeningTom - poppOpptjeningFom
+		const poppOpptjeningBelop = formMethods.watch('pensjonforvalter.inntekt.belop')
+		return harApfPrivat && (poppOpptjeningAntallAar < 30 || !poppOpptjeningBelop)
+	}
+
 	const soknad = formMethods.watch(`${alderspensjonPath}.soknad`)
 
 	const VEDTAK = 'Vedtak'
@@ -257,6 +269,12 @@ export const AlderspensjonForm = () => {
 							gyldig.
 						</StyledAlert>
 					)}
+				{manglerPoppOpptjening() && (
+					<StyledAlert variant={'info'} size={'small'}>
+						For å sikre at AFP privat innvilges må personen ha minst 30 år med opptjening i POPP (de
+						siste 5 årene er spesielt viktige), gjerne med inntekt over gjennomsnittet.
+					</StyledAlert>
+				)}
 
 				<div className="flexbox--flex-wrap">
 					<div className="toggle--wrapper">
@@ -328,11 +346,23 @@ export const AlderspensjonForm = () => {
 						/>
 					)}
 					{soknad && (
-						<FormTextInput
-							name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
-							label="Ektefelle/partners inntekt"
-							type="number"
-						/>
+						<>
+							<FormTextInput
+								name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
+								label="Ektefelle/partners inntekt"
+								type="number"
+							/>
+							<FormCheckbox
+								name={`${alderspensjonPath}.inkluderAfpPrivat`}
+								label="Inkluder AFP privat"
+								checkboxMargin
+							/>
+							<FormSelect
+								name={`${alderspensjonPath}.afpPrivatResultat`}
+								label="AFP privat resultat"
+								options={Options('afpPrivatResultat')}
+							/>
+						</>
 					)}
 				</div>
 			</Panel>

@@ -5,7 +5,9 @@ export const genInitialAlderspensjonSoknad = {
 	iverksettelsesdato: setDate(addMonths(new Date(), 1), 1),
 	uttaksgrad: 100,
 	relasjoner: [{ sumAvForvArbKapPenInntekt: null }],
-	soknad: true
+	inkluderAfpPrivat: false,
+	afpPrivatResultat: null,
+	soknad: true,
 }
 
 export const genInitialAlderspensjonVedtak = {
@@ -15,5 +17,5 @@ export const genInitialAlderspensjonVedtak = {
 	attesterer: null,
 	uttaksgrad: 100,
 	navEnhetId: null,
-	soknad: false
+	soknad: false,
 }
