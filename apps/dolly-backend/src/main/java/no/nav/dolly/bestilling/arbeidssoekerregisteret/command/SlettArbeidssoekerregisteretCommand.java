@@ -19,8 +19,6 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpStatus>> {
 
-    private static final String ARBEIDSOEKERREGISTERET = "/api/v1/arbeidssoekerregistrering/{identitetsnummer}";
-
     private final WebClient webClient;
     private final String ident;
     private final String token;
@@ -29,7 +27,7 @@ public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpSt
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(ARBEIDSOEKERREGISTERET)
+                        .path("/api/v1/arbeidssoekerregistrering/{identitetsnummer}")
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())

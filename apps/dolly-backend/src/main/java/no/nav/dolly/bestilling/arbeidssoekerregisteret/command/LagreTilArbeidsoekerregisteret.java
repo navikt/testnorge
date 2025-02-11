@@ -21,8 +21,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class LagreTilArbeidsoekerregisteret implements Callable<Mono<ArbeidssoekerregisteretResponse>> {
 
-    private static final String ARBEIDSOEKERREGISTERET = "/api/v1/arbeidssoekerregistrering";
-
     private final WebClient webClient;
     private final ArbeidssoekerregisteretRequest request;
     private final String token;
@@ -31,9 +29,10 @@ public class LagreTilArbeidsoekerregisteret implements Callable<Mono<Arbeidssoek
     public Mono<ArbeidssoekerregisteretResponse> call() {
 
         log.info("Lagrer i arbeidssøkerregisteret, ident: {}, request: {}", request.getIdentitetsnummer(), request);
+
         return webClient.post()
                 .uri(builder ->
-                        builder.path(ARBEIDSOEKERREGISTERET)
+                        builder.path("/api/v1/arbeidssoekerregistrering")
                                 .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
