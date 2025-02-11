@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-komponenter",
-  "version": "1.4.10",
+  "version": "1.4.11",
   "description": "Bibliotek for diverse dolly komponenter.",
   "type": "module",
   "module": "dist/esm/index.js",
@@ -28,6 +28,7 @@
     "@navikt/ds-css": "^7.12.2",
     "@navikt/ds-react": "^7.12.2",
     "classnames": "^2.3.2",
+    "@popperjs/core": "^2.11.8",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.3",
     "focus-trap-react": "^11.0.3",
