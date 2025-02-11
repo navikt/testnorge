@@ -28,6 +28,7 @@ import { AfpOffentligForm } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 import Loading from '@/components/ui/loading/Loading'
 import { PdlfForm } from '@/components/fagsystem/pdlf/form/Form'
+import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
@@ -77,6 +78,7 @@ const Steg2 = () => {
 			<InntektstubForm />
 			<InntektsmeldingForm />
 			<SkattekortForm />
+			<ArbeidssoekerregisteretForm />
 			<ArbeidsplassenForm />
 			<PensjonForm />
 			<PensjonsavtaleForm />

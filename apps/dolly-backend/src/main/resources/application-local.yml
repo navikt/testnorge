@@ -62,3 +62,5 @@ consumers:
     url: https://testnav-skattekort-service.intern.dev.nav.no
   yrkesskade-proxy:
     url: https://testnav-yrkesskade-proxy.intern.dev.nav.no
+  arbeidssoekerregisteret-proxy:
+    url: https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no
