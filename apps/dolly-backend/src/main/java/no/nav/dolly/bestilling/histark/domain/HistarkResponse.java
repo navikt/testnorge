@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Data
 @Builder
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HistarkResponse {
 
-    private String histarkId;
-    private String saksmappeId;
+    private String id;
+    private HttpStatus status;
     private String feilmelding;
 }

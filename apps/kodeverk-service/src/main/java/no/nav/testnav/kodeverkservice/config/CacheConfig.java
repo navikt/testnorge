@@ -30,7 +30,7 @@ public class CacheConfig {
     }
 
     @Bean
-    @Profile("dev")
+    @Profile("local")
     public CacheManager getNoOpCacheManager() {
 
         return new NoOpCacheManager();

@@ -17,6 +17,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.BestillingPdlOrdreStatusMapper;
 import no.nav.dolly.repository.IdentRepository;
 import org.apache.commons.lang3.BooleanUtils;
+import org.slf4j.event.Level;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -77,7 +78,8 @@ public class OrdreService {
                 .map(response -> {
                     progress.setPdlOrdreStatus(response.getStatus().is2xxSuccessful() ?
                             response.getJsonNode() : response.getFeilmelding());
-                    log.info("Pdl-forvalter status: {}", progress.getPdlOrdreStatus());
+                    log.atLevel(response.getStatus().is2xxSuccessful() ? Level.INFO : Level.ERROR)
+                            .log("Pdl-forvalter status: {}", progress.getPdlOrdreStatus());
                     return progress;
                 });
     }

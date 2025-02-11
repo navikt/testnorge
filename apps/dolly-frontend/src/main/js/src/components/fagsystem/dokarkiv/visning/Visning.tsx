@@ -26,7 +26,7 @@ const Dokarkiv = ({ data, miljo }: MiljoDataListe) => {
 		return <DokarkivVisning journalpost={data[0]} miljoe={miljo} />
 	}
 	return (
-		<DollyFieldArray header={'Dokument'} data={data}>
+		<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
 			{(dokument: Journalpost) => {
 				return <DokarkivVisning journalpost={dokument} miljoe={miljo} />
 			}}

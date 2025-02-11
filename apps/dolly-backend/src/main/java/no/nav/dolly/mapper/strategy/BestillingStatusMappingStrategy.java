@@ -22,6 +22,7 @@ import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironm
 import static no.nav.dolly.mapper.AnnenFeilStatusMapper.buildAnnenFeilStatusMap;
 import static no.nav.dolly.mapper.ArbeidsplassenCVStatusMapper.buildArbeidsplassenCVStatusMap;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
+import static no.nav.dolly.mapper.BestillingArbeidssoekerregisteretStatusMapper.buildArbeidssoekerregisteretStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
 import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
@@ -109,6 +110,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildArbeidsplassenCVStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildYrkesskadeStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildArbeidssoekerregisteretStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                     }
                 })

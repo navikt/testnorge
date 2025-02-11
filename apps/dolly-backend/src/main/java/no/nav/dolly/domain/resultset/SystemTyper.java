@@ -10,6 +10,7 @@ public enum SystemTyper {
     AAREG("Arbeidsregister (AAREG)"),
     ANNEN_FEIL("Annen Feil"),
     ARBEIDSPLASSENCV("Arbeidsplassen CV"),
+    ARBEIDSSOEKERREGISTERET("Arbeidssøkerregisteret"),
     ARENA("Arena fagsystem"),
     ARENA_AAP("Arena AAP ytelse"),
     ARENA_AAP115("Arena AAP115 rettighet"),

@@ -2,6 +2,7 @@ import useSWR from 'swr'
 import {
 	cvFetcher,
 	fetcher,
+	multiFetcherAll,
 	multiFetcherArena,
 	multiFetcherDokarkiv,
 	multiFetcherInst,
@@ -51,7 +52,7 @@ const journalpostUrl = (transaksjonsid, miljoer) => {
 	miljoer.forEach((miljoe) => {
 		const journalpostId = transaksjonsid
 			?.filter((id) => id.miljoe === miljoe)
-			?.map((filtrertId) => filtrertId?.transaksjonId?.journalpostId)
+			?.flatMap((filtrertId) => filtrertId?.transaksjonId?.map((item) => item?.journalpostId))
 		if (journalpostId && journalpostId?.length > 0) {
 			journalpostId?.forEach((journalpost) => {
 				urlListe.push({
@@ -69,8 +70,15 @@ const journalpostUrl = (transaksjonsid, miljoer) => {
 	return urlListe
 }
 
-const histarkUrl = (transaksjonsid: string) =>
-	transaksjonsid ? `/testnav-histark-proxy/api/saksmapper/${transaksjonsid}` : null
+const histarkUrl = (transaksjonsid: any) => {
+	const urlListe: Array<string> = []
+	transaksjonsid?.[0]?.transaksjonId?.forEach(
+		(id) =>
+			id?.dokumentInfoId &&
+			urlListe.push(`/testnav-histark-proxy/api/saksmapper/${id?.dokumentInfoId}`),
+	)
+	return urlListe
+}
 
 const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v3/cv'
 const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
@@ -194,12 +202,9 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 
 export const useHistarkData = (ident, harHistarkbestilling) => {
 	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
-
-	const histarkId = transaksjonsid?.[0]?.transaksjonId?.dokumentInfoId
-
 	const { data, isLoading, error } = useSWR<any, Error>(
-		harHistarkbestilling ? histarkUrl(histarkId) : null,
-		fetcher,
+		harHistarkbestilling ? histarkUrl(transaksjonsid) : null,
+		multiFetcherAll,
 	)
 
 	return {

@@ -228,14 +228,6 @@ public class MetadataTidspunkterService {
 
         person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
 
-        var doedsdato = person.getDoedsfall().stream()
-                .map(DoedsfallDTO::getDoedsdato)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
-
-        person.getSivilstand().getFirst().getFolkeregistermetadata().setOpphoerstidspunkt(doedsdato);
-
         var sivilstandCopy = mapperFacade.mapAsList(person.getSivilstand(), SivilstandDTO.class);
         var dato = new AtomicReference<>(LocalDateTime.now().minusYears(5));
 
@@ -261,6 +253,14 @@ public class MetadataTidspunkterService {
             sivilstand.getFolkeregistermetadata().setGyldighetstidspunkt(sivilstandCopy.get(i).getSivilstandsdato());
         }
         fixOpphoert(person.getSivilstand());
+
+        var doedsdato = person.getDoedsfall().stream()
+                .map(DoedsfallDTO::getDoedsdato)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+
+        person.getSivilstand().getFirst().getFolkeregistermetadata().setOpphoerstidspunkt(doedsdato);
     }
 
     private static void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {
