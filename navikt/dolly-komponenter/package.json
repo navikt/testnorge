@@ -2,14 +2,13 @@
   "name": "@navikt/dolly-komponenter",
   "version": "1.4.10",
   "description": "Bibliotek for diverse dolly komponenter.",
-  "main": "dist/cjs/index.js",
   "type": "module",
   "module": "dist/esm/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c --bundleConfigAsCjs",
+    "build": "rollup -c",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

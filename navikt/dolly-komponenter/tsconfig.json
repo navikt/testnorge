@@ -1,21 +1,16 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "strict": false,
-    "skipLibCheck": true,
     "jsx": "react",
     "module": "ESNext",
-    "declaration": true,
-    "sourceMap": true,
-    "outDir": "dist",
+    "target": "ESNext",
     "moduleResolution": "node",
-    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": [
-    "node_modules",
-    "src/**/*.test.tsx",
-    "src/**/*.stories.tsx"
+  "include": [
+    "src"
   ]
 }
