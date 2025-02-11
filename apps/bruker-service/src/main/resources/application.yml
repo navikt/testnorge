@@ -1,6 +1,5 @@
 spring:
   application:
-    version: application.version.todo
     name: testnav-bruker-service
     description: Tjeneste for brukere
   security:
@@ -29,20 +28,19 @@ consumers:
 
 management:
   endpoints:
-    enabled-by-default: true
+    access:
+      default: read_only
     web:
       base-path: /internal
       exposure:
         include: prometheus,health
       path-mapping:
         prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
   prometheus:
     metrics:
       export:
         enabled: true
+
 server:
   servlet:
     encoding:

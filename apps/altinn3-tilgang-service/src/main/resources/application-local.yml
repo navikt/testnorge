@@ -1,8 +1,5 @@
-ALTINN_URL: https://platform.tt02.altinn.no
 MASKINPORTEN_CLIENT_ID: ef2960de-7fa6-4396-80a5-2eca00e4af28
-MASKINPORTEN_CLIENT_JWK: dummy
 MASKINPORTEN_SCOPES: altinn:resourceregistry/accesslist.read altinn:resourceregistry/accesslist.write altinn:accessmanagement/authorizedparties.resourceowner
-MASKINPORTEN_WELL_KNOWN_URL: https://test.maskinporten.no/.well-known/oauth-authorization-server
 
 spring:
   cache:

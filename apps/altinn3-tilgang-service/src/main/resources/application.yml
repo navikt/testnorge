@@ -1,6 +1,5 @@
 spring:
   application:
-    version: application.version.todo
     name: testnav-altinn3-tilgang-service
     description: Tjeneste for å hente og sette tilganger for orgnisasjoner
   security:
@@ -30,20 +29,19 @@ altinn:
 
 management:
   endpoints:
-    enabled-by-default: true
+    access:
+      default: read_only
     web:
       base-path: /internal
       exposure:
         include: prometheus,health
       path-mapping:
         prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
   prometheus:
     metrics:
       export:
         enabled: true
+
 server:
   servlet:
     encoding:

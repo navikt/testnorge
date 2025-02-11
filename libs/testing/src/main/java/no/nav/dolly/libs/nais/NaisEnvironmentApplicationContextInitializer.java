@@ -34,6 +34,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         log.info("Configuring environment for local profile using Secret Manager");
 
         // Emulating NAIS provided environment variables.
+        properties.putIfAbsent("ALTINN_URL", "${sm\\://altinn-url}"); // Used by altinn3-tilgang-service only.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm\\://azure-openid-config-issuer}");
@@ -64,7 +65,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
                         "ALTINN_API_KEY",
                         "ALTINN_URL",
                         "AZURE_OPENID_CONFIG_ISSUER",
-                        "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", // CATO: Remove?
+                        "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
                         "CRYPTOGRAPHY_SECRET", // Used by bruker-service only.
                         "IDPORTEN_CLIENT_ID", // Used by dolly-frontend only.
                         "IDPORTEN_CLIENT_JWK", // Used by dolly-frontend only.
@@ -86,6 +87,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         log.info("Configuring environment for non-test, non-local profiles");
 
         properties.putIfAbsent("spring.main.banner-mode", "off");
+        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false"); // Unless we actually start using Secret Manager in deployment.
 
     }
 
