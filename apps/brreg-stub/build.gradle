@@ -18,7 +18,10 @@ wsimport {
 }
 
 dependencies {
-    implementation("io.dropwizard:dropwizard-jackson:4.0.7") {
+
+    runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect:2.1.10'
+
+    implementation("io.dropwizard:dropwizard-jackson:4.0.12") {
         exclude group: "com.google.code.findbugs"
     }
 

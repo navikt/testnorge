@@ -31,9 +31,9 @@ public class OpenApiConfig implements WebMvcConfigurer {
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
                 .info(new Info()
-                        .title("Adresse Service API")
+                        .title("Brreg-stub API")
                         .version("Versjon 1")
-                        .description("Adresseservice har operasjoner for uthenting av tilfeldige adresser fra PDL.")
+                        .description("Brreg-stub har operasjoner for testdata av brønnøysundregisteret.")
                         .termsOfService("https://nav.no")
                         .contact(new Contact()
                                 .url("https://nav-it.slack.com/archives/CA3P9NGA2")
