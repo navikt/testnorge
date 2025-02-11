@@ -36,5 +36,12 @@ spec:
     requests:
       cpu: 200m
       memory: 1024Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-brregstub-proxy
+        - application: flex-brreg-proxy
+          cluster: prod-gcp
+          namespace: flex
   ingresses:
     - "https://brreg-stub.intern.dev.nav.no" # dev-fss
