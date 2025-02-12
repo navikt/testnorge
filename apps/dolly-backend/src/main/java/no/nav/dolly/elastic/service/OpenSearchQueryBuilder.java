@@ -140,6 +140,7 @@ public class OpenSearchQueryBuilder {
             case ARBEIDSPLASSENCV -> QueryBuilders.existsQuery("arbeidsplassenCV");
             case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
             case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskader");
+            case ARBEIDSSOEKERREGISTERET -> QueryBuilders.existsQuery("arbeidssoekerregisteret");
         };
     }
 

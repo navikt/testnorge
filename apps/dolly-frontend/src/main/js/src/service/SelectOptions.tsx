@@ -501,6 +501,12 @@ const selectOptions = {
 		{ value: 'IKKE_SOKT', label: 'Ikke søkt' },
 	],
 
+	afpPrivatResultat: [
+		{ value: 'INNVILGET', label: 'Innvilget' },
+		{ value: 'AVSLATT', label: 'Avslått' },
+		{ value: 'TRUKKET', label: 'Trukket' },
+	],
+
 	// PDL vergemaal:
 	pdlVergemaalType: [
 		{ value: 'ensligMindreaarigAsylsoeker', label: 'Enslig mindreårig asylsøker' },

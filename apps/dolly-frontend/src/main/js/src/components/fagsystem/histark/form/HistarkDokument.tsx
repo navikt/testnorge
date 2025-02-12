@@ -16,7 +16,7 @@ type Vedlegg = {
 }
 
 enum Kodeverk {
-	TEMA = 'Tema',
+	TEMA = 'TemaHistark',
 }
 
 export const HistarkDokument = ({ path, formMethods }) => {
