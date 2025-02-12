@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
+import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
@@ -93,6 +94,8 @@ public class ElasticBestilling implements Persistable<Long> {
     private SkattekortRequestDTO skattekort;
     @Field
     private List<YrkesskadeRequest> yrkesskader;
+    @Field
+    private RsArbeidssoekerregisteret arbeidssoekerregisteret;
     @Field
     private List<String> identer;
     @Transient
