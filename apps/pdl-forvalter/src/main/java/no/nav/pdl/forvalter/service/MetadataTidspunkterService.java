@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
@@ -228,19 +229,19 @@ public class MetadataTidspunkterService {
         person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
 
         var sivilstandCopy = mapperFacade.mapAsList(person.getSivilstand(), SivilstandDTO.class);
-        var dato = new AtomicReference<>(LocalDateTime.now());
+        var dato = new AtomicReference<>(LocalDateTime.now().minusYears(5));
 
         sivilstandCopy
                 .forEach(sivilstand -> {
                     if (isNull(sivilstand.getSivilstandsdato()) && isNull(sivilstand.getBekreftelsesdato())) {
 
                         sivilstand.setSivilstandsdato(dato.get());
-                        dato.set(dato.get().minusYears(1));
+                        dato.set(dato.get().minusYears(3));
 
                     } else {
                         var sivilstandsdato = nonNull(sivilstand.getSivilstandsdato()) ? sivilstand.getSivilstandsdato() : sivilstand.getBekreftelsesdato();
                         sivilstand.setSivilstandsdato(sivilstandsdato);
-                        dato.set(sivilstandsdato.minusYears(1));
+                        dato.set(sivilstandsdato.minusYears(3));
                     }
                 });
 
@@ -250,6 +251,17 @@ public class MetadataTidspunkterService {
             fixFolkeregisterMetadata(sivilstand);
             sivilstand.getFolkeregistermetadata().setAjourholdstidspunkt(sivilstandCopy.get(i).getSivilstandsdato());
             sivilstand.getFolkeregistermetadata().setGyldighetstidspunkt(sivilstandCopy.get(i).getSivilstandsdato());
+        }
+        fixOpphoert(person.getSivilstand());
+
+        var doedsdato = person.getDoedsfall().stream()
+                .map(DoedsfallDTO::getDoedsdato)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+
+        if (!person.getSivilstand().isEmpty()) {
+            person.getSivilstand().getFirst().getFolkeregistermetadata().setOpphoerstidspunkt(doedsdato);
         }
     }
 

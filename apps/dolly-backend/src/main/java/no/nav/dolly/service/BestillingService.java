@@ -410,50 +410,52 @@ public class BestillingService {
         lagreDokumenter(request);
         return toJson(BestilteKriterier.builder()
                 .aareg(request.getAareg())
-                .krrstub(request.getKrrstub())
-                .udistub(request.getUdistub())
-                .sigrunstub(request.getSigrunstub())
-                .sigrunstubPensjonsgivende(request.getSigrunstubPensjonsgivende())
+                .arbeidsplassenCV(request.getArbeidsplassenCV())
+                .arbeidssoekerregisteret(request.getArbeidssoekerregisteret())
                 .arenaforvalter(request.getArenaforvalter())
-                .pdldata(request.getPdldata())
-                .fullmakt(request.getFullmakt())
-                .instdata(request.getInstdata())
-                .inntektstub(request.getInntektstub())
-                .pensjonforvalter(request.getPensjonforvalter())
-                .inntektsmelding(request.getInntektsmelding())
+                .bankkonto(request.getBankkonto())
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
-                .medl(request.getMedl())
+                .fullmakt(request.getFullmakt())
                 .histark(request.getHistark())
-                .tpsMessaging(request.getTpsMessaging())
-                .bankkonto(request.getBankkonto())
+                .inntektsmelding(request.getInntektsmelding())
+                .inntektstub(request.getInntektstub())
+                .instdata(request.getInstdata())
+                .krrstub(request.getKrrstub())
+                .medl(request.getMedl())
+                .pdldata(request.getPdldata())
+                .pensjonforvalter(request.getPensjonforvalter())
+                .sigrunstub(request.getSigrunstub())
+                .sigrunstubPensjonsgivende(request.getSigrunstubPensjonsgivende())
+                .skattekort(request.getSkattekort())
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
-                .arbeidsplassenCV(request.getArbeidsplassenCV())
-                .skattekort(request.getSkattekort())
+                .tpsMessaging(request.getTpsMessaging())
+                .udistub(request.getUdistub())
                 .yrkesskader(request.getYrkesskader())
                 .build());
     }
 
     private void lagreDokumenter(RsDollyBestilling request) {
 
-        if (nonNull(request.getDokarkiv())) {
-            request.getDokarkiv().getDokumenter().forEach(dokument ->
-                    dokument.getDokumentvarianter().forEach(dokumentVariant -> {
-                        if (isNotBlank(dokumentVariant.getFysiskDokument())) {
-                            dokumentVariant.setDokumentReferanse(lagreDokument(dokumentVariant.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_DOKARKIV));
-                            dokumentVariant.setFysiskDokument(null);
-                        }
-                    }));
-        }
+            request.getDokarkiv()
+                    .forEach(tema -> tema
+                            .getDokumenter().forEach(dokument ->
+                                    dokument.getDokumentvarianter().forEach(dokumentVariant -> {
+                                        if (isNotBlank(dokumentVariant.getFysiskDokument())) {
+                                            dokumentVariant.setDokumentReferanse(lagreDokument(dokumentVariant.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_DOKARKIV));
+                                            dokumentVariant.setFysiskDokument(null);
+                                        }
+                                    })));
 
         if (nonNull(request.getHistark())) {
-            request.getHistark().getDokumenter().forEach(dokument -> {
-                if (isNotBlank(dokument.getFysiskDokument())) {
-                    dokument.setDokumentReferanse(lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK));
-                    dokument.setFysiskDokument(null);
-                }
-            });
+            request.getHistark().getDokumenter()
+                    .forEach(dokument -> {
+                                if (isNotBlank(dokument.getFysiskDokument())) {
+                                    dokument.setDokumentReferanse(lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK));
+                                    dokument.setFysiskDokument(null);
+                                }
+                            });
         }
     }
 

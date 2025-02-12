@@ -6,6 +6,7 @@ import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialYrkesskade } from '@/components/fagsystem/yrkesskader/initialValues'
 import { yrkesskaderAttributt } from '@/components/fagsystem/yrkesskader/form/Form'
+import { initialValuesDetaljertSykemelding } from '@/components/fagsystem/sykdom/form/initialValues'
 
 export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)
@@ -46,13 +47,7 @@ SykdomPanel.initialValues = ({ set, del, delMutate, has }: any) => ({
 		label: 'Har sykemelding',
 		checked: has('sykemelding'),
 		add() {
-			set('sykemelding', {
-				syntSykemelding: {
-					startDato: new Date(),
-					orgnummer: '',
-					arbeidsforholdId: '',
-				},
-			})
+			set('sykemelding', initialValuesDetaljertSykemelding)
 		},
 		remove() {
 			del('sykemelding')

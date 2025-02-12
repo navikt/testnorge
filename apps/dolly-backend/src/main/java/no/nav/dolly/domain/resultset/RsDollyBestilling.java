@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
+import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
@@ -72,7 +73,7 @@ public class RsDollyBestilling {
     private PensjonData pensjonforvalter;
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
-    private RsDokarkiv dokarkiv;
+    private List<RsDokarkiv> dokarkiv;
     private RsHistark histark;
     private RsSykemelding sykemelding;
     private RsTpsMessaging tpsMessaging;
@@ -81,6 +82,7 @@ public class RsDollyBestilling {
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     private SkattekortRequestDTO skattekort;
     private List<YrkesskadeRequest> yrkesskader;
+    private RsArbeidssoekerregisteret arbeidssoekerregisteret;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {
@@ -129,6 +131,13 @@ public class RsDollyBestilling {
             yrkesskader = new ArrayList<>();
         }
         return yrkesskader;
+    }
+
+    public List<RsDokarkiv> getDokarkiv() {
+        if (isNull(dokarkiv)) {
+            dokarkiv = new ArrayList<>();
+        }
+        return dokarkiv;
     }
 
     @JsonIgnore

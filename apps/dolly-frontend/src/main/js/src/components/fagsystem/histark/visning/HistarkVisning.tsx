@@ -25,21 +25,21 @@ export default ({ dokument }: HistarkDokument) => {
 	}
 	return (
 		<div className="person-visning_content">
-			<TitleValue title="Enhetsnummer" value={dokument.enhetsNr} />
-			<TitleValue title="Enhetsnavn" value={dokument.enhetsNavn} />
 			<TitleValue
 				title="Temakoder"
 				value={dokument?.temaKodeSet && arrayToString(dokument?.temaKodeSet)}
 			/>
+			<TitleValue title="Enhetsnavn" value={dokument.enhetsNavn} />
+			<TitleValue title="Enhetsnummer" value={dokument.enhetsNr} />
 			<TitleValue title="Startår" value={dokument.startaar} />
 			<TitleValue title="Sluttår" value={dokument.sluttaar} />
 			<TitleValue
 				title="Skanningstidspunkt"
 				value={dokument?.skanningstidspunkt && formatDate(dokument.skanningstidspunkt)}
 			/>
-			<TitleValue title="Filnavn" value={dokument.filnavn} />
 			<TitleValue title="Skanner" value={dokument.skanner} />
 			<TitleValue title="Skannested" value={dokument.skannerSted} />
+			<TitleValue title="Filnavn" value={dokument.filnavn} />
 		</div>
 	)
 }

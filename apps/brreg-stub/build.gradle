@@ -18,7 +18,10 @@ wsimport {
 }
 
 dependencies {
-    implementation("io.dropwizard:dropwizard-jackson:4.0.7") {
+
+    runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect:2.1.10'
+
+    implementation("io.dropwizard:dropwizard-jackson:4.0.12") {
         exclude group: "com.google.code.findbugs"
     }
 
@@ -55,8 +58,9 @@ dependencies {
     implementation "no.nav.common:cxf:3.2023.10.17_06.55-4e30d96bba05"
 
     implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
+    implementation "jakarta.jws:jakarta.jws-api:3.0.0"
+
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:postgresql"
-    implementation "jakarta.jws:jakarta.jws-api:3.0.0"
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

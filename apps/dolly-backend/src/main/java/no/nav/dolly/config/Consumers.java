@@ -42,9 +42,9 @@ public class Consumers {
     private ServerProperties testnavSigrunstubProxy;
     private ServerProperties testnavSkjermingsregisterProxy;
     private ServerProperties testnavSykemeldingApi;
-    private ServerProperties testnavSyntSykemeldingApi;
     private ServerProperties testnavTpsMessagingService;
     private ServerProperties testnavUdistubProxy;
     private ServerProperties testnavSkattekortService;
     private ServerProperties yrkesskadeProxy;
+    private ServerProperties arbeidssoekerregisteretProxy;
 }
