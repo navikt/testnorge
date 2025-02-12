@@ -260,7 +260,9 @@ public class MetadataTidspunkterService {
                 .findFirst()
                 .orElse(null);
 
-        person.getSivilstand().getFirst().getFolkeregistermetadata().setOpphoerstidspunkt(doedsdato);
+        if (!person.getSivilstand().isEmpty()) {
+            person.getSivilstand().getFirst().getFolkeregistermetadata().setOpphoerstidspunkt(doedsdato);
+        }
     }
 
     private static void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {
