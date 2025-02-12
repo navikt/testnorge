@@ -7,6 +7,7 @@ public enum ElasticTyper {
 
     AAREG("Arbeidsgiver/arbeidstaker-register (AAREG)"),
     ARBEIDSPLASSENCV("Arbeidsplassen CV"),
+    ARBEIDSSOEKERREGISTERET("Arbeidssøkerregisteret"),
     ARENA_AAP("Arena AAP ytelse"),
     ARENA_AAP115("Arena AAP115 rettighet"),
     ARENA_DAGP("Arena dagpenger"),

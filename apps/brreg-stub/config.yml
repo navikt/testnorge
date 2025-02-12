@@ -41,7 +41,7 @@ spec:
       rules:
         - application: testnav-brregstub-proxy
         - application: flex-brreg-proxy
-          cluster: prod-gcp
+          cluster: dev-gcp
           namespace: flex
   ingresses:
     - "https://brreg-stub.intern.dev.nav.no" # dev-fss
