@@ -1,13 +1,14 @@
 package no.nav.testnav.proxies.yrkesskadeproxy;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.proxies.yrkesskadeproxy.config.Consumers;
 import no.nav.testnav.proxies.yrkesskadeproxy.consumer.FakedingsConsumer;
 import no.nav.testnav.proxies.yrkesskadeproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -22,7 +23,9 @@ import org.springframework.context.annotation.Import;
 public class YrkesskadeProxyApplicationStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(YrkesskadeProxyApplicationStarter.class, args);
+        new SpringApplicationBuilder(YrkesskadeProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     @Bean
@@ -48,4 +51,5 @@ public class YrkesskadeProxyApplicationStarter {
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerIdportenHeaderFilter(fakedingsConsumer, tokenService, consumers.getYrkesskade());
     }
+
 }
