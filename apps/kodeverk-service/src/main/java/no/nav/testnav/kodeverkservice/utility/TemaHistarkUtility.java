@@ -4,19 +4,16 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.*;
+
 @UtilityClass
 public class TemaHistarkUtility {
-
-    private static final String TEMAHISTARK = "TemaHistark";
-    private static final LocalDate GYLDIG_FRA = LocalDate.of(1900, 1, 1);
-    private static final LocalDate GYLDIG_TIL = LocalDate.of(9999, 12, 31);
 
     private static final List<Map<String, String>> temaHistark = new ArrayList<>();
 
@@ -109,8 +106,8 @@ public class TemaHistarkUtility {
                         .map(Map::entrySet)
                         .flatMap(Collection::stream)
                         .map(e -> KodeverkAdjustedDTO.KodeAdjusted.builder()
-                                .label(e.getKey())
-                                .value(e.getValue())
+                                .value(e.getKey())
+                                .label(e.getValue())
                                 .gyldigFra(GYLDIG_FRA)
                                 .gyldigTil(GYLDIG_TIL)
                                 .build())

@@ -9,12 +9,12 @@ import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.TEMAHISTARK;
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.YRKESKLASSIFISERING;
+
 @Service
 @RequiredArgsConstructor
 public class KodeverkSelectorService {
-
-    private static final String TEMAHISTARK = "TemaHistark";
-    private static final String YRKESKLASSIFISERING = "Yrkesklassifisering";
 
     private final KodeverkService kodeverkService;
 
