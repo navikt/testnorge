@@ -29,6 +29,8 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -36,8 +38,6 @@ import static no.nav.dolly.domain.resultset.SystemTyper.HISTARK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -115,21 +115,14 @@ public class HistarkClient implements ClientRegister {
             return null;
         }
 
-        if (response.stream().allMatch(arkiv -> isBlank(arkiv.getFeilmelding()))) {
+        saveTransaksjonId(response, ident, bestillingId);
 
-            saveTransaksjonId(response, ident, bestillingId);
-            return "OK";
-
-        } else {
-
-            return String.format("FEIL=Teknisk feil se logg! %s",
-                    response.stream()
-                            .filter(arkiv -> isNotBlank(arkiv.getFeilmelding()))
-                            .map(arkiv ->
-                                    ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(arkiv.getFeilmelding())))
-                            .findFirst()
-                            .orElse("UKJENT"));
-        }
+        var counter = new AtomicInteger(0);
+        return response.stream()
+                .map(status -> "DOK%d: %s".formatted(counter.incrementAndGet(),
+                        status.isOk() ? "OK" :
+                                "FEIL= %s".formatted(encodeStatus(errorStatusDecoder.getStatusMessage(status.getFeilmelding())))))
+                .collect(Collectors.joining(","));
     }
 
     private HistarkRequest buildRequest(RsHistark.RsHistarkDokument dokument, String ident, Long bestillingId) {
@@ -145,20 +138,24 @@ public class HistarkClient implements ClientRegister {
 
         log.info("Lagrer transaksjon for ident {}", ident);
 
-        transaksjonMappingService.save(
-                TransaksjonMapping.builder()
-                        .ident(ident)
-                        .bestillingId(bestillingId)
-                        .transaksjonId(toJson(histarkIds.stream()
-                                .map(HistarkResponse::getId)
-                                .map(histarkId -> HistarkTransaksjon.builder()
-                                        .dokumentInfoId(histarkId)
-                                        .build())
-                                .toList()))
-                        .datoEndret(LocalDateTime.now())
-                        .miljoe("NA")
-                        .system(HISTARK.name())
-                        .build());
+        if (histarkIds.stream().anyMatch(HistarkResponse::isOk)) {
+
+            transaksjonMappingService.save(
+                    TransaksjonMapping.builder()
+                            .ident(ident)
+                            .bestillingId(bestillingId)
+                            .transaksjonId(toJson(histarkIds.stream()
+                                    .filter(HistarkResponse::isOk)
+                                    .map(HistarkResponse::getId)
+                                    .map(histarkId -> HistarkTransaksjon.builder()
+                                            .dokumentInfoId(histarkId)
+                                            .build())
+                                    .toList()))
+                            .datoEndret(LocalDateTime.now())
+                            .miljoe("NA")
+                            .system(HISTARK.name())
+                            .build());
+        }
     }
 
     private String toJson(Object object) {
