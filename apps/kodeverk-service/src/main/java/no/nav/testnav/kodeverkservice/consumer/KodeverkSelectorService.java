@@ -2,6 +2,7 @@ package no.nav.testnav.kodeverkservice.consumer;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.kodeverkservice.service.KodeverkService;
+import no.nav.testnav.kodeverkservice.utility.TemaHistarkUtility;
 import no.nav.testnav.kodeverkservice.utility.YrkesklassifiseringUtility;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
@@ -10,26 +11,28 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class KodeverkFilterService {
+public class KodeverkSelectorService {
 
+    private static final String TEMAHISTARK = "TemaHistark";
     private static final String YRKESKLASSIFISERING = "Yrkesklassifisering";
+
     private final KodeverkService kodeverkService;
 
     public Mono<KodeverkDTO> getKodeverkMap(String kodeverk) {
 
-        if (!YRKESKLASSIFISERING.equals(kodeverk)) {
-            return kodeverkService.getKodeverkMap(kodeverk);
-        } else {
-            return Mono.just(YrkesklassifiseringUtility.getKodeverk());
-        }
+        return switch (kodeverk) {
+            case TEMAHISTARK -> Mono.just(TemaHistarkUtility.getKodeverk());
+            case YRKESKLASSIFISERING -> Mono.just(YrkesklassifiseringUtility.getKodeverk());
+            default -> kodeverkService.getKodeverkMap(kodeverk);
+        };
     }
 
     public Mono<KodeverkAdjustedDTO> getKodeverkByName(String kodeverkNavn) {
 
-        if (!YRKESKLASSIFISERING.equals(kodeverkNavn)) {
-            return kodeverkService.getKodeverkByName(kodeverkNavn);
-        } else {
-            return Mono.just(YrkesklassifiseringUtility.getKodeverkAdjusted());
-        }
+        return switch (kodeverkNavn) {
+            case TEMAHISTARK -> Mono.just(TemaHistarkUtility.getKodeverkAdjusted());
+            case YRKESKLASSIFISERING -> Mono.just(YrkesklassifiseringUtility.getKodeverkAdjusted());
+            default -> kodeverkService.getKodeverkByName(kodeverkNavn);
+        };
     }
 }

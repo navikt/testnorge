@@ -6,7 +6,10 @@ import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO.KodeAdjust
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -604,19 +607,19 @@ public class YrkesklassifiseringUtility {
         yrkesklassifisering.add(Map.of("9629", "Andre hjelpearbeidere"));
     }
 
-    public KodeverkDTO getKodeverk() {
+    public static KodeverkDTO getKodeverk() {
 
         return KodeverkDTO.builder()
                 .kodeverknavn(YRKESKLASSIFISERING)
                 .kodeverk(yrkesklassifisering.stream()
                         .map(Map::entrySet)
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-                )
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
                 .build();
     }
 
-    public KodeverkAdjustedDTO getKodeverkAdjusted() {
+    public static KodeverkAdjustedDTO getKodeverkAdjusted() {
+
         return KodeverkAdjustedDTO.builder()
                 .name(YRKESKLASSIFISERING)
                 .koder(yrkesklassifisering.stream()
