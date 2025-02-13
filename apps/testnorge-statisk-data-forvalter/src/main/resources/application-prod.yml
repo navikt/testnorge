@@ -12,8 +12,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     locations: classpath:db/migration/postgresql
-  main:
-    banner-mode: off
   security:
     oauth2:
       resourceserver:

@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.pensjontestdatafacadeproxy;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
@@ -8,8 +9,8 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTo
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.pensjontestdatafacadeproxy.config.Consumers;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -28,6 +29,12 @@ import java.util.Arrays;
 public class PensjonTestdataFacadeProxyApplicationStarter {
 
     private static final String[] MILJOER = {"q1", "q2"};
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(PensjonTestdataFacadeProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
+    }
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
@@ -76,7 +83,4 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                                 .map(AccessToken::getTokenValue));
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(PensjonTestdataFacadeProxyApplicationStarter.class, args);
-    }
 }

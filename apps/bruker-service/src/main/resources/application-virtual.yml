@@ -1,8 +1,4 @@
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: false
   security:
     oauth2:
       resourceserver:
@@ -28,8 +24,3 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-altinn3-tilgang-service
-
-TOKEN_X_WELL_KNOWN_URL: http://tokendings:8080/.well-known/oauth-authorization-server
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service
-JWT_SECRET: dummy
-CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE

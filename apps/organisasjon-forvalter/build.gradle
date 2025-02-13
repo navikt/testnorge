@@ -39,7 +39,6 @@ dependencies {
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
     testImplementation "com.h2database:h2"
-    testImplementation "no.nav.testnav.libs:testing"
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }
 

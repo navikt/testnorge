@@ -1,13 +1,14 @@
 package no.nav.dolly.budpro;
 
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import org.springframework.boot.SpringApplication;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class BudproServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BudproServiceApplication.class, args);
+        new SpringApplicationBuilder(BudproServiceApplication.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

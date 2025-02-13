@@ -2,10 +2,10 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactivecore.config.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
@@ -43,6 +43,12 @@ public class DollyFrontendApplicationStarter {
     private final AccessService accessService;
     private final UserJwtExchange userJwtExchange;
     private final Consumers consumers;
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(DollyFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
+    }
 
     private final GatewayFilter removeCookiesFilter = (exchange, chain) -> {
         ServerWebExchange modifiedExchange = exchange.mutate()
@@ -100,12 +106,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavAltinn3TilgangService(), "testnav-altinn3-tilgang-service"))
                 .route(createRoute(consumers.getTestnavArbeidssoekerregisteretProxy()))
                 .build();
-    }
-
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(DollyFrontendApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {

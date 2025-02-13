@@ -1,5 +1,0 @@
-TOKEN_X_ISSUER: dummy
-STS_TOKEN_PROVIDER_USERNAME: dummy
-STS_TOKEN_PROVIDER_PASSWORD: dummy
-
-proxy.url: http://localhost

@@ -1,5 +1,8 @@
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-adresse-service
-
 spring:
   config:
     import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dev-gcp:dolly:testnav-adresse-service
