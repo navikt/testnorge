@@ -1,5 +1,6 @@
 package no.nav.dolly.libs.vault;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -15,9 +16,10 @@ import java.util.stream.Stream;
  * Will set a system property {@code VAULT_TOKEN} if the Spring profile is set to {@link #PROFILE}.
  * Will only work for applications in {@code dev-fss}.
  */
+@Slf4j
 public class VaultTokenApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    private static final String PROFILE = "prod";
+    private static final String PROFILE = "local";
 
     @Override
     public void initialize(@NonNull ConfigurableApplicationContext context) {
@@ -26,13 +28,16 @@ public class VaultTokenApplicationContextInitializer implements ApplicationConte
                 .of(context.getEnvironment().getActiveProfiles())
                 .filter(profile -> profile.equals(PROFILE))
                 .findAny()
-                .ifPresent(profile -> System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken()));
+                .ifPresent(profile -> {
+                    log.info("Setting system property {} for profile {}", VAULT_TOKEN_SYSTEM_PROPERTY, PROFILE);
+                    System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken());
+                });
 
     }
 
     private static final String NAIS_CLUSTER_SYSTEM_PROPERTY = "NAIS_CLUSTER_NAME";
-    private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
     private static final String VAULT_TOKEN_ENVIRONMENT_PROPERTY = "VAULT_TOKEN";
+    private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
 
     private static String getVaultToken() {
 
@@ -44,22 +49,22 @@ public class VaultTokenApplicationContextInitializer implements ApplicationConte
                 });
 
         if (System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY) != null) {
+            log.info("Getting Vault token from system property {}", VAULT_TOKEN_ENVIRONMENT_PROPERTY);
             return System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY);
         }
 
         var environment = new AnnotationConfigApplicationContext().getEnvironment();
-        if (environment.containsProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY) && !"".equals(environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY))) {
+        if (!environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY, "").isEmpty()) {
+            log.info("Getting Vault token from environment property {}", VAULT_TOKEN_ENVIRONMENT_PROPERTY);
             return environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY);
         }
 
         var path = Paths.get("/var/run/secrets/nais.io/vault/vault_token");
-        if (!Files.exists(path)) {
-            throw new VaultException("Could not get vault token from nonexisting file %s".formatted(path.toString()));
-        }
         try {
+            log.info("Getting Vault token from file {}", path);
             return Files.readString(path).trim();
         } catch (IOException e) {
-            throw new VaultException("Unable to read vault token from existing file %s".formatted(path.toString()), e);
+            throw new VaultException("Unable to read vault token from file %s".formatted(path.toString()), e);
         }
 
     }
