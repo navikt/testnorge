@@ -2,13 +2,14 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'inntektsmelding-generator-service'
+rootProject.name = "inntektsmelding-generator-service"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/servlet-security"
+includeBuild "../../libs/testing"
 
 develocity {
     buildScan {

@@ -4,21 +4,21 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.InntektstubConsu
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.OrgFasteDataServiceConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.fastedata.Organisasjon;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.inntektstub.Inntektsinformasjon;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class InntektServiceTest {
+@ExtendWith(MockitoExtension.class)
+class InntektServiceTest {
 
     @Mock
     private InntektstubConsumer inntektstubConsumer;
@@ -32,7 +32,7 @@ public class InntektServiceTest {
     private static final String IDENT = "12345678910";
 
     @Test
-    public void shouldNotOppretteInntekter(){
+    void shouldNotOppretteInntekter() {
         when(orgFasteDataServiceConsumer.getOrganisasjoner()).thenReturn(Collections.emptyList());
 
         var response = inntektService.opprettetInntektPaaIdentFoerDato(IDENT, LocalDate.now());
@@ -41,7 +41,7 @@ public class InntektServiceTest {
     }
 
     @Test
-    public void shouldOppretteInntekter(){
+    void shouldOppretteInntekter() {
         when(orgFasteDataServiceConsumer.getOrganisasjoner()).thenReturn(Collections.singletonList(
                 new Organisasjon("123", "BEDR", "Org", "456")));
         when(inntektstubConsumer.postInntekter(anyList())).thenReturn(Collections.singletonList(
@@ -50,4 +50,5 @@ public class InntektServiceTest {
 
         assertThat(response).isTrue();
     }
+
 }

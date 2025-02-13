@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.vault;
+package no.nav.dolly.libs.vault;
 
 public class VaultException extends RuntimeException {
 

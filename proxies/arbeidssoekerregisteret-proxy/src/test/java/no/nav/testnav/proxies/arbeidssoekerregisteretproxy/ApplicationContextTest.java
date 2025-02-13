@@ -1,12 +1,12 @@
 package no.nav.testnav.proxies.arbeidssoekerregisteretproxy;
 
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest
+@DollySpringBootTest
 @ActiveProfiles("test")
 class ApplicationContextTest {
 

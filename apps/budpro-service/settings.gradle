@@ -2,17 +2,18 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'budpro-service'
+rootProject.name = "budpro-service"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/commands'
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-insecure-security'
-includeBuild '../../libs/servlet-security'
+includeBuild "../../libs/commands"
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/servlet-insecure-security"
+includeBuild "../../libs/servlet-security"
+includeBuild "../../libs/testing"
 
 develocity {
     buildScan {

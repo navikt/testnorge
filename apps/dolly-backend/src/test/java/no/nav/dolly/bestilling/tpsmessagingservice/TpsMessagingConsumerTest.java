@@ -4,44 +4,32 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yml")
+@DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
 class TpsMessagingConsumerTest {
 
@@ -49,22 +37,26 @@ class TpsMessagingConsumerTest {
     private static final List<String> MILJOER = List.of("q1", "q2");
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private AccessToken accessToken;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private TpsMessagingConsumer tpsMessagingConsumer;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private Random randomKontonummer = new SecureRandom();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Random randomKontonummer = new SecureRandom();
 
     @BeforeEach
     void setup() {
@@ -91,7 +83,10 @@ class TpsMessagingConsumerTest {
                 .collectList()
                 .block();
 
-        assertThat(response.get(0).getMiljoe(), is(equalTo("q1")));
+        assertThat(response)
+                .isNotNull()
+                .extracting(list -> list.getFirst().getMiljoe())
+                .isEqualTo("q1");
     }
 
     @Test
@@ -143,8 +138,10 @@ class TpsMessagingConsumerTest {
                 })
                 .toList();
 
-        var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().collect(Collectors.toList());
+        var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().toList();
 
-        assertThat(forskjelligeBankkontoer.size(), is(equalTo(sendtBankkontoer.size())));
+        AssertionsForInterfaceTypes
+                .assertThat(forskjelligeBankkontoer)
+                .hasSameSizeAs(sendtBankkontoer);
     }
 }

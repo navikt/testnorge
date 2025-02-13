@@ -2,14 +2,15 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'sykemelding-proxy'
+rootProject.name = "sykemelding-proxy"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-proxy'
-includeBuild '../../libs/security-token-service'
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/reactive-proxy"
+includeBuild "../../libs/security-token-service"
+includeBuild "../../libs/testing"
 
 develocity {
     buildScan {

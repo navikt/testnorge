@@ -3,41 +3,28 @@ package no.nav.dolly.bestilling.instdata;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yml")
+@DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
 class InstdataConsumerTest {
 
@@ -45,18 +32,22 @@ class InstdataConsumerTest {
     private static final String ENVIRONMENT = "U2";
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private ErrorStatusDecoder errorStatusDecoder;
 
     @Autowired
     private InstdataConsumer instdataConsumer;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     @BeforeEach

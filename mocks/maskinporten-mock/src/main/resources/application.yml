@@ -1,3 +1,7 @@
 spring:
   application:
     name: maskinporten-mock
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false

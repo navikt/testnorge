@@ -1,13 +1,14 @@
 package no.nav.testnav.proxies.arbeidsplassencvproxy;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.config.Consumers;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.consumer.FakedingsConsumer;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -25,8 +26,11 @@ import java.util.function.Function;
 })
 @SpringBootApplication
 public class ArbeidsplassenCVProxyApplicationStarter {
+
     public static void main(String[] args) {
-        SpringApplication.run(ArbeidsplassenCVProxyApplicationStarter.class, args);
+        new SpringApplicationBuilder(ArbeidsplassenCVProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     @Bean
