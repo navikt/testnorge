@@ -69,7 +69,7 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident, miljoe }: PersonMiljoein
 						Hold pekeren over et miljø for å se dataene som finnes på denne personen i TPS for det
 						aktuelle miljøet. <br />
 						(Q1 og Q2 vil alltid motsvare respektive PDL-miljøer, og visning har nå blitt
-						eksludert.)
+						ekskludert.)
 					</i>
 				</p>
 			)}
