@@ -29,7 +29,6 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -117,11 +116,10 @@ public class HistarkClient implements ClientRegister {
 
         saveTransaksjonId(response, ident, bestillingId);
 
-        var counter = new AtomicInteger(0);
         return response.stream()
-                .map(status -> "DOK%d: %s".formatted(counter.incrementAndGet(),
-                        status.isOk() ? "OK" :
-                                "FEIL= %s".formatted(encodeStatus(errorStatusDecoder.getStatusMessage(status.getFeilmelding())))))
+                .map(status ->
+                        status.isOk() ? "OK: %s".formatted(status.getDokument()) :
+                                "FEIL: %s".formatted(encodeStatus(errorStatusDecoder.getStatusMessage(status.getFeilmelding()))))
                 .collect(Collectors.joining(","));
     }
 

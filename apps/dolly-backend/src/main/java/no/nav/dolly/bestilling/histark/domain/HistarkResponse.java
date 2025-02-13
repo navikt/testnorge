@@ -14,6 +14,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @AllArgsConstructor
 public class HistarkResponse {
 
+    private String dokument;
     private String id;
     private HttpStatus status;
     private String feilmelding;
