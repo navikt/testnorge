@@ -56,9 +56,10 @@ export default handleActions(
 			state.feilmelding = action.payload.data?.message
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
-			state.feilmelding = _.isEmpty(action.payload?.data)
-				? ERROR_NAVIGATE_IDENT
-				: action.payload?.data?.message
+			state.feilmelding =
+				!action.payload?.data || _.isEmpty(action.payload?.data)
+					? ERROR_NAVIGATE_IDENT
+					: action.payload?.data?.message
 			state.hovedperson = action.payload.data.identHovedperson
 			state.visPerson = action.payload.data.identNavigerTil
 			state.sidetall = action.payload.data.sidetall

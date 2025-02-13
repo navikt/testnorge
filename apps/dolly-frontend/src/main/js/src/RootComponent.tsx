@@ -14,29 +14,8 @@ import { SWRConfig } from 'swr'
 import { App } from '@/app/App'
 import { AppError } from '@/components/ui/appError/AppError'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
-
-// TODO: LEGG TIL FARO IGJEN NÅR/HVIS DE STØTTER REACT 19
-// initializeFaro({
-// 	paused: window.location.hostname.includes('localhost'),
-// 	url: nais.telemetryCollectorURL,
-// 	app: nais.app,
-// 	instrumentations: [
-// 		...getWebInstrumentations(),
-//
-// 		new ReactIntegration({
-// 			router: {
-// 				version: ReactRouterVersion.V6,
-// 				dependencies: {
-// 					createRoutesFromChildren,
-// 					matchRoutes,
-// 					Routes,
-// 					useLocation,
-// 					useNavigationType,
-// 				},
-// 			},
-// 		}),
-// 	],
-// })
+import allRoutes from '@/allRoutes'
+import React from 'react'
 
 const ErrorView = () => {
 	console.error('Applikasjonen har støtt på en feil')
@@ -60,7 +39,16 @@ const router = createBrowserRouter(
 		<>
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/bruker" element={<BrukerPage />} errorElement={<ErrorView />} />
-			<Route path="*" element={<App />} errorElement={<ErrorView />} />
+			<Route
+				path="/"
+				element={<App />}
+				handle={{ crumb: () => 'Hjem' }}
+				errorElement={<ErrorView />}
+			>
+				{allRoutes.map((route, idx) => (
+					<Route key={idx} path={route.path} handle={route.handle} element={<route.element />} />
+				))}
+			</Route>
 		</>,
 	),
 )

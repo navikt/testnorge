@@ -1,31 +1,44 @@
-import { NavLink, useLocation, useMatches } from 'react-router'
+import { NavLink, useLocation } from 'react-router'
 import cn from 'classnames'
 import Version from '@/components/version/Version'
+import allRoutes from '@/allRoutes'
 
 import './Breadcrumb.less'
 
+interface Crumb {
+	pathname: string
+	label: string | JSX.Element
+}
+
 export const Breadcrumbs = () => {
 	const location = useLocation()
-	let matches = useMatches()
+	const pathnames = location.pathname.split('/').filter((x) => x)
 
-	let crumbs = matches.filter((match) => Boolean(match.handle?.crumb))
+	const crumbs: Crumb[] = [
+		{ pathname: '/', label: 'Hjem' },
+		...pathnames.map((_, index) => {
+			const pathname = `/${pathnames.slice(0, index + 1).join('/')}`
+			const route = allRoutes.find((route) => {
+				const routePath = route.path.replace(/:\w+/g, '[^/]+')
+				return new RegExp(`^${routePath}$`).test(pathname)
+			})
+			const params = { gruppeId: pathnames[1], personId: pathnames[3] }
+			const label = route?.handle?.crumb({ params }) || ''
 
-	const isActive = (match, currentLocation) => match.pathname === currentLocation.pathname
+			return { pathname, label }
+		}),
+	]
 
 	return (
 		<nav aria-label="breadcrumb" className="breadcrumb">
 			<ol>
-				{crumbs.map((match, idx) => {
-					const active = isActive(match, location)
+				{crumbs.map((crumb, idx) => {
+					const active = crumb.pathname === location.pathname
 					const classes = cn('breadcrumb-item', {})
 
 					return (
 						<li className={classes} key={idx}>
-							{active ? (
-								match?.handle?.crumb(match)
-							) : (
-								<NavLink to={match.pathname}>{match?.handle?.crumb(match)}</NavLink>
-							)}
+							{active ? crumb.label : <NavLink to={crumb.pathname}>{crumb.label}</NavLink>}
 						</li>
 					)
 				})}

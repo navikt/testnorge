@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Loading from '@/components/ui/loading/Loading'
 import { useLocation, useNavigate, useParams } from 'react-router'
@@ -37,10 +37,6 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const visning = useSelector((state: any) => state.finnPerson.visning)
-
-	useEffect(() => {
-		dispatch(resetNavigering())
-	}, [])
 
 	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
 		gruppeId,
@@ -89,6 +85,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 
 	const byttVisning = (value: VisningType) => {
 		dispatch(resetPaginering())
+		dispatch(resetNavigering())
 		dispatch(setVisning(value))
 	}
 

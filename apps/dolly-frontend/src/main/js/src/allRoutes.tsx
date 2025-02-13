@@ -23,10 +23,16 @@ const LevendeArbeidsforholdPage = lazyWithPreload(
 	() => import('@/pages/adminPages/Levendearbeidsforhold/AppstyringPage'),
 )
 
-const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
+const GruppeBreadcrumb = (props) => <span>Gruppe #{props.params?.gruppeId}</span>
 
 const allRoutes = [
-	{ path: '/', breadcrumb: 'Hjem', element: () => <Navigate to="/gruppe" replace /> },
+	{
+		path: '/',
+		handle: {
+			crumb: () => 'Hjem',
+		},
+		element: () => <Navigate to="/gruppe" replace />,
+	},
 	{
 		path: '/gruppe',
 		handle: {
@@ -34,42 +40,95 @@ const allRoutes = [
 		},
 		element: GruppeOversikt,
 	},
-	{ path: '/gruppe/:gruppeId', breadcrumb: GruppeBreadcrumb, element: GruppeConnector },
+	{
+		path: '/gruppe/:gruppeId',
+		handle: {
+			crumb: GruppeBreadcrumb,
+		},
+		element: GruppeConnector,
+	},
 	{
 		path: '/gruppe/:gruppeId/bestilling/:personId',
-		breadcrumb: 'Legg til/endre',
+		handle: {
+			crumb: () => 'Legg til/endre',
+		},
 		element: Bestillingsveileder,
 	},
 	{
 		path: '/gruppe/:gruppeId/bestilling',
-		breadcrumb: 'Opprett personer',
+		handle: {
+			crumb: () => 'Opprett personer',
+		},
 		element: Bestillingsveileder,
 	},
-	{ path: '/organisasjoner', breadcrumb: 'Organisasjoner', element: Organisasjon },
+	{
+		path: '/organisasjoner',
+		handle: {
+			crumb: () => 'Organisasjoner',
+		},
+		element: Organisasjon,
+	},
 	{
 		path: '/tenor/organisasjoner',
-		breadcrumb: 'Søk i Tenor organisasjoner',
+		handle: {
+			crumb: () => 'Søk i Tenor organisasjoner',
+		},
 		element: OrganisasjonTenorSoekPage,
 	},
 	{
 		path: '/organisasjoner/bestilling',
-		breadcrumb: 'Opprett organisasjon',
+		handle: {
+			crumb: () => 'Opprett organisasjon',
+		},
 		element: Bestillingsveileder,
 	},
-	{ path: '/minside', breadcrumb: 'Min side', element: MinSide },
-	{ path: '/ui', breadcrumb: 'UI demo', element: UI },
-	{ path: '/dollysoek', breadcrumb: 'Søk i Dolly', element: DollySoekPage },
-	{ path: '/testnorge', breadcrumb: 'Søk i Test-Norge', element: TestnorgePage },
-	{ path: '/tenor/personer', breadcrumb: 'Søk i Tenor personer', element: TenorSoekPage },
-	{ path: '/importer', breadcrumb: 'Importer', element: Bestillingsveileder },
-	{ path: '/endringsmelding', breadcrumb: 'Endringsmelding', element: Endringsmelding },
-	{ path: '/admin/orgtilgang', breadcrumb: 'Organisasjon-tilgang', element: OrgtilgangPage },
+	{ path: '/minside', handle: { crumb: () => 'Min side' }, element: MinSide },
+	{ path: '/ui', handle: { crumb: () => 'UI demo' }, element: UI },
+	{
+		path: '/dollysoek',
+		handle: { crumb: () => 'Søk i Dolly' },
+		element: DollySoekPage,
+	},
+	{
+		path: '/testnorge',
+		handle: { crumb: () => 'Søk i Test-Norge' },
+		element: TestnorgePage,
+	},
+	{
+		path: '/tenor',
+		handle: { crumb: () => 'Tenor' },
+		element: () => <Navigate to="/tenor/personer" replace />,
+	},
+	{
+		path: '/tenor/personer',
+		handle: { crumb: () => 'Søk i Tenor personer' },
+		element: TenorSoekPage,
+	},
+	{
+		path: '/importer',
+		handle: { crumb: () => 'Importer' },
+		element: Bestillingsveileder,
+	},
+	{
+		path: '/endringsmelding',
+		handle: { crumb: () => 'Endringsmelding' },
+		element: Endringsmelding,
+	},
+	{
+		path: '/admin/orgtilgang',
+		handle: { crumb: () => 'Organisasjon-tilgang' },
+		element: OrgtilgangPage,
+	},
 	{
 		path: '/admin/levendearbeidsforhold',
-		breadcrumb: 'Levende-arbeidsforhold',
+		handle: { crumb: () => 'Levende-arbeidsforhold' },
 		element: LevendeArbeidsforholdPage,
 	},
-	{ path: '/nyansettelser', breadcrumb: 'Nyansettelser', element: NyansettelserPage },
+	{
+		path: '/nyansettelser',
+		handle: { crumb: () => 'Nyansettelser' },
+		element: NyansettelserPage,
+	},
 ]
 
 export const preloadComponentOnRoute = (path: string) => {

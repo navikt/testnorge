@@ -1,8 +1,7 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router'
+import { Outlet } from 'react-router'
 import Header from '@/components/layout/header/Header'
 import Loading from '@/components/ui/loading/Loading'
-import allRoutes from '@/allRoutes'
 import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
 import { Forbedring } from '@/components/feedback/Forbedring'
@@ -61,15 +60,7 @@ export const App = () => {
 			<main>
 				<ErrorBoundary>
 					<Suspense fallback={<Loading label="Laster inn" />}>
-						<Routes>
-							{allRoutes.map((route: { element: any; path: string }, idx: React.Key) =>
-								route.element ? (
-									<Route key={idx} path={route.path} element={<route.element />} />
-								) : (
-									<React.Fragment key={idx} />
-								),
-							)}
-						</Routes>
+						<Outlet />
 					</Suspense>
 				</ErrorBoundary>
 			</main>

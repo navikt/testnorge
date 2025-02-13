@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
@@ -7,10 +7,15 @@ import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 
 export const FinnPersonDropdown = () => {
 	const location = useLocation()
-	const isActive =
-		location?.pathname === '/dollysoek' ||
-		location?.pathname === '/testnorge' ||
-		location?.pathname === '/tenor/personer/'
+	const [isActive, setIsActive] = useState(false)
+	useEffect(() => {
+		setIsActive(
+			location?.pathname === '/dollysoek' ||
+				location?.pathname === '/testnorge' ||
+				location?.pathname === '/nyansettelser' ||
+				location?.pathname === '/tenor/personer/',
+		)
+	}, [location])
 
 	return (
 		<ActionMenuWrapper

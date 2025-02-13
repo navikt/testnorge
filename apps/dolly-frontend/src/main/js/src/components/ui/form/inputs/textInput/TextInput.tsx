@@ -68,89 +68,84 @@ const StyledButton = styled(Button)`
 	}
 `
 
-export const TextInput = React.forwardRef(
-	(
-		{
-			placeholder = 'Ikke spesifisert',
-			name,
-			fieldName,
-			className,
-			icon,
-			isDisabled,
-			datepickerOnclick,
-			autoFocus,
-			...props
-		}: TextInputProps,
-		forwardRef,
-	) => {
-		const {
-			register,
-			formState: { touchedFields },
-			setValue,
-			watch,
-			getFieldState,
-		} = useFormContext()
-		const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-		const { onChange, onBlur } = register(name)
-		const input = props.input || props.value
-		const [fieldValue, setFieldValue] = useState(props.input || watch(name) || '')
-		const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
-		const feil =
-			getFieldState(`manual.${name}`)?.error ||
-			getFieldState(name)?.error ||
-			getFieldState(fieldName)?.error
-		const visFeil = feil && (errorContext?.showError || isTouched)
-		const css = cn('skjemaelement__input', className, {
-			'skjemaelement__input--harFeil': visFeil,
-		})
+export const TextInput = ({
+	placeholder = 'Ikke spesifisert',
+	name,
+	fieldName,
+	className,
+	icon,
+	isDisabled,
+	datepickerOnclick,
+	autoFocus,
+	...props
+}: TextInputProps) => {
+	const {
+		register,
+		formState: { touchedFields },
+		setValue,
+		watch,
+		getFieldState,
+	} = useFormContext()
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const { onChange, onBlur } = register(name)
+	const input = props.input || props.value
+	const [fieldValue, setFieldValue] = useState(props.input || watch(name) || '')
+	const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
+	const feil =
+		getFieldState(`manual.${name}`)?.error ||
+		getFieldState(name)?.error ||
+		getFieldState(fieldName)?.error
+	const visFeil = feil && (errorContext?.showError || isTouched)
+	const css = cn('skjemaelement__input', className, {
+		'skjemaelement__input--harFeil': visFeil,
+	})
 
-		useEffect(() => {
-			if (input && input !== fieldValue) {
-				setFieldValue(input)
-			}
-		}, [input])
+	useEffect(() => {
+		if (input && input !== fieldValue) {
+			setFieldValue(input)
+		}
+	}, [input])
 
-		return (
-			<>
-				<input
-					value={fieldValue}
-					autoFocus={autoFocus}
-					disabled={isDisabled}
-					id={name}
-					name={name}
-					className={css}
-					placeholder={placeholder}
-					onBlur={(e) => {
-						onBlur?.(e)
-						props.onBlur?.(e)
-						props.afterChange?.(e)
-					}}
-					onChange={(e) => {
-						setValue(name, e.target.value)
-						setFieldValue(e.target.value)
-						onChange?.(e)
-						props.onChange?.(e)
-					}}
-					data-testid={props['data-testid']}
-					onClick={props.onClick}
-					onFocus={props.onFocus}
-					onKeyDown={props.onKeyDown}
-					style={props.style}
-				/>
-				{icon &&
-					(datepickerOnclick ? (
-						<StyledButton variant="tertiary" onClick={datepickerOnclick}>
-							<Icon kind={icon} style={{ color: 'black' }} fontSize={'1.5rem'} />
-						</StyledButton>
-					) : (
-						<div style={{ height: '0' }}>
-							<StyledIcon fontSize="1.5rem" kind={icon} />
-						</div>
-					))}
-			</>
-		)
-	},
-)
+	return (
+		<>
+			<input
+				value={fieldValue}
+				autoFocus={autoFocus}
+				disabled={isDisabled}
+				id={name}
+				name={name}
+				className={css}
+				placeholder={placeholder}
+				onBlur={(e) => {
+					onBlur?.(e)
+					props.onBlur?.(e)
+					props.afterChange?.(e)
+				}}
+				onChange={(e) => {
+					setValue(name, e.target.value)
+					setFieldValue(e.target.value)
+					onChange?.(e)
+					props.onChange?.(e)
+				}}
+				data-testid={props['data-testid']}
+				onClick={props.onClick}
+				onFocus={props.onFocus}
+				onKeyDown={props.onKeyDown}
+				style={props.style}
+			/>
+			{icon &&
+				(datepickerOnclick ? (
+					<StyledButton variant="tertiary" onClick={datepickerOnclick}>
+						<Icon kind={icon} style={{ color: 'black' }} fontSize={'1.5rem'} />
+					</StyledButton>
+				) : (
+					<div style={{ height: '0' }}>
+						<StyledIcon fontSize="1.5rem" kind={icon} />
+					</div>
+				))}
+		</>
+	)
+}
 
 export const DollyTextInput = (props: TextInputProps) => (
 	<InputWrapper {...props}>
