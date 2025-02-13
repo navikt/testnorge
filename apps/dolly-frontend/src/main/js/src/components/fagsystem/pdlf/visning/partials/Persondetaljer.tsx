@@ -21,6 +21,8 @@ type PersondetaljerTypes = {
 	tmpPersoner: any
 	ident: string
 	erPdlVisning?: boolean
+	tpsMessaging: any
+	tpsMessagingLoading?: boolean
 	skjermingData: Skjerming
 	erRedigerbar?: boolean
 }

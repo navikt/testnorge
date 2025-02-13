@@ -20,6 +20,7 @@ import {Vergemaal} from '@/components/fagsystem/pdlf/form/partials/vergemaal/Ver
 import {NorskBankkonto, UtenlandskBankkonto} from '@/components/fagsystem/bankkonto/form'
 import {Foedested} from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import {Foedselsdato} from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
+import {SkjermingForm} from "@/components/fagsystem/skjermingsregister/form/SkjermingForm";
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -125,6 +126,10 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Navn" vis={navnPath}>
 					<Navn formMethods={formMethods} />
+				</Kategori>
+
+				<Kategori title="Diverse" vis={diversePaths}>
+					<SkjermingForm formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>
