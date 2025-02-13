@@ -59,7 +59,7 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident, miljoe }: PersonMiljoein
 
 	return (
 		<div>
-			<SubOverskrift label="Opprettet i TPS-miljøer" iconKind="vis-tps-data" />
+			<SubOverskrift label="Opprettet i miljøer" iconKind="vis-tps-data" />
 			{state.loading && <Loading label="Laster miljøer" />}
 			{/* @ts-ignore */}
 			{state.value && <TpsDataVisning data={state.value.data} />}
