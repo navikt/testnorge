@@ -22,7 +22,6 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsTpsMessaging {
 
-    private String spraakKode;
     @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
     private LocalDate egenAnsattDatoFom;
     @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
