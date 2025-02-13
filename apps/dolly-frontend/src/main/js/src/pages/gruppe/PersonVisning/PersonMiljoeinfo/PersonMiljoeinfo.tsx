@@ -1,9 +1,9 @@
-import {useAsync} from 'react-use'
+import { useAsync } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
-import {TpsDataVisning} from './TpsDataVisning'
+import { TpsDataVisning } from './TpsDataVisning'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import {BankkontoApi, TpsMessagingApi} from '@/service/Api'
-import {KontoregisterData} from '@/service/services/kontoregister/KontoregisterService'
+import { BankkontoApi, TpsMessagingApi } from '@/service/Api'
+import { KontoregisterData } from '@/service/services/kontoregister/KontoregisterService'
 
 type PersonMiljoeinfoProps = {
 	bankIdBruker: boolean
@@ -68,7 +68,8 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident, miljoe }: PersonMiljoein
 					<i>
 						Hold pekeren over et miljø for å se dataene som finnes på denne personen i TPS for det
 						aktuelle miljøet. <br />
-						(Q1 og Q2 vil alltid motsvare respektive PDL-miljøer, og visning har nå blitt eksludert.)
+						(Q1 og Q2 vil alltid motsvare respektive PDL-miljøer, og visning har nå blitt
+						eksludert.)
 					</i>
 				</p>
 			)}

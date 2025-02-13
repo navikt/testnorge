@@ -1,9 +1,9 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import {TitleValue} from '@/components/ui/titleValue/TitleValue'
-import {ErrorBoundary} from '@/components/ui/appError/ErrorBoundary'
-import {formatDate, showLabel} from '@/utils/DataFormatter'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import React from 'react'
-import {ArrayHistorikk} from '@/components/ui/historikk/ArrayHistorikk'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 
 const PdlPersonstatus = ({ data }) => {
 	return (

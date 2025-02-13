@@ -1,11 +1,11 @@
-import {AdresseKodeverk} from '@/config/kodeverk'
+import { AdresseKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import {TitleValue} from '@/components/ui/titleValue/TitleValue'
-import {formatDate} from '@/utils/DataFormatter'
-import {DollyFieldArray} from '@/components/ui/form/fieldArray/DollyFieldArray'
-import {ErrorBoundary} from '@/components/ui/appError/ErrorBoundary'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { formatDate } from '@/utils/DataFormatter'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
-const Statsborgerskap = ({ statsborgerskap}) => {
+const Statsborgerskap = ({ statsborgerskap }) => {
 	if (!statsborgerskap) {
 		return null
 	}
@@ -69,9 +69,7 @@ export const TpsfNasjonalitet = ({ data, visTittel = true }) => {
 						</DollyFieldArray>
 					</ErrorBoundary>
 				) : (
-					<Statsborgerskap
-						statsborgerskap={statsborgerskap[0] || statsborgerskap}
-					/>
+					<Statsborgerskap statsborgerskap={statsborgerskap[0] || statsborgerskap} />
 				)}
 				<InnvandretUtvandret data={innvandretUtvandret} />
 			</div>
