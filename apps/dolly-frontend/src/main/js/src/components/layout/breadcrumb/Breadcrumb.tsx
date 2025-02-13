@@ -8,22 +8,24 @@ export const Breadcrumbs = () => {
 	const location = useLocation()
 	let matches = useMatches()
 
-	let crumbs = matches
-		.filter((match) => Boolean(match.handle?.crumb))
-		.map((match) => match.handle.crumb(match.data))
+	let crumbs = matches.filter((match) => Boolean(match.handle?.crumb))
 
 	const isActive = (match, currentLocation) => match.pathname === currentLocation.pathname
 
 	return (
 		<nav aria-label="breadcrumb" className="breadcrumb">
 			<ol>
-				{crumbs.map(({ match, breadcrumb }, idx) => {
+				{crumbs.map((match, idx) => {
 					const active = isActive(match, location)
 					const classes = cn('breadcrumb-item', {})
 
 					return (
 						<li className={classes} key={idx}>
-							{active ? breadcrumb : <NavLink to={match.pathname}>{breadcrumb}</NavLink>}
+							{active ? (
+								match?.handle?.crumb(match)
+							) : (
+								<NavLink to={match.pathname}>{match?.handle?.crumb(match)}</NavLink>
+							)}
 						</li>
 					)
 				})}
