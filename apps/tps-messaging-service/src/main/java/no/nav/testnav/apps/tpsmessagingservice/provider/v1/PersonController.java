@@ -3,36 +3,12 @@ package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
-import no.nav.testnav.apps.tpsmessagingservice.service.AdressehistorikkService;
-import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoNorskService;
-import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoUtlandService;
-import no.nav.testnav.apps.tpsmessagingservice.service.DoedsmeldingService;
-import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
-import no.nav.testnav.apps.tpsmessagingservice.service.FoedselsmeldingService;
-import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
-import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
+import no.nav.testnav.apps.tpsmessagingservice.service.*;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkRequest;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingRequest;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonRequestDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,7 +25,6 @@ public class PersonController {
 
     private final PersonService personService;
     private final EgenansattService egenansattService;
-    private final SpraakService spraakService;
     private final BankkontoUtlandService bankkontoUtlandService;
     private final BankkontoNorskService bankkontoNorskService;
     private final AdressehistorikkService adressehistorikkService;
@@ -98,14 +73,6 @@ public class PersonController {
                                                          @RequestParam(required = false) List<String> miljoer) {
 
         return convert(egenansattService.opphoerEgenansatt(ident, miljoer));
-    }
-
-    @PostMapping("/{ident}/spraakkode")
-    public List<TpsMeldingResponseDTO> endreSpraakkode(@PathVariable String ident,
-                                                       @RequestBody SpraakDTO spraak,
-                                                       @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(spraakService.sendSpraakkode(ident, spraak, miljoer));
     }
 
     @PostMapping("/{ident}/bankkonto-norsk")

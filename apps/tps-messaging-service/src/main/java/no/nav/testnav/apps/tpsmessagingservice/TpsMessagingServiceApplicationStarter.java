@@ -1,13 +1,16 @@
 package no.nav.testnav.apps.tpsmessagingservice;
 
-import org.springframework.boot.SpringApplication;
+import no.nav.testnav.libs.servletcore.config.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class TpsMessagingServiceApplicationStarter {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(TpsMessagingServiceApplicationStarter.class, args);
+        new SpringApplicationBuilder(TpsMessagingServiceApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }
