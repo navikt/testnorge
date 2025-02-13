@@ -10,7 +10,6 @@ import {
 	initialPersonstatus,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarPersondetaljerConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
-import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
 import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
@@ -59,8 +58,6 @@ const PersondetaljerLes = ({
 	person,
 	skjerming,
 	redigertPerson,
-	tpsMessaging,
-	tpsMessagingLoading,
 	harFlerePersonstatuser,
 }: PersonTypes) => {
 	const navnListe = person?.navn
@@ -90,7 +87,6 @@ const PersondetaljerLes = ({
 				</>
 			)}
 			<SkjermingVisning data={skjerming} />
-			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
 	)
 }

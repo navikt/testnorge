@@ -10,7 +10,6 @@ import no.nav.testnav.apps.tpsmessagingservice.service.DoedsmeldingService;
 import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
 import no.nav.testnav.apps.tpsmessagingservice.service.FoedselsmeldingService;
 import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
-import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
@@ -22,7 +21,6 @@ import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonRequestDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,7 +47,6 @@ public class PersonController {
 
     private final PersonService personService;
     private final EgenansattService egenansattService;
-    private final SpraakService spraakService;
     private final BankkontoUtlandService bankkontoUtlandService;
     private final BankkontoNorskService bankkontoNorskService;
     private final AdressehistorikkService adressehistorikkService;
@@ -98,14 +95,6 @@ public class PersonController {
                                                          @RequestParam(required = false) List<String> miljoer) {
 
         return convert(egenansattService.opphoerEgenansatt(ident, miljoer));
-    }
-
-    @PostMapping("/{ident}/spraakkode")
-    public List<TpsMeldingResponseDTO> endreSpraakkode(@PathVariable String ident,
-                                                       @RequestBody SpraakDTO spraak,
-                                                       @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(spraakService.sendSpraakkode(ident, spraak, miljoer));
     }
 
     @PostMapping("/{ident}/bankkonto-norsk")

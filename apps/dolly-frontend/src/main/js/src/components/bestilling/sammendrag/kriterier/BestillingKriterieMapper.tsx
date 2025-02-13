@@ -988,7 +988,6 @@ const mapTpsMessaging = (bestillingData, data) => {
 	const bankkonto = _.get(bestillingData, 'bankkonto')
 
 	if (
-		tpsMessaging?.spraakKode ||
 		skjerming?.egenAnsattDatoFom ||
 		tpsMessaging?.egenAnsattDatoFom ||
 		skjerming?.egenAnsattDatoTom ||
@@ -997,7 +996,6 @@ const mapTpsMessaging = (bestillingData, data) => {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
 			items: [
-				obj('Språk', tpsMessaging?.spraakKode, PersoninformasjonKodeverk.Spraak),
 				obj(
 					'Skjerming fra',
 					formatDate(skjerming?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoFom),

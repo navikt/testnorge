@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
@@ -15,7 +14,6 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +22,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +37,6 @@ import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerat
 import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator.tilfeldigUtlandskBankkonto;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -49,7 +48,6 @@ public class TpsMessagingClient implements ClientRegister {
     private static final String TPS_MESSAGING = "TPS";
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
-    private final MapperFacade mapperFacade;
     private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
     private final MiljoerConsumer miljoerConsumer;
@@ -91,8 +89,6 @@ public class TpsMessagingClient implements ClientRegister {
                                     .flatMap(this::getPersonData)
                                     .collectList()
                                     .flatMapMany(personer -> Flux.concat(
-                                            sendSpraakkode(bestilling, dollyPerson.getIdent())
-                                                    .map(respons -> Map.of("SpråkKode", respons)),
                                             sendBankkontonummerNorge(bestilling, dollyPerson.getIdent())
                                                     .map(respons -> Map.of("NorskBankkonto", respons)),
                                             sendBankkontonummerUtenland(bestilling, dollyPerson.getIdent())
@@ -126,10 +122,7 @@ public class TpsMessagingClient implements ClientRegister {
 
     private boolean isTpsMessage(RsDollyUtvidetBestilling bestilling) {
 
-        return (nonNull(bestilling.getTpsMessaging()) &&
-                isNotBlank(bestilling.getTpsMessaging().getSpraakKode())) ||
-
-                nonNull(bestilling.getBankkonto()) ||
+        return nonNull(bestilling.getBankkonto()) ||
                 nonNull(bestilling.getSkjerming()) ||
 
                 (nonNull(bestilling.getPdldata()) &&
@@ -183,17 +176,6 @@ public class TpsMessagingClient implements ClientRegister {
                 .filter(personBolk -> nonNull(personBolk.getPerson()));
     }
 
-    private Mono<List<TpsMeldingResponseDTO>> sendSpraakkode(RsDollyUtvidetBestilling bestilling, String ident) {
-
-        return nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode()) ?
-
-                tpsMessagingConsumer.sendSpraakkodeRequest(ident, null,
-                                mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class))
-                        .collectList() :
-
-                Mono.just(emptyList());
-    }
-
     private Mono<List<TpsMeldingResponseDTO>> sendEgenansattSlett(RsDollyUtvidetBestilling bestilling,
                                                                   String ident) {
 
@@ -211,7 +193,7 @@ public class TpsMessagingClient implements ClientRegister {
         return nonNull(SkjermingUtil.getEgenansattDatoFom(bestilling)) ?
 
                 tpsMessagingConsumer.sendEgenansattRequest(ident, null,
-                                SkjermingUtil.getEgenansattDatoFom(bestilling).toLocalDate())
+                                toLocalDate(SkjermingUtil.getEgenansattDatoFom(bestilling)))
                         .collectList() :
 
                 Mono.just(emptyList());
@@ -256,5 +238,10 @@ public class TpsMessagingClient implements ClientRegister {
 
             return Mono.just(emptyList());
         }
+    }
+
+    private LocalDate toLocalDate(LocalDateTime datoOgTid) {
+
+        return nonNull(datoOgTid) ? datoOgTid.toLocalDate() : null;
     }
 }

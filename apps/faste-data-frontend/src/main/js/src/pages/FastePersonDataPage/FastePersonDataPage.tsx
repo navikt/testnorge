@@ -24,7 +24,7 @@ const grupper = [
   'WIP',
 ];
 
-const miljoer = ['q1', 'q2', 'q4', 'qx', 't13'];
+const miljoer = ['q1', 'q2', 'q4', 'qx'];
 
 const toOptions = (options: string[]) =>
   options.map((value) => ({

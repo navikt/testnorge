@@ -1,5 +1,5 @@
 config:
-  miljoer: t13, q1, q2, q4, qx
+  miljoer: q1, q2, q4, qx
 
 spring:
   application:
