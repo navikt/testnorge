@@ -5,16 +5,16 @@ import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO.KodeAdjusted;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.*;
 
 @UtilityClass
 public class YrkesklassifiseringUtility {
-
-    private static final String YRKESKLASSIFISERING = "Yrkesklassifisering";
-    private static final LocalDate GYLDIG_FRA = LocalDate.of(1900, 1, 1);
-    private static final LocalDate GYLDIG_TIL = LocalDate.of(9999, 12, 31);
 
     private static final List<Map<String, String>> yrkesklassifisering = new ArrayList<>();
 
@@ -604,27 +604,27 @@ public class YrkesklassifiseringUtility {
         yrkesklassifisering.add(Map.of("9629", "Andre hjelpearbeidere"));
     }
 
-    public KodeverkDTO getKodeverk() {
+    public static KodeverkDTO getKodeverk() {
 
         return KodeverkDTO.builder()
                 .kodeverknavn(YRKESKLASSIFISERING)
                 .kodeverk(yrkesklassifisering.stream()
                         .map(Map::entrySet)
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-                )
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
                 .build();
     }
 
-    public KodeverkAdjustedDTO getKodeverkAdjusted() {
+    public static KodeverkAdjustedDTO getKodeverkAdjusted() {
+
         return KodeverkAdjustedDTO.builder()
                 .name(YRKESKLASSIFISERING)
                 .koder(yrkesklassifisering.stream()
                         .map(Map::entrySet)
                         .flatMap(Collection::stream)
                         .map(e -> KodeAdjusted.builder()
-                                .label(e.getKey())
-                                .value(e.getValue())
+                                .value(e.getKey())
+                                .label(e.getValue())
                                 .gyldigFra(GYLDIG_FRA)
                                 .gyldigTil(GYLDIG_TIL)
                                 .build())
