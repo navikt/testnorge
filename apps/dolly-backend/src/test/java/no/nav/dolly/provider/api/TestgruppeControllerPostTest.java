@@ -101,7 +101,7 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
                 .thenReturn(Optional.of(new UserInfo(bruker.getBrukerId(), "", "", bruker.getBrukernavn())));
 
         when(miljoerConsumer.getMiljoer())
-                .thenReturn(Mono.just(List.of("t13", "q1", "q2", "q4", "qx")));
+                .thenReturn(Mono.just(List.of("q1", "q2", "q4", "qx")));
 
         Testgruppe testgruppe = Testgruppe
                 .builder()
