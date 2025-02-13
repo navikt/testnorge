@@ -4,6 +4,8 @@ on:
     paths:
       - '.nais/alerting-dolly.yml'
       - '.github/workflows/alert-dolly.yml'
+  workflow_dispatch:
+
 jobs:
   apply-alerts:
     name: Apply alerts to cluster
