@@ -57,7 +57,6 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.fullmakt',
 		'pdldata.person.sikkerhetstiltak',
 		'pdldata.person.tilrettelagtKommunikasjon',
-		'tpsMessaging.spraakKode',
 		'tpsMessaging.egenAnsattDatoFom',
 		'tpsMessaging.egenAnsattDatoTom',
 		'skjerming.egenAnsattDatoFom',

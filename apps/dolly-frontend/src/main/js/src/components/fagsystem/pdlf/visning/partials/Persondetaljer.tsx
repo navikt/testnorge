@@ -1,31 +1,26 @@
 import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { formatDate, showLabel } from '@/utils/DataFormatter'
+import {TitleValue} from '@/components/ui/titleValue/TitleValue'
+import {ErrorBoundary} from '@/components/ui/appError/ErrorBoundary'
+import {formatDate, showLabel} from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
-import {
-	getInitialKjoenn,
-	getInitialNavn,
-	initialPersonstatus,
-} from '@/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarPersondetaljerConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
-import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
-import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
-import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
-import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
-import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import { Personstatus } from '@/components/fagsystem/pdlf/visning/partials/Personstatus'
+import {getInitialKjoenn, getInitialNavn, initialPersonstatus,} from '@/components/fagsystem/pdlf/form/initialValues'
+import VisningRedigerbarPersondetaljerConnector
+	from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
+import {PersonData} from '@/components/fagsystem/pdlf/PdlTypes'
+import {SkjermingVisning} from '@/components/fagsystem/skjermingsregister/visning/Visning'
+import {Skjerming} from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
+import {DollyFieldArray} from '@/components/ui/form/fieldArray/DollyFieldArray'
+import VisningRedigerbarConnector
+	from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import {OpplysningSlettet} from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import {Personstatus} from '@/components/fagsystem/pdlf/visning/partials/Personstatus'
 
 type PersondetaljerTypes = {
 	data: any
 	tmpPersoner: any
 	ident: string
 	erPdlVisning?: boolean
-	tpsMessaging: any
-	tpsMessagingLoading?: boolean
 	skjermingData: Skjerming
 	erRedigerbar?: boolean
 }
@@ -59,8 +54,6 @@ const PersondetaljerLes = ({
 	person,
 	skjerming,
 	redigertPerson,
-	tpsMessaging,
-	tpsMessagingLoading,
 	harFlerePersonstatuser,
 }: PersonTypes) => {
 	const navnListe = person?.navn
@@ -90,7 +83,6 @@ const PersondetaljerLes = ({
 				</>
 			)}
 			<SkjermingVisning data={skjerming} />
-			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
 	)
 }

@@ -93,7 +93,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.kjonn} />
 					<Attributt attr={sm.attrs.navn} />
-					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
 						attr={sm.attrs.norskBankkonto}
@@ -158,7 +157,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			<AttributtKategori title="Diverse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.navn} />
-				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
@@ -205,9 +203,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		utflytting: 'pdldata.person.utflytting',
 		kjoenn: 'pdldata.person.kjoenn',
 		navn: 'pdldata.person.navn',
-		spraakKode: {
-			tpsM: 'tpsMessaging.spraakKode',
-		},
 		egenAnsattDatoFom: {
 			tpsM: 'tpsMessaging.egenAnsattDatoFom',
 			skjerming: 'skjerming.egenAnsattDatoFom',
@@ -221,7 +216,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
 		telefonnummer: {
 			pdl: 'pdldata.person.telefonnummer',
-			tpsM: 'tpsMessaging.telefonnummer',
 		},
 		fullmakt: 'fullmakt',
 		fullmaktPDL: 'pdldata.person.fullmakt',
@@ -318,12 +312,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			checked: has(paths.navn),
 			add: () => set(paths.navn, [getInitialNavn(initMaster)]),
 			remove: () => del(paths.navn),
-		},
-		sprakKode: {
-			label: 'Språk',
-			checked: has(paths.spraakKode.tpsM),
-			add: () => set(paths.spraakKode.tpsM, ''),
-			remove: () => del(paths.spraakKode.tpsM),
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming',

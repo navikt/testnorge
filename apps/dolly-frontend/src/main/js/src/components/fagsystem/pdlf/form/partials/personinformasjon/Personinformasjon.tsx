@@ -1,26 +1,25 @@
-import React, { useContext } from 'react'
+import React, {useContext} from 'react'
 import Panel from '@/components/ui/panel/Panel'
-import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { Sikkerhetstiltak } from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { TpsMessagingDiverse } from '@/components/fagsystem/tpsmessaging/form/TpsMessagingDiverse'
-import { Telefonnummer } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
-import { Doedsfall } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { Statsborgerskap } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
-import { Innvandring } from '@/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
-import { Utvandring } from '@/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
-import { TilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/form/partials/tilrettelagtkommunikasjon/TilrettelagtKommunikasjon'
-import { Alder } from '@/components/fagsystem/pdlf/form/partials/alder/Alder'
-import { Kjoenn } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
-import { Navn } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
-import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
-import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
-import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
-import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
-import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
-import { Fullmakt } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
+import {Vis} from '@/components/bestillingsveileder/VisAttributt'
+import {erForsteEllerTest, panelError} from '@/components/ui/form/formUtils'
+import {Kategori} from '@/components/ui/form/kategori/Kategori'
+import {Sikkerhetstiltak} from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
+import {BestillingsveilederContext} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {Telefonnummer} from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
+import {Doedsfall} from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
+import {Statsborgerskap} from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
+import {Innvandring} from '@/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import {Utvandring} from '@/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
+import {
+	TilrettelagtKommunikasjon
+} from '@/components/fagsystem/pdlf/form/partials/tilrettelagtkommunikasjon/TilrettelagtKommunikasjon'
+import {Alder} from '@/components/fagsystem/pdlf/form/partials/alder/Alder'
+import {Kjoenn} from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
+import {Navn} from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
+import {Vergemaal} from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
+import {NorskBankkonto, UtenlandskBankkonto} from '@/components/fagsystem/bankkonto/form'
+import {Foedested} from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
+import {Foedselsdato} from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -31,7 +30,6 @@ const nasjonalitetPaths = [
 ]
 
 const diversePaths = [
-	'tpsMessaging.spraakKode',
 	'skjerming.egenAnsattDatoFom',
 	'skjerming.egenAnsattDatoTom',
 ]
@@ -127,11 +125,6 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Navn" vis={navnPath}>
 					<Navn formMethods={formMethods} />
-				</Kategori>
-
-				<Kategori title="Diverse" vis={diversePaths}>
-					<TpsMessagingDiverse />
-					<SkjermingForm formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>
