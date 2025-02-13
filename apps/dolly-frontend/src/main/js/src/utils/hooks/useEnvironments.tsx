@@ -27,7 +27,7 @@ export const useDollyEnvironments = () => {
 	const environmentsSortedByType = _getEnvironmentsSortedByType(data)
 	return {
 		dollyEnvironments: environmentsSortedByType,
-		dollyEnvironmentList: environmentsSortedByType.Q?.concat(environmentsSortedByType?.T),
+		dollyEnvironmentList: environmentsSortedByType.Q,
 		loading: isLoading,
 		error: error,
 	}

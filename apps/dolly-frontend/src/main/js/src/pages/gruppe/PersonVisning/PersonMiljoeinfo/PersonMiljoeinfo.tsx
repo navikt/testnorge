@@ -1,9 +1,9 @@
-import { useAsync } from 'react-use'
+import {useAsync} from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
-import { TpsDataVisning } from './TpsDataVisning'
+import {TpsDataVisning} from './TpsDataVisning'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { BankkontoApi, TpsMessagingApi } from '@/service/Api'
-import { KontoregisterData } from '@/service/services/kontoregister/KontoregisterService'
+import {BankkontoApi, TpsMessagingApi} from '@/service/Api'
+import {KontoregisterData} from '@/service/services/kontoregister/KontoregisterService'
 
 type PersonMiljoeinfoProps = {
 	bankIdBruker: boolean
@@ -59,7 +59,7 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident, miljoe }: PersonMiljoein
 
 	return (
 		<div>
-			<SubOverskrift label="Opprettet i miljøer" iconKind="vis-tps-data" />
+			<SubOverskrift label="Opprettet i TPS-miljøer" iconKind="vis-tps-data" />
 			{state.loading && <Loading label="Laster miljøer" />}
 			{/* @ts-ignore */}
 			{state.value && <TpsDataVisning data={state.value.data} />}
@@ -67,7 +67,8 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident, miljoe }: PersonMiljoein
 				<p>
 					<i>
 						Hold pekeren over et miljø for å se dataene som finnes på denne personen i TPS for det
-						aktuelle miljøet.
+						aktuelle miljøet. <br />
+						(Q1 og Q2 vil alltid motsvare respektive PDL-miljøer, og visning har nå blitt eksludert.)
 					</i>
 				</p>
 			)}
