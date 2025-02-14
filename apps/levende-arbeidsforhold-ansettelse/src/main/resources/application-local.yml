@@ -9,14 +9,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
     user: postgres
     password:
+    locations: classpath:db/migration,classpath:db/local
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/testnav-levende-arbeidsforhold
     username: postgres
     password:
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:/db/local/default-config.sql
 
 consumers:
   testnav-kodeverk-service:
