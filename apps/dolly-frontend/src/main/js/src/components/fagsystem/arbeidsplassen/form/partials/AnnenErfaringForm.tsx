@@ -11,8 +11,10 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { useFormContext } from 'react-hook-form'
 
-export const AnnenErfaringForm = ({ formMethods }) => {
+export const AnnenErfaringForm = () => {
+	const formMethods = useFormContext()
 	const annenErfaringListePath = 'arbeidsplassenCV.annenErfaring'
 
 	return (
@@ -27,7 +29,12 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 				{(annenErfaringPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<DollyTextInput name={`${annenErfaringPath}.role`} label="Rolle" size="xlarge" />
+							<DollyTextInput
+								name={`${annenErfaringPath}.role`}
+								label="Rolle"
+								size="xlarge"
+								key={`role_${formMethods.getValues(`${annenErfaringPath}.role`)}`}
+							/>
 							<Fritekstfelt
 								label="Beskrivelse"
 								placeholder="Beskrivelse av annen erfaring"
@@ -39,6 +46,7 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 									)
 								}
 								size="small"
+								key={`description_${formMethods.getValues(`${annenErfaringPath}.description`)}`}
 								resize
 							/>
 							<FormDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />

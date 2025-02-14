@@ -8,8 +8,10 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { useFormContext } from 'react-hook-form'
 
-export const KompetanserForm = ({ formMethods }) => {
+export const KompetanserForm = () => {
+	const formMethods = useFormContext()
 	const kompetanseListePath = 'arbeidsplassenCV.kompetanser'
 
 	return (
