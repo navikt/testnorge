@@ -55,6 +55,7 @@ export const ForbedringModal = ({ closeModal }) => {
 							maxLength={MAX_LENGTH}
 							onChange={(event) => setForbedring(event.target.value)}
 							error={forbedring.length > MAX_LENGTH && 'Tilbakemelding inneholder for mange tegn'}
+							autoFocus
 						/>
 						<div className="skjemaelement textarea__container">
 							<DollyCheckbox

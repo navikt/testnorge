@@ -8,8 +8,10 @@ import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { useFormContext } from 'react-hook-form'
 
-export const SpraakForm = ({ formMethods }) => {
+export const SpraakForm = () => {
+	const formMethods = useFormContext()
 	const spraakListePath = 'arbeidsplassenCV.spraak'
 
 	return (

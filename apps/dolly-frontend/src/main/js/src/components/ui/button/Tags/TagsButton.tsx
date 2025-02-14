@@ -11,7 +11,7 @@ import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Alert } from '@navikt/ds-react'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
-import { TestComponentSelectors } from '../../../../../playwright/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type Props = {
 	action: Function

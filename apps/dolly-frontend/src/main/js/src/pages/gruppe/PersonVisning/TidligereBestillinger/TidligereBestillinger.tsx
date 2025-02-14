@@ -10,7 +10,7 @@ const NavigerTilBestillingButton = styled(Button)`
 	font-size: 15px;
 `
 
-export const TidligereBestillinger = ({ ids }) => {
+export const TidligereBestillinger = ({ ids, erOrg }) => {
 	const dispatch = useDispatch()
 
 	return (
@@ -18,17 +18,21 @@ export const TidligereBestillinger = ({ ids }) => {
 			<h4>{`Bestilling-ID${ids.length > 1 ? 'er' : ''}`}</h4>
 			{ids
 				.map((numId) => numId.toString())
-				.map((id) => (
-					<NavigerTilBestillingButton
-						data-testid={TestComponentSelectors.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
-						key={id}
-						onClick={() => {
-							dispatch(navigerTilBestilling(id))
-						}}
-					>
-						{id}
-					</NavigerTilBestillingButton>
-				))}
+				.map((id) =>
+					erOrg ? (
+						<p key={id}>{id}</p>
+					) : (
+						<NavigerTilBestillingButton
+							data-testid={TestComponentSelectors.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
+							key={id}
+							onClick={() => {
+								dispatch(navigerTilBestilling(id))
+							}}
+						>
+							{id}
+						</NavigerTilBestillingButton>
+					),
+				)}
 		</div>
 	)
 }

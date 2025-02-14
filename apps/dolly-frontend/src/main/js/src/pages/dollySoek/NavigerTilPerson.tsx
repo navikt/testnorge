@@ -1,6 +1,6 @@
 import { Button } from '@navikt/ds-react'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 import { useNaviger } from '@/utils/hooks/useNaviger'
 import styled from 'styled-components'

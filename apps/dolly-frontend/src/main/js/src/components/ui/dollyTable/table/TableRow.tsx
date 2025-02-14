@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Column from './TableColumn'
 import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
-import { resetNavigering } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
+import { resetNavigering } from '@/ducks/finnPerson'
 
 export default function TableRow({
 	children,

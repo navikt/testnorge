@@ -4,8 +4,10 @@ import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import { initialSammendragVerdi } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
+import { useFormContext } from 'react-hook-form'
 
-export const SammendragForm = ({ formMethods }) => {
+export const SammendragForm = () => {
+	const formMethods = useFormContext()
 	const sammendragPath = 'arbeidsplassenCV.sammendrag'
 
 	return (
@@ -17,7 +19,7 @@ export const SammendragForm = ({ formMethods }) => {
 				defaultValue={_.get(formMethods.getValues(), sammendragPath)}
 				onBlur={(sammendrag) => formMethods.setValue(sammendragPath, sammendrag?.target?.value)}
 				size="small"
-				key={`sammendrag_${_.get(formMethods.getValues(), sammendragPath)}`}
+				key={`sammendrag_${formMethods.getValues(sammendragPath)}`}
 				error={_.get(formMethods.getValues(), sammendragPath) === '' ? 'Feltet er påkrevd' : null}
 				resize
 			/>

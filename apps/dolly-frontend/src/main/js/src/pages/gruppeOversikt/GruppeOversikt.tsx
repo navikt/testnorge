@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import RedigerGruppeConnector from '@/components/redigerGruppe/RedigerGruppeConnector'
@@ -8,7 +8,7 @@ import FinnPersonBestillingConnector from '@/pages/gruppeOversikt/FinnPersonBest
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useGrupper } from '@/utils/hooks/useGruppe'
 import { useDispatch } from 'react-redux'
-import { setSidetall } from '@/ducks/finnPerson'
+import { resetNavigering, setSidetall, setVisning } from '@/ducks/finnPerson'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { ToggleGroup } from '@navikt/ds-react'
@@ -51,17 +51,22 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 	const {
 		currentBruker: { brukerId, brukertype },
 	} = useCurrentBruker()
-	const [visning, setVisning] = useState(VisningType.MINE)
+	const [visningType, setVisningType] = useState(VisningType.MINE)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 	const { grupper, loading } = useGrupper(
 		sidetall,
 		sideStoerrelse,
-		visning === VisningType.ALLE ? null : brukerId,
+		visningType === VisningType.ALLE ? null : brukerId,
 	)
 	const dispatch = useDispatch()
+	dispatch(resetNavigering())
+
+	useEffect(() => {
+		dispatch(setVisning('personer'))
+	}, [])
 
 	const byttVisning = (value: VisningType) => {
-		setVisning(value)
+		setVisningType(value)
 		dispatch(setSidetall(0))
 	}
 
@@ -96,7 +101,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 			{!bankIdBruker && (
 				<StyledDiv className="gruppe--flex-column-center">
 					<ToggleGroup
-						value={visning}
+						value={visningType}
 						onChange={byttVisning}
 						size={'small'}
 						style={{ backgroundColor: '#ffffff' }}
@@ -130,19 +135,19 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				gruppeDetaljer={{
 					pageSize: sideStoerrelse,
 					antallPages:
-						visning === VisningType.FAVORITTER
+						visningType === VisningType.FAVORITTER
 							? grupper?.favoritter?.length / sideStoerrelse
 							: grupper?.antallPages,
 					antallElementer:
-						visning === VisningType.FAVORITTER
+						visningType === VisningType.FAVORITTER
 							? grupper?.favoritter?.length
 							: grupper?.antallElementer,
 				}}
-				items={visning === VisningType.FAVORITTER ? grupper?.favoritter : grupper?.contents}
+				items={visningType === VisningType.FAVORITTER ? grupper?.favoritter : grupper?.contents}
 				isFetching={loading}
 				searchActive={searchActive}
 				visSide={sidetall}
-				visningType={visning}
+				visningType={visningType}
 			/>
 		</div>
 	)

@@ -26,7 +26,7 @@ export const BVOptions = (
 		opprettOrganisasjon = null,
 		leggTilPaaGruppe = null,
 		gruppe,
-	} = {},
+	}: any = {},
 	gruppeId,
 ) => {
 	const { dollyEnvironments } = useDollyEnvironments()

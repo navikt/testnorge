@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { useToggle } from 'react-use'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 import Button from '@/components/ui/button/Button'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
@@ -92,91 +92,90 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 
 	return (
 		<FormProvider {...formMethods}>
-			<form onSubmit={() => preSubmit(formMethods.getValues())}>
-				<div className="ny-bestilling-form">
-					<h3>Velg type og antall</h3>
-					<div className="ny-bestilling-form_selects">
-						<FormSelect
-							name="identtype"
-							label="Velg identtype"
-							size="medium"
-							options={Options('identtype')}
-							isClearable={false}
-						/>
-						<FormTextInput
-							name="antall"
-							label="Antall"
-							type="number"
-							size="medium"
-							onBlur={(event) => formMethods.setValue('antall', event?.target?.value || '1')}
+			<div className="ny-bestilling-form">
+				<h3>Velg type og antall</h3>
+				<div className="ny-bestilling-form_selects">
+					<FormSelect
+						name="identtype"
+						label="Velg identtype"
+						size="medium"
+						options={Options('identtype')}
+						isClearable={false}
+					/>
+					<FormTextInput
+						name="antall"
+						label="Antall"
+						type="number"
+						size="medium"
+						onBlur={(event) => formMethods.setValue('antall', event?.target?.value || '1')}
+					/>
+				</div>
+				<div className="ny-bestilling-form_maler">
+					<div>
+						<DollyCheckbox
+							data-testid={TestComponentSelectors.TOGGLE_MAL}
+							name="aktiver-maler"
+							onChange={() => handleMalChange(formMethods)}
+							label="Opprett fra mal"
+							wrapperSize={'none'}
+							size={'small'}
+							isSwitch
 						/>
 					</div>
-					<div className="ny-bestilling-form_maler">
-						<div>
-							<DollyCheckbox
-								data-testid={TestComponentSelectors.TOGGLE_MAL}
-								name="aktiver-maler"
-								onChange={() => handleMalChange(formMethods)}
-								label="Opprett fra mal"
-								wrapperSize={'none'}
-								size={'small'}
-								isSwitch
-							/>
-						</div>
 
-						<InputDiv>
-							<DollySelect
-								name="zIdent"
-								label="Bruker"
-								isLoading={loading}
-								options={brukerOptions}
-								size="medium"
-								onChange={(e) => handleBrukerChange(e, formMethods)}
-								value={bruker}
-								isClearable={false}
-								isDisabled={!malAktiv}
-							/>
-							<FormSelect
-								data-testid={TestComponentSelectors.SELECT_MAL}
-								name="mal"
-								label="Maler"
-								isLoading={loading}
-								options={malOptions}
-								size="grow"
-								isDisabled={!malAktiv}
-							/>
-						</InputDiv>
-						{erGammelFullmaktMal && (
-							<Alert
+					<InputDiv>
+						<DollySelect
+							name="zIdent"
+							label="Bruker"
+							isLoading={loading}
+							options={brukerOptions}
+							size="medium"
+							onChange={(e) => handleBrukerChange(e, formMethods)}
+							value={bruker}
+							isClearable={false}
+							isDisabled={!malAktiv}
+						/>
+						<FormSelect
+							data-testid={TestComponentSelectors.SELECT_MAL}
+							name="mal"
+							label="Maler"
+							isLoading={loading}
+							options={malOptions}
+							size="grow"
+							isDisabled={!malAktiv}
+							autoFocus={malAktiv}
+						/>
+					</InputDiv>
+					{erGammelFullmaktMal && (
+						<Alert
 								variant={'warning'}
 								size={'small'}
 								style={{ width: '97%', marginBottom: '10px' }}
 							>
-								Denne malen er utdatert, og vil muligens ikke fungere som den skal. Dette fordi
-								master for fullmakt er endret til Representasjon. Vi anbefaler at du oppretter en ny
-								mal og sletter denne malen.
-							</Alert>
-						)}
-						{erTpsfMal && (
-							<Alert
+							Denne malen er utdatert, og vil muligens ikke fungere som den skal. Dette fordi master
+							for fullmakt er endret til Representasjon. Vi anbefaler at du oppretter en ny mal og
+							sletter denne malen.
+						</Alert>
+					)}
+					{erTpsfMal && (
+						<Alert
 								variant={'warning'}
 								size={'small'}
 								style={{ width: '97%', marginBottom: '10px' }}
 							>
-								Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
-								master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en
-								ny mal og sletter denne malen.
-							</Alert>
-						)}
-						{erGammelAmeldingMal && (
-							<Alert
+							Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
+							master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en ny
+							mal og sletter denne malen.
+						</Alert>
+					)}
+					{erGammelAmeldingMal && (
+						<Alert
 								variant={'warning'}
 								size={'small'}
 								style={{ width: '97%', marginBottom: '10px' }}
 							>
-								Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den
-								inneholder arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at
-								du sletter denne malen og oppretter en ny.
+							Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder
+							arbeidsforhold med A-melding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.
 							</Alert>
 						)}
 						{/*Varsel om Aareg-mal kan fjernes naar oppretting til Aareg er tilgjengelig igjen*/}
@@ -199,25 +198,25 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 							>
 								Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den
 								inneholder syntetisk sykemelding, som ikke lenger er støttet. Vi anbefaler at du
-								sletter denne malen og oppretter en ny.
-							</Alert>
-						)}
-						<div className="mal-admin">
-							<Button kind="maler" fontSize={'1.2rem'}>
-								<NavLink to="/minside">Administrer maler</NavLink>
-							</Button>
-						</div>
+								sletter
+							denne malen og oppretter en ny.
+						</Alert>
+					)}
+					<div className="mal-admin">
+						<Button kind="maler" fontSize={'1.2rem'}>
+							<NavLink to="/minside">Administrer maler</NavLink>
+						</Button>
 					</div>
-					<ModalActionKnapper
-						data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
-						submitknapp="Start bestilling"
-						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-						onSubmit={() => preSubmit(formMethods.getValues())}
-						onAvbryt={onAvbryt}
-						center
-					/>
 				</div>
-			</form>
+				<ModalActionKnapper
+					data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
+					submitknapp="Start bestilling"
+					disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+					onSubmit={() => preSubmit(formMethods.getValues())}
+					onAvbryt={onAvbryt}
+					center
+				/>
+			</div>
 		</FormProvider>
 	)
 }

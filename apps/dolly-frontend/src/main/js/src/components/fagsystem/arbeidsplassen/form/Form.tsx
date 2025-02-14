@@ -31,18 +31,18 @@ export const ArbeidsplassenForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
 			>
 				<div className="flexbox--flex-wrap cv-form">
-					<JobboenskerForm formMethods={formMethods} />
-					<UtdanningForm formMethods={formMethods} />
-					<FagbrevForm formMethods={formMethods} />
-					<ArbeidserfaringForm formMethods={formMethods} />
-					<AnnenErfaringForm formMethods={formMethods} />
-					<KompetanserForm formMethods={formMethods} />
-					<OffentligeGodkjenningerForm formMethods={formMethods} />
-					<AndreGodkjenningerForm formMethods={formMethods} />
-					<SpraakForm formMethods={formMethods} />
-					<FoererkortForm formMethods={formMethods} />
-					<KursForm formMethods={formMethods} />
-					<SammendragForm formMethods={formMethods} />
+					<JobboenskerForm />
+					<UtdanningForm />
+					<FagbrevForm />
+					<ArbeidserfaringForm />
+					<AnnenErfaringForm />
+					<KompetanserForm />
+					<OffentligeGodkjenningerForm />
+					<AndreGodkjenningerForm />
+					<SpraakForm />
+					<FoererkortForm />
+					<KursForm />
+					<SammendragForm />
 					<HjemmelForm />
 				</div>
 			</Panel>
