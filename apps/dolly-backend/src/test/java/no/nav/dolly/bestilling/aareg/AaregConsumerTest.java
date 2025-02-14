@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.aareg;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
@@ -11,35 +12,20 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.created;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import java.util.List;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yml")
+@DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
 class AaregConsumerTest {
 
@@ -49,12 +35,14 @@ class AaregConsumerTest {
     private static final String MILJOE = "t0";
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private AccessToken accessToken;
 
     @Autowired
     private AaregConsumer aaregConsumer;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private TokenExchange tokenService;
 
     private Arbeidsforhold opprettRequest;
@@ -91,39 +79,39 @@ class AaregConsumerTest {
 
     @Test
     void opprettArbeidsforhold() throws JsonProcessingException {
-
         stubOpprettArbeidsforhold(arbeidsforholdRespons);
-
         var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE, accessToken)
                 .collectList()
                 .block();
-
-        assertThat(response.getFirst().getArbeidsforholdId(), is(equalTo("1")));
-        assertThat(response.getFirst().getMiljo(), is(equalTo(MILJOE)));
+        assertThat(response)
+                .isNotNull()
+                .extracting(List::getFirst)
+                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
+                .containsExactly("1", MILJOE);
     }
 
     @Test
     void oppdaterArbeidsforhold() throws JsonProcessingException {
-
         stubOppdaterArbeidsforhold(arbeidsforholdRespons);
-
         var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE, accessToken)
                 .collectList()
                 .block();
-
-        assertThat(response.getFirst().getArbeidsforholdId(), is(equalTo("1")));
-        assertThat(response.getFirst().getMiljo(), is(equalTo(MILJOE)));
+        assertThat(response)
+                .isNotNull()
+                .extracting(List::getFirst)
+                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
+                .containsExactly("1", MILJOE);
     }
 
     @Test
     void hentArbeidsforhold() throws JsonProcessingException {
-
         stubHentArbeidsforhold(arbeidsforholdRespons);
-
         var arbeidsforholdResponses = aaregConsumer.hentArbeidsforhold(IDENT, MILJOE, accessToken)
                 .block();
-
-        assertThat(arbeidsforholdResponses.getEksisterendeArbeidsforhold(), is(emptyList()));
+        assertThat(arbeidsforholdResponses)
+                .isNotNull()
+                .extracting(ArbeidsforholdRespons::getEksisterendeArbeidsforhold)
+                .isEqualTo(emptyList());
     }
 
     private void stubOpprettArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {

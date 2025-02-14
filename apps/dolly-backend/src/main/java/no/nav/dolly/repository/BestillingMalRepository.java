@@ -17,11 +17,4 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
     List<BestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
 
     List<BestillingMal> findByBruker(Bruker bruker);
-
-    @Query(value = """
-            from BestillingMal b
-            where b.bestKriterier like '%"dokarkiv":{%'
-            order by b.id
-            """)
-    Iterable<BestillingMal> findAllByDokument();
 }

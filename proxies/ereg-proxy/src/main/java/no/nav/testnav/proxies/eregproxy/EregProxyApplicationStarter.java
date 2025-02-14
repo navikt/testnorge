@@ -1,9 +1,10 @@
 package no.nav.testnav.proxies.eregproxy;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.Buildable;
@@ -21,6 +22,13 @@ import java.util.function.Function;
 })
 @SpringBootApplication
 public class EregProxyApplicationStarter {
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(EregProxyApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
+    }
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -31,10 +39,6 @@ public class EregProxyApplicationStarter {
                 .build();
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(EregProxyApplicationStarter.class, args);
-    }
-
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo) {
         return spec -> spec
                 .path("/api/" + miljo + "/**")
@@ -43,4 +47,5 @@ public class EregProxyApplicationStarter {
                         .removeRequestHeader(HttpHeaders.AUTHORIZATION)
                 ).uri("https://ereg-services-" + miljo + ".dev.intern.nav.no/");
     }
+
 }

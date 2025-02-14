@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -44,6 +44,11 @@ const DataVisning = ({ data, miljo }) => {
 				<TitleValue
 					title="Ektefelle/partners inntekt"
 					value={data?.relasjonListe?.[0]?.sumAvForventetArbeidKapitalPensjonInntekt}
+				/>
+				<TitleValue title="Inkluder AFP privat" value={oversettBoolean(data?.inkluderAfpPrivat)} />
+				<TitleValue
+					title="AFP privat resultat"
+					value={showLabel('afpPrivatResultat', data?.afpPrivatResultat)}
 				/>
 			</div>
 		</>

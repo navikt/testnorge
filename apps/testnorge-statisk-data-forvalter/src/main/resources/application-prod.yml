@@ -12,14 +12,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     locations: classpath:db/migration/postgresql
-  main:
-    banner-mode: off
   security:
     oauth2:
       resourceserver:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gcp:

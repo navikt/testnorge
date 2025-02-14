@@ -7,7 +7,7 @@ const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
 const getInstMiljoerUrl = '/testnav-inst-proxy/api/v1/environment'
 const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/rest/miljoe'
 
-const prefetchedMiljoer = ['t13', 'q1', 'q2', 'q4', 'qx']
+const prefetchedMiljoer = ['q1', 'q2', 'q4', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 const prefetchedInstMiljoer = { institusjonsoppholdEnvironments: ['q1', 'q2'] }
@@ -26,7 +26,7 @@ export const useDollyEnvironments = () => {
 	const environmentsSortedByType = _getEnvironmentsSortedByType(data)
 	return {
 		dollyEnvironments: environmentsSortedByType,
-		dollyEnvironmentList: environmentsSortedByType.Q?.concat(environmentsSortedByType?.T),
+		dollyEnvironmentList: environmentsSortedByType.Q,
 		loading: isLoading,
 		error: error,
 	}

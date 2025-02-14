@@ -9,21 +9,19 @@ springdoc:
 
 management:
   endpoints:
+    access:
+      default: read_only
     web:
       base-path: /internal
       exposure:
         include: prometheus,health
       path-mapping:
         prometheus: metrics
-    access:
-      default: read_only
-  endpoint:
-    prometheus:
-      access: read_only
   prometheus:
     metrics:
       export:
         enabled: true
+
 server:
   servlet:
     encoding:

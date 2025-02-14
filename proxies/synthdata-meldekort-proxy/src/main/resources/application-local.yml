@@ -1,12 +1,4 @@
-AZURE_APP_CLIENT_ID: ${sm\://azure-app-client-id}
-AZURE_APP_CLIENT_SECRET: ${sm\://azure-app-client-secret}
-AZURE_OPENID_CONFIG_ISSUER: ${sm\://azure-openid-config-issuer}
-
 spring:
-  cloud:
-    gcp:
-      secretmanager:
-        enabled: true
   config:
     import: "sm://"
 

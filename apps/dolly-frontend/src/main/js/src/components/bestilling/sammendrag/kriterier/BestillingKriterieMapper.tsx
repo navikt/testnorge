@@ -988,7 +988,6 @@ const mapTpsMessaging = (bestillingData, data) => {
 	const bankkonto = _.get(bestillingData, 'bankkonto')
 
 	if (
-		tpsMessaging?.spraakKode ||
 		skjerming?.egenAnsattDatoFom ||
 		tpsMessaging?.egenAnsattDatoFom ||
 		skjerming?.egenAnsattDatoTom ||
@@ -997,7 +996,6 @@ const mapTpsMessaging = (bestillingData, data) => {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
 			items: [
-				obj('Språk', tpsMessaging?.spraakKode, PersoninformasjonKodeverk.Spraak),
 				obj(
 					'Skjerming fra',
 					formatDate(skjerming?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoFom),
@@ -2078,6 +2076,8 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 					obj('Uttaksgrad', `${ap.uttaksgrad}%`),
 					obj('NAV-kontor', navEnhetLabel || ap.navEnhetId),
 					obj('Ektefelle/partners inntekt', ap.relasjoner?.[0]?.sumAvForvArbKapPenInntekt),
+					obj('Inkluder AFP privat', oversettBoolean(ap.inkluderAfpPrivat)),
+					obj('AFP privat resultat', showLabel('afpPrivatResultat', ap.afpPrivatResultat)),
 				],
 			}
 			data.push(pensjonforvalterAlderspensjon)

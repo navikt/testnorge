@@ -84,4 +84,5 @@ https://www.ssb.no/arbeid-og-lonn/sysselsetting/statistikk/antall-arbeidsforhold
 
 ## Lokal kjøring
 * [Generelt.](../../docs/local_general.md)
+* [Lokal PostgreSQL.](../../docs/local_db.md)
 * [Secret Manager.](../../docs/local_secretmanager.md)
