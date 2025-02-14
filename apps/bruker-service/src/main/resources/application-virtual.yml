@@ -4,7 +4,6 @@ spring:
       resourceserver:
         tokenx:
           issuer-uri: http://tokendings:8080
-          jwk-set-uri: http://tokendings:8080/jwks
           accepted-audience: dev-gcp:dolly:testnav-bruker-service
   jackson:
     serialization:
