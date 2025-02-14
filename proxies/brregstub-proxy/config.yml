@@ -33,6 +33,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: flex-brreg-proxy
+          cluster: dev-gcp
+          namespace: flex
   liveness:
     path: /internal/isAlive
     initialDelay: 4
