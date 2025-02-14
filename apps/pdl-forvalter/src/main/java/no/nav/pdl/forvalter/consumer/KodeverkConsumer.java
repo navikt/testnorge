@@ -71,11 +71,17 @@ public class KodeverkConsumer {
                 .block();
     }
 
-    private Mono<Map<String, String>> hentKodeverk(String kodeverk) {
+    private Mono<Map<String, String>> hentKodeverkInner(String kodeverk) {
 
         return tokenExchange
                 .exchange(serverProperties)
                 .flatMap(token -> new KodeverkCommand(webClient, kodeverk, token.getTokenValue()).call())
                 .map(KodeverkDTO::getKodeverk);
+    }
+
+    private Mono<Map<String, String>> hentKodeverk(String kodeverk) {
+
+        return hentKodeverkInner(kodeverk)
+                .switchIfEmpty(hentKodeverkInner(kodeverk));
     }
 }
