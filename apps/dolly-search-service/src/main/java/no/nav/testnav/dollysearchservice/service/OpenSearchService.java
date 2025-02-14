@@ -4,15 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.dollysearchservice.consumer.ElasticParamsConsumer;
 import no.nav.testnav.dollysearchservice.consumer.ElasticSearchConsumer;
 import no.nav.testnav.dollysearchservice.domain.ElasticTyper;
 import no.nav.testnav.dollysearchservice.dto.Kategori;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.dto.SearchResponse;
-import no.nav.testnav.dollysearchservice.model.BestillingElasticRepository;
-import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticBestilling;
-import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.unit.TimeValue;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.search.SearchHits;
@@ -34,14 +30,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class OpenSearchService {
 
-    private final RestHighLevelClient restHighLevelClient;
-    private final ElasticParamsConsumer elasticParamsConsumer;
-    private final BestillingElasticRepository bestillingElasticRepository;
     private final ElasticSearchConsumer elasticSearchConsumer;
     private final ObjectMapper objectMapper;
-
-    @Value("${open.search.index}")
-    private String index;
 
     public Mono<SearchResponse> getTyper(ElasticTyper[] typer) {
 
@@ -53,11 +43,6 @@ public class OpenSearchService {
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);
         return execQuery(query);
-    }
-
-    public List<ElasticBestilling> search(String ident) {
-
-        return bestillingElasticRepository.getAllByIdenterIn(List.of(ident));
     }
 
     public List<Kategori> getTyper() {

@@ -36,7 +36,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalDTO;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Document(indexName = "#{@environment.getProperty('open.search.person.index')}")
 @Data
 @Builder
 @NoArgsConstructor
