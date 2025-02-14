@@ -1,12 +1,9 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 spring:
   jpa:
     properties:
       hibernate:
         id:
           db_structure_naming_strategy: legacy
-  main:
-    banner-mode: off
   application:
     name: testnav-inntektsmelding-service
     description: Tjeneste for sende inntektsmelding til dokarkiv.
@@ -14,8 +11,7 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
 springdoc:
@@ -51,6 +47,7 @@ management:
     metrics:
       export:
         enabled: true
+
 server:
   error:
     include-message: always

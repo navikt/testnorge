@@ -2,14 +2,15 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'udi-stub'
+rootProject.name = "udi-stub"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/vault'
+includeBuild "../../libs/data-transfer-objects"
+includeBuild "../../libs/servlet-core"
+includeBuild "../../libs/servlet-security"
+includeBuild "../../libs/testing"
+includeBuild "../../libs/vault"
 
 develocity {
     buildScan {

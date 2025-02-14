@@ -1,16 +1,23 @@
 package no.nav.registre.testnorge.sykemelding;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication(scanBasePackages = "no.nav.registre.testnorge.sykemelding")
 @Import({ ApplicationCoreConfig.class })
 public class SykemeldingApiApplicationStarter {
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(SykemeldingApiApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
+    }
 
     @Bean
     public ApplicationInfo systemInfo(
@@ -24,7 +31,4 @@ public class SykemeldingApiApplicationStarter {
                 .build();
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(SykemeldingApiApplicationStarter.class, args);
-    }
 }

@@ -53,6 +53,8 @@ export const validation = {
 						.nullable(),
 				}),
 			),
+			inkluderAfpPrivat: Yup.boolean().nullable(),
+			afpPrivatResultat: Yup.string().nullable(),
 		}),
 	),
 }

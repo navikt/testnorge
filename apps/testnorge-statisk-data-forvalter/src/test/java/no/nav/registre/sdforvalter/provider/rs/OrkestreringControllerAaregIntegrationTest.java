@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
+import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -12,15 +13,11 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
 
@@ -31,16 +28,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(
-        webEnvironment = RANDOM_PORT
-)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
+@DollySpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 0)
 class OrkestreringControllerAaregIntegrationTest {
@@ -66,13 +58,13 @@ class OrkestreringControllerAaregIntegrationTest {
     private ObjectMapper objectMapper;
 
     @AfterEach
-    public void cleanUp() {
+    void cleanUp() {
         reset();
         aaregRepository.deleteAll();
     }
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         syntString = getResourceFileContent("files/enkel_arbeidsforholdmelding.json");
     }
 
@@ -110,4 +102,5 @@ class OrkestreringControllerAaregIntegrationTest {
                 .verifyGet();
 
     }
+
 }

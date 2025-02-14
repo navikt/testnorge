@@ -10,7 +10,8 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "org.springframework.boot:spring-boot-starter-test"
+    implementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 }

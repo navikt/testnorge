@@ -19,10 +19,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Service
@@ -34,16 +32,10 @@ public class KrrstubClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
 
-    private static boolean isKrrMaalform(String spraak) {
-
-        return isNotBlank(spraak) && Stream.of("NB", "NN", "EN", "SE").anyMatch(spraak::equalsIgnoreCase);
-    }
-
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getKrrstub()) ||
-                (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode()))) {
+        if (nonNull(bestilling.getKrrstub())) {
 
             var context = new MappingContext.Factory().getContext();
             context.setProperty("ident", dollyPerson.getIdent());

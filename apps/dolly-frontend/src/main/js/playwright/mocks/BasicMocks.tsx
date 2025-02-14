@@ -1955,9 +1955,6 @@ export const backendBestillingerMock = [
 					],
 				},
 			},
-			tpsMessaging: {
-				spraakKode: 'AB',
-			},
 			bankkonto: {
 				norskBankkonto: {
 					kontonummer: '99999999999',

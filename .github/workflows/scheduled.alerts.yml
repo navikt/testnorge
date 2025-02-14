@@ -1,9 +1,11 @@
-name: Deploy dolly alerts to NAIS
 on:
+  schedule:
+    - cron: "0 9 * * MON"
   push:
     paths:
-      - '.nais/alerting-dolly.yml'
-      - '.github/workflows/alert-dolly.yml'
+      - "../../.nais/alerts.yml"
+  workflow_dispatch:
+
 jobs:
   apply-alerts:
     name: Apply alerts to cluster
@@ -19,4 +21,4 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: ".nais/alerting-dolly.yml"
+          RESOURCE: ".nais/alerts.yml"

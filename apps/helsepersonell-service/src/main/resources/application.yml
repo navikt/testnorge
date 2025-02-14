@@ -1,9 +1,5 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 spring:
-  main:
-    banner-mode: off
   application:
-    version: application.version.todo
     name: testnav-helsepersonell-service
   codec:
     max-in-memory-size: 10MB
@@ -11,12 +7,10 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
         tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER} 
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
+          issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 springdoc:
@@ -40,6 +34,7 @@ management:
     metrics:
       export:
         enabled: true
+
 server:
   servlet:
     encoding:

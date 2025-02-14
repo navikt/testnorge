@@ -29,18 +29,24 @@ class NonBeanJwtDecoder {
     }
 
     public ReactiveJwtDecoder jwtDecoder() {
-        NimbusReactiveJwtDecoder jwtDecoder = switch (resourceServerProperties.getType()) {
-            case TOKEN_X -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).build();
-            case AZURE_AD ->
-                    NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).webClient(proxyWebClient).build();
+
+        var jwtDecoder = switch (resourceServerProperties.getType()) {
+            case TOKEN_X -> NimbusReactiveJwtDecoder
+                    .withIssuerLocation(resourceServerProperties.getIssuerUri())
+                    .build();
+            case AZURE_AD -> NimbusReactiveJwtDecoder
+                    .withIssuerLocation(resourceServerProperties.getIssuerUri())
+                    .webClient(proxyWebClient)
+                    .build();
         };
-
-        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
-        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(resourceServerProperties.getIssuerUri());
-        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
-
-        jwtDecoder.setJwtValidator(withAudience);
+        jwtDecoder.setJwtValidator(
+                new DelegatingOAuth2TokenValidator<>(
+                        JwtValidators.createDefaultWithIssuer(resourceServerProperties.getIssuerUri()),
+                        new AudienceValidator()
+                )
+        );
         return jwtDecoder;
+
     }
 
     private WebClient buildProxyWebClient(String proxyHost) {

@@ -41,7 +41,7 @@ public class MiljoerServiceConsumer {
                 .flatMap(token ->
                         new MiljoerServiceCommand(webClient, token.getTokenValue()).call())
                 .map(miljoer -> Flux.fromIterable(Arrays.asList(miljoer))
-                        .filter(env -> !env.equals("t13") && !env.equals("qx"))
+                        .filter(env -> !env.equals("qx"))
                         .collect(Collectors.toSet()))
                 .flatMap(Mono::from)
                 .cache(Duration.ofMinutes(5))

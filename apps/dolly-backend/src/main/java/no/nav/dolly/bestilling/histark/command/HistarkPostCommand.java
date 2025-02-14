@@ -41,9 +41,13 @@ public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
                 .body(fromMultipartData(body))
                 .retrieve()
                 .bodyToMono(HistarkResponse.class)
+                .map(response -> {
+                    response.setDokument(histarkRequest.getMetadata().getFilnavn());
+                    return response;
+                })
                 .doOnNext(response -> log.info("Responsebody fra histark: {}", response))
-//                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-//                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(throwable -> Mono.just(HistarkResponse.builder()
                         .status(WebClientFilter.getStatus(throwable))
