@@ -3,13 +3,13 @@ name:  yrkesskade-proxy
 on:
   push:
     paths:
-      - plugins/**
+      - .github/workflows/proxy.yrkesskade-proxy.yml
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/reactive-security/**
       - libs/security-core/**
+      - plugins/**
       - proxies/yrkesskade-proxy/**
-      - .github/workflows/proxy.yrkesskade-proxy.yml
 
 jobs:
   workflow:
