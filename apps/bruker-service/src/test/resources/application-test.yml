@@ -8,7 +8,6 @@ spring:
       resourceserver:
         tokenx:
           issuer-uri: ${wiremockBaseUrl}
-          jwk-set-uri: ${wiremockBaseUrl}/jwks
 
 consumers:
   testnav-altinn3-tilgang-service:
