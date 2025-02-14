@@ -26,6 +26,7 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:reactive-session-security"
     implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
 
     // Session
     implementation "redis.clients:jedis:5.1.2"
