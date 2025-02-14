@@ -38,6 +38,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm\\://azure-openid-config-issuer}");
+        properties.putIfAbsent("AZURE_OPENID_CONFIG_JWKS_URI", "${sm\\://azure-openid-config-jwks-uri}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-openid-config-token-endpoint}");
         properties.putIfAbsent("CRYPTOGRAPHY_SECRET", DUMMY); // Used by bruker-service only.
         properties.putIfAbsent("JWT_SECRET", DUMMY); // Used by bruker-service only.
@@ -65,6 +66,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
                         "ALTINN_API_KEY",
                         "ALTINN_URL",
                         "AZURE_OPENID_CONFIG_ISSUER",
+                        "AZURE_OPENID_CONFIG_JWKS_URI",
                         "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
                         "CRYPTOGRAPHY_SECRET", // Used by bruker-service only.
                         "IDPORTEN_CLIENT_ID", // Used by dolly-frontend only.
