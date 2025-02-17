@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
@@ -18,14 +17,9 @@ import java.util.stream.Stream;
  * Will only work for applications in {@code dev-fss}.
  */
 @Slf4j
-public class VaultTokenApplicationContextInitializer implements Ordered, ApplicationContextInitializer<ConfigurableApplicationContext> {
+public class VaultTokenApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    private static final String PROFILE = "local";
-
-    @Override
-    public int getOrder() {
-        return Integer.MIN_VALUE;
-    }
+    private static final String PROFILE = "prod";
 
     @Override
     public void initialize(@NonNull ConfigurableApplicationContext context) {
