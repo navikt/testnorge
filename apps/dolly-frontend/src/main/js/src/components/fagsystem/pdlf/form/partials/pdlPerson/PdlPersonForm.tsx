@@ -1,7 +1,7 @@
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { DollyApi } from '@/service/Api'
 import { useAsync } from 'react-use'
 import { Option } from '@/service/SelectOptionsOppslag'

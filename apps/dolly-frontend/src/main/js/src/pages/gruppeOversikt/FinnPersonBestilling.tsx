@@ -4,7 +4,7 @@ import AsyncSelect from 'react-select/async'
 import { components } from 'react-select'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import Icon from '@/components/ui/icon/Icon'
 import { SoekTypeValg, VelgSoekTypeToggle } from '@/pages/gruppeOversikt/VelgSoekTypeToggle'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -13,14 +13,8 @@ import styled from 'styled-components'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-
-type FinnPersonProps = {
-	feilmelding: string
-	gruppe: number
-	resetFeilmelding: Function
-	navigerTilPerson: Function
-	navigerTilBestilling: Function
-}
+import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/ducks/finnPerson'
+import { useDispatch, useSelector } from 'react-redux'
 
 type Person = {
 	ident: string
@@ -44,13 +38,12 @@ const StyledAsyncSelect = styled(AsyncSelect)`
 	margin-top: 2px;
 `
 
-const FinnPersonBestilling = ({
-	feilmelding,
-	gruppe,
-	resetFeilmelding,
-	navigerTilPerson,
-	navigerTilBestilling,
-}: FinnPersonProps) => {
+const FinnPersonBestilling = () => {
+	const dispatch = useDispatch()
+
+	const feilmelding = useSelector((state: any) => state.finnPerson.feilmelding)
+	const gruppe = useSelector((state: any) => state.finnPerson.navigerTilGruppe)
+
 	const [soekType, setSoekType] = useState(SoekTypeValg.PERSON)
 	const [searchQuery, setSearchQuery] = useState(null)
 	const [fragment, setFragment] = useState('')
@@ -106,21 +99,15 @@ const FinnPersonBestilling = ({
 	}, [feilmelding])
 
 	useEffect(() => {
-		resetFeilmelding()
+		dispatch(resetFeilmelding())
 		if (!searchQuery) {
 			return
 		}
 		soekType === SoekTypeValg.PERSON
-			? navigerTilPerson(searchQuery)
-			: navigerTilBestilling(searchQuery)
+			? dispatch(navigerTilPerson(searchQuery))
+			: dispatch(navigerTilBestilling(searchQuery))
 		return setSearchQuery(null)
 	}, [searchQuery])
-
-	useEffect(() => {
-		if (fragment && !feilmelding) {
-			resetFeilmelding()
-		}
-	}, [fragment])
 
 	function mapToPersoner(personData: any, personer: Array<Option>) {
 		if (!Array.isArray(personData)) {
@@ -213,6 +200,7 @@ const FinnPersonBestilling = ({
 	)
 
 	const handleChange = (tekst: string) => {
+		dispatch(resetFeilmelding())
 		fetchOptions(tekst)
 		setFragment(tekst)
 	}

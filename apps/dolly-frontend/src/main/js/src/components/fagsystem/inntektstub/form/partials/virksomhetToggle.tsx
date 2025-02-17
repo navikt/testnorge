@@ -157,7 +157,12 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.privat && (
 					<div className="flexbox--flex-wrap">
-						<FormTextInput name={virksomhetPath} label="Virksomhet (fnr/dnr/npid)" size="medium" />
+						<FormTextInput
+							name={virksomhetPath}
+							label="Virksomhet (fnr/dnr/npid)"
+							size="medium"
+							autoFocus
+						/>
 						<FormTextInput name={opplysningspliktigPath} label="Opplysningspliktig" size="medium" />
 					</div>
 				)}

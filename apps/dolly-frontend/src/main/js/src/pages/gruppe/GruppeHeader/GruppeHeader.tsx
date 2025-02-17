@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
 import RedigerGruppeConnector from '@/components/redigerGruppe/RedigerGruppeConnector'
-import FavoriteButtonConnector from '@/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '@/components/ui/button/LaasButton/LaasButton'
@@ -22,6 +21,7 @@ import cn from 'classnames'
 import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import Loading from '@/components/ui/loading/Loading'
+import FavoriteButton from '@/components/ui/button/FavoriteButton/FavoriteButton'
 
 type GruppeHeaderProps = {
 	gruppeId: string
@@ -155,7 +155,7 @@ const GruppeHeader = ({
 							action={getGruppeExcelFil}
 							loading={isFetchingExcel}
 						/>
-						{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
+						{!gruppe.erEierAvGruppe && <FavoriteButton groupId={gruppe.id} />}
 					</div>
 				</div>
 			</header>

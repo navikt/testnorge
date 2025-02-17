@@ -31,6 +31,7 @@ type DollyModalProps = {
 	minWidth?: string
 }
 
+// Set the app element for accessibility
 Modal.setAppElement('#root')
 
 export const DollyModal: React.FC<DollyModalProps> = ({
