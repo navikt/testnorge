@@ -20,8 +20,15 @@ import java.util.stream.Stream;
 @Slf4j
 public class VaultTokenApplicationContextInitializer implements Ordered, ApplicationContextInitializer<ConfigurableApplicationContext> {
 
+    private static final String NAIS_CLUSTER_SYSTEM_PROPERTY = "NAIS_CLUSTER_NAME";
     private static final String PROFILE = "prod";
+    private static final String VAULT_TOKEN_ENVIRONMENT_PROPERTY = "VAULT_TOKEN";
+    private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
 
+    /**
+     * Must run before {@code org.springframework.cloud.vault.config.ClientAuthenticationFactory}.
+     * @return {@code Integer.MIN_VALUE}
+     */
     @Override
     public int getOrder() {
         return Integer.MIN_VALUE;
@@ -30,6 +37,7 @@ public class VaultTokenApplicationContextInitializer implements Ordered, Applica
     @Override
     public void initialize(@NonNull ConfigurableApplicationContext context) {
 
+        System.out.println("VaultTokenApplicationContextInitializer.initialize");
         Stream
                 .of(context.getEnvironment().getActiveProfiles())
                 .filter(profile -> profile.equals(PROFILE))
@@ -41,10 +49,6 @@ public class VaultTokenApplicationContextInitializer implements Ordered, Applica
 
     }
 
-    private static final String NAIS_CLUSTER_SYSTEM_PROPERTY = "NAIS_CLUSTER_NAME";
-    private static final String VAULT_TOKEN_ENVIRONMENT_PROPERTY = "VAULT_TOKEN";
-    private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
-
     private static String getVaultToken() {
 
         Optional
@@ -54,17 +58,20 @@ public class VaultTokenApplicationContextInitializer implements Ordered, Applica
                     throw new VaultException("Attempting to get Vault token in cluster %s which is not onprem".formatted(cluster));
                 });
 
+        System.out.println("Attempting to set from VAULT_TOKEN_SYSTEM_PROPERTY");
         if (System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY) != null) {
             log.info("Getting Vault token from system property {}", VAULT_TOKEN_ENVIRONMENT_PROPERTY);
             return System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY);
         }
 
+        System.out.println("Attempting to set from VAULT_TOKEN_ENVIRONMENT_PROPERTY");
         var environment = new AnnotationConfigApplicationContext().getEnvironment();
         if (!environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY, "").isEmpty()) {
             log.info("Getting Vault token from environment property {}", VAULT_TOKEN_ENVIRONMENT_PROPERTY);
             return environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY);
         }
 
+        System.out.println("Attempting to set from file");
         var path = Paths.get("/var/run/secrets/nais.io/vault/vault_token");
         try {
             log.info("Getting Vault token from file {}", path);
