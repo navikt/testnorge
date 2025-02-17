@@ -1,0 +1,48 @@
+package no.nav.testnav.dollysearchservice.consumer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.dollysearchservice.config.Consumers;
+import no.nav.testnav.dollysearchservice.consumer.command.OpenSearchCommand;
+import no.nav.testnav.dollysearchservice.dto.SearchResponse;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.opensearch.action.search.SearchRequest;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+import static no.nav.testnav.dollysearchservice.consumer.utils.JacksonExchangeStrategyUtil.getJacksonStrategy;
+
+@Slf4j
+@Component
+public class OpenSearchConsumer {
+
+    private final WebClient webClient;
+    private final TokenExchange tokenExchange;
+    private final ServerProperties serverProperties;
+
+    public OpenSearchConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
+    ) {
+
+        serverProperties = consumers.getTestnavPdlProxy();
+        this.webClient = webClientBuilder
+                .baseUrl(serverProperties.getUrl())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .build();
+        this.tokenExchange = tokenExchange;
+    }
+
+    @SneakyThrows
+    public Flux<SearchResponse> search(SearchRequest searchRequest) {
+        return tokenExchange.exchange(serverProperties)
+                .flatMapMany(token ->
+                        new OpenSearchCommand(webClient, searchRequest.indices()[0],
+                                token.getTokenValue(), searchRequest.source().toString()).call());
+    }
+}
