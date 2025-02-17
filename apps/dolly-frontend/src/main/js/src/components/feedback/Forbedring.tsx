@@ -6,20 +6,37 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { Popover } from '@navikt/ds-react'
+import { useRef, useState } from 'react'
+import { KontaktinfoPanel } from '@/components/feedback/KontaktinfoPanel'
 
 export const Forbedring = () => {
-	const [isForbedringModalOpen, openForbedringModal, closeForbedringModal] = useBoolean(false)
+	const buttonRef = useRef<HTMLButtonElement>(null)
+	const [openState, setOpenState] = useState(false)
+	const [isKontaktskjemaOpen, openKontaktskjema, closeKontaktskjema] = useBoolean(false)
 
 	return (
 		<ErrorBoundary>
 			<button
+				ref={buttonRef}
 				data-testid={TestComponentSelectors.BUTTON_OPEN_FORBEDRING_MODAL}
-				className="btn-modal"
-				onClick={openForbedringModal}
+				className={'btn-modal'}
+				onClick={() => setOpenState(!openState)}
+				title="Kontakt oss"
 			>
-				<Icon kind="krr" fontSize={'2rem'} />
+				<Icon kind={openState ? 'collapse' : 'krr'} fontSize={openState ? '2.5rem' : '2rem'} />
 			</button>
-			{isForbedringModalOpen && <ForbedringModal closeModal={closeForbedringModal} />}
+			<Popover
+				open={openState}
+				onClose={() => setOpenState(false)}
+				anchorEl={buttonRef.current}
+				arrow={false}
+				placement={'top-end'}
+				style={{ border: 'none' }}
+			>
+				<KontaktinfoPanel setOpenState={setOpenState} openKontaktskjema={openKontaktskjema} />
+			</Popover>
+			{isKontaktskjemaOpen && <ForbedringModal closeModal={closeKontaktskjema} />}
 		</ErrorBoundary>
 	)
 }
