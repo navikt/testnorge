@@ -4,49 +4,38 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Will set a system property {@code VAULT_TOKEN} if the Spring profile is set to {@link #PROFILE}.
  * Will only work for applications in {@code dev-fss}.
  */
 @Slf4j
-public class VaultTokenApplicationContextInitializer implements Ordered, ApplicationContextInitializer<ConfigurableApplicationContext> {
+public class VaultTokenApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     private static final String NAIS_CLUSTER_SYSTEM_PROPERTY = "NAIS_CLUSTER_NAME";
     private static final String PROFILE = "prod";
     private static final String VAULT_TOKEN_ENVIRONMENT_PROPERTY = "VAULT_TOKEN";
     private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
 
-    /**
-     * Must run before {@code org.springframework.cloud.vault.config.ClientAuthenticationFactory}.
-     * @return {@code Integer.MIN_VALUE}
-     */
-    @Override
-    public int getOrder() {
-        return Integer.MIN_VALUE;
+    public VaultTokenApplicationContextInitializer() {
+        if (PROFILE.equals(System.getProperty("spring.profiles.active"))) {
+            log.info("Setting system property {} for profile {}", VAULT_TOKEN_SYSTEM_PROPERTY, PROFILE);
+            System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken());
+        }
     }
 
     @Override
-    public void initialize(@NonNull ConfigurableApplicationContext context) {
-
-        System.out.println("VaultTokenApplicationContextInitializer.initialize");
-        Stream
-                .of(context.getEnvironment().getActiveProfiles())
-                .filter(profile -> profile.equals(PROFILE))
-                .findAny()
-                .ifPresent(profile -> {
-                    log.info("Setting system property {} for profile {}", VAULT_TOKEN_SYSTEM_PROPERTY, PROFILE);
-                    System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken());
-                });
-
+    public void initialize(@NonNull ConfigurableApplicationContext context)
+        throws IllegalStateException {
+        if (System.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY, "").isEmpty()) {
+            throw new VaultException("System property %s is NOT set".formatted(VAULT_TOKEN_ENVIRONMENT_PROPERTY));
+        }
     }
 
     private static String getVaultToken() {
@@ -58,20 +47,17 @@ public class VaultTokenApplicationContextInitializer implements Ordered, Applica
                     throw new VaultException("Attempting to get Vault token in cluster %s which is not onprem".formatted(cluster));
                 });
 
-        System.out.println("Attempting to set from VAULT_TOKEN_SYSTEM_PROPERTY");
         if (System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY) != null) {
             log.info("Getting Vault token from system property {}", VAULT_TOKEN_ENVIRONMENT_PROPERTY);
             return System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY);
         }
 
-        System.out.println("Attempting to set from VAULT_TOKEN_ENVIRONMENT_PROPERTY");
         var environment = new AnnotationConfigApplicationContext().getEnvironment();
         if (!environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY, "").isEmpty()) {
             log.info("Getting Vault token from environment property {}", VAULT_TOKEN_ENVIRONMENT_PROPERTY);
             return environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY);
         }
 
-        System.out.println("Attempting to set from file");
         var path = Paths.get("/var/run/secrets/nais.io/vault/vault_token");
         try {
             log.info("Getting Vault token from file {}", path);
