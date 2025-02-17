@@ -1,74 +1,60 @@
 package no.nav.dolly.libs.vault;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 
 /**
- * Will set a system property {@code VAULT_TOKEN} if the Spring profile is set to {@link #PROFILE}.
+ * Will set a system property {@link #SPRING_CLOUD_VAULT_TOKEN} based on contents of a file {@link #NAIS_SECRET_FILENAME} if the Spring profile is set to {@link #PROD}.
  * Will only work for applications in {@code dev-fss}.
  */
-public class VaultTokenApplicationContextInitializer implements Ordered, ApplicationContextInitializer<ConfigurableApplicationContext> {
+@Slf4j
+public class VaultTokenApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    private static final String NAIS_CLUSTER_SYSTEM_PROPERTY = "NAIS_CLUSTER_NAME";
-    private static final String PROFILE = "prod";
-    private static final String VAULT_TOKEN_ENVIRONMENT_PROPERTY = "VAULT_TOKEN";
-    private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
+    private static final String NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME";
+    private static final String NAIS_SECRET_FILENAME = "/var/run/secrets/nais.io/vault/vault_token";
+    private static final String PROD = "prod";
+    private static final String SPRING_CLOUD_VAULT_TOKEN = "spring.cloud.vault.token";
+    private static final String SPRING_PROFILES_ACTIVE = "spring.profiles.active";
 
-    @Override
-    public int getOrder() {
-        return Integer.MIN_VALUE;
+    public VaultTokenApplicationContextInitializer() {
+
+        if (!PROD.equals(System.getProperty(SPRING_PROFILES_ACTIVE))) {
+            log.info("Skipping setting system property {} for Spring profile != {}", SPRING_CLOUD_VAULT_TOKEN, PROD);
+            return;
+        }
+        if ("dev-fss".equals(System.getProperty(NAIS_CLUSTER_NAME))) {
+            throw new VaultException("Attempting to get Vault token in cluster %s which is not onprem".formatted(System.getProperty(NAIS_CLUSTER_NAME)));
+        }
+        System.setProperty(SPRING_CLOUD_VAULT_TOKEN, getVaultTokenFromFile());
+
     }
 
     @Override
-    public void initialize(@NonNull ConfigurableApplicationContext context) {
-
-        Stream
-                .of(context
-                        .getEnvironment()
-                        .getActiveProfiles())
-                .filter(profile -> profile.equals(PROFILE))
-                .findAny()
-                .ifPresentOrElse(
-                        profile -> {
-                            System.out.printf("Setting system property %s for profile %s%n", VAULT_TOKEN_SYSTEM_PROPERTY, PROFILE);
-                            System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken(context));
-                        },
-                        () -> System.out.printf("Profile %s not active, skipping setting system property %s%n", PROFILE, VAULT_TOKEN_SYSTEM_PROPERTY));
-
+    public void initialize(@NonNull ConfigurableApplicationContext context)
+            throws VaultException {
+        if (!PROD.equals(System.getProperty(SPRING_PROFILES_ACTIVE))) {
+            log.info("Spring profile != {}, skipping validation", PROD);
+            return;
+        }
+        if (System.getProperty(SPRING_CLOUD_VAULT_TOKEN, "").isEmpty()) {
+            throw new VaultException("System property %s is NOT set".formatted(SPRING_CLOUD_VAULT_TOKEN));
+        }
     }
 
-    private static String getVaultToken(ConfigurableApplicationContext context) {
-
-        if (!"dev-fss".equals(System.getProperty(NAIS_CLUSTER_SYSTEM_PROPERTY))) {
-            throw new VaultException("Attempting to get Vault token in cluster %s which is not onprem".formatted(System.getProperty(NAIS_CLUSTER_SYSTEM_PROPERTY)));
-        }
-
-        if (System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY) != null) {
-            System.out.printf("Getting Vault token from system property %s%n", VAULT_TOKEN_ENVIRONMENT_PROPERTY);
-            return System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY);
-        }
-
-        var environment = context.getEnvironment();
-        if (!environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY, "").isEmpty()) {
-            System.out.printf("Getting Vault token from environment property %s%n", VAULT_TOKEN_ENVIRONMENT_PROPERTY);
-            return environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY);
-        }
-
-        var path = Paths.get("/var/run/secrets/nais.io/vault/vault_token");
+    private static String getVaultTokenFromFile() {
+        var path = Paths.get(NAIS_SECRET_FILENAME);
+        log.info("Getting Vault token from file {}", path);
         try {
-            System.out.printf("Getting Vault token from file %s%n", path);
             return Files.readString(path).trim();
         } catch (IOException e) {
             throw new VaultException("Unable to read vault token from file %s".formatted(path.toString()), e);
         }
-
     }
 
 }
