@@ -17,4 +17,15 @@ public class FilterUtility {
             return kodeverk;
         }
     }
+
+    public static KodeverkBetydningerResponse filtrerKodeverk(KodeverkBetydningerResponse kodeverk) {
+
+        if (KOMMUNER.equals(kodeverk.getKodeverknavn())) {
+
+            kodeverk.getBetydninger().entrySet()
+                    .removeIf(entry -> entry.getKey().equals("9999"));
+        }
+
+        return kodeverk;
+    }
 }

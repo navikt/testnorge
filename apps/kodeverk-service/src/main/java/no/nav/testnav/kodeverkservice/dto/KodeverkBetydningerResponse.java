@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class KodeverkBetydningerResponse {
 
+    private String kodeverknavn;
+
     private Map<String, List<Betydning>> betydninger;
 
     public Map<String, List<Betydning>> getBetydninger() {

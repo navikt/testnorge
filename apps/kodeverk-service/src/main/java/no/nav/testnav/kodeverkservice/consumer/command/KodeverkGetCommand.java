@@ -45,6 +45,10 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkBetydningerResp
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .retrieve()
                 .bodyToMono(KodeverkBetydningerResponse.class)
+                .map(response -> {
+                    response.setKodeverknavn(kodeverk);
+                    return response;
+                })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }
