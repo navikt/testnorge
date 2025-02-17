@@ -17,6 +17,7 @@ import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
+import { RouteChangeHandler } from '@/RootComponent'
 
 const logout = (feilmelding: string) => {
 	if (!runningE2ETest()) {
@@ -53,6 +54,7 @@ export const App = () => {
 
 	return (
 		<ErrorBoundary>
+			<RouteChangeHandler />
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />

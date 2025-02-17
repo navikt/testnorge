@@ -4,16 +4,16 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import RedigerGruppeConnector from '@/components/redigerGruppe/RedigerGruppeConnector'
 import Icon from '@/components/ui/icon/Icon'
 import Liste from './Liste'
-import FinnPersonBestillingConnector from '@/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useGrupper } from '@/utils/hooks/useGruppe'
 import { useDispatch } from 'react-redux'
-import { resetNavigering, setSidetall, setVisning } from '@/ducks/finnPerson'
+import { setSidetall, setVisning } from '@/ducks/finnPerson'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
 
 type GruppeOversiktProps = {
 	importerteZIdenter: any
@@ -59,7 +59,6 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 		visningType === VisningType.ALLE ? null : brukerId,
 	)
 	const dispatch = useDispatch()
-	dispatch(resetNavigering())
 
 	useEffect(() => {
 		dispatch(setVisning('personer'))
@@ -93,7 +92,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				>
 					Ny gruppe
 				</StyledNavButton>
-				{!bankIdBruker && <FinnPersonBestillingConnector />}
+				{!bankIdBruker && <FinnPersonBestilling />}
 			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}

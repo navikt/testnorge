@@ -14,12 +14,7 @@ import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/ducks/finnPerson'
-import { useDispatch } from 'react-redux'
-
-type FinnPersonProps = {
-	feilmelding: string
-	gruppe: number
-}
+import { useDispatch, useSelector } from 'react-redux'
 
 type Person = {
 	ident: string
@@ -43,14 +38,16 @@ const StyledAsyncSelect = styled(AsyncSelect)`
 	margin-top: 2px;
 `
 
-const FinnPersonBestilling = ({ feilmelding, gruppe }: FinnPersonProps) => {
+const FinnPersonBestilling = () => {
 	const dispatch = useDispatch()
+
+	const feilmelding = useSelector((state: any) => state.finnPerson.feilmelding)
+	const gruppe = useSelector((state: any) => state.finnPerson.navigerTilGruppe)
 
 	const [soekType, setSoekType] = useState(SoekTypeValg.PERSON)
 	const [searchQuery, setSearchQuery] = useState(null)
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
-	const [value, setValue] = useState(null)
 
 	const [pdlfIdenter, setPdlfIdenter] = useState([])
 	const [pdlIdenter, setPdlIdenter] = useState([])
@@ -111,12 +108,6 @@ const FinnPersonBestilling = ({ feilmelding, gruppe }: FinnPersonProps) => {
 			: dispatch(navigerTilBestilling(searchQuery))
 		return setSearchQuery(null)
 	}, [searchQuery])
-
-	useEffect(() => {
-		if (fragment && !feilmelding) {
-			dispatch(resetFeilmelding())
-		}
-	}, [fragment])
 
 	function mapToPersoner(personData: any, personer: Array<Option>) {
 		if (!Array.isArray(personData)) {
@@ -209,6 +200,7 @@ const FinnPersonBestilling = ({ feilmelding, gruppe }: FinnPersonProps) => {
 	)
 
 	const handleChange = (tekst: string) => {
+		dispatch(resetFeilmelding())
 		fetchOptions(tekst)
 		setFragment(tekst)
 	}
@@ -264,11 +256,8 @@ const FinnPersonBestilling = ({ feilmelding, gruppe }: FinnPersonProps) => {
 						}}
 						isClearable={true}
 						options={options}
-						value={value}
-						onChange={(e: Option) => {
-							setValue(e.value)
-							setSearchQuery(e?.value)
-						}}
+						value={null}
+						onChange={(e: Option) => setSearchQuery(e?.value)}
 						backspaceRemovesValue={true}
 						label="Person"
 						placeholder={

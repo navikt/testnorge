@@ -1,9 +1,10 @@
-import { Provider } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import {
 	createBrowserRouter,
 	createRoutesFromElements,
 	Route,
 	RouterProvider,
+	useLocation,
 	useRouteError,
 } from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -15,7 +16,8 @@ import { App } from '@/app/App'
 import { AppError } from '@/components/ui/appError/AppError'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import allRoutes from '@/allRoutes'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { locationChange } from '@/ducks/finnPerson'
 
 const ErrorView = () => {
 	console.error('Applikasjonen har støtt på en feil')
@@ -32,6 +34,17 @@ const ErrorView = () => {
 		navigateToLogin(error?.message)
 	}
 	return <AppError error={error} stackTrace={error.stackTrace} />
+}
+
+export function RouteChangeHandler() {
+	const location = useLocation()
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		dispatch(locationChange(location))
+	}, [location, dispatch])
+
+	return null
 }
 
 const router = createBrowserRouter(

@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Loading from '@/components/ui/loading/Loading'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { resetNavigering, resetPaginering, setVisning } from '@/ducks/finnPerson'
+import {
+	resetNavigering,
+	resetPaginering,
+	setGruppeNavigerTil,
+	setVisning,
+} from '@/ducks/finnPerson'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { useIkkeFerdigBestillingerGruppe } from '@/utils/hooks/useBestilling'
@@ -14,9 +19,9 @@ import GruppeHeaderConnector from '@/pages/gruppe/GruppeHeader/GruppeHeaderConne
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import StatusListeConnector from '@/components/bestilling/statusListe/StatusListeConnector'
 import BestillingsveilederModal from '@/components/bestillingsveileder/startModal/StartModal'
-import FinnPersonBestillingConnector from '@/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { GruppeToggle } from '@/pages/gruppe/GruppeToggle'
 import { GruppeVisning } from '@/pages/gruppe/GruppeVisning'
+import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
 
 export type GruppeProps = {
 	sidetall: number
@@ -37,6 +42,10 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const visning = useSelector((state: any) => state.finnPerson.visning)
+
+	useEffect(() => {
+		dispatch(setGruppeNavigerTil(null))
+	}, [])
 
 	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
 		gruppeId,
@@ -136,7 +145,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 						Importer personer
 					</NavButton>
 					<div style={{ flexGrow: '2' }}></div>
-					{!bankIdBruker && <FinnPersonBestillingConnector />}
+					{!bankIdBruker && <FinnPersonBestilling />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<GruppeToggle
