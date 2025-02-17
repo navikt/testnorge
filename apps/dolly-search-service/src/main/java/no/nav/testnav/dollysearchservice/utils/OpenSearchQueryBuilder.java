@@ -1,30 +1,29 @@
-package no.nav.testnav.dollysearchservice.service;
+package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.dollysearchservice.domain.ElasticTyper;
-import no.nav.testnav.dollysearchservice.dto.SearchRequest;
+import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
 import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
 
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseKommunenrQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressebeskyttelseQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAlderQuery;
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterIdentifier;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseBydelsnrQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseKommunenrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseMatrikkelQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressePostnrQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedUkjentQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseUtlandQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdressebeskyttelseQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAlderQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDoedsfallQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addDollyIdentifier;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarAdresseBydelsnummerQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBarnQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedUkjentQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarBostedsadresseQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarDeltBostedQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarDoedfoedtbarnQuery;
@@ -46,40 +45,19 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addSivilstandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addStatsborgerskapQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addVergemaalQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarAdresseBydelsnummerQuery;
 
 @UtilityClass
 public class OpenSearchQueryBuilder {
 
-    private static final Random seed = new SecureRandom();
+    private static final Random SEED = new SecureRandom();
 
-    public static BoolQueryBuilder buildSearchQuery(SearchRequest request) {
+    public static BoolQueryBuilder buildSearchQuery(SearchRequest request, Integer seed) {
 
-        var queryBuilder = buildTyperQuery(request.getTyper().toArray(ElasticTyper[]::new));
+        var queryBuilder = QueryBuilders.boolQuery()
+                .must(getRandomScoreQueryBuilder(seed))
+                .must(addIdenterIdentifier(request));
+
         setPersonQuery(queryBuilder, request);
-
-        return queryBuilder;
-    }
-
-    public static BoolQueryBuilder buildPersonQuery(SearchRequest request) {
-
-        var queryBuilder = QueryBuilders.boolQuery()
-                .must(getRandomScoreQueryBuilder())
-                .must(addDollyIdentifier());
-
-            setPersonQuery(queryBuilder, request);
-
-        return queryBuilder;
-    }
-
-    public static BoolQueryBuilder buildTyperQuery(ElasticTyper[] typer) {
-
-        var queryBuilder = QueryBuilders.boolQuery()
-                .must(getRandomScoreQueryBuilder());
-
-        Arrays.stream(typer)
-                .map(OpenSearchQueryBuilder::getFagsystemQuery)
-                .forEach(queryBuilder::must);
 
         return queryBuilder;
     }
@@ -125,44 +103,9 @@ public class OpenSearchQueryBuilder {
                 });
     }
 
-    private QueryBuilder getFagsystemQuery(ElasticTyper type) {
+    private static FunctionScoreQueryBuilder getRandomScoreQueryBuilder(Integer seed) {
 
-        return switch (type) {
-            case AAREG -> QueryBuilders.existsQuery("aareg");
-            case INST -> QueryBuilders.existsQuery("instdata");
-            case KRRSTUB -> QueryBuilders.existsQuery("krrstub");
-            case SIGRUN_LIGNET -> QueryBuilders.existsQuery("sigrunstub");
-            case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.existsQuery("sigrunstubPensjonsgivende");
-            case ARENA_AAP -> QueryBuilders.existsQuery("arenaforvalter.aap");
-            case ARENA_AAP115 -> QueryBuilders.existsQuery("arenaforvalter.aap115");
-            case ARENA_DAGP -> QueryBuilders.existsQuery("arenaforvalter.dagpenger");
-            case UDISTUB -> QueryBuilders.existsQuery("udistub");
-            case INNTK -> QueryBuilders.existsQuery("inntektstub");
-            case PEN_INNTEKT -> QueryBuilders.existsQuery("pensjonforvalter.inntekt");
-            case PEN_TP -> QueryBuilders.existsQuery("pensjonforvalter.tp");
-            case PEN_AP -> QueryBuilders.existsQuery("pensjonforvalter.alderspensjon");
-            case PEN_UT -> QueryBuilders.existsQuery("pensjonforvalter.uforetrygd");
-            case PEN_AFP_OFFENTLIG -> QueryBuilders.existsQuery("pensjonforvalter.afpOffentlig");
-            case PEN_PENSJONSAVTALE -> QueryBuilders.existsQuery("pensjonforvalter.pensjonsavtale");
-            case INNTKMELD -> QueryBuilders.existsQuery("inntektsmelding");
-            case BRREGSTUB -> QueryBuilders.existsQuery("brregstub");
-            case DOKARKIV -> QueryBuilders.existsQuery("dokarkiv");
-            case FULLMAKT -> QueryBuilders.existsQuery("fullmakt");
-            case MEDL -> QueryBuilders.existsQuery("medl");
-            case HISTARK -> QueryBuilders.existsQuery("histark");
-            case SYKEMELDING -> QueryBuilders.existsQuery("sykemelding");
-            case SKJERMING -> QueryBuilders.existsQuery("skjerming");
-            case BANKKONTO -> QueryBuilders.existsQuery("bankkonto");
-            case BANKKONTO_NORGE -> QueryBuilders.existsQuery("bankkonto.norskBankkonto");
-            case BANKKONTO_UTLAND -> QueryBuilders.existsQuery("bankkonto.utenlandskBankkonto");
-            case ARBEIDSPLASSENCV -> QueryBuilders.existsQuery("arbeidsplassenCV");
-            case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
-            case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskader");
-        };
-    }
-
-    private static FunctionScoreQueryBuilder getRandomScoreQueryBuilder() {
-
-        return QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder().seed(seed.nextInt()));
+        return QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder()
+                .seed(nonNull(seed) ? seed : SEED.nextInt()));
     }
 }

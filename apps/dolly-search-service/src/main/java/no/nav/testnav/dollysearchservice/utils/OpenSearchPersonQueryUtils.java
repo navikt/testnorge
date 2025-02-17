@@ -1,18 +1,24 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.dollysearchservice.dto.SearchRequest;
+import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import org.apache.lucene.search.join.ScoreMode;
 import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.FOLKEREGISTERIDENTIFIKATOR;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HENT_IDENTER;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HISTORISK;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.METADATA_HISTORISK;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.NAVSPERSONIDENTIFIKATOR;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedExistQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedMatchQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.rangeQuery;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -20,9 +26,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class OpenSearchPersonQueryUtils {
 
     private static final String FAMILIE_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
-    private static final String HENT_IDENTER = "hentIdenter.identer";
-    private static final String HISTORISK = "historisk";
-    private static final String METADATA_HISTORISK = "metadata.historisk";
     private static final String BOSTEDSADRESSE = "hentPerson.bostedsadresse";
     private static final String OPPHOLDSADRESSE = "hentPerson.oppholdsadresse";
     private static final String KONTAKTADRESSE = "hentPerson.kontaktadresse";
@@ -32,21 +35,7 @@ public class OpenSearchPersonQueryUtils {
     private static final String KOMMUNENUMMER = "kommunenummer";
     private static final String POSTNUMMER = "postnummer";
     private static final String BYDELSNUMMER = "bydelsnummer";
-    private static final String FOLKEREGISTERIDENTIFIKATOR = "hentPerson.folkeregisteridentifikator";
-    private static final String NAVSPERSONIDENTIFIKATOR = "hentPerson.navspersonidentifikator";
     private static final String CONCAT = "%s.%s";
-
-    public static BoolQueryBuilder addDollyIdentifier() {
-
-        return QueryBuilders.boolQuery()
-                .should(matchQuery("tags", "DOLLY"))
-                .should(QueryBuilders.boolQuery()
-                        .must(nestedMatchQuery(FOLKEREGISTERIDENTIFIKATOR, METADATA_HISTORISK, false))
-                        .must(nestedRegexpQuery(FOLKEREGISTERIDENTIFIKATOR, "identifikasjonsnummer", "\\d{2}[4-5]\\d{8}")))
-                .should(QueryBuilders.boolQuery()
-                        .must(nestedMatchQuery(NAVSPERSONIDENTIFIKATOR, METADATA_HISTORISK, false))
-                        .must(nestedRegexpQuery(NAVSPERSONIDENTIFIKATOR, "identifikasjonsnummer", "\\d{2}[6-7]\\d{8}")));
-    }
 
     public static void addAlderQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
@@ -406,40 +395,5 @@ public class OpenSearchPersonQueryUtils {
                                 request.getPersonRequest().getIdenttype().name())));
             }
         }
-    }
-
-    private QueryBuilder rangeQuery(String field, Integer value1, Integer value2) {
-
-        return QueryBuilders.rangeQuery(field).from(value1).to(value2);
-    }
-
-    private QueryBuilder matchQuery(String field, Object value) {
-
-        return QueryBuilders.matchQuery(field, value);
-    }
-
-    private QueryBuilder existQuery(String field) {
-
-        return QueryBuilders.existsQuery(field);
-    }
-
-    private QueryBuilder regexpQuery(String field, String value) {
-
-        return QueryBuilders.regexpQuery(field, value);
-    }
-
-    private QueryBuilder nestedRegexpQuery(String path, String field, String value) {
-
-        return QueryBuilders.nestedQuery(path, regexpQuery("%s.%s".formatted(path, field), value), ScoreMode.Avg);
-    }
-
-    private QueryBuilder nestedMatchQuery(String path, String field, Object value) {
-
-        return QueryBuilders.nestedQuery(path, matchQuery("%s.%s".formatted(path, field), value), ScoreMode.Avg);
-    }
-
-    private QueryBuilder nestedExistQuery(String path, String field) {
-
-        return QueryBuilders.nestedQuery(path, existQuery(path + '.' + field), ScoreMode.Avg);
     }
 }

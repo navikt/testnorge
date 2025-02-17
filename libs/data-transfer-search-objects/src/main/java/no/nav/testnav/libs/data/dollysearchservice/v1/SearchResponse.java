@@ -1,4 +1,4 @@
-package no.nav.testnav.dollysearchservice.dto;
+package no.nav.testnav.libs.data.dollysearchservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;

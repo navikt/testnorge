@@ -1,12 +1,11 @@
 package no.nav.testnav.dollysearchservice.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.dollysearchservice.domain.ElasticTyper;
-import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import no.nav.testnav.dollysearchservice.dto.SearchResponse;
+import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
+import no.nav.testnav.libs.data.dollysearchservice.v1.SearchResponse;
 import no.nav.testnav.dollysearchservice.service.OpenSearchService;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,17 +20,16 @@ public class OpensearchController {
 
     private final OpenSearchService openSearchService;
 
-    @GetMapping("/identer")
-    @Operation(description = "Henter identer som matcher søk i request, registre kun")
-    public Mono<SearchResponse> getIdenterMed(@RequestParam ElasticTyper... typer) {
-
-        return openSearchService.getTyper(typer);
-    }
-
     @PostMapping("/identer")
     @Operation(description = "Henter identer som matcher søk i request, både registre og persondetaljer")
-    public Mono<SearchResponse> getIdenterMed(@RequestBody SearchRequest request) {
+    public Mono<SearchResponse> getIdenterMed(@RequestBody SearchRequest request,
+                                              @Schema(description = "Sidenummer")
+                                              @RequestParam(required = false) Integer side,
+                                              @Schema(description = "Antall resultater per side")
+                                              @RequestParam(required = false) Integer antall,
+                                              @Schema(description = "Seed for paginering")
+                                              @RequestParam(required = false) Integer seed) {
 
-        return openSearchService.search(request);
+        return openSearchService.search(request, side, antall, seed);
     }
 }

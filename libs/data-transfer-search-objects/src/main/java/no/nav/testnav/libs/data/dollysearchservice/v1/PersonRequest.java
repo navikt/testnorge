@@ -1,4 +1,4 @@
-package no.nav.testnav.dollysearchservice.dto;
+package no.nav.testnav.libs.data.dollysearchservice.v1;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -42,7 +42,6 @@ public class PersonRequest {
     private Boolean harNyIdentitet;
 
     private AdresseRequest adresse;
-
 
     @Data
     @Builder
