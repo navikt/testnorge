@@ -1,4 +1,4 @@
-package no.nav.testnav.dollysearchservice.model;
+package no.nav.testnav.dollysearchservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.dollysearchservice.consumer.ElasticSearchConsumer;
+import no.nav.testnav.dollysearchservice.consumer.OpenSearchConsumer;
+import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
 import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.data.dollysearchservice.v1.SearchResponse;
-import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
 import org.opensearch.common.unit.TimeValue;
 import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -25,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class OpenSearchService {
 
-    private final ElasticSearchConsumer elasticSearchConsumer;
+    private final OpenSearchConsumer openSearchConsumer;
     private final ObjectMapper objectMapper;
 
     public Mono<SearchResponse> search(SearchRequest request, Integer side, Integer antall, Integer seed) {
@@ -36,7 +35,7 @@ public class OpenSearchService {
 
     private Mono<SearchResponse> execQuery(BoolQueryBuilder query, Integer side, Integer antall) {
 
-        return Mono.from(elasticSearchConsumer.search(new org.opensearch.action.search.SearchRequest()
+        return Mono.from(openSearchConsumer.search(new org.opensearch.action.search.SearchRequest()
                         .indices("pdl-sok")
                         .source(new SearchSourceBuilder()
                                 .from(nonNull(side) ? side : 0)
@@ -46,8 +45,7 @@ public class OpenSearchService {
                 .map(this::getIdenter));
     }
 
-
-    private SearchResponse getIdenter(no.nav.testnav.dollysearchservice.model.SearchResponse response) {
+    private SearchResponse getIdenter(no.nav.testnav.dollysearchservice.dto.SearchResponse response) {
 
         if (isNotBlank(response.getError())) {
             return SearchResponse.builder()
@@ -59,23 +57,11 @@ public class OpenSearchService {
                 .took(response.getTook().toString())
                 .totalHits(response.getHits().getTotal().getValue())
                 .score(response.getHits().getMaxScore())
+                .antall(response.getHits().getHits().size())
                 .personer(response.getHits().getHits().stream()
-                        .map(no.nav.testnav.dollysearchservice.model.SearchResponse.SearchHit::get_source)
+                        .map(no.nav.testnav.dollysearchservice.dto.SearchResponse.SearchHit::get_source)
                         .map(person -> objectMapper.convertValue(person, JsonNode.class))
-//                        .map(result -> objectMapper.convertValue(result, Response.class))
-//                        .map(Response::getHentIdenter)
-//                        .map(HentIdenterModel::getIdenter)
-//                        .flatMap(Collection::stream)
-//                        .filter(IdenterModel::isFolkeregisterident)
-//                        .map(IdenterModel::getIdent)
                         .toList())
                 .build();
-    }
-
-    @SuppressWarnings("java:S2259")
-    private static Long getTotalHits(SearchHits searchHits) {
-
-        return nonNull(searchHits) && nonNull(searchHits.getTotalHits()) ?
-                searchHits.getTotalHits().value : null;
     }
 }

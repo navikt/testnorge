@@ -1,4 +1,4 @@
-package no.nav.testnav.dollysearchservice.service.utils;
+package no.nav.testnav.dollysearchservice.consumer.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;

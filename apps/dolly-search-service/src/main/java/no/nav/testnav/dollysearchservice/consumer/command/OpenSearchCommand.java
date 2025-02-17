@@ -1,7 +1,7 @@
 package no.nav.testnav.dollysearchservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.dollysearchservice.model.SearchResponse;
+import no.nav.testnav.dollysearchservice.dto.SearchResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,7 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
 @RequiredArgsConstructor
-public class ElasticSearchCommand implements Callable<Mono<SearchResponse>> {
+public class OpenSearchCommand implements Callable<Mono<SearchResponse>> {
 
     private static final String SEARCH_URL = "/pdl-elastic/{index}/_search";
 

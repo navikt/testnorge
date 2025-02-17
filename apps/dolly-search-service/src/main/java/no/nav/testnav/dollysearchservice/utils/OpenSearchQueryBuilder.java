@@ -62,7 +62,7 @@ public class OpenSearchQueryBuilder {
         return queryBuilder;
     }
 
-    private void setPersonQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+    private static void setPersonQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest())
                 .ifPresent(value -> {
