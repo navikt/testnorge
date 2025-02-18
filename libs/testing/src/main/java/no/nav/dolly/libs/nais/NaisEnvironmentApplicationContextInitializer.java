@@ -65,6 +65,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
                         "ALTINN_API_KEY",
                         "ALTINN_URL",
+                        "AZURE_APP_CLIENT_ID",
                         "AZURE_OPENID_CONFIG_ISSUER",
                         "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
                         "CRYPTOGRAPHY_SECRET", // Used by bruker-service only.
