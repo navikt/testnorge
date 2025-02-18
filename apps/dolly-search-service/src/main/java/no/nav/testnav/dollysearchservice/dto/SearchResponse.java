@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchResponse {
+
+    private SearchRequest request;
 
     private Integer took;
     private Boolean timedOut;

@@ -1,4 +1,4 @@
-# testnav-person-search-service
+# testnav-dolly-search-service
 Service som forvalter søking på personer basert på innsendte kriterier
 
 ## Lokal kjøring

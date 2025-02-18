@@ -11,7 +11,7 @@ import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.Random;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterIdentifier;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseKommunenrQuery;
@@ -51,10 +51,10 @@ public class OpenSearchQueryBuilder {
 
     private static final Random SEED = new SecureRandom();
 
-    public static BoolQueryBuilder buildSearchQuery(SearchRequest request, Integer seed) {
+    public static BoolQueryBuilder buildSearchQuery(SearchRequest request) {
 
         var queryBuilder = QueryBuilders.boolQuery()
-                .must(getRandomScoreQueryBuilder(seed))
+                .must(getRandomScoreQueryBuilder(request))
                 .must(addIdenterIdentifier(request));
 
         setPersonQuery(queryBuilder, request);
@@ -103,9 +103,13 @@ public class OpenSearchQueryBuilder {
                 });
     }
 
-    private static FunctionScoreQueryBuilder getRandomScoreQueryBuilder(Integer seed) {
+    private static FunctionScoreQueryBuilder getRandomScoreQueryBuilder(SearchRequest request) {
+
+        if (isNull(request.getSeed())){
+            request.setSeed(SEED.nextInt());
+        }
 
         return QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder()
-                .seed(nonNull(seed) ? seed : SEED.nextInt()));
+                .seed(request.getSeed()));
     }
 }

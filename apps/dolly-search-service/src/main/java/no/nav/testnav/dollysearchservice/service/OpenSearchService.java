@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -27,25 +28,34 @@ public class OpenSearchService {
     private final OpenSearchConsumer openSearchConsumer;
     private final ObjectMapper objectMapper;
 
-    public Mono<SearchResponse> search(SearchRequest request, Integer side, Integer antall, Integer seed) {
+    public Mono<SearchResponse> search(SearchRequest request) {
 
-        var query = OpenSearchQueryBuilder.buildSearchQuery(request, seed);
-        return execQuery(query, side, antall);
+        var query = OpenSearchQueryBuilder.buildSearchQuery(request);
+        return execQuery(request, query);
     }
 
-    private Mono<SearchResponse> execQuery(BoolQueryBuilder query, Integer side, Integer antall) {
+    private Mono<SearchResponse> execQuery(SearchRequest request, BoolQueryBuilder query) {
 
-        return Mono.from(openSearchConsumer.search(new org.opensearch.action.search.SearchRequest()
-                        .indices("pdl-sok")
-                        .source(new SearchSourceBuilder()
-                                .from(nonNull(side) ? side : 0)
-                                .query(query)
-                                .size(nonNull(antall) ? antall : 10)
-                                .timeout(new TimeValue(3, TimeUnit.SECONDS))))
-                .map(this::getIdenter));
+        if (isNull(request.getSide())) {
+            request.setSide(1);
+        }
+
+        return Mono.from(openSearchConsumer.search(
+                        no.nav.testnav.dollysearchservice.dto.SearchRequest.builder()
+                                .query(
+                                        new org.opensearch.action.search.SearchRequest()
+                                                .indices("pdl-sok")
+                                                .source(new SearchSourceBuilder()
+                                                        .query(query)
+                                                        .from(request.getSide())
+                                                        .size(nonNull(request.getAntall()) ? request.getAntall() : 10)
+                                                        .timeout(new TimeValue(3, TimeUnit.SECONDS))))
+                                .request(request)
+                                .build()))
+                .map(this::formatResponse);
     }
 
-    private SearchResponse getIdenter(no.nav.testnav.dollysearchservice.dto.SearchResponse response) {
+    private SearchResponse formatResponse(no.nav.testnav.dollysearchservice.dto.SearchResponse response) {
 
         if (isNotBlank(response.getError())) {
             return SearchResponse.builder()
@@ -56,8 +66,9 @@ public class OpenSearchService {
         return SearchResponse.builder()
                 .took(response.getTook().toString())
                 .totalHits(response.getHits().getTotal().getValue())
-                .score(response.getHits().getMaxScore())
                 .antall(response.getHits().getHits().size())
+                .side(response.getRequest().getSide())
+                .seed(response.getRequest().getSeed())
                 .personer(response.getHits().getHits().stream()
                         .map(no.nav.testnav.dollysearchservice.dto.SearchResponse.SearchHit::get_source)
                         .map(person -> objectMapper.convertValue(person, JsonNode.class))

@@ -15,7 +15,6 @@ import java.util.List;
 public class SearchResponse {
 
     private Long totalHits;
-    private Float score;
     private String took;
     private Integer side;
     private Integer antall;
