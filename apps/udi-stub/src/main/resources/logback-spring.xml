@@ -3,8 +3,6 @@
     <springProfile name="prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
-                <addCauses>true</addCauses>
-                <maxStackTraceLength>-1</maxStackTraceLength>
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     

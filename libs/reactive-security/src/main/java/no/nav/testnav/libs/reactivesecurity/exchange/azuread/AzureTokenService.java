@@ -97,21 +97,4 @@ public class AzureTokenService implements TokenService {
                 token
         ).call();
     }
-
-    /**
-     * Replaces {@link AzureTokenService} in test profile.
-     */
-    public static class Test extends AzureTokenService {
-
-        public Test(AzureClientCredential clientCredential) {
-            super(null, clientCredential, null);
-        }
-
-        @Override
-        public Mono<AccessToken> exchange(ServerProperties serverProperties) {
-            return Mono.empty();
-        }
-
-    }
-
 }
