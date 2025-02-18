@@ -6,6 +6,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 
 interface Form {
 	data?: Array<MiljoDataListe>
+	ident: string
 	loading: boolean
 }
 
@@ -14,13 +15,13 @@ type MiljoDataListe = {
 	data: Array<Journalpost>
 }
 
-const Histark = ({ data }) => {
+const Histark = ({ data, ident }) => {
 	if (!data) return null
 
-	return <HistarkVisning dokument={data} />
+	return <HistarkVisning dokument={data} ident={ident} />
 }
 
-export default ({ data, loading }: Form) => {
+export default ({ data, loading, ident }: Form) => {
 	if (loading) {
 		return <Loading label="Laster dokument-data" />
 	}
@@ -33,11 +34,11 @@ export default ({ data, loading }: Form) => {
 		<>
 			<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
 			{data.length === 1 ? (
-				<Histark data={data[0]} />
+				<Histark data={data[0]} ident={ident} />
 			) : (
 				<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
 					{(dokument) => {
-						return <Histark data={dokument} />
+						return <Histark data={dokument} ident={ident} />
 					}}
 				</DollyFieldArray>
 			)}
