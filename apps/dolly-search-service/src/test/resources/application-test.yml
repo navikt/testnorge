@@ -1,8 +1,1 @@
 TOKEN_X_ISSUER: https://tokenx.dev-gcp.nav.cloud.nais.io
-
-open:
-  search:
-    uri: http://localhost:9200
-    username: dummy
-    password: dummy
-    index: local

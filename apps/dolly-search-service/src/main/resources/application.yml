@@ -4,11 +4,6 @@ spring:
   application:
     name: testnav-dolly-search-service
     description: Tjeneste for å søke etter Dolly-personer.
-  autoconfigure:
-    exclude:
-      org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticSearchReactiveHealthContributorAutoConfiguration,
-      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration,
-      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration
   security:
     oauth2:
       resourceserver:
@@ -34,9 +29,6 @@ consumers:
     cluster: dev-fss
 
 management:
-  health:
-    elasticsearch:
-      enabled: false
   endpoints:
     enabled-by-default: true
     web:
