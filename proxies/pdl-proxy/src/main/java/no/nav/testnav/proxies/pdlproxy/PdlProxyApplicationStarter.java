@@ -75,5 +75,4 @@ public class PdlProxyApplicationStarter {
                                 .map(AccessToken::getTokenValue));
         return createRoute(segment, host, filter);
     }
-
 }
