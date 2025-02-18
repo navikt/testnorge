@@ -40,4 +40,10 @@ public class GetAuthenticatedAutoConfiguration {
         return new GetAuthenticatedToken(getAuthenticatedResourceServerType);
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    GetAuthenticatedUserId getAuthenticatedUserId(GetAuthenticatedResourceServerType getAuthenticatedResourceServerType) {
+        return new GetAuthenticatedUserId(getAuthenticatedResourceServerType);
+    }
+
 }
