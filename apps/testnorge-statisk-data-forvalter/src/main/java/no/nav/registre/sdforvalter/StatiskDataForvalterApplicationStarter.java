@@ -11,8 +11,7 @@ public class StatiskDataForvalterApplicationStarter {
         new SpringApplicationBuilder(StatiskDataForvalterApplicationStarter.class)
                 .initializers(
                         new VaultTokenApplicationContextInitializer(),
-                        new NaisEnvironmentApplicationContextInitializer()
-                )
+                        new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
 }
