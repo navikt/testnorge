@@ -4,12 +4,17 @@ import { arrayToString } from '@/utils/DataFormatter'
 import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useFormContext } from 'react-hook-form'
 
 export const BestillingsveilederHeader = () => {
+	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
+
 	const importFra = opts.is.leggTil && opts.identMaster === 'PDL' ? 'Test-Norge' : undefined
-	const { gruppe } = useGruppeById(opts?.gruppeId || opts?.gruppe?.id)
+	const formGruppeId = formMethods.watch('gruppeId')
+
+	const { gruppe } = useGruppeById(opts?.gruppeId || opts?.gruppe?.id || formGruppeId)
 
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon || opts.is.nyOrganisasjonFraMal) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
@@ -49,7 +54,7 @@ export const BestillingsveilederHeader = () => {
 				{opts.is.leggTilPaaGruppe && (
 					<Header.TitleValue
 						title="Legg til på / endre alle personer"
-						value={`Gruppe #${opts?.gruppeId} - ${gruppe?.navn}`}
+						value={`Gruppe #${formGruppeId || opts?.gruppeId} - ${gruppe?.navn}`}
 					/>
 				)}
 				{importFra !== undefined && <Header.TitleValue title="Importert fra" value={importFra} />}

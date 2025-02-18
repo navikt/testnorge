@@ -17,6 +17,7 @@ import {
 	initialVergemaal,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
+import { useFormContext } from 'react-hook-form'
 
 const ignoreKeysTestnorge = [
 	'alder',
@@ -30,10 +31,12 @@ const utvandret = 'utvandretTilLand'
 
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
+	const formMethods = useFormContext()
 	const sm: any = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts: any = useContext(BestillingsveilederContext)
+	const formGruppeId = formMethods.watch('gruppeId')
 
-	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id || formGruppeId
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 

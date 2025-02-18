@@ -20,7 +20,7 @@ export const VelgGruppe = ({
 	const [valgtGruppe] = useState(formMethods.watch(`gruppeId`) || '')
 
 	useEffect(() => {
-		if (formMethods.getValues('gruppeId') !== valgtGruppe) {
+		if (formMethods.watch('gruppeId') !== valgtGruppe) {
 			formMethods.setValue('gruppeId', valgtGruppe)
 			formMethods.trigger('gruppeId')
 		}
