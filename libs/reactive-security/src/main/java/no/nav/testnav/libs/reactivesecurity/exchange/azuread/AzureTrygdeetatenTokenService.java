@@ -114,4 +114,20 @@ public class AzureTrygdeetatenTokenService implements TokenService {
                 .minusSeconds(300)
                 .isBefore(Instant.now());
     }
+
+    /**
+     * Replaces {@link AzureTrygdeetatenTokenService} in test profile.
+     */
+    public static class Test extends AzureTrygdeetatenTokenService {
+
+        public Test(AzureTrygdeetatenClientCredential clientCredential) {
+            super(null, clientCredential, null, null);
+        }
+
+        @Override
+        public Mono<AccessToken> exchange(ServerProperties serverProperties) {
+            return Mono.empty();
+        }
+    }
+
 }
