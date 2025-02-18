@@ -9,6 +9,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - "libs/testing/**"
       - "apps/dolly-search-service/**"
       - ".github/workflows/app.dolly-search-service.yml"
 
