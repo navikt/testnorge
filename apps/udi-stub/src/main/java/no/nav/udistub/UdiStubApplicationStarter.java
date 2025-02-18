@@ -11,7 +11,8 @@ public class UdiStubApplicationStarter {
         new SpringApplicationBuilder(UdiStubApplicationStarter.class)
                 .initializers(
                         new VaultTokenApplicationContextInitializer(),
-                        new NaisEnvironmentApplicationContextInitializer())
+                        new NaisEnvironmentApplicationContextInitializer()
+                )
                 .run(args);
     }
 }
