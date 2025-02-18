@@ -47,4 +47,5 @@ public class Consumers {
     private ServerProperties testnavSkattekortService;
     private ServerProperties yrkesskadeProxy;
     private ServerProperties arbeidssoekerregisteretProxy;
+    private ServerProperties dollySearchService;
 }
