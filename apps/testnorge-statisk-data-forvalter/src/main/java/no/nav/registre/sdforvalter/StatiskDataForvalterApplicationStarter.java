@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
+import no.nav.dolly.libs.vault.VaultTokenApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 

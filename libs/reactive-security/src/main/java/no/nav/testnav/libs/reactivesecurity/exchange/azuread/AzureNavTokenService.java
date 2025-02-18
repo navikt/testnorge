@@ -64,21 +64,4 @@ public class AzureNavTokenService implements TokenService {
         ).call();
 
     }
-
-    /**
-     * Replaces {@link AzureNavTokenService} in test profile.
-     */
-    public static class Test extends AzureNavTokenService {
-
-        public Test(AzureNavClientCredential clientCredential) {
-            super(null, clientCredential);
-        }
-
-        @Override
-        public Mono<AccessToken> exchange(ServerProperties serverProperties) {
-            return Mono.empty();
-        }
-
-    }
-
 }
