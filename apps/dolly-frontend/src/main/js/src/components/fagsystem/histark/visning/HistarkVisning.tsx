@@ -1,11 +1,11 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, formatDate } from '@/utils/DataFormatter'
 import Button from '@/components/ui/button/Button'
-import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 import JoarkDokumentService from '@/service/services/JoarkDokumentService'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 type HistarkDokument = {
-	ident: string
+	transaksjon: any
 	dokument: {
 		antallSider: number
 		enhetsNr: string
@@ -23,41 +23,43 @@ type HistarkDokument = {
 	}
 }
 
-export default ({ dokument, ident }: HistarkDokument) => {
-	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
-	const transaksjon = transaksjonsid?.[0]?.transaksjonId
+export default ({ dokument, transaksjon }: HistarkDokument) => {
 	if (!dokument) {
 		return null
 	}
 	return (
-		<div>
-			<div className="person-visning_content">
-				<TitleValue
-					title="Temakoder"
-					value={dokument?.temaKodeSet && arrayToString(dokument?.temaKodeSet)}
-				/>
-				<TitleValue title="Enhetsnavn" value={dokument.enhetsNavn} />
-				<TitleValue title="Enhetsnummer" value={dokument.enhetsNr} />
-				<TitleValue title="Startår" value={dokument.startaar} />
-				<TitleValue title="Sluttår" value={dokument.sluttaar} />
-				<TitleValue
-					title="Skanningstidspunkt"
-					value={dokument?.skanningstidspunkt && formatDate(dokument.skanningstidspunkt)}
-				/>
-				<TitleValue title="Skanner" value={dokument.skanner} />
-				<TitleValue title="Skannested" value={dokument.skannerSted} />
-				<TitleValue title="Filnavn" value={dokument.filnavn} />
-			</div>
-			{transaksjon?.map((transaksjon: { dokumentInfoId: number }) => (
-				<Button
-					key={transaksjon.dokumentInfoId}
-					className="flexbox--align-center csv-eksport-btn"
-					kind="file-new-table"
-					onClick={() => JoarkDokumentService.hentHistarkPDF(transaksjon.dokumentInfoId)}
-				>
-					HENT DOKUMENT #{transaksjon.dokumentInfoId}
-				</Button>
-			))}
+		<div className="person-visning_content">
+			<TitleValue
+				title="Temakoder"
+				value={dokument?.temaKodeSet && arrayToString(dokument?.temaKodeSet)}
+			/>
+			<TitleValue title="Enhetsnavn" value={dokument.enhetsNavn} />
+			<TitleValue title="Enhetsnummer" value={dokument.enhetsNr} />
+			<TitleValue title="Startår" value={dokument.startaar} />
+			<TitleValue title="Sluttår" value={dokument.sluttaar} />
+			<TitleValue
+				title="Skanningstidspunkt"
+				value={dokument?.skanningstidspunkt && formatDate(dokument.skanningstidspunkt)}
+			/>
+			<TitleValue title="Skanner" value={dokument.skanner} />
+			<TitleValue title="Skannested" value={dokument.skannerSted} />
+			<DollyFieldArray header={'Vedlegg'} data={[transaksjon]} nested>
+				{(transaksjon: { dokumentInfoId: number }, idx: number) => {
+					return (
+						<div key={idx} className="person-visning_content">
+							<TitleValue title="Filnavn" value={dokument.filnavn} />
+							<TitleValue title="Dokumentinfo-ID" value={transaksjon.dokumentInfoId} />
+							<Button
+								className="flexbox--align-center csv-eksport-btn"
+								kind="file-new-table"
+								onClick={() => JoarkDokumentService.hentHistarkPDF(transaksjon.dokumentInfoId)}
+							>
+								VIS PDF
+							</Button>
+						</div>
+					)
+				}}
+			</DollyFieldArray>
 		</div>
 	)
 }
