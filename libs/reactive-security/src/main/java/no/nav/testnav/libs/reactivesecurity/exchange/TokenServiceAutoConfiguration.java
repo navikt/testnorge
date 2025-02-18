@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.util.Assert;
 
 @AutoConfiguration(after = ClientCredentialAutoConfiguration.class)
 public class TokenServiceAutoConfiguration {
@@ -24,9 +25,10 @@ public class TokenServiceAutoConfiguration {
     @Bean
     @Profile("test")
     AzureTokenService azureAdTokenServiceTest(
-            AzureClientCredential clientCredential
+            AzureClientCredential clientCredential,
+            GetAuthenticatedToken getAuthenticatedToken
     ) {
-        return new AzureTokenService.Test(clientCredential);
+        return new AzureTokenService(null, clientCredential, getAuthenticatedToken);
     }
 
     @Bean
@@ -45,7 +47,7 @@ public class TokenServiceAutoConfiguration {
     AzureNavTokenService azureNavTokenServiceTest(
             AzureNavClientCredential azureNavClientCredential
     ) {
-        return new AzureNavTokenService.Test(azureNavClientCredential);
+        return new AzureNavTokenService(null, azureNavClientCredential);
     }
 
     @Bean
@@ -61,9 +63,11 @@ public class TokenServiceAutoConfiguration {
     @Bean
     @Profile("test")
     AzureTrygdeetatenTokenService trygdeetatenAzureAdTokenServiceTest(
-            AzureTrygdeetatenClientCredential clientCredential
+            AzureTrygdeetatenClientCredential clientCredential,
+            GetAuthenticatedUserId getAuthenticatedUserId,
+            ObjectMapper objectMapper
     ) {
-        return new AzureTrygdeetatenTokenService.Test(clientCredential);
+        return new AzureTrygdeetatenTokenService(null, clientCredential, getAuthenticatedUserId, objectMapper);
     }
 
     @Bean

@@ -27,7 +27,6 @@ dependencies {
 
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:vault"
-    implementation "no.nav.testnav.libs:testing"
 
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-web-services"
