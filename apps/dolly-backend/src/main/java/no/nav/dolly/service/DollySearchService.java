@@ -73,7 +73,7 @@ public class DollySearchService {
                         .map(map -> (List<String>) map.get("identer"))
                         .flatMap(Collection::stream)
                         .distinct()
-                        .limit(100)
+                        .limit(1000)
                         .toList())
                 .totalHits(getTotalHits(response.getHits()))
                 .took(response.getTook().getStringRep())
