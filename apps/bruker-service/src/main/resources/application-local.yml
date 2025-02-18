@@ -1,3 +1,5 @@
+CRYPTOGRAPHY_SECRET: dummy
+JWT_SECRET: dummy
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service-dev
 
 spring:
