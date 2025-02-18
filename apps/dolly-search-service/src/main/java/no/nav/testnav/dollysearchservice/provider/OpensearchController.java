@@ -18,8 +18,8 @@ public class OpensearchController {
 
     private final OpenSearchService openSearchService;
 
-    @PostMapping("/identer")
-    @Operation(description = "Henter identer som matcher søk i request, både registre og persondetaljer")
+    @PostMapping
+    @Operation(description = "Henter personer som matcher søk av persondetaljer i request")
     public Mono<SearchResponse> getIdenterMed(@RequestBody SearchRequest request) {
 
         return openSearchService.search(request);
