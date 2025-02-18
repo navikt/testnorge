@@ -1,12 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import ReactPaginate from 'react-paginate'
-import Icon from '@/components/ui/icon/Icon'
 import ItemCountSelect from './ItemCountSelect/ItemCountSelect'
 
-import './Pagination.less'
+import './DollyPagination.less'
 import { setSideStoerrelse, setSidetall } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
+import { Pagination } from '@navikt/ds-react'
 
 type PaginationProps = {
 	visSide?: number
@@ -16,11 +15,11 @@ type PaginationProps = {
 }
 const ITEM_PER_PAGE = 10
 
-export const Pagination = ({
+export const DollyPagination = ({
 	gruppeDetaljer: { antallElementer, antallPages, pageSize },
 	items,
 	render,
-	visSide = 0,
+	visSide = 1,
 }: PaginationProps) => {
 	const [currentPage, setCurrentPage] = useState(visSide)
 	const [currentPageSize, setCurrentPageSize] = useState(pageSize || ITEM_PER_PAGE)
@@ -33,10 +32,10 @@ export const Pagination = ({
 
 	const dispatch = useDispatch()
 
-	const pageChangeHandler = (event: { selected: number }) => {
+	const pageChangeHandler = (page: number) => {
 		location.state = null
-		dispatch(setSidetall(event.selected))
-		setCurrentPage(event.selected)
+		dispatch(setSidetall(page - 1))
+		setCurrentPage(page - 1)
 	}
 
 	const itemCountHandler = (event: { value: number }) => {
@@ -86,15 +85,12 @@ export const Pagination = ({
 					<span className="pagination-label">
 						Viser {startIndex}-{lastIndex > itemCount ? itemCount : lastIndex} av {itemCount}
 					</span>
-					<ReactPaginate
-						containerClassName="pagination-container"
-						forcePage={currentPage}
-						pageCount={pageCount}
-						pageRangeDisplayed={2}
-						marginPagesDisplayed={1}
+					<Pagination
+						style={{ marginTop: '5px' }}
+						page={currentPage + 1}
+						count={pageCount}
+						size={'xsmall'}
 						onPageChange={pageChangeHandler}
-						previousLabel={<Icon size={11} kind="arrow-left" />}
-						nextLabel={<Icon size={11} kind="arrow-right" />}
 					/>
 				</Fragment>
 			)}

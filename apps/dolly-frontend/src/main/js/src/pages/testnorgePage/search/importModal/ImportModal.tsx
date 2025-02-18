@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useToggle } from 'react-use'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import NavButton from '@/components/ui/button/NavButton/NavButton'

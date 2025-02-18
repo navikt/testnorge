@@ -31,7 +31,7 @@ import java.util.function.Function;
 @SpringBootApplication
 public class DokarkivProxyApplicationStarter {
 
-    private static final String[] miljoer = new String[]{"q1", "q2", "q4", "q5", "t3"};
+    private static final String[] miljoer = new String[]{"q1", "q2", "q4"};
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(DokarkivProxyApplicationStarter.class)

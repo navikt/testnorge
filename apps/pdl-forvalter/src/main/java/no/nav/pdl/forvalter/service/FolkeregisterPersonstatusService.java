@@ -147,13 +147,6 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                     personstatus.setGyldigFraOgMed(getBoadresseGyldigFraDato(person));
                 }
 
-            } else if (nonNull(person.getBostedsadresse().getFirst().getUkjentBosted())) {
-
-                if (isNotCurrentStatus(FOEDSELSREGISTRERT, person)) {
-                    personstatus.setStatus(FOEDSELSREGISTRERT);
-                    personstatus.setGyldigFraOgMed(getBoadresseGyldigFraDato(person));
-                }
-
             } else if (isNotCurrentStatus(BOSATT, person)) {
 
                 personstatus.setStatus(BOSATT);

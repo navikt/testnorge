@@ -7,8 +7,10 @@ import {
 	initialJobboensker,
 	initialJobboenskerVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
+import { useFormContext } from 'react-hook-form'
 
-export const JobboenskerForm = ({ formMethods }) => {
+export const JobboenskerForm = () => {
+	const formMethods = useFormContext()
 	const jobboenskerPath = 'arbeidsplassenCV.jobboensker'
 
 	const setYrker = (options) => {

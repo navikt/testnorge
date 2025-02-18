@@ -29,7 +29,7 @@ const pensjonsavtaleUrl = (miljoer) =>
 		miljo: miljo,
 	}))
 
-const tpUrl = (ident, miljoer) =>
+const tpForholdUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
 		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
@@ -124,7 +124,7 @@ export const useTpData = (ident, harTpBestilling) => {
 
 	const { data, isLoading, error } = useSWR<any, Error>(
 		[
-			harTpBestilling ? tpUrl(ident, pensjonEnvironments) : null,
+			harTpBestilling ? tpForholdUrl(ident, pensjonEnvironments) : null,
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
 		([url, headers]) => multiFetcherPensjon(url, headers),

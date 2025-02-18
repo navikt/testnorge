@@ -12,8 +12,10 @@ import * as _ from 'lodash-es'
 import { showLabel } from '@/utils/DataFormatter'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { useFormContext } from 'react-hook-form'
 
-export const KursForm = ({ formMethods }) => {
+export const KursForm = () => {
+	const formMethods = useFormContext()
 	const kursListePath = 'arbeidsplassenCV.kurs'
 
 	return (
@@ -28,13 +30,13 @@ export const KursForm = ({ formMethods }) => {
 									name={`${kursPath}.title`}
 									label="Kursnavn"
 									size="xlarge"
-									key={`title_${_.get(formMethods.getValues(), `${kursPath}.title`)}`}
+									key={`title_${formMethods.getValues(`${kursPath}.title`)}`}
 								/>
 								<FormTextInput
 									name={`${kursPath}.issuer`}
 									label="Kursholder"
 									size="xlarge"
-									key={`issuer_${_.get(formMethods.getValues(), `${kursPath}.issuer`)}`}
+									key={`issuer_${formMethods.getValues(`${kursPath}.issuer`)}`}
 								/>
 								<FormDatepicker name={`${kursPath}.date`} label="Fullført" />
 								<FormSelect
@@ -52,7 +54,7 @@ export const KursForm = ({ formMethods }) => {
 									}`}
 									size="small"
 									type="number"
-									key={`duration_${_.get(formMethods.getValues(), `${kursPath}.duration`)}`}
+									key={`duration_${formMethods.getValues(`${kursPath}.duration`)}`}
 								/>
 							</div>
 							<EraseFillButtons
