@@ -3,9 +3,10 @@ name: reactive-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-proxy/**"
-      - ".github/workflows/lib.reactive-proxy.yml"
+      - plugins/**
+      - libs/reactive-proxy/**
+      - .github/workflows/lib.reactive-proxy.yml
+      - libs/reactive-security/**
 
 jobs:
   workflow:

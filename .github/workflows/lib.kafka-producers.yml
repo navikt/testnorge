@@ -3,9 +3,11 @@ name: kafka-producers
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/kafka-producers/**"
-      - ".github/workflows/lib.kafka-producers.yml"
+      - .github/workflows/lib.kafka-producers.yml
+      - libs/avro-schema/**
+      - libs/kafka-config/**
+      - libs/kafka-producers/**
+      - plugins/**
 
 jobs:
   workflow:

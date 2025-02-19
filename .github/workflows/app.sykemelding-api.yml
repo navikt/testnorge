@@ -3,12 +3,16 @@ name: sykemelding-api
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/avro-schema/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/servlet-core/**"
-      - "apps/sykemelding-api/**"
-      - ".github/workflows/app.sykemelding-api.yml"
+      - .github/workflows/app.sykemelding-api.yml
+      - apps/sykemelding-api/**
+      - libs/avro-schema/**
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - plugins/**
 
 jobs:
   workflow:
