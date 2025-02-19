@@ -44,7 +44,7 @@ export default ({ data, loading, ident }: Form) => {
 						return (
 							<Histark
 								data={dokument}
-								transaksjon={transaksjoner?.[transaksjoner.length - 1 - idx]}
+								transaksjon={transaksjoner?.[idx]}
 							/>
 						)
 					}}
