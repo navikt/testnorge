@@ -96,11 +96,12 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        // Pensjonforvalter / POPP, AP, UT støtter pt ikke sletting
+        // Pensjonforvalter AP, UT støtter pt ikke sletting
 
         pensjonforvalterConsumer.sletteTpForhold(identer);
         pensjonforvalterConsumer.slettePensjonsavtale(identer);
         pensjonforvalterConsumer.sletteAfpOffentlig(identer);
+        pensjonforvalterConsumer.slettePoppinntekt(identer);
     }
 
     private String prepInitStatus(Set<String> miljoer) {
