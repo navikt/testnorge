@@ -2,11 +2,11 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'reactive-security'
+rootProject.name = "reactive-security"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../security-core'
+includeBuild "../../libs/security-core"
 
 develocity {
     buildScan {

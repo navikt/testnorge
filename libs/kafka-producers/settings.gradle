@@ -2,12 +2,12 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'kafka-producers'
+rootProject.name = "kafka-producers"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../kafka-config'
-includeBuild '../avro-schema'
+includeBuild "../../libs/kafka-config"
+includeBuild "../../libs/avro-schema"
 
 develocity {
     buildScan {

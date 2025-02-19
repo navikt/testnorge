@@ -2,11 +2,11 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'integration-test'
+rootProject.name = "integration-test"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../security-core'
+includeBuild "../../libs/security-core"
 
 develocity {
     buildScan {
