@@ -43,13 +43,6 @@ public class DollyFrontendApplicationStarter {
     private final AccessService accessService;
     private final UserJwtExchange userJwtExchange;
     private final Consumers consumers;
-
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(DollyFrontendApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
     private final GatewayFilter removeCookiesFilter = (exchange, chain) -> {
         ServerWebExchange modifiedExchange = exchange.mutate()
                 .request(r -> r.headers(headers -> headers.remove(HttpHeaders.COOKIE)))
@@ -106,6 +99,12 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavAltinn3TilgangService(), "testnav-altinn3-tilgang-service"))
                 .route(createRoute(consumers.getTestnavArbeidssoekerregisteretProxy()))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(DollyFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
