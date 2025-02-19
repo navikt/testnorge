@@ -1,10 +1,10 @@
 package no.nav.dolly.provider.api;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.opensearch.dto.SearchRequest;
+import no.nav.dolly.opensearch.dto.SearchResponse;
 import no.nav.dolly.elastic.ElasticTyper;
-import no.nav.dolly.service.DollySearchService;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchResponse;
+import no.nav.dolly.opensearch.service.DollySearchService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +23,7 @@ public class DollySearchController {
 
     @PostMapping
     public Mono<SearchResponse> searchPersoner(@RequestParam(required = false) List<ElasticTyper> registre,
-                                              @RequestBody SearchRequest request) {
+                                               @RequestBody SearchRequest request) {
 
         return dollySearchService.search(registre, request);
     }

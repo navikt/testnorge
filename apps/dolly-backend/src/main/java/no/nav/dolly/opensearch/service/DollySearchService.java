@@ -1,15 +1,19 @@
-package no.nav.dolly.service;
+package no.nav.dolly.opensearch.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.consumer.dollysearchservice.DollySearchServiceConsumer;
+import no.nav.dolly.opensearch.dto.SearchRequest;
+import no.nav.dolly.opensearch.dto.SearchResponse;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.service.OpenSearchQueryBuilder;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchResponse;
+import no.nav.dolly.mapper.MappingContextUtils;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -18,11 +22,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -30,28 +37,50 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class DollySearchService {
 
+    private static final Random SEED = new SecureRandom();
+
     private final RestHighLevelClient restHighLevelClient;
     private final DollySearchServiceConsumer dollySearchServiceConsumer;
+    private final MapperFacade mapperFacade;
 
     @Value("${open.search.index}")
     private String index;
 
     public Mono<SearchResponse> search(List<ElasticTyper> registre, SearchRequest request) {
 
+        var personRequest = mapperFacade.map(request, no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest.class);
+        var response = new SearchResponse();
+
         if (nonNull(registre)) {
-            var query = OpenSearchQueryBuilder.buildTyperQuery(registre.toArray(ElasticTyper[]::new));
-            var registreResultat = execQuery(query);
-            request.setIdenter(new HashSet<>(!registreResultat.getIdenter().isEmpty() ?
+            var registreResultat = execRegistreQuery(registre, request);
+
+            var context = MappingContextUtils.getMappingContext();
+            context.setProperty("registre", registre);
+            response.setRegistreSearchResponse(mapperFacade.map(registreResultat,
+                    SearchResponse.RegistreResponseStatus.class,
+                    context));
+
+            personRequest.setIdenter(new HashSet<>(!registreResultat.getIdenter().isEmpty() ?
                     registreResultat.getIdenter() : List.of("99999999999")));
         }
-        return dollySearchServiceConsumer.doPersonSearch(request);
+
+        return dollySearchServiceConsumer.doPersonSearch(personRequest)
+                .map(personResultat -> {
+                    response.setDollySearchResponse(personResultat);
+                    return response;
+                });
     }
 
-    private no.nav.dolly.elastic.dto.SearchResponse execQuery(BoolQueryBuilder query) {
+    private no.nav.dolly.elastic.dto.SearchResponse execRegistreQuery(List<ElasticTyper> registre, SearchRequest request) {
 
+        var query = buildTyperQuery(registre, request);
         var searchRequest = new org.opensearch.action.search.SearchRequest(index);
-        searchRequest.source(new SearchSourceBuilder().query(query)
-                .size(500));
+        searchRequest
+                .source(new SearchSourceBuilder().query(query)
+                        .size(isNull(request.getPagineringBestillingRequest().getAntall()) ?
+                                500 : request.getPagineringBestillingRequest().getAntall())
+                        .from(isNull(request.getPagineringBestillingRequest().getSide()) ?
+                                1 : request.getPagineringBestillingRequest().getSide()));
 
         try {
             var response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
@@ -81,10 +110,24 @@ public class DollySearchService {
                 .build();
     }
 
-    @SuppressWarnings("java:S2259")
     private static Long getTotalHits(SearchHits searchHits) {
 
         return nonNull(searchHits) && nonNull(searchHits.getTotalHits()) ?
                 searchHits.getTotalHits().value : null;
+    }
+
+    private static BoolQueryBuilder buildTyperQuery(List<ElasticTyper> typer, SearchRequest request) {
+
+        var queryBuilder = QueryBuilders.boolQuery()
+                .must(QueryBuilders.functionScoreQuery(
+                        new RandomScoreFunctionBuilder()
+                                .seed(isNull(request.getPagineringBestillingRequest().getSeed()) ?
+                                        SEED.nextInt() : request.getPagineringBestillingRequest().getSeed())));
+
+        typer.stream()
+                .map(OpenSearchQueryBuilder::getFagsystemQuery)
+                .forEach(queryBuilder::must);
+
+        return queryBuilder;
     }
 }
