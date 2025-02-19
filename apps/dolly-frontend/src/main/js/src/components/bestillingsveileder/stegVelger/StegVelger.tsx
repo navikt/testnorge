@@ -11,7 +11,10 @@ import {
 import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	ShowErrorContext,
 	ShowErrorContextType,
@@ -20,11 +23,12 @@ import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateCont
 import Loading from '@/components/ui/loading/Loading'
 import { DollyValidation } from '@/components/bestillingsveileder/stegVelger/steg/steg2/DollyValidation'
 import { lazyWithPreload } from '@/utils/lazyWithPreload'
+import Steg0 from './steg/steg0/Steg0'
+import Steg1 from './steg/steg1/Steg1'
+import Steg2 from './steg/steg2/Steg2'
+import Steg3 from './steg/steg3/Steg3'
 
-const Steg1 = lazyWithPreload(() => import('./steg/steg1/Steg1'))
-const Steg2 = lazyWithPreload(() => import('./steg/steg2/Steg2'))
-const Steg3 = lazyWithPreload(() => import('./steg/steg3/Steg3'))
-
+Steg0.label = 'Velg gruppe/mal'
 Steg1.label = 'Velg egenskaper'
 Steg2.label = 'Velg verdier'
 Steg3.label = 'Oppsummering'
@@ -32,7 +36,7 @@ Steg3.label = 'Oppsummering'
 const DisplayFormState = lazyWithPreload(() => import('@/utils/DisplayFormState'))
 const DisplayFormErrors = lazyWithPreload(() => import('@/utils/DisplayFormErrors'))
 
-const STEPS = [Steg1, Steg2, Steg3]
+let STEPS = [Steg0, Steg1, Steg2, Steg3]
 const manualMutateFields = ['manual.sykemelding.detaljertSykemelding']
 
 export const devEnabled =
@@ -40,8 +44,11 @@ export const devEnabled =
 	window.location.hostname.includes('dolly-frontend-dev')
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
-	const context: any = useContext(BestillingsveilederContext)
+	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	if (context.gruppeId) {
+		STEPS = STEPS.filter((step) => step !== Steg0)
+	}
 
 	const [formMutate, setFormMutate] = useState(() => null as any)
 	const [mutateLoading, setMutateLoading] = useState(false)
@@ -69,7 +76,12 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 			const errorFelter = Object.keys(formMethods.formState.errors)
 			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
 			const kunGruppeIdError = errorFelter.length === 1 && errorFelter[0] === 'gruppeId'
-			if (errorFelter.length > 0 && step === 1 && !kunEnvironmentError && !kunGruppeIdError) {
+			if (
+				errorFelter.length > 0 &&
+				STEPS[step] === Steg2 &&
+				!kunEnvironmentError &&
+				!kunGruppeIdError
+			) {
 				console.warn('Feil i form, stopper navigering videre')
 				console.error(formMethods.formState.errors)
 				errorContext?.setShowError(true)
@@ -80,7 +92,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	}
 
 	const handleNext = () => {
-		if (step === 1 && formMutate) {
+		if (STEPS[step] === Steg2 && formMutate) {
 			formMethods.clearErrors(manualMutateFields)
 			errorContext?.setShowError(true)
 			setMutateLoading(true)
@@ -139,7 +151,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 						</Stepper.Step>
 					))}
 				</Stepper>
-				<BestillingsveilederHeader />
+				<BestillingsveilederHeader context={context} formMethods={formMethods} />
 				<Suspense fallback={<Loading label="Laster komponenter" />}>
 					<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 				</Suspense>

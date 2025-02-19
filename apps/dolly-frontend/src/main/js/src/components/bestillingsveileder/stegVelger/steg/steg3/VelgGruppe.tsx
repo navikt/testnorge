@@ -8,6 +8,8 @@ type VelgGruppeProps = {
 	formMethods: UseFormReturn
 	title: string
 	fraGruppe?: number
+	gruppevalg: number
+	setGruppevalg: (gruppeValg: number) => void
 }
 
 export const VelgGruppe = ({
@@ -18,6 +20,7 @@ export const VelgGruppe = ({
 	setGruppevalg,
 }: VelgGruppeProps) => {
 	const [valgtGruppe] = useState(formMethods.watch(`gruppeId`) || '')
+	console.log('valgtGruppe: ', valgtGruppe) //TODO - SLETT MEG
 
 	useEffect(() => {
 		if (formMethods.watch('gruppeId') !== valgtGruppe) {

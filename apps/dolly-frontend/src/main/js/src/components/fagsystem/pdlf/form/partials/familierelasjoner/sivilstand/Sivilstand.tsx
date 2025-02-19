@@ -14,7 +14,10 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface SivilstandFormTypes {
@@ -53,7 +56,7 @@ export const SivilstandForm = ({
 		formMethods.trigger(path)
 	}
 
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const identMaster = opts?.identMaster || (parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF')
 
 	const isTestnorgeIdent = identMaster === 'PDL'
@@ -125,7 +128,9 @@ export const SivilstandForm = ({
 
 export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	// @ts-ignore
-	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const { identtype, identMaster } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const handleRemoveEntry = (idx: number) => {

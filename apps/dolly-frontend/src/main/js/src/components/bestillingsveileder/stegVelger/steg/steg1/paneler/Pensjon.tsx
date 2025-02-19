@@ -17,12 +17,15 @@ import { initialAfpOffentlig } from '@/components/fagsystem/afpOffentlig/initial
 import { avtalePath } from '@/components/fagsystem/pensjonsavtale/form/Form'
 import { afpOffentligPath } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { initialPensjonInntekt } from '@/components/fagsystem/pensjon/form/initialValues'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const harGyldigApBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
 		bestilling.status?.some(

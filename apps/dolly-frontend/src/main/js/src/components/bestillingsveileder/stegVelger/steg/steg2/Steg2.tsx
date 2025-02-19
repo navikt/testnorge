@@ -1,6 +1,9 @@
 import React, { lazy, Suspense, useContext, useEffect } from 'react'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
@@ -51,18 +54,18 @@ const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 }
 
 const Steg2 = () => {
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formMethods = useFormContext()
+	const gruppe = opts.gruppe
 
 	useEffect(() => {
-		if (opts.gruppe?.id) {
-			formMethods.setValue('gruppeId', opts.gruppe?.id)
+		if (gruppe?.id) {
+			formMethods.setValue('gruppeId', gruppe?.id)
 		}
 	}, [])
 
 	const leggTil = opts.is.leggTil
 	const importTestnorge = opts.is.importTestnorge
-	const gruppe = opts.gruppe
 
 	if (!harAvhukedeAttributter(formMethods.getValues())) {
 		return <Alert variant={'info'}>{getEmptyMessage(leggTil, importTestnorge, gruppe)}</Alert>
