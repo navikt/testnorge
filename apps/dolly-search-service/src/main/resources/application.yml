@@ -29,6 +29,9 @@ consumers:
     cluster: dev-fss
 
 management:
+  health:
+    elasticsearch:
+      enabled: false
   endpoints:
     enabled-by-default: true
     web:

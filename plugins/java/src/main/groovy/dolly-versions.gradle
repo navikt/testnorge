@@ -31,7 +31,7 @@ class DollyVersionCatalog {
     String logback = "8.0"
     String mq = "3.3.5"
     String okhttp = "4.12.0"
-    String opensearch = "1.6.0"
+    String opensearch = "1.6.1"
     String orika = "1.5.4"
     String reactorSpring = "1.0.1.RELEASE"
     String reactorTest = "3.7.1"
