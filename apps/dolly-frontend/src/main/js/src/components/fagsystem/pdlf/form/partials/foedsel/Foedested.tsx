@@ -31,7 +31,7 @@ export const FoedestedForm = ({ formMethods, path }: FoedestedTypes) => {
 			<FormSelect
 				name={`${path}.foedekommune`}
 				label="Fødekommune"
-				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
 				isDisabled={
 					formMethods.watch(`${path}.foedeland`) !== 'NOR' &&

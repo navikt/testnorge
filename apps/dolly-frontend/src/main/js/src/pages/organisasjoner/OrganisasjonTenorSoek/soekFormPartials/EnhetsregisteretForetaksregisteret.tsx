@@ -32,7 +32,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 			<FormSelect
 				name="forretningsadresse.kommunenummer"
 				label="Kommunenummer"
-				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				kodeverk={AdresseKodeverk.Kommunenummer}
 				size={'large'}
 				onChange={(val: Option) =>
 					handleChange(val?.value || null, 'forretningsadresse.kommunenummer')
