@@ -1,7 +1,7 @@
 spring:
   application:
     name: testnav-kodeverk-service
-    description: Tjeneste for å hente fra felles kodeverk.</br>Lagt til eget kodeverk, Kommuner2024, som henter Kommuner og fjerner gamle kommunenummere.
+    description: Tjeneste for å hente fra felles kodeverk.
   security:
     oauth2:
       resourceserver:

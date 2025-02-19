@@ -11,7 +11,7 @@ export const UkjentBosted = ({ path }: UkjentBostedValues) => {
 			<FormSelect
 				name={`${path}.bostedskommune`}
 				label="Bostedskommune"
-				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
 			/>
 		</div>
