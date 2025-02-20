@@ -27,7 +27,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class LagreAlderspensjonCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
     private static final String PENSJON_AP_VEDTAK_URL = "/api/v4/vedtak/ap";
-    private static final String PENSJON_AP_SOKNAD_URL = "/api/v3/vedtak/ap/soknad";
+    private static final String PENSJON_AP_SOKNAD_URL = "/api/v4/vedtak/ap/soknad";
 
     private final WebClient webClient;
 
