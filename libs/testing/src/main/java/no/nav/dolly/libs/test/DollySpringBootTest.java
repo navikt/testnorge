@@ -1,5 +1,6 @@
-package no.nav.dolly.libs.nais;
+package no.nav.dolly.libs.test;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.annotation.AliasFor;
