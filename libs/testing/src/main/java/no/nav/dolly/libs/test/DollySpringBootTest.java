@@ -26,6 +26,7 @@ public @interface DollySpringBootTest {
      * {@inheritDoc}
      * <p>Defaults to {@link SpringBootTest.WebEnvironment#RANDOM_PORT}.</p>
      */
+    @AliasFor(annotation = SpringBootTest.class, attribute = "webEnvironment")
     SpringBootTest.WebEnvironment webEnvironment() default SpringBootTest.WebEnvironment.RANDOM_PORT;
 
     /**
