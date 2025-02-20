@@ -3,35 +3,36 @@ package no.nav.dolly.libs.test;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.test.web.servlet.MockMvc;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 /**
  * Common test base for all tests that simply want to check the application context.
  * Also does a simple check to see if the application is alive and ready.
- * Note that this class is intentionally not annotated with {@link DollySpringBootTest}.
+ * Note that this class is intentionally not annotated with {@link DollySpringBootTest}, for readability.
  */
-@AutoConfigureMockMvc(addFilters = false)
 public class DollyApplicationContextTest {
 
     @Setter(onMethod_ = @Autowired)
-    private MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
     @Test
-    void isAlive() throws Exception {
-        mockMvc
-                .perform(get("/internal/isAlive"))
-                .andExpect(status().isOk());
+    void isAlive() {
+        webTestClient
+                .get()
+                .uri("/internal/isAlive")
+                .exchange()
+                .expectStatus()
+                .isOk();
     }
 
     @Test
-    void isReady() throws Exception {
-        mockMvc
-                .perform(get("/internal/isReady"))
-                .andExpect(status().isOk());
+    void isReady() {
+        webTestClient
+                .get()
+                .uri("/internal/isReady")
+                .exchange()
+                .expectStatus()
+                .isOk();
     }
 
 }
