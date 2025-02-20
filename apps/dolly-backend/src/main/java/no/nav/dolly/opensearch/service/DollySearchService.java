@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.consumer.dollysearchservice.DollySearchServiceConsumer;
-import no.nav.dolly.opensearch.dto.SearchRequest;
-import no.nav.dolly.opensearch.dto.SearchResponse;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.service.OpenSearchQueryBuilder;
 import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.opensearch.dto.SearchRequest;
+import no.nav.dolly.opensearch.dto.SearchResponse;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.index.query.BoolQueryBuilder;
@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -52,16 +51,8 @@ public class DollySearchService {
         var response = new SearchResponse();
 
         if (nonNull(registre)) {
-            var registreResultat = execRegistreQuery(registre, request);
 
-            var context = MappingContextUtils.getMappingContext();
-            context.setProperty("registre", registre);
-            response.setRegistreSearchResponse(mapperFacade.map(registreResultat,
-                    SearchResponse.RegistreResponseStatus.class,
-                    context));
-
-            personRequest.setIdenter(new HashSet<>(!registreResultat.getIdenter().isEmpty() ?
-                    registreResultat.getIdenter() : List.of("99999999999")));
+            response.setRegistreSearchResponse(execRegistreQuery(registre, request));
         }
 
         return dollySearchServiceConsumer.doPersonSearch(personRequest)
@@ -71,26 +62,43 @@ public class DollySearchService {
                 });
     }
 
-    private no.nav.dolly.elastic.dto.SearchResponse execRegistreQuery(List<ElasticTyper> registre, SearchRequest request) {
+    private SearchResponse.RegistreResponseStatus execRegistreQuery(List<ElasticTyper> registre, SearchRequest request) {
 
-        var query = buildTyperQuery(registre, request);
+        var side = isNull(request.getPagineringBestillingRequest().getSide()) ?
+                1 : request.getPagineringBestillingRequest().getSide();
+        var antall = isNull(request.getPagineringBestillingRequest().getAntall()) ?
+                500 : request.getPagineringBestillingRequest().getAntall();
+        var seed = isNull(request.getPagineringBestillingRequest().getSeed()) ?
+                SEED.nextInt() : request.getPagineringBestillingRequest().getSeed();
+
+        var query = buildTyperQuery(registre, seed);
         var searchRequest = new org.opensearch.action.search.SearchRequest(index);
         searchRequest
                 .source(new SearchSourceBuilder().query(query)
-                        .size(isNull(request.getPagineringBestillingRequest().getAntall()) ?
-                                500 : request.getPagineringBestillingRequest().getAntall())
-                        .from(isNull(request.getPagineringBestillingRequest().getSide()) ?
-                                1 : request.getPagineringBestillingRequest().getSide()));
+                        .size(antall)
+                        .from(side));
 
         try {
-            var response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-            return getIdenter(response);
+            var registerResultat = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+            var context = MappingContextUtils.getMappingContext();
+            context.setProperty("registre", registre);
+            context.setProperty("identer", getIdenter(registerResultat));
+
+            var response = mapperFacade.map(registerResultat,
+                    SearchResponse.RegistreResponseStatus.class,
+                    context);
+
+            response.setSide(side);
+            response.setAntall(antall);
+            response.setSeed(seed);
+
+            return response;
 
         } catch (IOException e) {
             log.error("OpenSearch feil ved utføring av søk: {}", e.getMessage(), e);
-            return no.nav.dolly.elastic.dto.SearchResponse.builder()
-                    .error(e.getLocalizedMessage())
-                    .build();
+            return SearchResponse.RegistreResponseStatus.builder()
+                            .error(e.getLocalizedMessage())
+                            .build();
         }
     }
 
@@ -116,13 +124,11 @@ public class DollySearchService {
                 searchHits.getTotalHits().value : null;
     }
 
-    private static BoolQueryBuilder buildTyperQuery(List<ElasticTyper> typer, SearchRequest request) {
+    private static BoolQueryBuilder buildTyperQuery(List<ElasticTyper> typer, Integer seed) {
 
         var queryBuilder = QueryBuilders.boolQuery()
                 .must(QueryBuilders.functionScoreQuery(
-                        new RandomScoreFunctionBuilder()
-                                .seed(isNull(request.getPagineringBestillingRequest().getSeed()) ?
-                                        SEED.nextInt() : request.getPagineringBestillingRequest().getSeed())));
+                        new RandomScoreFunctionBuilder().seed(seed)));
 
         typer.stream()
                 .map(OpenSearchQueryBuilder::getFagsystemQuery)
