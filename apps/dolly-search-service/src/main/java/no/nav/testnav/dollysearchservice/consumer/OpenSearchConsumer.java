@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.config.Consumers;
 import no.nav.testnav.dollysearchservice.consumer.command.OpenSearchCommand;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import no.nav.testnav.dollysearchservice.dto.SearchResponse;
+import no.nav.testnav.dollysearchservice.dto.OpenSearchResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -39,7 +39,7 @@ public class OpenSearchConsumer {
     }
 
     @SneakyThrows
-    public Flux<SearchResponse> search(SearchRequest request) {
+    public Flux<OpenSearchResponse> search(SearchRequest request) {
         return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token ->
                         new OpenSearchCommand(webClient, request.getQuery().indices()[0],
