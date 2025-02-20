@@ -44,21 +44,19 @@ export default ({ dokument, transaksjon }: HistarkDokument) => {
 			<TitleValue title="Skanner" value={dokument.skanner} />
 			<TitleValue title="Skannested" value={dokument.skannerSted} />
 			<DollyFieldArray header={'Vedlegg'} data={[transaksjon]} nested>
-				{(transaksjon: { dokumentInfoId: number }, idx: number) => {
-					return (
-						<div key={idx} className="person-visning_content">
-							<TitleValue title="Filnavn" value={dokument.filnavn} />
-							<TitleValue title="Dokumentinfo-ID" value={transaksjon.dokumentInfoId} />
-							<Button
-								className="flexbox--align-center csv-eksport-btn"
-								kind="file-new-table"
-								onClick={() => JoarkDokumentService.hentHistarkPDF(transaksjon.dokumentInfoId)}
-							>
-								VIS PDF
-							</Button>
-						</div>
-					)
-				}}
+				{(transaksjon: { dokumentInfoId: number }, idx: number) => (
+					<div key={idx} className="person-visning_content">
+						<TitleValue title="Filnavn" value={dokument.filnavn} />
+						<TitleValue title="Dokumentinfo-ID" value={transaksjon.dokumentInfoId} />
+						<Button
+							className="flexbox--align-center csv-eksport-btn"
+							kind="file-new-table"
+							onClick={() => JoarkDokumentService.hentHistarkPDF(transaksjon.dokumentInfoId)}
+						>
+							VIS PDF
+						</Button>
+					</div>
+				)}
 			</DollyFieldArray>
 		</div>
 	)

@@ -24,7 +24,6 @@ const Histark = ({ data, transaksjon }) => {
 
 export default ({ data, loading, ident }: Form) => {
 	const { transaksjonsid, loading: loadingTransaksjon } = useTransaksjonsid('HISTARK', ident)
-	const transaksjoner = transaksjonsid?.[0]?.transaksjonId
 	if (loading || loadingTransaksjon) {
 		return <Loading label="Laster dokument-data" />
 	}
@@ -33,23 +32,20 @@ export default ({ data, loading, ident }: Form) => {
 		return null
 	}
 
-	return (
-		<>
-			<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
-			{data.length === 1 ? (
-				<Histark data={data[0]} transaksjon={transaksjoner?.[0]} />
-			) : (
-				<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
-					{(dokument, idx) => {
-						return (
-							<Histark
-								data={dokument}
-								transaksjon={transaksjoner?.[idx]}
-							/>
-						)
-					}}
-				</DollyFieldArray>
-			)}
-		</>
-	)
+	return transaksjonsid.map((transaksjon) => {
+		return (
+			<>
+				<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
+				{data.length === 1 ? (
+					<Histark data={data[0]} transaksjon={transaksjon?.transaksjonId?.[0]} />
+				) : (
+					<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
+						{(dokument, idx) => {
+							return <Histark data={dokument} transaksjon={transaksjon?.transaksjonId?.[idx]} />
+						}}
+					</DollyFieldArray>
+				)}
+			</>
+		)
+	})
 }
