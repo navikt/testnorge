@@ -1,7 +1,7 @@
 import * as React from 'react'
 // @ts-ignore
-import './Forbedring.less'
-import { ForbedringModal } from '@/components/feedback/ForbedringModal'
+import './Kontaktinfo.less'
+import { KontaktModal } from '@/components/feedback/KontaktModal'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -10,7 +10,7 @@ import { Popover } from '@navikt/ds-react'
 import { useRef, useState } from 'react'
 import { KontaktinfoPanel } from '@/components/feedback/KontaktinfoPanel'
 
-export const Forbedring = () => {
+export const Kontaktinfo = () => {
 	const buttonRef = useRef<HTMLButtonElement>(null)
 	const [openState, setOpenState] = useState(false)
 	const [isKontaktskjemaOpen, openKontaktskjema, closeKontaktskjema] = useBoolean(false)
@@ -36,7 +36,7 @@ export const Forbedring = () => {
 			>
 				<KontaktinfoPanel setOpenState={setOpenState} openKontaktskjema={openKontaktskjema} />
 			</Popover>
-			{isKontaktskjemaOpen && <ForbedringModal closeModal={closeKontaktskjema} />}
+			{isKontaktskjemaOpen && <KontaktModal closeModal={closeKontaktskjema} />}
 		</ErrorBoundary>
 	)
 }

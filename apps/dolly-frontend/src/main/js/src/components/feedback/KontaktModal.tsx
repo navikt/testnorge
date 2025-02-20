@@ -12,19 +12,19 @@ import { Textarea } from '@navikt/ds-react'
 import { Logger } from '@/logger/Logger'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
-export const ForbedringModal = ({ closeModal }) => {
+export const KontaktModal = ({ closeModal }) => {
 	const { brukerBilde } = useBrukerProfilBilde()
 	const { currentBruker } = useCurrentBruker()
 
 	const MAX_LENGTH = 2000
 	const [uuid] = useState(_uuid())
-	const [forbedring, setForbedring] = useState('')
+	const [melding, setMelding] = useState('')
 	const [isAnonym, toggleAnonym] = useToggle(false)
 
-	const sendForbedring = () => {
+	const sendMelding = () => {
 		Logger.log({
-			event: `Ønsket forbedring fra Dollybruker`,
-			message: forbedring,
+			event: `Melding fra Dollybruker`,
+			message: melding,
 			uuid: uuid,
 			isAnonym: isAnonym,
 			brukerType: currentBruker.brukertype,
@@ -35,13 +35,16 @@ export const ForbedringModal = ({ closeModal }) => {
 	return (
 		<ErrorBoundary>
 			<DollyModal isOpen closeModal={closeModal} width="70%">
-				<h1>Ønske om forbedring eller ny funksjonalitet</h1>
+				<h1>Kontakt team Dolly</h1>
 				<br />
+				<p style={{ fontSize: '1.125rem', margin: '5px 0 25px 0' }}>
+					Her kan du sende oss tilbakemeldinger, komme med ønsker eller forslag til ny
+					funksjonalitet, eller melde fra om feil og mangler. NB! Om du ønsker svar på meldingen kan
+					du ikke velge å være anonym.
+				</p>
 				<div className="modal-content">
 					{isAnonym ? (
-						<div>
-							<Icon kind="user" fontSize={'2rem'} className="bruker-ikon" />
-						</div>
+						<Icon kind="user" className="bruker-ikon" />
 					) : (
 						<img alt="Profilbilde" src={brukerBilde || dolly} />
 					)}
@@ -49,12 +52,12 @@ export const ForbedringModal = ({ closeModal }) => {
 					<div className="modal-input">
 						<Textarea
 							data-testid={TestComponentSelectors.INPUT_FORBEDRING_MODAL}
-							value={forbedring}
-							label={'Forbedring/funksjonalitet'}
+							value={melding}
+							label={'Melding'}
 							placeholder={'Forsøk å være så spesifikk som mulig'}
 							maxLength={MAX_LENGTH}
-							onChange={(event) => setForbedring(event.target.value)}
-							error={forbedring.length > MAX_LENGTH && 'Tilbakemelding inneholder for mange tegn'}
+							onChange={(event) => setMelding(event.target.value)}
+							error={melding.length > MAX_LENGTH && 'Meldingen inneholder for mange tegn'}
 						/>
 						<div className="skjemaelement textarea__container">
 							<DollyCheckbox
@@ -67,9 +70,9 @@ export const ForbedringModal = ({ closeModal }) => {
 				</div>
 				<ModalActionKnapper
 					data-testid={TestComponentSelectors.BUTTON_SEND_FORBEDRINGSOENSKE}
-					submitknapp="Send ønske"
-					disabled={forbedring === '' || forbedring.length > MAX_LENGTH}
-					onSubmit={sendForbedring}
+					submitknapp="Send melding"
+					disabled={melding === '' || melding.length > MAX_LENGTH}
+					onSubmit={sendMelding}
 					onAvbryt={closeModal}
 					center
 				/>
