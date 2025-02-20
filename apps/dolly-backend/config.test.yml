@@ -22,6 +22,7 @@ spec:
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-batch-bestilling-service
+        - application: testnav-dolly-search-service
         - application: testnav-dollystatus
         - application: testnav-oversikt-frontend
         - application: testnav-tenor-search-service

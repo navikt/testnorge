@@ -24,6 +24,9 @@ spec:
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
     outbound:
+      rules:
+        - application: dolly-backend
+        - application: dolly-backend-dev
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   liveness:
