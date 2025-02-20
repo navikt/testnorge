@@ -5,7 +5,7 @@ import JoarkDokumentService from '@/service/services/JoarkDokumentService'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 type HistarkDokument = {
-	transaksjon: any
+	dokumentInfoId: any
 	dokument: {
 		antallSider: number
 		enhetsNr: string
@@ -23,7 +23,7 @@ type HistarkDokument = {
 	}
 }
 
-export default ({ dokument, transaksjon }: HistarkDokument) => {
+export default ({ dokument, dokumentInfoId }: HistarkDokument) => {
 	if (!dokument) {
 		return null
 	}
@@ -43,15 +43,15 @@ export default ({ dokument, transaksjon }: HistarkDokument) => {
 			/>
 			<TitleValue title="Skanner" value={dokument.skanner} />
 			<TitleValue title="Skannested" value={dokument.skannerSted} />
-			<DollyFieldArray header={'Vedlegg'} data={[transaksjon]} nested>
-				{(transaksjon: { dokumentInfoId: number }, idx: number) => (
+			<DollyFieldArray header={'Vedlegg'} data={[dokumentInfoId]} nested>
+				{(dokumentInfoId: number, idx: number) => (
 					<div key={idx} className="person-visning_content">
 						<TitleValue title="Filnavn" value={dokument.filnavn} />
-						<TitleValue title="Dokumentinfo-ID" value={transaksjon.dokumentInfoId} />
+						<TitleValue title="Dokumentinfo-ID" value={dokumentInfoId} />
 						<Button
 							className="flexbox--align-center csv-eksport-btn"
 							kind="file-new-table"
-							onClick={() => JoarkDokumentService.hentHistarkPDF(transaksjon.dokumentInfoId)}
+							onClick={() => JoarkDokumentService.hentHistarkPDF(dokumentInfoId)}
 						>
 							VIS PDF
 						</Button>

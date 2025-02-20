@@ -16,14 +16,21 @@ type MiljoDataListe = {
 	data: Array<Journalpost>
 }
 
-const Histark = ({ data, transaksjon }) => {
+const Histark = ({ data, dokumentInfoId }) => {
 	if (!data) return null
 
-	return <HistarkVisning dokument={data} transaksjon={transaksjon} />
+	return <HistarkVisning dokument={data} dokumentInfoId={dokumentInfoId} />
 }
 
 export default ({ data, loading, ident }: Form) => {
 	const { transaksjonsid, loading: loadingTransaksjon } = useTransaksjonsid('HISTARK', ident)
+	let dokumentInfoIder: number[] = []
+	transaksjonsid?.forEach((transaksjon) =>
+		transaksjon?.transaksjonId.forEach((indreTransaksjon) =>
+			dokumentInfoIder.push(indreTransaksjon.dokumentInfoId),
+		),
+	)
+
 	if (loading || loadingTransaksjon) {
 		return <Loading label="Laster dokument-data" />
 	}
@@ -32,20 +39,18 @@ export default ({ data, loading, ident }: Form) => {
 		return null
 	}
 
-	return transaksjonsid.map((transaksjon) => {
-		return (
-			<>
-				<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
-				{data.length === 1 ? (
-					<Histark data={data[0]} transaksjon={transaksjon?.transaksjonId?.[0]} />
-				) : (
-					<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
-						{(dokument, idx) => {
-							return <Histark data={dokument} transaksjon={transaksjon?.transaksjonId?.[idx]} />
-						}}
-					</DollyFieldArray>
-				)}
-			</>
-		)
-	})
+	return (
+		<>
+			<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
+			{data.length === 1 ? (
+				<Histark data={data[0]} dokumentInfoId={dokumentInfoIder?.[0]} />
+			) : (
+				<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
+					{(dokument, idx) => {
+						return <Histark data={dokument} dokumentInfoId={dokumentInfoIder?.[idx]} />
+					}}
+				</DollyFieldArray>
+			)}
+		</>
+	)
 }
