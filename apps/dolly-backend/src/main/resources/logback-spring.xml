@@ -5,7 +5,7 @@
             <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
                 <maxStackTraceLength>-1</maxStackTraceLength>
                 <addCauses>true</addCauses>
-                <stackTraceIncludePrefix>-</stackTraceIncludePrefix>
+<!--                <stackTraceIncludePrefix>-</stackTraceIncludePrefix>-->
 <!--                <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">-->
 <!--                    <rootCauseFirst>true</rootCauseFirst>-->
 <!--                    -->
