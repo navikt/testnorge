@@ -8,11 +8,8 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.vault.config.VaultAutoConfiguration;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.vault.core.VaultTemplate;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
 import org.springframework.vault.core.lease.domain.RequestedSecret;
@@ -20,17 +17,10 @@ import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;
 
 @AutoConfiguration
 @ConditionalOnProperty("spring.cloud.vault.database.enabled")
-@EnableConfigurationProperties({ // Required to avoid IntellJ warnings, as it isn't smart enough to resolve the resulting application context.
-        DataSourceProperties.class,
-        VaultDatabaseProperties.class
-})
-@Import({ // Required to avoid IntellJ warnings, as it isn't smart enough to resolve the resulting application context.
-        HikariDataSource.class,
-        SecretLeaseContainer.class,
-        VaultAutoConfiguration.class
-})
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+//@EnableConfigurationProperties({ // Required to avoid IntellJ warnings, as it isn't smart enough to resolve the resulting application context.
 public class VaultDatabaseAutoConfiguration implements InitializingBean {
 
     private final DataSourceProperties dataSourceProperties;
