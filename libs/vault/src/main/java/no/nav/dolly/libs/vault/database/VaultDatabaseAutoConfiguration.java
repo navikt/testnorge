@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.vault.core.VaultTemplate;
@@ -18,14 +19,24 @@ import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;
 @AutoConfiguration
 @ConditionalOnProperty("spring.cloud.vault.database.enabled")
 @RequiredArgsConstructor
+@EnableConfigurationProperties({
+        DataSourceProperties.class,
+        VaultDatabaseProperties.class
+})
 @Slf4j
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class VaultDatabaseAutoConfiguration implements InitializingBean {
 
     private final DataSourceProperties dataSourceProperties;
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final HikariDataSource dataSource;
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final SecretLeaseContainer container;
+
     private final VaultDatabaseProperties vaultDatabaseProperties;
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final VaultTemplate vault;
 
     /**
