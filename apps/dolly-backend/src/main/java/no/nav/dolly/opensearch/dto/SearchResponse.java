@@ -25,7 +25,7 @@ public class SearchResponse {
     public static class RegistreResponseStatus {
 
         private Long totalHitsBestillinger;
-        private Integer score;
+        private Float score;
         private String took;
         private Integer antall;
         private Integer side;

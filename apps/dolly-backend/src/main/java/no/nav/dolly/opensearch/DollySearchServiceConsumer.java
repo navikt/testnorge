@@ -1,8 +1,8 @@
-package no.nav.dolly.consumer.dollysearchservice;
+package no.nav.dolly.opensearch;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.Consumers;
-import no.nav.dolly.consumer.dollysearchservice.command.DollySearchServicePostCommand;
+import no.nav.dolly.opensearch.command.DollySearchServicePostCommand;
 import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.data.dollysearchservice.v1.SearchResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;

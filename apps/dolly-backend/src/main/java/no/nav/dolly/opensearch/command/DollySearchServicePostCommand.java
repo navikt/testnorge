@@ -1,4 +1,4 @@
-package no.nav.dolly.consumer.dollysearchservice.command;
+package no.nav.dolly.opensearch.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;

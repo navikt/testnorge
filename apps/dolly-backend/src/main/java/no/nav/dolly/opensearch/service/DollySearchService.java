@@ -3,10 +3,9 @@ package no.nav.dolly.opensearch.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.consumer.dollysearchservice.DollySearchServiceConsumer;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.service.OpenSearchQueryBuilder;
-import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.opensearch.DollySearchServiceConsumer;
 import no.nav.dolly.opensearch.dto.SearchRequest;
 import no.nav.dolly.opensearch.dto.SearchResponse;
 import org.opensearch.client.RequestOptions;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -52,12 +52,16 @@ public class DollySearchService {
 
         if (nonNull(registre)) {
 
-            response.setRegistreSearchResponse(execRegistreQuery(registre, request));
+            var registreResponse = execRegistreQuery(registre, request);
+            response.setRegistreSearchResponse(registreResponse);
+            personRequest.setIdenter(new HashSet<>(!registreResponse.getIdenter().isEmpty() ?
+                    registreResponse.getIdenter() : List.of("99999999999")));
         }
 
         return dollySearchServiceConsumer.doPersonSearch(personRequest)
                 .map(personResultat -> {
                     response.setDollySearchResponse(personResultat);
+                    response.getRegistreSearchResponse().setIdenter(null);
                     return response;
                 });
     }
@@ -80,19 +84,13 @@ public class DollySearchService {
 
         try {
             var registerResultat = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-            var context = MappingContextUtils.getMappingContext();
-            context.setProperty("registre", registre);
-            context.setProperty("identer", getIdenter(registerResultat));
+            var registreResponse = getIdenter(registerResultat);
+            registreResponse.setRegistre(registre);
+            registreResponse.setSide(side);
+            registreResponse.setAntall(antall);
+            registreResponse.setSeed(seed);
 
-            var response = mapperFacade.map(registerResultat,
-                    SearchResponse.RegistreResponseStatus.class,
-                    context);
-
-            response.setSide(side);
-            response.setAntall(antall);
-            response.setSeed(seed);
-
-            return response;
+            return registreResponse;
 
         } catch (IOException e) {
             log.error("OpenSearch feil ved utføring av søk: {}", e.getMessage(), e);
@@ -102,18 +100,20 @@ public class DollySearchService {
         }
     }
 
-    private static no.nav.dolly.elastic.dto.SearchResponse getIdenter(org.opensearch.action.search.SearchResponse response) {
+    private static SearchResponse.RegistreResponseStatus getIdenter(org.opensearch.action.search.SearchResponse response) {
 
-        return no.nav.dolly.elastic.dto.SearchResponse.builder()
-                .identer(Arrays.stream(response.getHits().getHits())
-                        .map(SearchHit::getSourceAsMap)
-                        .map(map -> (List<String>) map.get("identer"))
-                        .flatMap(Collection::stream)
-                        .distinct()
-                        .limit(1000)
-                        .toList())
-                .totalHits(getTotalHits(response.getHits()))
+        var identer = Arrays.stream(response.getHits().getHits())
+                .map(SearchHit::getSourceAsMap)
+                .map(map -> (List<String>) map.get("identer"))
+                .flatMap(Collection::stream)
+                .distinct()
+                .limit(1000)
+                .toList();
+        return SearchResponse.RegistreResponseStatus.builder()
+                .identer(identer)
+                .totalHitsBestillinger(getTotalHits(response.getHits()))
                 .took(response.getTook().getStringRep())
+                .antallIdenter(identer.size())
                 .score(response.getHits().getMaxScore())
                 .build();
     }
