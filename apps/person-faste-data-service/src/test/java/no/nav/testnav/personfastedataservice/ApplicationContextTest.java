@@ -1,16 +1,6 @@
 package no.nav.testnav.personfastedataservice;
 
-import no.nav.dolly.libs.nais.DollySpringBootTest;
-import org.junit.jupiter.api.Test;
+import no.nav.dolly.libs.test.DollyApplicationContextTest;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-@DollySpringBootTest
-class ApplicationContextTest {
-
-    @Test
-    void load_app_context() {
-        assertThat(true).isTrue();
-    }
-
+class ApplicationContextTest extends DollyApplicationContextTest {
 }

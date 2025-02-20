@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.jenkinsbatchstatusservice;
+package no.nav.testnav.levendearbeidsforholdscheduler;
 
 import no.nav.dolly.libs.test.DollyApplicationContextTest;
 
