@@ -9,7 +9,7 @@ import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import org.junit.jupiter.api.AfterEach;

@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.aareg;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;

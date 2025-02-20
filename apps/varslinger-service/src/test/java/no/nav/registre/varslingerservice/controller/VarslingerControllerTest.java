@@ -3,7 +3,7 @@ package no.nav.registre.varslingerservice.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.varslingerservice.repository.VarslingRepository;
 import no.nav.registre.varslingerservice.repository.model.VarslingModel;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

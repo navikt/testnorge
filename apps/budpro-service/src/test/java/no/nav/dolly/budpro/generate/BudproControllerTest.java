@@ -3,7 +3,7 @@ package no.nav.dolly.budpro.generate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.budpro.navn.GeneratedNameService;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
