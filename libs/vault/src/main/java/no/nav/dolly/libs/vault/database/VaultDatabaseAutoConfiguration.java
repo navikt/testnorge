@@ -7,9 +7,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.vault.config.VaultAutoConfiguration;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.vault.core.VaultTemplate;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
 import org.springframework.vault.core.lease.domain.RequestedSecret;
@@ -17,26 +20,33 @@ import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;
 
 @AutoConfiguration
 @ConditionalOnProperty("spring.cloud.vault.database.enabled")
-@EnableConfigurationProperties(VaultDatabaseProperties.class)
+@EnableConfigurationProperties({ // Required to avoid IntellJ warnings, as it isn't smart enough to resolve the resulting application context.
+        DataSourceProperties.class,
+        VaultDatabaseProperties.class
+})
+@Import({ // Required to avoid IntellJ warnings, as it isn't smart enough to resolve the resulting application context.
+        HikariDataSource.class,
+        SecretLeaseContainer.class,
+        VaultAutoConfiguration.class
+})
 @RequiredArgsConstructor
 @Slf4j
 public class VaultDatabaseAutoConfiguration implements InitializingBean {
 
-    private final VaultDatabaseProperties config;
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    private final DataSourceProperties dataSourceProperties;
     private final HikariDataSource dataSource;
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final SecretLeaseContainer container;
+    private final VaultDatabaseProperties vaultDatabaseProperties;
+    private final VaultTemplate vault;
 
     /**
      * Setup a rotating lease for the database credentials in Vault.
+     * Not configurable as a bean.
      */
     @Override
     public void afterPropertiesSet() {
 
-        var secret = RequestedSecret.rotating(config.getBackend() + "/creds/" + config.getRole());
+        var secret = RequestedSecret.rotating(vaultDatabaseProperties.getBackend() + "/creds/" + vaultDatabaseProperties.getRole());
         log.info("Setup vault lease for {}", secret);
         container
                 .addLeaseListener(
@@ -59,8 +69,8 @@ public class VaultDatabaseAutoConfiguration implements InitializingBean {
     }
 
     @Bean
-    FlywayConfigurationCustomizer flywayConfigurationCustomizer(VaultTemplate vault) {
-        return new VaultFlywayConfigurationCustomizer(vault, config);
+    FlywayConfigurationCustomizer flywayConfigurationCustomizer() {
+        return new VaultFlywayConfigurationCustomizer(vault, dataSourceProperties, vaultDatabaseProperties);
     }
 
 }
