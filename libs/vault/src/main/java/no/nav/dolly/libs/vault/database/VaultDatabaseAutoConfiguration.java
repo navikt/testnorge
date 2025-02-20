@@ -20,7 +20,6 @@ import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;
 @RequiredArgsConstructor
 @Slf4j
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-//@EnableConfigurationProperties({ // Required to avoid IntellJ warnings, as it isn't smart enough to resolve the resulting application context.
 public class VaultDatabaseAutoConfiguration implements InitializingBean {
 
     private final DataSourceProperties dataSourceProperties;
