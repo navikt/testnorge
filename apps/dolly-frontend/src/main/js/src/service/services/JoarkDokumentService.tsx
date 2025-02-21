@@ -80,8 +80,29 @@ const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): 
 			console.error(error)
 		})
 
+const hentHistarkPDF = (dokumentInfoId: number): any =>
+	api
+		.fetch(`/testnav-histark-proxy/api/saksmapper/${dokumentInfoId}/pdf`, {
+			method: 'GET',
+			headers: {
+				Accept: 'application/pdf',
+				'Content-Type': 'application/pdf',
+			},
+		})
+		.then((response) => {
+			return response.blob()
+		})
+		.then((resp) => {
+			const fileURL = URL.createObjectURL(resp)
+			window.open(fileURL)
+		})
+		.catch((error) => {
+			console.error(error)
+		})
+
 export default {
 	hentJournalpost,
 	hentDokument,
 	hentPDF,
+	hentHistarkPDF,
 }
