@@ -114,6 +114,7 @@ public class DollySearchService {
                 .build();
     }
 
+    @SuppressWarnings("java:S2259")
     private static Long getTotalHits(SearchHits searchHits) {
 
         return nonNull(searchHits) && nonNull(searchHits.getTotalHits()) ?
