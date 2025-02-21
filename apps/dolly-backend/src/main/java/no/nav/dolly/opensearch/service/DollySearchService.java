@@ -50,13 +50,10 @@ public class DollySearchService {
         var personRequest = mapperFacade.map(request, no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest.class);
         var response = new SearchResponse();
 
-        if (nonNull(registre)) {
-
-            var registreResponse = execRegistreQuery(registre, request);
-            response.setRegistreSearchResponse(registreResponse);
-            personRequest.setIdenter(new HashSet<>(!registreResponse.getIdenter().isEmpty() ?
-                    registreResponse.getIdenter() : List.of("99999999999")));
-        }
+        var registreResponse = execRegistreQuery(registre, request);
+        response.setRegistreSearchResponse(registreResponse);
+        personRequest.setIdenter(new HashSet<>(!registreResponse.getIdenter().isEmpty() ?
+                registreResponse.getIdenter() : List.of("99999999999")));
 
         return dollySearchServiceConsumer.doPersonSearch(personRequest)
                 .map(personResultat -> {
@@ -95,8 +92,8 @@ public class DollySearchService {
         } catch (IOException e) {
             log.error("OpenSearch feil ved utføring av søk: {}", e.getMessage(), e);
             return SearchResponse.RegistreResponseStatus.builder()
-                            .error(e.getLocalizedMessage())
-                            .build();
+                    .error(e.getLocalizedMessage())
+                    .build();
         }
     }
 
@@ -130,9 +127,11 @@ public class DollySearchService {
                 .must(QueryBuilders.functionScoreQuery(
                         new RandomScoreFunctionBuilder().seed(seed)));
 
-        typer.stream()
-                .map(OpenSearchQueryBuilder::getFagsystemQuery)
-                .forEach(queryBuilder::must);
+        if (nonNull(typer)) {
+            typer.stream()
+                    .map(OpenSearchQueryBuilder::getFagsystemQuery)
+                    .forEach(queryBuilder::must);
+        }
 
         return queryBuilder;
     }

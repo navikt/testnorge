@@ -23,7 +23,6 @@ spec:
         - application: etterlatte-testdata
           namespace: etterlatte
         - application: testnav-batch-bestilling-service
-        - application: testnav-dolly-search-service
         - application: testnav-dollystatus
         - application: testnav-helsepersonell-service
         - application: testnav-oversikt-frontend

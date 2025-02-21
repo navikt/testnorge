@@ -48,7 +48,6 @@ public class OpenSearchService {
                 .map(tuple -> {
                     var personer = tuple.getT2().getPersoner().entrySet().stream()
                             .filter(person -> isFalse(ikkeFiltrer) ||
-                                    request.getIdenter().isEmpty() ||
                                     isTrue(tuple.getT1().getIBruk().get(person.getKey())))
                             .map(Map.Entry::getValue)
                             .toList();
