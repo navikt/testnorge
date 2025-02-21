@@ -24,7 +24,8 @@ consumers:
 
 management:
   endpoints:
-    enabled-by-default: true
+    access:
+      default: read_only
     web:
       base-path: /internal
       exposure:
