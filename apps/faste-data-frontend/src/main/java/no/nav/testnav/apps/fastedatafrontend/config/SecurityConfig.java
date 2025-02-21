@@ -11,17 +11,14 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 @Configuration
-public class SecurityConfig {
+class SecurityConfig {
 
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(spec -> spec
-                        .pathMatchers(
-                                "/internal/isReady",
-                                "/internal/isAlive",
-                                "/internal/metrics")
+                        .pathMatchers("/internal/**")
                         .permitAll()
                         .anyExchange()
                         .authenticated())
