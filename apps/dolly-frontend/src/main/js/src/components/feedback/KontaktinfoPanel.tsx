@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { ChatElipsisIcon, EnvelopeClosedIcon } from '@navikt/aksel-icons'
 import '@/styles/variables.less'
 import Icon from '@/components/ui/icon/Icon'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const Panel = styled.div`
 	background-color: #0067c5;
@@ -61,6 +62,7 @@ export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
 					</Button>
 				</a>
 				<Button
+					data-testid={TestComponentSelectors.BUTTON_OPEN_KONTAKTSKJEMA}
 					variant="secondary"
 					iconPosition="left"
 					icon={<ChatElipsisIcon />}

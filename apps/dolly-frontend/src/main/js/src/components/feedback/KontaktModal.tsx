@@ -51,7 +51,7 @@ export const KontaktModal = ({ closeModal }) => {
 
 					<div className="modal-input">
 						<Textarea
-							data-testid={TestComponentSelectors.INPUT_FORBEDRING_MODAL}
+							data-testid={TestComponentSelectors.INPUT_KONTAKT_MODAL}
 							value={melding}
 							label={'Melding'}
 							placeholder={'Forsøk å være så spesifikk som mulig'}
@@ -61,7 +61,7 @@ export const KontaktModal = ({ closeModal }) => {
 						/>
 						<div className="skjemaelement textarea__container">
 							<DollyCheckbox
-								data-testid={TestComponentSelectors.CHECKBOX_FORBEDRING_ANONYM}
+								data-testid={TestComponentSelectors.CHECKBOX_KONTAKT_ANONYM}
 								label="Jeg ønsker å være anonym"
 								onChange={toggleAnonym}
 							/>
@@ -69,7 +69,7 @@ export const KontaktModal = ({ closeModal }) => {
 					</div>
 				</div>
 				<ModalActionKnapper
-					data-testid={TestComponentSelectors.BUTTON_SEND_FORBEDRINGSOENSKE}
+					data-testid={TestComponentSelectors.BUTTON_SEND_MELDING}
 					submitknapp="Send melding"
 					disabled={melding === '' || melding.length > MAX_LENGTH}
 					onSubmit={sendMelding}

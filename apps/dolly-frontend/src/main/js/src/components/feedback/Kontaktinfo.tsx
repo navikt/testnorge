@@ -19,7 +19,7 @@ export const Kontaktinfo = () => {
 		<ErrorBoundary>
 			<button
 				ref={buttonRef}
-				data-testid={TestComponentSelectors.BUTTON_OPEN_FORBEDRING_MODAL}
+				data-testid={TestComponentSelectors.BUTTON_OPEN_KONTAKTINFO}
 				className={'btn-modal'}
 				onClick={() => setOpenState(!openState)}
 				title="Kontakt oss"
