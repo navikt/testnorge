@@ -3,7 +3,6 @@ package no.nav.testnav.kodeverkservice.consumer;
 import no.nav.testnav.kodeverkservice.config.Consumers;
 import no.nav.testnav.kodeverkservice.consumer.command.KodeverkGetCommand;
 import no.nav.testnav.kodeverkservice.dto.KodeverkBetydningerResponse;
-import no.nav.testnav.kodeverkservice.utility.FilterUtility;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class KodeverkConsumer {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new KodeverkGetCommand(webClient,
-                        FilterUtility.hentKodeverk(kodeverk),
+                        kodeverk,
                         token.getTokenValue()).call());
     }
 }

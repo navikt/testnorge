@@ -20,7 +20,7 @@ public class KodeverkConsumer {
 
     private static final String POSTNUMMER = "Postnummer";
     private static final String LANDKODER = "Landkoder";
-    private static final String KOMMUNER = "Kommuner2024";
+    private static final String KOMMUNER = "Kommuner";
     private static final String EMBETER = "Vergemål_Fylkesmannsembeter";
     private static final Random random = new SecureRandom();
 
