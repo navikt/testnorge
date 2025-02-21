@@ -2,9 +2,9 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, formatDate } from '@/utils/DataFormatter'
 import Button from '@/components/ui/button/Button'
 import JoarkDokumentService from '@/service/services/JoarkDokumentService'
-import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 type HistarkDokument = {
+	idx: number
 	dokumentInfoId: any
 	dokument: {
 		antallSider: number
@@ -23,7 +23,7 @@ type HistarkDokument = {
 	}
 }
 
-export default ({ dokument, dokumentInfoId }: HistarkDokument) => {
+export default ({ dokument, dokumentInfoId, idx }: HistarkDokument) => {
 	if (!dokument) {
 		return null
 	}
@@ -43,21 +43,24 @@ export default ({ dokument, dokumentInfoId }: HistarkDokument) => {
 			/>
 			<TitleValue title="Skanner" value={dokument.skanner} />
 			<TitleValue title="Skannested" value={dokument.skannerSted} />
-			<DollyFieldArray header={'Vedlegg'} data={[dokumentInfoId]} nested>
-				{(dokumentInfoId: number, idx: number) => (
-					<div key={idx} className="person-visning_content">
-						<TitleValue title="Filnavn" value={dokument.filnavn} />
-						<TitleValue title="Dokumentinfo-ID" value={dokumentInfoId} />
-						<Button
-							className="flexbox--align-center csv-eksport-btn"
-							kind="file-new-table"
-							onClick={() => JoarkDokumentService.hentHistarkPDF(dokumentInfoId)}
-						>
-							VIS PDF
-						</Button>
-					</div>
-				)}
-			</DollyFieldArray>
+			<div style={{ width: '-webkit-fill-available' }}>
+				<h3>Vedlegg</h3>
+			</div>
+			<div
+				className="person-visning_content"
+				style={{ backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white', padding: '10px' }}
+			>
+				<TitleValue title="Filnavn" value={dokument.filnavn} />
+				<TitleValue title="Dokumentinfo-ID" value={dokumentInfoId} />
+				<Button
+					style={{ marginLeft: 'auto' }}
+					className="csv-eksport-btn"
+					kind="file-new-table"
+					onClick={() => JoarkDokumentService.hentHistarkPDF(dokumentInfoId)}
+				>
+					VIS PDF
+				</Button>
+			</div>
 		</div>
 	)
 }

@@ -16,10 +16,14 @@ type MiljoDataListe = {
 	data: Array<Journalpost>
 }
 
-const Histark = ({ data, dokumentInfoId }) => {
+const getHeader = (dokument: any) => {
+	return `Dokument (${dokument?.filnavn})`
+}
+
+const Histark = ({ data, dokumentInfoId, idx }) => {
 	if (!data) return null
 
-	return <HistarkVisning dokument={data} dokumentInfoId={dokumentInfoId} />
+	return <HistarkVisning dokument={data} dokumentInfoId={dokumentInfoId} idx={idx} />
 }
 
 export default ({ data, loading, ident }: Form) => {
@@ -43,11 +47,16 @@ export default ({ data, loading, ident }: Form) => {
 		<>
 			<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
 			{data.length === 1 ? (
-				<Histark data={data[0]} dokumentInfoId={dokumentInfoIder?.[0]} />
+				<Histark data={data[0]} dokumentInfoId={dokumentInfoIder?.[0]} idx={0} />
 			) : (
-				<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
+				<DollyFieldArray
+					getHeader={getHeader}
+					header={'Dokument'}
+					data={data}
+					expandable={data?.length > 2}
+				>
 					{(dokument, idx) => {
-						return <Histark data={dokument} dokumentInfoId={dokumentInfoIder?.[idx]} />
+						return <Histark data={dokument} dokumentInfoId={dokumentInfoIder?.[idx]} idx={idx} />
 					}}
 				</DollyFieldArray>
 			)}

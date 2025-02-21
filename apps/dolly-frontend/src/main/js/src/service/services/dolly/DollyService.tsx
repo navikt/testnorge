@@ -157,11 +157,6 @@ export default {
 		return Request.delete(Endpoints.deleteOrganisasjonOrgnummer(orgnummer))
 	},
 
-	//* Tags
-	getTags() {
-		return Request.get(Endpoints.getTags())
-	},
-
 	getTagsForIdent(ident) {
 		return Request.get(Endpoints.getIdentTags(ident))
 	},
