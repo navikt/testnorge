@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-arbeidssoekerregisteret-proxy
     description: Proxy for arbeidssoekerregisteret som fikser tenant=trygdeetaten.no.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,13 +17,6 @@ spring:
     gateway:
       httpclient:
         response-timeout: 600s
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   arbeidssoekerregisteret:
