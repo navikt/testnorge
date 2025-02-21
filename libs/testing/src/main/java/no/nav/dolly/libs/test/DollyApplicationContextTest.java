@@ -16,20 +16,20 @@ public class DollyApplicationContextTest {
     private WebTestClient webTestClient;
 
     @Test
-    void isAlive() {
+    void testLivenessEndpoint() {
         webTestClient
                 .get()
-                .uri("/internal/isAlive")
+                .uri("/internal/health/liveness")
                 .exchange()
                 .expectStatus()
                 .isOk();
     }
 
     @Test
-    void isReady() {
+    void testReadinessEndpoint() {
         webTestClient
                 .get()
-                .uri("/internal/isReady")
+                .uri("/internal/health/readiness")
                 .exchange()
                 .expectStatus()
                 .isOk();
