@@ -581,7 +581,7 @@ export default ({
 					loading={loadingDokarkivData}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
+				<HistarkVisning data={histarkData} loading={loadingHistarkData} ident={ident.ident} />
 				<SkatteetatenVisning
 					data={tenorData?.data?.data?.dokumentListe?.find((dokument: any) =>
 						dokument.identifikator?.includes(ident.ident),

@@ -334,7 +334,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 				)
 			},
 			remove() {
-				del('skjerming')
+				del(['skjerming', paths.egenAnsattDatoFom.tpsM, paths.egenAnsattDatoFom.skjerming])
 			},
 		},
 		norskBankkonto: {
