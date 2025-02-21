@@ -68,7 +68,7 @@ public class DollySearchService {
         var side = isNull(request.getPagineringBestillingRequest().getSide()) ?
                 1 : request.getPagineringBestillingRequest().getSide();
         var antall = isNull(request.getPagineringBestillingRequest().getAntall()) ?
-                500 : request.getPagineringBestillingRequest().getAntall();
+                1000 : request.getPagineringBestillingRequest().getAntall();
         var seed = isNull(request.getPagineringBestillingRequest().getSeed()) ?
                 SEED.nextInt() : request.getPagineringBestillingRequest().getSeed();
 
@@ -104,7 +104,6 @@ public class DollySearchService {
                 .map(map -> (List<String>) map.get("identer"))
                 .flatMap(Collection::stream)
                 .distinct()
-                .limit(1000)
                 .toList();
         return SearchResponse.RegistreResponseStatus.builder()
                 .identer(identer)
