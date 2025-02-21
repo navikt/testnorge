@@ -27,16 +27,6 @@ consumers:
     namespace: dolly
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  dolly-backend:
-    name: dolly-backend
-    namespace: dolly
-    url: http://dolly-backend.dolly.svc.cluster.local
-    cluster: dev-gcp
-  dolly-backend-dev:
-    name: dolly-backend-dev
-    namespace: dolly
-    url: http://dolly-backend-dev.dolly.svc.cluster.local
-    cluster: dev-gcp
 
 management:
   health:
