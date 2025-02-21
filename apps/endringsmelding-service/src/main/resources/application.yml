@@ -47,9 +47,6 @@ management:
         include: prometheus,health
       path-mapping:
         prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
   health:
     elasticsearch:
       enabled: false
