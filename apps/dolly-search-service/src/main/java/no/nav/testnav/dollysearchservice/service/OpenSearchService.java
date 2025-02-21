@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -40,6 +39,10 @@ public class OpenSearchService {
             request.setSide(1);
         }
 
+        if (isNull(request.getAntall())) {
+            request.setAntall(10);
+        }
+
         return Mono.from(openSearchConsumer.search(
                         no.nav.testnav.dollysearchservice.dto.SearchRequest.builder()
                                 .query(
@@ -47,8 +50,8 @@ public class OpenSearchService {
                                                 .indices("pdl-sok")
                                                 .source(new SearchSourceBuilder()
                                                         .query(query)
-                                                        .from(request.getSide())
-                                                        .size(nonNull(request.getAntall()) ? request.getAntall() : 10)
+                                                        .from(request.getSide() * request.getAntall())
+                                                        .size(request.getAntall())
                                                         .timeout(new TimeValue(3, TimeUnit.SECONDS))))
                                 .request(request)
                                 .build()))
