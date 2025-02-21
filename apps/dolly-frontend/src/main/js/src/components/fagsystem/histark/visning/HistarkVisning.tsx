@@ -53,7 +53,7 @@ export default ({ dokument, dokumentInfoId, idx }: HistarkDokument) => {
 				<TitleValue title="Filnavn" value={dokument.filnavn} />
 				<TitleValue title="Dokumentinfo-ID" value={dokumentInfoId} />
 				<Button
-					style={{ marginLeft: 'auto' }}
+					style={{ marginLeft: 'auto', marginBottom: 'auto' }}
 					className="csv-eksport-btn"
 					kind="file-new-table"
 					onClick={() => JoarkDokumentService.hentHistarkPDF(dokumentInfoId)}
