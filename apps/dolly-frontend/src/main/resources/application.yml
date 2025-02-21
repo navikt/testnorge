@@ -5,6 +5,8 @@ spring:
   application:
     name: dolly-frontend
     allow-circular-references: true
+  config:
+    import: "classpath:dolly-application.yml"
   data:
     redis:
       host: ${REDIS_HOST}
@@ -241,37 +243,11 @@ consumers:
     name: testnav-arbeidssoekerregisteret-proxy
     url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
 
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
 server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
   max-http-request-header-size: 128KB
 
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
-
   level:
-    org:
-      springframework:
-        boot:
-          autoconfigure:
-            security:
-              reactive:
-                ReactiveUserDetailsServiceAutoConfiguration: OFF
+    org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration: OFF

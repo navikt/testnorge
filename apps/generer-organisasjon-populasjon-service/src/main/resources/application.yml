@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-generer-organisasjon-populasjon-service
     description: Tjeneste for å opprette organisasjon-populasjon
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -11,11 +13,6 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
 
 kafka:
   groupid: generer-organisasjon-populasjon-service-v1
@@ -31,24 +28,3 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-orgnummer-service
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

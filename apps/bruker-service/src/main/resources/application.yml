@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-bruker-service
     description: Tjeneste for brukere
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -14,36 +16,9 @@ spring:
     serialization:
       write_dates_as_timestamps:
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
 consumers:
   testnav-altinn3-tilgang-service:
     url: http://testnav-altinn3-tilgang-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
     namespace: dolly
     name: testnav-altinn3-tilgang-proxy
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
