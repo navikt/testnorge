@@ -11,13 +11,18 @@ const Panel = styled.div`
 	padding: 5px 20px 25px 20px;
 	border-radius: 8px;
 	width: 300px;
+
+	p {
+		margin-bottom: 25px;
+		line-height: normal;
+	}
 `
 
 const Header = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: -15px;
+	margin-bottom: -18px;
 
 	h2 {
 		font-size: 1.8em;
@@ -35,7 +40,7 @@ export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
 					<Icon kind={'chevron-down'} />
 				</Button>
 			</Header>
-			<p style={{ marginBottom: '25px' }}>
+			<p>
 				Team Dolly er tilgjengelige på Slack (#dolly), e-post (dolly@nav.no), og via kontaktskjema.
 			</p>
 			<VStack gap="2">

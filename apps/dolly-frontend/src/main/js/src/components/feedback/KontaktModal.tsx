@@ -37,7 +37,7 @@ export const KontaktModal = ({ closeModal }) => {
 			<DollyModal isOpen closeModal={closeModal} width="70%">
 				<h1>Kontakt team Dolly</h1>
 				<br />
-				<p style={{ fontSize: '1.125rem', margin: '5px 0 25px 0' }}>
+				<p style={{ fontSize: '1.125rem', margin: '5px 0 25px 0', lineHeight: 'normal' }}>
 					Her kan du sende oss tilbakemeldinger, komme med ønsker eller forslag til ny
 					funksjonalitet, eller melde fra om feil og mangler. NB! Om du ønsker svar på meldingen kan
 					du ikke velge å være anonym.
