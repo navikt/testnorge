@@ -26,7 +26,8 @@ public class KodeverkController {
     @Operation(description = "Hent kodeverk, returnerer map")
     public Mono<KodeverkDTO> fetchKodeverk(@RequestParam String kodeverk) {
 
-        return kodeverkSelectorService.getKodeverkMap(kodeverk);
+        return kodeverkSelectorService.getKodeverkMap(kodeverk)
+                .switchIfEmpty(kodeverkSelectorService.getKodeverkMap(kodeverk));
     }
 
     @Cacheable(value = CACHE_KODEVERK_2, unless = "#result.koder?.size() == 0")
@@ -34,6 +35,7 @@ public class KodeverkController {
     @Operation(description = "Hent kodeverk etter kodeverkNavn")
     public Mono<KodeverkAdjustedDTO> getKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
 
-        return kodeverkSelectorService.getKodeverkByName(kodeverkNavn);
+        return kodeverkSelectorService.getKodeverkByName(kodeverkNavn)
+                .switchIfEmpty(kodeverkSelectorService.getKodeverkByName(kodeverkNavn));
     }
 }

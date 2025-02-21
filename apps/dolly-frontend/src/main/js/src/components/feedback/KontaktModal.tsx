@@ -58,6 +58,7 @@ export const KontaktModal = ({ closeModal }) => {
 							maxLength={MAX_LENGTH}
 							onChange={(event) => setMelding(event.target.value)}
 							error={melding.length > MAX_LENGTH && 'Meldingen inneholder for mange tegn'}
+							autoFocus
 						/>
 						<div className="skjemaelement textarea__container">
 							<DollyCheckbox

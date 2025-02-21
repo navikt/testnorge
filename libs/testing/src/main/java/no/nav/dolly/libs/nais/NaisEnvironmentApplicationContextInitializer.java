@@ -38,7 +38,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm\\://azure-openid-config-issuer}");
-        properties.putIfAbsent("AZURE_OPENID_CONFIG_JWKS_URI", "${sm\\://azure-openid-config-jwks-uri}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-openid-config-token-endpoint}");
         properties.putIfAbsent("CRYPTOGRAPHY_SECRET", DUMMY); // Used by bruker-service only.
         properties.putIfAbsent("JWT_SECRET", DUMMY); // Used by bruker-service only.
@@ -49,7 +48,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("SLACK_CHANNEL", DUMMY); // Used by tilbakemelding-api only.
         properties.putIfAbsent("SLACK_TOKEN", DUMMY); // Used by tilbakemelding-api only.
         properties.putIfAbsent("TOKEN_X_ISSUER", "${sm\\://token-x-issuer}");
-        properties.putIfAbsent("TOKEN_X_JWKS_URI", "${sm\\://token-x-jwks-uri}");
 
     }
 
@@ -63,10 +61,11 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         // Setting dummy placeholders.
         Stream
                 .of(
+                        "spring.cloud.vault.token", // For apps using no.nav.testnav.libs:vault.
+
                         "ALTINN_API_KEY",
                         "ALTINN_URL",
                         "AZURE_OPENID_CONFIG_ISSUER",
-                        "AZURE_OPENID_CONFIG_JWKS_URI",
                         "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
                         "CRYPTOGRAPHY_SECRET", // Used by bruker-service only.
                         "IDPORTEN_CLIENT_ID", // Used by dolly-frontend only.
@@ -77,8 +76,7 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
                         "MASKINPORTEN_SCOPES",
                         "MASKINPORTEN_WELL_KNOWN_URL",
                         "TOKEN_X_CLIENT_ID",
-                        "TOKEN_X_ISSUER",
-                        "spring.cloud.vault.token" // For apps using no.nav.testnav.libs:vault.
+                        "TOKEN_X_ISSUER"
                 )
                 .forEach(key -> properties.putIfAbsent(key, DUMMY));
 

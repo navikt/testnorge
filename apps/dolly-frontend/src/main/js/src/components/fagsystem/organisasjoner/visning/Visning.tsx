@@ -34,7 +34,7 @@ export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisningP
 			<Enhetstre enheter={[orgTree]} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
 			<Detaljer data={[orgTree.find(selectedId)]} />
 			{/* @ts-ignore */}
-			<TidligereBestillinger ids={data.bestillingId} />
+			<TidligereBestillinger ids={data.bestillingId} erOrg={true} />
 			<OrganisasjonMiljoeinfo orgnummer={data.organisasjonsnummer} />
 			<div className="flexbox--align-center--justify-end info-block">
 				<BestillingSammendragModal

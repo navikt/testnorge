@@ -1,13 +1,15 @@
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
-import FavoriteButtonConnector from '@/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { GruppeIconItem } from '@/components/ui/icon/IconItem'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { arrayToString } from '@/utils/DataFormatter'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { VisningType } from '@/pages/gruppeOversikt/GruppeOversikt'
+import FavoriteButton from '@/components/ui/button/FavoriteButton/FavoriteButton'
+import { resetPaginering } from '@/ducks/finnPerson'
+import { useDispatch } from 'react-redux'
 
 export default function Liste({
 	items,
@@ -17,6 +19,7 @@ export default function Liste({
 	visningType = null,
 }) {
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
 	if (isFetching) return <Loading label="Laster grupper" panel />
 
 	const getEmptyStartText = (visningType) => {
@@ -79,7 +82,7 @@ export default function Liste({
 			width: '15',
 			dataField: 'id',
 			formatter: (_cell, row) =>
-				!row.erEierAvGruppe && <FavoriteButtonConnector hideLabel={true} groupId={row.id} />,
+				!row.erEierAvGruppe && <FavoriteButton hideLabel={true} groupId={row.id} />,
 		},
 		{
 			text: 'Låst',
@@ -101,7 +104,10 @@ export default function Liste({
 				pagination
 				data={items}
 				columns={columns}
-				onRowClick={(row) => () => navigate(`/gruppe/${row.id}`)}
+				onRowClick={(row) => () => {
+					dispatch(resetPaginering())
+					return navigate(`/gruppe/${row.id}`)
+				}}
 				iconItem={<GruppeIconItem />}
 				gruppeDetaljer={gruppeDetaljer}
 			/>

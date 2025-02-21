@@ -41,7 +41,7 @@ test.describe('Navigering til ident som finnes i bestilling og tilbake igjen til
 	})
 })
 
-test.describe('Navigering til ident som finnes i gruppe 1', () => {
+test.describe('Navigering til ident som IKKE finnes, deretter til ident som finnes i gruppe 1', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('gruppe')
 

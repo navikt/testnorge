@@ -19,7 +19,7 @@ export const SoekefeltWrapper = styled.div`
 	flex-direction: column;
 	margin-bottom: 20px;
 	background-color: white;
-	border: 1px @color-bg-grey-border;
+	border: 1px solid #ccc;
 	border-radius: 4px;
 `
 
@@ -82,7 +82,7 @@ const KategoriCircle = styled.div`
 	}
 `
 
-const KategoriEmptyButton = styled(Button)`
+const KategoriEmptyButtonWrapper = styled.div`
 	position: absolute;
 	right: 10px;
 `
@@ -98,17 +98,19 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy 
 				</KategoriCircle>
 			)}
 			{paths && (
-				<KategoriEmptyButton
-					onClick={(e) => {
-						e.stopPropagation()
-						emptyCategory?.(paths)
-					}}
-					data-testid={TestComponentSelectors.BUTTON_TENOR_CLEAR_HEADER}
-					variant={'tertiary'}
-					icon={<TrashIcon />}
-					size={'small'}
-					title="Tøm kategori"
-				/>
+				<KategoriEmptyButtonWrapper>
+					<Button
+						onClick={(e) => {
+							e.stopPropagation()
+							emptyCategory?.(paths)
+						}}
+						data-testid={TestComponentSelectors.BUTTON_TENOR_CLEAR_HEADER}
+						variant={'tertiary'}
+						icon={<TrashIcon />}
+						size={'small'}
+						title="Tøm kategori"
+					/>
+				</KategoriEmptyButtonWrapper>
 			)}
 		</KategoriHeader>
 	)

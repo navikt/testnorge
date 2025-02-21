@@ -10,7 +10,7 @@ import Option from '@/components/ui/form/inputs/select/Option'
 import * as _ from 'lodash-es'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { useController, useFormContext } from 'react-hook-form'
-import { useContext } from 'react'
+import React, { createRef, useContext, useEffect } from 'react'
 import {
 	ShowErrorContext,
 	ShowErrorContextType,
@@ -26,6 +26,7 @@ type SelectProps = {
 	classNamePrefix?: string
 	onChange?: any
 	onBlur?: any
+	autoFocus?: boolean
 	isDisabled?: boolean
 	isLoading?: boolean
 	isSearchable?: boolean
@@ -63,9 +64,17 @@ export const Select = ({
 	onChange,
 	isInDialog = false,
 	normalFontPlaceholder = false,
+	autoFocus = false,
 	...rest
 }: SelectProps) => {
 	const formMethods = useFormContext()
+	const ref = createRef()
+
+	useEffect(() => {
+		if (autoFocus) {
+			ref?.current?.focus?.()
+		}
+	}, [autoFocus])
 	const val = formMethods?.watch(name)
 	let formValue = isMulti
 		? options?.filter?.((o) => val?.some((el) => el === o?.value))
@@ -90,6 +99,7 @@ export const Select = ({
 		<span data-testid={rest['data-testid']}>
 			<ReactSelect
 				value={!_.isEmpty(formValue) ? formValue : propValue}
+				autoFocus={autoFocus}
 				options={options}
 				name={name}
 				inputId={id || name}
@@ -119,9 +129,10 @@ export const Select = ({
 				menuPortalTarget={
 					isInDialog
 						? (document.getElementsByClassName('navds-modal')[0] as HTMLElement)
-						: document.getElementById('react-select-root')
+						: document.getElementById('root')
 				}
 				menuPosition={isInDialog ? 'fixed' : undefined}
+				ref={ref}
 				{...rest}
 			/>
 		</span>

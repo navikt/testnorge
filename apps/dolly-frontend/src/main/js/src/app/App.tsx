@@ -1,8 +1,7 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Outlet } from 'react-router'
 import Header from '@/components/layout/header/Header'
 import Loading from '@/components/ui/loading/Loading'
-import allRoutes from '@/allRoutes'
 import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
 import { Kontaktinfo } from '@/components/feedback/Kontaktinfo'
@@ -16,9 +15,9 @@ import {
 } from '@/utils/hooks/useMaler'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
-import { FaroErrorBoundary } from '@grafana/faro-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
+import { RouteChangeHandler } from '@/RootComponent'
 
 const logout = (feilmelding: string) => {
 	if (!runningE2ETest()) {
@@ -54,7 +53,8 @@ export const App = () => {
 	}
 
 	return (
-		<FaroErrorBoundary>
+		<ErrorBoundary>
+			<RouteChangeHandler />
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
@@ -62,20 +62,12 @@ export const App = () => {
 			<main>
 				<ErrorBoundary>
 					<Suspense fallback={<Loading label="Laster inn" />}>
-						<Routes>
-							{allRoutes.map((route: { element: any; path: string }, idx: React.Key) =>
-								route.element ? (
-									<Route key={idx} path={route.path} element={<route.element />} />
-								) : (
-									<React.Fragment key={idx} />
-								),
-							)}
-						</Routes>
+						<Outlet />
 					</Suspense>
 				</ErrorBoundary>
 			</main>
 			<Kontaktinfo />
 			<ToastConnector />
-		</FaroErrorBoundary>
+		</ErrorBoundary>
 	)
 }

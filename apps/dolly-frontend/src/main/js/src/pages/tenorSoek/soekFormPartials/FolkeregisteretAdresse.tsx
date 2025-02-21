@@ -22,7 +22,7 @@ export const FolkeregisteretAdresse = ({ handleChange }: any) => {
 			<FormSelect
 				name="adresser.kommunenummer"
 				label="Kommunenummer"
-				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				kodeverk={AdresseKodeverk.Kommunenummer}
 				onChange={(val: Option) => handleChange(val?.value, 'adresser.kommunenummer')}
 				size="large"
 			/>
