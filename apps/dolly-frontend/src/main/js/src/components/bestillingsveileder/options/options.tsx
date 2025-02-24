@@ -1,5 +1,4 @@
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 const TYPE = Object.freeze({
 	NY_BESTILLING: 'NY_BESTILLING',
@@ -27,10 +26,9 @@ export const BVOptions = (
 		leggTilPaaGruppe = null,
 		gruppe,
 	}: any = {},
-	gruppeId,
+	gruppeId: number,
+	dollyEnvironments: any,
 ) => {
-	const { dollyEnvironments } = useDollyEnvironments()
-
 	let initialValues = {
 		antall: antall || 1,
 		beskrivelse: null,

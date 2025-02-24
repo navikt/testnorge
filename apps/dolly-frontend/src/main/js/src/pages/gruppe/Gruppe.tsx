@@ -36,7 +36,7 @@ export enum VisningType {
 }
 
 export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
-	const { gruppeId } = useParams<{ gruppeId: string }>()
+	const { gruppeId } = useParams<{ gruppeId: number }>()
 	const { currentBruker, loading: loadingBruker } = useCurrentBruker()
 	const location = useLocation()
 	const dispatch = useDispatch()

@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
+import React, { useContext, useEffect, useState } from 'react'
+import { Gruppevalg, VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type VelgGruppeProps = {
 	formMethods: UseFormReturn
 	title: string
 	fraGruppe?: number
-	gruppevalg: number
-	setGruppevalg: (gruppeValg: number) => void
 }
 
-export const VelgGruppe = ({
-	formMethods,
-	title,
-	fraGruppe = null,
-	gruppevalg,
-	setGruppevalg,
-}: VelgGruppeProps) => {
-	const [valgtGruppe] = useState(formMethods.watch(`gruppeId`) || '')
-	console.log('valgtGruppe: ', valgtGruppe) //TODO - SLETT MEG
+export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeProps) => {
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const gruppeId = formMethods.getValues('gruppeId') || opts?.gruppeId || opts?.gruppe?.id
+	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
+	const [valgtGruppe] = useState(gruppeId)
 
 	useEffect(() => {
 		if (formMethods.watch('gruppeId') !== valgtGruppe) {
@@ -44,7 +42,7 @@ export const VelgGruppe = ({
 VelgGruppe.validation = {
 	gruppeId: ifPresent(
 		'$gruppeId',
-		Yup.string().required(
+		Yup.number().required(
 			'Velg eksisterende gruppe eller opprett ny gruppe for å importere personen(e)',
 		),
 	),

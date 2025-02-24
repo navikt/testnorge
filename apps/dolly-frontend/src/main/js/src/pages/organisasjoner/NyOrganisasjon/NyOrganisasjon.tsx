@@ -8,13 +8,13 @@ import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 
 import styled from 'styled-components'
 import { useDollyOrganisasjonMaler } from '@/utils/hooks/useMaler'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { FormProvider, useForm } from 'react-hook-form'
+import { NyBestillingProps } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 import {
 	getBrukerOptions,
 	getMalOptions,
-	NyBestillingProps,
-} from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
-import { TestComponentSelectors } from '#/mocks/Selectors'
-import { FormProvider, useForm } from 'react-hook-form'
+} from '@/components/bestillingsveileder/startModal/MalVelger'
 
 const initialValues = {
 	mal: null as unknown as string,

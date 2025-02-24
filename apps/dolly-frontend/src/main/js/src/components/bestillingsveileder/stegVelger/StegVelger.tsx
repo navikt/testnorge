@@ -46,9 +46,6 @@ export const devEnabled =
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-	if (context.gruppeId) {
-		STEPS = STEPS.filter((step) => step !== Steg0)
-	}
 
 	const [formMutate, setFormMutate] = useState(() => null as any)
 	const [mutateLoading, setMutateLoading] = useState(false)

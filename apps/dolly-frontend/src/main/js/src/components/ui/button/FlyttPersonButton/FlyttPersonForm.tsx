@@ -12,7 +12,6 @@ import Icon from '@/components/ui/icon/Icon'
 import { Alert } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useFieldArray, useFormContext } from 'react-hook-form'
-import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 
 type Option = {
 	value: string
@@ -113,7 +112,6 @@ export const FlyttPersonForm = ({
 }: any) => {
 	const formMethods = useFormContext()
 	const [searchText, setSearchText] = useState('')
-	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 	const fieldMethods = useFieldArray({
 		control: formMethods.control,
 		name: 'identer',
@@ -135,8 +133,6 @@ export const FlyttPersonForm = ({
 					formMethods={formMethods}
 					title={'Velg hvilken gruppe du ønsker å flytte personer til'}
 					fraGruppe={gruppeId}
-					gruppevalg={gruppevalg}
-					setGruppevalg={setGruppevalg}
 				/>
 				<StyledErrorMessageWithFocus name="gruppe" />
 			</GruppeVelger>
