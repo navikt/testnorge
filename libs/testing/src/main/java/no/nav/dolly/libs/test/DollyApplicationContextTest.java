@@ -35,4 +35,24 @@ public class DollyApplicationContextTest {
                 .isOk();
     }
 
+    @Test
+    void testIsAliveEndpoint() {
+        webTestClient
+                .get()
+                .uri("/internal/isAlive")
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Test
+    void testIsReadyEndpoint() {
+        webTestClient
+                .get()
+                .uri("/internal/isReady")
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
 }
