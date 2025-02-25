@@ -12,16 +12,19 @@ import { PensjonForm } from '@/components/fagsystem/pensjon/form/Form'
 import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
 import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
-import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
-import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
+import { TjenestepensjonForm, tpPath } from '@/components/fagsystem/tjenestepensjon/form/Form'
+import {
+	AlderspensjonForm,
+	alderspensjonPath,
+} from '@/components/fagsystem/alderspensjon/form/Form'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
-import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
+import { UforetrygdForm, uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
 import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { SkattekortForm } from '@/components/fagsystem/skattekort/form/Form'
-import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
+import { avtalePath, PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
 import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
-import { AfpOffentligForm } from '@/components/fagsystem/afpOffentlig/form/Form'
+import { AfpOffentligForm, afpOffentligPath } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 import Loading from '@/components/ui/loading/Loading'
 import { PdlfForm } from '@/components/fagsystem/pdlf/form/Form'
@@ -80,11 +83,11 @@ const Steg2: React.FC = () => {
 			{getValues('arbeidssoekerregisteret') && <ArbeidssoekerregisteretForm />}
 			{getValues('arbeidsplassenCV') && <ArbeidsplassenForm />}
 			{getValues('pensjonforvalter') && <PensjonForm />}
-			{getValues('pensjonsavtale') && <PensjonsavtaleForm />}
-			{getValues('tjenestepensjon') && <TjenestepensjonForm />}
-			{getValues('alderspensjon') && <AlderspensjonForm />}
-			{getValues('uforetrygd') && <UforetrygdForm />}
-			{getValues('afpOffentlig') && <AfpOffentligForm />}
+			{getValues(avtalePath) && <PensjonsavtaleForm />}
+			{getValues(tpPath) && <TjenestepensjonForm />}
+			{getValues(alderspensjonPath) && <AlderspensjonForm />}
+			{getValues(uforetrygdPath) && <UforetrygdForm />}
+			{getValues(afpOffentligPath) && <AfpOffentligForm />}
 			{getValues('arenaforvalter') && <ArenaForm />}
 			{getValues('sykemelding') && <SykdomForm />}
 			{getValues('yrkesskader') && <YrkesskaderForm />}

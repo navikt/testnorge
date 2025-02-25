@@ -58,9 +58,9 @@ export const TagsButton = ({ gruppeId, eksisterendeTags, isSending }: Props) => 
 						<DollySelect
 							name={'tags'}
 							options={tagOptions}
-							// options={tagOptions}
 							isMulti
-							value={tags?.map((t) => ({ value: t, label: t }))}
+							value={tags}
+							size={'large'}
 							onChange={(selected: any) => {
 								setTags(selected.map((s: any) => s.value))
 							}}
