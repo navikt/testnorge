@@ -17,6 +17,7 @@ dependencies {
     implementation "no.nav.testnav.libs:servlet-security"
     implementation "no.nav.testnav.libs:testing"
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     implementation "org.opensearch.client:spring-data-opensearch:$versions.opensearch"
 
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
