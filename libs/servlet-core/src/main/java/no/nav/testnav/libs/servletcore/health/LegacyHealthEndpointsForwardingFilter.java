@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
  * endpoints to the new {@code /internal/health/liveness} and {@code /internal/health/readiness} endpoints.</p>
  * <p>This is to ensure backwards compatibility with external apps that may still be using the old endpoints.</p>
  */
+@Slf4j
 class LegacyHealthEndpointsForwardingFilter extends HttpFilter {
 
     @Override
@@ -19,12 +21,18 @@ class LegacyHealthEndpointsForwardingFilter extends HttpFilter {
             throws IOException, ServletException {
 
         switch (request.getRequestURI()) {
-            case "/internal/isAlive" -> request
+            case "/internal/isAlive" -> {
+                log.warn("Received request to deprecated endpoint /internal/isAlive from remote host {}", request.getRemoteHost());
+                request
                         .getRequestDispatcher("/internal/health/liveness")
                         .forward(request, response);
-            case "/internal/isReady" -> request
+            }
+            case "/internal/isReady" -> {
+                log.warn("Received request to deprecated endpoint /internal/isReady from remote host {}", request.getRemoteHost());
+                request
                         .getRequestDispatcher("/internal/health/readiness")
                         .forward(request, response);
+            }
             default -> chain.doFilter(request, response);
         }
 
