@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Alert } from '@navikt/ds-react'
@@ -12,6 +12,10 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { useFormContext } from 'react-hook-form'
 import Button from '@/components/ui/button/Button'
 import { NavLink } from 'react-router'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type MalVelgerProps = {
 	brukernavn: string
@@ -34,28 +38,38 @@ export function getMalOptions(malbestillinger: Record<string, Mal[]>, bruker: st
 	}))
 }
 
-export const MalVelger = ({ brukernavn, gruppeId }: MalVelgerProps) => {
+export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formMethods = useFormContext()
 	const { maler, loading } = useDollyMaler()
 	const { dollyEnvironments } = useDollyEnvironments()
 	const [bruker, setBruker] = useState(brukernavn)
-	const [malAktiv, toggleMalAktiv] = useToggle(false)
+	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal'))
 
 	const brukerOptions = getBrukerOptions(maler)
 	const malOptions = getMalOptions(maler, bruker)
 
 	const handleMalChange = (mal: { value: string; label: string; data: any }) => {
 		if (mal) {
-			const options = BVOptions(location.state, gruppeId, dollyEnvironments)
-			console.log('options: ', options.initialValues) //TODO - SLETT MEG
+			opts.mal = mal.data
+			const options = BVOptions(opts, gruppeId, dollyEnvironments)
 			formMethods.reset(options.initialValues)
 			formMethods.setValue('mal', mal.value)
+			formMethods.setValue('gruppeId', gruppeId)
+		} else {
+			opts.mal = undefined
+			formMethods.reset(opts.initialValues)
+			formMethods.setValue('mal', undefined)
+			formMethods.setValue('gruppeId', gruppeId)
 		}
 	}
 
 	const handleMalEnable = () => {
+		opts.mal = undefined
 		toggleMalAktiv()
+		formMethods.reset(opts.initialValues)
 		formMethods.setValue('mal', undefined)
+		formMethods.setValue('gruppeId', gruppeId)
 	}
 
 	const handleBrukerChange = (event: { value: string }) => {
@@ -84,6 +98,7 @@ export const MalVelger = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 				name="aktiver-maler"
 				onChange={handleMalEnable}
 				label="Opprett fra mal"
+				checked={malAktiv}
 				wrapperSize={'none'}
 				size={'small'}
 				isSwitch
@@ -109,7 +124,6 @@ export const MalVelger = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 					options={malOptions}
 					size="grow"
 					isDisabled={!malAktiv}
-					autoFocus={malAktiv}
 				/>
 			</div>
 			<div className="mal-admin">

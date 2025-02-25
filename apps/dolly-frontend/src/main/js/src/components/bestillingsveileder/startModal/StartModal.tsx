@@ -12,7 +12,7 @@ const StyledToggleGroup = styled(ToggleGroup)`
 	margin-bottom: 20px;
 `
 
-const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingProps) => {
+const BestillingsveilederModal = ({ onAvbryt, onSubmit }: NyBestillingProps) => {
 	const [type, setType] = useState('ny')
 	return (
 		<DollyModal isOpen closeModal={onAvbryt} width="60%" overflow="auto">
@@ -34,9 +34,7 @@ const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }: NyBestilli
 						Eksisterende person
 					</ToggleGroup.Item>
 				</StyledToggleGroup>
-				{type === 'ny' && (
-					<NyIdent onAvbryt={onAvbryt} onSubmit={onSubmit} brukernavn={brukernavn} />
-				)}
+				{type === 'ny' && <NyIdent onAvbryt={onAvbryt} onSubmit={onSubmit} />}
 				{type === 'eksisterende' && <EksisterendeIdent onAvbryt={onAvbryt} onSubmit={onSubmit} />}
 			</div>
 		</DollyModal>

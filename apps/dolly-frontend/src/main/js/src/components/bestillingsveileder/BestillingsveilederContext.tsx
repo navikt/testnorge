@@ -7,6 +7,7 @@ export const BestillingsveilederContext = __preserveRef(
 
 export interface BestillingsveilederContextType {
 	gruppeId?: string
+	initialValues: any
 	gruppe?: { id?: string; navn?: string }
 	personFoerLeggTil?: string
 	identMaster?: string

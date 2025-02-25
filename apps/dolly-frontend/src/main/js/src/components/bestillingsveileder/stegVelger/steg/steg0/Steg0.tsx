@@ -5,11 +5,14 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { MalVelger } from '@/components/bestillingsveileder/startModal/MalVelger'
+import { MalVelgerIdent } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { MalVelgerOrganisasjon } from '@/pages/organisasjoner/MalVelgerOrganisasjon'
 
 const Steg0 = () => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const isOrganisasjon =
+		opts.is?.nyOrganisasjon || opts.is?.nyStandardOrganisasjon || opts.is?.nyOrganisasjonFraMal
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
 
@@ -22,11 +25,17 @@ const Steg0 = () => {
 
 	return (
 		<div className="start-bestilling-modal">
+			{!isOrganisasjon && (
+				<div className="dolly-panel dolly-panel-open">
+					<VelgGruppe formMethods={formMethods} title={'Hvilken gruppe vil du bestille til?'} />
+				</div>
+			)}
 			<div className="dolly-panel dolly-panel-open">
-				<VelgGruppe formMethods={formMethods} title={'Hvilken gruppe vil du bestille til?'} />
-			</div>
-			<div className="dolly-panel dolly-panel-open">
-				<MalVelger brukernavn={currentBruker?.brukernavn} gruppeId={gruppeId} />
+				{isOrganisasjon ? (
+					<MalVelgerOrganisasjon brukernavn={currentBruker?.brukernavn} gruppeId={gruppeId} />
+				) : (
+					<MalVelgerIdent brukernavn={currentBruker?.brukernavn} gruppeId={gruppeId} />
+				)}
 			</div>
 		</div>
 	)

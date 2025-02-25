@@ -52,7 +52,6 @@ export const Bestillingsveileder = () => {
 		return null
 	}
 
-	console.log('location.state: ', location.state) //TODO - SLETT MEG
 	const options = BVOptions(location.state, gruppeId, dollyEnvironments)
 
 	const handleSubmit = async (values) => {

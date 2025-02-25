@@ -26,7 +26,7 @@ import { dokarkivValidation } from '@/components/fagsystem/dokarkiv/form/Dokarki
 import { histarkValidation } from '@/components/fagsystem/histark/form/HistarkValidation'
 import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
 
-export const DollyValidation = Yup.object({
+export const DollyIdentValidation = Yup.object({
 	...PdlfForm.validation,
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,
@@ -48,9 +48,13 @@ export const DollyValidation = Yup.object({
 	...FullmaktForm.validation,
 	...dokarkivValidation,
 	...histarkValidation,
-	...OrganisasjonForm.validation,
 	...MiljoVelger.validation,
 	...PensjonForm.validation,
 	...MalForm.validation,
 	...VelgGruppe.validation,
+})
+export const DollyOrganisasjonValidation = Yup.object({
+	...OrganisasjonForm.validation,
+	...MiljoVelger.validation,
+	...MalForm.validation,
 })

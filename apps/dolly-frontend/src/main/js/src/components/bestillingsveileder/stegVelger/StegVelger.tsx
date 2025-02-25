@@ -21,7 +21,10 @@ import {
 } from '@/components/bestillingsveileder/ShowErrorContext'
 import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
 import Loading from '@/components/ui/loading/Loading'
-import { DollyValidation } from '@/components/bestillingsveileder/stegVelger/steg/steg2/DollyValidation'
+import {
+	DollyIdentValidation,
+	DollyOrganisasjonValidation,
+} from '@/components/bestillingsveileder/stegVelger/steg/steg2/DollyIdentValidation'
 import { lazyWithPreload } from '@/utils/lazyWithPreload'
 import Steg0 from './steg/steg0/Steg0'
 import Steg1 from './steg/steg1/Steg1'
@@ -46,6 +49,13 @@ export const devEnabled =
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const context = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const erOrganisasjon =
+		context.is?.nyOrganisasjon ||
+		context.is?.nyStandardOrganisasjon ||
+		context.is?.nyOrganisasjonFraMal
+	const validationResolver: any = erOrganisasjon
+		? DollyOrganisasjonValidation
+		: DollyIdentValidation
 
 	const [formMutate, setFormMutate] = useState(() => null as any)
 	const [mutateLoading, setMutateLoading] = useState(false)
@@ -57,14 +67,14 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: initialValues,
-		resolver: yupResolver(DollyValidation),
+		resolver: yupResolver(validationResolver),
 		context: context,
 	})
 	const stateModifier = useStateModifierFns(formMethods, setFormMutate)
 
 	const matchMutate = useMatchMutate()
 
-	const validationPaths = Object.keys(DollyValidation.fields)
+	const validationPaths = Object.keys(validationResolver.fields)
 
 	const isLastStep = () => step === STEPS.length - 1
 
@@ -72,13 +82,12 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		formMethods.trigger(validationPaths).then(() => {
 			const errorFelter = Object.keys(formMethods.formState.errors)
 			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
-			const kunGruppeIdError = errorFelter.length === 1 && errorFelter[0] === 'gruppeId'
-			if (
-				errorFelter.length > 0 &&
-				STEPS[step] === Steg2 &&
-				!kunEnvironmentError &&
-				!kunGruppeIdError
-			) {
+			const gruppeIdError = errorFelter.filter((fieldName) => fieldName === 'gruppeId')?.[0]
+			if (gruppeIdError) {
+				errorContext?.setShowError(true)
+				return
+			}
+			if (errorFelter.length > 0 && STEPS[step] === Steg2 && !kunEnvironmentError) {
 				console.warn('Feil i form, stopper navigering videre')
 				console.error(formMethods.formState.errors)
 				errorContext?.setShowError(true)

@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from 'react-router'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 import { Button, Checkbox } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
-import { MalValg } from '@/pages/tenorSoek/resultatVisning/MalValg'
 import { EnterIcon } from '@navikt/aksel-icons'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
@@ -35,7 +34,6 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePe
 	const location = useLocation()
 	const { pdlPersoner, loading } = usePdlPersonbolk(identer)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [valgtMal, setValgtMal] = useState(null)
 
 	const [partnere, setPartnere] = useState([])
 	const [valgtePartnere, setValgtePartnere] = useState([])
@@ -69,7 +67,6 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePe
 						},
 					}
 				}),
-				mal: valgtMal,
 				gruppe: location?.state?.gruppe,
 				identMaster: 'PDL',
 			},
@@ -105,7 +102,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePe
 					size="xsmall"
 					icon={<EnterIcon />}
 					loading={loading}
-					onClick={openModal}
+					onClick={() => (partnere.length === 0 ? handleClick() : openModal())}
 					style={{ minWidth: '155px', height: '24px', marginTop: '10px' }}
 				>
 					Importer person
@@ -130,7 +127,6 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePe
 							</Hjelpetekst>
 						</CheckboxWrapper>
 					)}
-					<MalValg setValgtMal={setValgtMal} />
 					<div className="dollymodal_buttons dollymodal_buttons--center">
 						<Button
 							data-testid={TestComponentSelectors.BUTTON_IMPORTER}

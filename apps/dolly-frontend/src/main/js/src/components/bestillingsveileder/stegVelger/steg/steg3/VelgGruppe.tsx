@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Gruppevalg, VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
-import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import {
@@ -40,10 +39,5 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 }
 
 VelgGruppe.validation = {
-	gruppeId: ifPresent(
-		'$gruppeId',
-		Yup.number().required(
-			'Velg eksisterende gruppe eller opprett ny gruppe for å importere personen(e)',
-		),
-	),
+	gruppeId: Yup.number().required('Velg gruppe for bestillingen'),
 }

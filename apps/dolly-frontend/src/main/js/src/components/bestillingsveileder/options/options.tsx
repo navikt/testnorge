@@ -153,6 +153,7 @@ export const BVOptions = (
 		importPersoner,
 		identMaster,
 		tidligereBestillinger,
+		opprettOrganisasjon,
 		gruppe,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,

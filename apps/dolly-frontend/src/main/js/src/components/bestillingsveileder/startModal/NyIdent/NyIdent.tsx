@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { useDollyMaler } from '@/utils/hooks/useMaler'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -30,27 +29,12 @@ export type NyBestillingProps = {
 	onAvbryt: () => void
 }
 
-export function NyIdent({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) {
-	const { maler } = useDollyMaler()
+export function NyIdent({ onAvbryt, onSubmit }: NyBestillingProps) {
 	const formMethods = useForm({
 		mode: 'onBlur',
 		defaultValues: initialValues,
 		resolver: yupResolver(validationSchema),
 	})
-
-	const preSubmit = (values: any) => {
-		if (values.mal) {
-			const malOption = maler[values.zIdent]?.find((m) => m.id === values.mal)
-			if (malOption) {
-				values.mal = {
-					bestilling: malOption.bestilling,
-					malNavn: malOption.malNavn,
-					id: malOption.id,
-				}
-			}
-		}
-		return onSubmit(values, formMethods)
-	}
 
 	return (
 		<FormProvider {...formMethods}>
@@ -76,7 +60,7 @@ export function NyIdent({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) {
 					data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
 					submitknapp="Start bestilling"
 					disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-					onSubmit={() => preSubmit(formMethods.getValues())}
+					onSubmit={() => onSubmit(formMethods.getValues(), formMethods)}
 					onAvbryt={onAvbryt}
 					center
 				/>
