@@ -1,7 +1,7 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
+import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
@@ -14,6 +14,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.NAVSP
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedMatchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRegexpQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedTermsQuery;
 
 @UtilityClass
 public class OpenSearchIdenterQueryUtils {
@@ -43,10 +44,7 @@ public class OpenSearchIdenterQueryUtils {
 
     private static BoolQueryBuilder addIdenterQuery(Set<String> identer) {
 
-        var query = QueryBuilders.boolQuery();
-        identer.forEach(ident -> query
-                .should(nestedMatchQuery(HENT_IDENTER, "ident", ident))
-        );
-        return query;
+        return QueryBuilders.boolQuery()
+                .should(nestedTermsQuery(HENT_IDENTER, "ident", identer.toArray(new String[]{})));
     }
 }
