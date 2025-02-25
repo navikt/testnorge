@@ -24,9 +24,14 @@ public class SigrunstubProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
-                .route(spec -> spec.path("/**").uri("http://sigrun-skd-stub.team-inntekt.svc.nais.local/"))
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder
+                .routes()
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
+                        .uri("http://sigrun-skd-stub.team-inntekt.svc.nais.local/"))
                 .build();
     }
 

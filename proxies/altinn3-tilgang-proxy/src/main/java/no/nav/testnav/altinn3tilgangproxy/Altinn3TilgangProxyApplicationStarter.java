@@ -28,17 +28,23 @@ public class Altinn3TilgangProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-                                           TokenExchange tokenExchange,
-                                           Consumers consumers) {
-
+    RouteLocator customRouteLocator(
+            RouteLocatorBuilder builder,
+            TokenExchange tokenExchange,
+            Consumers consumers
+    ) {
         return builder
                 .routes()
-                .route(spec -> spec.path("/**")
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
                         .filters(filterSpec -> filterSpec
                                 .filter(AddAuthenticationRequestGatewayFilterFactory
-                                        .bearerAuthenticationHeaderFilter(() -> tokenExchange.exchange(consumers.getAltinn3TilgangService())
-                                                .map(AccessToken::getTokenValue))))
+                                        .bearerAuthenticationHeaderFilter(
+                                                () -> tokenExchange
+                                                        .exchange(consumers.getAltinn3TilgangService())
+                                                        .map(AccessToken::getTokenValue))))
                         .uri(consumers.getAltinn3TilgangService().getUrl()))
                 .build();
     }
