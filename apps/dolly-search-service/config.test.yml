@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-dolly-search-service
+  name: testnav-dolly-search-service-dev
   namespace: dolly
   labels:
     team: dolly
@@ -66,7 +66,7 @@ spec:
       memory: 2048Mi
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: prod
+      value: dev
   ingresses:
-    - "https://testnav-dolly-search-service.intern.dev.nav.no"
+    - "https://testnav-dolly-search-service-dev.intern.dev.nav.no"
 

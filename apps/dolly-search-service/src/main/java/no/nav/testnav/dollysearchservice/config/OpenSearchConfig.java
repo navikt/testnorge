@@ -15,7 +15,7 @@ import java.time.Duration;
 
 @Slf4j
 @Configuration
-@Profile({"prod"})
+@Profile({"prod","dev"})
 @RequiredArgsConstructor
 @EnableElasticsearchRepositories("no.nav.testnav.dollysearchservice.jpa")
 public class OpenSearchConfig extends AbstractOpenSearchConfiguration {
