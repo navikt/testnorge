@@ -13,7 +13,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class DollyApplicationContextTest {
 
     @Setter(onMethod_ = @Autowired)
-    private WebTestClient webTestClient;
+    public WebTestClient webTestClient;
 
     @Test
     void testLivenessEndpoint() {
@@ -35,6 +35,10 @@ public class DollyApplicationContextTest {
                 .isOk();
     }
 
+    /**
+     * <p>Note that this should fail, as {@code WebTestClient} is not configured with {@code LegacyHealthEndpointsRedirectFilter}.</p>
+     * <p>Added to ensure no app publishes on legacy endpoints itself.</p>
+     */
     @Test
     void testIsAliveEndpoint() {
         webTestClient
@@ -45,6 +49,10 @@ public class DollyApplicationContextTest {
                 .isNotFound();
     }
 
+    /**
+     * <p>Note that this should fail, as {@code WebTestClient} is not configured with {@code LegacyHealthEndpointsRedirectFilter}.</p>
+     * <p>Added to ensure no app publishes on legacy endpoints itself.</p>
+     */
     @Test
     void testIsReadyEndpoint() {
         webTestClient
@@ -53,6 +61,26 @@ public class DollyApplicationContextTest {
                 .exchange()
                 .expectStatus()
                 .isNotFound();
+    }
+
+    @Test
+    void testNonexistingInternalEndpoint() {
+        webTestClient
+                .get()
+                .uri("/internal/someNonExistingEndpoint")
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Test
+    public void testNonexistingApiEndpoint() {
+        webTestClient
+                .get()
+                .uri("/api/someNonExistingEndpoint")
+                .exchange()
+                .expectStatus()
+                .is4xxClientError();
     }
 
 }
