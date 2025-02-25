@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.core.ParameterizedTypeReference;
@@ -9,39 +10,53 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public interface ConsumerStatus {
+@Slf4j
+public abstract class ConsumerStatus {
 
-    org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConsumerStatus.class);
+    public abstract String serviceUrl();
 
-    String serviceUrl();
+    public abstract String consumerName();
 
-    String consumerName();
+    public String getLivenessEndpoint() {
+        return "/internal/health/liveness";
+    }
 
-    default Map<String, TestnavStatusResponse> checkStatus(WebClient webClient) {
+    public String getReadinessEndpoint() {
+        return "/internal/health/readiness";
+    }
+
+    public Map<String, TestnavStatusResponse> checkStatus(WebClient webClient) {
 
         var consumerStatus = CheckAliveUtil.checkConsumerStatus(
-                serviceUrl() + "/internal/isAlive",
-                serviceUrl() + "/internal/isReady",
+                serviceUrl() + getLivenessEndpoint(),
+                serviceUrl() + getReadinessEndpoint(),
                 webClient);
 
         var statusMap = new ConcurrentHashMap<String, TestnavStatusResponse>();
         statusMap.put(consumerName(), consumerStatus);
 
-        var response = webClient.get()
+        webClient
+                .get()
                 .uri(serviceUrl() + "/internal/status")
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Map<String, String>>>() {
-                })
+                .bodyToMono(new TypeReference())
                 .timeout(Duration.ofSeconds(5))
                 .doOnError(throwable -> log.error("Klarte ikke å hente status for {}", serviceUrl(), throwable))
                 .onErrorReturn(new ConcurrentHashMap<>())
-                .block();
-        response.forEach((key, value) -> statusMap.put(key, TestnavStatusResponse.builder()
-                .team(value.get("team"))
-                .alive(value.get("alive"))
-                .ready(value.get("ready"))
-                .build()));
+                .blockOptional()
+                .orElse(new ConcurrentHashMap<>())
+                .forEach((key, value) -> statusMap
+                        .put(key, TestnavStatusResponse
+                                .builder()
+                                .team(value.get("team"))
+                                .alive(value.get("alive"))
+                                .ready(value.get("ready"))
+                                .build()));
 
         return statusMap;
     }
+
+    private static class TypeReference extends ParameterizedTypeReference<Map<String, Map<String, String>>> {
+    }
+
 }

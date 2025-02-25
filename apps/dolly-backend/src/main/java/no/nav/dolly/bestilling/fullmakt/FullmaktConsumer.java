@@ -25,7 +25,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class FullmaktConsumer implements ConsumerStatus {
+public class FullmaktConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;

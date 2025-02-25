@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Service
-public class UdiStubConsumer implements ConsumerStatus {
+public class UdiStubConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;

@@ -37,7 +37,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class ArenaForvalterConsumer implements ConsumerStatus {
+public class ArenaForvalterConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final ServerProperties serverProperties;
