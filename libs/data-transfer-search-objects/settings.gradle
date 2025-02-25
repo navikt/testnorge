@@ -5,6 +5,7 @@ plugins {
 rootProject.name = 'data-transfer-search-objects'
 
 includeBuild "../../plugins/java"
+includeBuild '../../libs/data-transfer-objects'
 
 develocity {
     buildScan {

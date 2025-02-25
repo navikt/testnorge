@@ -64,3 +64,5 @@ consumers:
     url: https://testnav-yrkesskade-proxy.intern.dev.nav.no
   arbeidssoekerregisteret-proxy:
     url: https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no
+  dolly-search-service:
+    url: https://testnav-dolly-search-service.intern.dev.nav.no

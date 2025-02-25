@@ -19,8 +19,11 @@ metadata:
   labels:
     team: dolly
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "2400"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "2400"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "240"
+    nginx.ingress.kubernetes.io/proxy-body-size: "8m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
 spec:
   image: "{{image}}"
   port: 8080
@@ -64,6 +67,8 @@ spec:
         - application: testnav-tenor-search-service
           cluster: dev-gcp
         - application: testnav-levende-arbeidsforhold-ansettelse
+          cluster: dev-gcp
+        - application: testnav-dolly-search-service
           cluster: dev-gcp
     outbound:
       rules:

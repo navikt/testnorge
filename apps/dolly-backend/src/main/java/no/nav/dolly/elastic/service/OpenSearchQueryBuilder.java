@@ -70,7 +70,7 @@ public class OpenSearchQueryBuilder {
         return queryBuilder;
     }
 
-    private void setPersonQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+    private static void setPersonQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest())
                 .ifPresent(value -> {
@@ -107,7 +107,7 @@ public class OpenSearchQueryBuilder {
                 });
     }
 
-    private QueryBuilder getFagsystemQuery(ElasticTyper type) {
+   public static QueryBuilder getFagsystemQuery(ElasticTyper type) {
 
         return switch (type) {
             case AAREG -> QueryBuilders.existsQuery("aareg");
