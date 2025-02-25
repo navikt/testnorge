@@ -5,6 +5,7 @@ import org.springframework.boot.actuate.health.HealthContributorRegistry;
 import org.springframework.boot.actuate.health.SimpleStatusAggregator;
 import org.springframework.boot.actuate.health.StatusAggregator;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,15 +15,15 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(HealthContributorAutoConfiguration.class)
 @Profile("!test")
-public class HealthToMeterAutoConfig {
+public class HealthAutoConfiguration {
 
     @Bean
-    public HealthToMeterBinder healthToMeterBinder(HealthContributorRegistry registry) {
+    HealthToMeterBinder healthToMeterBinder(HealthContributorRegistry registry) {
         return new HealthToMeterBinder(registry);
     }
 
     @Bean
-    public StatusAggregator statusAggregator() {
+    StatusAggregator statusAggregator() {
         return new SimpleStatusAggregator(List.of(
                 Health.DOWN,
                 Health.OUT_OF_SERVICE,
@@ -31,4 +32,14 @@ public class HealthToMeterAutoConfig {
                 Health.UP
         ));
     }
+
+    @Bean
+    FilterRegistrationBean<LegacyHealthEndpointsForwardingFilter> redirectFilterRegistration() {
+        var registrationBean = new FilterRegistrationBean<LegacyHealthEndpointsForwardingFilter>();
+        registrationBean.setFilter(new LegacyHealthEndpointsForwardingFilter());
+        registrationBean.addUrlPatterns("/internal/isAlive", "/internal/isReady");
+        registrationBean.setOrder(1); // Set the order of the filter
+        return registrationBean;
+    }
+
 }
