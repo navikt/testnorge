@@ -31,18 +31,21 @@ public class BrregstubReverseProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-//                                           AzureNavTokenService tokenService,
+                                           AzureNavTokenService tokenService,
                                            Consumers consumers) {
 
-//        var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-//                .bearerAuthenticationHeaderFilter(
-//                        () -> tokenService
-//                                .exchange(consumers.getBrregstub())
-//                                .map(AccessToken::getTokenValue));
+        var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
+                .bearerAuthenticationHeaderFilter(
+                        () -> tokenService
+                                .exchange(consumers.getBrregstub())
+                                .map(AccessToken::getTokenValue));
 
         return builder.routes()
-                .route(spec -> spec.path("/**")
-//                        .filters(filter -> filter.filter(addAuthenticationHeaderFilter))
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
+                        .filters(filter -> filter.filter(addAuthenticationHeaderFilter))
                         .uri(consumers.getBrregstub().getUrl())
                 )
                 .build();
