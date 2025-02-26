@@ -6,6 +6,8 @@ on:
       - .github/workflows/proxy.medl-proxy.yml
       - libs/data-transfer-objects/**
       - libs/database/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
       - libs/reactive-security/**
       - libs/security-core/**
       - libs/servlet-core/**

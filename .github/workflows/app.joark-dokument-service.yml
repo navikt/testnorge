@@ -3,16 +3,15 @@ name: joark-dokument-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/domain/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
+      - .github/workflows/app.joark-dokument-service.yml
+      - apps/joark-dokument-service/**
+      - libs/domain/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
       - libs/testing/**
-      - "apps/joark-dokument-service/**"
-      - ".github/workflows/app.joark-dokument-service.yml"
+      - plugins/**
 
 jobs:
   workflow:
