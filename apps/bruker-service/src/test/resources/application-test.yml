@@ -1,6 +1,3 @@
-CRYPTOGRAPHY_SECRET: dummy
-JWT_SECRET: dummy
-
 spring:
   flyway:
     url: jdbc:h2:mem:testdb

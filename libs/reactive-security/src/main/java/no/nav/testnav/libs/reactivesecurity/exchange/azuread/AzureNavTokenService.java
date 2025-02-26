@@ -64,5 +64,4 @@ public class AzureNavTokenService implements TokenService {
         ).call();
 
     }
-
 }

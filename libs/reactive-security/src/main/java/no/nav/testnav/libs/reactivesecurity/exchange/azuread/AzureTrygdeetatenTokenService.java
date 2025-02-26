@@ -114,5 +114,4 @@ public class AzureTrygdeetatenTokenService implements TokenService {
                 .minusSeconds(300)
                 .isBefore(Instant.now());
     }
-
 }
