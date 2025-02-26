@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
-import RedigerGruppeConnector from '@/components/redigerGruppe/RedigerGruppeConnector'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '@/components/ui/button/LaasButton/LaasButton'
@@ -22,6 +21,7 @@ import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import Loading from '@/components/ui/loading/Loading'
 import FavoriteButton from '@/components/ui/button/FavoriteButton/FavoriteButton'
+import { RedigerGruppeNy } from '@/components/redigerGruppe/RedigerGruppeNy'
 
 type GruppeHeaderProps = {
 	gruppeId: string
@@ -160,7 +160,7 @@ const GruppeHeader = ({
 				</div>
 			</header>
 
-			{visRedigerState && <RedigerGruppeConnector gruppeId={gruppeId} onCancel={skjulRediger} />}
+			{visRedigerState && <RedigerGruppeNy gruppeId={gruppeId} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
 				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppeId={gruppeId} />
 			)}

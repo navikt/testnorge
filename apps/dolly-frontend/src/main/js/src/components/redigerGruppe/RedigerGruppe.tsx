@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import Loading from '@/components/ui/loading/Loading'
@@ -12,6 +12,7 @@ import { useGruppeById } from '@/utils/hooks/useGruppe'
 import * as _ from 'lodash-es'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 
 type Props = {
 	gruppeId?: string
@@ -33,6 +34,7 @@ const validation = () =>
 			.required('Gi en beskrivelse av hensikten med gruppen')
 			.max(200, 'Maksimalt 200 bokstaver'),
 	})
+
 const RedigerGruppe = ({
 	gruppeId,
 	createGruppe,
@@ -41,6 +43,9 @@ const RedigerGruppe = ({
 	onCancel,
 	error,
 }: Props): JSX.Element => {
+	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
+	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
+
 	const navigate = useNavigate()
 	const { gruppe } = useGruppeById(gruppeId)
 	const erRedigering = gruppe?.id !== undefined
@@ -48,6 +53,7 @@ const RedigerGruppe = ({
 		navn: _.get(gruppe, 'navn', ''),
 		hensikt: _.get(gruppe, 'hensikt', ''),
 	}
+
 	const mutate = useMatchMutate()
 	const formMethods = useForm({
 		mode: 'onChange',
@@ -97,6 +103,10 @@ const RedigerGruppe = ({
 				data-testid={TestComponentSelectors.BUTTON_OPPRETT}
 				variant={'primary'}
 				type={'submit'}
+				onClick={() => {
+					formMethods.handleSubmit(onHandleSubmit)
+					formMethods.trigger()
+				}}
 			>
 				{erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
 			</NavButton>
@@ -112,31 +122,44 @@ const RedigerGruppe = ({
 				control={formMethods.control}
 				className={'opprett-tabellrad'}
 				autoComplete={'off'}
-				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
+				onSubmit={() => {
+					formMethods.handleSubmit(onHandleSubmit)
+					formMethods.trigger()
+				}}
 			>
-				<div className="fields">
-					<FormTextInput
-						data-testid={TestComponentSelectors.INPUT_NAVN}
-						name="navn"
-						label="NAVN"
-						size="grow"
-						useOnChange={true}
-						autoFocus
-					/>
-					<FormTextInput
-						data-testid={TestComponentSelectors.INPUT_HENSIKT}
-						name="hensikt"
-						label="HENSIKT"
-						size="grow"
-						useOnChange={true}
-					/>
-					{buttons}
-				</div>
-				{error && (
-					<div className="opprett-error">
-						<span>{error.message}</span>
+				<>
+					{devEnabled && (
+						<>
+							<Suspense fallback={<Loading label="Laster komponenter" />}>
+								<DisplayFormState />
+								<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+							</Suspense>
+						</>
+					)}
+					<div className="fields">
+						<FormTextInput
+							data-testid={TestComponentSelectors.INPUT_NAVN}
+							name="navn"
+							label="NAVN"
+							size="grow"
+							useOnChange={true}
+							autoFocus
+						/>
+						<FormTextInput
+							data-testid={TestComponentSelectors.INPUT_HENSIKT}
+							name="hensikt"
+							label="HENSIKT"
+							size="grow"
+							useOnChange={true}
+						/>
+						{buttons}
 					</div>
-				)}
+					{error && (
+						<div className="opprett-error">
+							<span>{error.message}</span>
+						</div>
+					)}
+				</>
 			</Form>
 		</FormProvider>
 	)
