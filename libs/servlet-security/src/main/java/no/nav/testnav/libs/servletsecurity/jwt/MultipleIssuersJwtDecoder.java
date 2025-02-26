@@ -4,7 +4,6 @@ import com.nimbusds.jwt.JWTParser;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
-import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.*;
@@ -21,12 +20,13 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
     MultipleIssuersJwtDecoder(List<ResourceServerProperties> properties) {
         this.decoderMap = properties
                 .stream()
-                .peek(config -> log.info("Configuring decoder for issuer {}", config.getIssuerUri()))
                 .collect(Collectors.toMap(
                         ResourceServerProperties::getIssuerUri,
-                        props -> {
-                            NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(props.getIssuerUri());
-                            jwtDecoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(issuerValidator(props), audienceValidator(props)));
+                        config -> {
+                            var jwtDecoder = NimbusJwtDecoder
+                                    .withIssuerLocation(config.getIssuerUri())
+                                    .build();
+                            jwtDecoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(defaultIssuerValidator(config), customAudienceValidator(config)));
                             return jwtDecoder;
                         }
                 ));
@@ -35,15 +35,13 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
     @Override
     public Jwt decode(String token) throws JwtException {
         try {
-            var parsed = JWTParser.parse(token);
-            var claims = parsed.getJWTClaimsSet();
-            var issuer = claims.getIssuer();
-            log.info("Decoding token from issuer {}", issuer);
-            var decoder = decoderMap.get(issuer);
-            log.info("Decoding using decoder {} instanceof {}", decoder, decoder.getClass());
-            var decoded = decoder.decode(token);
-            log.info("Decoded token with claims {}", decoded == null ? "null!?" : decoded.getClaims());
-            return decoded;
+            var issuer = JWTParser
+                    .parse(token)
+                    .getJWTClaimsSet()
+                    .getIssuer();
+            return decoderMap
+                    .get(issuer)
+                    .decode(token);
         } catch (ParseException e) {
             log.error("Feil ved parsing av token", e);
             throw new JwtException("Feil ved parsing av token", e);
@@ -56,23 +54,33 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
         }
     }
 
-    private static OAuth2TokenValidator<Jwt> issuerValidator(ResourceServerProperties properties) {
+    private static OAuth2TokenValidator<Jwt> defaultIssuerValidator(ResourceServerProperties properties) {
         return JwtValidators.createDefaultWithIssuer(properties.getIssuerUri());
     }
 
-    private static OAuth2TokenValidator<Jwt> audienceValidator(ResourceServerProperties properties) {
-        return token -> token
-                .getAudience()
-                .stream()
-                .anyMatch(audience -> properties.getAcceptedAudience().contains(audience)) ?
-                OAuth2TokenValidatorResult.success() :
-                OAuth2TokenValidatorResult.failure(error(properties.getAcceptedAudience(), token.getAudience()));
+    private static OAuth2TokenValidator<Jwt> customAudienceValidator(ResourceServerProperties properties) {
+        return token -> {
+            var valid = token
+                    .getAudience()
+                    .stream()
+                    .anyMatch(audience -> properties.getAcceptedAudience().contains(audience));
+            if (!valid) {
+                log.error("Fant ikke påkrevd audience {} i tokenet, bare {}", properties.getAcceptedAudience(), token.getAudience());
+            }
+            return OAuth2TokenValidatorResult.success();
+        };
+//        return token -> token
+//                .getAudience()
+//                .stream()
+//                .anyMatch(audience -> properties.getAcceptedAudience().contains(audience)) ?
+//                OAuth2TokenValidatorResult.success() :
+//                OAuth2TokenValidatorResult.failure(error(properties.getAcceptedAudience(), token.getAudience()));
     }
 
-    private static OAuth2Error error(List<String> acceptedAudiences, List<String> tokenAudiences) {
-        var message = "Fant ikke påkrevd audience %s i tokenet, bare %s".formatted(acceptedAudiences, tokenAudiences);
-        log.error(message);
-        return new OAuth2Error("invalid_token", message, null);
-    }
+//    private static OAuth2Error error(List<String> acceptedAudiences, List<String> tokenAudiences) {
+//        var message = "Fant ikke påkrevd audience %s i tokenet, bare %s".formatted(acceptedAudiences, tokenAudiences);
+//        log.error(message);
+//        return new OAuth2Error("invalid_token", message, null);
+//    }
 
 }
