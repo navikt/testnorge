@@ -19,7 +19,7 @@ public class Oauth2Resolver {
     public static Mono<OAuth2AuthenticationToken> getOauth2AuthenticationToken() {
         return ReactiveSecurityContextHolder
                 .getContext()
-                .switchIfEmpty(Mono.error(new JwtResolverException("ReactiveSecurityContext is empty")))
+                .switchIfEmpty(Mono.error(new EmptyReactiveSecurityContextException()))
                 .doOnNext(context -> log.info("Oauth2Resolver context.authentication {} {}", context.getAuthentication().getClass().getCanonicalName(), context.getAuthentication()))
                 .map(SecurityContext::getAuthentication)
                 .map(OAuth2AuthenticationToken.class::cast)
