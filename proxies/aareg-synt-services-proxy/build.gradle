@@ -8,3 +8,9 @@ sonarqube {
         property "sonar.projectName", "aareg-synt-services-proxy"
     }
 }
+
+dependencies {
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-proxy"
+    implementation "no.nav.testnav.libs:testing"
+}

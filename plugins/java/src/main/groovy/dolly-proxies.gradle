@@ -23,9 +23,6 @@ dependencies {
 
     implementation "com.google.cloud:spring-cloud-gcp-starter-secretmanager:$versions.gcpSecretManager"
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
-    implementation "no.nav.testnav.libs:reactive-core"
-    implementation "no.nav.testnav.libs:reactive-proxy"
-    implementation "no.nav.testnav.libs:testing"
     implementation "org.hibernate.validator:hibernate-validator"
     implementation "org.projectlombok:lombok"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
