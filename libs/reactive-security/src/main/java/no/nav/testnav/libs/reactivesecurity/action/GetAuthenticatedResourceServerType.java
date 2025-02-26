@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.jwt.JwtClaimAccessor;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import reactor.core.publisher.Mono;
 
@@ -18,23 +19,23 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
 
     private final List<ResourceServerProperties> resourceServerProperties;
 
-    private Optional<ResourceServerType> getResourceTypeForm(JwtAuthenticationToken token) {
+    private Optional<ResourceServerType> getResourceTypeFrom(JwtAuthenticationToken token) {
         return resourceServerProperties
                 .stream()
                 .filter(properties -> {
                     if (token == null) {
-                        log.error("Token is null");
+                        log.warn("Token is null");
+                    } else if (token.getToken() == null) {
+                        log.warn("Token.getToken() is null");
+                    } else if (token.getToken().getIssuer() == null) {
+                        log.warn("Token.getToken().getIssuer() is null");
                     }
-                    if (token.getToken() == null) {
-                        log.error("Token.getToken() is null");
-                    }
-                    if (token.getToken().getIssuer() == null) {
-                        log.error("Token.getToken().getIssuer() is null");
-                    }
-                    log.info("Configured issuer, token issuer: {}, {}", properties.getIssuerUri(), token.getToken().getIssuer().toString());
-                    return properties
-                            .getIssuerUri()
-                            .equalsIgnoreCase(token.getToken().getIssuer().toString());
+                    return Optional
+                            .ofNullable(token)
+                            .map(JwtAuthenticationToken::getToken)
+                            .map(JwtClaimAccessor::getIssuer)
+                            .map(issuerFromToken -> issuerFromToken.toString().equalsIgnoreCase(properties.getIssuerUri()))
+                            .orElse(false);
                 })
                 .findFirst()
                 .map(ResourceServerProperties::getType);
@@ -44,17 +45,20 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
     public Mono<ResourceServerType> call() {
 
         return getJwtAuthenticationToken()
-                .onErrorResume(JwtResolverException.class, throwable -> Mono.empty())
+                .onErrorResume(EmptyReactiveSecurityContextException.class, exception -> {
+                    log.error("Failed to get JWT token", exception);
+                    return Mono.empty();
+                })
                 .flatMap(authentication -> {
-                    if (authentication instanceof JwtAuthenticationToken jwtAuthenticationTokentoken) {
-                        return getResourceTypeForm(jwtAuthenticationTokentoken)
-                                .map(Mono::just)
-                                .orElseGet(Mono::empty);
-                    } else if (authentication instanceof OAuth2AuthenticationToken) {
+                    if (authentication instanceof JwtAuthenticationToken token) {
+                        return Mono.justOrEmpty(getResourceTypeFrom(token));
+                    }
+                    if (authentication instanceof OAuth2AuthenticationToken) {
                         return Mono.just(ResourceServerType.TOKEN_X);
                     }
                     return Mono.empty();
                 });
+
     }
 
 }
