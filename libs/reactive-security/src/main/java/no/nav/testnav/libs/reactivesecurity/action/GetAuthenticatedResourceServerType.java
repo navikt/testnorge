@@ -24,15 +24,20 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
         return resourceServerProperties
                 .stream()
                 .filter(properties -> {
-                    log.info("Configured issuer: {}", properties.getIssuerUri());
-                    assert token != null;
-                    assert token.getToken() != null;
-                    assert token.getToken().getIssuer() != null;
-                    assert token.getToken().getIssuer().toString() != null;
-                    log.info("Token issuer: {}", token.getToken().getIssuer().toString());
+                    if (token == null) {
+                        log.error("Token is null");
+                    }
+                    if (token.getToken() == null) {
+                        log.error("Token.getToken() is null");
+                    }
+                    if (token.getToken().getIssuer() == null) {
+                        log.error("Token.getToken().getIssuer() is null");
+                    }
+                    log.info("Configured issuer, token issuer: {}, {}", properties.getIssuerUri(), token.getToken().getIssuer().toString());
                     return properties
-                        .getIssuerUri()
-                        .equalsIgnoreCase(token.getToken().getIssuer().toString()); })
+                            .getIssuerUri()
+                            .equalsIgnoreCase(token.getToken().getIssuer().toString());
+                })
                 .findFirst()
                 .map(ResourceServerProperties::getType);
     }
