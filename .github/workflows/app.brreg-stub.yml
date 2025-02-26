@@ -7,6 +7,7 @@ on:
       - apps/brreg-stub/**
       - libs/database/**
       - libs/servlet-core/**
+      - libs/testing/**
       - libs/vault/**
       - plugins/**
 

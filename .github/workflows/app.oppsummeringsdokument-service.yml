@@ -8,6 +8,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "xsd/arbeidsforhold-xsd/**"
       - "apps/oppsummeringsdokument-service/**"
       - ".github/workflows/app.oppsummeringsdokument-service.yml"

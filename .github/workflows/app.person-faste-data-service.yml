@@ -7,6 +7,7 @@ on:
       - "libs/data-transfer-objects/**"
       - "libs/reactive-core/**"
       - "libs/reactive-security/**"
+      - libs/testing/**
       - "apps/person-faste-data-service/**"
       - ".github/workflows/app.person-faste-data-service.yml"
 

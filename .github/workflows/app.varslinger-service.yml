@@ -9,6 +9,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "apps/varslinger-service/**"
       - ".github/workflows/app.varslinger-service.yml"
 

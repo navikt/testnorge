@@ -11,6 +11,7 @@ on:
       - libs/security-core/**
       - libs/servlet-core/**
       - libs/servlet-insecure-security/**
+      - libs/testing/**
       - plugins/**
 
 jobs:

@@ -8,6 +8,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "apps/inntektsmelding-service/**"
       - ".github/workflows/app.inntektsmelding-service.yml"
 

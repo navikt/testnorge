@@ -6,6 +6,7 @@ on:
       - "plugins/**"
       - "libs/reactive-core/**"
       - "libs/reactive-proxy/**"
+      - libs/testing/**
       - "proxies/ereg-proxy/**"
       - ".github/workflows/proxy.ereg-proxy.yml"
 

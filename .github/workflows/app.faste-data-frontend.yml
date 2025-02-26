@@ -10,6 +10,7 @@ on:
       - "libs/security-core/**"
       - "apps/faste-data-frontend/**"
       - ".github/workflows/app.faste-data-frontend.yml"
+      - libs/testing/**
 
 jobs:
   workflow:

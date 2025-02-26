@@ -8,6 +8,7 @@ on:
       - "libs/reactive-proxy/**"
       - "libs/reactive-security/**"
       - "libs/security-core/**"
+      - libs/testing/**
       - "proxies/fullmakt-proxy/**"
       - ".github/workflows/proxy.fullmakt-proxy.yml"
 

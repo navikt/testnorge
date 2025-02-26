@@ -9,6 +9,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "apps/miljoer-service/**"
       - ".github/workflows/app.miljoer-service.yml"
 

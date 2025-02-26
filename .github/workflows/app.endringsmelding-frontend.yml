@@ -10,6 +10,7 @@ on:
       - "libs/security-core/**"
       - "apps/endringsmelding-frontend/**"
       - ".github/workflows/app.endringsmelding-frontend.yml"
+      - libs/testing/**
 
 jobs:
   workflow:

@@ -6,6 +6,7 @@ on:
       - "plugins/**"
       - "libs/reactive-core/**"
       - "libs/reactive-proxy/**"
+      - libs/testing/**
       - "proxies/aareg-synt-services-proxy/**"
       - ".github/workflows/proxy.aareg-synt-services-proxy.yml"
 

@@ -8,6 +8,7 @@ on:
       - "libs/reactive-security/**"
       - "libs/security-core/**"
       - "libs/data-transfer-objects/**"
+      - libs/testing/**
       - "apps/skattekort-service/**"
       - ".github/workflows/app.skattekort-service.yml"
 

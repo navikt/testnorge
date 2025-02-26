@@ -11,6 +11,7 @@ on:
       - "libs/servlet-insecure-security/**"
       - "apps/generer-arbeidsforhold-populasjon-service/**"
       - ".github/workflows/app.generer-arbeidsforhold-populasjon-service.yml"
+      - libs/testing/**
 
 jobs:
   workflow:

@@ -12,6 +12,7 @@ on:
       - libs/security-core/**
       - libs/servlet-core/**
       - libs/servlet-security/**
+      - libs/testing/**
       - plugins/**
 
 jobs:

@@ -10,6 +10,7 @@ on:
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
       - "libs/slack/**"
+      - libs/testing/**
       - "apps/tilbakemelding-api/**"
       - ".github/workflows/app.tilbakemelding-api.yml"
 

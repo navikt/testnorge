@@ -10,6 +10,7 @@ on:
       - libs/reactive-frontend/**
       - libs/reactive-security/**
       - libs/security-core/**
+      - libs/testing/**
       - plugins/**
 
 jobs:

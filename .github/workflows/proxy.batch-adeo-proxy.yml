@@ -6,6 +6,7 @@ on:
       - "plugins/**"
       - "libs/reactive-core/**"
       - "libs/reactive-proxy/**"
+      - libs/testing/**
       - "proxies/batch-adeo-proxy/**"
       - ".github/workflows/proxy.batch-adeo-proxy.yml"
 

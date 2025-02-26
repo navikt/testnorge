@@ -10,6 +10,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "apps/organisasjon-bestilling-service/**"
       - ".github/workflows/app.organisasjon-bestilling-service.yml"
 

@@ -9,6 +9,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "apps/tps-messaging-service/**"
       - ".github/workflows/app.tps-messaging-service.yml"
 

@@ -9,6 +9,7 @@ on:
       - libs/database/**
       - libs/servlet-core/**
       - libs/servlet-security/**
+      - libs/testing/**
       - libs/vault/**
       - plugins/**
 

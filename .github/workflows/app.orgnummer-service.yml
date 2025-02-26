@@ -11,6 +11,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "apps/orgnummer-service/**"
       - ".github/workflows/app.orgnummer-service.yml"
 

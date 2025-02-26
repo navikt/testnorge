@@ -8,6 +8,7 @@ on:
       - "libs/reactive-proxy/**"
       - "libs/reactive-security/**"
       - "libs/security-core/**"
+      - libs/testing/**
       - "proxies/aareg-proxy/**"
       - ".github/workflows/proxy.aareg-proxy.yml"
 

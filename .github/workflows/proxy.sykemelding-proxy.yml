@@ -10,6 +10,7 @@ on:
       - libs/reactive-security/**
       - libs/security-core/**
       - libs/security-token-service/**
+      - libs/testing/**
       - plugins/**
       - proxies/sykemelding-proxy/**
 

@@ -8,6 +8,7 @@ on:
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/security-core/**
+      - libs/testing/**
       - plugins/**
       - proxies/arena-forvalteren-proxy/**
 

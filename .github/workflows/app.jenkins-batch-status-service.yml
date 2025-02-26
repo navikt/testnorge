@@ -10,6 +10,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "apps/jenkins-batch-status-service/**"
       - ".github/workflows/app.jenkins-batch-status-service.yml"
 

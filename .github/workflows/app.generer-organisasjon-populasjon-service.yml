@@ -14,6 +14,7 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-security/**"
+      - libs/testing/**
       - "apps/generer-organisasjon-populasjon-service/**"
       - ".github/workflows/app.generer-organisasjon-populasjon-service.yml"
 
