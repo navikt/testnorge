@@ -1,2 +1,4 @@
+no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedAutoConfiguration
 no.nav.testnav.libs.reactivesecurity.exchange.TokenServiceAutoConfiguration
 no.nav.testnav.libs.reactivesecurity.jwt.ReactiveJwtAutoConfiguration
+no.nav.testnav.libs.reactivesecurity.properties.ResourceServerPropertiesAutoConfiguration

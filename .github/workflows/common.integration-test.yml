@@ -41,8 +41,7 @@ jobs:
       - name: "Health check"
         timeout-minutes: 5
         run: |
-          echo Wait on service...
-          bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' ${{ inputs.healthcheck }})" != "200" ]]; do echo ...; sleep 5; done; echo Service is up;'
+          bash -c 'while true; do status=$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' ${{ inputs.healthcheck }}); if [ "$status" -eq 200 ]; then echo Service is up; break; else echo "HTTP status: $status"; sleep 5; fi; done;'
       - name: "Run integration tests"
         uses: gradle/actions/setup-gradle@v3
         with:
