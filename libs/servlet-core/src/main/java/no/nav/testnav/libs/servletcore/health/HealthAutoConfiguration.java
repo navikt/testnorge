@@ -38,7 +38,7 @@ public class HealthAutoConfiguration {
         var registrationBean = new FilterRegistrationBean<LegacyHealthEndpointsForwardingFilter>();
         registrationBean.setFilter(new LegacyHealthEndpointsForwardingFilter());
         registrationBean.addUrlPatterns("/internal/isAlive", "/internal/isReady");
-        registrationBean.setOrder(1); // Set the order of the filter
+        registrationBean.setOrder(1);
         return registrationBean;
     }
 
