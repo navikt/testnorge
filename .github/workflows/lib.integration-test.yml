@@ -3,9 +3,10 @@ name: integration-test
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/integration-test/**"
-      - ".github/workflows/lib.reactive-core.yml"
+      - .github/workflows/lib.reactive-core.yml
+      - libs/integration-test/**
+      - libs/security-core/**
+      - plugins/**
 
 jobs:
   workflow:

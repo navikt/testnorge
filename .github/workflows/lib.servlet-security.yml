@@ -3,9 +3,10 @@ name: servlet-security
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/servlet-security/**"
-      - ".github/workflows/lib.commanservlet-securityds.yml"
+      - .github/workflows/lib.commanservlet-securityds.yml
+      - libs/security-core/**
+      - libs/servlet-security/**
+      - plugins/**
 
 jobs:
   workflow:

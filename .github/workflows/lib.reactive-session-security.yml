@@ -3,9 +3,10 @@ name: reactive-session-security
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-session-security/**"
-      - ".github/workflows/lib.reactive-session-security.yml"
+      - .github/workflows/lib.reactive-session-security.yml
+      - libs/reactive-session-security/**
+      - libs/security-core/**
+      - plugins/**
 
 jobs:
   workflow:

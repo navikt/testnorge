@@ -3,9 +3,10 @@ name: reactive-frontend
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-frontend/**"
-      - ".github/workflows/lib.reactive-frontend.yml"
+      - .github/workflows/lib.reactive-frontend.yml
+      - libs/reactive-frontend/**
+      - libs/security-core/**
+      - plugins/**
 
 jobs:
   workflow:

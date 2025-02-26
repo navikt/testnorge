@@ -2,11 +2,11 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'servlet-security'
+rootProject.name = "servlet-security"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../security-core'
+includeBuild "../../libs/security-core"
 
 develocity {
     buildScan {
