@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'security-core'
+rootProject.name = "security-core"
 
 includeBuild "../../plugins/java"
 

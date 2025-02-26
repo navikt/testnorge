@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'servlet-core'
+rootProject.name = "servlet-core"
 
 includeBuild "../../plugins/java"
 

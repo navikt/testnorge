@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'avro-schema'
+rootProject.name = "avro-schema"
 
 includeBuild "../../plugins/java"
 

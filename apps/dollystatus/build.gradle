@@ -6,10 +6,12 @@ sonarqube {
     properties {
         property "sonar.projectKey", "testnav-dollystatus"
         property "sonar.projectName", "testnav-dollystatus"
-        property 'sonar.sources', 'src/main/java,src/main/js'
+        property "sonar.sources", "src/main/java,src/main/js"
     }
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation "org.springframework.boot:spring-boot-starter-web"
 }

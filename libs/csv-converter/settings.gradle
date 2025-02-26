@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'csv-converter'
+rootProject.name = "csv-converter"
 
 includeBuild "../../plugins/java"
 

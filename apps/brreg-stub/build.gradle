@@ -19,13 +19,14 @@ wsimport {
 
 dependencies {
 
-    runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect:2.1.10'
+    runtimeOnly "org.jetbrains.kotlin:kotlin-reflect:2.1.10"
 
     implementation("io.dropwizard:dropwizard-jackson:4.0.12") {
         exclude group: "com.google.code.findbugs"
     }
 
     implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.boot:spring-boot-starter-web"

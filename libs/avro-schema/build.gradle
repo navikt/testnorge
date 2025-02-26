@@ -2,7 +2,7 @@ plugins {
     id "dolly-libs"
     id "dolly-libs-publish"
 
-    id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
+    id "com.github.davidmc24.gradle.plugin.avro" version "1.9.1"
 }
 
 sonarqube {

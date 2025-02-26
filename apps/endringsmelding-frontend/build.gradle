@@ -29,6 +29,7 @@ dependencies {
     implementation("no.nav.testnav.libs:security-core") {
         exclude group: "org.springframework.session", module: "spring-session-data-redis"
     }
+    implementation "no.nav.testnav.libs:testing"
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
 

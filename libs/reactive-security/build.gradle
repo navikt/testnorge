@@ -1,7 +1,7 @@
 plugins {
     id "dolly-libs"
 
-    id 'maven-publish'
+    id "maven-publish"
 }
 
 sonarqube {
@@ -19,7 +19,7 @@ publishing {
     repositories {
         maven {
             name = "github"
-            url = uri('https://maven.pkg.github.com/navikt/testnorge')
+            url = uri("https://maven.pkg.github.com/navikt/testnorge")
             credentials(PasswordCredentials) {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
@@ -31,10 +31,10 @@ publishing {
             from(components.java)
 
             versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
                 }
-                usage('java-runtime') {
+                usage("java-runtime") {
                     fromResolutionResult()
                 }
             }
@@ -44,12 +44,12 @@ publishing {
 
 dependencies {
 
-    implementation 'no.nav.testnav.libs:security-core'
+    implementation "no.nav.testnav.libs:security-core"
     implementation "com.auth0:java-jwt:$versions.jwt"
 
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-security"
 
 }

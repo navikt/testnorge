@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'data-transfer-search-objects'
+rootProject.name = "data-transfer-search-objects"
 
 includeBuild "../../plugins/java"
 

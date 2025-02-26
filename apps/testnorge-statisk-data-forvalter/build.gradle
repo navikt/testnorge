@@ -21,6 +21,7 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
+    implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:vault"
 
     implementation "org.springframework.kafka:spring-kafka"
@@ -47,8 +48,8 @@ dependencies {
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
     testImplementation "org.springframework.security:spring-security-test"

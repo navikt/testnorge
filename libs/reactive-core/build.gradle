@@ -14,10 +14,10 @@ publishing {
     publications {
         gpr(MavenPublication) {
             versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
                 }
-                usage('java-runtime') {
+                usage("java-runtime") {
                     fromResolutionResult()
                 }
             }
@@ -26,7 +26,7 @@ publishing {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
 
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"

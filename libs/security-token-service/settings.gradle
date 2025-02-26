@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'security-token-service'
+rootProject.name = "security-token-service"
 
 includeBuild "../../plugins/java"
 

@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'kafka-config'
+rootProject.name = "kafka-config"
 
 includeBuild "../../plugins/java"
 
