@@ -11,7 +11,5 @@ sonarqube {
 }
 
 dependencies {
-    implementation "no.nav.testnav.libs:testing"
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }

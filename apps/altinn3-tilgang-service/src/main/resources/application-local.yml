@@ -1,4 +1,3 @@
-ALTINN_URL: ${sm\://azure-openid-config-token-endpoint}
 MASKINPORTEN_CLIENT_ID: ef2960de-7fa6-4396-80a5-2eca00e4af28
 MASKINPORTEN_SCOPES: altinn:resourceregistry/accesslist.read altinn:resourceregistry/accesslist.write altinn:accessmanagement/authorizedparties.resourceowner
 

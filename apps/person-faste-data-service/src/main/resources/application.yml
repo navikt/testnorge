@@ -7,7 +7,7 @@ spring:
       resourceserver:
         aad:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: dev-gcp:dolly:testnav-person-faste-data-service
