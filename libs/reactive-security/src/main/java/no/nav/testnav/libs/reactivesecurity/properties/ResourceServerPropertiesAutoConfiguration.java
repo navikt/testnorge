@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
-// TODO: Configuration such as spring.security.oauth2.resourceserver is not part of the Spring framework, and should be moved to separate configuration, such as dolly.oauth2 or similar.
-
 /**
  * Auto configuration for resource server properties, e.g. configuration under {@code spring.security.oauth2.resourceserver}.
  * Supported properties are:
@@ -38,10 +36,7 @@ public class ResourceServerPropertiesAutoConfiguration {
             @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}") String issuerUri,
             @Value("${spring.security.oauth2.resourceserver.aad.accepted-audience}") List<String> acceptedAudience
     ) {
-        var azureAdResourceServerProperties = new AzureAdResourceServerProperties();
-        azureAdResourceServerProperties.setIssuerUri(issuerUri);
-        azureAdResourceServerProperties.setAcceptedAudience(acceptedAudience);
-        return azureAdResourceServerProperties;
+        return new AzureAdResourceServerProperties(issuerUri, acceptedAudience);
     }
 
     @Bean
@@ -62,10 +57,7 @@ public class ResourceServerPropertiesAutoConfiguration {
             @Value("${spring.security.oauth2.resourceserver.tokenx.issuer-uri}") String issuerUri,
             @Value("${spring.security.oauth2.resourceserver.tokenx.accepted-audience}") List<String> acceptedAudience
     ) {
-        var tokenxResourceServerProperties = new TokenxResourceServerProperties();
-        tokenxResourceServerProperties.setIssuerUri(issuerUri);
-        tokenxResourceServerProperties.setAcceptedAudience(acceptedAudience);
-        return tokenxResourceServerProperties;
+        return new TokenxResourceServerProperties(issuerUri, acceptedAudience);
     }
 
     @Bean
@@ -86,10 +78,7 @@ public class ResourceServerPropertiesAutoConfiguration {
             @Value("${spring.security.oauth2.resourceserver.trygdeetaten.issuer-uri}") String issuerUri,
             @Value("${spring.security.oauth2.resourceserver.trygdeetaten.accepted-audience}") List<String> acceptedAudience
     ) {
-        var trygdeetatenAzureAdResourceServerProperties = new TrygdeetatenAzureAdResourceServerProperties();
-        trygdeetatenAzureAdResourceServerProperties.setIssuerUri(issuerUri);
-        trygdeetatenAzureAdResourceServerProperties.setAcceptedAudience(acceptedAudience);
-        return trygdeetatenAzureAdResourceServerProperties;
+        return new TrygdeetatenAzureAdResourceServerProperties(issuerUri, acceptedAudience);
     }
 
     @Bean

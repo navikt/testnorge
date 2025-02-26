@@ -28,9 +28,9 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
                                 .map(JwtAuthenticationToken::getToken)
                                 .map(JwtClaimAccessor::getIssuer)
                                 .map(issuerFromToken -> {
-                                    var issuer = issuerFromToken.toString().equalsIgnoreCase(properties.getIssuerUri());
-                                    log.info("issuerFromToken: {}, properties.getIssuerUri(): {}, issuer: {}", issuerFromToken, properties.getIssuerUri(), issuer);
-                                    return issuer;
+                                    var match = issuerFromToken.toString().equalsIgnoreCase(properties.getIssuerUri());
+                                    log.info("issuerFromToken: {}, issuerFromProperties: {} ({}), match: {}", issuerFromToken, properties.getIssuerUri(), properties.getClass(), match);
+                                    return match;
                                 })
                                 .orElse(false))
                 .findFirst()
@@ -47,7 +47,7 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
                 })
                 .flatMap(authentication -> {
                     if (authentication instanceof JwtAuthenticationToken token) {
-                        return Mono.justOrEmpty(getResourceTypeFrom(token));
+                        return Mono.justOrEmpty(getResourceTypeFrom(token).orElse(ResourceServerType.AZURE_AD));
                     }
                     if (authentication instanceof OAuth2AuthenticationToken) {
                         return Mono.just(ResourceServerType.TOKEN_X);
