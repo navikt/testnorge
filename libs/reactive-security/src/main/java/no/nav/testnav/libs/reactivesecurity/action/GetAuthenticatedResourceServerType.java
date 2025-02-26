@@ -22,21 +22,17 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
     private Optional<ResourceServerType> getResourceTypeFrom(JwtAuthenticationToken token) {
         return resourceServerProperties
                 .stream()
-                .filter(properties -> {
-                    if (token == null) {
-                        log.warn("Token is null");
-                    } else if (token.getToken() == null) {
-                        log.warn("Token.getToken() is null");
-                    } else if (token.getToken().getIssuer() == null) {
-                        log.warn("Token.getToken().getIssuer() is null");
-                    }
-                    return Optional
-                            .ofNullable(token)
-                            .map(JwtAuthenticationToken::getToken)
-                            .map(JwtClaimAccessor::getIssuer)
-                            .map(issuerFromToken -> issuerFromToken.toString().equalsIgnoreCase(properties.getIssuerUri()))
-                            .orElse(false);
-                })
+                .filter(properties ->
+                        Optional
+                                .ofNullable(token)
+                                .map(JwtAuthenticationToken::getToken)
+                                .map(JwtClaimAccessor::getIssuer)
+                                .map(issuerFromToken -> {
+                                    var match = issuerFromToken.toString().equalsIgnoreCase(properties.getIssuerUri());
+                                    log.info("issuerFromToken: {}, issuerFromProperties: {} ({}), match: {}", issuerFromToken, properties.getIssuerUri(), properties.getClass(), match);
+                                    return match;
+                                })
+                                .orElse(false))
                 .findFirst()
                 .map(ResourceServerProperties::getType);
     }
@@ -51,7 +47,7 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
                 })
                 .flatMap(authentication -> {
                     if (authentication instanceof JwtAuthenticationToken token) {
-                        return Mono.justOrEmpty(getResourceTypeFrom(token));
+                        return Mono.justOrEmpty(getResourceTypeFrom(token).orElse(ResourceServerType.AZURE_AD));
                     }
                     if (authentication instanceof OAuth2AuthenticationToken) {
                         return Mono.just(ResourceServerType.TOKEN_X);
