@@ -21,10 +21,10 @@ import java.io.IOException;
 public class OpensearchParameterSettings implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final String INDEX_SETTING =
-            "{\"index\":{\"max_terms_count\":\"%s\"}}";
+            "{\"index\":{\"max_terms_count\":%d}}";
 
     @Value("${open.search.max-terms-count}")
-    private String maxTermsCount;
+    private Integer maxTermsCount;
 
     private final ElasticParamsConsumer elasticParamsConsumer;
     private final ObjectMapper objectMapper;
