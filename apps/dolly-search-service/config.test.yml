@@ -14,7 +14,7 @@ spec:
   port: 8080
   openSearch:
     instance: bestillinger
-    access: admin
+    access: read
   tokenx:
     enabled: true
   azure:

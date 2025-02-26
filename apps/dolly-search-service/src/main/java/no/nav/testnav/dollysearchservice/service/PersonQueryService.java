@@ -9,6 +9,7 @@ import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import org.opensearch.common.unit.TimeValue;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.search.builder.SearchSourceBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +25,9 @@ public class PersonQueryService {
     private final OpenSearchConsumer openSearchConsumer;
     private final ObjectMapper objectMapper;
 
+    @Value("${open.search.pdl-index}")
+    private String pdlIndex;
+
     public Mono<SearchInternalResponse> execQuery(SearchRequest request, QueryBuilder query) {
 
         if (isNull(request.getSide())) {
@@ -38,7 +42,7 @@ public class PersonQueryService {
                         no.nav.testnav.dollysearchservice.dto.SearchRequest.builder()
                                 .query(
                                         new org.opensearch.action.search.SearchRequest()
-                                                .indices("pdl-sok")
+                                                .indices(pdlIndex)
                                                 .source(new SearchSourceBuilder()
                                                         .query(query)
                                                         .from(request.getSide() * request.getAntall())
