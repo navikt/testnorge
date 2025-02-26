@@ -18,6 +18,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class OpenSearchV2Service {
 
+    private static final String NO_IDENT = "9999999999)";
+
     private final BestillingQueryService bestillingQueryService;
     private final MapperFacade mapperFacade;
     private final PersonQueryService personQueryService;
@@ -29,7 +31,7 @@ public class OpenSearchV2Service {
         request.setRegistreRequest(registreRequest);
 
         var identer = bestillingQueryService.execRegisterQuery(request);
-        request.setIdenter(identer.isEmpty() ? Set.of("99999999999") : identer);
+        request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);
 

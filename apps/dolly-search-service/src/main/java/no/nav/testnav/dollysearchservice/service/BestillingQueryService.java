@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BestillingQueryService {
 
-    private static final int QUERY_SIZE = 1000;
+    private static final int QUERY_SIZE = 10000;
 
     @Value("${open.search.index}")
     private String dollyIndex;

@@ -53,3 +53,7 @@ server:
       charset: UTF-8
   error:
     include-message: always
+
+open:
+  search:
+    max-terms-count: 200000
