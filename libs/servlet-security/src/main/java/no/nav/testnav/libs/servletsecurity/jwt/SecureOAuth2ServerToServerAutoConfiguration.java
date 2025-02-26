@@ -36,7 +36,7 @@ public class SecureOAuth2ServerToServerAutoConfiguration {
     @Bean
     @Profile("!test")
     @ConditionalOnMissingBean
-    JwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
+    MultipleIssuersJwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
         return new MultipleIssuersJwtDecoder(properties);
     }
 

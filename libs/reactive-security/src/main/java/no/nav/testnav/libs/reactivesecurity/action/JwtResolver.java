@@ -14,15 +14,14 @@ abstract class JwtResolver {
                 .getContext()
                 .switchIfEmpty(Mono.error(new EmptyReactiveSecurityContextException()))
                 .doOnNext(context -> log.info("JwtResolver context.authentication {} {}", context.getAuthentication().getClass().getCanonicalName(), context.getAuthentication()))
-                .map(SecurityContext::getAuthentication);
+                .map(SecurityContext::getAuthentication)
+                .doOnNext(authentication -> log.info("JwtResolver authentication {} {}", authentication.getClass().getCanonicalName(), authentication));
     }
 
     static class EmptyReactiveSecurityContextException extends IllegalStateException {
-
         EmptyReactiveSecurityContextException() {
             super();
         }
-
     }
 
 }

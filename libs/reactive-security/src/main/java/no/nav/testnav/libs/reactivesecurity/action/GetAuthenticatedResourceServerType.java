@@ -22,21 +22,17 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
     private Optional<ResourceServerType> getResourceTypeFrom(JwtAuthenticationToken token) {
         return resourceServerProperties
                 .stream()
-                .filter(properties -> {
-                    if (token == null) {
-                        log.warn("Token is null");
-                    } else if (token.getToken() == null) {
-                        log.warn("Token.getToken() is null");
-                    } else if (token.getToken().getIssuer() == null) {
-                        log.warn("Token.getToken().getIssuer() is null");
-                    }
-                    return Optional
-                            .ofNullable(token)
-                            .map(JwtAuthenticationToken::getToken)
-                            .map(JwtClaimAccessor::getIssuer)
-                            .map(issuerFromToken -> issuerFromToken.toString().equalsIgnoreCase(properties.getIssuerUri()))
-                            .orElse(false);
-                })
+                .filter(properties ->
+                        Optional
+                                .ofNullable(token)
+                                .map(JwtAuthenticationToken::getToken)
+                                .map(JwtClaimAccessor::getIssuer)
+                                .map(issuerFromToken -> {
+                                    var issuer = issuerFromToken.toString().equalsIgnoreCase(properties.getIssuerUri());
+                                    log.info("issuerFromToken: {}, properties.getIssuerUri(): {}, issuer: {}", issuerFromToken, properties.getIssuerUri(), issuer);
+                                    return issuer;
+                                })
+                                .orElse(false))
                 .findFirst()
                 .map(ResourceServerProperties::getType);
     }

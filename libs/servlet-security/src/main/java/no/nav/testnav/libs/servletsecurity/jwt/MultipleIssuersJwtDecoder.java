@@ -65,7 +65,7 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
                     .stream()
                     .anyMatch(audience -> properties.getAcceptedAudience().contains(audience));
             if (!valid) {
-                log.error("Fant ikke påkrevd audience {} i tokenet, bare {}", properties.getAcceptedAudience(), token.getAudience());
+                log.warn("Fant ikke påkrevd audience {} i tokenet, bare {}", properties.getAcceptedAudience(), token.getAudience());
             }
             return OAuth2TokenValidatorResult.success();
         };
