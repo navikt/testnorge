@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.reactivesecurity.action;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -14,6 +15,7 @@ import java.util.concurrent.Callable;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class GetAuthenticatedResourceServerType extends JwtResolver implements Callable<Mono<ResourceServerType>> {
 
     private final List<ResourceServerProperties> resourceServerProperties;
@@ -21,9 +23,16 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
     private Optional<ResourceServerType> getResourceTypeForm(JwtAuthenticationToken token) {
         return resourceServerProperties
                 .stream()
-                .filter(properties -> properties
+                .filter(properties -> {
+                    log.info("Configured issuer: {}", properties.getIssuerUri());
+                    assert token != null;
+                    assert token.getToken() != null;
+                    assert token.getToken().getIssuer() != null;
+                    assert token.getToken().getIssuer().toString() != null;
+                    log.info("Token issuer: {}", token.getToken().getIssuer().toString());
+                    return properties
                         .getIssuerUri()
-                        .equalsIgnoreCase(token.getToken().getIssuer().toString()))
+                        .equalsIgnoreCase(token.getToken().getIssuer().toString()); })
                 .findFirst()
                 .map(ResourceServerProperties::getType);
     }
