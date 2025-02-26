@@ -20,7 +20,7 @@ export const Bestillingsveileder = () => {
 	const [error, setError] = useState(null)
 	const [showError, setShowError] = useState(false)
 	const [navigateRoot, setNavigateRoot] = useState(false)
-	const { gruppeId } = useParams()
+	const { gruppeId }: any = useParams()
 	const erOrganisasjon = location?.state?.opprettOrganisasjon
 	const importPersoner = location?.state?.importPersoner
 
