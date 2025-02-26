@@ -21,10 +21,10 @@ import java.io.IOException;
 public class OpensearchParameterSettings implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final String INDEX_SETTING =
-            "{\"index\":{\"max_terms_count\":%d}}";
+            "{\"settings\":{\"index\":{\"max_terms_count\":\"%s\"}}}";
 
     @Value("${open.search.max-terms-count}")
-    private Integer maxTermsCount;
+    private String maxTermsCount;
 
     private final ElasticParamsConsumer elasticParamsConsumer;
     private final ObjectMapper objectMapper;
@@ -34,7 +34,7 @@ public class OpensearchParameterSettings implements ApplicationListener<ContextR
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
         try {
-            var indexSetting = String.format(INDEX_SETTING, maxTermsCount);
+            var indexSetting = INDEX_SETTING.formatted(maxTermsCount);
             var jsonFactory = objectMapper.getFactory();
             var jsonParser = jsonFactory.createParser(indexSetting);
             var jsonNode = (JsonNode) objectMapper.readTree(jsonParser);
