@@ -71,12 +71,14 @@ const journalpostUrl = (transaksjonsid, miljoer) => {
 }
 
 const histarkUrl = (transaksjonsid: any) => {
-	const urlListe: Array<string> = []
-	transaksjonsid?.[0]?.transaksjonId?.forEach(
-		(id) =>
-			id?.dokumentInfoId &&
-			urlListe.push(`/testnav-histark-proxy/api/saksmapper/${id?.dokumentInfoId}`),
-	)
+	const urlListe: string[] = []
+	transaksjonsid?.forEach((transaksjon: any) => {
+		transaksjon?.transaksjonId?.forEach((tx) => {
+			if (tx?.dokumentInfoId) {
+				urlListe.push(`/testnav-histark-proxy/api/saksmapper/${tx.dokumentInfoId}`)
+			}
+		})
+	})
 	return urlListe
 }
 

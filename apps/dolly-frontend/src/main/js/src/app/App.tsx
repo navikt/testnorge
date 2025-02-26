@@ -4,7 +4,7 @@ import Header from '@/components/layout/header/Header'
 import Loading from '@/components/ui/loading/Loading'
 import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
-import { Forbedring } from '@/components/feedback/Forbedring'
+import { Kontaktinfo } from '@/components/feedback/Kontaktinfo'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -66,7 +66,7 @@ export const App = () => {
 					</Suspense>
 				</ErrorBoundary>
 			</main>
-			<Forbedring />
+			<Kontaktinfo />
 			<ToastConnector />
 		</ErrorBoundary>
 	)

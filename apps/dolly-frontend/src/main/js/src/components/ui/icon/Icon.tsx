@@ -74,6 +74,7 @@ import CheckCircle from '@/assets/icons/custom/CheckCircle.svg?raw'
 import Dolly from '@/assets/icons/custom/Dolly.svg?raw'
 import DollyPanic from '@/assets/icons/custom/DollyPanic.svg?raw'
 import TenorLogo from '@/assets/icons/custom/TenorLogo.svg?raw'
+import SlackLogo from '@/assets/icons/custom/SlackLogo.svg?raw'
 import Playwright from '@/assets/img/playwright.png'
 
 import './Icon.less'
@@ -88,6 +89,7 @@ export const icons = {
 	dollyPanic: DollyPanic,
 	playwright: Playwright,
 	tenor: TenorLogo,
+	slack: SlackLogo,
 
 	trashcan: TrashIcon,
 	'add-circle': PlusCircleIcon,
@@ -109,6 +111,7 @@ export const icons = {
 	synchronize: ArrowsCirclepathIcon,
 	kryss: XMarkIcon,
 	'chevron-down': ChevronDownIcon,
+	collapse: ChevronDownIcon,
 	'chevron-up': ChevronUpIcon,
 	'chevron-down-double-circle': ChevronDownDoubleCircleIcon,
 	'chevron-up-double-circle': ChevronUpDoubleCircleIcon,
@@ -209,6 +212,7 @@ const Icon = ({
 		'dollyPanic',
 		'playwright',
 		'tenor',
+		'slack',
 	]
 
 	if (halvannenRemIkoner.includes(kind)) {
