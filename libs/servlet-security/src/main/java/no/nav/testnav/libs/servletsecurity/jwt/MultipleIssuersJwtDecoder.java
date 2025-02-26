@@ -19,31 +19,36 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
     private final Map<String, NimbusJwtDecoder> decoderMap;
 
     MultipleIssuersJwtDecoder(List<ResourceServerProperties> properties) {
-        this.decoderMap = properties.stream().collect(Collectors.toMap(
-                ResourceServerProperties::getIssuerUri,
-                props -> {
-                    NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(props.getIssuerUri());
-                    jwtDecoder.setJwtValidator(oAuth2TokenValidator(props));
-                    return jwtDecoder;
-                }
-        ));
+        this.decoderMap = properties
+                .stream()
+                .peek(config -> log.info("Configuring decoder for issuer {}", config.getIssuerUri()))
+                .collect(Collectors.toMap(
+                        ResourceServerProperties::getIssuerUri,
+                        props -> {
+                            NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(props.getIssuerUri());
+                            jwtDecoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(issuerValidator(props), audienceValidator(props)));
+                            return jwtDecoder;
+                        }
+                ));
     }
 
     @Override
     public Jwt decode(String token) throws JwtException {
         try {
-            var issuer = JWTParser
-                    .parse(token)
-                    .getJWTClaimsSet()
-                    .getIssuer();
-            return decoderMap
-                    .get(issuer)
-                    .decode(token);
+            var parsed = JWTParser.parse(token);
+            var claims = parsed.getJWTClaimsSet();
+            var issuer = claims.getIssuer();
+            log.info("Decoding token from issuer {}", issuer);
+            var decoder = decoderMap.get(issuer);
+            log.info("Decoding using decoder {} instanceof {}", decoder, decoder.getClass());
+            var decoded = decoder.decode(token);
+            log.info("Decoded token with claims {}", decoded == null ? "null!?" : decoded.getClaims());
+            return decoded;
         } catch (ParseException e) {
             log.error("Feil ved parsing av token", e);
             throw new JwtException("Feil ved parsing av token", e);
         } catch (JwtValidationException e) {
-            log.error("Feil ved validering av token", e);
+            log.error("Feil ved validering av token: {}", e.getErrors(), e);
             throw e;
         } catch (Exception e) {
             log.error("Ukjent feil", e);
@@ -51,19 +56,23 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
         }
     }
 
-    private OAuth2TokenValidator<Jwt> oAuth2TokenValidator(ResourceServerProperties properties) {
-        OAuth2TokenValidator<Jwt> issuerValidator = JwtValidators.createDefaultWithIssuer(properties.getIssuerUri());
-        OAuth2TokenValidator<Jwt> audienceValidator = token ->
-                token.getAudience().stream().anyMatch(audience -> properties.getAcceptedAudience().contains(audience)) ?
-                        OAuth2TokenValidatorResult.success() :
-                        OAuth2TokenValidatorResult.failure(createError(
-                                String.format("Fant ikke påkrevd audience %s i tokenet.", properties.getAcceptedAudience())
-                        ));
-        return new DelegatingOAuth2TokenValidator<>(issuerValidator, audienceValidator);
+    private static OAuth2TokenValidator<Jwt> issuerValidator(ResourceServerProperties properties) {
+        return JwtValidators.createDefaultWithIssuer(properties.getIssuerUri());
     }
 
-    private OAuth2Error createError(String msg) {
-        return new OAuth2Error("invalid_token", msg, null);
+    private static OAuth2TokenValidator<Jwt> audienceValidator(ResourceServerProperties properties) {
+        return token -> token
+                .getAudience()
+                .stream()
+                .anyMatch(audience -> properties.getAcceptedAudience().contains(audience)) ?
+                OAuth2TokenValidatorResult.success() :
+                OAuth2TokenValidatorResult.failure(error(properties.getAcceptedAudience(), token.getAudience()));
+    }
+
+    private static OAuth2Error error(List<String> acceptedAudiences, List<String> tokenAudiences) {
+        var message = "Fant ikke påkrevd audience %s i tokenet, bare %s".formatted(acceptedAudiences, tokenAudiences);
+        log.error(message);
+        return new OAuth2Error("invalid_token", message, null);
     }
 
 }
