@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.dollysearchservice.config.CachingConfig;
 import no.nav.testnav.dollysearchservice.dto.BestillingIdenter;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.utils.FagsystemQuereyUtils;
@@ -15,6 +16,7 @@ import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +27,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static no.nav.testnav.dollysearchservice.config.CachingConfig.CACHE_REGISTRE;
 
 @Slf4j
 @Service
@@ -39,6 +43,7 @@ public class BestillingQueryService {
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
 
+    @Cacheable(cacheNames = CACHE_REGISTRE, key="#request.registreRequest")
     public Set<String> execRegisterQuery(SearchRequest request) {
 
         Set<String> identer;
