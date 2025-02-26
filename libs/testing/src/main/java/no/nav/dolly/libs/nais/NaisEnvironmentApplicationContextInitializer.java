@@ -34,19 +34,14 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         log.info("Configuring environment for local profile using Secret Manager");
 
         // Emulating NAIS provided environment variables.
-        properties.putIfAbsent("ALTINN_URL", "${sm\\://altinn-url}"); // Used by altinn3-tilgang-service only.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm\\://azure-openid-config-issuer}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-openid-config-token-endpoint}");
-        properties.putIfAbsent("CRYPTOGRAPHY_SECRET", DUMMY); // Used by bruker-service only.
-        properties.putIfAbsent("JWT_SECRET", DUMMY); // Used by bruker-service only.
         properties.putIfAbsent("MASKINPORTEN_CLIENT_ID", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("MASKINPORTEN_CLIENT_JWK", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("MASKINPORTEN_SCOPES", DUMMY); // Used by tenor-search-service and altinn3-tilgang-service only.
         properties.putIfAbsent("MASKINPORTEN_WELL_KNOWN_URL", "${sm\\://maskinporten-well-known-url}"); // Used by tenor-search-service and altinn3-tilgang-service only.
-        properties.putIfAbsent("SLACK_CHANNEL", DUMMY); // Used by tilbakemelding-api only.
-        properties.putIfAbsent("SLACK_TOKEN", DUMMY); // Used by tilbakemelding-api only.
         properties.putIfAbsent("TOKEN_X_ISSUER", "${sm\\://token-x-issuer}");
 
     }
@@ -65,12 +60,16 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
                         "ALTINN_API_KEY",
                         "ALTINN_URL",
+                        "AZURE_APP_CLIENT_ID",
+                        "AZURE_APP_CLIENT_SECRET",
+                        "AZURE_NAV_APP_CLIENT_ID",
+                        "AZURE_NAV_APP_CLIENT_SECRET",
+                        "AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT",
                         "AZURE_OPENID_CONFIG_ISSUER",
                         "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
-                        "CRYPTOGRAPHY_SECRET", // Used by bruker-service only.
-                        "IDPORTEN_CLIENT_ID", // Used by dolly-frontend only.
-                        "IDPORTEN_CLIENT_JWK", // Used by dolly-frontend only.
-                        "JWT_SECRET", // Used by bruker-service only.
+                        "AZURE_TRYGDEETATEN_APP_CLIENT_ID",
+                        "AZURE_TRYGDEETATEN_APP_CLIENT_SECRET",
+                        "AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT",
                         "MASKINPORTEN_CLIENT_ID",
                         "MASKINPORTEN_CLIENT_JWK",
                         "MASKINPORTEN_SCOPES",

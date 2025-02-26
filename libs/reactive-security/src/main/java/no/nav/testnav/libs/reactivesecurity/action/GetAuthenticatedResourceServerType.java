@@ -6,14 +6,12 @@ import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-@Component
 @RequiredArgsConstructor
 @Slf4j
 public class GetAuthenticatedResourceServerType extends JwtResolver implements Callable<Mono<ResourceServerType>> {
@@ -58,4 +56,5 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
                     return Mono.empty();
                 });
     }
+
 }
