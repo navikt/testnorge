@@ -1,6 +1,7 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
@@ -16,6 +17,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.neste
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRegexpQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedTermsQuery;
 
+@Slf4j
 @UtilityClass
 public class OpenSearchIdenterQueryUtils {
 
@@ -44,7 +46,13 @@ public class OpenSearchIdenterQueryUtils {
 
     private static BoolQueryBuilder addIdenterQuery(Set<String> identer) {
 
-        return QueryBuilders.boolQuery()
-                .should(nestedTermsQuery(HENT_IDENTER, "ident", identer.toArray(new String[]{})));
+        var now = System.currentTimeMillis();
+
+        var arr = new String[identer.size()];
+        var query = QueryBuilders.boolQuery()
+                .should(nestedTermsQuery(HENT_IDENTER, "ident", identer.toArray(arr)));
+
+        log.info("Konvertering av liste til array tok {} ms", System.currentTimeMillis() - now);
+        return query;
     }
 }

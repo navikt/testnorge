@@ -19,7 +19,7 @@ public class CachingConfig {
     public static final String CACHE_REGISTRE = "registre";
 
     @Bean
-    @Profile({ "dev", "prod" })
+    @Profile({ "dev", "prod"})
     public CacheManager cacheManager(Caffeine caffeine) {
         var caffeineCacheManager = new CaffeineCacheManager(CACHE_REGISTRE
         );

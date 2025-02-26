@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.dollysearchservice.config.CachingConfig;
 import no.nav.testnav.dollysearchservice.dto.BestillingIdenter;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.utils.FagsystemQuereyUtils;
@@ -46,6 +45,8 @@ public class BestillingQueryService {
     @Cacheable(cacheNames = CACHE_REGISTRE, key="#request.registreRequest")
     public Set<String> execRegisterQuery(SearchRequest request) {
 
+        var now = System.currentTimeMillis();
+
         Set<String> identer;
         SearchResponse searchResponse;
 
@@ -81,6 +82,8 @@ public class BestillingQueryService {
             log.error("Feil ved henting av identer", e);
             identer = Set.of("99999999999");
         }
+
+        log.info("Uthenting av {} identer tok {} ms", identer.size(), System.currentTimeMillis() - now);
 
         return identer;
     }

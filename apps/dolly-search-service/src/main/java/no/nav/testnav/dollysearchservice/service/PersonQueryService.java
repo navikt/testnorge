@@ -3,6 +3,7 @@ package no.nav.testnav.dollysearchservice.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.consumer.OpenSearchConsumer;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonQueryService {
@@ -30,6 +32,8 @@ public class PersonQueryService {
 
     public Mono<SearchInternalResponse> execQuery(SearchRequest request, QueryBuilder query) {
 
+        var now = System.currentTimeMillis();
+
         if (isNull(request.getSide())) {
             request.setSide(0);
         }
@@ -38,7 +42,7 @@ public class PersonQueryService {
             request.setAntall(10);
         }
 
-        return Mono.from(openSearchConsumer.search(
+        var personSoekResponse = Mono.from(openSearchConsumer.search(
                         no.nav.testnav.dollysearchservice.dto.SearchRequest.builder()
                                 .query(
                                         new org.opensearch.action.search.SearchRequest()
@@ -51,6 +55,10 @@ public class PersonQueryService {
                                 .request(request)
                                 .build()))
                 .map(this::formatResponse);
+
+        log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
+
+        return personSoekResponse;
     }
 
     private SearchInternalResponse formatResponse(no.nav.testnav.dollysearchservice.dto.SearchResponse response) {
