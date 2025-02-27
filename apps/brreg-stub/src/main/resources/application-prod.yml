@@ -1,5 +1,6 @@
-
 spring:
+  config:
+    import: "vault://"
   flyway:
     locations: classpath:db/migration/postgresql
   datasource:
@@ -30,5 +31,3 @@ spring:
         role: testnav-brregstub-admin
         backend: postgresql/preprod-fss
       fail-fast: true
-  config:
-    import: vault://

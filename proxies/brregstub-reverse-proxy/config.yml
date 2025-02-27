@@ -1,0 +1,71 @@
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-brregstub-reverse-proxy-nav
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-testnav-brregstub-reverse-proxy-nav
+  secretKeyPrefix: "AZURE_NAV"
+  tenant: nav.no
+---
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-brregstub-reverse-proxy
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: "{{image}}"
+  port: 8080
+  webproxy: true
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: trygdeetaten.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: flex-brreg-proxy
+          cluster: dev-gcp
+          namespace: flex
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1024Mi
+    limits:
+      memory: 2048Mi
+  envFrom:
+    - secret: azure-testnav-brregstub-reverse-proxy-nav
+  ingresses:
+    - "https://testnav-brregstub-reverse-proxy.dev-fss-pub.nais.io"

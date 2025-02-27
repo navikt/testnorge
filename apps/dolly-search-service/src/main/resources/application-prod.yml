@@ -1,0 +1,7 @@
+testnorge:
+  analyse:
+    enabled: true
+
+open:
+  search:
+    index: bestilling

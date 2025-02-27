@@ -1,6 +1,6 @@
 spring:
   config:
-    import: vault://
+    import: "vault://"
   datasource:
     url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-statisk-data?useUnicode=yes&characterEncoding=UTF-8
     hikari:
