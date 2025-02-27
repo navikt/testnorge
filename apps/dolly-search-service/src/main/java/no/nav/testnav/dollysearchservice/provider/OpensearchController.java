@@ -27,7 +27,7 @@ public class OpensearchController {
     private final OpenSearchService openSearchService;
 
     @PostMapping
-    @Operation(description = "Henter personer som matcher søk av persondetaljer i request")
+    @Operation(description = "Henter Dolly-personer som matcher både søk i registre og søk av persondetaljer i PDL")
     public Mono<SearchResponse> getPersoner(@RequestParam(required = false) List<ElasticTyper> registreRequest,
                                             @RequestBody SearchRequest request) {
 
@@ -35,7 +35,7 @@ public class OpensearchController {
     }
 
     @GetMapping("/typer")
-    @Operation(description = "Henter alle typer som kan søkes på")
+    @Operation(description = "Henter alle søketyper mot registre")
     public List<Kategori> getKategorier() {
 
         return openSearchService.getTyper();
