@@ -5,16 +5,17 @@ import lombok.SneakyThrows;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.excel.ExcelService;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @RestController
 @RequestMapping("/api/v1/excel")
@@ -38,7 +39,7 @@ public class ExcelController {
     @GetMapping(value = "/organisasjoner")
     public ResponseEntity<Resource> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId) {
 
-        var bruker = brukerService.fetchOrCreateBruker(StringUtils.isNotBlank(brukerId) ? brukerId : getUserId(getUserInfo));
+        var bruker = brukerService.fetchOrCreateBruker(brukerId);
         var resource = excelService.getExcelOrganisasjonerWorkbook(bruker);
 
         return wrapContents(resource);

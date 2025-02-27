@@ -105,6 +105,7 @@ public class TestgruppeService {
 
     public Page<Testgruppe> getAllTestgrupper(Integer pageNo, Integer pageSize) {
 
+        var bruker = brukerService.fetchOrCreateBruker();
         return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
 
