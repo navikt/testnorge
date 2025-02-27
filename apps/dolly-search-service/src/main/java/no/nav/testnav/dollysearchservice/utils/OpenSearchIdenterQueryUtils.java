@@ -1,7 +1,8 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
@@ -14,7 +15,9 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.NAVSP
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedMatchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRegexpQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedTermsQuery;
 
+@Slf4j
 @UtilityClass
 public class OpenSearchIdenterQueryUtils {
 
@@ -43,10 +46,13 @@ public class OpenSearchIdenterQueryUtils {
 
     private static BoolQueryBuilder addIdenterQuery(Set<String> identer) {
 
-        var query = QueryBuilders.boolQuery();
-        identer.forEach(ident -> query
-                .should(nestedMatchQuery(HENT_IDENTER, "ident", ident))
-        );
+        var now = System.currentTimeMillis();
+
+        var arr = new String[identer.size()];
+        var query = QueryBuilders.boolQuery()
+                .should(nestedTermsQuery(HENT_IDENTER, "ident", identer.toArray(arr)));
+
+        log.info("Konvertering av liste til array tok {} ms", System.currentTimeMillis() - now);
         return query;
     }
 }

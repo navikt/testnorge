@@ -1,4 +1,4 @@
-package no.nav.dolly.elastic;
+package no.nav.testnav.libs.data.dollysearchservice.v1;
 
 import lombok.Getter;
 

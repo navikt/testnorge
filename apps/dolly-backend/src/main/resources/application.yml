@@ -250,9 +250,4 @@ consumers:
     namespace: dolly
     url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
-  dolly-search-service:
-    name: testnav-dolly-search-service
-    namespace: dolly
-    url: http://testnav-dolly-search-service.dolly.svc.cluster.local
-    cluster: dev-gcp
     
