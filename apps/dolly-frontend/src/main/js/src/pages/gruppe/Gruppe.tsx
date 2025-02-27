@@ -88,10 +88,6 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 		return <GruppeFeilmelding feil={GruppeFeil.FETCH_FAILED} />
 	}
 
-	if (bankIdBruker && !gruppe?.erEierAvGruppe) {
-		return <GruppeFeilmelding feil={GruppeFeil.ACCESS_DENIED} />
-	}
-
 	const byttVisning = (value: VisningType) => {
 		dispatch(resetPaginering())
 		dispatch(resetNavigering())
