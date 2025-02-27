@@ -57,4 +57,3 @@ server:
 open:
   search:
     pdl-index: pdl-sok
-    max-terms-count: 200000

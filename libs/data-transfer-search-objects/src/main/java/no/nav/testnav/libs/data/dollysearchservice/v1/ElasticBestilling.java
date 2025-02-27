@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.data.dollysearchservice.v2;
+package no.nav.testnav.libs.data.dollysearchservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -48,11 +48,11 @@ public class ElasticBestilling implements Persistable<Long> {
     @Field
     private Object inntektstub;
     @Field
-    private Arenadata arenaforvalter;
+    private Object arenaforvalter;
     @Field
     private Object udistub;
     @Field
-    private PensjonData pensjonforvalter;
+    private Object pensjonforvalter;
     @Field
     private RsInntektsmelding inntektsmelding;
     @Field
@@ -64,7 +64,7 @@ public class ElasticBestilling implements Persistable<Long> {
     @Field
     private Object sykemelding;
     @Field
-    private BankkontoData bankkonto;
+    private Object bankkonto;
     @Field
     private Object skjerming;
     @Field
@@ -80,37 +80,6 @@ public class ElasticBestilling implements Persistable<Long> {
     @Transient
     @JsonIgnore
     private boolean ignore;
-
-    private static class BankkontoData {
-        @Field
-        private Object norskBankkonto;
-        @Field
-        private Object utenlandskBankkonto;
-    }
-
-    private static class PensjonData {
-        @Field
-        private Object inntekt;
-        @Field
-        private Object tp;
-        @Field
-        private Object alderspensjon;
-        @Field
-        private Object uforetrygd;
-        @Field
-        private Object afpOffentlig;
-        @Field
-        private Object pensjonsavtale;
-    }
-
-    private static class Arenadata {
-        @Field
-        private Object aap;
-        @Field
-        private Object aap115;
-        @Field
-        private Object dagpenger;
-    }
 
     @Override
     @JsonIgnore
