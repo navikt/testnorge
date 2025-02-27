@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -16,6 +17,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
@@ -53,6 +55,8 @@ public class TestgruppeService {
     private final PersonService personService;
     private final GetUserInfo getUserInfo;
     private final PdlDataConsumer pdlDataConsumer;
+    private final BrukerServiceConsumer brukerServiceConsumer;
+    private final BrukerRepository brukerRepository;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
@@ -103,14 +107,16 @@ public class TestgruppeService {
                 new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
     }
 
-    public Page<Testgruppe> getAllTestgrupper(Integer pageNo, Integer pageSize) {
+    public Mono<Page<Testgruppe>> getAllTestgrupper(Integer pageNo, Integer pageSize) {
 
         var bruker = brukerService.fetchOrCreateBruker();
         if (bruker.getBrukertype() == Bruker.Brukertype.BANKID) {
-            bruker.getBrukerId();
-            return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
+            return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .collectList()
+                    .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere, PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
+        } else {
+            return Mono.just(testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
         }
-        return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
 
     public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer) {
