@@ -44,7 +44,7 @@ export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 	const { maler, loading } = useDollyMaler()
 	const { dollyEnvironments } = useDollyEnvironments()
 	const [bruker, setBruker] = useState(brukernavn)
-	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal'))
+	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal') || false)
 
 	const brukerOptions = getBrukerOptions(maler)
 	const malOptions = getMalOptions(maler, bruker)
@@ -58,7 +58,8 @@ export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 			formMethods.setValue('gruppeId', gruppeId)
 		} else {
 			opts.mal = undefined
-			formMethods.reset(opts.initialValues)
+			const options = BVOptions(opts, gruppeId, dollyEnvironments)
+			formMethods.reset(options.initialValues)
 			formMethods.setValue('mal', undefined)
 			formMethods.setValue('gruppeId', gruppeId)
 		}
@@ -66,8 +67,9 @@ export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 
 	const handleMalEnable = () => {
 		opts.mal = undefined
+		const options = BVOptions(opts, gruppeId, dollyEnvironments)
 		toggleMalAktiv()
-		formMethods.reset(opts.initialValues)
+		formMethods.reset(options.initialValues)
 		formMethods.setValue('mal', undefined)
 		formMethods.setValue('gruppeId', gruppeId)
 	}
@@ -92,7 +94,8 @@ export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 	const erAaregMal = _.has(valgtMal, 'data.bestilling.aareg')
 
 	return (
-		<div className="ny-bestilling-form_maler">
+		<div className="ny-bestilling-form_input">
+			<h2>Velg mal</h2>
 			<DollyCheckbox
 				data-testid={TestComponentSelectors.TOGGLE_MAL}
 				name="aktiver-maler"

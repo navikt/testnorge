@@ -34,6 +34,7 @@ export default () => {
 	const [state, setState] = useState<any>(initialState)
 	const { response, loading, error, mutate } = useTenorOversikt(request, 10, state.side, state.seed)
 	const [markertePersoner, setMarkertePersoner] = useState([])
+	const [inkluderPartnere, setInkluderPartnere] = useState(false)
 
 	useEffect(() => {
 		setState(initialState)
@@ -127,6 +128,8 @@ export default () => {
 					personListe={state.personListe}
 					markertePersoner={markertePersoner}
 					setMarkertePersoner={setMarkertePersoner}
+					inkluderPartnere={inkluderPartnere}
+					setInkluderPartnere={setInkluderPartnere}
 					nesteSide={state.nesteSide}
 					loading={loading}
 					error={error}

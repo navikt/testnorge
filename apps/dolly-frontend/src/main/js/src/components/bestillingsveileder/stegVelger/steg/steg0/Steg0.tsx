@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
+import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgGruppe'
 import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
@@ -8,11 +8,13 @@ import {
 import { MalVelgerIdent } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { MalVelgerOrganisasjon } from '@/pages/organisasjoner/MalVelgerOrganisasjon'
+import { VelgIdenttype } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgIdenttype'
 
 const Steg0 = () => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const isOrganisasjon =
 		opts.is?.nyOrganisasjon || opts.is?.nyStandardOrganisasjon || opts.is?.nyOrganisasjonFraMal
+	const isNyIdent = opts.is?.nyBestilling || opts.is?.nyBestillingFraMal
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
 
@@ -26,9 +28,16 @@ const Steg0 = () => {
 	return (
 		<div className="start-bestilling-modal">
 			{!isOrganisasjon && (
-				<div className="dolly-panel dolly-panel-open">
-					<VelgGruppe formMethods={formMethods} title={'Hvilken gruppe vil du bestille til?'} />
-				</div>
+				<>
+					<div className="dolly-panel dolly-panel-open">
+						<VelgGruppe formMethods={formMethods} title={'Hvilken gruppe vil du bestille til?'} />
+					</div>
+					{isNyIdent && (
+						<div className="dolly-panel dolly-panel-open">
+							<VelgIdenttype />
+						</div>
+					)}
+				</>
 			)}
 			<div className="dolly-panel dolly-panel-open">
 				{isOrganisasjon ? (

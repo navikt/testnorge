@@ -18,15 +18,25 @@ import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstub
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
-import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
+import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgGruppe'
 import { SkattekortForm } from '@/components/fagsystem/skattekort/form/Form'
 import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 import { dokarkivValidation } from '@/components/fagsystem/dokarkiv/form/DokarkivValidation'
 import { histarkValidation } from '@/components/fagsystem/histark/form/HistarkValidation'
 import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
+import { ifPresent } from '@/utils/YupValidations'
 
 export const DollyIdentValidation = Yup.object({
+	antall: ifPresent(
+		'$antall',
+		Yup.number()
+			.transform((v, o) => (o === '' ? null : v))
+			.positive('Må være et positivt tall')
+			.min(1, 'Må minst opprette {min} person')
+			.max(50, 'Kan kun bestille max 50 identer om gangen.')
+			.required('Oppgi antall personer'),
+	),
 	...PdlfForm.validation,
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,

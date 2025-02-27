@@ -1,50 +1,35 @@
-import React from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as Yup from 'yup'
-import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
+import React, { useContext, useState } from 'react'
+import { FormProvider, useFormContext } from 'react-hook-form'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { Option } from '@/service/SelectOptionsOppslag'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
-const validationSchema = Yup.object({
-	antall: Yup.number()
-		.positive('Må være et positivt tall')
-		.min(1, 'Må minst opprette {min} person')
-		.max(50, 'Kan kun bestille max 50 identer om gangen.')
-		.required('Oppgi antall personer'),
-	identtype: Yup.string().required('Velg en identtype'),
-})
-
-const initialValues = {
-	antall: '1',
-	identtype: Options('identtype')[0].value,
-	mal: null,
-}
-
-export type NyBestillingProps = {
-	brukernavn: string
-	onSubmit: (values: any, formMethods: any) => void
-	onAvbryt: () => void
-}
-
-export function NyIdent({ onAvbryt, onSubmit }: NyBestillingProps) {
-	const formMethods = useForm({
-		mode: 'onBlur',
-		defaultValues: initialValues,
-		resolver: yupResolver(validationSchema),
-	})
+export function NyIdent() {
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const identtypePath = 'pdldata.opprettNyPerson.identtype'
+	const formMethods = useFormContext()
+	const [identtype, setIdenttype] = useState(formMethods.watch(identtypePath))
 
 	return (
 		<FormProvider {...formMethods}>
-			<div className="ny-bestilling-form">
-				<h3>Velg type og antall</h3>
+			<div style={{ flexDirection: 'column', alignItems: 'start' }}>
+				<h3 style={{ marginBottom: 0 }}>Velg type og antall</h3>
 				<div className="ny-bestilling-form_selects">
 					<FormSelect
-						name="identtype"
+						name={identtypePath}
 						label="Velg identtype"
 						size="medium"
+						onChange={(option: Option) => {
+							opts.identtype = option.value
+							setIdenttype(option.value)
+							formMethods.setValue(identtypePath, option.value)
+						}}
+						value={identtype}
 						options={Options('identtype')}
 						isClearable={false}
 					/>
@@ -53,17 +38,13 @@ export function NyIdent({ onAvbryt, onSubmit }: NyBestillingProps) {
 						label="Antall"
 						type="number"
 						size="medium"
-						onBlur={(event) => formMethods.setValue('antall', event?.target?.value || '1')}
+						onBlur={(event) => {
+							const selectedValue = event?.target?.value || '1'
+							opts.antall = selectedValue
+							formMethods.setValue('antall', selectedValue)
+						}}
 					/>
 				</div>
-				<ModalActionKnapper
-					data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
-					submitknapp="Start bestilling"
-					disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-					onSubmit={() => onSubmit(formMethods.getValues(), formMethods)}
-					onAvbryt={onAvbryt}
-					center
-				/>
 			</div>
 		</FormProvider>
 	)

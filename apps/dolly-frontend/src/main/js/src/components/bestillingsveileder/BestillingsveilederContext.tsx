@@ -16,13 +16,14 @@ export interface BestillingsveilederContextType {
 	opprettFraIdenter?: string[]
 	mal?: { malNavn?: string }
 	is?: {
-		nyOrganisasjon?: boolean
-		nyStandardOrganisasjon?: boolean
-		nyOrganisasjonFraMal?: boolean
-		opprettFraIdenter?: boolean
-		leggTilPaaGruppe?: boolean
+		nyBestilling?: boolean
 		nyBestillingFraMal?: boolean
-		importTestnorge?: boolean
+		opprettFraIdenter?: boolean
 		leggTil?: boolean
+		leggTilPaaGruppe?: boolean
+		nyOrganisasjon?: boolean
+		nyOrganisasjonFraMal?: boolean
+		nyStandardOrganisasjon?: boolean
+		importTestnorge?: boolean
 	}
 }

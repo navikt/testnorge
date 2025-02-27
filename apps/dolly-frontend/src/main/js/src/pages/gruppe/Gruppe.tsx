@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import useBoolean from '@/utils/hooks/useBoolean'
 import Loading from '@/components/ui/loading/Loading'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,7 +16,6 @@ import './Gruppe.less'
 import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import StatusListeConnector from '@/components/bestilling/statusListe/StatusListeConnector'
-import BestillingsveilederModal from '@/components/bestillingsveileder/startModal/StartModal'
 import { GruppeToggle } from '@/pages/gruppe/GruppeToggle'
 import { GruppeVisning } from '@/pages/gruppe/GruppeVisning'
 import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
@@ -76,8 +74,6 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 		sorting?.retning || '',
 	)
 
-	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
-
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
 	if (loadingBruker || loadingGruppe) {
@@ -98,8 +94,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 		dispatch(setVisning(value))
 	}
 
-	const startBestilling = (values: Record<string, unknown>) =>
-		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
+	const startBestilling = () => navigate(`/gruppe/${gruppeId}/bestilling`)
 
 	const erLaast = gruppe.erLaast
 
@@ -118,7 +113,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 						<NavButton
 							data-testid={TestComponentSelectors.BUTTON_OPPRETT_PERSONER}
 							variant={'primary'}
-							onClick={visStartBestilling}
+							onClick={startBestilling}
 							disabled={erLaast}
 							title={
 								erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''
@@ -156,13 +151,6 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 					/>
 				</div>
 			</div>
-			{startBestillingAktiv && (
-				<BestillingsveilederModal
-					onSubmit={startBestilling}
-					onAvbryt={skjulStartBestilling}
-					brukernavn={currentBruker?.brukernavn}
-				/>
-			)}
 			<GruppeVisning
 				visning={visning}
 				erLaast={erLaast}

@@ -41,7 +41,7 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId }: MalVelgerProps) 
 	const formMethods = useFormContext()
 	const { maler, loading } = useDollyOrganisasjonMaler()
 	const [bruker, setBruker] = useState(brukernavn)
-	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal'))
+	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal') || false)
 
 	const brukerOptions = getBrukerOptions(maler)
 	const malOptions = getMalOptions(maler, bruker)
@@ -55,7 +55,8 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId }: MalVelgerProps) 
 		} else {
 			opts.mal = undefined
 			formMethods.setValue('mal', undefined)
-			formMethods.reset(opts.initialValues)
+			const options = BVOptions(opts, gruppeId, dollyEnvironments)
+			formMethods.reset(options.initialValues)
 		}
 	}
 
@@ -63,7 +64,8 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId }: MalVelgerProps) 
 		opts.mal = undefined
 		toggleMalAktiv()
 		formMethods.setValue('mal', undefined)
-		formMethods.reset(opts.initialValues)
+		const options = BVOptions(opts, gruppeId, dollyEnvironments)
+		formMethods.reset(options.initialValues)
 	}
 
 	const handleBrukerChange = (event: { value: string }) => {
@@ -72,7 +74,7 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId }: MalVelgerProps) 
 	}
 
 	return (
-		<div className="ny-bestilling-form_maler">
+		<div className="ny-bestilling-form_input">
 			<DollyCheckbox
 				data-testid={TestComponentSelectors.TOGGLE_MAL}
 				name="aktiver-maler"
