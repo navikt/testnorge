@@ -1,7 +1,7 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.data.dollysearchservice.v2.ElasticTyper;
+import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 

@@ -6,11 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static java.util.Objects.isNull;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,15 +21,4 @@ public class SearchRequest {
 
     @Schema(description = "Persondetaljer")
     private PersonRequest personRequest;
-
-    @Schema(description = "Identer fra registre")
-    private Set<String> identer;
-
-    public Set<String> getIdenter() {
-
-        if (isNull(identer)) {
-            identer = new HashSet<>();
-        }
-        return identer;
-    }
 }
