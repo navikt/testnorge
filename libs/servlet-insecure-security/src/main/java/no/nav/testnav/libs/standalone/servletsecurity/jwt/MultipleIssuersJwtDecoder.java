@@ -2,7 +2,6 @@ package no.nav.testnav.libs.standalone.servletsecurity.jwt;
 
 import com.nimbusds.jwt.JWTParser;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.standalone.servletsecurity.properties.ResourceServerProperties;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -14,20 +13,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static no.nav.testnav.libs.standalone.servletsecurity.jwt.InsecureJwtServerToServerAutoConfiguration.ResourceServerProperties;
+
 @Slf4j
 class MultipleIssuersJwtDecoder implements JwtDecoder {
 
     private final Map<String, NimbusJwtDecoder> decoderMap;
 
     MultipleIssuersJwtDecoder(List<ResourceServerProperties> properties) {
-        this.decoderMap = properties.stream().collect(Collectors.toMap(
-                ResourceServerProperties::getIssuerUri,
-                props -> {
-                    NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(props.getIssuerUri());
-                    jwtDecoder.setJwtValidator(oAuth2TokenValidator(props));
-                    return jwtDecoder;
-                }
-        ));
+        this.decoderMap = properties
+                .stream()
+                .collect(Collectors.toMap(
+                        ResourceServerProperties::getIssuerUri,
+                        props -> {
+                            NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(props.getIssuerUri());
+                            jwtDecoder.setJwtValidator(oAuth2TokenValidator(props));
+                            return jwtDecoder;
+                        }
+                ));
     }
 
     @Override

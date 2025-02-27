@@ -2,7 +2,6 @@ package no.nav.testnav.libs.servletsecurity.jwt;
 
 import com.nimbusds.jwt.JWTParser;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -16,17 +15,20 @@ import java.util.stream.Collectors;
 
 @Slf4j
 class MultipleIssuersJwtDecoder implements JwtDecoder {
+
     private final Map<String, NimbusJwtDecoder> decoderMap;
 
-    MultipleIssuersJwtDecoder(List<ResourceServerProperties> properties) {
-        this.decoderMap = properties.stream().collect(Collectors.toMap(
-                ResourceServerProperties::getIssuerUri,
-                props -> {
-                    NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(props.getIssuerUri());
-                    jwtDecoder.setJwtValidator(oAuth2TokenValidator(props));
-                    return jwtDecoder;
-                }
-        ));
+    MultipleIssuersJwtDecoder(List<SecureOAuth2ServerToServerAutoConfiguration.ResourceServerProperties> properties) {
+        this.decoderMap = properties
+                .stream()
+                .collect(Collectors.toMap(
+                        SecureOAuth2ServerToServerAutoConfiguration.ResourceServerProperties::getIssuerUri,
+                        props -> {
+                            NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(props.getIssuerUri());
+                            jwtDecoder.setJwtValidator(oAuth2TokenValidator(props));
+                            return jwtDecoder;
+                        }
+                ));
     }
 
     @Override
@@ -51,7 +53,7 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
         }
     }
 
-    private OAuth2TokenValidator<Jwt> oAuth2TokenValidator(ResourceServerProperties properties) {
+    private OAuth2TokenValidator<Jwt> oAuth2TokenValidator(SecureOAuth2ServerToServerAutoConfiguration.ResourceServerProperties properties) {
         OAuth2TokenValidator<Jwt> issuerValidator = JwtValidators.createDefaultWithIssuer(properties.getIssuerUri());
         OAuth2TokenValidator<Jwt> audienceValidator = token ->
                 token.getAudience().stream().anyMatch(audience -> properties.getAcceptedAudience().contains(audience)) ?
