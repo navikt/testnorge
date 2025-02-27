@@ -23,8 +23,6 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class RsAareg {
 
-    private RsPeriodeAmelding genererPeriode;
-
     @Schema(description = "Gyldige verdier finnes i kodeverk 'Arbeidsforholdstyper'")
     private String arbeidsforholdstype;
 
@@ -52,8 +50,6 @@ public class RsAareg {
 
     @Schema(description = "Angir om posten er oppdatering")
     private Boolean isOppdatering;
-
-    private List<RsAmeldingRequest> amelding;
 
     public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
         if (isNull(antallTimerForTimeloennet)) {
@@ -88,12 +84,5 @@ public class RsAareg {
             utenlandsopphold = new ArrayList<>();
         }
         return utenlandsopphold;
-    }
-
-    public List<RsAmeldingRequest> getAmelding() {
-        if (isNull(amelding)) {
-            amelding = new ArrayList<>();
-        }
-        return amelding;
     }
 }
