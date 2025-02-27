@@ -37,7 +37,7 @@ public class KontaktadataDeleteCommand implements Callable<Mono<DigitalKontaktda
     public Mono<DigitalKontaktdataResponse> call() {
 
 
-        Map<String, String> body = new HashMap<>();
+        var body = new HashMap<>();
         body.put("personidentifikator", ident);
 
         return webClient.method(HttpMethod.DELETE)
