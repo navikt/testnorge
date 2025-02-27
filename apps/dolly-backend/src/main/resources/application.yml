@@ -205,11 +205,6 @@ consumers:
     namespace: dolly
     url: http://testnav-arbeidsforhold-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-amelding-service:
-    name: testnav-amelding-service
-    namespace: dolly
-    url: http://testnav-amelding-service.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-sykemelding-api:
     name: testnav-sykemelding-api
     namespace: dolly
