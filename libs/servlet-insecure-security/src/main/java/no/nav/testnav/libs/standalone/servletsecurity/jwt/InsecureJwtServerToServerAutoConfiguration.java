@@ -31,7 +31,7 @@ class InsecureJwtServerToServerAutoConfiguration {
     @Profile("!test")
     @ConditionalOnMissingBean
     @ConditionalOnMissingClass("no.nav.testnav.libs.servletsecurity.jwt.MultipleIssuersJwtDecoder")
-        // TODO: These two identical implementations should join forces.
+        // TODO: These two identical implementations should join forces in servlet-core.
     JwtDecoder jwtDecoder(
             @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri:#{null}") String azureIssuerUri,
             @Value("${spring.security.oauth2.resourceserver.aad.accepted-audience:#{null}") List<String> azureAcceptedAudience,
@@ -54,7 +54,7 @@ class InsecureJwtServerToServerAutoConfiguration {
     @Profile("test")
     @ConditionalOnMissingBean
     @ConditionalOnMissingClass("no.nav.testnav.libs.servletsecurity.jwt.NoopJwtDecoder")
-        // TODO: These two identical implementations should join forces.
+        // TODO: These two identical implementations should join forces in servlet-core.
     JwtDecoder jwtDecoderForTesting() {
         return new NoopJwtDecoder();
     }
