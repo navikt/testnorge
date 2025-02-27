@@ -31,7 +31,6 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -57,7 +56,6 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -78,7 +76,6 @@ public class BestillingService {
     private final ObjectMapper objectMapper;
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
-    private final GetUserInfo getUserInfo;
     private final BestillingElasticRepository elasticRepository;
     private final MiljoerConsumer miljoerConsumer;
     private final DokumentRepository dokumentRepository;
@@ -502,7 +499,7 @@ public class BestillingService {
     }
 
     private Bruker fetchOrCreateBruker() {
-        return brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        return brukerService.fetchOrCreateBruker();
     }
 
     private String toJson(Object object) {

@@ -32,6 +32,7 @@ spec:
         - application: testnav-arbeidsforhold-service
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-bruker-service-dev
         - application: testnav-inntektsmelding-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service

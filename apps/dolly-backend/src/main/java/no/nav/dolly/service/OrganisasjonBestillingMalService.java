@@ -13,7 +13,6 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.service.MalBestillingService.getBruker;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +35,6 @@ public class OrganisasjonBestillingMalService {
     private final BrukerService brukerService;
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final MapperFacade mapperFacade;
-    private final GetUserInfo getUserInfo;
 
     public void saveOrganisasjonBestillingMal(OrganisasjonBestilling organisasjonBestilling, String malNavn, Bruker bruker) {
 
@@ -52,7 +49,7 @@ public class OrganisasjonBestillingMalService {
 
     public void saveOrganisasjonBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
-        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        Bruker bruker = brukerService.fetchOrCreateBruker();
 
         var organisasjonBestilling = organisasjonBestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));

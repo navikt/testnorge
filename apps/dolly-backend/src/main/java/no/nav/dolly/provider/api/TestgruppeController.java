@@ -27,7 +27,6 @@ import no.nav.dolly.service.SplittGruppeService;
 import no.nav.dolly.service.TestgruppeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -93,7 +92,7 @@ public class TestgruppeController {
         return mapperFacade.map(gruppe, RsTestgruppe.class);
     }
 
-    @CacheEvict(value = { CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE}, allEntries = true)
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
@@ -134,16 +133,16 @@ public class TestgruppeController {
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/page/{pageNo}")
     @Operation(description = "Hent paginerte testgrupper")
-    public RsTestgruppePage getTestgrupper(@PathVariable(value = "pageNo") Integer pageNo, @RequestParam(value = "pageSize") Integer pageSize) {
+    public Mono<RsTestgruppePage> getTestgrupper(@PathVariable(value = "pageNo") Integer pageNo, @RequestParam(value = "pageSize") Integer pageSize) {
 
-        Page<Testgruppe> page = testgruppeService.getAllTestgrupper(pageNo, pageSize);
-        return RsTestgruppePage.builder()
-                .pageNo(page.getNumber())
-                .antallPages(page.getTotalPages())
-                .pageSize(page.getPageable().getPageSize())
-                .antallElementer(page.getTotalElements())
-                .contents(mapperFacade.mapAsList(page.getContent(), RsTestgruppe.class))
-                .build();
+        return testgruppeService.getAllTestgrupper(pageNo, pageSize)
+                .map(page -> RsTestgruppePage.builder()
+                        .pageNo(page.getNumber())
+                        .antallPages(page.getTotalPages())
+                        .pageSize(page.getPageable().getPageSize())
+                        .antallElementer(page.getTotalElements())
+                        .contents(mapperFacade.mapAsList(page.getContent(), RsTestgruppe.class))
+                        .build());
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
@@ -154,7 +153,7 @@ public class TestgruppeController {
         testgruppeService.deleteGruppeById(gruppeId);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     @Operation(description = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")
@@ -166,7 +165,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Opprett berikede testpersoner basert på eskisterende identer")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestillingStatus opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
@@ -178,7 +177,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Importere testpersoner fra PDL og legg til berikning non-PDL artifacter")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/importfrapdl")
     public RsBestillingStatus importAvIdenterFraPdlBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyImportFraPdlRequest request) {
@@ -190,7 +189,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Legg til berikning på alle i gruppe")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{gruppeId}/leggtilpaagruppe")
     public RsBestillingStatus endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
@@ -200,7 +199,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/{gruppeId}/gjenopprett")
     @Operation(description = "Gjenopprett testidenter tilhørende en gruppe med liste for tilhørende miljoer")
     public RsBestillingStatus gjenopprettBestilling(@PathVariable("gruppeId") Long gruppeId,
@@ -211,7 +210,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}/identer/{identer}")
     @Operation(description = "Flytt angitte identer til denne gruppe")

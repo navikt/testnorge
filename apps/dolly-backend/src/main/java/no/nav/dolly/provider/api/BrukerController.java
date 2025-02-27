@@ -9,7 +9,6 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -25,7 +24,6 @@ import java.util.List;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Slf4j
 @RestController
@@ -35,7 +33,6 @@ public class BrukerController {
 
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
-    private final GetUserInfo getUserInfo;
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
@@ -48,7 +45,7 @@ public class BrukerController {
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
-        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        Bruker bruker = brukerService.fetchOrCreateBruker();
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
