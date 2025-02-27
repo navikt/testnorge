@@ -20,10 +20,14 @@ dependencies {
     implementation "org.opensearch.client:spring-data-opensearch:$versions.opensearch"
 
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
 
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-web"
+
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 }

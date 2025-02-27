@@ -70,6 +70,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-dolly-search-service
           cluster: dev-gcp
+        - application: testnav-dolly-search-service-dev
+          cluster: dev-gcp
     outbound:
       rules:
         - application: pdl-testdata
