@@ -8,7 +8,10 @@ import { Alert, ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import * as _ from 'lodash-es'
 import { add, getYear, isAfter, isDate, parseISO } from 'date-fns'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { getAlder } from '@/ducks/fagsystem'
@@ -50,7 +53,7 @@ export const AlderspensjonForm = () => {
 		setRandomSaksbehandlere(genererTilfeldigeNavPersonidenter(saksbehandler))
 	}, [])
 
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
 
 	function sjekkAlderFelt() {

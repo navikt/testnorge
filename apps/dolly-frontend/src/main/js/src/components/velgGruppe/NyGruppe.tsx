@@ -72,6 +72,7 @@ export default () => {
 			<NavButton
 				data-testid={TestComponentSelectors.BUTTON_NY_GRUPPE_OPPRETT}
 				variant="primary"
+				disabled={nyGruppe.length > 0}
 				onClick={(event) => {
 					event.preventDefault()
 					return onHandleSubmit()

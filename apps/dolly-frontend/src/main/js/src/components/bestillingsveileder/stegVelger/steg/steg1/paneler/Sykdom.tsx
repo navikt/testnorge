@@ -3,14 +3,17 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { sykdomAttributt } from '@/components/fagsystem/sykdom/form/Form'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialYrkesskade } from '@/components/fagsystem/yrkesskader/initialValues'
 import { yrkesskaderAttributt } from '@/components/fagsystem/yrkesskader/form/Form'
 import { initialValuesDetaljertSykemelding } from '@/components/fagsystem/sykdom/form/initialValues'
 
 export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const harGyldigSykemeldingBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
 		bestilling.status?.some(

@@ -19,7 +19,10 @@ import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/par
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 interface ForelderForm {
@@ -49,7 +52,7 @@ export const ForelderBarnRelasjonForm = ({
 	identtype,
 	ident,
 }: ForelderForm) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const antall = opts?.antall || 1
 	const identMaster = opts?.identMaster || 'PDLF'
@@ -254,7 +257,9 @@ export const ForelderBarnRelasjonForm = ({
 }
 
 export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
-	const { identtype, identMaster, personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { identtype, identMaster, personFoerLeggTil } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const handleRemoveEntry = (idx: number) => {

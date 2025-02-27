@@ -14,8 +14,7 @@ import {
 	SivilstandData,
 	VergemaalValues,
 } from '@/components/fagsystem/pdlf/PdlTypes'
-import { addDays, addMonths, isAfter, setDate } from 'date-fns'
-import subYears from 'date-fns/subYears'
+import { addDays, addMonths, isAfter, setDate, subYears } from 'date-fns'
 import {
 	initialArbeidsavtale,
 	initialArbeidsgiverOrg,

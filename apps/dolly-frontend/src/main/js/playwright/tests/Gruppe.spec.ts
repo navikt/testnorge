@@ -28,11 +28,14 @@ test.describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () =
 			.fill('Masse testing med Playwright')
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_PERSONER).click()
+
 		await page.getByTestId(TestComponentSelectors.TOGGLE_EKSISTERENDE_PERSON).click()
 		await page.getByTestId(TestComponentSelectors.TOGGLE_NY_PERSON).click()
-		await page.getByTestId(TestComponentSelectors.TOGGLE_MAL).click()
 		await expect(page).toHaveURL(/\/gruppe\/2/)
-		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_MAL).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 
 		for (const button_velg of await page
 			.getByTestId(TestComponentSelectors.BUTTON_VELG_ALLE)
@@ -56,7 +59,7 @@ test.describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () =
 		}
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
-		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+		// await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 		await page.getByTestId(TestComponentSelectors.TOGGLE_BESTILLING_MAL).click()
 		await expect(page.getByTestId(TestComponentSelectors.TOGGLE_BESTILLING_MAL)).toBeChecked()
 

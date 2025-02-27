@@ -10,15 +10,17 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 import { sendBestilling } from '@/ducks/bestilling'
 import { useDispatch } from 'react-redux'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 export const Bestillingsveileder = () => {
 	const location = useLocation()
+	const { dollyEnvironments } = useDollyEnvironments()
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 	const [error, setError] = useState(null)
 	const [showError, setShowError] = useState(false)
 	const [navigateRoot, setNavigateRoot] = useState(false)
-	const { gruppeId } = useParams()
+	const { gruppeId }: any = useParams()
 	const erOrganisasjon = location?.state?.opprettOrganisasjon
 	const importPersoner = location?.state?.importPersoner
 
@@ -50,7 +52,7 @@ export const Bestillingsveileder = () => {
 		return null
 	}
 
-	const options = BVOptions(location.state, gruppeId)
+	const options = BVOptions(location.state, gruppeId, dollyEnvironments)
 
 	const handleSubmit = async (values) => {
 		try {

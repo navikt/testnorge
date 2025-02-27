@@ -4,20 +4,12 @@ import * as _ from 'lodash-es'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { PdlforvalterApi } from '@/service/Api'
 import Loading from '@/components/ui/loading/Loading'
-import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 import Icon from '@/components/ui/icon/Icon'
 
 import './eksisterendeIdent.less'
 import { Alert, Table, Textarea } from '@navikt/ds-react'
-import { TestComponentSelectors } from '#/mocks/Selectors'
 
-export const EksisterendeIdent = ({
-	onAvbryt,
-	onSubmit,
-}: {
-	onSubmit: (arg0: any, arg1?: any) => any
-	onAvbryt: () => void
-}) => {
+export const EksisterendeIdent = () => {
 	const [text, setText] = useState('')
 	const [state, fetch] = useAsyncFn(async () => {
 		const identListe = text?.trim().split(/[\W\s]+/)
@@ -25,16 +17,8 @@ export const EksisterendeIdent = ({
 		return data
 	}, [text])
 
-	const _onSubmit = () =>
-		onSubmit({
-			opprettFraIdenter: state.value
-				.filter((v: { available: any }) => v.available)
-				.map((v: { ident: any }) => v.ident),
-		})
-
 	const statuser = _.get(state, 'value', [])
 	const finnesUgyldige = statuser.some((v) => !v.available)
-	const finnesGyldige = statuser.some((v) => v.available)
 
 	return (
 		<div className="eksisterende-ident-form">
@@ -92,16 +76,6 @@ export const EksisterendeIdent = ({
 						</Alert>
 					)}
 				</React.Fragment>
-			)}
-
-			{finnesGyldige && (
-				<ModalActionKnapper
-					data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
-					submitknapp="Start bestilling"
-					onSubmit={_onSubmit}
-					onAvbryt={onAvbryt}
-					center
-				/>
 			)}
 		</div>
 	)

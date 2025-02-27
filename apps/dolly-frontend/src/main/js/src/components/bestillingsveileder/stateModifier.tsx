@@ -5,7 +5,7 @@ import * as _ from 'lodash-es'
 
 export const useStateModifierFns = (formMethods: UseFormReturn, setFormMutate: any) => {
 	const { setValue, watch, resetField, getValues, reset, formState } = formMethods
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const set = (path: string, value: any) => setValue(path, value)
 	const has = (path: string) => watch(path) !== undefined

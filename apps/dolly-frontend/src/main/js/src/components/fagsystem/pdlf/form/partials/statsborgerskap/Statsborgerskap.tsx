@@ -5,7 +5,10 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type StatsborgerskapTypes = {
 	path: string
@@ -34,7 +37,7 @@ export const StatsborgerskapForm = ({ path, kanVelgeMaster }: StatsborgerskapTyp
 }
 
 export const Statsborgerskap = () => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return (
 		<div className="flexbox--flex-wrap">

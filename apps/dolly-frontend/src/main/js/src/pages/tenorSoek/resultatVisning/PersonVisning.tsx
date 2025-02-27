@@ -17,6 +17,8 @@ type PersonVisningProps = {
 	ibruk: boolean
 	loading: boolean
 	error: any
+	inkluderPartnere: boolean
+	setInkluderPartnere: any
 }
 
 const PersonVisningWrapper = styled.div`
@@ -33,7 +35,15 @@ const NavnHeader = styled.h2`
 	hyphens: auto;
 `
 
-export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVisningProps) => {
+export const PersonVisning = ({
+	person,
+	ident,
+	ibruk,
+	loading,
+	error,
+	inkluderPartnere,
+	setInkluderPartnere,
+}: PersonVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster person ..." />
 	}
@@ -58,7 +68,12 @@ export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVi
 					{ibruk ? (
 						<NavigerTilPerson ident={ident} />
 					) : (
-						<ImporterValgtePersoner identer={[ident]} isMultiple={false} />
+						<ImporterValgtePersoner
+							identer={[ident]}
+							isMultiple={false}
+							inkluderPartnere={inkluderPartnere}
+							setInkluderPartnere={setInkluderPartnere}
+						/>
 					)}
 				</div>
 				<FolkeregisteretVisning data={personData} />

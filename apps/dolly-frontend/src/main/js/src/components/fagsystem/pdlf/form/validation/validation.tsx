@@ -118,6 +118,7 @@ export const validation = {
 					'foedtEtter',
 					'Dato må være etter født etter-dato',
 				),
+				identtype: Yup.string().required('Velg en identtype'),
 			}).nullable(),
 			person: Yup.object({
 				bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
