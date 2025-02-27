@@ -107,7 +107,7 @@ public class TestgruppeService {
 
         var bruker = brukerService.fetchOrCreateBruker();
         if (bruker.getBrukertype() == Bruker.Brukertype.BANKID) {
-            bruker.getBrukerId()
+            bruker.getBrukerId();
             return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
         }
         return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
