@@ -36,14 +36,22 @@ import java.util.stream.Stream;
 })
 public class SecureOAuth2ServerToServerAutoConfiguration {
 
+    @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri:#{null}}")
+    private String azureIssuerUri;
+
+    @Value("${spring.security.oauth2.resourceserver.aad.accepted-audience:#{null}}")
+    private List<String> azureAcceptedAudience;
+
+    @Value("${spring.security.oauth2.resourceserver.tokenx.issuer-uri:#{null}}")
+    private String tokenXIssuerUri;
+
+    @Value("${spring.security.oauth2.resourceserver.tokenx.accepted-audience:#{null}}")
+    private List<String> tokenXAcceptedAudience;
+
+
     @Bean
     @Profile("!test")
-    JwtDecoder jwtDecoder(
-            @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri:#{null}") String azureIssuerUri,
-            @Value("${spring.security.oauth2.resourceserver.aad.accepted-audience:#{null}") List<String> azureAcceptedAudience,
-            @Value("${spring.security.oauth2.resourceserver.tokenx.issuer-uri:#{null}") String tokenXIssuerUri,
-            @Value("${spring.security.oauth2.resourceserver.tokenx.accepted-audience:#{null}") List<String> tokenXAcceptedAudience
-    ) {
+    JwtDecoder jwtDecoder() {
         var azure = Azure.ifNonNull(azureIssuerUri, azureAcceptedAudience);
         var tokenX = TokenX.ifNonNull(tokenXIssuerUri, tokenXAcceptedAudience);
         var list = Stream
