@@ -53,3 +53,8 @@ server:
       charset: UTF-8
   error:
     include-message: always
+
+open:
+  search:
+    pdl-index: pdl-sok
+    max-terms-count: 200000

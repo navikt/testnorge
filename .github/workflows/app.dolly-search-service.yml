@@ -19,6 +19,7 @@ jobs:
     with:
       working-directory: "apps/dolly-search-service"
       deploy-tag: "#deploy-dolly-search-service"
+      deploy-tag-test: "#deploy-test-dolly-search-service"
     permissions:
       contents: read
       id-token: write

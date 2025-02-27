@@ -4,4 +4,4 @@ testnorge:
 
 open:
   search:
-    index: bestilling
+    index: bestilling-dev

@@ -1,7 +1,6 @@
 package no.nav.testnav.dollysearchservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.config.Consumers;
 import no.nav.testnav.dollysearchservice.consumer.command.OpenSearchCommand;
@@ -38,7 +37,6 @@ public class OpenSearchConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    @SneakyThrows
     public Flux<SearchResponse> search(SearchRequest request) {
         return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token ->
