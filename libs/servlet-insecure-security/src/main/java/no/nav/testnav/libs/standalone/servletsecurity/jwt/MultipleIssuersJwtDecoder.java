@@ -24,11 +24,11 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
                 .stream()
                 .collect(Collectors.toMap(
                         ResourceServerProperties::getIssuerUri,
-                        this::getValidatingDecoder
+                        MultipleIssuersJwtDecoder::getValidatingDecoder
                 ));
     }
 
-    private NimbusJwtDecoder getValidatingDecoder(ResourceServerProperties properties) {
+    private static NimbusJwtDecoder getValidatingDecoder(ResourceServerProperties properties) {
         NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(properties.getIssuerUri());
         jwtDecoder.setJwtValidator(oAuth2TokenValidator(properties));
         return jwtDecoder;
@@ -61,7 +61,7 @@ class MultipleIssuersJwtDecoder implements JwtDecoder {
         }
     }
 
-    private OAuth2TokenValidator<Jwt> oAuth2TokenValidator(ResourceServerProperties properties) {
+    private static OAuth2TokenValidator<Jwt> oAuth2TokenValidator(ResourceServerProperties properties) {
         return new DelegatingOAuth2TokenValidator<>(
                 issuerValidator(properties.getIssuerUri()),
                 audienceValidator(properties.getAcceptedAudience())
