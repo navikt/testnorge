@@ -6,8 +6,9 @@ spring:
   config:
     import: "sm://"
 
-consumers:
-  dolly-backend:
-    url: https://dolly-backend.intern.dev.nav.no
-  dolly-backend-dev:
-    url: https://dolly-backend-dev.intern.dev.nav.no
+open:
+  search:
+    uri: http://localhost:9200
+    username: dummy
+    password: dummy
+    index: local

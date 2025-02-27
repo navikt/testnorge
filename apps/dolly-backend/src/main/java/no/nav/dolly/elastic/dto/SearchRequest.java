@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import no.nav.dolly.elastic.ElasticTyper;
+import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
 
 import java.util.ArrayList;
 import java.util.List;
