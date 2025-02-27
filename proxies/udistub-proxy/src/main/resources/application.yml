@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-udistub-proxy
     description: Proxy for udistub som legger på sikkerhet.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,13 +17,6 @@ spring:
     gateway:
       httpclient:
         response-timeout: 1200s
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   testnav-udistub:

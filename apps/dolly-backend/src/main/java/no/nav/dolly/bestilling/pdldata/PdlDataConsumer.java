@@ -30,7 +30,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class PdlDataConsumer implements ConsumerStatus {
+public class PdlDataConsumer extends ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;

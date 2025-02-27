@@ -3,26 +3,12 @@ generer:
   identer:
     enable: true
 
-### METRICS ###
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
 spring:
   application:
     name: testnav-ident-pool
     version: 1.0.0
+  config:
+    import: "classpath:dolly-application.yml"
   flyway:
     enabled: true
     locations: classpath:/db/migration
@@ -45,21 +31,9 @@ spring:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
 consumers:
   tps-messaging-service:
     url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
     cluster: dev-gcp
     namespace: dolly
     name: testnav-tps-messaging-service
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

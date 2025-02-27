@@ -6,7 +6,7 @@ import no.nav.brregstub.api.v1.RolleTo;
 import no.nav.brregstub.api.v1.RolleoversiktTo;
 import no.nav.brregstub.database.domene.Rolleoversikt;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

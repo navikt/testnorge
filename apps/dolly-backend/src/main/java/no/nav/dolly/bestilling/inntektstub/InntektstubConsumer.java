@@ -23,7 +23,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Service
 @Slf4j
-public class InntektstubConsumer implements ConsumerStatus {
+public class InntektstubConsumer extends ConsumerStatus {
 
     private static final int BLOCK_SIZE = 10;
 

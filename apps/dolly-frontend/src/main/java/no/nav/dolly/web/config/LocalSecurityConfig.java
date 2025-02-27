@@ -18,33 +18,31 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 @Configuration
 @Profile("local")
 @EnableWebFluxSecurity
-public class LocalSecurityConfig {
+class LocalSecurityConfig {
 
     private static final String LOGOUT = "/logout";
     private static final String LOGIN = "/login";
 
     @SneakyThrows
     @Bean
-    public SecurityWebFilterChain configure(ServerHttpSecurity http) {
+    SecurityWebFilterChain configure(ServerHttpSecurity http) {
         var authenticationSuccessHandler = new DollyAuthenticationSuccessHandler();
         var logoutSuccessHandler = new LogoutSuccessHandler();
 
         return http.cors(ServerHttpSecurity.CorsSpec::disable)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.pathMatchers(
-                                "/internal/isReady",
-                                "/internal/isAlive",
-                                "/assets/*",
-                                "/internal/metrics",
-                                "/oauth2/callback",
-                                "/favicon.ico",
-                                LOGIN,
-                                LOGOUT,
-                                "/oauth2/logout",
                                 "/*.css",
                                 "/*.js",
                                 "/*.mjs",
-                                "/*.png"
+                                "/*.png",
+                                "/assets/*",
+                                "/favicon.ico",
+                                "/internal/**",
+                                "/oauth2/callback",
+                                "/oauth2/logout",
+                                LOGIN,
+                                LOGOUT
                         ).permitAll()
                         .anyExchange().authenticated())
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec

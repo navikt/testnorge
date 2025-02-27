@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "http://udi-stub.dev.intern.nav.no/internal/isAlive",
-                "http://udi-stub.dev.intern.nav.no/internal/isReady",
+                "http://udi-stub.dev.intern.nav.no/internal/health/liveness",
+                "http://udi-stub.dev.intern.nav.no/internal/health/readiness",
                 statusWebClient);
 
         return Map.of(

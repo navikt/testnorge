@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jna.Function;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
@@ -51,7 +50,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class PensjonforvalterConsumer implements ConsumerStatus {
+public class PensjonforvalterConsumer extends ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;

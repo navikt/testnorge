@@ -25,8 +25,13 @@ public class HistarkProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://histarkimport.dev.intern.nav.no/"))
+        return builder
+                .routes()
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
+                        .uri("https://histarkimport.dev.intern.nav.no/"))
                 .build();
     }
 

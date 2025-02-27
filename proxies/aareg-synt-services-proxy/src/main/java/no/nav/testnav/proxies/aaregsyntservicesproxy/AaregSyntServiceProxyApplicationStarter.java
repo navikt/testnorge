@@ -24,9 +24,14 @@ public class AaregSyntServiceProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
-                .route(spec -> spec.path("/**").uri("http://aareg-synt-services.arbeidsforhold.svc.nais.local"))
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder
+                .routes()
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
+                        .uri("http://aareg-synt-services.arbeidsforhold.svc.nais.local"))
                 .build();
     }
 

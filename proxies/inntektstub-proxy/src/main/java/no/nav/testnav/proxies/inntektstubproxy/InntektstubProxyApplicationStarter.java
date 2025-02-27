@@ -24,9 +24,13 @@ public class InntektstubProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route(spec -> spec.path("/**").uri("http://inntektstub.team-inntekt.svc.nais.local/"))
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
+                        .uri("http://inntektstub.team-inntekt.svc.nais.local/"))
                 .build();
     }
 

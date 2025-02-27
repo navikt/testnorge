@@ -8,9 +8,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-@SpringBootApplication(scanBasePackages = "no.nav.registre.testnorge.sykemelding")
+@EnableWebSecurity
 @Import({ ApplicationCoreConfig.class })
+@SpringBootApplication
 public class SykemeldingApiApplicationStarter {
 
     public static void main(String[] args) {

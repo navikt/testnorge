@@ -1,0 +1,37 @@
+#
+# Import this file to apply some common boilerplate config to your app:
+#
+# spring:
+#   config:
+#     import: "classpath:dolly-application.yml"
+#
+
+management:
+  endpoints:
+    access:
+      default: read_only
+    web:
+      base-path: /internal
+      exposure:
+        include: prometheus,health
+      path-mapping:
+        prometheus: metrics
+  health:
+    probes:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs

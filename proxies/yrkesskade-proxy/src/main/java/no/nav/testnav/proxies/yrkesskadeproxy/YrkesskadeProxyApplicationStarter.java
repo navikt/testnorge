@@ -37,6 +37,8 @@ public class YrkesskadeProxyApplicationStarter {
                 .routes()
                 .route(spec -> spec
                         .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
                         .filters(f -> f.filter(tokenxAuthenticationFilter))
                         .uri(consumers.getYrkesskade().getUrl()))
                 .build();

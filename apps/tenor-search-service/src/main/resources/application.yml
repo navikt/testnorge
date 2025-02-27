@@ -3,6 +3,8 @@ spring:
     version: 1
     name: testnav-tenor-search-service
     description: Tjeneste som formidler søk til Tenor testdata hos Skatteetaten
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -16,36 +18,13 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
 server:
   servlet:
     encoding:
-      charset: UTF-8
       enabled: true
       force: true
       force-request: true
       force-response: true
-  error:
-    include-message: always
 
 consumers:
   tenor-search-service:

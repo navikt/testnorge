@@ -14,6 +14,6 @@ jobs:
     uses: ./.github/workflows/common.integration-test.yml
     with:
       working-directory: "apps/bruker-service/"
-      healthcheck: "http://localhost:8002/internal/isAlive"
+      healthcheck: "http://localhost:8002/internal/health/liveness"
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
