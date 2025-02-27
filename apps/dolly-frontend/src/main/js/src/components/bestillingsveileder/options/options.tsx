@@ -41,36 +41,36 @@ export const BVOptions = (
 		importPersoner: null,
 	}
 
-	let initialValuesLeggTil = {
+	const initialValuesLeggTil = Object.freeze({
 		antall: antall || 1,
 		environments: [],
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: null,
 		},
-	}
+	})
 
-	let initialValuesLeggTilPaaGruppe = {
+	const initialValuesLeggTilPaaGruppe = Object.freeze({
 		environments: [],
 		pdldata: {
 			opprettNyPerson: null,
 		},
-	}
+	})
 
-	let initialValuesOpprettFraIdenter = {
+	const initialValuesOpprettFraIdenter = Object.freeze({
 		pdldata: {
 			opprettNyPerson: {},
 		},
 		opprettFraIdenter: opprettFraIdenter,
-	}
+	})
 
-	let initialValuesOrganisasjon = {
+	const initialValuesOrganisasjon = Object.freeze({
 		organisasjon: {
 			enhetstype: '',
 		},
-	}
+	})
 
-	let initialValuesStandardOrganisasjon = {
+	const initialValuesStandardOrganisasjon = Object.freeze({
 		organisasjon: {
 			enhetstype: 'AS',
 			naeringskode: '01.451',
@@ -93,14 +93,9 @@ export const BVOptions = (
 				},
 			],
 		},
-	}
+	})
 
 	let bestType = TYPE.NY_BESTILLING
-
-	if (mal) {
-		bestType = TYPE.NY_BESTILLING_FRA_MAL
-		initialValues = Object.assign(initialValues, initialValuesBasedOnMal(mal, dollyEnvironments))
-	}
 
 	if (opprettFraIdenter) {
 		bestType = TYPE.OPPRETT_FRA_IDENTER
@@ -125,19 +120,27 @@ export const BVOptions = (
 		antall = importPersoner.length
 	}
 
+	if (mal) {
+		bestType = TYPE.NY_BESTILLING_FRA_MAL
+		initialValues = {
+			...initialValuesBasedOnMal(mal, dollyEnvironments),
+			...initialValues,
+		}
+	}
+
 	if (opprettOrganisasjon) {
 		if (opprettOrganisasjon === 'STANDARD') {
 			bestType = TYPE.NY_STANDARD_ORGANISASJON
 			initialValues = initialValuesStandardOrganisasjon
 		} else if (mal) {
 			bestType = TYPE.NY_ORGANISASJON_FRA_MAL
-			initialValues = Object.assign(
-				initialValuesOrganisasjon,
-				initialValuesBasedOnMal(mal, dollyEnvironments),
-			)
+			initialValues = {
+				...initialValuesOrganisasjon,
+				...initialValuesBasedOnMal(mal, dollyEnvironments),
+			}
 		} else {
 			bestType = TYPE.NY_ORGANISASJON
-			initialValues = initialValuesOrganisasjon
+			initialValues = { ...initialValuesOrganisasjon }
 		}
 	}
 
