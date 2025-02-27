@@ -15,8 +15,8 @@ public class TilgangController {
     private final TilgangService tilgangService;
 
     @GetMapping
-    public Flux<String> getBrukereISammeOrganisasjon(String brukeId) {
+    public Flux<String> getBrukereISammeOrganisasjon(String brukerId) {
 
-        return tilgangService.getBrukereISammeOrganisasjon(brukeId);
+        return tilgangService.getBrukereISammeOrganisasjon(brukerId);
     }
 }

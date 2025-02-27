@@ -12,9 +12,9 @@ public class TilgangService {
 
     private final UserRepository userRepository;
 
-    public Flux<String> getBrukereISammeOrganisasjon(String brukeId) {
+    public Flux<String> getBrukereISammeOrganisasjon(String brukerId) {
 
-        return userRepository.findBrukereISammeOrganisasjoner(brukeId)
+        return userRepository.findBrukereISammeOrganisasjoner(brukerId)
                 .mapNotNull(UserEntity::getId);
     }
 }
