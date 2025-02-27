@@ -37,6 +37,9 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("ALTINN_URL", "${sm\\://altinn-url}"); // Used by altinn3-tilgang-service only.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
+        properties.putIfAbsent("AZURE_NAV_APP_CLIENT_ID", DUMMY); // Value found in pod, if needed.
+        properties.putIfAbsent("AZURE_NAV_APP_CLIENT_SECRET", DUMMY); // Value found in pod, if needed.
+        properties.putIfAbsent("AZURE_NAV_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-nav-openid-config-token-endpoint}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_ISSUER", "${sm\\://azure-openid-config-issuer}");
         properties.putIfAbsent("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", "${sm\\://azure-openid-config-token-endpoint}");
         properties.putIfAbsent("CRYPTOGRAPHY_SECRET", DUMMY); // Used by bruker-service only.
