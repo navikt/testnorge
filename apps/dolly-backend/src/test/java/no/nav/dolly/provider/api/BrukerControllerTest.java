@@ -26,10 +26,6 @@ import static org.mockito.Mockito.when;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class BrukerControllerTest {
 
-    private final static String BRUKERID = "123";
-    private final static String BRUKERNAVN = "BRUKER";
-    private final static String EPOST = "@@@@";
-
     @Mock
     private BrukerService brukerService;
 
@@ -63,7 +59,7 @@ class BrukerControllerTest {
         Bruker bruker = Bruker.builder().build();
         RsBruker rsBruker = new RsBruker();
 
-        when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(bruker);
+        when(brukerService.fetchOrCreateBruker()).thenReturn(bruker);
         when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
 
         assertThat(controller.getCurrentBruker(), is(rsBruker));
