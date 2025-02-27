@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.excel.ExcelService;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ import java.io.IOException;
 public class ExcelController {
 
     private final ExcelService excelService;
-    private final GetUserInfo getUserInfo;
     private final BrukerService brukerService;
 
     @SneakyThrows
