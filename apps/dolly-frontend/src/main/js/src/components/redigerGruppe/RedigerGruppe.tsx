@@ -1,100 +1,95 @@
-import React, { lazy, Suspense } from 'react'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
-import * as yup from 'yup'
-import Loading from '@/components/ui/loading/Loading'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-
-import './RedigerGruppe.less'
 import { useNavigate } from 'react-router'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
-import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
-import * as _ from 'lodash-es'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
+import * as Yup from 'yup'
+import { DollyApi } from '@/service/Api'
+import React, { useState } from 'react'
+import Loading from '@/components/ui/loading/Loading'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import './RedigerGruppe.less'
+import { Alert } from '@navikt/ds-react'
 
 type Props = {
-	gruppeId?: string
-	createGruppe: (arg0: any) => any
-	createOrUpdateFetching: boolean
-	updateGruppe: (arg0: number, arg1: any) => any
-	onCancel: () => void
-	error: {
-		message: string
-	}
+	gruppeId: string
+	onCancel: Function
 }
 
-const validation = () =>
-	yup.object().shape({
-		navn: yup.string().trim().required('Navn er et påkrevd felt').max(30, 'Maksimalt 30 bokstaver'),
-		hensikt: yup
-			.string()
-			.trim()
-			.required('Gi en beskrivelse av hensikten med gruppen')
-			.max(200, 'Maksimalt 200 bokstaver'),
-	})
+const validation = Yup.object().shape({
+	navn: Yup.string().trim().required('Gi gruppen et navn').max(30, 'Maksimalt 30 bokstaver'),
+	hensikt: Yup.string()
+		.trim()
+		.required('Beskriv hensikten med gruppen')
+		.max(200, 'Maksimalt 200 bokstaver'),
+})
 
-const RedigerGruppe = ({
-	gruppeId,
-	createGruppe,
-	createOrUpdateFetching,
-	updateGruppe,
-	onCancel,
-	error,
-}: Props): JSX.Element => {
-	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
-	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
-
+export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 	const navigate = useNavigate()
 	const { gruppe } = useGruppeById(gruppeId)
-	const erRedigering = gruppe?.id !== undefined
+	const erRedigering = gruppeId !== undefined
+
+	const [feilmelding, setFeilmelding] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
+
 	const initialValues = {
-		navn: _.get(gruppe, 'navn', ''),
-		hensikt: _.get(gruppe, 'hensikt', ''),
+		navn: gruppe?.navn || '',
+		hensikt: gruppe?.hensikt || '',
 	}
 
 	const mutate = useMatchMutate()
 	const formMethods = useForm({
-		mode: 'onChange',
+		mode: 'all',
 		defaultValues: initialValues,
-		resolver: yupResolver(validation()),
+		resolver: yupResolver(validation),
 	})
 
-	const onHandleSubmit = async (
-		values: {
-			hensikt: any
-			navn: any
-		},
-		_actions: any,
-	) => {
-		const groupValues = {
-			hensikt: values.hensikt,
-			navn: values.navn,
-		}
-		erRedigering
-			? await updateGruppe(gruppe.id, groupValues).then(() => {
-					return mutate(REGEX_BACKEND_GRUPPER)
-				})
-			: await createGruppe(groupValues).then(
-					(response: {
-						value: {
-							data: {
-								id: any
-							}
-						}
-					}) => {
-						const gruppeId = response.value?.data?.id
-						if (gruppeId) {
-							navigate(`/gruppe/${gruppeId}`)
-						}
-					},
-				)
-		return !error && onCancel()
+	const handleCreateGruppe = () => {
+		setIsLoading(true)
+		DollyApi.createGruppe({
+			navn: formMethods.watch('navn'),
+			hensikt: formMethods.watch('hensikt'),
+		}).then((response: any) => {
+			if (response.error) {
+				setFeilmelding('Noe gikk galt under oppretting av gruppe: ' + response.error)
+				setIsLoading(false)
+			} else {
+				setFeilmelding('')
+				setIsLoading(false)
+				const gruppeId = response.data?.id
+				if (gruppeId) {
+					navigate(`/gruppe/${gruppeId}`)
+				}
+			}
+		})
 	}
 
-	if (createOrUpdateFetching) {
-		return <Loading label="oppdaterer gruppe" />
+	const handleUpdateGruppe = () => {
+		setIsLoading(true)
+		DollyApi.updateGruppe(gruppeId, {
+			navn: formMethods.watch('navn'),
+			hensikt: formMethods.watch('hensikt'),
+		}).then((response: any) => {
+			if (response.error) {
+				setFeilmelding('Noe gikk galt under redigering av gruppe: ' + response.error)
+				setIsLoading(false)
+			} else {
+				setFeilmelding('')
+				setIsLoading(false)
+				onCancel()
+				return mutate(REGEX_BACKEND_GRUPPER)
+			}
+		})
+	}
+
+	if (isLoading) {
+		return (
+			<div style={{ marginBottom: '15px' }}>
+				<Loading label="Oppdaterer gruppe ..." />
+			</div>
+		)
 	}
 
 	const buttons = (
@@ -104,8 +99,15 @@ const RedigerGruppe = ({
 				variant={'primary'}
 				type={'submit'}
 				onClick={() => {
-					formMethods.handleSubmit(onHandleSubmit)
-					formMethods.trigger()
+					formMethods.trigger(['navn', 'hensikt'])
+					formMethods.setValue('navn', formMethods.getValues('navn'), {
+						shouldValidate: true,
+						shouldTouch: true,
+					})
+					formMethods.setValue('hensikt', formMethods.getValues('hensikt'), {
+						shouldValidate: true,
+						shouldTouch: true,
+					})
 				}}
 			>
 				{erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
@@ -122,46 +124,32 @@ const RedigerGruppe = ({
 				control={formMethods.control}
 				className={'opprett-tabellrad'}
 				autoComplete={'off'}
-				onSubmit={() => {
-					formMethods.handleSubmit(onHandleSubmit)
-					formMethods.trigger()
-				}}
+				onSubmit={formMethods.handleSubmit(erRedigering ? handleUpdateGruppe : handleCreateGruppe)}
 			>
-				<>
-					{devEnabled && (
-						<>
-							<Suspense fallback={<Loading label="Laster komponenter" />}>
-								<DisplayFormState />
-								<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
-							</Suspense>
-						</>
-					)}
-					<div className="fields">
-						<FormTextInput
-							data-testid={TestComponentSelectors.INPUT_NAVN}
-							name="navn"
-							label="NAVN"
-							size="grow"
-							useOnChange={true}
-							autoFocus
-						/>
-						<FormTextInput
-							data-testid={TestComponentSelectors.INPUT_HENSIKT}
-							name="hensikt"
-							label="HENSIKT"
-							size="grow"
-							useOnChange={true}
-						/>
-						{buttons}
-					</div>
-					{error && (
-						<div className="opprett-error">
-							<span>{error.message}</span>
-						</div>
-					)}
-				</>
+				<div className="fields">
+					<FormTextInput
+						data-testid={TestComponentSelectors.INPUT_NAVN}
+						name="navn"
+						label="NAVN"
+						size="grow"
+						useOnChange={true}
+						autoFocus
+					/>
+					<FormTextInput
+						data-testid={TestComponentSelectors.INPUT_HENSIKT}
+						name="hensikt"
+						label="HENSIKT"
+						size="grow"
+						useOnChange={true}
+					/>
+					{buttons}
+				</div>
+				{feilmelding && (
+					<Alert variant={'error'} size={'small'} style={{ margin: '0 10px 15px' }}>
+						{feilmelding}
+					</Alert>
+				)}
 			</Form>
 		</FormProvider>
 	)
 }
-export default RedigerGruppe

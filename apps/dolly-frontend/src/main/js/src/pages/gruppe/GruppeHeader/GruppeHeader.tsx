@@ -21,7 +21,7 @@ import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import Loading from '@/components/ui/loading/Loading'
 import FavoriteButton from '@/components/ui/button/FavoriteButton/FavoriteButton'
-import { RedigerGruppeNy } from '@/components/redigerGruppe/RedigerGruppeNy'
+import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 
 type GruppeHeaderProps = {
 	gruppeId: string
@@ -160,7 +160,7 @@ const GruppeHeader = ({
 				</div>
 			</header>
 
-			{visRedigerState && <RedigerGruppeNy gruppeId={gruppeId} onCancel={skjulRediger} />}
+			{visRedigerState && <RedigerGruppe gruppeId={gruppeId} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
 				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppeId={gruppeId} />
 			)}

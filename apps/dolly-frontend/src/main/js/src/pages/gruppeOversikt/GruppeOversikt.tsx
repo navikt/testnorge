@@ -13,7 +13,7 @@ import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
-import { RedigerGruppeNy } from '@/components/redigerGruppe/RedigerGruppeNy'
+import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 
 type GruppeOversiktProps = {
 	importerteZIdenter: any
@@ -95,7 +95,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				{!bankIdBruker && <FinnPersonBestilling />}
 			</div>
 
-			{visNyGruppeState && <RedigerGruppeNy onCancel={skjulNyGruppe} />}
+			{visNyGruppeState && <RedigerGruppe onCancel={skjulNyGruppe} />}
 
 			{!bankIdBruker && (
 				<StyledDiv className="gruppe--flex-column-center">
