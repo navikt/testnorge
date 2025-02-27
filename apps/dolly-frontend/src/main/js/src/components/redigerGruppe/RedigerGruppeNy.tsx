@@ -11,8 +11,12 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import './RedigerGruppe.less'
+import { Alert } from '@navikt/ds-react'
 
-//TODO: props
+type Props = {
+	gruppeId: string
+	onCancel: Function
+}
 
 const validation = Yup.object().shape({
 	navn: Yup.string().trim().required('Gi gruppen et navn').max(30, 'Maksimalt 30 bokstaver'),
@@ -22,12 +26,12 @@ const validation = Yup.object().shape({
 		.max(200, 'Maksimalt 200 bokstaver'),
 })
 
-export const RedigerGruppeNy = ({ gruppeId, onCancel }: any) => {
+export const RedigerGruppeNy = ({ gruppeId, onCancel }: Props) => {
 	const navigate = useNavigate()
 	const { gruppe } = useGruppeById(gruppeId)
 	const erRedigering = gruppeId !== undefined
 
-	const [feilmelding, setFeilmelding] = useState('') //TODO: Test feilmelding
+	const [feilmelding, setFeilmelding] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 
 	const initialValues = {
@@ -50,9 +54,10 @@ export const RedigerGruppeNy = ({ gruppeId, onCancel }: any) => {
 		}).then((response: any) => {
 			if (response.error) {
 				setFeilmelding('Noe gikk galt under oppretting av gruppe: ' + response.error)
+				setIsLoading(false)
 			} else {
 				setFeilmelding('')
-				setIsLoading(false) //TODO: staa et annet sted?
+				setIsLoading(false)
 				const gruppeId = response.data?.id
 				if (gruppeId) {
 					navigate(`/gruppe/${gruppeId}`)
@@ -69,6 +74,7 @@ export const RedigerGruppeNy = ({ gruppeId, onCancel }: any) => {
 		}).then((response: any) => {
 			if (response.error) {
 				setFeilmelding('Noe gikk galt under redigering av gruppe: ' + response.error)
+				setIsLoading(false)
 			} else {
 				setFeilmelding('')
 				setIsLoading(false)
@@ -139,9 +145,9 @@ export const RedigerGruppeNy = ({ gruppeId, onCancel }: any) => {
 					{buttons}
 				</div>
 				{feilmelding && (
-					<div className="opprett-error">
-						<span>{feilmelding}</span>
-					</div>
+					<Alert variant={'error'} size={'small'} style={{ margin: '0 10px 15px' }}>
+						{feilmelding}
+					</Alert>
 				)}
 			</Form>
 		</FormProvider>
