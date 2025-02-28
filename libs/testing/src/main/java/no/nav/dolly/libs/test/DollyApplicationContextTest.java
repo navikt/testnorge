@@ -36,7 +36,7 @@ public class DollyApplicationContextTest {
     }
 
     /**
-     * <p>Note that this should fail, as {@code WebTestClient} is not configured with {@code LegacyHealthEndpointsRedirectFilter}.</p>
+     * <p>Note that {@code WebTestClient} is not configured with {@code LegacyHealthEndpointsForwardingFilter}.</p>
      * <p>Added to ensure no app publishes on legacy endpoints itself.</p>
      */
     @Test
@@ -50,7 +50,7 @@ public class DollyApplicationContextTest {
     }
 
     /**
-     * <p>Note that this should fail, as {@code WebTestClient} is not configured with {@code LegacyHealthEndpointsRedirectFilter}.</p>
+     * <p>Note that {@code WebTestClient} is not configured with {@code LegacyHealthEndpointsForwardingFilter}.</p>
      * <p>Added to ensure no app publishes on legacy endpoints itself.</p>
      */
     @Test
