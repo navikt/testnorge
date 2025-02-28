@@ -4,6 +4,7 @@ import { ChatElipsisIcon, EnvelopeClosedIcon } from '@navikt/aksel-icons'
 import '@/styles/variables.less'
 import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 const Panel = styled.div`
 	background-color: #0067c5;
@@ -30,6 +31,9 @@ const Header = styled.div`
 `
 
 export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
+	const { currentBruker } = useCurrentBruker()
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
+
 	const closePanel = () => setOpenState(false)
 
 	return (
@@ -41,9 +45,22 @@ export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
 				</Button>
 			</Header>
 			<p>
-				Team Dolly er tilgjengelige på Slack (#dolly), e-post (dolly@nav.no), og via kontaktskjema.
+				{`Team Dolly er tilgjengelige på ${bankIdBruker ? '' : 'Slack (#dolly), '}e-post (dolly@nav.no), og via kontaktskjema.`}
 			</p>
 			<VStack gap="2">
+				{!bankIdBruker && (
+					<a href={'https://nav-it.slack.com/archives/CA3P9NGA2'} target="_blank">
+						<Button
+							variant="secondary"
+							iconPosition="left"
+							icon={<Icon kind="slack" />}
+							style={{ width: '100%' }}
+							onClick={closePanel}
+						>
+							Gå til Slack-kanal
+						</Button>
+					</a>
+				)}
 				<a href={'mailto:dolly@nav.no'}>
 					<Button
 						variant="secondary"
@@ -53,17 +70,6 @@ export const KontaktinfoPanel = ({ setOpenState, openKontaktskjema }: any) => {
 						onClick={closePanel}
 					>
 						Send e-post
-					</Button>
-				</a>
-				<a href={'https://nav-it.slack.com/archives/CA3P9NGA2'} target="_blank">
-					<Button
-						variant="secondary"
-						iconPosition="left"
-						icon={<Icon kind="slack" />}
-						style={{ width: '100%' }}
-						onClick={closePanel}
-					>
-						Gå til Slack-kanal
 					</Button>
 				</a>
 				<Button
