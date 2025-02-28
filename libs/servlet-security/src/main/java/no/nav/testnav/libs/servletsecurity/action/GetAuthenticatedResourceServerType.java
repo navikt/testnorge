@@ -2,7 +2,6 @@ package no.nav.testnav.libs.servletsecurity.action;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
-import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import static no.nav.testnav.libs.servletsecurity.jwt.SecureOAuth2ServerToServerAutoConfiguration.ResourceServerProperties;
 
 @Component
 @RequiredArgsConstructor

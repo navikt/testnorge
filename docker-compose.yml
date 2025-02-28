@@ -9,6 +9,7 @@ services:
       context: ./apps/altinn3-tilgang-service
     environment:
       - ALTINN_URL=http//altinn:8080
+      - AZURE_APP_CLIENT_ID=dummy
       - AZURE_OPENID_CONFIG_ISSUER=dummy
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - MASKINPORTEN_CLIENT_ID=dummy
@@ -16,6 +17,7 @@ services:
       - MASKINPORTEN_SCOPES=altinn:resourceregistry/accesslist.read altinn:resourceregistry/accesslist.write altinn:accessmanagement/authorizedparties.resourceowner
       - MASKINPORTEN_WELL_KNOWN_URL=http://maskinporten:8080
       - SPRING_PROFILES_ACTIVE=virtual
+      - TOKEN_X_CLIENT_ID=dev-gcp:dolly:testnav-altinn3-tilgang-service
       - TOKEN_X_ISSUER=http://tokendings:8080
       - TOKEN_X_PRIVATE_JWK=${JWK}
     ports:
@@ -61,6 +63,7 @@ services:
     build:
       context: ./apps/bruker-service
     environment:
+      - AZURE_APP_CLIENT_ID=dummy
       - AZURE_OPENID_CONFIG_ISSUER=dummy
       - CRYPTOGRAPHY_SECRET=dummy
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005

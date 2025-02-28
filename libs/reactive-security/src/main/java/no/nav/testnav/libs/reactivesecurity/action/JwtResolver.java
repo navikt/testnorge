@@ -12,8 +12,17 @@ abstract class JwtResolver {
     Mono<Authentication> getJwtAuthenticationToken() {
         return ReactiveSecurityContextHolder
                 .getContext()
-                .switchIfEmpty(Mono.error(new JwtResolverException("ReactiveSecurityContext is empty")))
+                .switchIfEmpty(Mono.error(new EmptyReactiveSecurityContextException()))
                 .doOnNext(context -> log.info("JwtResolver context.authentication {} {}", context.getAuthentication().getClass().getCanonicalName(), context.getAuthentication()))
                 .map(SecurityContext::getAuthentication);
     }
+
+    static class EmptyReactiveSecurityContextException extends IllegalStateException {
+
+        EmptyReactiveSecurityContextException() {
+            super();
+        }
+
+    }
+
 }

@@ -6,7 +6,7 @@ import no.nav.registre.testnorge.profil.consumer.AzureAdProfileConsumer;
 import no.nav.registre.testnorge.profil.consumer.PersonOrganisasjonTilgangConsumer;
 import no.nav.registre.testnorge.profil.domain.Profil;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -22,7 +22,8 @@ public class ProfilService {
     private static final String UKJENT = "[ukjent]";
     private static final String BANK_ID = "BankId";
     private final AzureAdProfileConsumer azureAdProfileConsumer;
-    private final TokenXResourceServerProperties tokenXResourceServerProperties;
+    @Value("${spring.security.oauth2.resourceserver.tokenx.issuer-uri}")
+    private String tokenxIssuerUri;
     private final PersonOrganisasjonTilgangConsumer organisasjonTilgangConsumer;
     private final GetUserInfo getUserInfo;
 
@@ -69,7 +70,7 @@ public class ProfilService {
                 .map(token -> token
                         .getTokenAttributes()
                         .get(JwtClaimNames.ISS)
-                        .equals(tokenXResourceServerProperties.getIssuerUri()))
+                        .equals(tokenxIssuerUri))
                 .orElseThrow();
     }
 
@@ -78,7 +79,7 @@ public class ProfilService {
         return getJwtAuthenticationToken()
                 .map(JwtAuthenticationToken::getTokenAttributes)
                 .map(attribs -> attribs.get("pid"))
-                .map(ident -> (String) ident)
+                .map(String.class::cast)
                 .orElseThrow();
     }
 }
