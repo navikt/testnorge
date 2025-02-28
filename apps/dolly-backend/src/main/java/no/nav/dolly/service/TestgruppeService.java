@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -71,7 +72,7 @@ public class TestgruppeService {
     @Transactional(readOnly = true)
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
 
-        sjekkTilgang(gruppeId, pageNo, pageSize);
+        sjekkTilgang(gruppeId);
 
         var testgruppeUtenIdenter = testgruppeRepository.findByIdOrderById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
@@ -101,11 +102,12 @@ public class TestgruppeService {
         return rsTestgruppe;
     }
 
-    private void sjekkTilgang(Long gruppeId, Integer pageNo, Integer pageSize) {
+    private void sjekkTilgang(Long gruppeId) {
 
         var bruker = brukerService.fetchOrCreateBruker();
         if (bruker.getBrukertype() == BANKID) {
             brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
                     .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
                     .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
                     .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
@@ -123,6 +125,7 @@ public class TestgruppeService {
         var bruker = brukerService.fetchOrCreateBruker();
         if (bruker.getBrukertype() == BANKID) {
             return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
                     .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
                             PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
         } else {
@@ -204,6 +207,7 @@ public class TestgruppeService {
 
         if (bruker.getBrukertype() == BANKID) {
             paginertGruppe = brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
                     .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
                             PageRequest.of(pageNo, pageSize, Sort.by("id").descending())))
                     .block();
