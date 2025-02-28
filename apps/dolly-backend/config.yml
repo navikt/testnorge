@@ -17,15 +17,16 @@ spec:
   accessPolicy:
     inbound:
       rules:
+
         - application: dolly-frontend
         - application: dolly-idporten
+        - application: etterlatte-testdata
+          namespace: etterlatte
         - application: testnav-batch-bestilling-service
         - application: testnav-dollystatus
         - application: testnav-helsepersonell-service
         - application: testnav-oversikt-frontend
         - application: testnav-tenor-search-service
-        - application: etterlatte-testdata
-          namespace: etterlatte
     outbound:
       rules:
         - application: generer-navn-service

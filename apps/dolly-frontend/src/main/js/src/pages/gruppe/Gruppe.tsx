@@ -15,13 +15,13 @@ import { useIkkeFerdigBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import './Gruppe.less'
 import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
-import GruppeHeaderConnector from '@/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import StatusListeConnector from '@/components/bestilling/statusListe/StatusListeConnector'
 import BestillingsveilederModal from '@/components/bestillingsveileder/startModal/StartModal'
 import { GruppeToggle } from '@/pages/gruppe/GruppeToggle'
 import { GruppeVisning } from '@/pages/gruppe/GruppeVisning'
 import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
+import GruppeHeader from '@/pages/gruppe/GruppeHeader/GruppeHeader'
 
 export type GruppeProps = {
 	sidetall: number
@@ -105,7 +105,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppeId={gruppe.id} />
+			<GruppeHeader gruppeId={gruppe.id} />
 			{ikkeFerdigBestillinger && (
 				<StatusListeConnector
 					gruppeId={gruppe.id}

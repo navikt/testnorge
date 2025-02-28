@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
@@ -6,13 +7,11 @@ import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '@/components/ui/button/LaasButton/LaasButton'
 import { Header } from '@/components/ui/header/Header'
 import { arrayToString, formatStringDates } from '@/utils/DataFormatter'
-
 import './GruppeHeader.less'
 import { TagsButton } from '@/components/ui/button/Tags/TagsButton'
 import { GjenopprettGruppe } from '@/components/bestilling/gjenopprett/GjenopprettGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
-import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { FlyttPersonButton } from '@/components/ui/button/FlyttPersonButton/FlyttPersonButton'
 import { LeggTilPaaGruppe } from '@/pages/gruppe/LeggTilPaaGruppe/LeggTilPaaGruppe'
@@ -22,42 +21,52 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import Loading from '@/components/ui/loading/Loading'
 import FavoriteButton from '@/components/ui/button/FavoriteButton/FavoriteButton'
 import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
+import { actions } from '@/ducks/gruppe'
+import { createLoadingSelector } from '@/ducks/loading'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
+
+const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
+const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
+const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
+const loadingSelectorGetExcel = createLoadingSelector(actions.getGruppeExcelFil)
 
 type GruppeHeaderProps = {
 	gruppeId: string
-	laasGruppe: Function
-	isLockingGruppe: boolean
-	deleteGruppe: Function
-	isDeletingGruppe: boolean
-	getGruppeExcelFil: Function
-	isFetchingExcel: boolean
-	isSendingTags: boolean
-	sendTags: Function
 }
 
-const GruppeHeader = ({
-	gruppeId,
-	deleteGruppe,
-	isDeletingGruppe,
-	getGruppeExcelFil,
-	isFetchingExcel,
-	laasGruppe,
-	isLockingGruppe,
-	sendTags,
-	isSendingTags,
-}: GruppeHeaderProps) => {
+const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
+	const dispatch = useDispatch()
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
 	const {
 		currentBruker: { brukertype },
 	} = useCurrentBruker()
-	const { gruppe, loading } = useGruppeById(gruppeId)
 
-	if (loading) {
+	const isDeletingGruppe = useSelector((state: any) => loadingSelectorSlettGruppe(state))
+	const isSendingTags = useSelector((state: any) => loadingSelectorSendTags(state))
+	const isLockingGruppe = useSelector((state: any) => loadingSelectorLaasGruppe(state))
+	const isFetchingExcel = useSelector((state: any) => loadingSelectorGetExcel(state))
+
+	const { gruppe, error } = useGruppeById(gruppeId)
+
+	if (error) {
+		return <div>Could not load group</div>
+	}
+	if (!gruppe) {
 		return <Loading label={'Laster gruppe...'} />
 	}
-	const erLaast = gruppe.erLaast
 
+	const laasGruppe = (id: number) => {
+		dispatch(actions.laas(id, { erLaast: true, laastBeskrivelse: 'Låst gruppe' }))
+	}
+	const deleteGruppe = (id: number) => {
+		dispatch(actions.remove(id))
+	}
+	const getGruppeExcelFil = (id: number) => {
+		dispatch(actions.getGruppeExcelFil(id))
+	}
+
+	const erLaast = gruppe.erLaast
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
 	const iconType = erLaast ? 'locked-group' : 'group'
@@ -103,7 +112,7 @@ const GruppeHeader = ({
 					<div className="gruppe-header__border" />
 					<div className="gruppe-header__actions">
 						{!erLaast && <LeggTilPaaGruppe antallPersoner={antallPersoner} gruppeId={gruppe.id} />}
-						{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
+						{!erLaast && <FlyttPersonButton gruppeId={gruppe.id} disabled={antallPersoner < 1} />}
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<Button
 								data-testid={TestComponentSelectors.BUTTON_REDIGER_GRUPPE}
@@ -143,8 +152,7 @@ const GruppeHeader = ({
 						)}
 						{brukertype !== 'BANKID' && (
 							<TagsButton
-								loading={isSendingTags}
-								action={sendTags}
+								isSending={isSendingTags}
 								gruppeId={gruppe.id}
 								eksisterendeTags={gruppe.tags}
 							/>
@@ -159,7 +167,6 @@ const GruppeHeader = ({
 					</div>
 				</div>
 			</header>
-
 			{visRedigerState && <RedigerGruppe gruppeId={gruppeId} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
 				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppeId={gruppeId} />
@@ -167,4 +174,5 @@ const GruppeHeader = ({
 		</Fragment>
 	)
 }
+
 export default GruppeHeader

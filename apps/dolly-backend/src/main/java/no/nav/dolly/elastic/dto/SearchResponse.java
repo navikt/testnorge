@@ -7,7 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.elastic.ElasticBestilling;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -20,6 +23,22 @@ public class SearchResponse {
     private Float score;
     private String took;
     private List<String> identer;
-    private List<ElasticBestilling> bestillinger;
+    private List<ElasticBestilling> registre;
     private String error;
+
+    public List<String> getIdenter() {
+
+        if (isNull(identer)) {
+            identer = new ArrayList<>();
+        }
+        return identer;
+    }
+
+    public List<ElasticBestilling> getRegistre() {
+
+        if (isNull(registre)) {
+            registre = new ArrayList<>();
+        }
+        return registre;
+    }
 }

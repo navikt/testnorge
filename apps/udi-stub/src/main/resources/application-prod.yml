@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "vault://"
   datasource:
     url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-udistub?autoReconnect=true&useSSL=false
     hikari:
@@ -23,8 +25,6 @@ spring:
         backend: postgresql/preprod-fss
         role: testnav-udistub-admin
         enabled: true
-  config:
-    import: vault://
   security:
     oauth2:
       resourceserver:

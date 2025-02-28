@@ -1,0 +1,26 @@
+name: dolly-search-service
+
+on:
+  push:
+    paths:
+      - "plugins/**"
+      - "libs/data-transfer-search-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/testing/**"
+      - "apps/dolly-search-service/**"
+      - ".github/workflows/app.dolly-search-service.yml"
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/dolly-search-service"
+      deploy-tag: "#deploy-dolly-search-service"
+      deploy-tag-test: "#deploy-test-dolly-search-service"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

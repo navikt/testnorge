@@ -3,9 +3,11 @@ import HistarkVisning from './HistarkVisning'
 import Loading from '@/components/ui/loading/Loading'
 import { Journalpost } from '@/service/services/JoarkDokumentService'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 
 interface Form {
 	data?: Array<MiljoDataListe>
+	ident: string
 	loading: boolean
 }
 
@@ -14,14 +16,26 @@ type MiljoDataListe = {
 	data: Array<Journalpost>
 }
 
-const Histark = ({ data }) => {
-	if (!data) return null
-
-	return <HistarkVisning dokument={data} />
+const getHeader = (dokument: any) => {
+	return `Dokument (${dokument?.filnavn})`
 }
 
-export default ({ data, loading }: Form) => {
-	if (loading) {
+const Histark = ({ data, dokumentInfoId, idx }) => {
+	if (!data) return null
+
+	return <HistarkVisning dokument={data} dokumentInfoId={dokumentInfoId} idx={idx} />
+}
+
+export default ({ data, loading, ident }: Form) => {
+	const { transaksjonsid, loading: loadingTransaksjon } = useTransaksjonsid('HISTARK', ident)
+	let dokumentInfoIder: number[] = []
+	transaksjonsid?.forEach((transaksjon) =>
+		transaksjon?.transaksjonId.forEach((indreTransaksjon) =>
+			dokumentInfoIder.push(indreTransaksjon.dokumentInfoId),
+		),
+	)
+
+	if (loading || loadingTransaksjon) {
 		return <Loading label="Laster dokument-data" />
 	}
 
@@ -33,11 +47,16 @@ export default ({ data, loading }: Form) => {
 		<>
 			<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
 			{data.length === 1 ? (
-				<Histark data={data[0]} />
+				<Histark data={data[0]} dokumentInfoId={dokumentInfoIder?.[0]} idx={0} />
 			) : (
-				<DollyFieldArray header={'Dokument'} data={data} expandable={data?.length > 2}>
-					{(dokument) => {
-						return <Histark data={dokument} />
+				<DollyFieldArray
+					getHeader={getHeader}
+					header={'Dokument'}
+					data={data}
+					expandable={data?.length > 2}
+				>
+					{(dokument, idx) => {
+						return <Histark data={dokument} dokumentInfoId={dokumentInfoIder?.[idx]} idx={idx} />
 					}}
 				</DollyFieldArray>
 			)}
