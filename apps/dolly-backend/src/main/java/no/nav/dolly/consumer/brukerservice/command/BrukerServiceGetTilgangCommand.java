@@ -9,10 +9,11 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class BrukerServiceGetTilgangCommand implements Callable<Flux<String>> {
+public class BrukerServiceGetTilgangCommand implements Callable<Mono<List<String>>> {
 
     private static final String TILGANG_URL = "/api/v1/tilgang";
 
@@ -21,7 +22,7 @@ public class BrukerServiceGetTilgangCommand implements Callable<Flux<String>> {
     private final String token;
 
     @Override
-    public Flux<String> call() {
+    public Mono<List<String>> call() {
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(TILGANG_URL)
@@ -29,9 +30,10 @@ public class BrukerServiceGetTilgangCommand implements Callable<Flux<String>> {
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToFlux(String.class)
+                .bodyToMono(String[].class)
+                .map(List::of)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(brukerId))
+                .onErrorResume(error -> Mono.just(List.of(brukerId)))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

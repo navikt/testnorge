@@ -8,6 +8,9 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -29,10 +32,10 @@ public class BrukerServiceConsumer {
                 .build();
     }
 
-    public Flux<String> getKollegaerIOrganisasjon(String brukerId) {
+    public Mono<List<String>> getKollegaerIOrganisasjon(String brukerId) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
+                .flatMap(token ->
                         new BrukerServiceGetTilgangCommand(webClient, brukerId, token.getTokenValue()).call());
     }
 }

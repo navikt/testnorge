@@ -110,7 +110,6 @@ public class TestgruppeService {
         if (bruker.getBrukertype() == BANKID) {
             log.info("Sjekker tilgang for bruker: {}, brukertype: {}", bruker.getBrukerId(), bruker.getBrukertype());
             brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .collectList()
                     .doOnNext(brukere -> log.info("BrukerServiceConsumer hentet {} kollegaer for bruker: {}",
                             String.join(",", brukere), bruker.getBrukerId()))
                     .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
@@ -131,7 +130,6 @@ public class TestgruppeService {
         log.info("Henter testgrupper for bruker: {}, brukertype: {}", bruker.getBrukerId(), bruker.getBrukertype());
         if (bruker.getBrukertype() == BANKID) {
             return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .collectList()
                     .doOnNext(brukere -> log.info("BrukerServiceConsumer hentet {} kollegaer for bruker: {}",
                             String.join(",", brukere), bruker.getBrukerId()))
                     .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
