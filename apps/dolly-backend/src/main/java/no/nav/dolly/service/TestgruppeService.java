@@ -37,6 +37,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.BANKID;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -56,7 +57,6 @@ public class TestgruppeService {
     private final GetUserInfo getUserInfo;
     private final PdlDataConsumer pdlDataConsumer;
     private final BrukerServiceConsumer brukerServiceConsumer;
-    private final BrukerRepository brukerRepository;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
@@ -73,6 +73,8 @@ public class TestgruppeService {
 
     @Transactional(readOnly = true)
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
+
+        sjekkTilgang(gruppeId, pageNo, pageSize);
 
         var testgruppeUtenIdenter = testgruppeRepository.findByIdOrderById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
@@ -102,6 +104,22 @@ public class TestgruppeService {
         return rsTestgruppe;
     }
 
+    private void sjekkTilgang(Long gruppeId, Integer pageNo, Integer pageSize) {
+
+        var bruker = brukerService.fetchOrCreateBruker();
+        if (bruker.getBrukertype() == BANKID) {
+            log.info("Sjekker tilgang for bruker: {}, brukertype: {}", bruker.getBrukerId(), bruker.getBrukertype());
+            brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .collectList()
+                    .doOnNext(brukere -> log.info("BrukerServiceConsumer hentet {} kollegaer for bruker: {}",
+                            String.join(",", brukere), bruker.getBrukerId()))
+                    .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
+                    .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
+                    .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
+                    .block();
+        }
+    }
+
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
         return testgruppeRepository.findById(gruppeId).orElseThrow(() ->
                 new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
@@ -110,10 +128,14 @@ public class TestgruppeService {
     public Mono<Page<Testgruppe>> getAllTestgrupper(Integer pageNo, Integer pageSize) {
 
         var bruker = brukerService.fetchOrCreateBruker();
-        if (bruker.getBrukertype() == Bruker.Brukertype.BANKID) {
+        log.info("Henter testgrupper for bruker: {}, brukertype: {}", bruker.getBrukerId(), bruker.getBrukertype());
+        if (bruker.getBrukertype() == BANKID) {
             return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                     .collectList()
-                    .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere, PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
+                    .doOnNext(brukere -> log.info("BrukerServiceConsumer hentet {} kollegaer for bruker: {}",
+                            String.join(",", brukere), bruker.getBrukerId()))
+                    .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
+                            PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
         } else {
             return Mono.just(testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
         }
