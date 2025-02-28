@@ -81,7 +81,7 @@ export const TextInput = ({
 }: TextInputProps) => {
 	const {
 		register,
-		formState: { touchedFields },
+		formState: { touchedFields, errors },
 		setValue,
 		watch,
 		getFieldState,
@@ -94,8 +94,10 @@ export const TextInput = ({
 	const feil =
 		getFieldState(`manual.${name}`)?.error ||
 		getFieldState(name)?.error ||
-		getFieldState(fieldName)?.error
+		getFieldState(fieldName)?.error ||
+		errors[name]
 	const visFeil = feil && (errorContext?.showError || isTouched)
+
 	const css = cn('skjemaelement__input', className, {
 		'skjemaelement__input--harFeil': visFeil,
 	})

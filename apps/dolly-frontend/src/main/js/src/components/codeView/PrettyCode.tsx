@@ -10,6 +10,7 @@ SyntaxHighlighter.registerLanguage('json', json)
 const StyledSyntaxHighlighter = styled(SyntaxHighlighter)`
 	font-size: 0.9em;
 	width: 100%;
+	margin: 0;
 `
 
 type Props = {

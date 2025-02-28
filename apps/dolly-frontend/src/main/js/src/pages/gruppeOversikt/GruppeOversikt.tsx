@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import RedigerGruppeConnector from '@/components/redigerGruppe/RedigerGruppeConnector'
 import Icon from '@/components/ui/icon/Icon'
 import Liste from './Liste'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -14,6 +13,7 @@ import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
+import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 
 type GruppeOversiktProps = {
 	importerteZIdenter: any
@@ -95,40 +95,38 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				{!bankIdBruker && <FinnPersonBestilling />}
 			</div>
 
-			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
+			{visNyGruppeState && <RedigerGruppe onCancel={skjulNyGruppe} />}
 
-			{!bankIdBruker && (
-				<StyledDiv className="gruppe--flex-column-center">
-					<ToggleGroup
-						value={visningType}
-						onChange={byttVisning}
-						size={'small'}
-						style={{ backgroundColor: '#ffffff' }}
+			<StyledDiv className="gruppe--flex-column-center">
+				<ToggleGroup
+					value={visningType}
+					onChange={byttVisning}
+					size={'small'}
+					style={{ backgroundColor: '#ffffff' }}
+				>
+					<StyledToggleItem
+						data-testid={TestComponentSelectors.TOGGLE_MINE}
+						value={VisningType.MINE}
 					>
-						<StyledToggleItem
-							data-testid={TestComponentSelectors.TOGGLE_MINE}
-							value={VisningType.MINE}
-						>
-							<Icon kind={'man-silhouette'} />
-							Mine
-						</StyledToggleItem>
-						<StyledToggleItem
-							data-testid={TestComponentSelectors.TOGGLE_FAVORITTER}
-							value={VisningType.FAVORITTER}
-						>
-							<Icon kind={'star-light'} />
-							Favoritter
-						</StyledToggleItem>
-						<StyledToggleItem
-							data-testid={TestComponentSelectors.TOGGLE_ALLE}
-							value={VisningType.ALLE}
-						>
-							<Icon kind={'group-light'} />
-							Alle
-						</StyledToggleItem>
-					</ToggleGroup>
-				</StyledDiv>
-			)}
+						<Icon kind={'man-silhouette'} />
+						Mine
+					</StyledToggleItem>
+					<StyledToggleItem
+						data-testid={TestComponentSelectors.TOGGLE_FAVORITTER}
+						value={VisningType.FAVORITTER}
+					>
+						<Icon kind={'star-light'} />
+						Favoritter
+					</StyledToggleItem>
+					<StyledToggleItem
+						data-testid={TestComponentSelectors.TOGGLE_ALLE}
+						value={VisningType.ALLE}
+					>
+						<Icon kind={'group-light'} />
+						Alle
+					</StyledToggleItem>
+				</ToggleGroup>
+			</StyledDiv>
 
 			<Liste
 				gruppeDetaljer={{

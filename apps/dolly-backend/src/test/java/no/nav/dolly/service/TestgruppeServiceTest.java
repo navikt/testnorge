@@ -228,6 +228,7 @@ class TestgruppeServiceTest {
     @Test
     void getTestgrupper() {
         when(testgruppeRepository.findAllByOrderByIdDesc(any(Pageable.class))).thenReturn(new PageImpl<>(emptyList()));
+        when(brukerService.fetchOrCreateBruker(any())).thenReturn(new Bruker());
         testgruppeService.getTestgruppeByBrukerId(0, 10, null);
         verify(testgruppeRepository).findAllByOrderByIdDesc(Pageable.ofSize(10));
     }
