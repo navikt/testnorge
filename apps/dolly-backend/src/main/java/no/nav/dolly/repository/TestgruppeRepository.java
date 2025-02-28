@@ -33,7 +33,7 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
     @Query(value = "delete from Testgruppe tg where tg.id = :testgruppeId")
     int deleteAllById(@Param("testgruppeId") Long id);
 
-    @Query(value = "select * from gruppe tg " +
+    @Query(value = "select tg.* from gruppe tg " +
             "join bruker b on tg.opprettet_av = b.id " +
             "and b.bruker_Id in  (:brukere) ", nativeQuery = true)
     Page<Testgruppe> findAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere, PageRequest id);
