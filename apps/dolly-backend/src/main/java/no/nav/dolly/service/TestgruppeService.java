@@ -17,7 +17,6 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
@@ -35,8 +34,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.BANKID;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -207,10 +204,25 @@ public class TestgruppeService {
 
     public RsTestgruppePage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        var bruker = isBlank(brukerId) ? null : brukerService.fetchBruker(brukerId);
-        var paginertGruppe = isBlank(brukerId)
-                ? testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize))
-                : fetchTestgrupperByBrukerId(pageNo, pageSize, brukerId);
+        var bruker = brukerService.fetchOrCreateBruker(brukerId);
+        log.info("Henter testgrupper for bruker: {}, brukertype: {}", bruker.getBrukerId(), bruker.getBrukertype());
+
+        Page<Testgruppe> paginertGruppe;
+
+        if (bruker.getBrukertype() == BANKID) {
+            paginertGruppe = brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .doOnNext(brukere -> log.info("BrukerServiceConsumer hentet {} kollegaer for bruker: {}",
+                            String.join(",", brukere), bruker.getBrukerId()))
+                    .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
+                            PageRequest.of(pageNo, pageSize, Sort.by("id").descending())))
+                    .block();
+
+        } else if (isBlank(brukerId)) {
+            paginertGruppe = testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize));
+
+        } else {
+            paginertGruppe = fetchTestgrupperByBrukerId(pageNo, pageSize, brukerId);
+        }
 
         return RsTestgruppePage.builder()
                 .pageNo(paginertGruppe.getNumber())
@@ -218,7 +230,7 @@ public class TestgruppeService {
                 .pageSize(paginertGruppe.getSize())
                 .antallElementer(paginertGruppe.getTotalElements())
                 .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppe.class))
-                .favoritter(nonNull(bruker) ? mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class) : emptyList())
+                .favoritter(mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class))
                 .build();
     }
 
