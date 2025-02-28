@@ -51,7 +51,7 @@ public class KrrstubConsumer extends ConsumerStatus {
                 .flatMap(token -> new KontaktdataPostCommand(webClient, digitalKontaktdata, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_getKontaktdata" })
+    @Timed(name = "providers", tags = { "operation", "krrstub_deleteKontaktdata" })
     public Flux<DigitalKontaktdataResponse> deleteKontaktdata(List<String> identer) {
 
         return tokenService.exchange(serverProperties)

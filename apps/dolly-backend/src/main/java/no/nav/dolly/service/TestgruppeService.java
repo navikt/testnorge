@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -33,8 +35,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.BANKID;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -53,6 +54,7 @@ public class TestgruppeService {
     private final PersonService personService;
     private final GetUserInfo getUserInfo;
     private final PdlDataConsumer pdlDataConsumer;
+    private final BrukerServiceConsumer brukerServiceConsumer;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
@@ -69,6 +71,8 @@ public class TestgruppeService {
 
     @Transactional(readOnly = true)
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
+
+        sjekkTilgang(gruppeId);
 
         var testgruppeUtenIdenter = testgruppeRepository.findByIdOrderById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
@@ -98,14 +102,35 @@ public class TestgruppeService {
         return rsTestgruppe;
     }
 
+    private void sjekkTilgang(Long gruppeId) {
+
+        var bruker = brukerService.fetchOrCreateBruker();
+        if (bruker.getBrukertype() == BANKID) {
+            brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
+                    .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
+                    .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
+                    .block();
+        }
+    }
+
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
         return testgruppeRepository.findById(gruppeId).orElseThrow(() ->
                 new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
     }
 
-    public Page<Testgruppe> getAllTestgrupper(Integer pageNo, Integer pageSize) {
+    public Mono<Page<Testgruppe>> getAllTestgrupper(Integer pageNo, Integer pageSize) {
 
-        return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
+        var bruker = brukerService.fetchOrCreateBruker();
+        if (bruker.getBrukertype() == BANKID) {
+            return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
+                            PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
+        } else {
+            return Mono.just(testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
+        }
     }
 
     public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer) {
@@ -176,10 +201,23 @@ public class TestgruppeService {
 
     public RsTestgruppePage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        var bruker = isBlank(brukerId) ? null : brukerService.fetchBruker(brukerId);
-        var paginertGruppe = isBlank(brukerId)
-                ? testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize))
-                : fetchTestgrupperByBrukerId(pageNo, pageSize, brukerId);
+        var bruker = brukerService.fetchOrCreateBruker(brukerId);
+
+        Page<Testgruppe> paginertGruppe;
+
+        if (isBlank(brukerId) && bruker.getBrukertype() == BANKID) {
+            paginertGruppe = brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
+                            PageRequest.of(pageNo, pageSize, Sort.by("id").descending())))
+                    .block();
+
+        } else if (isBlank(brukerId)) {
+            paginertGruppe = testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize));
+
+        } else {
+            paginertGruppe = fetchTestgrupperByBrukerId(pageNo, pageSize, brukerId);
+        }
 
         return RsTestgruppePage.builder()
                 .pageNo(paginertGruppe.getNumber())
@@ -187,7 +225,7 @@ public class TestgruppeService {
                 .pageSize(paginertGruppe.getSize())
                 .antallElementer(paginertGruppe.getTotalElements())
                 .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppe.class))
-                .favoritter(nonNull(bruker) ? mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class) : emptyList())
+                .favoritter(mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class))
                 .build();
     }
 

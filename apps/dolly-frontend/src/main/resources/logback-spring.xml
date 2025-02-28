@@ -5,7 +5,6 @@
             <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
                 <maxStackTraceLength>-1</maxStackTraceLength>
                 <addCauses>true</addCauses>
-                <stackTraceIncludePrefix>-</stackTraceIncludePrefix>
             </encoder>
         </appender>
         <root level="INFO">

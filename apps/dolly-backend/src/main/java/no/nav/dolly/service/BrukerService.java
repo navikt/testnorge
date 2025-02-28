@@ -25,6 +25,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -44,9 +45,12 @@ public class BrukerService {
 
     public Bruker fetchOrCreateBruker(String brukerId) {
 
+        if (isBlank(brukerId)) {
+            brukerId = getUserId(getUserInfo);
+        }
         try {
-            Bruker bruker = fetchBruker(brukerId);
-            List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
+            var bruker = fetchBruker(brukerId);
+            var brukere = brukerRepository.fetchEidAv(bruker);
             bruker.getFavoritter().addAll(brukere.stream().map(Bruker::getFavoritter)
                     .flatMap(Collection::stream).collect(Collectors.toSet()));
 
@@ -57,6 +61,11 @@ public class BrukerService {
         } catch (NotFoundException e) {
             return createBruker();
         }
+    }
+
+    public Bruker fetchOrCreateBruker() {
+
+        return fetchOrCreateBruker(null);
     }
 
     @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)

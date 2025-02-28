@@ -20,6 +20,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-backend
         - application: dolly-frontend
         - application: dolly-idporten
         - application: testnav-oversikt-frontend

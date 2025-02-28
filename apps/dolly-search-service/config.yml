@@ -12,7 +12,9 @@ metadata:
 spec:
   image: "{{image}}"
   port: 8080
-  webproxy: true
+  openSearch:
+    instance: bestillinger
+    access: read
   tokenx:
     enabled: true
   azure:
@@ -23,8 +25,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-backend
-        - application: dolly-backend-dev
+        - application: dolly-idporten
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
     outbound:
@@ -59,6 +62,9 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   ingresses:
     - "https://testnav-dolly-search-service.intern.dev.nav.no"
 
