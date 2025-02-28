@@ -81,7 +81,7 @@ export const TextInput = ({
 }: TextInputProps) => {
 	const {
 		register,
-		formState: { touchedFields, validatingFields, errors },
+		formState: { touchedFields, errors },
 		setValue,
 		watch,
 		getFieldState,
@@ -96,18 +96,12 @@ export const TextInput = ({
 		getFieldState(name)?.error ||
 		getFieldState(fieldName)?.error ||
 		errors[name]
-	// console.log('feil: ', feil) //TODO - SLETT MEG
 	const visFeil = feil && (errorContext?.showError || isTouched)
-	// const visFeil = feil
-	// console.log('visFeil: ', visFeil) //TODO - SLETT MEG
-	// console.log('touchedFields: ', touchedFields) //TODO - SLETT MEG
-	// console.log('validatingFields: ', validatingFields) //TODO - SLETT MEG
-	// console.log('errors: ', errors) //TODO - SLETT MEG
 
 	const css = cn('skjemaelement__input', className, {
 		'skjemaelement__input--harFeil': visFeil,
 	})
-	// console.log('css: ', css) //TODO - SLETT MEG
+
 	useEffect(() => {
 		if (input && input !== fieldValue) {
 			setFieldValue(input)
