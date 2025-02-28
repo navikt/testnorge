@@ -205,7 +205,7 @@ public class TestgruppeService {
 
         Page<Testgruppe> paginertGruppe;
 
-        if (bruker.getBrukertype() == BANKID) {
+        if (isBlank(brukerId) && bruker.getBrukertype() == BANKID) {
             paginertGruppe = brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                     .map(TilgangDTO::getBrukere)
                     .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
