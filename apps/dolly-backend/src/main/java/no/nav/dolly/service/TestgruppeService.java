@@ -105,10 +105,7 @@ public class TestgruppeService {
 
         var bruker = brukerService.fetchOrCreateBruker();
         if (bruker.getBrukertype() == BANKID) {
-            log.info("Sjekker tilgang for bruker: {}, brukertype: {}", bruker.getBrukerId(), bruker.getBrukertype());
             brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .doOnNext(brukere -> log.info("BrukerServiceConsumer hentet {} kollegaer for bruker: {}",
-                            String.join(",", brukere), bruker.getBrukerId()))
                     .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
                     .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
                     .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
@@ -124,11 +121,8 @@ public class TestgruppeService {
     public Mono<Page<Testgruppe>> getAllTestgrupper(Integer pageNo, Integer pageSize) {
 
         var bruker = brukerService.fetchOrCreateBruker();
-        log.info("Henter testgrupper for bruker: {}, brukertype: {}", bruker.getBrukerId(), bruker.getBrukertype());
         if (bruker.getBrukertype() == BANKID) {
             return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .doOnNext(brukere -> log.info("BrukerServiceConsumer hentet {} kollegaer for bruker: {}",
-                            String.join(",", brukere), bruker.getBrukerId()))
                     .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
                             PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
         } else {
@@ -205,14 +199,11 @@ public class TestgruppeService {
     public RsTestgruppePage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
         var bruker = brukerService.fetchOrCreateBruker(brukerId);
-        log.info("Henter testgrupper for bruker: {}, brukertype: {}", bruker.getBrukerId(), bruker.getBrukertype());
 
         Page<Testgruppe> paginertGruppe;
 
         if (bruker.getBrukertype() == BANKID) {
             paginertGruppe = brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .doOnNext(brukere -> log.info("BrukerServiceConsumer hentet {} kollegaer for bruker: {}",
-                            String.join(",", brukere), bruker.getBrukerId()))
                     .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
                             PageRequest.of(pageNo, pageSize, Sort.by("id").descending())))
                     .block();
