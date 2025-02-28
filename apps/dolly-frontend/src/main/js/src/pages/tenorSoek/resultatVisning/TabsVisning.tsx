@@ -26,8 +26,18 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 	if (!kildedata) {
 		return <div className="person-visning_content">{children}</div>
 	}
-	const kildedataJson = JSON.parse(kildedata)
-	const kildedataPretty = JSON.stringify(kildedataJson, null, 2)
+
+	const kildedataIsValidJson = () => {
+		try {
+			JSON.parse(kildedata)
+		} catch (e) {
+			return false
+		}
+		return true
+	}
+
+	const kildedataJson = kildedataIsValidJson() ? JSON.parse(kildedata) : null
+	const kildedataPretty = kildedataJson ? JSON.stringify(kildedataJson, null, 2) : kildedata
 
 	return (
 		<TabsVisningFormatter>
