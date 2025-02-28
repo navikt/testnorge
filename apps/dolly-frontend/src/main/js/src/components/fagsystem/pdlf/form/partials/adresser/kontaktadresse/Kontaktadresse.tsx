@@ -22,7 +22,10 @@ import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partia
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface KontaktadresseValues {
 	formMethods: UseFormReturn
@@ -153,7 +156,7 @@ export const KontaktadresseForm = ({
 }
 
 export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (

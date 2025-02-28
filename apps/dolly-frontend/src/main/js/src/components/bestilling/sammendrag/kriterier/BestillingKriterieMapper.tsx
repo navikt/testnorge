@@ -25,7 +25,10 @@ import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
 import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
@@ -2418,7 +2421,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	const data: any[] = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
 
-	const bestilling = useContext(BestillingsveilederContext)
+	const bestilling = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const { navEnheter } = useNavEnheter()
 
 	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype, firstIdent)

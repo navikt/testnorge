@@ -12,7 +12,10 @@ import styled from 'styled-components'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type NavnTypes = {
 	formMethods: any
@@ -163,7 +166,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 }
 
 export const Navn = ({ formMethods }: NavnTypes) => {
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormDollyFieldArray

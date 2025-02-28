@@ -7,7 +7,10 @@ import { useAsync } from 'react-use'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useContext, useEffect, useState } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ToggleGroup } from '@navikt/ds-react'
 import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
@@ -71,7 +74,7 @@ export const PdlPersonForm = ({
 	}
 
 	//@ts-ignore
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const [type, setType] = useState(getType())
 
 	const gruppeIdenter = gruppe?.value?.data?.identer?.map((person) => person.ident)

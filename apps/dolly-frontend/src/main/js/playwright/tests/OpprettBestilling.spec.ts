@@ -5,8 +5,7 @@ test.describe('Oppretter bestilling med artifakter som er avhengige av Q1 eller 
 	test('passes', async ({ page }) => {
 		await page.goto('gruppe/1')
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_PERSONER).click()
-		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
-		await page.waitForTimeout(2000)
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 
 		const fjernMiljoeAvhengige = await page
 			.getByTestId(TestComponentSelectors.BUTTON_FJERN_MILJOE_AVHENGIG)
@@ -39,11 +38,10 @@ test.describe('Oppretter bestilling med alle resterende artifakter', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('gruppe/1')
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_PERSONER).click()
+
 		await page.getByTestId(TestComponentSelectors.TOGGLE_MAL).click()
 		await page.getByTestId(TestComponentSelectors.SELECT_MAL).click()
-
-		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
-		await page.waitForTimeout(2000)
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 
 		for (const button_velg_alle of await page
 			.getByTestId(TestComponentSelectors.BUTTON_VELG_ALLE)

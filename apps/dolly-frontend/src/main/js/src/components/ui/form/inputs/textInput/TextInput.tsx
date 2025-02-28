@@ -114,6 +114,7 @@ export const TextInput = ({
 				value={fieldValue}
 				autoFocus={autoFocus}
 				disabled={isDisabled}
+				type={props.type || 'text'}
 				id={name}
 				name={name}
 				className={css}

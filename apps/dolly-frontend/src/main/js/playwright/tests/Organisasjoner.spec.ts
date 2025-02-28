@@ -25,7 +25,7 @@ test.describe('Naviger til organisasjoner og start en bestilling med alle tilval
 		await page.goto('http://localhost:5678/organisasjoner')
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_ORGANISASJON).click()
-		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 
 		for (const button_velg_alle of await page
 			.getByTestId(TestComponentSelectors.BUTTON_VELG_ALLE)

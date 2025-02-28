@@ -9,6 +9,8 @@ import { useFormContext } from 'react-hook-form'
 
 interface VelgGruppeToggleProps {
 	fraGruppe?: number
+	gruppevalg: any
+	setGruppevalg: any
 }
 
 export enum Gruppevalg {
@@ -22,14 +24,14 @@ const StyledToggleGroup = styled(ToggleGroup)`
 `
 
 export const VelgGruppeToggle = ({
-	fraGruppe = null,
+	fraGruppe,
 	gruppevalg,
 	setGruppevalg,
 }: VelgGruppeToggleProps) => {
 	const formMethods = useFormContext()
 	const handleToggleChange = (value: Gruppevalg) => {
 		setGruppevalg(value)
-		formMethods.setValue('gruppeId', '')
+		formMethods.setValue('gruppeId', null)
 	}
 	return (
 		<div className="toggle--wrapper">

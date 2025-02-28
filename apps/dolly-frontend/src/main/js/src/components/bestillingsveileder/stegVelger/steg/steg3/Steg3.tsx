@@ -1,14 +1,15 @@
-import React, { Suspense, useContext, useEffect, useState } from 'react'
+import React, { Suspense, useContext, useEffect } from 'react'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
-import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
-import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 import { useFormContext } from 'react-hook-form'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
@@ -17,11 +18,9 @@ const Bestillingskriterier = React.lazy(
 )
 
 const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
-
-	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
 	const { organisasjonMiljoe, loading } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
@@ -97,14 +96,6 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 					bankIdBruker={bankIdBruker}
 					orgTilgang={organisasjonMiljoe}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
-				/>
-			)}
-			{importTestnorge && !opts.gruppe && (
-				<VelgGruppe
-					formMethods={formMethods}
-					title={'Hvilken gruppe vil du importere til?'}
-					gruppevalg={gruppevalg}
-					setGruppevalg={setGruppevalg}
 				/>
 			)}
 			{importTestnorge && opts.gruppe && (

@@ -29,7 +29,10 @@ import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 import Loading from '@/components/ui/loading/Loading'
 import { PdlfForm } from '@/components/fagsystem/pdlf/form/Form'
 import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { Alert } from '@navikt/ds-react'
 
@@ -38,7 +41,7 @@ const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/Dok
 
 const Steg2: React.FC = () => {
 	const { getValues, setValue } = useFormContext()
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 		if (leggTil) {

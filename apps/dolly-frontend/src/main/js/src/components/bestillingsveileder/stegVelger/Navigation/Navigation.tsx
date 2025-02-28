@@ -6,7 +6,10 @@ import './Navigation.less'
 import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
 import { useNavigate } from 'react-router'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 import {
 	ShowErrorContext,
@@ -16,7 +19,7 @@ import {
 export const Navigation = ({ step, onPrevious, isLastStep, mutateLoading, handleSubmit }: any) => {
 	const showPrevious = step > 0
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const importTestnorge = opts?.is?.importTestnorge
 
 	const navigate = useNavigate()

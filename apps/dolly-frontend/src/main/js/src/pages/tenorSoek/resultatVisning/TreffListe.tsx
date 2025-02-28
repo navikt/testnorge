@@ -27,6 +27,8 @@ export const TreffListe = ({
 	personListe,
 	markertePersoner,
 	setMarkertePersoner,
+	inkluderPartnere,
+	setInkluderPartnere,
 	nesteSide,
 	loading,
 	error,
@@ -80,7 +82,12 @@ export const TreffListe = ({
 						<h2 style={{ margin: '0', alignSelf: 'center' }}>
 							{antallTreff ? `${antallTreff} treff` : ''}
 						</h2>
-						<ImporterValgtePersoner identer={markertePersoner} isMultiple={true} />
+						<ImporterValgtePersoner
+							identer={markertePersoner}
+							isMultiple={true}
+							inkluderPartnere={inkluderPartnere}
+							setInkluderPartnere={setInkluderPartnere}
+						/>
 					</div>
 				</Box>
 			</div>
@@ -149,6 +156,8 @@ export const TreffListe = ({
 						ibruk={valgtPerson?.ibruk}
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
+						inkluderPartnere={inkluderPartnere}
+						setInkluderPartnere={setInkluderPartnere}
 					/>
 				)}
 			</div>

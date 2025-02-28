@@ -4,14 +4,20 @@ import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/i
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { doedsboAttributt } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
+import { useFormContext } from 'react-hook-form'
 
 export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
+	const formMethods = useFormContext()
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const formGruppeId = formMethods.watch('gruppeId')
 
-	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 
