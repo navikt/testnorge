@@ -31,7 +31,7 @@ spec:
       external:
         - host: testnav-altinn3-tilgang-service.nav.no
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
@@ -43,7 +43,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500

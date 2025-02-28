@@ -36,7 +36,7 @@ public class UdistubProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
@@ -45,11 +45,13 @@ public class UdistubProxyApplicationStarter {
                                 .map(AccessToken::getTokenValue));
         return builder
                 .routes()
-                .route(spec -> spec.path("/**")
-                        .filters(
-                                filterspec -> filterspec
-                                        .setResponseHeader(CONTENT_TYPE, "application/json; charset=UTF-8")
-                                        .filter(addAuthenticationHeaderFilter))
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
+                        .filters(filterspec -> filterspec
+                                .setResponseHeader(CONTENT_TYPE, "application/json; charset=UTF-8")
+                                .filter(addAuthenticationHeaderFilter))
                         .uri(consumers.getTestnavUdistub().getUrl()))
                 .build();
     }

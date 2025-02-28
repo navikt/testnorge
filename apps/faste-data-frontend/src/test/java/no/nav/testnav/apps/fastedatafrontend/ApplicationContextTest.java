@@ -1,16 +1,19 @@
 package no.nav.testnav.apps.fastedatafrontend;
 
-import no.nav.dolly.libs.nais.DollySpringBootTest;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollyApplicationContextTest;
 
 @DollySpringBootTest
-class ApplicationContextTest {
+class ApplicationContextTest extends DollyApplicationContextTest {
 
-    @Test
-    void load_app_context() {
-        assertThat(true).isTrue();
+    @Override
+    public void testNonexistingApiEndpoint() {
+        webTestClient
+                .get()
+                .uri("/api/someNonExistingEndpoint")
+                .exchange()
+                .expectStatus()
+                .is3xxRedirection();
     }
 
 }

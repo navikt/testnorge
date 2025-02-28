@@ -5,7 +5,7 @@ import no.nav.registre.sdforvalter.consumer.rs.krr.request.KrrRequest;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
 import no.nav.registre.sdforvalter.database.repository.KrrRepository;
 import no.nav.registre.sdforvalter.domain.Krr;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

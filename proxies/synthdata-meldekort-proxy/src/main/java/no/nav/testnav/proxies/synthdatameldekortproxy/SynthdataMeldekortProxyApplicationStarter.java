@@ -30,7 +30,7 @@ public class SynthdataMeldekortProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(
+    RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             AzureNavTokenService tokenService,
             Consumers consumers
@@ -43,7 +43,10 @@ public class SynthdataMeldekortProxyApplicationStarter {
         return builder
                 .routes()
                 .route(
-                        spec -> spec.path("/**")
+                        spec -> spec
+                                .path("/**")
+                                .and()
+                                .not(not -> not.path("/internal/**"))
                                 .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderFilter))
                                 .uri(consumers.getSyntMeldekort().getUrl()))
                 .build();

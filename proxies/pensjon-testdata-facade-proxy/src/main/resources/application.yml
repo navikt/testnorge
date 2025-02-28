@@ -2,6 +2,8 @@ spring:
   application:
     name: pensjon-testdata-facade-proxy
     description: Proxy for pensjon-testdata-facade som legger på sikkerhet.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -24,13 +26,6 @@ logging:
       springframework:
         cloud:
           gateway: TRACE
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   pensjon-testdata-facade:

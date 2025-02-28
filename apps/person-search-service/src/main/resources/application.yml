@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-person-search-service
     description: Tjeneste for å søke etter personer.
+  config:
+    import: "classpath:dolly-application.yml"
   autoconfigure:
     exclude:
       org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticSearchReactiveHealthContributorAutoConfiguration,
@@ -17,10 +19,10 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
+management:
+  health:
+    elasticsearch:
+      enabled: false
 
 consumers:
   testnav-pdl-proxy:
@@ -28,28 +30,3 @@ consumers:
     namespace: dolly
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-
-management:
-  health:
-    elasticsearch:
-      enabled: false
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

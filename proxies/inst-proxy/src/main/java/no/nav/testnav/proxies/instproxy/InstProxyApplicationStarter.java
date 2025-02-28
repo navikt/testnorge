@@ -29,7 +29,7 @@ public class InstProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(
+    RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             AzureTrygdeetatenTokenService tokenService,
             Consumers consumers
@@ -44,9 +44,10 @@ public class InstProxyApplicationStarter {
                 .routes()
                 .route(spec -> spec
                         .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
-                        .uri(consumers.getInst().getUrl())
-                )
+                        .uri(consumers.getInst().getUrl()))
                 .build();
     }
 

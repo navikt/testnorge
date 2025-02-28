@@ -24,9 +24,14 @@ public class BatchAdeoProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://batch.adeo.no"))
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder
+                .routes()
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
+                        .uri("https://batch.adeo.no"))
                 .build();
     }
 

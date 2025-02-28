@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MiljoerConsumer implements ConsumerStatus {
+public class MiljoerConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;

@@ -11,12 +11,6 @@ sonarqube {
     }
 }
 
-configurations {
-    configureEach {
-        exclude group: "org.springframework.boot", module: "spring-boot-starter-actuator"
-    }
-}
-
 dependencies {
     implementation "io.grpc:grpc-netty:$versions.grpc"
 

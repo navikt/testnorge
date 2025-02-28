@@ -30,7 +30,7 @@ public class KontoregisterProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(
+    RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             AzureTrygdeetatenTokenService tokenService,
             Consumers consumers
@@ -45,6 +45,8 @@ public class KontoregisterProxyApplicationStarter {
                 .route(
                         spec -> spec
                                 .path("/**")
+                                .and()
+                                .not(not -> not.path("/internal/**"))
                                 .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
                                 .uri(consumers.getKontoregister().getUrl()))
                 .build();

@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-altinn3-tilgang-service
     description: Tjeneste for å hente og sette tilganger for orgnisasjoner
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,11 +17,6 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
 altinn:
   api:
     url: ${ALTINN_URL}
@@ -27,25 +24,6 @@ altinn:
     owner: nav
     identifier: godkjente-dolly-tilganger
 
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
 server:
-  servlet:
-    encoding:
-      charset: UTF-8
   error:
-    include-message: always
     include-stacktrace: never

@@ -2,6 +2,8 @@ spring:
   application:
     name: organisasjon-bestilling-service
     description: Tjeneste for å registere og hente ut organiasjonsbestilling status
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -9,36 +11,9 @@ spring:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
 consumers:
   jenkins:
     url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
     namespace: dolly
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

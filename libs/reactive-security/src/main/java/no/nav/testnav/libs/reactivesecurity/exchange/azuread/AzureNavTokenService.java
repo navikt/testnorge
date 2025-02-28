@@ -64,4 +64,18 @@ public class AzureNavTokenService implements TokenService {
         ).call();
 
     }
+
+    public static class Test extends AzureNavTokenService {
+
+        public Test(String proxyHost, AzureNavClientCredential azureNavClientCredential) {
+            super(proxyHost, azureNavClientCredential);
+        }
+
+        @Override
+        public Mono<AccessToken> exchange(ServerProperties serverProperties) {
+            return Mono.empty();
+        }
+
+    }
+
 }

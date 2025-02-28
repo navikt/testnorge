@@ -2,6 +2,8 @@ spring:
   application:
     name: testnorge-profil-api
     description: API for hente ut profil fra Azure Ad
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -11,11 +13,6 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
 
 access.scopes:
   - https://graph.microsoft .com/.default
@@ -28,25 +25,3 @@ consumers:
     namespace: dolly
     name: ${ALTINN3_TILGANG_NAME}
     url: ${ALTINN3_TILGANG_URL}
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

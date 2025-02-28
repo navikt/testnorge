@@ -30,17 +30,22 @@ public class ArbeidssoekerregisteretProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-                                           AzureTrygdeetatenTokenService tokenService,
-                                           Consumers consumers) {
-
-        return builder.routes()
-                .route(spec -> spec.path("/**")
+    RouteLocator customRouteLocator(
+            RouteLocatorBuilder builder,
+            AzureTrygdeetatenTokenService tokenService,
+            Consumers consumers
+    ) {
+        return builder
+                .routes()
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
                         .filters(filterSpec -> filterSpec.filters(
                                 AddAuthenticationRequestGatewayFilterFactory.bearerAuthenticationHeaderFilter(
-                                        () -> tokenService.exchange(consumers.getArbeidssoekerregisteret())
-                                                .map(AccessToken::getTokenValue)
-                                )))
+                                        () -> tokenService
+                                                .exchange(consumers.getArbeidssoekerregisteret())
+                                                .map(AccessToken::getTokenValue))))
                         .uri(consumers.getArbeidssoekerregisteret().getUrl())
                 )
                 .build();
