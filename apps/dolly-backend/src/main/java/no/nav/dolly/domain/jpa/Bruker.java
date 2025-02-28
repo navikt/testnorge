@@ -131,5 +131,5 @@ public class Bruker implements Serializable {
                 .toHashCode();
     }
 
-    public enum Brukertype {AZURE, BANKID, BASIC}
+    public enum Brukertype {AZURE, BANKID}
 }

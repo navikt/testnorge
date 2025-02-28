@@ -97,38 +97,36 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 
 			{visNyGruppeState && <RedigerGruppe onCancel={skjulNyGruppe} />}
 
-			{!bankIdBruker && (
-				<StyledDiv className="gruppe--flex-column-center">
-					<ToggleGroup
-						value={visningType}
-						onChange={byttVisning}
-						size={'small'}
-						style={{ backgroundColor: '#ffffff' }}
+			<StyledDiv className="gruppe--flex-column-center">
+				<ToggleGroup
+					value={visningType}
+					onChange={byttVisning}
+					size={'small'}
+					style={{ backgroundColor: '#ffffff' }}
+				>
+					<StyledToggleItem
+						data-testid={TestComponentSelectors.TOGGLE_MINE}
+						value={VisningType.MINE}
 					>
-						<StyledToggleItem
-							data-testid={TestComponentSelectors.TOGGLE_MINE}
-							value={VisningType.MINE}
-						>
-							<Icon kind={'man-silhouette'} />
-							Mine
-						</StyledToggleItem>
-						<StyledToggleItem
-							data-testid={TestComponentSelectors.TOGGLE_FAVORITTER}
-							value={VisningType.FAVORITTER}
-						>
-							<Icon kind={'star-light'} />
-							Favoritter
-						</StyledToggleItem>
-						<StyledToggleItem
-							data-testid={TestComponentSelectors.TOGGLE_ALLE}
-							value={VisningType.ALLE}
-						>
-							<Icon kind={'group-light'} />
-							Alle
-						</StyledToggleItem>
-					</ToggleGroup>
-				</StyledDiv>
-			)}
+						<Icon kind={'man-silhouette'} />
+						Mine
+					</StyledToggleItem>
+					<StyledToggleItem
+						data-testid={TestComponentSelectors.TOGGLE_FAVORITTER}
+						value={VisningType.FAVORITTER}
+					>
+						<Icon kind={'star-light'} />
+						Favoritter
+					</StyledToggleItem>
+					<StyledToggleItem
+						data-testid={TestComponentSelectors.TOGGLE_ALLE}
+						value={VisningType.ALLE}
+					>
+						<Icon kind={'group-light'} />
+						Alle
+					</StyledToggleItem>
+				</ToggleGroup>
+			</StyledDiv>
 
 			<Liste
 				gruppeDetaljer={{

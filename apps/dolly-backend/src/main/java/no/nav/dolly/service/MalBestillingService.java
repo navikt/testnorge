@@ -251,11 +251,10 @@ public class MalBestillingService {
 
         if (isNull(bruker)) {
             return ANONYM;
+
+        } else {
+            return bruker.getBrukernavn();
         }
-        return switch (bruker.getBrukertype()) {
-            case AZURE, BANKID -> bruker.getBrukernavn();
-            case BASIC -> bruker.getNavIdent();
-        };
     }
 
     private String toJson(RsDollyUtvidetBestilling bestilling) {
