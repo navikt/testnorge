@@ -35,8 +35,6 @@ spec:
           cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
-        - application: testnav-generer-organisasjon-populasjon-service
-          cluster: dev-gcp
         - application: testnav-budpro-service
           cluster: dev-gcp
         - application: testnav-endringsmelding-service
