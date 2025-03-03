@@ -59,7 +59,6 @@ test.describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () =
 		}
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
-		// await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 		await page.getByTestId(TestComponentSelectors.TOGGLE_BESTILLING_MAL).click()
 		await expect(page.getByTestId(TestComponentSelectors.TOGGLE_BESTILLING_MAL)).toBeChecked()
 
