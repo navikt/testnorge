@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.*;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -47,10 +47,8 @@ class ArenaForvalterConsumerTest {
     @Test
     void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
         stubOpprettErrorResponse();
-        assertThrows(Exception.class, () -> {
-            arenaForvalterConsumer.sendBrukereTilArenaForvalter(null);
-        });
-
+        assertThrows(Exception.class, () ->
+            arenaForvalterConsumer.sendBrukereTilArenaForvalter(null));
     }
 
     private void stubOpprettErrorResponse() {
