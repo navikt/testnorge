@@ -29,14 +29,14 @@ const Steg0 = () => {
 		<div className="start-bestilling-modal">
 			{!isOrganisasjon && (
 				<>
-					<div className="dolly-panel dolly-panel-open">
-						<VelgGruppe formMethods={formMethods} title={'Hvilken gruppe vil du bestille til?'} />
-					</div>
 					{isNyIdent && (
 						<div className="dolly-panel dolly-panel-open">
 							<VelgIdenttype />
 						</div>
 					)}
+					<div className="dolly-panel dolly-panel-open">
+						<VelgGruppe formMethods={formMethods} title={'Hvilken gruppe vil du bestille til?'} />
+					</div>
 				</>
 			)}
 			<div className="dolly-panel dolly-panel-open">

@@ -54,7 +54,7 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId }: MalVelgerProps) 
 			formMethods.setValue('mal', mal.value)
 		} else {
 			opts.mal = undefined
-			formMethods.setValue('mal', undefined)
+			formMethods.setValue('mal', null)
 			const options = BVOptions(opts, gruppeId, dollyEnvironments)
 			formMethods.reset(options.initialValues)
 		}
@@ -63,14 +63,14 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId }: MalVelgerProps) 
 	const handleMalEnable = () => {
 		opts.mal = undefined
 		toggleMalAktiv()
-		formMethods.setValue('mal', undefined)
+		formMethods.setValue('mal', null)
 		const options = BVOptions(opts, gruppeId, dollyEnvironments)
 		formMethods.reset(options.initialValues)
 	}
 
 	const handleBrukerChange = (event: { value: string }) => {
 		setBruker(event.value)
-		formMethods.setValue('mal', undefined)
+		formMethods.setValue('mal', null)
 	}
 
 	return (
