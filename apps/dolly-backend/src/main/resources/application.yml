@@ -200,11 +200,6 @@ consumers:
     namespace: dolly
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-arbeidsforhold-service:
-    name: testnav-arbeidsforhold-service
-    namespace: dolly
-    url: http://testnav-arbeidsforhold-service.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-sykemelding-api:
     name: testnav-sykemelding-api
     namespace: dolly
