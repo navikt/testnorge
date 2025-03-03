@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Configuration
+@Profile({"prod", "dev"})
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 class SecurityConfig {
