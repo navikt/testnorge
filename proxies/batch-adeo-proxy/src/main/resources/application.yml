@@ -2,6 +2,8 @@ spring:
   application:
     name: testnorge-batch-adeo-proxy
     description: Proxy for batch.adeo.no som legger på sikkerhet.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,10 +17,3 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

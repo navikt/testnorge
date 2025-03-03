@@ -1,5 +1,6 @@
-package no.nav.dolly.libs.nais;
+package no.nav.dolly.libs.test;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.annotation.AliasFor;
@@ -25,6 +26,7 @@ public @interface DollySpringBootTest {
      * {@inheritDoc}
      * <p>Defaults to {@link SpringBootTest.WebEnvironment#RANDOM_PORT}.</p>
      */
+    @AliasFor(annotation = SpringBootTest.class, attribute = "webEnvironment")
     SpringBootTest.WebEnvironment webEnvironment() default SpringBootTest.WebEnvironment.RANDOM_PORT;
 
     /**

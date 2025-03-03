@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-pdl-proxy
     description: Proxy for pdl som legger på AzureAd sikkerhet og lager en sts token..
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -27,13 +29,6 @@ sts:
   token:
     provider:
       url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   pdl-testdata:

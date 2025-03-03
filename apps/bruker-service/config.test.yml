@@ -20,6 +20,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-backend-dev
         - application: dolly-frontend-dev
         - application: dolly-frontend-dev-unstable
         - application: team-dolly-lokal-app
@@ -28,7 +29,7 @@ spec:
       rules:
         - application: testnav-altinn3-tilgang-service
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
@@ -40,7 +41,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500

@@ -16,10 +16,7 @@ class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(spec -> spec
-                        .pathMatchers(
-                                "/internal/isReady",
-                                "/internal/isAlive",
-                                "/internal/metrics")
+                        .pathMatchers("/internal/**")
                         .permitAll()
                         .anyExchange()
                         .authenticated())

@@ -22,6 +22,8 @@ server:
   max-http-request-header-size: 128KB
 
 spring:
+  config:
+    import: "classpath:dolly-application.yml"
   main:
     allow-bean-definition-overriding: true
   flyway:
@@ -51,30 +53,8 @@ spring:
 
 springdoc:
   swagger-ui:
-    url: /v3/api-docs
-    disable-swagger-default-url: true
     tags-sorter: alpha
   pre-loading-enabled: true
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    health:
-      show-components: always
-      show-details: always
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
 
 logging:
   level:
@@ -239,5 +219,10 @@ consumers:
     name: testnav-arbeidssoekerregisteret-proxy
     namespace: dolly
     url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  bruker-service:
+    name: testnav-bruker-service
+    namespace: dolly
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
     cluster: dev-gcp
     

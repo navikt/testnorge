@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.DetaljerDTO;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.NavnDTO;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

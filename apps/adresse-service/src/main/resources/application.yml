@@ -1,6 +1,8 @@
 spring:
   application:
     name: adresse-service
+  config:
+    import: "classpath:dolly-application.yml"
   flyway:
     enabled: false
   security:
@@ -13,35 +15,9 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
 consumers:
   pdl-services:
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
     namespace: dolly
     name: testnav-pdl-proxy
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

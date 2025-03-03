@@ -3,6 +3,8 @@ spring:
     name: testnav-levende-arbeidsforhold-service
     version: 1
     description: App for å avslutte arbeidsforhold ved dødsfall.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -12,33 +14,6 @@ spring:
   kafka:
     consumer:
       group-id: testnav-levende-arbeidsforhold-service
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   testnav-aareg-proxy:

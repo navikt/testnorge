@@ -20,7 +20,6 @@ import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.FAILED;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -68,7 +66,6 @@ public class OrganisasjonBestillingService {
     private final BrukerService brukerService;
     private final ObjectMapper objectMapper;
     private final JsonBestillingMapper jsonBestillingMapper;
-    private final GetUserInfo getUserInfo;
 
     @Transactional
     public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
@@ -153,7 +150,7 @@ public class OrganisasjonBestillingService {
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestilling request) {
 
-        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        Bruker bruker = brukerService.fetchOrCreateBruker();
         OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
                 .antall(1)
                 .ferdig(false)
@@ -173,7 +170,7 @@ public class OrganisasjonBestillingService {
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestillingStatus status) {
 
-        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        Bruker bruker = brukerService.fetchOrCreateBruker();
         OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
                 .antall(1)
                 .sistOppdatert(now())
@@ -215,7 +212,7 @@ public class OrganisasjonBestillingService {
 
     public List<OrganisasjonBestilling> fetchOrganisasjonBestillingByBrukerId(String brukerId) {
 
-        var bruker = isNull(brukerId) ? brukerService.fetchOrCreateBruker(getUserId(getUserInfo)) :
+        var bruker = isNull(brukerId) ? brukerService.fetchOrCreateBruker() :
                 brukerRepository.findBrukerByBrukerId(brukerId)
                         .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 

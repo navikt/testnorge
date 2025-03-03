@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.brukerservice.initializer;
+package no.nav.testnav.apps.brukerservice;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
@@ -9,17 +9,19 @@ import org.springframework.context.event.ContextClosedEvent;
 
 import java.util.Map;
 
-public class WireMockInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+class WireMockInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
     @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
-        WireMockServer wireMockServer = new WireMockServer(new WireMockConfiguration().dynamicPort());
+    public void initialize(ConfigurableApplicationContext context) {
+
+        var wireMockServer = new WireMockServer(new WireMockConfiguration().dynamicPort());
         wireMockServer.start();
 
-        applicationContext
+        context
                 .getBeanFactory()
                 .registerSingleton("wireMockServer", wireMockServer);
-
-        applicationContext.addApplicationListener(applicationEvent -> {
+        context
+                .addApplicationListener(applicationEvent -> {
             if (applicationEvent instanceof ContextClosedEvent) {
                 wireMockServer.stop();
             }
@@ -27,7 +29,8 @@ public class WireMockInitializer implements ApplicationContextInitializer<Config
 
         TestPropertyValues
                 .of(Map.of("wiremockBaseUrl", "http://localhost:" + wireMockServer.port() + "/test"))
-                .applyTo(applicationContext);
+                .applyTo(context);
+
     }
 
 }

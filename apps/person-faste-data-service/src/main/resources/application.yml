@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-person-faste-data-service
     description: Tjeneste for å bestille og holde kontroll på faste data
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -12,35 +14,8 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: dev-gcp:dolly:testnav-person-faste-data-service
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
 testnav:
   config:
     hosts:
       - testnav-person-faste-data-service.intern.dev.nav.no
       - testnav-person-faste-data-service.dolly.svc.cluster.local
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

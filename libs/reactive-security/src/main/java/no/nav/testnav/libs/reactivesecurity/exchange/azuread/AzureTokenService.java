@@ -97,4 +97,18 @@ public class AzureTokenService implements TokenService {
                 token
         ).call();
     }
+
+    public static class Test extends AzureTokenService {
+
+        public Test(String proxyHost, AzureClientCredential azureClientCredential, GetAuthenticatedToken getAuthenticatedToken) {
+            super(proxyHost, azureClientCredential, getAuthenticatedToken);
+        }
+
+        @Override
+        public Mono<AccessToken> exchange(ServerProperties serverProperties) {
+            return Mono.empty();
+        }
+
+    }
+
 }

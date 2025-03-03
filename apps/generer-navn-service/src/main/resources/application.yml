@@ -3,6 +3,8 @@ spring:
     name: generer-navn-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å generere fiktive navn.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -12,31 +14,3 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

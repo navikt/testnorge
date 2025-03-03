@@ -34,29 +34,27 @@ public class FullmaktProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            Consumers consumers,
                                            FakedingsConsumer fakedingsConsumer,
                                            TokenXService tokenXService) {
+        var gatewayFilter = AddAuthenticationRequestGatewayFilterFactory
+                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService, consumers.getFullmakt());
         return builder
                 .routes()
-                .route(createRoute(
-                        consumers
-                                .getFullmakt()
-                                .getUrl(),
-                        AddAuthenticationRequestGatewayFilterFactory
-                                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService, consumers.getFullmakt())))
+                .route(createRoute(consumers.getFullmakt().getUrl(), gatewayFilter))
                 .build();
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String url, GatewayFilter filter) {
         return spec -> spec
                 .path("/**")
-                .filters(
-                        filterSpec -> filterSpec
-                                .rewritePath("/(?<segment>.*)", "/${segment}")
-                                .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
-                                .filter(filter))
+                .and()
+                .not(not -> not.path("/internal/**"))
+                .filters(filterSpec -> filterSpec
+                        .rewritePath("/(?<segment>.*)", "/${segment}")
+                        .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
+                        .filter(filter))
                 .uri(url);
     }
 
