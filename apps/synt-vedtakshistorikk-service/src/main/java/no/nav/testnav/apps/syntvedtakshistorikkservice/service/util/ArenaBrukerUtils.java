@@ -6,8 +6,8 @@ import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.ArbeidssoekerException;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

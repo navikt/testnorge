@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
 import lombok.AllArgsConstructor;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
