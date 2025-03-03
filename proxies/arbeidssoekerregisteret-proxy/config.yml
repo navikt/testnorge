@@ -37,6 +37,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
+        - application: dolly-idporten
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-backend

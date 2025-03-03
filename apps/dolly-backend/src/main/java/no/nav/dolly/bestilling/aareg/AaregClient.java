@@ -6,13 +6,11 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
@@ -52,7 +50,6 @@ public class AaregClient implements ClientRegister {
     private static final String SYSTEM = "AAREG";
 
     private final AaregConsumer aaregConsumer;
-    private final AmeldingService ameldingService;
     private final ApplicationConfig applicationConfig;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
@@ -76,27 +73,17 @@ public class AaregClient implements ClientRegister {
             transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
                     BestillingProgress::setAaregStatus, initStatus);
 
-            return Flux.just(1)
-                    .flatMap(index -> {
-                        if (bestilling.getAareg().stream()
-                                .map(RsAareg::getAmelding)
-                                .allMatch(List::isEmpty)) {
-
-                            return sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre);
-                        } else {
-                            return ameldingService.sendAmelding(bestilling, dollyPerson, miljoerTrygg.get());
-                        }
-                    })
+            return Flux.from(sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre)
                     .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                     .onErrorResume(error -> getErrors(error, miljoerTrygg.get()))
-                    .map(status -> futurePersist(progress, status));
+                    .map(status -> futurePersist(progress, status)));
         }
         return Flux.empty();
     }
 
-    private Flux<String> getErrors(Throwable error, Set<String> miljoer) {
+    private Mono<String> getErrors(Throwable error, Set<String> miljoer) {
 
-        return Flux.just(miljoer.stream()
+        return Mono.just(miljoer.stream()
                 .map(miljoe -> "%s:Feil= %s".formatted(miljoe, ErrorStatusDecoder.encodeStatus(WebClientFilter.getMessage(error))))
                 .collect(Collectors.joining(",")));
     }

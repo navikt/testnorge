@@ -46,8 +46,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: testnav-arbeidsforhold-service
-          cluster: dev-gcp
         - application: testnav-levende-arbeidsforhold-service
           cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter

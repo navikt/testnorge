@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
+import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,0 @@
-schema: pdl-api-schema.graphql
-extensions:
-  endpoints:
-    PDL GraphQL Endpoint:
-      url: https://pdl-api.dev.intern.nav.no/graphql
-      headers:
-        user-agent: ''
-      introspect: false
