@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-generer-arbeidsforhold-populasjon-service
     description: Tjeneste for å opprette arbeidsforhold-populasjon
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -11,11 +13,6 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
 
 consumers:
   synt-amelding:
@@ -38,26 +35,3 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

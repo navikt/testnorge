@@ -1,32 +1,7 @@
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
+spring:
+  config:
+    import: "classpath:dolly-application.yml"
 
 logging:
   level:
-    org:
-      springframework:
-        boot:
-          autoconfigure:
-            security:
-              reactive:
-                ReactiveUserDetailsServiceAutoConfiguration: OFF
+    org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration: OFF

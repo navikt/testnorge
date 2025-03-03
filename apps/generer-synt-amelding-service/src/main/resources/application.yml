@@ -4,6 +4,8 @@ spring:
     description: App for å generere syntetiske ameldinger.
     cluster: dev-gcp
     namespace: dolly
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -14,37 +16,9 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
 consumers:
   synt-amelding:
     url: https://synthdata-amelding.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-amelding
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-server:
-  error:
-    include-message: always
-  servlet:
-    encoding:
-      charset: UTF-8

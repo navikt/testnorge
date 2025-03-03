@@ -26,7 +26,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class KontoregisterConsumer implements ConsumerStatus {
+public class KontoregisterConsumer extends ConsumerStatus {
 
 
     private final WebClient webClient;

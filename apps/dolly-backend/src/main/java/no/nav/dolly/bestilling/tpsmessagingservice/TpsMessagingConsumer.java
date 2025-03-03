@@ -26,7 +26,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class TpsMessagingConsumer implements ConsumerStatus {
+public class TpsMessagingConsumer extends ConsumerStatus {
 
     private static final String BASE_URL = "/api/v1/personer/{ident}";
     private static final String UTENLANDSK_BANKKONTO_URL = BASE_URL + "/bankkonto-utenlandsk";

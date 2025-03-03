@@ -28,7 +28,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
-public class SkjermingsRegisterConsumer implements ConsumerStatus {
+public class SkjermingsRegisterConsumer extends ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;

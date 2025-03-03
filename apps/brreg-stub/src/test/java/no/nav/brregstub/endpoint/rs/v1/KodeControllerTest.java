@@ -2,7 +2,7 @@ package no.nav.brregstub.endpoint.rs.v1;
 
 import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.api.common.UnderstatusKode;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

@@ -21,7 +21,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Slf4j
 @Service
-public class InntektsmeldingConsumer implements ConsumerStatus {
+public class InntektsmeldingConsumer extends ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;

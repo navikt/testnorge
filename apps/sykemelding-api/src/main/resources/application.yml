@@ -7,6 +7,8 @@ spring:
     version: application.version.todo
     name: testnav-sykemelding-api
     description: Api for opprettelse av detaljerte sykemeldinger
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -16,34 +18,6 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 ibm:
   mq:

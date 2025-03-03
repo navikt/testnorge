@@ -8,7 +8,7 @@ import no.nav.registre.varslingerservice.repository.VarslingRepository;
 import no.nav.registre.varslingerservice.repository.model.BrukerModel;
 import no.nav.registre.varslingerservice.repository.model.MottattVarslingModel;
 import no.nav.registre.varslingerservice.repository.model.VarslingModel;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.Token;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
