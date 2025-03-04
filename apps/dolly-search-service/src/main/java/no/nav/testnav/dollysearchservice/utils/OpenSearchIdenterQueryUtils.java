@@ -23,6 +23,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.match
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedMatchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRegexpQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedTermsQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.regexpQuery;
 
 @Slf4j
 @UtilityClass
@@ -86,14 +87,15 @@ public class OpenSearchIdenterQueryUtils {
     }
 
     private static void addNameQuery(BoolQueryBuilder queryBuilder, IdentSearch search) {
+
         Optional.ofNullable(search.getNavn())
                 .ifPresent(values -> {
                     if (values.size() == 1) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.navn",
                                 QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*"))
-                                        .should(QueryBuilders.regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*"))
+                                        .should(regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*"))
+                                        .should(regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*"))
                                         .minimumShouldMatch(1),
                                 ScoreMode.Avg));
 
@@ -102,11 +104,11 @@ public class OpenSearchIdenterQueryUtils {
                                 "hentPerson.navn",
                                 QueryBuilders.boolQuery()
                                         .should(QueryBuilders.boolQuery()
-                                                .must(QueryBuilders.regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*"))
-                                                .must(QueryBuilders.regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(1) + ".*")))
+                                                .must(regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*"))
+                                                .must(regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(1) + ".*")))
                                         .should(QueryBuilders.boolQuery()
-                                                .must(QueryBuilders.regexpQuery(PERSON_FORNAVN, ".*" + values.get(1) + ".*"))
-                                                .must(QueryBuilders.regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*")))
+                                                .must(regexpQuery(PERSON_FORNAVN, ".*" + values.get(1) + ".*"))
+                                                .must(regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*")))
                                         .minimumShouldMatch(1),
                                 ScoreMode.Avg));
                     }
