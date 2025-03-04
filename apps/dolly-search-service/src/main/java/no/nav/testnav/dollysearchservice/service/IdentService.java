@@ -6,16 +6,17 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.IdentSearch;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import no.nav.testnav.dollysearchservice.utils.QueryBuilder;
 import no.nav.testnav.libs.data.dollysearchservice.v1.IdentdataDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.buildTestnorgeIdentSearchQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -29,14 +30,16 @@ public class IdentService {
     @SneakyThrows
     public Flux<IdentdataDTO> getIdenter(String fragment) {
 
-        var query = QueryBuilder.buildIdentSearchQuery(getSearchCriteria(fragment));
+        var identer = bestillingQueryService.execTestnorgeIdenterQuery();
+        var query = buildTestnorgeIdentSearchQuery(getSearchCriteria(fragment, identer));
+
         return personQueryService.execQuery(new SearchRequest(), query)
                 .map(this::formatResponse)
                 .map(this::filterRegister)
                 .flatMapMany(Flux::fromIterable);
     }
 
-    private IdentSearch getSearchCriteria(String query) {
+    private IdentSearch getSearchCriteria(String query, Set<String> identer) {
 
         var ident = Stream.of(query.split(" "))
                 .filter(StringUtils::isNumeric)
@@ -53,6 +56,7 @@ public class IdentService {
                 .tags(List.of("DOLLY", "TESTNORGE"))
                 .ident(ident)
                 .navn(navn)
+                .identer(identer)
                 .build();
     }
 

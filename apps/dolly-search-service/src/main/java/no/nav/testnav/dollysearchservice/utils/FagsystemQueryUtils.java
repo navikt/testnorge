@@ -6,7 +6,7 @@ import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
 @UtilityClass
-public class FagsystemQuereyUtils {
+public class FagsystemQueryUtils {
 
     public static QueryBuilder getFagsystemQuery(ElasticTyper type) {
 

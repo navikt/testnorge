@@ -6,11 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.BestillingIdenter;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import no.nav.testnav.dollysearchservice.utils.FagsystemQuereyUtils;
+import no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils;
 import org.opensearch.action.search.SearchResponse;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.unit.TimeValue;
+import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -42,27 +43,38 @@ public class BestillingQueryService {
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
 
-    @Cacheable(cacheNames = CACHE_REGISTRE, key="{#request.registreRequest, #request.identer}")
+    @Cacheable(cacheNames = CACHE_REGISTRE, key = "#request.registreRequest")
     public Set<String> execRegisterQuery(SearchRequest request) {
+
+        var queryBuilder = QueryBuilders.boolQuery();
+
+        request.getRegistreRequest().stream()
+                .map(FagsystemQueryUtils::getFagsystemQuery)
+                .forEach(queryBuilder::must);
+
+        return execQuery(queryBuilder);
+    }
+
+    public Set<String> execTestnorgeIdenterQuery() {
+
+        var queryBuilder = QueryBuilders.boolQuery();
+
+        queryBuilder.must(QueryBuilders.regexpQuery("identer", "\\d{2}[8-9]\\d{8}"));
+
+        return execQuery(queryBuilder);
+    }
+
+    private Set<String> execQuery(QueryBuilder query) {
 
         var now = System.currentTimeMillis();
 
         Set<String> identer;
         SearchResponse searchResponse;
 
-        var queryBuilder = QueryBuilders.boolQuery();
-        request.getRegistreRequest().stream()
-                .map(FagsystemQuereyUtils::getFagsystemQuery)
-                .forEach(queryBuilder::must);
-
-        if (!request.getIdenter().isEmpty()) {
-            queryBuilder.must(QueryBuilders.termsQuery("identer", request.getIdenter()));
-        }
-
         try {
             searchResponse = restHighLevelClient.search(new org.opensearch.action.search.SearchRequest(dollyIndex)
                     .source(new SearchSourceBuilder()
-                            .query(queryBuilder)
+                            .query(query)
                             .sort("id")
                             .size(QUERY_SIZE)
                             .timeout(new TimeValue(3, TimeUnit.SECONDS))), RequestOptions.DEFAULT);
@@ -73,7 +85,7 @@ public class BestillingQueryService {
 
                 searchResponse = restHighLevelClient.search(new org.opensearch.action.search.SearchRequest(dollyIndex)
                         .source(new SearchSourceBuilder()
-                                .query(queryBuilder)
+                                .query(query)
                                 .sort("id")
                                 .searchAfter(new Object[]{searchResponse.getHits().getAt(searchResponse.getHits().getHits().length - 1).getId()})
                                 .size(QUERY_SIZE)
