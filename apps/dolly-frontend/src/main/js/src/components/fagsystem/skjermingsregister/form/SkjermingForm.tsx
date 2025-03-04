@@ -26,13 +26,17 @@ export const SkjermingForm = ({ formMethods }) => {
 		<div className="flexbox--flex-wrap">
 			<FormDatepicker
 				name="skjerming.egenAnsattDatoFom"
-				label="Skjerming fra"
+				label="Skjerming/egen ansatt fra"
 				disabled={harSkjerming}
 				maxDate={new Date()}
 				visHvisAvhuket
 			/>
 			{harSkjerming && (
-				<FormDatepicker name="skjerming.egenAnsattDatoTom" label="Skjerming til" visHvisAvhuket />
+				<FormDatepicker
+					name="skjerming.egenAnsattDatoTom"
+					label="Skjerming/egen ansatt til"
+					visHvisAvhuket
+				/>
 			)}
 		</div>
 	)

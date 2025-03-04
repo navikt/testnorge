@@ -997,11 +997,11 @@ const mapTpsMessaging = (bestillingData, data) => {
 			header: 'Personinformasjon',
 			items: [
 				obj(
-					'Skjerming fra',
+					'Skjerming/egen ansatt fra',
 					formatDate(skjerming?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoFom),
 				),
 				obj(
-					'Skjerming til',
+					'Skjerming/egen ansatt til',
 					formatDate(skjerming?.egenAnsattDatoTom || tpsMessaging?.egenAnsattDatoTom),
 				),
 			],

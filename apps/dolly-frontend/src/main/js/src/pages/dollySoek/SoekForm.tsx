@@ -18,6 +18,7 @@ import {
 	SoekefeltWrapper,
 	SoekKategori,
 } from '@/components/ui/soekForm/SoekForm'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 const initialValues = {
 	typer: [],
@@ -109,6 +110,9 @@ export const SoekForm = () => {
 		liste.forEach((item) => {
 			watch(`personRequest.${item}`) && antall++
 		})
+		if (liste?.includes('harSkjerming') && watch('typer')?.includes('SKJERMING')) {
+			antall++
+		}
 		return antall
 	}
 
@@ -159,6 +163,7 @@ export const SoekForm = () => {
 														'harUtflytting',
 														'harSikkerhetstiltak',
 														'harTilrettelagtKommunikasjon',
+														'harSkjerming',
 													])}
 												/>
 											</Accordion.Header>
@@ -229,6 +234,32 @@ export const SoekForm = () => {
 															)
 														}
 													/>
+													<FormCheckbox
+														name={`${personPath}.harSkjerming`}
+														label="Har skjerming / er egen ansatt"
+														checked={watch('typer')?.includes('SKJERMING')}
+														onChange={(val: SyntheticEvent) => {
+															setValue(
+																'typer',
+																val.target.checked
+																	? [...watch('typer'), 'SKJERMING']
+																	: watch('typer')?.filter((item: string) => item !== 'SKJERMING'),
+															)
+															trigger('typer')
+															const updatedRequest = watch()
+															if (requestIsEmpty(updatedRequest)) {
+																setRequest(null)
+															} else {
+																setRequest(updatedRequest)
+															}
+															mutate()
+														}}
+													/>
+													<div style={{ marginLeft: '-20px', marginTop: '3px' }}>
+														<Hjelpetekst>
+															Tilsvarer søk på Skjermingsregisteret under fagsystemer.
+														</Hjelpetekst>
+													</div>
 												</SoekKategori>
 											</Accordion.Content>
 										</Accordion.Item>
