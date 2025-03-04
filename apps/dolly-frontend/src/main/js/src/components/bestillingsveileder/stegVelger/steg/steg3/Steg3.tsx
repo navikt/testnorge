@@ -126,9 +126,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 					opprettetFraMal={opts?.mal?.malNavn}
 				/>
 			)}
-			{!erOrganisasjon && !importTestnorge && (
-				<OppsummeringKommentarForm formMethods={formMethods} />
-			)}
+			{!erOrganisasjon && <OppsummeringKommentarForm formMethods={formMethods} />}
 		</div>
 	)
 }

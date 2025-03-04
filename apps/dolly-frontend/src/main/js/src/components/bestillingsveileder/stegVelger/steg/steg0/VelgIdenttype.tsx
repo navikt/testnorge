@@ -4,7 +4,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import { NyIdent } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 import { EksisterendeIdent } from '@/components/bestillingsveileder/startModal/EksisterendeIdent/EksisterendeIdent'
 
-export const VelgIdenttype = () => {
+export const VelgIdenttype = ({ gruppeId }: any) => {
 	const [type, setType] = useState('ny')
 
 	return (
@@ -26,7 +26,7 @@ export const VelgIdenttype = () => {
 					Eksisterende person
 				</ToggleGroup.Item>
 			</ToggleGroup>
-			{type === 'ny' && <NyIdent />}
+			{type === 'ny' && <NyIdent gruppeId={gruppeId} />}
 			{type === 'eksisterende' && <EksisterendeIdent />}
 		</div>
 	)

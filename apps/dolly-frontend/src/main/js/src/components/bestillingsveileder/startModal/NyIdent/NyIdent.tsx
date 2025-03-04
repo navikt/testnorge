@@ -8,9 +8,12 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import { BVOptions } from '@/components/bestillingsveileder/options/options'
 
-export function NyIdent() {
+export function NyIdent({ gruppeId }: any) {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const { dollyEnvironments } = useDollyEnvironments()
 	const identtypePath = 'pdldata.opprettNyPerson.identtype'
 	const formMethods = useFormContext()
 	const [identtype, setIdenttype] = useState(formMethods.watch(identtypePath))
@@ -26,8 +29,11 @@ export function NyIdent() {
 						size="medium"
 						onChange={(option: Option) => {
 							opts.identtype = option.value
+							opts.mal = undefined
+							const options = BVOptions(opts, gruppeId, dollyEnvironments)
 							setIdenttype(option.value)
-							formMethods.setValue(identtypePath, option.value)
+							formMethods.reset(options.initialValues)
+							formMethods.setValue('gruppeId', gruppeId)
 						}}
 						value={identtype}
 						options={Options('identtype')}

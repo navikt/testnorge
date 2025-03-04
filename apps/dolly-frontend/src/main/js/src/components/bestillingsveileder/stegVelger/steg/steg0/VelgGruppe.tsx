@@ -27,7 +27,7 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 	}, [valgtGruppe])
 
 	return (
-		<div className="input-oppsummering">
+		<div style={{ backgroundColor: 'white', padding: '10px 20px' }}>
 			<h2>{title}</h2>
 			<VelgGruppeToggle
 				fraGruppe={fraGruppe}

@@ -19,7 +19,7 @@ import {
 
 type MalVelgerProps = {
 	brukernavn: string
-	gruppeId: number
+	gruppeId: number | undefined
 }
 
 export function getBrukerOptions(malbestillinger: Record<string, Mal[]>) {

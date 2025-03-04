@@ -16,7 +16,7 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 type MalVelgerProps = {
 	brukernavn: string
-	gruppeId: number
+	gruppeId: number | undefined
 }
 
 export function getBrukerOptions(malbestillinger: Record<string, Mal[]>) {
