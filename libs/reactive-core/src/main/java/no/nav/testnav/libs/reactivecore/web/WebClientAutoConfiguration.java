@@ -9,13 +9,10 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ClientRequestObservationConvention;
 import org.springframework.web.reactive.function.client.DefaultClientRequestObservationConvention;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
@@ -38,7 +35,6 @@ class WebClientAutoConfiguration {
             );
             return WebClient
                     .builder()
-                    //.defaultStatusHandler(HttpStatusCode::isError, Errors::handle)
                     .observationConvention(new DefaultClientRequestObservationConvention())
                     .observationRegistry(observationRegistry)
                     .clientConnector(
