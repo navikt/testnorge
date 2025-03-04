@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.yrkesskade.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.yrkesskade.dto.YrkesskadeResponseDTO;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;

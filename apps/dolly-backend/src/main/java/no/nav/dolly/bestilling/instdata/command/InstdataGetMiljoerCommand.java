@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.instdata.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.instdata.domain.MiljoerResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;

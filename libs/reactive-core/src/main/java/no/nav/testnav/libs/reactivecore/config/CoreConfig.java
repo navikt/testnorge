@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Import;
 
 @Import({
         RequestLogger.class,
-        ApplicationProperties.class,
-        WebClientConfig.class
+        ApplicationProperties.class
 })
 @Configuration
 public class CoreConfig {

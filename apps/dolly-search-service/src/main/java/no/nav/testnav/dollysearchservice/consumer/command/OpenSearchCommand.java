@@ -2,7 +2,7 @@ package no.nav.testnav.dollysearchservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.dollysearchservice.dto.SearchResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

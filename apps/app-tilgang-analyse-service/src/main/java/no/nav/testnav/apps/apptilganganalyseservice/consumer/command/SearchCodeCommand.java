@@ -2,7 +2,7 @@ package no.nav.testnav.apps.apptilganganalyseservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.SearchDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

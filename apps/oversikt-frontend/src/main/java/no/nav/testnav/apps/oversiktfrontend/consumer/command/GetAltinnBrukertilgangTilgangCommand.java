@@ -3,7 +3,7 @@ package no.nav.testnav.apps.oversiktfrontend.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.oversiktfrontend.consumer.dto.AltinnBrukerRequest;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
