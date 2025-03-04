@@ -21,4 +21,5 @@ dependencies {
 
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
     testImplementation "no.nav.testnav.libs:integration-test"
+    implementation "org.springframework.boot:spring-boot-starter-test"
 }

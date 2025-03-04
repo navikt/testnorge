@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.AlderSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;

@@ -22,7 +22,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Component
-public class AaregConsumer implements ConsumerStatus {
+public class AaregConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final ServerProperties serverProperties;

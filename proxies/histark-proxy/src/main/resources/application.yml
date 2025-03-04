@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-histark-proxy
     description: Proxy for histark som legger på sikkerhet.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,10 +17,3 @@ spring:
     gateway:
       httpclient:
         response-timeout: 600s
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always

@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service.util;
 
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

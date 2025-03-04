@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-arena-forvalteren-proxy
     description: Proxy for arena-forvalteren som legger på sikkerhet.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -15,13 +17,6 @@ spring:
     gateway:
       httpclient:
         response-timeout: 120s
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   arena-services:

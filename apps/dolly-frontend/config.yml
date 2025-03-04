@@ -39,15 +39,12 @@ spec:
         - application: dolly-redis-session
         - application: generer-navn-service
         - application: testnav-adresse-service
-        - application: testnav-amelding-service
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-bruker-service
-        - application: testnav-generer-synt-amelding-service
         - application: testnav-helsepersonell-service
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
-        - application: testnav-oppsummeringsdokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
@@ -83,7 +80,7 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
@@ -95,7 +92,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140

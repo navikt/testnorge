@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/isAlive",
-                "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/isReady",
+                "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/health/liveness",
+                "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/health/readiness",
                 statusWebClient);
 
         return Map.of(

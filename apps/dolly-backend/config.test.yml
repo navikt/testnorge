@@ -28,8 +28,6 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
-        - application: testnav-amelding-service
-        - application: testnav-arbeidsforhold-service
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-bruker-service-dev
@@ -90,7 +88,7 @@ spec:
   ingresses:
     - "https://dolly-backend-dev.intern.dev.nav.no"
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
@@ -102,7 +100,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140

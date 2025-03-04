@@ -1,9 +1,13 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehovFeil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.NyEndreInnsatsbehovFeil;
 
 import java.util.List;
 

@@ -29,6 +29,8 @@ public class RouteLocatorConfig {
                 .routes()
                 .route(spec -> spec
                         .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
                         .filters(f -> f.filter(authenticationFilter))
                         .uri(consumers.getSkjermingsregister().getUrl()))
                 .build();

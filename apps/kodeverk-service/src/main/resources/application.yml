@@ -2,41 +2,14 @@ spring:
   application:
     name: testnav-kodeverk-service
     description: Tjeneste for å hente fra felles kodeverk.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
         aad:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    prometheus:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   kodeverk-api:

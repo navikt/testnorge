@@ -26,19 +26,16 @@ spec:
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-faste-data-frontend
-        - application: testnav-generer-arbeidsforhold-populasjon-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-orgnummer-service
         - application: testnav-oversikt-frontend
-        - application: testnav-synt-sykemelding-api
-        - application: testnav-synt-sykemelding-api-dev
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
     outbound:
       external:
         - host: testnav-ereg-proxy.dev-fss-pub.nais.io
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
@@ -50,7 +47,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500

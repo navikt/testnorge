@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -29,28 +31,6 @@ consumers:
     namespace: dolly
     name: testnav-bruker-service-dev
     url: http://testnav-bruker-service-dev.dolly.svc.cluster.local
-
-management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 logging:
   level:

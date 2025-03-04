@@ -26,7 +26,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Component
 @Slf4j
-public class ArbeidsplassenCVConsumer implements ConsumerStatus {
+public class ArbeidsplassenCVConsumer extends ConsumerStatus {
 
     public static final String ARBEIDSPLASSEN_CALL_ID = "Nav-CallId";
     private final WebClient webClient;

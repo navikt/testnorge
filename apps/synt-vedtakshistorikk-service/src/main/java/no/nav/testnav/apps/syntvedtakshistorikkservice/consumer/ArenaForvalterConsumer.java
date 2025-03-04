@@ -13,10 +13,10 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.En
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.EndreInnsatsbehovResponse;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;

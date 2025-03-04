@@ -7,30 +7,33 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.boot.actuate.health.HealthContributorRegistry;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.lang.NonNull;
 
 import java.util.function.ToDoubleFunction;
 
 @RequiredArgsConstructor
-public class HealthToMeterBinder implements MeterBinder {
+class HealthToMeterBinder implements MeterBinder {
 
     private final HealthContributorRegistry registry;
 
     @Override
-    public void bindTo(MeterRegistry meterRegistry) {
-        registry.stream()
+    public void bindTo(@NonNull MeterRegistry meterRegistry) {
+        registry
+                .stream()
                 .filter(e -> e.getContributor() instanceof HealthIndicator)
                 .forEach(e -> bind(e.getName(), (HealthIndicator) e.getContributor(), meterRegistry));
     }
 
-    private void bind(String key, HealthIndicator healthIndicator, MeterRegistry registry) {
-        Gauge.builder("health", healthIndicator, statusToDouble()).tag("name", key).register(registry);
+    private static void bind(String key, HealthIndicator healthIndicator, MeterRegistry registry) {
+        Gauge
+                .builder("health", healthIndicator, statusToDouble())
+                .tag("name", key)
+                .register(registry);
     }
 
-    private ToDoubleFunction<HealthIndicator> statusToDouble() {
-
+    private static ToDoubleFunction<HealthIndicator> statusToDouble() {
         return value -> {
             val status = value.health().getStatus().getCode();
-
             return switch (status) {
                 case Health.UP -> 1;
                 case Health.PAUSED -> 2;

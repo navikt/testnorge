@@ -18,7 +18,7 @@ spec:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     periodSeconds: 30
     initialDelay: 30
   observability:
@@ -29,7 +29,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 30
   prometheus:
     enabled: true

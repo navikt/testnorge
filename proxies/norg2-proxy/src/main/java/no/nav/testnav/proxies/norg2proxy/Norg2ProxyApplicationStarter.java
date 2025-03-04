@@ -24,9 +24,13 @@ public class Norg2ProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
-                .route(spec -> spec.path("/**")
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder
+                .routes()
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
                         .uri("http://norg2.org.svc.nais.local"))
                 .build();
     }

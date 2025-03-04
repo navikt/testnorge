@@ -1,8 +1,8 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollyApplicationContextTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOAuth2Login;
@@ -22,10 +21,7 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 )
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureWebTestClient(timeout = "PT1M")
-class RouteLocatorConfigTest {
-
-    @Autowired
-    private WebTestClient webClient;
+class RouteLocatorConfigTest extends DollyApplicationContextTest {
 
     @TestConfiguration
     static class TestAuthenticationConfig {
@@ -52,7 +48,7 @@ class RouteLocatorConfigTest {
                         )
         );
 
-        webClient
+        webTestClient
                 .mutateWith(mockOAuth2Login())
                 .get().uri("/testing/route")
                 .exchange()

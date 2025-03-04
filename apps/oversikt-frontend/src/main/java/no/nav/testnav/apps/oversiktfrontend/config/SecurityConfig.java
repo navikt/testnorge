@@ -1,7 +1,8 @@
 package no.nav.testnav.apps.oversiktfrontend.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Value;
+import no.nav.testnav.libs.reactivesecurity.properties.AzureAdResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -13,24 +14,27 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebFluxSecurity
-public class SecurityConfig {
+@RequiredArgsConstructor
+class SecurityConfig {
 
-    @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}")
-    private String issuer;
+    private final AzureAdResourceServerProperties config;
 
     @SneakyThrows
     @Bean
-    public SecurityWebFilterChain configure(ServerHttpSecurity http) {
-
-        http.cors(Customizer.withDefaults())
+    SecurityWebFilterChain configure(ServerHttpSecurity http) {
+        return http
+                .cors(Customizer.withDefaults())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().permitAll())
-                .oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtDecoder()));
-        return http.build();
+                .authorizeExchange(spec -> spec
+                        .anyExchange()
+                        .permitAll())
+                .oauth2ResourceServer(spec -> spec.jwt(jwtSpec -> jwtDecoder()))
+                .build();
     }
 
     @Bean
-    public ReactiveJwtDecoder jwtDecoder() {
-        return ReactiveJwtDecoders.fromOidcIssuerLocation(issuer);
+    ReactiveJwtDecoder jwtDecoder() {
+        return ReactiveJwtDecoders.fromOidcIssuerLocation(config.getIssuerUri());
     }
+
 }

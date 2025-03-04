@@ -3,12 +3,11 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.provider;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.SyntetiserArenaRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 
 import java.util.List;
 import java.util.Map;

@@ -37,6 +37,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
+        - application: dolly-idporten
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-backend
@@ -47,7 +48,7 @@ spec:
         - application: paw-arbeidssoekerregisteret-api-dolly
           namespace: paw
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
@@ -59,7 +60,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import java.util.List;
 

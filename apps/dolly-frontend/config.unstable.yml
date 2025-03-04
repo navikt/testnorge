@@ -40,7 +40,6 @@ spec:
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
-        - application: testnav-oppsummeringsdokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
@@ -78,7 +77,7 @@ spec:
   ingresses:
     - "https://dolly-frontend-dev-unstable.intern.dev.nav.no"
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
@@ -90,7 +89,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140

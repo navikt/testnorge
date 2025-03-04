@@ -3,6 +3,8 @@ spring:
     name: testnav-levende-arbeidsforhold-ansettelse
     version: 1
     description: App for å ansette personer i en organisasjon
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -14,38 +16,10 @@ spring:
     enabled: true
     baseline-on-migrate: true
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
-
 management:
-  endpoints:
-    access:
-      default: read_only
-    web:
-      base-path: /internal
-      exposure:
-        include: prometheus,health
-      path-mapping:
-        prometheus: metrics
-  endpoint:
-    health:
-      show-details: always
-  prometheus:
-    metrics:
-      export:
-        enabled: true
   health:
     elasticsearch:
       enabled: false
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   testnav-aareg-proxy:

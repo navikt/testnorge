@@ -34,24 +34,26 @@ public class ArbeidsplassenCVProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
+    RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            Consumers consumers,
                                            FakedingsConsumer fakedingsConsumer,
                                            TokenXService tokenXService) {
+        var gatewayFilter = AddAuthenticationRequestGatewayFilterFactory
+                .bearerIdportenHeaderFilter(
+                        fakedingsConsumer,
+                        tokenXService,
+                        consumers.getArbeidsplassenCv());
         return builder
                 .routes()
-                .route(createRoute(
-                        consumers
-                                .getArbeidsplassenCv()
-                                .getUrl(),
-                        AddAuthenticationRequestGatewayFilterFactory
-                                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService, consumers.getArbeidsplassenCv())))
+                .route(createRoute(consumers.getArbeidsplassenCv().getUrl(), gatewayFilter))
                 .build();
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String url, GatewayFilter filter) {
         return spec -> spec
                 .path("/**")
+                .and()
+                .not(not -> not.path("/internal/**"))
                 .filters(
                         filterSpec -> filterSpec
                                 .rewritePath("/(?<segment>.*)", "/pam-cv-api/${segment}")

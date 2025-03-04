@@ -25,7 +25,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Component
-public class SigrunStubConsumer implements ConsumerStatus {
+public class SigrunStubConsumer extends ConsumerStatus {
 
     private static final String SIGRUN_STUB_LIGNET_INNTEKT_URL = "/api/v1/lignetinntekt";
     private static final String SIGRUN_STUB_PENSJONSGIVENDE_INNTEKT_URL = "/api/v1/pensjonsgivendeinntektforfolketrygden";

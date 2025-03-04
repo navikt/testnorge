@@ -20,14 +20,14 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.re
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetUngUfoerRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
 
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
+import no.nav.testnav.libs.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Adresse;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Forvalter;
+import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Konto;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

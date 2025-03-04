@@ -2,6 +2,8 @@ spring:
   application:
     name: testnav-synthdata-meldekort-proxy
     description: Proxy for synthdata-arena-meldekort som legger på sikkerhet.
+  config:
+    import: "classpath:dolly-application.yml"
   security:
     oauth2:
       resourceserver:
@@ -14,13 +16,6 @@ spring:
     gcp:
       secretmanager:
         enabled: false
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  error:
-    include-message: always
 
 consumers:
   synt-meldekort:

@@ -1,13 +1,13 @@
-name: brregstub-reverse--proxy
+name: brregstub-reverse-proxy
 
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "proxies/brregstub-reverse-proxy/**"
-      - ".github/workflows/proxy.brregstub-reverse-proxy.yml"
+      - .github/workflows/proxy.brregstub-reverse-proxy.yml
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - plugins/**
+      - proxies/brregstub-reverse-proxy/**
 
 jobs:
   workflow:

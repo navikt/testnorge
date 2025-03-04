@@ -35,8 +35,6 @@ spec:
           cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
-        - application: testnav-generer-organisasjon-populasjon-service
-          cluster: dev-gcp
         - application: testnav-budpro-service
           cluster: dev-gcp
         - application: testnav-endringsmelding-service
@@ -49,7 +47,7 @@ spec:
       enabled: true
       tenant: nav.no
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
@@ -61,7 +59,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500

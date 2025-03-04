@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;

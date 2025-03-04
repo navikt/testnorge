@@ -11,7 +11,7 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BrukerService;
-import no.nav.dolly.libs.nais.DollySpringBootTest;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

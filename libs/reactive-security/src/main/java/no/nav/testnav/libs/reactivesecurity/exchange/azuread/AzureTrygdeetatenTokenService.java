@@ -114,4 +114,18 @@ public class AzureTrygdeetatenTokenService implements TokenService {
                 .minusSeconds(300)
                 .isBefore(Instant.now());
     }
+
+    public static class Test extends AzureTrygdeetatenTokenService {
+
+        public Test(String proxyHost, AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential, GetAuthenticatedUserId getAuthenticatedUserId, ObjectMapper objectMapper) {
+            super(proxyHost, azureTrygdeetatenClientCredential, getAuthenticatedUserId, objectMapper);
+        }
+
+        @Override
+        public Mono<AccessToken> exchange(ServerProperties serverProperties) {
+            return Mono.empty();
+        }
+
+    }
+
 }
