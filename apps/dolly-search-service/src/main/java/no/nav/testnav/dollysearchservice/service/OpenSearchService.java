@@ -38,7 +38,7 @@ public class OpenSearchService {
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);
 
-        return personQueryService.execQuery(request,query)
+        return personQueryService.execQuery(request, query)
                 .map(response -> mapperFacade.map(response, SearchResponse.class));
     }
 

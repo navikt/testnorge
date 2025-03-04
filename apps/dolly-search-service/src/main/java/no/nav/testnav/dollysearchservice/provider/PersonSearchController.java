@@ -20,9 +20,9 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/opensearch")
+@RequestMapping("/api/v1/personer")
 @RequiredArgsConstructor
-public class OpensearchController {
+public class PersonSearchController {
 
     private final OpenSearchService openSearchService;
 

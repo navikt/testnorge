@@ -42,7 +42,7 @@ public class BestillingQueryService {
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
 
-    @Cacheable(cacheNames = CACHE_REGISTRE, key="#request.registreRequest")
+    @Cacheable(cacheNames = CACHE_REGISTRE, key="{#request.registreRequest, #request.identer}")
     public Set<String> execRegisterQuery(SearchRequest request) {
 
         var now = System.currentTimeMillis();
@@ -54,6 +54,10 @@ public class BestillingQueryService {
         request.getRegistreRequest().stream()
                 .map(FagsystemQuereyUtils::getFagsystemQuery)
                 .forEach(queryBuilder::must);
+
+        if (!request.getIdenter().isEmpty()) {
+            queryBuilder.must(QueryBuilders.termsQuery("identer", request.getIdenter()));
+        }
 
         try {
             searchResponse = restHighLevelClient.search(new org.opensearch.action.search.SearchRequest(dollyIndex)
