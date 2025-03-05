@@ -13,10 +13,6 @@ const testForeldreansvar = (val: Yup.StringSchema<string, Yup.AnyObject>) => {
 		const context = testContext.options.context
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-		// if (context.leggTilPaaGruppe || context.personFoerLeggTil) {
-		// 	return true
-		// }
-
 		if (context.leggTilPaaGruppe) {
 			return true
 		}
