@@ -22,27 +22,21 @@ import java.time.Duration;
 @Slf4j
 class WebClientAutoConfiguration {
 
-    /**
-     * <p>Get a {@link WebClient.Builder] with an observation registry if available.</p>
-     * <p>Slated for removal once usages are refactored.</p>
-     * @param context The {@link ApplicationContext}.
-     * @return A {@link WebClient.Builder}.
-     * @deprecated Use {@link WebClient#mutate()} instead. This will ensure that any common future modifications to the {@link WebClient} are applied.
-     */
-    @Deprecated(forRemoval = true)
     @Bean
-    WebClient.Builder webClientBuilder(ApplicationContext context) {
+    WebClient webClient(
+            ApplicationContext context,
+            WebClient.Builder builder
+    ) {
 
         try {
 
             var observationRegistry = context.getBean(ObservationRegistry.class);
             log.info(
                     "Using {} with observation registry {}",
-                    WebClient.Builder.class.getCanonicalName(),
+                    builder.getClass().getCanonicalName(),
                     observationRegistry.getClass().getCanonicalName()
             );
-            return WebClient
-                    .builder()
+            return builder
                     .observationConvention(new DefaultClientRequestObservationConvention())
                     .observationRegistry(observationRegistry)
                     .clientConnector(
@@ -59,23 +53,20 @@ class WebClientAutoConfiguration {
                                             .option(EpollChannelOption.TCP_KEEPINTVL, 60)
                                             .option(EpollChannelOption.TCP_KEEPCNT, 8)
                                             .responseTimeout(Duration.ofSeconds(10))
-                            ));
+                            ))
+                    .build();
 
         } catch (NoSuchBeanDefinitionException e) {
 
             log.info(
                     "No {} found in context, using {} without any observation registry",
                     ObservationRegistry.class.getCanonicalName(),
-                    WebClient.Builder.class.getCanonicalName()
+                    builder.getClass().getCanonicalName()
             );
-            return WebClient.builder();
+            return builder.build();
 
         }
-    }
 
-    @Bean
-    WebClient webClient(WebClient.Builder webClientBuilder) {
-        return webClientBuilder.build();
     }
 
     @Bean

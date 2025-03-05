@@ -47,8 +47,11 @@ class BrukerServiceIntegrationTest {
     void initialize() {
         String baseUrl = String.format("http://localhost:%s",
                 mockBackEnd.getPort());
-        tokendingsClient = new TokendingsClient(baseUrl);
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+        tokendingsClient = new TokendingsClient(webClient, baseUrl);
+        this.webClient = webClient
+                .mutate()
+                .baseUrl(baseUrl)
+                .build();
         objectMapper = new ObjectMapper();
     }
 

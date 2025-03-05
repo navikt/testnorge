@@ -19,11 +19,12 @@ public class GeneratedNameService {
     GeneratedNameService(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         serverProperties = consumers.getGenererNavnService();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -26,11 +26,12 @@ public class DollyBackendConsumer {
     public DollyBackendConsumer(
             Consumers consumers,
             TokenExchange tokenService,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         serverProperties = consumers.getDollyBackend();
         this.tokenService = tokenService;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
@@ -65,5 +66,5 @@ public class DollyBackendConsumer {
                 .orElse(Collections.emptyList());
 
     }
-    
+
 }

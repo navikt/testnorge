@@ -38,12 +38,13 @@ public class PersonServiceConsumer extends ConsumerStatus {
     public PersonServiceConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder,
-            ObjectMapper objectMapper) {
-
+            WebClient webClient,
+            ObjectMapper objectMapper
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPersonService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

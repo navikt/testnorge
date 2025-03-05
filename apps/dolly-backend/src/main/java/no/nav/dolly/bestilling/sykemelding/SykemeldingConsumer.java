@@ -29,17 +29,18 @@ public class SykemeldingConsumer extends ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavSykemeldingApi();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
+    @Timed(name = "providers", tags = {"operation", "detaljertsykemelding_opprett"})
     public Mono<SykemeldingResponse> postDetaljertSykemelding(DetaljertSykemeldingRequest detaljertSykemeldingRequest) {
 
         log.info("Detaljert Sykemelding sendt {}", Json.pretty(detaljertSykemeldingRequest));

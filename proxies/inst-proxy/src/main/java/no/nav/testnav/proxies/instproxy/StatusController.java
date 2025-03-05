@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.instproxy;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,21 +11,24 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class StatusController {
+
     private static final String TEAM_ROCKET = "Team Rocket";
+
+    private final WebClient webClient;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
-        var statusWebClient = WebClient.builder().build();
 
         var serviceStatus = checkConsumerStatus(
                 "https://institusjon-opphold-testdata.dev.intern.nav.no/internal/health/liveness",
                 "https://institusjon-opphold-testdata.dev.intern.nav.no/internal/health/readiness",
-                statusWebClient);
-
+                webClient);
         return Map.of(
                 "inst-testdata", serviceStatus
         );
+
     }
 
     public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {

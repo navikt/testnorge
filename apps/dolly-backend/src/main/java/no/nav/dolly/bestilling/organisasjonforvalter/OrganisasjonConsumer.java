@@ -3,12 +3,7 @@ package no.nav.dolly.bestilling.organisasjonforvalter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.command.GetOrganisasjonCommand;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.*;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -27,9 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -51,11 +44,12 @@ public class OrganisasjonConsumer {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavOrganisasjonForvalter();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

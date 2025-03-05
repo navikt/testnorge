@@ -2,13 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.GetArenaBrukereCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostArenaBrukerCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostDagpengerCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostEndreInnsatsbehovCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostFinnTiltakCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostRettighetCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.SlettArenaBrukerCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.*;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
@@ -26,11 +20,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.isNull;
@@ -51,9 +41,11 @@ public class ArenaForvalterConsumer {
     public ArenaForvalterConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavArenaForvalterenProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

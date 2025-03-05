@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -36,9 +37,10 @@ public class SecureOAuth2ServerToServerConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager(
+            WebClient webClient,
             List<ResourceServerProperties> resourceServerProperties,
             @Value("${HTTP_PROXY:#{null}}") String proxyHost
     ) {
-        return new JwtReactiveAuthenticationManager(resourceServerProperties, proxyHost);
+        return new JwtReactiveAuthenticationManager(webClient, resourceServerProperties, proxyHost);
     }
 }
