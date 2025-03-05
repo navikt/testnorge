@@ -21,10 +21,10 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class IdentService {
+public class IdenterSearchService {
 
     private final BestillingQueryService bestillingQueryService;
-    private final PersonQueryService personQueryService;
+    private final OpenSearchQueryService personQueryService;
     private final MapperFacade mapperFacade;
 
     @SneakyThrows

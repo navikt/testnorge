@@ -20,7 +20,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.terms
 @RequiredArgsConstructor
 public class LegacyService {
 
-    private final PersonQueryService personQueryService;
+    private final OpenSearchQueryService openSearchQueryService;
     private final MapperFacade mapperFacade;
 
     public Flux<PersonDTO> searchPersoner(PersonSearch personSearch) {
@@ -33,7 +33,7 @@ public class LegacyService {
         query.mustNot(termsQuery("tags", new String[]{"DOLLY", "ARENASYNT"}));
         query.must(matchQuery("tags", "TESTNORGE"));
 
-        return personQueryService.execQuery(personRequest, query)
+        return openSearchQueryService.execQuery(personRequest, query)
                 .map(this::formatResponse)
                 .flatMapMany(Flux::fromIterable);
     }
