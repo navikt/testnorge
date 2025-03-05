@@ -25,7 +25,7 @@ public class AzureAdTokenService {
     private final GetAuthenticatedToken getAuthenticatedToken;
 
     AzureAdTokenService(
-            @Value("${http.proxy:#{null}}") String proxyHost,
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {

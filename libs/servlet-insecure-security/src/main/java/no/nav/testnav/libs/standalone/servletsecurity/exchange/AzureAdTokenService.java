@@ -28,7 +28,7 @@ public class AzureAdTokenService implements ExchangeToken {
 
     AzureAdTokenService(
             WebClient webClient,
-            @Value("${http.proxy:#{null}}") String proxyHost,
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost,
             AzureClientCredential clientCredential
     ) {
         log.info("Init AzureAd token exchange.");

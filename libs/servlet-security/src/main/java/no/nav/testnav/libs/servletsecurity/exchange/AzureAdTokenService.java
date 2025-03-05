@@ -34,7 +34,7 @@ public class AzureAdTokenService implements TokenService {
 
     AzureAdTokenService(
             WebClient webClient,
-            @Value("${http.proxy:#{null}}") String proxyHost,
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost,
             AzureClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {

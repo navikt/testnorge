@@ -27,7 +27,7 @@ public class AzureAdProfileConsumer {
     private final String url;
 
     public AzureAdProfileConsumer(
-            @Value("${http.proxy:#{null}}") String proxyHost,
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost,
             @Value("${api.azuread.url}") String url,
             AzureAdTokenService azureAdTokenService,
             WebClient.Builder webClientBuilder) {

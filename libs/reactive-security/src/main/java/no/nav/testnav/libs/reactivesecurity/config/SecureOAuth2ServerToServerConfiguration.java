@@ -37,7 +37,7 @@ public class SecureOAuth2ServerToServerConfiguration {
     @ConditionalOnMissingBean
     public JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager(
             List<ResourceServerProperties> resourceServerProperties,
-            @Value("${http.proxy:#{null}}") String proxyHost
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost
     ) {
         return new JwtReactiveAuthenticationManager(resourceServerProperties, proxyHost);
     }

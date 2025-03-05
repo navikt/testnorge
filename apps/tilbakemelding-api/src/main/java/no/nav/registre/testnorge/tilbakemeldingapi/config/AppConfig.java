@@ -17,7 +17,7 @@ public class AppConfig {
             WebClient webClient,
             @Value("${consumers.slack.token}") String token,
             @Value("${consumers.slack.baseUrl}") String baseUrl,
-            @Value("${http.proxy:#{null}}") String proxyHost
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost
     ) {
         return new SlackConsumer(webClient, token, baseUrl, proxyHost);
     }
