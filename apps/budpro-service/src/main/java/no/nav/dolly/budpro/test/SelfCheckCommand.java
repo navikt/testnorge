@@ -2,7 +2,6 @@ package no.nav.dolly.budpro.test;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,14 +13,12 @@ import java.util.concurrent.Callable;
 class SelfCheckCommand implements Callable<Mono<DummyDTO>> {
 
     private final WebClient webClient;
-    private final String token;
 
-    public SelfCheckCommand(WebClient webClient, String token) {
+    public SelfCheckCommand(WebClient webClient) {
         this.webClient = webClient
                 .mutate()
                 .baseUrl("http://localhost:8080")
                 .build();
-        this.token = token;
     }
 
     @Override
@@ -34,13 +31,12 @@ class SelfCheckCommand implements Callable<Mono<DummyDTO>> {
                         .port(8080)
                         .path("/failure/get")
                         .queryParam("httpStatus", "402")
-                        .queryParam("delayInMillis", 100000)
                         .build())
-                .headers(WebClientHeaders.bearer(token))
+                //.headers(WebClientHeaders.bearer(token))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, webClientErrorHandler::log)
+                .onStatus(HttpStatusCode::isError, webClientErrorHandler::handle)
                 .bodyToMono(DummyDTO.class)
-                .retryWhen(WebClientError.is(HttpClientErrorException.class::isInstance, 1, 0))
+                .retryWhen(WebClientError.is(HttpClientErrorException.class::isInstance))
                 .doOnError(webClientErrorHandler::log);
 
     }

@@ -1,7 +1,5 @@
 package no.nav.testnav.libs.reactivecore.web;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -23,7 +21,7 @@ public class WebClientError {
 
     /**
      * <p>Returns a {@link Retry} that will retry on the given exception type, for a given number of times, after a given set of seconds.</p>
-     * <p>Note that the logging from {@link Handler#log(ClientResponse)} is turned OFF until the last retry attempt, to avoid repetitive logging.</p>
+     * <p>Note that the logging from {@link Handler#handle(ClientResponse)} is turned OFF until the last retry attempt, to avoid repetitive logging.</p>
      *
      * @param on           Exception type.
      * @param times        Times to retry.
@@ -33,14 +31,7 @@ public class WebClientError {
     public static Retry is(Predicate<Throwable> on, long times, long afterSeconds) {
         return Retry
                 .backoff(times, Duration.ofSeconds(afterSeconds))
-                .filter(on)
-                .doBeforeRetry(retrySignal -> {
-                    if (retrySignal.totalRetries() < times) {
-                        ((Logger) log).setLevel(Level.OFF);
-                    } else {
-                        ((Logger) log).setLevel(Level.ERROR);
-                    }
-                });
+                .filter(on);
     }
 
     /**
@@ -75,17 +66,25 @@ public class WebClientError {
          */
         public Handler() {
             var currentStackTrace = Thread.currentThread().getStackTrace();
-            constructorStackTrace = Arrays.copyOfRange(currentStackTrace, 2, currentStackTrace.length);
+            constructorStackTrace = Arrays.copyOfRange(currentStackTrace, 2, currentStackTrace.length); // Removes the first two elements, which are Thread.getStackTrace and this constructor.
         }
 
-        public Mono<Throwable> log(ClientResponse response) {
-            var request = response.request();
+        /**
+         * Handle an error. Example use is {@code .onStatus(HttpStatusCode::isError, webClientErrorHandler::handle)}. Rewrites the stack trace to the point where this {@code Handler} was instantiated.
+         * @param response The response that caused the error.
+         * @return A {@link Mono} that will throw a {@link ResponseStatusException} with the status code and reason, with a rewritten stack trace.
+         */
+        public Mono<Throwable> handle(ClientResponse response) {
             var exception = new ResponseStatusException(response.statusCode());
-            exception.setStackTrace(constructorStackTrace);
-            log.error("{} on {} to {}", exception.getMessage(), request.getMethod(), request.getURI(), exception);
+            exception.setStackTrace(constructorStackTrace); // Replace the stack trace (which is Reactive only) with the stack trace into our code where this Handler was instantiated.
             return Mono.error(exception);
         }
 
+        /**
+         * Log an error. Example use is {@code .doOnError(webClientErrorHandler::log)}.
+         * @param throwable The error to log.
+         * @return A {@link Mono} that will throw the same error.
+         */
         public Mono<Throwable> log(Throwable throwable) {
             log.error(throwable.getMessage(), throwable);
             return Mono.error(throwable);
