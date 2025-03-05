@@ -219,7 +219,7 @@ export const VisningRedigerbarPersondetaljer = ({
 									skjerming.feil = true
 								})
 								.then(() => {
-									console.log('Skjerming/egen ansatt slettet')
+									console.log('Skjerming slettet')
 									skjerming.oppdatert = false
 									setVisningModus(Modus.Les)
 									mutate(REGEX_BACKEND_GRUPPER)
@@ -308,9 +308,9 @@ export const VisningRedigerbarPersondetaljer = ({
 						<h4>Hvilke opplysninger ønsker du å slette?</h4>
 						{slettAttr.skjerming && (
 							<Alert variant={'info'}>
-								Sletting av skjerming/egen ansatt sletter all data på person i skjermingregisteret.
-								For å heller avslutte skjermingen bruk "LEGG TIL/ENDRE" for å legge til en sluttdato
-								for skjermingen.
+								Sletting av skjerming sletter all data på person i skjermingregisteret. For å heller
+								avslutte skjermingen bruk "LEGG TIL/ENDRE" for å legge til en sluttdato for
+								skjermingen.
 							</Alert>
 						)}
 						<div className="flexbox--flex-wrap">

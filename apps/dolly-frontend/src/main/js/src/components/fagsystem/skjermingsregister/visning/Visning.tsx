@@ -21,9 +21,9 @@ export const SkjermingVisning = ({ data }: SkjermingProps) => {
 						: 'JA'
 				}
 			/>
-			<TitleValue title="Skjerming/egen ansatt fra" value={formatDate(data.skjermetFra)} />
+			<TitleValue title="Skjerming fra" value={formatDate(data.skjermetFra)} />
 			{data?.skjermetTil && (
-				<TitleValue title="Skjerming/egen ansatt til" value={formatDate(data.skjermetTil)} />
+				<TitleValue title="Skjerming til" value={formatDate(data.skjermetTil)} />
 			)}
 		</>
 	)

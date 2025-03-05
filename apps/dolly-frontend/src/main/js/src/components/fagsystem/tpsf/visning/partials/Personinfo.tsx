@@ -22,15 +22,9 @@ function hentSkjermingData(skjermingPath) {
 								: 'JA'
 						}
 					/>
-					<TitleValue
-						title="Skjerming/egen ansatt fra"
-						value={formatDate(skjermingPath.egenAnsattDatoFom)}
-					/>
+					<TitleValue title="Skjerming fra" value={formatDate(skjermingPath.egenAnsattDatoFom)} />
 					{skjermingPath.egenAnsattDatoTom && (
-						<TitleValue
-							title="Skjerming/egen ansatt til"
-							value={formatDate(skjermingPath.egenAnsattDatoTom)}
-						/>
+						<TitleValue title="Skjerming til" value={formatDate(skjermingPath.egenAnsattDatoTom)} />
 					)}
 				</>
 			)}
