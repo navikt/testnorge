@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
@@ -50,6 +51,8 @@ public class LegacyRequestMappingStrategy implements MappingStrategy {
                                                     .harKontaktadresse(isNotBlank(adresser.getHarKontaktadresse()))
                                                     .harOppholdsadresse(isNotBlank(adresser.getHarOppholdsadresse()))
                                             .build()));
+
+                        personRequest.setErLevende(isTrue(personSearch.getKunLevende()));
                     }
                 }).register();
     }

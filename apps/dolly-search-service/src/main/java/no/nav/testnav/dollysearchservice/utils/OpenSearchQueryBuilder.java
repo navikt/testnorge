@@ -41,6 +41,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarUtflyttingQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addIdenttypeQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addKjoennQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addKunLevendePersonerQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addPersonStatusQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addSivilstandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addStatsborgerskapQuery;
@@ -100,6 +101,7 @@ public class OpenSearchQueryBuilder {
                     addKjoennQuery(queryBuilder, request);
                     addIdenttypeQuery(queryBuilder, request);
                     addPersonStatusQuery(queryBuilder, request);
+                    addKunLevendePersonerQuery(queryBuilder, request);
                 });
     }
 

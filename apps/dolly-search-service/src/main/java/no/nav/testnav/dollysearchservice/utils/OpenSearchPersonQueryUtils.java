@@ -110,7 +110,7 @@ public class OpenSearchPersonQueryUtils {
 
     public static void addDoedsfallQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
-        if (isTrue(request.getPersonRequest().getHarDoedsfall())) {
+        if (isTrue(request.getPersonRequest().getErDoed())) {
             queryBuilder
                     .must(nestedMatchQuery("hentPerson.doedsfall", METADATA_HISTORISK, false));
         }
@@ -377,6 +377,13 @@ public class OpenSearchPersonQueryUtils {
                     .must(nestedMatchQuery("hentPerson.kjoenn", "kjoenn",
                             request.getPersonRequest().getKjoenn().name())
                     );
+        }
+    }
+
+    public static void addKunLevendePersonerQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+
+        if (isTrue(request.getPersonRequest().getErLevende())) {
+            queryBuilder.mustNot(nestedMatchQuery("hentPerson.doedsfall", METADATA_HISTORISK, false));
         }
     }
 

@@ -23,12 +23,15 @@ public class PersonRequest {
     private Integer alderTom;
     private SivilstandDTO.Sivilstand sivilstand;
 
+    @Schema(description = "erLevende eksluderer erDoed, begge kan ikke være satt")
+    private Boolean erLevende;
+    @Schema(description = "erDoed eksluderer erLevende, begge kan ikke være satt")
+    private Boolean erDoed;
     private Boolean harBarn;
     private Boolean harForeldre;
     private Boolean harDoedfoedtBarn;
     private Boolean harForeldreAnsvar;
     private Boolean harVerge;
-    private Boolean harDoedsfall;
     private Boolean harInnflytting;
     private Boolean harUtflytting;
     private Boolean harKontaktinformasjonForDoedsbo;
