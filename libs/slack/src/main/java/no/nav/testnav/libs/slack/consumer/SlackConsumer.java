@@ -19,29 +19,31 @@ public class SlackConsumer {
     private final WebClient webClient;
 
     public SlackConsumer(
+            WebClient webClient,
             String token,
             String baseUrl,
             String proxyHost,
-            String applicationName,
-            WebClient.Builder webClientBuilder
+            String applicationName
     ) {
         this.token = token;
         this.applicationName = applicationName;
+
+        var builder = webClient
+                .mutate()
+                .baseUrl(baseUrl);
         if (proxyHost != null) {
             log.trace("Setter opp proxy host {} for Slack api", proxyHost);
             var uri = URI.create(proxyHost);
-            webClientBuilder.clientConnector(new ReactorClientHttpConnector(
-                HttpClient
-                    .create()
-                    .proxy(proxy -> proxy
-                        .type(ProxyProvider.Proxy.HTTP)
-                        .host(uri.getHost())
-                        .port(uri.getPort()))
+            builder.clientConnector(new ReactorClientHttpConnector(
+                    HttpClient
+                            .create()
+                            .proxy(proxy -> proxy
+                                    .type(ProxyProvider.Proxy.HTTP)
+                                    .host(uri.getHost())
+                                    .port(uri.getPort()))
             ));
         }
-        this.webClient = webClientBuilder
-                .baseUrl(baseUrl)
-                .build();
+        this.webClient = builder.build();
     }
 
     public void publish(Message message) {

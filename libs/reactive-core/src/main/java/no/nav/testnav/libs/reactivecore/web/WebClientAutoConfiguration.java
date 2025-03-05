@@ -22,6 +22,14 @@ import java.time.Duration;
 @Slf4j
 class WebClientAutoConfiguration {
 
+    /**
+     * <p>Get a {@link WebClient.Builder] with an observation registry if available.</p>
+     * <p>Slated for removal once usages are refactored.</p>
+     * @param context The {@link ApplicationContext}.
+     * @return A {@link WebClient.Builder}.
+     * @deprecated Use {@link WebClient#mutate()} instead. This will ensure that any common future modifications to the {@link WebClient} are applied.
+     */
+    @Deprecated(forRemoval = true)
     @Bean
     WebClient.Builder webClientBuilder(ApplicationContext context) {
 

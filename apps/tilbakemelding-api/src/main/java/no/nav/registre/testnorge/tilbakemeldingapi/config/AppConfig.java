@@ -15,13 +15,13 @@ public class AppConfig {
 
     @Bean
     public SlackConsumer slackConsumer(
+            WebClient webClient,
             @Value("${consumers.slack.token}") String token,
             @Value("${consumers.slack.baseUrl}") String baseUrl,
             @Value("${http.proxy:#{null}}") String proxyHost,
-            ApplicationProperties properties,
-            WebClient .Builder webClientBuilder
+            ApplicationProperties properties
     ) {
-        return new SlackConsumer(token, baseUrl, proxyHost, properties.getName(), webClientBuilder);
+        return new SlackConsumer(webClient, token, baseUrl, proxyHost, properties.getName());
     }
 
 

@@ -63,7 +63,7 @@ public class WebClientError {
     }
 
     /**
-     * <p>A custom logging handler, using its stack trace at construction time to log any error.</p>
+     * <p>A custom logging handler, using its stack trace at construction time to log any error handled within a {@link org.springframework.web.reactive.function.client.WebClient} spec.</p>
      * <p>That means, use the constructor outside the {@link org.springframework.web.reactive.function.client.WebClient} spec itself.</p>
      */
     public static class Handler {
@@ -84,6 +84,11 @@ public class WebClientError {
             exception.setStackTrace(constructorStackTrace);
             log.error("{} on {} to {}", exception.getMessage(), request.getMethod(), request.getURI(), exception);
             return Mono.error(exception);
+        }
+
+        public Mono<Throwable> log(Throwable throwable) {
+            log.error(throwable.getMessage(), throwable);
+            return Mono.error(throwable);
         }
 
     }
