@@ -15,10 +15,12 @@ public class TenorConsumer {
     private final WebClient webClient;
     private final MaskinportenConsumer maskinportenConsumer;
 
-    public TenorConsumer(Consumers consumers, MaskinportenConsumer maskinportenConsumer,
-                         WebClient.Builder webClientBuilder) {
-
-        this.webClient = webClientBuilder
+    public TenorConsumer(
+            Consumers consumers,
+            MaskinportenConsumer maskinportenConsumer,
+            WebClient webClient) {
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(consumers.getTenorSearchService().getUrl())
                 .codecs(configurer -> configurer.defaultCodecs()
                         .maxInMemorySize(32 * 1024 * 1024))

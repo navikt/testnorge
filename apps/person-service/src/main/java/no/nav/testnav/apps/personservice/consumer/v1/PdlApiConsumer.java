@@ -21,12 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -49,9 +44,8 @@ public class PdlApiConsumer {
             Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
-
         serverProperties = consumers.getPdlProxy();
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
@@ -65,7 +59,8 @@ public class PdlApiConsumer {
                                     .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                         })
                 .build();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();
@@ -133,7 +128,7 @@ public class PdlApiConsumer {
         var opplysningIdsFraPdl = getOpplysningIds(pdlAktoer.getData().getHentPerson());
 
         log.info("Sjekker ident {} i miljø {}, med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident, miljoe,
-                String.join(",",opplysningIdsFraPdl),
+                String.join(",", opplysningIdsFraPdl),
                 nonNull(opplysningId) ?
                         String.join(", ", opplysningId) :
                         null);
@@ -151,10 +146,10 @@ public class PdlApiConsumer {
 
             return
                     pdlAktoer.getErrors().stream().noneMatch(value -> value.getMessage().equals("Fant ikke person")) &&
-                    identer.stream()
-                            .filter(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "AKTORID")))
-                            .anyMatch(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "FOLKEREGISTERIDENT")) ||
-                                    identer.stream().anyMatch(ident2 -> isGruppe(ident2, "NPID")));
+                            identer.stream()
+                                    .filter(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "AKTORID")))
+                                    .anyMatch(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "FOLKEREGISTERIDENT")) ||
+                                            identer.stream().anyMatch(ident2 -> isGruppe(ident2, "NPID")));
         }
     }
 

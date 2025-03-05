@@ -27,14 +27,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                             authorize
                                     .requestMatchers(
-                                            "/internal/**",
-                                            "/webjars/**",
-                                            "/swagger-resources/**",
-                                            "/v3/api-docs/**",
-                                            "/swagger-ui/**",
-                                            "/swagger",
                                             "/error",
-                                            "/swagger-ui.html")
+                                            "/failure/**",
+                                            "/internal/**",
+                                            "/swagger",
+                                            "/swagger-resources/**",
+                                            "/swagger-ui.html",
+                                            "/swagger-ui/**",
+                                            "/v3/api-docs/**",
+                                            "/webjars/**")
                                     .permitAll();
                             if (allowApi) {
                                 authorize

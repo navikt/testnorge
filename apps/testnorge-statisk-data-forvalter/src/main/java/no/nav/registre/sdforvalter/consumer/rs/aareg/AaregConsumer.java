@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 @Component
 public class AaregConsumer {
+
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
@@ -22,11 +23,12 @@ public class AaregConsumer {
     public AaregConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         serverProperties = consumers.getTestnavAaregProxy();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()

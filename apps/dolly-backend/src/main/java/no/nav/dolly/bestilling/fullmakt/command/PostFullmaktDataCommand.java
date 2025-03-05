@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.util.RequestHeaderUtil;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

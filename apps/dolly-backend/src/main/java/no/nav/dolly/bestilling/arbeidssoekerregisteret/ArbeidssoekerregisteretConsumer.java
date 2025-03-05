@@ -15,17 +15,21 @@ import reactor.core.publisher.Mono;
 @Service
 public class ArbeidssoekerregisteretConsumer {
 
-   private final ServerProperties serverProperties;
-   private final WebClient webClient;
-   private final TokenExchange tokenExchange;
+    private final ServerProperties serverProperties;
+    private final WebClient webClient;
+    private final TokenExchange tokenExchange;
 
-    public ArbeidssoekerregisteretConsumer(Consumers consumers, WebClient.Builder webClient, TokenExchange tokenExchange) {
-
-         this.serverProperties = consumers.getArbeidssoekerregisteretProxy();
-         this.webClient = webClient
-                 .baseUrl(serverProperties.getUrl())
-                 .build();
-         this.tokenExchange = tokenExchange;
+    public ArbeidssoekerregisteretConsumer(
+            Consumers consumers,
+            WebClient webClient,
+            TokenExchange tokenExchange
+    ) {
+        this.serverProperties = consumers.getArbeidssoekerregisteretProxy();
+        this.webClient = webClient
+                .mutate()
+                .baseUrl(serverProperties.getUrl())
+                .build();
+        this.tokenExchange = tokenExchange;
     }
 
     public Mono<ArbeidssoekerregisteretResponse> postArbeidssokerregisteret(ArbeidssoekerregisteretRequest request) {

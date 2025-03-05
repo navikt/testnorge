@@ -10,18 +10,20 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class AnsettelseConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
-    public AnsettelseConsumer(Consumers consumers,
-                              TokenExchange tokenExchange,
-                              WebClient.Builder webClientBuilder) {
-
+    public AnsettelseConsumer(
+            Consumers consumers,
+            TokenExchange tokenExchange,
+            WebClient webClient
+    ) {
         this.serverProperties = consumers.getLevendeArbeidsforholdAnsettelse();
         this.tokenExchange = tokenExchange;
-
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

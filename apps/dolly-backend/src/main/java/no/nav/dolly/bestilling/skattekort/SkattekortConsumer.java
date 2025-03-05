@@ -16,10 +16,14 @@ public class SkattekortConsumer {
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
-    public SkattekortConsumer(WebClient.Builder webClientBuilder, Consumers consumers, TokenExchange tokenExchange) {
-
+    public SkattekortConsumer(
+            WebClient webClient,
+            Consumers consumers,
+            TokenExchange tokenExchange
+    ) {
         this.serverProperties = consumers.getTestnavSkattekortService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

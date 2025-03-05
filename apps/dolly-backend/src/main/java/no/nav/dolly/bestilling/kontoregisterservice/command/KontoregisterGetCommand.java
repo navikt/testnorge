@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

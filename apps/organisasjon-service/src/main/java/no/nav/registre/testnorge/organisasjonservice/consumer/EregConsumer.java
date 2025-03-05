@@ -14,18 +14,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 @Component
 public class EregConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
-
     public EregConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavEregProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

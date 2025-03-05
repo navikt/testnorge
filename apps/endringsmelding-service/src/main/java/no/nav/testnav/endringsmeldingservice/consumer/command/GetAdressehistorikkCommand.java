@@ -3,7 +3,7 @@ package no.nav.testnav.endringsmeldingservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkRequest;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;

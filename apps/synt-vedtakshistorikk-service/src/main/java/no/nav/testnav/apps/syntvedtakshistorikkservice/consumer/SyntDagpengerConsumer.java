@@ -27,12 +27,12 @@ public class SyntDagpengerConsumer {
     public SyntDagpengerConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
-
         serverProperties = consumers.getSyntDagpenger();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(ExchangeStrategies
                         .builder()
                         .codecs(configurer -> configurer

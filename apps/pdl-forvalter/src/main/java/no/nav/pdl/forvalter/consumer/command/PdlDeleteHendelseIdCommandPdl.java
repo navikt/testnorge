@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,7 +17,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
-import static no.nav.testnav.libs.reactivecore.utils.WebClientFilter.getMessage;
+import static no.nav.testnav.libs.reactivecore.web.WebClientFilter.getMessage;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

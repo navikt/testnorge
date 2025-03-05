@@ -31,10 +31,12 @@ public class HistarkConsumer {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavHistarkProxy();
         this.tokenService = tokenService;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

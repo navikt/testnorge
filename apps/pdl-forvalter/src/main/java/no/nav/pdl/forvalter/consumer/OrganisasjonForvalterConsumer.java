@@ -23,10 +23,12 @@ public class OrganisasjonForvalterConsumer {
     public OrganisasjonForvalterConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getOrgForvalter();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

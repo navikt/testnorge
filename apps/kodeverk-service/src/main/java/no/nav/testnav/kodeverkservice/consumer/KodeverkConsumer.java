@@ -20,11 +20,12 @@ public class KodeverkConsumer {
     public KodeverkConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getKodeverkApi();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(
                         ExchangeStrategies
                                 .builder()

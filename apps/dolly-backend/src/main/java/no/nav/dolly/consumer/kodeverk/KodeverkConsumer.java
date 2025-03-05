@@ -23,11 +23,12 @@ public class KodeverkConsumer {
     public KodeverkConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavKodeverkService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

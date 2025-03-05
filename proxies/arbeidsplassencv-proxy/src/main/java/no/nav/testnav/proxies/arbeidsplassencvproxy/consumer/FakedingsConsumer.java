@@ -11,18 +11,19 @@ import reactor.core.publisher.Mono;
 public class FakedingsConsumer {
 
     private static final String FAKE_TOKENDINGS_URL = "https://fakedings.intern.dev.nav.no";
+
     private final WebClient webClient;
 
-    public FakedingsConsumer(ObjectMapper objectMapper, WebClient.Builder webClientBuilder) {
-
-        this.webClient = webClientBuilder
+    public FakedingsConsumer(ObjectMapper objectMapper, WebClient webClient) {
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(FAKE_TOKENDINGS_URL)
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
     }
 
     public Mono<String> getFakeToken(String ident) {
-
         return new FakedingsGetCommand(webClient, ident).call();
     }
+
 }

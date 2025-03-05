@@ -33,11 +33,12 @@ public class KrrstubConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavKrrstubProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
@@ -51,7 +52,7 @@ public class KrrstubConsumer extends ConsumerStatus {
                 .flatMap(token -> new KontaktdataPostCommand(webClient, digitalKontaktdata, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_deleteKontaktdata" })
+    @Timed(name = "providers", tags = {"operation", "krrstub_deleteKontaktdata"})
     public Flux<DigitalKontaktdataResponse> deleteKontaktdata(List<String> identer) {
 
         return tokenService.exchange(serverProperties)

@@ -12,6 +12,7 @@ import java.util.List;
 
 @Component
 public class OrganisasjonBestillingConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
@@ -19,11 +20,12 @@ public class OrganisasjonBestillingConsumer {
     public OrganisasjonBestillingConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getOrganisasjonBestillingService();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

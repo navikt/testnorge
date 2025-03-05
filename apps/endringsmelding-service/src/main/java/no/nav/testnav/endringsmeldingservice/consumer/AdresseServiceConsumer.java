@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public class AdresseServiceConsumer {
+
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
@@ -20,11 +21,11 @@ public class AdresseServiceConsumer {
     public AdresseServiceConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getAdresseService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

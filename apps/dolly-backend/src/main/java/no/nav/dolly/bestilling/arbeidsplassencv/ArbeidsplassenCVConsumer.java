@@ -3,11 +3,7 @@ package no.nav.dolly.bestilling.arbeidsplassencv;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenDeleteCVCommand;
-import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGodtaHjemmelCommand;
-import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGodtaVilkaarCommand;
-import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostPersonCommand;
-import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPutCVCommand;
+import no.nav.dolly.bestilling.arbeidsplassencv.command.*;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.config.Consumers;
@@ -37,17 +33,18 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         serverProperties = consumers.getTestnavArbeidsplassenCVProxy();
         this.tokenService = tokenService;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_oppdaterCV" })
+    @Timed(name = "providers", tags = {"operation", "arbeidsplassen_oppdaterCV"})
     public Flux<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, PAMCVDTO arbeidsplassenCV, String uuid) {
 
         return tokenService.exchange(serverProperties)
@@ -55,7 +52,7 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
                 .doOnNext(resultat -> log.info("Oppdatert CV for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_godtaVilkaar" })
+    @Timed(name = "providers", tags = {"operation", "arbeidsplassen_godtaVilkaar"})
     public Flux<ArbeidsplassenCVStatusDTO> godtaVilkaar(String ident, String uuid) {
 
         return tokenService.exchange(serverProperties)
@@ -63,7 +60,7 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
                 .doOnNext(resultat -> log.info("Opprettet vilkaar for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_godtaHjemmel" })
+    @Timed(name = "providers", tags = {"operation", "arbeidsplassen_godtaHjemmel"})
     public Flux<ArbeidsplassenCVStatusDTO> godtaHjemmel(String ident, String uuid) {
 
         return tokenService.exchange(serverProperties)
@@ -71,7 +68,7 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
                 .doOnNext(resultat -> log.info("Opprettet hjemmel for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_opprettPerson" })
+    @Timed(name = "providers", tags = {"operation", "arbeidsplassen_opprettPerson"})
     public Flux<ArbeidsplassenCVStatusDTO> opprettPerson(String ident, String uuid) {
 
         return tokenService.exchange(serverProperties)

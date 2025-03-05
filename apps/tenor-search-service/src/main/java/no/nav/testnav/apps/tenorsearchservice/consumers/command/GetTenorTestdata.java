@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;

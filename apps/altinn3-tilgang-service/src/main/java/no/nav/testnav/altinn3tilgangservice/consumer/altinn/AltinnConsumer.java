@@ -51,11 +51,13 @@ public class AltinnConsumer {
             MaskinportenConsumer maskinportenConsumer,
             ObjectMapper objectMapper,
             MapperFacade mapperFacade,
-            WebClient.Builder webClientBuilder, BrregConsumer brregConsumer) {
-
+            WebClient webClient,
+            BrregConsumer brregConsumer
+    ) {
         this.altinnConfig = altinnConfig;
         this.maskinportenConsumer = maskinportenConsumer;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(altinnConfig.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
                     clientDefaultCodecsConfigurer

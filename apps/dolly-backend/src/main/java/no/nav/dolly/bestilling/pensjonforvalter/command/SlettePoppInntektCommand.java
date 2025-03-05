@@ -2,15 +2,12 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 

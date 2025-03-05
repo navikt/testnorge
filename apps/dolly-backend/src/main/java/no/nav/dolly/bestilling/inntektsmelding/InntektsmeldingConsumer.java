@@ -30,16 +30,17 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
     public InntektsmeldingConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavInntektsmeldingService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntektsmelding_opprett" })
+    @Timed(name = "providers", tags = {"operation", "inntektsmelding_opprett"})
     public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();

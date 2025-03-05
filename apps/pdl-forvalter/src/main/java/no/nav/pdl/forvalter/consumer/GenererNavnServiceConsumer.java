@@ -27,11 +27,12 @@ public class GenererNavnServiceConsumer {
     public GenererNavnServiceConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getGenererNavnService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
@@ -39,8 +40,8 @@ public class GenererNavnServiceConsumer {
     public Optional<NavnDTO> getNavn(Integer antall) {
 
         return Arrays.stream(tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())
-                .block())
+                        .flatMap(token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())
+                        .block())
                 .findFirst();
     }
 

@@ -19,7 +19,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

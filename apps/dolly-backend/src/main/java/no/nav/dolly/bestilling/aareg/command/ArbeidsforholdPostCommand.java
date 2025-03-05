@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;

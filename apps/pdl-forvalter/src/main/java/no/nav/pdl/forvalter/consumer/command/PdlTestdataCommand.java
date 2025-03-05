@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;

@@ -32,11 +32,12 @@ public class AaregConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         serverProperties = consumers.getTestnavAaregProxy();
         this.tokenService = tokenService;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
