@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
@@ -38,6 +39,7 @@ public class PersonRequest {
     private Boolean harOpphold;
     @Schema(description = "landkode")
     private String statsborgerskap;
+    private FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus personStatus;
     private Boolean harNyIdentitet;
 
     private AdresseRequest adresse;
