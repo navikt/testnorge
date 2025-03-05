@@ -3,7 +3,7 @@ on:
     inputs:
       workflow:
         type: choice
-        description: "Backend or frontend."
+        description: "Backend or frontend. These use slightly different workflows."
         options:
           - "backend"
           - "frontend"
@@ -35,7 +35,7 @@ on:
       sonar-enabled:
         type: boolean
         description: "Run Sonar scan?"
-        default: true
+        default: false
 
 permissions:
   contents: read
