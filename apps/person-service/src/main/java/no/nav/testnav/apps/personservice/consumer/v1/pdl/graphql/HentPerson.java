@@ -29,7 +29,7 @@ public class HentPerson {
     List<MetadataDTO> vergemaalEllerFremtidsfullmakt;
     List<MetadataDTO> doedfoedtBarn;
     List<MetadataDTO> adressebeskyttelse;
-    List<MetadataDTO> falskIdentitet;
+    MetadataDTO falskIdentitet;
     List<MetadataDTO> utenlandskIdentifikasjonsnummer;
     List<MetadataDTO> tilrettelagtKommunikasjon;
     List<MetadataDTO> sikkerhetstiltak;
@@ -128,14 +128,6 @@ public class HentPerson {
             adressebeskyttelse = new ArrayList<>();
         }
         return adressebeskyttelse;
-    }
-
-    public List<MetadataDTO> getFalskIdentitet() {
-
-        if (isNull(falskIdentitet)) {
-            falskIdentitet = new ArrayList<>();
-        }
-        return falskIdentitet;
     }
 
     public List<MetadataDTO> getUtenlandskIdentifikasjonsnummer() {
