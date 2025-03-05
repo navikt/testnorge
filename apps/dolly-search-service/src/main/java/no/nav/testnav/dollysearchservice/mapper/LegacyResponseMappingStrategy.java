@@ -96,7 +96,7 @@ public class LegacyResponseMappingStrategy implements MappingStrategy {
 
     private static void mapStatsborgerskap(PersonDTO personDTO, Person person) {
 
-        if (nonNull(person.getHentPerson().getStatsborgerskap())) {
+        if (!person.getHentPerson().getStatsborgerskap().isEmpty()) {
             personDTO.setStatsborgerskap(PersonDTO.StatsborgerskapDTO.builder()
                     .land(person.getHentPerson().getStatsborgerskap().stream()
                             .map(Person.Statsborgerskap::getLand)
@@ -119,7 +119,7 @@ public class LegacyResponseMappingStrategy implements MappingStrategy {
 
     private static void mapPersonstatus(PersonDTO personDTO, Person person) {
 
-        if (nonNull(person.getHentPerson().getFolkeregisterpersonstatus())) {
+        if (!person.getHentPerson().getFolkeregisterpersonstatus().isEmpty()) {
             personDTO.setFolkeregisterpersonstatus(person.getHentPerson().getFolkeregisterpersonstatus().stream()
                     .map(personstatus -> PersonDTO.FolkeregisterpersonstatusDTO.builder()
                             .status(personstatus.getStatus().name())
@@ -162,7 +162,7 @@ public class LegacyResponseMappingStrategy implements MappingStrategy {
 
     private void mapForelderBarnRelasjoner(PersonDTO personDTO, Person person) {
 
-        if (nonNull(person.getHentPerson().getForelderBarnRelasjon())) {
+        if (!person.getHentPerson().getForelderBarnRelasjon().isEmpty()) {
             personDTO.setForelderBarnRelasjoner(PersonDTO.ForelderBarnRelasjonDTO.builder()
                             .barn(person.getHentPerson().getForelderBarnRelasjon().stream()
                                     .filter(Person.ForelderBarnRelasjon::isBarn)

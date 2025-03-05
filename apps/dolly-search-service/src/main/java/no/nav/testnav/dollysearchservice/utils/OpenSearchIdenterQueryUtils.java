@@ -115,7 +115,7 @@ public class OpenSearchIdenterQueryUtils {
                 });
     }
 
-    private static void addIdenterQuery(BoolQueryBuilder queryBuilder, Set<String> identer) {
+    public static void addIdenterQuery(BoolQueryBuilder queryBuilder, Set<String> identer) {
 
         var now = System.currentTimeMillis();
         var arr = new String[identer.size()];

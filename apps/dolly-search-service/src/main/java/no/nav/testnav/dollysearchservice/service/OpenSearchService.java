@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class OpenSearchService {
         request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);
+        addIdenterQuery(query, request.getIdenter());
 
         return personQueryService.execQuery(request, query)
                 .map(response -> mapperFacade.map(response, SearchResponse.class));

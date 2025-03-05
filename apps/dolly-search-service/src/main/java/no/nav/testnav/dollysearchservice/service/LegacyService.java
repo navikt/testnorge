@@ -13,6 +13,9 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.termsQuery;
+
 @Service
 @RequiredArgsConstructor
 public class LegacyService {
@@ -27,6 +30,8 @@ public class LegacyService {
                 .build();
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(personRequest);
+        query.mustNot(termsQuery("tags", new String[]{"DOLLY", "ARENASYNT"}));
+        query.must(matchQuery("tags", "TESTNORGE"));
 
         return personQueryService.execQuery(personRequest, query)
                 .map(this::formatResponse)

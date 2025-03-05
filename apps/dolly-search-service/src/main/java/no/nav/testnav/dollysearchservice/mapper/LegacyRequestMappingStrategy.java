@@ -21,7 +21,7 @@ public class LegacyRequestMappingStrategy implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         factory.classMap(PersonSearch.class, PersonRequest.class)
-                .customize(new CustomMapper<PersonSearch, PersonRequest>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(PersonSearch personSearch, PersonRequest personRequest, MappingContext context) {
 
@@ -44,13 +44,12 @@ public class LegacyRequestMappingStrategy implements MappingStrategy {
                                 .ifPresent(nasjonalitet -> personRequest.setStatsborgerskap(nasjonalitet.getStatsborgerskap()));
 
                         Optional.ofNullable(personSearch.getAdresser())
-                                .ifPresent(adresser -> {
+                                .ifPresent(adresser ->
                                     personRequest.setAdresse(PersonRequest.AdresseRequest.builder()
                                                     .harUtenlandsadresse(isNotBlank(adresser.getHarUtenlandskAdresse()))
                                                     .harKontaktadresse(isNotBlank(adresser.getHarKontaktadresse()))
                                                     .harOppholdsadresse(isNotBlank(adresser.getHarOppholdsadresse()))
-                                            .build());
-                                });
+                                            .build()));
                     }
                 }).register();
     }
