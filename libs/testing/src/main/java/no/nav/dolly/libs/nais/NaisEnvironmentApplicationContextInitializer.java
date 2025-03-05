@@ -33,6 +33,9 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
         log.info("Configuring environment for local profile using Secret Manager");
 
+        // Enable all actuator endpoints.
+        properties.putIfAbsent("management.endpoints.web.exposure.include", "*");
+
         // Emulating NAIS provided environment variables.
         properties.putIfAbsent("ALTINN_URL", "${sm\\://altinn-url}"); // Used by altinn3-tilgang-service only.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
