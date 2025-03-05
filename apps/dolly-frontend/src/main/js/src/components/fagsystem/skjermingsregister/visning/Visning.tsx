@@ -14,7 +14,7 @@ export const SkjermingVisning = ({ data }: SkjermingProps) => {
 	return (
 		<>
 			<TitleValue
-				title="Har skjerming/egen ansatt"
+				title="Har skjerming (egen ansatt)"
 				value={
 					data.skjermetTil && isBefore(new Date(data.skjermetTil), addDays(new Date(), -1))
 						? 'NEI'

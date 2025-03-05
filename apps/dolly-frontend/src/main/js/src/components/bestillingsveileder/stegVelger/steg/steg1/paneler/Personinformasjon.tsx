@@ -404,7 +404,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			},
 		},
 		egenAnsattDatoFom: {
-			label: 'Skjerming/egen ansatt',
+			label: 'Skjerming (egen ansatt)',
 			checked: has(paths.egenAnsattDatoFom.tpsM) || has(paths.egenAnsattDatoFom.skjerming),
 			add() {
 				setMulti(
