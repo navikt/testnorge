@@ -57,7 +57,7 @@ const DataVisning = ({ data, miljo }) => {
 		(enhet) => enhet.value === data?.navEnhetId?.toString(),
 	)?.label
 
-	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+	const { vedtakData, loading } = usePensjonVedtak(data?.fnr, miljo)
 	const vedtakUT = vedtakData?.find((vedtak) => vedtak?.sakType === 'UT')
 
 	const getSisteOppdatering = (sisteOppdatering: string) => {
@@ -74,7 +74,7 @@ const DataVisning = ({ data, miljo }) => {
 
 	return (
 		<>
-			{!vedtakUT && (
+			{!vedtakUT && !loading && (
 				<StyledAlert variant={'warning'} size={'small'}>
 					Kunne ikke hente vedtaksstatus for person. Opprettelse av uføresak har sannsynligvis
 					feilet.

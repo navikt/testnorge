@@ -21,12 +21,12 @@ const DataVisning = ({ data, miljo }) => {
 		(enhet) => enhet.value === data?.navEnhetId?.toString(),
 	)?.label
 
-	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+	const { vedtakData, loading } = usePensjonVedtak(data?.fnr, miljo)
 	const vedtakAP = vedtakData?.find((vedtak) => vedtak?.sakType === 'AP')
 
 	return (
 		<>
-			{!vedtakAP && (
+			{!vedtakAP && !loading && (
 				<StyledAlert variant={'warning'} size={'small'}>
 					Kunne ikke hente vedtaksstatus for person. Opprettelse av alderspensjon har sannsynligvis
 					feilet.
