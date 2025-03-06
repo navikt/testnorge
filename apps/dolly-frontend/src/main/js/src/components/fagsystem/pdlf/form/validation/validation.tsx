@@ -120,7 +120,7 @@ export const validation = {
 						'foedtEtter',
 						'Dato må være etter født etter-dato',
 					),
-					identtype: Yup.string().required('Velg en identtype'),
+					identtype: ifPresent('$identtype', Yup.string().required('Velg en identtype')),
 				}).nullable(),
 			),
 			person: Yup.object({

@@ -5,6 +5,7 @@ import { getLeggTilIdent, rootPaths } from '@/components/bestillingsveileder/uti
 import { v4 as uuid } from 'uuid'
 import * as _ from 'lodash-es'
 import { Logger } from '@/logger/Logger'
+import { BVOptions } from '@/components/bestillingsveileder/options/options'
 
 export const actions = createActions(
 	{
@@ -47,7 +48,8 @@ const trackBestilling = (values) => {
 /**
  * Sender de ulike bestillingstypene fra Bestillingsveileder
  */
-export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispatch) => {
+export const sendBestilling = (values, options, gruppeId, navigate) => async (dispatch) => {
+	const opts = BVOptions(options, gruppeId, values.environments)
 	const valgtGruppe = values?.gruppeId || gruppeId
 	let bestillingAction
 
@@ -57,7 +59,6 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 	} else if (opts.is.leggTilPaaGruppe) {
 		bestillingAction = actions.postBestillingLeggTilPaaGruppe(valgtGruppe, values)
 	} else if (opts.is.opprettFraIdenter) {
-		values = Object.assign({}, values, { opprettFraIdenter: opts.opprettFraIdenter })
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(valgtGruppe, values)
 	} else if (opts.is.importTestnorge) {
 		values = Object.assign({}, values, {

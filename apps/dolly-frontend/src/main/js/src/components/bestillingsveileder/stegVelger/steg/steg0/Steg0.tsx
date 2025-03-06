@@ -1,11 +1,9 @@
 import React, { useContext, useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgGruppe'
 import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { MalVelgerIdent } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { MalVelgerOrganisasjon } from '@/pages/organisasjoner/MalVelgerOrganisasjon'
 import { VelgIdenttype } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgIdenttype'
@@ -14,6 +12,8 @@ import {
 	getInitialSivilstand,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
+import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgGruppe'
+import { MalVelgerIdent } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
 
 const GRUPPE_AVHENGIGE_ATTRIBUTTER = [
 	'fullmakt',
@@ -105,7 +105,7 @@ const Steg0 = () => {
 				<>
 					{isNyIdent && (
 						<div className="dolly-panel dolly-panel-open">
-							<VelgIdenttype />
+							<VelgIdenttype gruppeId={numericGruppeId} />
 						</div>
 					)}
 					{!kanVelgeGruppe && (
@@ -117,9 +117,9 @@ const Steg0 = () => {
 			)}
 			<div className="dolly-panel dolly-panel-open">
 				{isOrganisasjon ? (
-					<MalVelgerOrganisasjon brukernavn={username} gruppeId={numericGruppeId ?? undefined} />
+					<MalVelgerOrganisasjon brukernavn={username} gruppeId={numericGruppeId} />
 				) : (
-					<MalVelgerIdent brukernavn={username} gruppeId={numericGruppeId ?? undefined} />
+					<MalVelgerIdent brukernavn={username} gruppeId={numericGruppeId} />
 				)}
 			</div>
 		</div>

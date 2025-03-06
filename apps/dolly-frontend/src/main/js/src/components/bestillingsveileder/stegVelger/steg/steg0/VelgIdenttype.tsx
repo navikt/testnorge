@@ -3,9 +3,12 @@ import { ToggleGroup } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { NyIdent } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 import { EksisterendeIdent } from '@/components/bestillingsveileder/startModal/EksisterendeIdent/EksisterendeIdent'
+import { useFormContext } from 'react-hook-form'
 
 export const VelgIdenttype = ({ gruppeId }: any) => {
-	const [type, setType] = useState('ny')
+	const formMethods = useFormContext()
+	const harEksisterendeIdenter = formMethods.getValues('opprettFraIdenter')
+	const [type, setType] = useState(harEksisterendeIdenter ? 'eksisterende' : 'ny')
 
 	return (
 		<div className="ny-bestilling-form_input">
@@ -27,7 +30,7 @@ export const VelgIdenttype = ({ gruppeId }: any) => {
 				</ToggleGroup.Item>
 			</ToggleGroup>
 			{type === 'ny' && <NyIdent gruppeId={gruppeId} />}
-			{type === 'eksisterende' && <EksisterendeIdent />}
+			{type === 'eksisterende' && <EksisterendeIdent gruppeId={gruppeId} />}
 		</div>
 	)
 }
