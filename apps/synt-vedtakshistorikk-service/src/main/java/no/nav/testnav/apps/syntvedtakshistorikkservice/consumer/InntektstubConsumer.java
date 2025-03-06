@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -49,13 +48,10 @@ public class InntektstubConsumer {
     }
 
     public void deleteInntekter(List<String> identer) {
-        try {
+
             log.info("Sletter ident(er) fra Inntektstub");
             tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new DeleteInntekterCommand(identer, accessToken.getTokenValue(), webClient).call())
                     .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
-        } catch (Exception e) {
-            log.error("Klarte ikke slette identer fra Inntektstub: ", identer.stream().collect(Collectors.joining(", ")), e);
-        }
     }
 }

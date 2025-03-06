@@ -50,7 +50,7 @@ class PdlConsumerTest {
     }
 
     private void stubPdlPersonResponse() {
-        stubFor(post(urlPathMatching("(.*)/pdl/pdl-api/graphql"))
+        stubFor(post(urlPathMatching("(.*)/pdl-api/graphql"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/pdl/pdlperson.json")))
@@ -77,7 +77,7 @@ class PdlConsumerTest {
     }
 
     private void stubPdlPersonBolkResponse() {
-        stubFor(post(urlPathMatching("(.*)/pdl/pdl-api/graphql"))
+        stubFor(post(urlPathMatching("(.*)/pdl-api/graphql"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/pdl/pdlpersonbolk.json")))
@@ -100,7 +100,7 @@ class PdlConsumerTest {
     }
 
     private void stubPdlPersonErrorResponse() {
-        stubFor(post(urlPathMatching("(.*)/pdl/pdl-api/graphql"))
+        stubFor(post(urlPathMatching("(.*)/pdl-api/graphql"))
                 .willReturn(aResponse().withStatus(500))
         );
     }
@@ -121,7 +121,7 @@ class PdlConsumerTest {
     }
 
     private void stubOpprettTags() {
-        stubFor(post(urlEqualTo("/pdl/pdl-testdata/api/v1/bestilling/tags?tags=ARENASYNT"))
+        stubFor(post(urlEqualTo("/pdl-testdata/api/v1/bestilling/tags?tags=ARENASYNT"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                 )

@@ -51,7 +51,7 @@ spec:
         - application: synthdata-arena-dagpenger
         - application: synthdata-arena-vedtakshistorikk
         - application: testnav-organisasjon-faste-data-service
-        - application: testnav-person-search-service
+        - application: testnav-dolly-search-service
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io

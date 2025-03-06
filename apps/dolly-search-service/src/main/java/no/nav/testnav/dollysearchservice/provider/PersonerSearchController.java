@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.Kategori;
-import no.nav.testnav.dollysearchservice.service.OpenSearchService;
+import no.nav.testnav.dollysearchservice.service.PersonerSearchService;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
 import no.nav.testnav.libs.data.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.data.dollysearchservice.v1.SearchResponse;
@@ -20,24 +20,24 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/opensearch")
+@RequestMapping("/api/v1/personer")
 @RequiredArgsConstructor
-public class OpensearchController {
+public class PersonerSearchController {
 
-    private final OpenSearchService openSearchService;
+    private final PersonerSearchService personerSearchService;
 
     @PostMapping
     @Operation(description = "Henter Dolly-personer som matcher både søk i registre og søk av persondetaljer i PDL")
     public Mono<SearchResponse> getPersoner(@RequestParam(required = false) List<ElasticTyper> registreRequest,
                                             @RequestBody SearchRequest request) {
 
-        return openSearchService.search(request, registreRequest);
+        return personerSearchService.search(request, registreRequest);
     }
 
     @GetMapping("/typer")
     @Operation(description = "Henter alle søketyper mot registre")
     public List<Kategori> getKategorier() {
 
-        return openSearchService.getTyper();
+        return personerSearchService.getTyper();
     }
 }

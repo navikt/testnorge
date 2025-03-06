@@ -57,7 +57,7 @@ class SyntVedtakshistorikkConsumerTest {
     }
 
     private void stubHistorikkResponse() {
-        stubFor(post(urlPathMatching("(.*)/synt/api/v1/vedtakshistorikk"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/vedtakshistorikk"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/synt/historikk.json")))
@@ -73,7 +73,7 @@ class SyntVedtakshistorikkConsumerTest {
     }
 
     private void stubErrorResponse() {
-        stubFor(post(urlPathMatching("(.*)/synt/api/v1/vedtakshistorikk"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/vedtakshistorikk"))
                 .willReturn(aResponse().withStatus(500))
         );
     }

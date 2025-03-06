@@ -69,19 +69,19 @@ class ArenaForvalterConsumerTest {
     }
 
     private void stubHentBrukere() {
-        stubFor(get(urlEqualTo("/arena/api/v1/bruker"))
+        stubFor(get(urlEqualTo("/api/v1/bruker"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/arena_brukere_page_0.json"))
                 )
         );
-        stubFor(get(urlEqualTo("/arena/api/v1/bruker?page=0"))
+        stubFor(get(urlEqualTo("/api/v1/bruker?page=0"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/arena_brukere_page_0.json"))
                 )
         );
-        stubFor(get(urlEqualTo("/arena/api/v1/bruker?page=1"))
+        stubFor(get(urlEqualTo("/api/v1/bruker?page=1"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/arena_brukere_page_1.json"))
@@ -101,19 +101,19 @@ class ArenaForvalterConsumerTest {
 
 
     private void stubHentBrukereFilter() {
-        stubFor(get(urlEqualTo("/arena/api/v1/bruker?filter-eier=Dolly&filter-miljoe=q2&filter-personident=10101010101"))
+        stubFor(get(urlEqualTo("/api/v1/bruker?filter-eier=Dolly&filter-miljoe=q2&filter-personident=10101010101"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/all_filters_page_0.json"))
                 )
         );
-        stubFor(get(urlEqualTo("/arena/api/v1/bruker?filter-eier=Dolly&filter-miljoe=q2&filter-personident=10101010101&page=0"))
+        stubFor(get(urlEqualTo("/api/v1/bruker?filter-eier=Dolly&filter-miljoe=q2&filter-personident=10101010101&page=0"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/all_filters_page_0.json"))
                 )
         );
-        stubFor(get(urlEqualTo("/arena/api/v1/bruker?filter-eier=Dolly&filter-miljoe=q2&filter-personident=10101010101&page=1"))
+        stubFor(get(urlEqualTo("/api/v1/bruker?filter-eier=Dolly&filter-miljoe=q2&filter-personident=10101010101&page=1"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/all_filters_page_1.json"))
@@ -129,7 +129,7 @@ class ArenaForvalterConsumerTest {
     }
 
     private void stubEmptyResponse() {
-        stubFor(get(urlEqualTo("/arena/api/v1/bruker?filter-miljoe=q2&filter-personident=10101010101"))
+        stubFor(get(urlEqualTo("/api/v1/bruker?filter-miljoe=q2&filter-personident=10101010101"))
                 .willReturn(aResponse().withStatus(400)
                         .withBody("{" +
                                 "\"timestamp\": \"2019-07-03T07:45:19.109+0000\"," +
@@ -174,35 +174,35 @@ class ArenaForvalterConsumerTest {
     }
 
     private void stubArenaForvalterOpprettAapRettighet() {
-        stubFor(post(urlEqualTo("/arena/api/v1/aap"))
+        stubFor(post(urlEqualTo("/api/v1/aap"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/aap/aap_forvalter_response.json"))
                 )
         );
 
-        stubFor(post(urlEqualTo("/arena/api/v1/aap115"))
+        stubFor(post(urlEqualTo("/api/v1/aap115"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/aap/aap115_forvalter_response.json"))
                 )
         );
 
-        stubFor(post(urlEqualTo("/arena/api/v1/aapungufor"))
+        stubFor(post(urlEqualTo("/api/v1/aapungufor"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/aap/ung_ufoer_forvalter_response.json"))
                 )
         );
 
-        stubFor(post(urlEqualTo("/arena/api/v1/aaptvungenforvaltning"))
+        stubFor(post(urlEqualTo("/api/v1/aaptvungenforvaltning"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/aap/tvungen_forvaltning_forvalter_response.json"))
                 )
         );
 
-        stubFor(post(urlEqualTo("/arena/api/v1/aapfritakmeldekort"))
+        stubFor(post(urlEqualTo("/api/v1/aapfritakmeldekort"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/aap/fritak_meldekort_forvalter_response.json"))
@@ -226,7 +226,7 @@ class ArenaForvalterConsumerTest {
     }
 
     private void stubArenaForvalterOpprettTilleggRettighet() {
-        stubFor(post(urlEqualTo("/arena/api/v1/tilleggsstonad"))
+        stubFor(post(urlEqualTo("/api/v1/tilleggsstonad"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/tillegg/tillegg_forvalter_response.json"))
@@ -255,14 +255,14 @@ class ArenaForvalterConsumerTest {
     }
 
     private void stubArenaForvalterOpprettTiltakRettighet() {
-        stubFor(post(urlEqualTo("/arena/api/v1/tiltaksdeltakelse"))
+        stubFor(post(urlEqualTo("/api/v1/tiltaksdeltakelse"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/tiltak/tiltaksdeltakelse_forvalter_response.json"))
                 )
         );
 
-        stubFor(post(urlEqualTo("/arena/api/v1/tiltakspenger"))
+        stubFor(post(urlEqualTo("/api/v1/tiltakspenger"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/arena/tiltak/tiltakspenger_forvalter_response.json"))
