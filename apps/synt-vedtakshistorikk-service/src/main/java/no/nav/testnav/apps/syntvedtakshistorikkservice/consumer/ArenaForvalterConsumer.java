@@ -59,17 +59,11 @@ public class ArenaForvalterConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public NyeBrukereResponse sendBrukereTilArenaForvalter(
-            List<NyBruker> nyeBrukere
-    ) {
-        try {
-            return tokenExchange.exchange(serverProperties)
-                    .flatMap(accessToken -> new PostArenaBrukerCommand(nyeBrukere, accessToken.getTokenValue(), webClient).call())
-                    .block();
-        } catch (Exception e) {
-            log.error("Klarte ikke å sende inn ny(e) bruker(e) til Arena-forvalteren.", e);
-            throw e;
-        }
+    public NyeBrukereResponse sendBrukereTilArenaForvalter(List<NyBruker> nyeBrukere) {
+
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(accessToken -> new PostArenaBrukerCommand(nyeBrukere, accessToken.getTokenValue(), webClient).call())
+                .block();
     }
 
     public void slettBrukerIArenaForvalteren(String ident, String miljoe) {

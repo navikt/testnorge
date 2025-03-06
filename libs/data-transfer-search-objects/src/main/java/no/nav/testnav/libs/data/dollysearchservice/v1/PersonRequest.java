@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
@@ -22,12 +23,15 @@ public class PersonRequest {
     private Integer alderTom;
     private SivilstandDTO.Sivilstand sivilstand;
 
+    @Schema(description = "erLevende eksluderer erDoed, begge kan ikke være satt")
+    private Boolean erLevende;
+    @Schema(description = "erDoed eksluderer erLevende, begge kan ikke være satt")
+    private Boolean erDoed;
     private Boolean harBarn;
     private Boolean harForeldre;
     private Boolean harDoedfoedtBarn;
     private Boolean harForeldreAnsvar;
     private Boolean harVerge;
-    private Boolean harDoedsfall;
     private Boolean harInnflytting;
     private Boolean harUtflytting;
     private Boolean harKontaktinformasjonForDoedsbo;
@@ -38,6 +42,7 @@ public class PersonRequest {
     private Boolean harOpphold;
     @Schema(description = "landkode")
     private String statsborgerskap;
+    private FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus personStatus;
     private Boolean harNyIdentitet;
 
     private AdresseRequest adresse;

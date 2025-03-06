@@ -16,16 +16,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OpenSearchService {
+public class PersonerSearchService {
 
     private static final String NO_IDENT = "9999999999)";
 
     private final BestillingQueryService bestillingQueryService;
     private final MapperFacade mapperFacade;
-    private final PersonQueryService personQueryService;
+    private final OpenSearchQueryService openSearchQueryService;
 
     public Mono<SearchResponse> search(SearchRequest searchRequest, List<ElasticTyper> registreRequest) {
 
@@ -37,8 +39,9 @@ public class OpenSearchService {
         request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);
+        addIdenterQuery(query, request.getIdenter());
 
-        return personQueryService.execQuery(request,query)
+        return openSearchQueryService.execQuery(request, query)
                 .map(response -> mapperFacade.map(response, SearchResponse.class));
     }
 

@@ -30,6 +30,7 @@ spec:
         - application: dolly-frontend-dev
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
+        - application: testnav-synt-vedtakshistorikk-service
     outbound:
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io

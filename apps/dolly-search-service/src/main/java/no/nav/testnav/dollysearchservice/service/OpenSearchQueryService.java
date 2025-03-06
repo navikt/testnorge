@@ -22,7 +22,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PersonQueryService {
+public class OpenSearchQueryService {
 
     private final OpenSearchConsumer openSearchConsumer;
     private final ObjectMapper objectMapper;

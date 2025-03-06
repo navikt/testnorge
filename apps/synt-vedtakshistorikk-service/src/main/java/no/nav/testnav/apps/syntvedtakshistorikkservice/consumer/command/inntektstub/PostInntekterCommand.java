@@ -2,6 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.inntekt
 
 import lombok.AllArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.inntektstub.Inntektsinformasjon;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,7 +31,8 @@ public class PostInntekterCommand implements Callable<Mono<List<Inntektsinformas
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(inntektsinformasjon)
                 .retrieve()
-                .bodyToMono(RESPONSE_TYPE);
+                .bodyToMono(RESPONSE_TYPE)
+                .doOnError(WebClientFilter::logErrorMessage);
     }
 
 }

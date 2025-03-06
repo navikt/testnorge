@@ -3,8 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class TagsService {
         var identer = new ArrayList<>(personer.stream().map(PersonDTO::getIdent).toList());
         var partnere = personer.stream()
                 .map(PersonDTO::getSivilstand)
-                .map(SivilstandDTO::getRelatertVedSivilstand)
+                .map(PersonDTO.SivilstandDTO::getRelatertVedSivilstand)
                 .filter(Objects::nonNull)
                 .toList();
 

@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Random;
 
 import static java.util.Objects.isNull;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterIdentifier;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseKommunenrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseMatrikkelQuery;
@@ -42,6 +41,8 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addHarUtflyttingQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addIdenttypeQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addKjoennQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addKunLevendePersonerQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addPersonStatusQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addSivilstandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addStatsborgerskapQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addVergemaalQuery;
@@ -54,8 +55,7 @@ public class OpenSearchQueryBuilder {
     public static BoolQueryBuilder buildSearchQuery(SearchRequest request) {
 
         var queryBuilder = QueryBuilders.boolQuery()
-                .must(getRandomScoreQueryBuilder(request))
-                .must(addIdenterIdentifier(request));
+                .must(getRandomScoreQueryBuilder(request));
 
         setPersonQuery(queryBuilder, request);
 
@@ -100,6 +100,8 @@ public class OpenSearchQueryBuilder {
                     addHarNyIdentitetQuery(queryBuilder, request);
                     addKjoennQuery(queryBuilder, request);
                     addIdenttypeQuery(queryBuilder, request);
+                    addPersonStatusQuery(queryBuilder, request);
+                    addKunLevendePersonerQuery(queryBuilder, request);
                 });
     }
 

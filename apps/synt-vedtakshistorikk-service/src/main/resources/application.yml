@@ -12,6 +12,11 @@ spring:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
 
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
 consumers:
   synt-vedtakshistorikk:
     url: http://synthdata-arena-vedtakshistorikk.dolly.svc.cluster.local
@@ -33,11 +38,11 @@ consumers:
     namespace: dolly
     name: testnav-pensjon-testdata-facade-proxy
     url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-  testnav-person-search-service:
+  testnav-dolly-search-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-search-service
-    url: http://testnav-person-search-service.dolly.svc.cluster.local
+    name: testnav-dolly-search-service
+    url: http://testnav-dolly-search-service.dolly.svc.cluster.local
   pdl-api-proxy:
     cluster: dev-fss
     namespace: dolly
