@@ -12,7 +12,6 @@ const GruppeOversikt = lazyWithPreload(() => import('@/pages/gruppeOversikt/Grup
 const Organisasjon = lazyWithPreload(() => import('@/pages/organisasjoner/Organisasjoner'))
 const MinSide = lazyWithPreload(() => import('@/pages/minSide/MinSide'))
 const UI = lazyWithPreload(() => import('@/pages/ui/index'))
-const TestnorgePage = lazyWithPreload(() => import('@/pages/testnorgePage/index'))
 const Endringsmelding = lazyWithPreload(() => import('@/pages/endringsmelding/Endringsmelding'))
 const DollySoekPage = lazyWithPreload(() => import('@/pages/dollySoek/DollySoekPage'))
 const TenorSoekPage = lazyWithPreload(() => import('@/pages/tenorSoek/TenorSoekPage'))
@@ -69,7 +68,7 @@ const allRoutes = [
 	{
 		path: '/tenor/organisasjoner',
 		handle: {
-			crumb: () => 'Søk i Tenor organisasjoner',
+			crumb: () => 'Søk etter organisasjoner i Tenor',
 		},
 		element: OrganisasjonTenorSoekPage,
 	},
@@ -88,18 +87,13 @@ const allRoutes = [
 		element: DollySoekPage,
 	},
 	{
-		path: '/testnorge',
-		handle: { crumb: () => 'Søk i Test-Norge' },
-		element: TestnorgePage,
-	},
-	{
 		path: '/tenor',
 		handle: { crumb: () => 'Tenor' },
 		element: () => <Navigate to="/tenor/personer" replace />,
 	},
 	{
 		path: '/tenor/personer',
-		handle: { crumb: () => 'Søk i Tenor personer' },
+		handle: { crumb: () => 'Søk etter personer i Tenor' },
 		element: TenorSoekPage,
 	},
 	{
