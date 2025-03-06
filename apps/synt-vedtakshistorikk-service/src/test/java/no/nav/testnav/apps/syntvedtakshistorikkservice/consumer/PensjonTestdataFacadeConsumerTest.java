@@ -54,7 +54,7 @@ class PensjonTestdataFacadeConsumerTest {
     }
 
     private void stubOpprettPerson() {
-        stubFor(post(urlPathMatching("(.*)/pensjon/api/v1/person"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/person"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/pensjon/pensjon_response.json")))
@@ -70,7 +70,7 @@ class PensjonTestdataFacadeConsumerTest {
     }
 
     private void stubErrorOpprettPerson() {
-        stubFor(post(urlPathMatching("(.*)/pensjon/api/v1/person"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/person"))
                 .willReturn(aResponse().withStatus(500))
         );
     }
@@ -85,7 +85,7 @@ class PensjonTestdataFacadeConsumerTest {
     }
 
     private void stubOpprettInntekt() {
-        stubFor(post(urlPathMatching("(.*)/pensjon/api/v1/inntekt"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("files/pensjon/pensjon_response.json")))
@@ -102,7 +102,7 @@ class PensjonTestdataFacadeConsumerTest {
     }
 
     private void stubErrorOpprettInntekt() {
-        stubFor(post(urlPathMatching("(.*)/pensjon/api/v1/inntekt"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
                 .willReturn(aResponse().withStatus(500))
         );
     }

@@ -6,20 +6,18 @@ import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchConsumer;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.DollySearchServiceConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.IdentMedKontonr;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.search.AlderSearch;
-import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
-import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonstatusSearch;
-import no.nav.testnav.libs.dto.personsearchservice.v1.search.RelasjonSearch;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonSearch;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -32,13 +30,13 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class IdentService {
 
-    private final PersonSearchConsumer personSearchConsumer;
+    private final DollySearchServiceConsumer dollySearchServiceConsumer;
     private final ArenaForvalterService arenaForvalterService;
     private final PdlProxyConsumer pdlProxyConsumer;
-    private final Random rand = new Random();
+    private final Random RANDOM = new SecureRandom();
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
-    private static final String BOSATT_STATUS = "bosatt";
+    private static final String BOSATT_STATUS = "BOSATT";
     private static final List<IdentMedKontonr> IDENTER_MED_KONTONR;
 
     static {
@@ -64,11 +62,11 @@ public class IdentService {
     ) {
         List<PersonDTO> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
 
-        var randomSeed = rand.nextFloat() + "";
-        var page = 1;
+        var randomSeed = RANDOM.nextInt();
+        var page = 0;
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, maaVaereBosatt ? BOSATT_STATUS : null, null);
-            var response = personSearchConsumer.search(request);
+            var response = dollySearchServiceConsumer.search(request);
 
             var numberOfPages = 0;
             if (nonNull(response)) {
@@ -97,11 +95,11 @@ public class IdentService {
     ) {
         List<PersonDTO> utvalgteIdenter = new ArrayList<>();
 
-        var randomSeed = rand.nextFloat() + "";
-        var page = 1;
+        var randomSeed = RANDOM.nextInt();
+        var page = 0;
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, maaVaereBosatt ? BOSATT_STATUS:  null, true);
-            var response = personSearchConsumer.search(request);
+            var response = dollySearchServiceConsumer.search(request);
 
             var numberOfPages = 0;
             if (nonNull(response)){
@@ -152,7 +150,7 @@ public class IdentService {
     }
 
     public Kontoinfo getIdentMedKontoinformasjon() {
-        var ident = IDENTER_MED_KONTONR.get(rand.nextInt(IDENTER_MED_KONTONR.size()));
+        var ident = IDENTER_MED_KONTONR.get(RANDOM.nextInt(IDENTER_MED_KONTONR.size()));
         var pdlPerson = pdlProxyConsumer.getPdlPerson(ident.getIdent());
         if (isNull(pdlPerson) || isNull(pdlPerson.getData())) return null;
         var navnInfo = pdlPerson.getData().getHentPerson().getNavn();
@@ -178,7 +176,7 @@ public class IdentService {
     }
 
     private PersonSearch getSearchRequest(
-            String randomSeed,
+            int randomSeed,
             int page,
             int minimumAlder,
             int maksimumAlder,
@@ -186,31 +184,28 @@ public class IdentService {
             Boolean harBarn
     ) {
         var request = PersonSearch.builder()
-                .tag("TESTNORGE")
-                .excludeTags(Arrays.asList("DOLLY", "ARENASYNT"))
                 .kunLevende(true)
                 .randomSeed(randomSeed)
                 .page(page)
                 .pageSize(PAGE_SIZE)
-                .alder(AlderSearch.builder()
-                        .fra((short) minimumAlder)
-                        .til((short) maksimumAlder)
+                .alder(PersonSearch.AlderSearch.builder()
+                        .fra(minimumAlder)
+                        .til(maksimumAlder)
                         .build())
                 .build();
 
         if (nonNull(personstatus) && !personstatus.isEmpty()) {
-            request.setPersonstatus(PersonstatusSearch.builder()
+            request.setPersonstatus(PersonSearch.PersonstatusSearch.builder()
                     .status(personstatus)
                     .build());
         }
 
         if (nonNull(harBarn) && Boolean.TRUE.equals(harBarn)) {
-            request.setRelasjoner(RelasjonSearch.builder()
-                    .harBarn("Y")
+            request.setRelasjoner(PersonSearch.RelasjonSearch.builder()
+                    .harBarn(true)
                     .build());
         }
 
         return request;
-
     }
 }

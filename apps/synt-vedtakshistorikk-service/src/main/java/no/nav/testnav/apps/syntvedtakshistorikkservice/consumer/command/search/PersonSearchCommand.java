@@ -2,9 +2,9 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.search;
 
 import lombok.AllArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.search.PersonSearchResponse;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonSearch;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,7 +32,7 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
     public Mono<PersonSearchResponse> call() {
         return webClient.post()
                 .uri(builder ->
-                        builder.path("/api/v1/person")
+                        builder.path("/api/v1/legacy")
                                 .build()
                 )
                 .header(AUTHORIZATION, "Bearer " + token)
@@ -44,7 +44,9 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
                     var numberOfItems = headers != null && !headers.isEmpty() ? headers.get(0) : "0";
                     return Mono.just(new PersonSearchResponse(Integer.parseInt(numberOfItems), entity.getBody()));
                 })
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(error -> Mono.empty());
     }
 }
