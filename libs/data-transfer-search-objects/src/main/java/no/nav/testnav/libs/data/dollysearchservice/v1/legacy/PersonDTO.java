@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.data.dollysearchservice.v1;
+package no.nav.testnav.libs.data.dollysearchservice.v1.legacy;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

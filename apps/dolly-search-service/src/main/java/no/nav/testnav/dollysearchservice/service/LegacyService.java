@@ -5,9 +5,9 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
-import no.nav.testnav.libs.data.dollysearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.data.dollysearchservice.v1.PersonRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.PersonSearch;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonSearch;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -26,6 +26,9 @@ public class LegacyService {
     public Flux<PersonDTO> searchPersoner(PersonSearch personSearch) {
 
         var personRequest = SearchRequest.builder()
+                .seed(personSearch.getRandomSeed())
+                .side(personSearch.getPage())
+                .antall(personSearch.getPageSize())
                 .personRequest(mapperFacade.map(personSearch, PersonRequest.class))
                 .build();
 

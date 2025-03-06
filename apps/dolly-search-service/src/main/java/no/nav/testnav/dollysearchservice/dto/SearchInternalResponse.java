@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -21,4 +24,12 @@ public class SearchInternalResponse {
     private Integer seed;
     private List<JsonNode> personer;
     private String error;
+
+    public List<JsonNode> getPersoner() {
+
+        if (isNull(personer)) {
+            return new ArrayList<>();
+        }
+        return personer;
+    }
 }

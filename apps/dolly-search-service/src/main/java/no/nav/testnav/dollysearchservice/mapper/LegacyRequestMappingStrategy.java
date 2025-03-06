@@ -4,7 +4,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.libs.data.dollysearchservice.v1.PersonRequest;
-import no.nav.testnav.libs.data.dollysearchservice.v1.PersonSearch;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonSearch;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class LegacyRequestMappingStrategy implements MappingStrategy {
@@ -27,12 +26,10 @@ public class LegacyRequestMappingStrategy implements MappingStrategy {
                     public void mapAtoB(PersonSearch personSearch, PersonRequest personRequest, MappingContext context) {
 
                         Optional.ofNullable(personSearch.getAlder())
-                                        .ifPresent(alder -> {
-                                            personRequest.setAlderFom(nonNull(alder.getFra()) ?
-                                                    alder.getFra().intValue() : null);
-                                            personRequest.setAlderTom(nonNull(alder.getTil()) ?
-                                                    alder.getTil().intValue() : null);
-                                        });
+                                .ifPresent(alder -> {
+                                    personRequest.setAlderFom(nonNull(alder.getFra()) ? alder.getFra() : null);
+                                    personRequest.setAlderTom(nonNull(alder.getTil()) ? alder.getTil() : null);
+                                });
 
                         Optional.ofNullable(personSearch.getPersonstatus())
                                 .ifPresent(personstatus ->
@@ -46,13 +43,17 @@ public class LegacyRequestMappingStrategy implements MappingStrategy {
 
                         Optional.ofNullable(personSearch.getAdresser())
                                 .ifPresent(adresser ->
-                                    personRequest.setAdresse(PersonRequest.AdresseRequest.builder()
-                                                    .harUtenlandsadresse(isNotBlank(adresser.getHarUtenlandskAdresse()))
-                                                    .harKontaktadresse(isNotBlank(adresser.getHarKontaktadresse()))
-                                                    .harOppholdsadresse(isNotBlank(adresser.getHarOppholdsadresse()))
-                                            .build()));
+                                        personRequest.setAdresse(PersonRequest.AdresseRequest.builder()
+                                                .harUtenlandsadresse(isTrue(adresser.getHarUtenlandskAdresse()))
+                                                .harKontaktadresse(isTrue(adresser.getHarKontaktadresse()))
+                                                .harOppholdsadresse(isTrue(adresser.getHarOppholdsadresse()))
+                                                .build()));
 
                         personRequest.setErLevende(isTrue(personSearch.getKunLevende()));
+
+                        Optional.ofNullable(personSearch.getRelasjoner())
+                                .ifPresent(relasjoner ->
+                                        personRequest.setHarBarn(isTrue(relasjoner.getHarBarn())));
                     }
                 }).register();
     }
