@@ -32,20 +32,12 @@ export const FinnPersonDropdown = () => {
 				<DropdownStyledLink href="/dollysoek">Søk i Dolly</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem
-				route="/testnorge"
-				dataTestId={TestComponentSelectors.BUTTON_HEADER_TESTNORGE}
-				style={{ color: '#212529' }}
-			>
-				<Icon kind="search" fontSize="1.5rem" />
-				<DropdownStyledLink href="/testnorge">Søk i Test-Norge</DropdownStyledLink>
-			</PreloadableActionMenuItem>
-			<PreloadableActionMenuItem
 				route="/tenor/personer"
 				dataTestId={TestComponentSelectors.BUTTON_HEADER_TENOR}
 				style={{ color: '#212529' }}
 			>
 				<Icon kind="search" fontSize="1.5rem" />
-				<DropdownStyledLink href="/tenor/personer/">Søk i Tenor</DropdownStyledLink>
+				<DropdownStyledLink href="/tenor/personer/">Søk i Tenor (Test-Norge)</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem route="/nyansettelser" style={{ color: '#212529' }}>
 				<Icon kind="ansettelse" fontSize="1.5rem" />
