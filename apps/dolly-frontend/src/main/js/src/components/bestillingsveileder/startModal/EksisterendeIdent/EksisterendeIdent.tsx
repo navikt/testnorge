@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Alert, Button, Table, Textarea } from '@navikt/ds-react'
+import { Alert, Button, Table, Textarea, VStack } from '@navikt/ds-react'
 import { usePdlfEksistens } from '@/utils/hooks/usePdlForvalter'
 import Icon from '@/components/ui/icon/Icon'
 import './eksisterendeIdent.less'
@@ -64,23 +64,24 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 					{error.message}
 				</Alert>
 			)}
-
-			<Textarea
-				onChange={(event) => setInput(event.target.value)}
-				value={input}
-				label="Identer"
-				description={
-					<>
-						Skriv inn FNR/DNR/NPID adskilt med mellomrom, komma eller linjeskift.
-						<br />
-						Disse personene kan ikke eksistere i prod, eller finnes i Dolly fra før.
-					</>
-				}
-				autoComplete="off"
-			/>
-
+			<VStack gap="2" style={{ maxHeight: '20vh', marginRight: '20px' }}>
+				<Textarea
+					UNSAFE_autoScrollbar
+					onChange={(event) => setInput(event.target.value)}
+					value={input}
+					label="Identer"
+					description={
+						<>
+							Skriv inn FNR/DNR/NPID adskilt med mellomrom, komma eller linjeskift. Disse personene
+							kan ikke eksistere i prod, eller finnes i Dolly fra før.
+						</>
+					}
+					autoComplete="off"
+				/>
+			</VStack>
 			<div style={{ width: '-webkit-fill-available' }} className="form-actions">
 				<Button
+					style={{ marginRight: '10px' }}
 					type="submit"
 					onClick={onSubmit}
 					variant="primary"
@@ -95,9 +96,8 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 					</Button>
 				)}
 			</div>
-
 			{pdlfEksistens?.length > 0 && (
-				<Table size="medium" zebraStripes style={{ marginBottom: '20px' }}>
+				<Table size="medium" zebraStripes style={{ marginBottom: '20px', marginRight: '20px' }}>
 					<Table.Header>
 						<Table.Row>
 							<Table.HeaderCell scope="col">Ident</Table.HeaderCell>
@@ -120,9 +120,8 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 					</Table.Body>
 				</Table>
 			)}
-
 			{hasInvalidIdentifiers && (
-				<Alert variant="warning">
+				<Alert variant="warning" style={{ width: '100%', marginRight: '20px' }}>
 					Det finnes personer markert som ikke gyldig. Kun gyldige personer blir tatt med.
 				</Alert>
 			)}

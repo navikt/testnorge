@@ -57,7 +57,7 @@ export const PensjonForm = () => {
 				heading="Pensjonsgivende inntekt (POPP)"
 				hasErrors={panelError(pensjonPath) || panelError(pensjonGenererPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath, pensjonGenererPath])}
+				startOpen={erForsteEllerTest(formMethods.watch(), [pensjonPath, pensjonGenererPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				{!alder && (nyBestilling || nyBestillingFraMal) && (

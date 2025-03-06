@@ -4,13 +4,11 @@ import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
 import { AaregForm } from '@/components/fagsystem/aareg/form/Form'
 import { BrregstubForm } from '@/components/fagsystem/brregstub/form/Form'
-import { PdlfForm } from '@/components/fagsystem/pdlf/form/Form'
 import { ArenaForm } from '@/components/fagsystem/arena/form/Form'
 import { InstForm } from '@/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '@/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '@/components/fagsystem/pensjon/form/Form'
 import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
-import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
@@ -26,6 +24,8 @@ import { dokarkivValidation } from '@/components/fagsystem/dokarkiv/form/Dokarki
 import { histarkValidation } from '@/components/fagsystem/histark/form/HistarkValidation'
 import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
 import { ifPresent } from '@/utils/YupValidations'
+import SykdomForm from '@/components/fagsystem/sykdom/form/Form'
+import PdlfForm from '@/components/fagsystem/pdlf/form/Form'
 
 export const DollyIdentValidation = Yup.object({
 	antall: ifPresent(

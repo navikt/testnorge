@@ -10,7 +10,7 @@ import { InstForm } from '@/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '@/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '@/components/fagsystem/pensjon/form/Form'
 import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
-import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
+
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm, tpPath } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import {
@@ -27,7 +27,6 @@ import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { AfpOffentligForm, afpOffentligPath } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 import Loading from '@/components/ui/loading/Loading'
-import { PdlfForm } from '@/components/fagsystem/pdlf/form/Form'
 import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
 import {
 	BestillingsveilederContext,
@@ -39,6 +38,8 @@ import { useGruppeById } from '@/utils/hooks/useGruppe'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
+const SykdomForm = lazy(() => import('@/components/fagsystem/sykdom/form/Form'))
+const PdlfForm = lazy(() => import('@/components/fagsystem/pdlf/form/Form'))
 
 const gruppeNavn = (gruppe: any) => <span style={{ fontWeight: 'bold' }}>{gruppe?.navn}</span>
 
