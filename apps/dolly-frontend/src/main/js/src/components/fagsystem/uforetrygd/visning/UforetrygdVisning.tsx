@@ -11,6 +11,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import styled from 'styled-components'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const BarnetilleggSamlet = styled.div`
 	margin: 0 0 15px 0;
@@ -73,6 +74,12 @@ const DataVisning = ({ data, miljo }) => {
 
 	return (
 		<>
+			{!vedtakUT && (
+				<StyledAlert variant={'warning'} size={'small'}>
+					Kunne ikke hente vedtaksstatus for person. Opprettelse av uføresak har sannsynligvis
+					feilet.
+				</StyledAlert>
+			)}
 			<div className="person-visning_content">
 				<TitleValue title="Vedtaksstatus" value={getSisteOppdatering(vedtakUT?.sisteOppdatering)} />
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />

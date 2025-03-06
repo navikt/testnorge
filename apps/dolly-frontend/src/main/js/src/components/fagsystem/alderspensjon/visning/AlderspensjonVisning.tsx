@@ -9,6 +9,7 @@ import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export const sjekkManglerApData = (apData) => {
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
@@ -25,6 +26,12 @@ const DataVisning = ({ data, miljo }) => {
 
 	return (
 		<>
+			{!vedtakAP && (
+				<StyledAlert variant={'warning'} size={'small'}>
+					Kunne ikke hente vedtaksstatus for person. Opprettelse av alderspensjon har sannsynligvis
+					feilet.
+				</StyledAlert>
+			)}
 			<div className="person-visning_content">
 				<TitleValue
 					title="Vedtaksstatus"
