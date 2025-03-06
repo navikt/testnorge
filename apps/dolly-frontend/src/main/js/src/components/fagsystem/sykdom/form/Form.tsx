@@ -9,7 +9,7 @@ import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner
 
 export const sykdomAttributt = 'sykemelding'
 
-export const SykdomForm = () => {
+const SykdomForm = () => {
 	const formMethods = useFormContext()
 	const detaljertSykemelding = formMethods.watch(`${sykdomAttributt}.detaljertSykemelding`)
 
@@ -54,3 +54,5 @@ export const SykdomForm = () => {
 }
 
 SykdomForm.validation = validation
+
+export default SykdomForm

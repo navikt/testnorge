@@ -15,14 +15,17 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { validation } from '@/components/fagsystem/yrkesskader/form/validation'
 import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { YrkesskadeTypes } from '@/components/fagsystem/yrkesskader/YrkesskaderTypes'
 
 export const yrkesskaderAttributt = 'yrkesskader'
 
 export const YrkesskaderForm = () => {
 	const formMethods = useFormContext()
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const handleChangeTidstype = (value: any, path: string) => {
 		formMethods.setValue(`${path}.tidstype`, value?.value || null)

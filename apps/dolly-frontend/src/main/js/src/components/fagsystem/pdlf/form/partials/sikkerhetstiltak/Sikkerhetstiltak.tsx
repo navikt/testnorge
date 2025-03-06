@@ -13,7 +13,10 @@ import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialSikkerhetstiltak } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface SikkerhetstiltakProps {
@@ -21,7 +24,7 @@ interface SikkerhetstiltakProps {
 }
 
 export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const [randomNavUsers, setRandomNavUsers] = useState([])
 
 	const { navEnheter } = useNavEnheter()

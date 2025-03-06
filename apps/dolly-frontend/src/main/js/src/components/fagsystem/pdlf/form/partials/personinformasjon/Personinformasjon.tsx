@@ -4,7 +4,10 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { Sikkerhetstiltak } from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Telefonnummer } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { Doedsfall } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 import { Statsborgerskap } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
@@ -72,7 +75,9 @@ const panelPaths = [
 ].flat()
 
 export const Personinformasjon = ({ formMethods }) => {
-	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 
 	return (
 		<Vis attributt={panelPaths}>

@@ -9,7 +9,10 @@ import Loading from '@/components/ui/loading/Loading'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { useDokumenterFraMal } from '@/utils/hooks/useDokumenter'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type Skjema = {
 	data: string
@@ -25,7 +28,7 @@ enum Kodeverk {
 }
 
 export const Dokument = ({ path, formMethods, digitalInnsending }) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const malId = opts?.mal?.id
 	const {
 		dokumenter: dokumenterFraMal,

@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useContext, useEffect } from 'react'
+import React, { lazy, Suspense, useContext } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
@@ -10,7 +10,7 @@ import { InstForm } from '@/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '@/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '@/components/fagsystem/pensjon/form/Form'
 import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
-import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
+
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm, tpPath } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import {
@@ -27,48 +27,49 @@ import { FullmaktForm } from '@/components/fagsystem/fullmakt/form/FullmaktForm'
 import { AfpOffentligForm, afpOffentligPath } from '@/components/fagsystem/afpOffentlig/form/Form'
 import { YrkesskaderForm } from '@/components/fagsystem/yrkesskader/form/Form'
 import Loading from '@/components/ui/loading/Loading'
-import { PdlfForm } from '@/components/fagsystem/pdlf/form/Form'
 import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoekerregisteret/form/Form'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { Alert } from '@navikt/ds-react'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
+const SykdomForm = lazy(() => import('@/components/fagsystem/sykdom/form/Form'))
+const PdlfForm = lazy(() => import('@/components/fagsystem/pdlf/form/Form'))
+
+const gruppeNavn = (gruppe: any) => <span style={{ fontWeight: 'bold' }}>{gruppe?.navn}</span>
 
 const Steg2: React.FC = () => {
-	const { getValues, setValue } = useFormContext()
-	const opts: any = useContext(BestillingsveilederContext)
+	const { getValues, watch } = useFormContext()
+	const gruppeId = watch('gruppeId')
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const { gruppe } = useGruppeById(gruppeId)
 
-	const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
+	const getEmptyMessage = (leggTil, importTestnorge) => {
 		if (leggTil) {
 			return 'Du har ikke lagt til flere egenskaper. Vennligst gå tilbake og velg nye egenskaper.'
 		} else if (importTestnorge) {
 			return (
 				<span>
 					Du har ikke lagt til egenskaper. Dolly vil importere valgt Test-Norge person(er) til
-					{gruppe === null && <> gruppe du velger i neste steg.</>}
-					{gruppe !== null && <> gruppen {gruppeNavn(gruppe)}.</>}
+					{gruppeId === null && <> gruppe du velger i første steg.</>}
+					{gruppeId !== null && <> gruppen {gruppeNavn(gruppe)}.</>}
 				</span>
 			)
 		}
 		return 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
 	}
 
-	useEffect(() => {
-		if (opts.gruppe?.id) {
-			setValue('gruppeId', opts.gruppe?.id)
-		}
-	}, [])
-
 	const leggTil = opts.is.leggTil
 	const importTestnorge = opts.is.importTestnorge
-	const gruppe = opts.gruppe
 
 	if (!harAvhukedeAttributter(getValues())) {
-		return <Alert variant={'info'}>{getEmptyMessage(leggTil, importTestnorge, gruppe)}</Alert>
+		return <Alert variant={'info'}>{getEmptyMessage(leggTil, importTestnorge)}</Alert>
 	}
-	const gruppeNavn = (gruppe: any) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
 	return (
 		<div>

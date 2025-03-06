@@ -15,7 +15,8 @@ export default {
 	},
 
 	updateGruppe(gruppeId, data) {
-		return Request.put(Endpoints.gruppeById(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.put(Endpoints.gruppeById(valgtGruppe), data)
 	},
 
 	deleteGruppe(gruppeId) {
@@ -23,11 +24,13 @@ export default {
 	},
 
 	createBestilling(gruppeId, data) {
-		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.post(Endpoints.gruppeBestilling(valgtGruppe), data)
 	},
 
 	createBestillingFraEksisterendeIdenter(gruppeId, data) {
-		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(valgtGruppe), data)
 	},
 
 	updateGruppeLaas(gruppeId, data) {
@@ -60,7 +63,8 @@ export default {
 	},
 
 	createBestillingLeggTilPaaGruppe(gruppeId, data) {
-		return Request.put(Endpoints.leggTilPaaGruppe(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.put(Endpoints.leggTilPaaGruppe(valgtGruppe), data)
 	},
 
 	navigerTilPerson(ident) {
@@ -126,7 +130,8 @@ export default {
 	},
 
 	importerPersonerFraPdl: (gruppeId, request) => {
-		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
+		const valgtGruppe = gruppeId || request.gruppeId
+		return Request.post(Endpoints.gruppeBestillingImportFraPdl(valgtGruppe), request)
 	},
 
 	getAktoerFraPdl(aktoerId, pdlMiljoe) {

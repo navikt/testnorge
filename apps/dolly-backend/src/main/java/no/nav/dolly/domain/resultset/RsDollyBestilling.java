@@ -58,6 +58,7 @@ public class RsDollyBestilling {
     private Set<String> environments;
 
     @Schema(description = "Navn på malbestillling")
+    private String beskrivelse;
     private String malBestillingNavn;
     private PdlPersondata pdldata;
     private RsDigitalKontaktdata krrstub;

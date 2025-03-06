@@ -18,11 +18,10 @@ import { resetPaginering } from '@/ducks/finnPerson'
 import { bottom } from '@popperjs/core'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { ToggleGroup } from '@navikt/ds-react'
-import useBoolean from '@/utils/hooks/useBoolean'
-import { OrganisasjonBestillingsveilederModal } from '@/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
 import OrganisasjonHeaderConnector from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useReduxSelector } from '@/utils/hooks/useRedux'
+import { useForm } from 'react-hook-form'
 
 enum BestillingType {
 	NY = 'NY',
@@ -38,8 +37,8 @@ export default () => {
 	} = useCurrentBruker()
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
-	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const searchStr = useReduxSelector((state) => state.search)
+	const formMethods = useForm({ mode: 'onBlur' })
 
 	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
@@ -99,7 +98,7 @@ export default () => {
 					<NavButton
 						data-testid={TestComponentSelectors.BUTTON_OPPRETT_ORGANISASJON}
 						variant={'primary'}
-						onClick={visStartBestilling}
+						onClick={() => startBestilling(formMethods.getValues())}
 					>
 						Opprett organisasjon
 					</NavButton>
@@ -125,14 +124,6 @@ export default () => {
 
 					<SearchField placeholder={searchfieldPlaceholderSelector()} setText={undefined} />
 				</div>
-
-				{startBestillingAktiv && (
-					<OrganisasjonBestillingsveilederModal
-						onSubmit={startBestilling}
-						onAvbryt={skjulStartBestilling}
-						brukernavn={brukernavn}
-					/>
-				)}
 
 				{visning === VISNING_ORGANISASJONER &&
 					(isFetching ? (

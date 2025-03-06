@@ -1,13 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useToggle } from 'react-use'
 import { useNavigate } from 'react-router'
-import useBoolean from '@/utils/hooks/useBoolean'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { ImportPerson } from '@/pages/testnorgePage/search/SearchView'
 import { DollyApi } from '@/service/Api'
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { MalValg } from '@/pages/testnorgePage/search/importModal/MalValg'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import './ImportModal.less'
 import { Gruppe } from '@/utils/hooks/useGruppe'
@@ -60,11 +57,7 @@ const partnerSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT
 export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props) => {
 	const navigate = useNavigate()
 
-	const [modalMalIsOpen, openMalModal, closeMalModal] = useBoolean(false)
-	const [malData, setMalData] = useState(null)
-
 	const [importMedPartner, toggleImportMedPartner] = useToggle(false)
-	const [importMedMal, toggleImportMedMal] = useToggle(false)
 
 	const personerValgt = valgtePersoner.length > 0
 
@@ -84,17 +77,17 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 	}
 
 	const handleImport = () => {
-		importer(valgtePersoner, null)
+		importer(valgtePersoner)
 	}
 
-	const importer = (personer: ImportPerson[], mal: any) => {
+	const importer = (personer: ImportPerson[]) => {
 		const partnere = getPartnere(valgtePersoner.map((person) => person.data))
 		if (importMedPartner && partnere?.length > 0) {
 			getPdlPersoner(partnere).then((response: ImportPerson[]) => {
-				importerPersoner(valgtePersoner.concat(response), malData, navigate, gruppe)
+				importerPersoner(valgtePersoner.concat(response), null, navigate, gruppe)
 			})
 		} else {
-			importerPersoner(personer, mal, navigate, gruppe)
+			importerPersoner(personer, null, navigate, gruppe)
 		}
 	}
 
@@ -118,49 +111,17 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 						</Hjelpetekst>
 					</span>
 				)}
-				<div>
-					<FormCheckbox
-						id="import-modal-import-med-mal"
-						checked={importMedMal}
-						onChange={toggleImportMedMal}
-						label="Benytt mal"
-					/>
-				</div>
 
 				<NavButton
 					type={'button'}
 					variant={'primary'}
-					onClick={() => {
-						if (importMedMal) {
-							openMalModal()
-						} else {
-							handleImport()
-						}
-					}}
+					onClick={handleImport}
 					disabled={!personerValgt}
 					title={!personerValgt ? 'Velg personer' : null}
 				>
 					Importer
 				</NavButton>
 			</div>
-
-			<DollyModal isOpen={modalMalIsOpen} closeModal={closeMalModal} width="60%" overflow="auto">
-				<div className="importModal">
-					<div className="importModal importModal-content">
-						<h1>Import med mal</h1>
-					</div>
-					<MalValg valgtMal={(mal: any) => setMalData(mal)} />
-					<div className="importModal-actions">
-						<NavButton
-							type={'button'}
-							onClick={() => importer(valgtePersoner, malData)}
-							variant={'primary'}
-						>
-							Importer
-						</NavButton>
-					</div>
-				</div>
-			</DollyModal>
 		</React.Fragment>
 	)
 }

@@ -14,8 +14,6 @@ public class RsDollyUtvidetBestilling extends RsDollyBestilling {
 
     private Boolean navSyntetiskIdent;
 
-    private String beskrivelse;
-
     @JsonIgnore
     private Boolean ekskluderEksternePersoner;
 }
