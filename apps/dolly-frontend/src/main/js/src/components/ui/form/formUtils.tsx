@@ -87,6 +87,7 @@ const getValgteAttributter = (values) => {
 		'arbeidssoekerregisteret',
 		'arbeidsplassenCV',
 		'pensjonforvalter.inntekt',
+		'pensjonforvalter.generertInntekt',
 		'pensjonforvalter.pensjonsavtale',
 		'pensjonforvalter.tp',
 		'pensjonforvalter.alderspensjon',

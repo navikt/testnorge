@@ -2,7 +2,10 @@ import React, { useContext } from 'react'
 import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	getInitialDoedsfall,
 	getInitialFoedested,
@@ -17,6 +20,7 @@ import {
 	initialVergemaal,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
+import { useFormContext } from 'react-hook-form'
 
 const ignoreKeysTestnorge = [
 	'alder',
@@ -30,11 +34,13 @@ const utvandret = 'utvandretTilLand'
 
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
+	const formMethods = useFormContext()
 	const sm: any = stateModifier(PersoninformasjonPanel.initialValues)
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
-	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
-	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const formGruppeId = formMethods.watch('gruppeId')
+	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
+	const { identer } = useGruppeIdenter(gruppeId)
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 
 	const opprettFraEksisterende = opts.is.opprettFraIdenter

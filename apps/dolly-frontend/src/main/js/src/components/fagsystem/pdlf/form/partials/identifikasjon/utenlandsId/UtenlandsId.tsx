@@ -6,7 +6,10 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { getInitialUtenlandskIdentifikasjonsnummer } from '@/components/fagsystem/pdlf/form/initialValues'
 import React, { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const UtenlandsIdForm = ({ path, idx, identtype, identMaster }) => {
 	return (
@@ -31,7 +34,9 @@ export const UtenlandsIdForm = ({ path, idx, identtype, identMaster }) => {
 }
 
 export const UtenlandsId = () => {
-	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const { identtype, identMaster } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 
 	return (
 		<FormDollyFieldArray

@@ -30,7 +30,10 @@ import { AlertAaregRequired } from '@/components/ui/brukerAlert/AlertAaregRequir
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 
 enum TypeArbeidsgiver {
@@ -81,7 +84,9 @@ export const InntektsmeldingForm = () => {
 			: TypeArbeidsgiver.VIRKSOMHET,
 	)
 
-	const { personFoerLeggTil, leggTilPaaGruppe }: any = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, leggTilPaaGruppe }: any = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)

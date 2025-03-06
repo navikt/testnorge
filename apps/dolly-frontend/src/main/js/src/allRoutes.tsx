@@ -8,9 +8,7 @@ const OrganisasjonTenorSoekPage = lazyWithPreload(
 	() => import('@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'),
 )
 const NyansettelserPage = lazyWithPreload(() => import('@/pages/nyansettelser/NyansettelserPage'))
-const GruppeOversikt = lazyWithPreload(
-	() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'),
-)
+const GruppeOversikt = lazyWithPreload(() => import('@/pages/gruppeOversikt/GruppeOversikt'))
 const Organisasjon = lazyWithPreload(() => import('@/pages/organisasjoner/Organisasjoner'))
 const MinSide = lazyWithPreload(() => import('@/pages/minSide/MinSide'))
 const UI = lazyWithPreload(() => import('@/pages/ui/index'))

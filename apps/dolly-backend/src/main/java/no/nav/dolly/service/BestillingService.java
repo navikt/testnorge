@@ -322,6 +322,7 @@ public class BestillingService {
                 .bruker(bruker)
                 .antallIdenter(request.getIdenter().size())
                 .pdlImport(join(",", request.getIdenter()))
+                .beskrivelse(request.getBeskrivelse())
                 .build());
 
         request.setId(bestilling.getId());

@@ -6,7 +6,7 @@ import { Identifikasjon } from '@/components/fagsystem/pdlf/form/partials/identi
 import { Familierelasjoner } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
 import { useFormContext } from 'react-hook-form'
 
-export const PdlfForm = () => {
+const PdlfForm = () => {
 	const formMethods = useFormContext()
 	return (
 		<>
@@ -20,3 +20,5 @@ export const PdlfForm = () => {
 }
 
 PdlfForm.validation = validation
+
+export default PdlfForm

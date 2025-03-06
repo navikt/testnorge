@@ -9,7 +9,10 @@ import Loading from '@/components/ui/loading/Loading'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
 import { arbeidsgiverToggleValues } from '@/utils/OrgUtils'
 
@@ -66,7 +69,9 @@ export const ArbeidsforholdToggle = ({
 	const aaregData = formMethods.getValues(path)
 
 	//@ts-ignore
-	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 	const tidligereAaregdata = hentAaregEksisterendeData(personFoerLeggTil)
 	const erLaastArbeidsforhold = idx < tidligereAaregdata?.length
 
