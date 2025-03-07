@@ -41,6 +41,14 @@ export const Detaljer = ({
 	const initialValues = _.omit(formMethods.getValues().organisasjon, ['underenheter', 'sektorkode'])
 	const underenheter = formMethods.getValues('organisasjon.underenheter')
 	const sektorkodeErValgt = formMethods.getValues('organisasjon.sektorkode')
+	const superduperlangdnwaiudnjiuadhiuahdiuahdiahdiaushdiushdfijksdzbnjfkhcbnszdjhkfbjhskzebfjszbdefjhszdhjbfawdiuwa =
+		'dwadwad'
+	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+	console.log(
+		'superduperlangdnwaiudnjiuadhiuahdiuahdiahdiaushdiushdfijksdzbnjfkhcbnszdjhkfbjhskzebfjszbdefjhszdhjbfawdiuwa: ',
+		superduperlangdnwaiudnjiuadhiuahdiuahdiahdiaushdiushdfijksdzbnjfkhcbnszdjhkfbjhskzebfjszbdefjhszdhjbfawdiuwa,
+	) //TODO - SLETT MEG
+	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
 
 	const getTypeUnderenhet = () => {
 		return (
@@ -78,6 +86,8 @@ export const Detaljer = ({
 		formMethods.trigger(`${path}`)
 	}
 
+	console.log('path: ', path) //TODO - SLETT MEG
+
 	return (
 		<>
 			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths} flexRow={true}>
@@ -95,17 +105,27 @@ export const Detaljer = ({
 							</ToggleGroup.Item>
 						</StyledToggleGroup>
 					)}
-					<FormSelect
-						name={`${path}.enhetstype`}
-						label="Enhetstype"
-						kodeverk={
-							typeUnderenhet === TypeUnderenhet.JURIDISKENHET
-								? OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
-								: OrganisasjonKodeverk.EnhetstyperVirksomhet
-						}
-						size="xxlarge"
-						isClearable={false}
-					/>
+					{path === 'organisasjon' ? (
+						<FormSelect
+							name={`${path}.enhetstype`}
+							label="Enhetstype"
+							kodeverk={OrganisasjonKodeverk.EnhetstyperJuridiskEnhet}
+							size="xxlarge"
+							isClearable={false}
+						/>
+					) : (
+						<FormSelect
+							name={`${path}.enhetstype`}
+							label="Enhetstype"
+							kodeverk={
+								typeUnderenhet === TypeUnderenhet.JURIDISKENHET
+									? OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
+									: OrganisasjonKodeverk.EnhetstyperVirksomhet
+							}
+							size="xxlarge"
+							isClearable={false}
+						/>
+					)}
 				</div>
 				<FormSelect
 					name={`${path}.naeringskode`}
