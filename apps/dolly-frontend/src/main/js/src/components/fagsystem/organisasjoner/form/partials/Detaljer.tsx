@@ -48,7 +48,6 @@ export const Detaljer = ({
 		'superduperlangdnwaiudnjiuadhiuahdiuahdiahdiaushdiushdfijksdzbnjfkhcbnszdjhkfbjhskzebfjszbdefjhszdhjbfawdiuwa: ',
 		superduperlangdnwaiudnjiuadhiuahdiuahdiahdiaushdiushdfijksdzbnjfkhcbnszdjhkfbjhskzebfjszbdefjhszdhjbfawdiuwa,
 	) //TODO - SLETT MEG
-	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
 
 	const getTypeUnderenhet = () => {
 		return (
