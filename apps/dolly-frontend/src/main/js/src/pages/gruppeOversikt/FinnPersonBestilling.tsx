@@ -201,7 +201,6 @@ const FinnPersonBestilling = () => {
 
 	const handleChange = (tekst: string) => {
 		dispatch(resetFeilmelding())
-		fetchOptions(tekst)
 		setFragment(tekst)
 	}
 
