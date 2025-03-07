@@ -10,11 +10,11 @@ import { SoekTypeValg, VelgSoekTypeToggle } from '@/pages/gruppeOversikt/VelgSoe
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Highlighter from 'react-highlight-words'
 import styled from 'styled-components'
-import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/ducks/finnPerson'
 import { useDispatch, useSelector } from 'react-redux'
+import { identerSearch } from '@/service/services/dollysearch/DollySearch'
 
 type Person = {
 	ident: string
@@ -148,7 +148,7 @@ const FinnPersonBestilling = () => {
 
 		const [pdlfValues, pdlValues, pdlAktoerValues] = (await Promise.allSettled([
 			PdlforvalterApi.soekPersoner(tekst),
-			PersonSearch.searchPdlFragment(tekst),
+			identerSearch(tekst),
 			DollyApi.getAktoerFraPdl(tekst),
 		])) as any
 
