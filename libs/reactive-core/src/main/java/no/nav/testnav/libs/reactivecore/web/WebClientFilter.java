@@ -15,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @UtilityClass
+@Deprecated(forRemoval = true)
 public class WebClientFilter {
 
     public static boolean is5xxException(Throwable throwable) {
