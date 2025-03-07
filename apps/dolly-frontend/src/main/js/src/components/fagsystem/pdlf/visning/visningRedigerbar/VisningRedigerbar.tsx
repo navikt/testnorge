@@ -43,6 +43,7 @@ import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foed
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 import Loading from '@/components/ui/loading/Loading'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -401,7 +402,7 @@ export const VisningRedigerbar = ({
 				{visningModus === Modus.Skriv && (
 					<Form onSubmit={(data) => handleSubmit(data)}>
 						<>
-							{devEnabled && (
+							{(devEnabled || erDollyAdmin()) && (
 								<>
 									<Suspense fallback={<Loading label="Laster komponenter" />}>
 										<DisplayFormState />

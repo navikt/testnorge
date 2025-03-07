@@ -30,6 +30,7 @@ import Steg0 from './steg/steg0/Steg0'
 import Steg1 from './steg/steg1/Steg1'
 import Steg2 from './steg/steg2/Steg2'
 import Steg3 from './steg/steg3/Steg3'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 Steg0.label = 'Velg gruppe/mal'
 Steg1.label = 'Velg egenskaper'
@@ -161,7 +162,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 				<Suspense fallback={<Loading label="Laster komponenter" />}>
 					<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 				</Suspense>
-				{devEnabled && (
+				{(devEnabled || erDollyAdmin()) && (
 					<Suspense fallback={<Loading label="Laster komponenter" />}>
 						<DisplayFormState />
 						<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />

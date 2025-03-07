@@ -12,6 +12,7 @@ import { SamletReskontroinnsyn } from '@/pages/organisasjoner/OrganisasjonTenorS
 import { Tjenestepensjonsavtale } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import Loading from '@/components/ui/loading/Loading'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -209,7 +210,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 								</Accordion.Item>
 							</Accordion>
 						</Form>
-						{devEnabled && (
+						{(devEnabled || erDollyAdmin()) && (
 							<Suspense fallback={<Loading label="Laster komponenter" />}>
 								<DisplayFormState />
 							</Suspense>
