@@ -95,17 +95,27 @@ export const Detaljer = ({
 							</ToggleGroup.Item>
 						</StyledToggleGroup>
 					)}
-					<FormSelect
-						name={`${path}.enhetstype`}
-						label="Enhetstype"
-						kodeverk={
-							typeUnderenhet === TypeUnderenhet.JURIDISKENHET
-								? OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
-								: OrganisasjonKodeverk.EnhetstyperVirksomhet
-						}
-						size="xxlarge"
-						isClearable={false}
-					/>
+					{path === 'organisasjon' ? (
+						<FormSelect
+							name={`${path}.enhetstype`}
+							label="Enhetstype"
+							kodeverk={OrganisasjonKodeverk.EnhetstyperJuridiskEnhet}
+							size="xxlarge"
+							isClearable={false}
+						/>
+					) : (
+						<FormSelect
+							name={`${path}.enhetstype`}
+							label="Enhetstype"
+							kodeverk={
+								typeUnderenhet === TypeUnderenhet.JURIDISKENHET
+									? OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
+									: OrganisasjonKodeverk.EnhetstyperVirksomhet
+							}
+							size="xxlarge"
+							isClearable={false}
+						/>
+					)}
 				</div>
 				<FormSelect
 					name={`${path}.naeringskode`}
