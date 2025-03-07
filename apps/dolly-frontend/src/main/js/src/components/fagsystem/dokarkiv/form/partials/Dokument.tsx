@@ -216,7 +216,11 @@ export const Dokument = ({ path, formMethods, digitalInnsending }) => {
 					</>
 				)}
 			</div>
-			<FormCheckbox name={`${path}.ferdigstill`} label="Ferdigstill journalpost" />
+			<FormCheckbox
+				id={`${path}.ferdigstill`}
+				name={`${path}.ferdigstill`}
+				label="Ferdigstill journalpost"
+			/>
 			{digitalInnsending ? <Digitalinnsending path={path} /> : null}
 			<VStack gap="4" style={{ margin: '10px 0 15px 0', width: '100%' }}>
 				<FileUpload.Dropzone
