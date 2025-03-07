@@ -16,6 +16,7 @@ import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjene
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import DisplayFormState from '@/utils/DisplayFormState'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -290,7 +291,7 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 								</Accordion.Item>
 							</Accordion>
 						</Form>
-						{devEnabled && <DisplayFormState />}
+						{(devEnabled || erDollyAdmin()) && <DisplayFormState />}
 					</>
 				</FormProvider>
 			</Soekefelt>
