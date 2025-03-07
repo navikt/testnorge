@@ -26,33 +26,27 @@ public class WebClientFilter {
     }
 
     public static String getMessage(Throwable throwable) {
-
-        if (throwable instanceof WebClientResponseException responseException) {
-            return responseException.getResponseBodyAsString(StandardCharsets.UTF_8);
-
-        } else if (throwable instanceof WebClientRequestException requestException) {
-
-            if (requestException.getCause() instanceof ConnectTimeoutException ||
-                    requestException.getCause() instanceof ReadTimeoutException ||
-                    requestException.getCause() instanceof WriteTimeoutException) {
-
-                return "Mottaker svarer ikke, eller har for lang svartid.";
-
-            } else if (requestException.getCause() instanceof SocketException) {
-
-                return "Forbindelsen er ustabil og mottaker kunne ikke nås.";
-
-            } else {
-
-                return requestException.getCause().toString();
+        switch (throwable) {
+            case WebClientResponseException e -> {
+                return e.getResponseBodyAsString(StandardCharsets.UTF_8);
             }
-
-        } else if (throwable instanceof TimeoutException) {
-
-            return "Mottaker svarer ikke, eller har for lang svartid.";
-
-        } else {
-            return throwable.getMessage();
+            case WebClientRequestException e -> {
+                if (e.getCause() instanceof ConnectTimeoutException ||
+                        e.getCause() instanceof ReadTimeoutException ||
+                        e.getCause() instanceof WriteTimeoutException) {
+                    return "Mottaker svarer ikke, eller har for lang svartid.";
+                } else if (e.getCause() instanceof SocketException) {
+                    return "Forbindelsen er ustabil og mottaker kunne ikke nås.";
+                } else {
+                    return e.getCause().toString();
+                }
+            }
+            case TimeoutException ignored -> {
+                return "Mottaker svarer ikke, eller har for lang svartid.";
+            }
+            default -> {
+                return throwable.getMessage();
+            }
         }
     }
 
@@ -70,10 +64,13 @@ public class WebClientFilter {
     }
 
     public static void logErrorMessage(Throwable throwable) {
-
         if ((throwable instanceof WebClientResponseException webClientResponseException)) {
-            log.error("%s, %s".formatted(throwable.getMessage(),
-                    webClientResponseException.getResponseBodyAsString()), throwable);
+            log.error(
+                    "{}, {}",
+                    throwable.getMessage(),
+                    webClientResponseException.getResponseBodyAsString(),
+                    throwable
+            );
         } else {
             log.error(throwable.getMessage(), throwable);
         }
