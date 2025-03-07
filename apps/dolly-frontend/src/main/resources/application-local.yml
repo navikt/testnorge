@@ -56,8 +56,8 @@ consumers:
     url: https://testnav-organisasjon-service.intern.dev.nav.no
   testnav-miljoer-service:
     url: https://testnav-miljoer-service.intern.dev.nav.no
-  testnav-person-search-service:
-    url: https://testnav-person-search-service.intern.dev.nav.no
+  testnav-dolly-search-service:
+    url: https://testnav-dolly-search-service.intern.dev.nav.no
   testnav-adresse-service:
     url: https://testnav-adresse-service.intern.dev.nav.no
   testnorge-tilbakemelding-api:

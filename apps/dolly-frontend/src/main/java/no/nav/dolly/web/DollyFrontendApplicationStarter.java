@@ -83,7 +83,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavOrganisasjonService()))
                 .route(createRoute(consumers.getTestnavSigrunstubProxy()))
                 .route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter"))
-                .route(createRoute(consumers.getTestnavPersonSearchService()))
+                .route(createRoute(consumers.getTestnavDollySearchService()))
                 .route(createRoute(consumers.getTestnavSkjermingsregisterProxy()))
                 .route(createRoute(consumers.getTestnavDokarkivProxy()))
                 .route(createRoute(consumers.getTestnavArbeidsplassenCVProxy()))

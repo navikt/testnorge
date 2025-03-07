@@ -132,11 +132,11 @@ consumers:
     namespace: dolly
     name: testnav-miljoer-service
     url: http://testnav-miljoer-service.dolly.svc.cluster.local
-  testnav-person-search-service:
+  testnav-dolly-search-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-search-service
-    url: http://testnav-person-search-service.dolly.svc.cluster.local
+    name: testnav-dolly-search-service
+    url: http://testnav-dolly-search-service.dolly.svc.cluster.local
   testnav-person-service:
     cluster: dev-gcp
     namespace: dolly
