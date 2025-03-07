@@ -2,6 +2,8 @@ package no.nav.testnav.libs.reactivecore.web;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
@@ -54,12 +56,25 @@ public class WebClientError {
     }
 
     /**
+     * Log an error. Example use is {@code .doOnError(webClientErrorHandler::log)}.
+     *
+     * @param throwable The error to log.
+     * @return A {@link Mono} that will throw the same error.
+     */
+    public static Mono<Throwable> log(Throwable throwable) {
+        log.error(throwable.getMessage(), throwable);
+        return Mono.error(throwable);
+    }
+
+    /**
      * <p>A custom logging handler, using its stack trace at construction time to log any error handled within a {@link org.springframework.web.reactive.function.client.WebClient} spec.</p>
      * <p>That means, use the constructor outside the {@link org.springframework.web.reactive.function.client.WebClient} spec itself.</p>
+     * <p>Also, will log using the calling class as the logging class, for log readability.</p>
      */
     public static class Handler {
 
         private final StackTraceElement[] constructorStackTrace;
+        private final Logger actualLogger;
 
         /**
          * Use this constructor outside {@link org.springframework.web.reactive.function.client.WebClient} spec to get a relevant stack trace to this point in code on any errors.
@@ -67,26 +82,29 @@ public class WebClientError {
         public Handler() {
             var currentStackTrace = Thread.currentThread().getStackTrace();
             constructorStackTrace = Arrays.copyOfRange(currentStackTrace, 2, currentStackTrace.length); // Removes the first two elements, which are Thread.getStackTrace and this constructor.
+            actualLogger = LoggerFactory.getLogger(constructorStackTrace[0].getClassName()); // When logging from this handler later on, use the calling class name as the logger name, for better log readability.
         }
 
         /**
          * Handle an error. Example use is {@code .onStatus(HttpStatusCode::isError, webClientErrorHandler::handle)}. Rewrites the stack trace to the point where this {@code Handler} was instantiated.
+         *
          * @param response The response that caused the error.
          * @return A {@link Mono} that will throw a {@link ResponseStatusException} with the status code and reason, with a rewritten stack trace.
          */
         public Mono<Throwable> handle(ClientResponse response) {
             var exception = new ResponseStatusException(response.statusCode());
-            exception.setStackTrace(constructorStackTrace); // Replace the stack trace (which is Reactive only) with the stack trace into our code where this Handler was instantiated.
+            exception.setStackTrace(constructorStackTrace); // Replace the stack trace (if any at all) with the stack trace into our code where this Handler was instantiated.
             return Mono.error(exception);
         }
 
         /**
          * Log an error. Example use is {@code .doOnError(webClientErrorHandler::log)}.
+         *
          * @param throwable The error to log.
          * @return A {@link Mono} that will throw the same error.
          */
         public Mono<Throwable> log(Throwable throwable) {
-            log.error(throwable.getMessage(), throwable);
+            actualLogger.error(throwable.getMessage(), throwable);
             return Mono.error(throwable);
         }
 
