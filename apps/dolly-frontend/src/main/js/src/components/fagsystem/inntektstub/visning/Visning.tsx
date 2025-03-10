@@ -76,12 +76,10 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 			{(inntektsinformasjon: Inntektsinformasjon, index) => {
 				const virksomhetNavn =
 					virksomhetInfo?.[index]?.q1?.organisasjonsnavn ||
-					virksomhetInfo?.[index]?.q2?.organisasjonsnavn ||
-					'Ukjent'
+					virksomhetInfo?.[index]?.q2?.organisasjonsnavn
 				const opplysningspliktigNavn =
 					opplysningspliktigInfo?.[index]?.q1?.organisasjonsnavn ||
-					opplysningspliktigInfo?.[index]?.q2?.organisasjonsnavn ||
-					'Ukjent'
+					opplysningspliktigInfo?.[index]?.q2?.organisasjonsnavn
 				return (
 					<React.Fragment>
 						<div className="person-visning_content">

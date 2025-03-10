@@ -154,8 +154,9 @@ export const useFasteDataOrganisasjon = (orgnummer: string) => {
 	}
 }
 
-export const useOrganisasjonForvalter = (orgnummere: string[]) => {
-	if (!orgnummere || orgnummere.length === 0) {
+export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
+	const filteredOrgnummere = orgnummere.filter((orgnummer) => orgnummer !== undefined)
+	if (!filteredOrgnummere || filteredOrgnummere.length === 0) {
 		return {
 			organisasjoner: [],
 			loading: false,
@@ -163,7 +164,7 @@ export const useOrganisasjonForvalter = (orgnummere: string[]) => {
 		}
 	}
 
-	const urls = orgnummere.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
+	const urls = filteredOrgnummere.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
 
 	const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
 		const validUrls = urls.filter((url) => url !== null) as string[]
