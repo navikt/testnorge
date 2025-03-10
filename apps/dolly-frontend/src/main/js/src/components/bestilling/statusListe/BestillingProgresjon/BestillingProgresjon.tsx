@@ -5,7 +5,7 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Icon from '@/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
-import { useOrganisasjonBestillingStatus } from '@/utils/hooks/useOrganisasjoner'
+import { useOrganisasjonBestillingStatus } from '@/utils/hooks/useDollyOrganisasjoner'
 import { useBestillingById } from '@/utils/hooks/useBestilling'
 import {
 	REGEX_BACKEND_BESTILLINGER,

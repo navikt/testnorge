@@ -25,7 +25,7 @@ import {
 	sjekkManglerPensjonData,
 } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { AaregVisning, sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
-import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
+import { useArbeidsforhold } from '@/utils/hooks/useDollyOrganisasjoner'
 import {
 	useArbeidsplassencvData,
 	useArenaData,

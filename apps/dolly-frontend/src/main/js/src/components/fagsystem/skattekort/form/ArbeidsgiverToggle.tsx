@@ -6,9 +6,9 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import {
 	useDollyFasteDataOrganisasjoner,
+	useDollyOrganisasjoner,
 	useFasteDataOrganisasjon,
-	useOrganisasjoner,
-} from '@/utils/hooks/useOrganisasjoner'
+} from '@/utils/hooks/useDollyOrganisasjoner'
 import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
@@ -37,7 +37,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 		useDollyFasteDataOrganisasjoner(true)
 
 	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
-		useOrganisasjoner(currentBruker?.brukerId)
+		useDollyOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	const organisasjonPath = `${path}.organisasjonsnummer`

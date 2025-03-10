@@ -8,7 +8,10 @@ import { initialArbeidsforholdOrg } from '@/components/fagsystem/aareg/form/init
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ArbeidsforholdForm } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdForm'
 import React from 'react'
-import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import {
+	useDollyFasteDataOrganisasjoner,
+	useDollyOrganisasjoner,
+} from '@/utils/hooks/useDollyOrganisasjoner'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 
@@ -22,7 +25,7 @@ export const AaregForm = () => {
 		useDollyFasteDataOrganisasjoner(true)
 
 	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
-		useOrganisasjoner(currentBruker?.brukerId)
+		useDollyOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	return (

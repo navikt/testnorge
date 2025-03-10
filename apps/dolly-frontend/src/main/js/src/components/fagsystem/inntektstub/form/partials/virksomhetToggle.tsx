@@ -10,9 +10,9 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import {
 	useDollyFasteDataOrganisasjoner,
+	useDollyOrganisasjoner,
 	useFasteDataOrganisasjon,
-	useOrganisasjoner,
-} from '@/utils/hooks/useOrganisasjoner'
+} from '@/utils/hooks/useDollyOrganisasjoner'
 import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import { useBoolean } from 'react-use'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
@@ -36,7 +36,7 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 		useDollyFasteDataOrganisasjoner(true)
 
 	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
-		useOrganisasjoner(currentBruker?.brukerId)
+		useDollyOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	const virksomhetPath = `${path}.virksomhet`

@@ -1,6 +1,10 @@
 import useSWR from 'swr'
 import { fetcher, multiFetcherAareg } from '@/api'
-import { Organisasjon, OrganisasjonFasteData } from '@/service/services/organisasjonforvalter/types'
+import {
+	Organisasjon,
+	OrganisasjonFasteData,
+	OrganisasjonForvalterData,
+} from '@/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
@@ -19,13 +23,18 @@ const getOrganisasjonBestillingerUrl = (brukerId: string) =>
 const getOrganisasjonBestillingStatusUrl = (bestillingId: number | string) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
 
-const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =>
+const getDollyFasteDataOrganisasjonerUrl = (kanHaArbeidsforhold?: boolean) =>
 	`/testnav-organisasjon-faste-data-service/api/v1/organisasjoner?gruppe=DOLLY${
 		typeof kanHaArbeidsforhold === 'boolean' ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
 	}`
 
-const getFasteDataOrganisasjon = (orgnummer: string) =>
+const getFasteDataOrganisasjonUrl = (orgnummer: string) =>
 	orgnummer ? `/testnav-organisasjon-faste-data-service/api/v1/organisasjoner/${orgnummer}` : null
+
+const getOrganisasjonForvalterUrl = (orgnummer: string) =>
+	orgnummer
+		? `/testnav-organisasjon-forvalter/api/v2/organisasjoner/framiljoe?orgnummer=${orgnummer}`
+		: null
 
 const getArbeidsforholdUrl = (miljoer: string[]) => {
 	return miljoer.map((miljoe) => ({
@@ -91,7 +100,7 @@ export type Bestillingsstatus = {
 	stoppet: boolean
 }
 
-export const useOrganisasjoner = (brukerId?: string) => {
+export const useDollyOrganisasjoner = (brukerId?: string) => {
 	if (!brukerId) {
 		return {
 			loading: false,
@@ -113,7 +122,7 @@ export const useOrganisasjoner = (brukerId?: string) => {
 
 export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) => {
 	const { data, isLoading, error } = useSWR<OrganisasjonFasteData[], Error>(
-		getDollyFasteDataOrganisasjoner(kanHaArbeidsforhold),
+		getDollyFasteDataOrganisasjonerUrl(kanHaArbeidsforhold),
 		fetcher,
 		{ fallbackData: fasteDataFallback },
 	)
@@ -127,7 +136,7 @@ export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =
 
 export const useFasteDataOrganisasjon = (orgnummer: string) => {
 	const { data, isLoading, error } = useSWR<OrganisasjonFasteData, Error>(
-		getFasteDataOrganisasjon(orgnummer),
+		getFasteDataOrganisasjonUrl(orgnummer),
 		fetcher,
 	)
 
@@ -140,6 +149,44 @@ export const useFasteDataOrganisasjon = (orgnummer: string) => {
 
 	return {
 		organisasjon: data,
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
+	const filteredOrgnummere = orgnummere.filter((orgnummer) => orgnummer !== undefined)
+	if (!filteredOrgnummere || filteredOrgnummere.length === 0) {
+		return {
+			organisasjoner: [],
+			loading: false,
+			error: new Error('Organisasjonsnummer mangler!'),
+		}
+	}
+
+	const urls = filteredOrgnummere.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
+
+	const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
+		const validUrls = urls.filter((url) => url !== null) as string[]
+
+		if (validUrls.length === 0) return []
+
+		return await Promise.all(
+			validUrls.map((url) =>
+				fetcher(url, { 'Content-Type': 'application/json' }).catch((error) => {
+					throw error
+				}),
+			),
+		)
+	}
+
+	const { data, isLoading, error } = useSWR<OrganisasjonForvalterData[], Error>(
+		urls.length > 0 ? urls : null,
+		fetchAllOrganisasjoner,
+	)
+
+	return {
+		organisasjoner: data || [],
 		loading: isLoading,
 		error: error,
 	}

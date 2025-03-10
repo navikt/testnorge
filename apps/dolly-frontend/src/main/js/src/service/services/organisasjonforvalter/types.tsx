@@ -43,6 +43,37 @@ export type OrganisasjonFasteData = {
 	tags?: string[]
 }
 
+export type OrganisasjonForvalterData = {
+	q1: OrganisasjonForvalterMiljoeData
+	q2: OrganisasjonForvalterMiljoeData
+}
+
+export type OrganisasjonForvalterMiljoeData = {
+	id: number
+	organisasjonsnummer: string
+	enhetstype: string
+	naeringskode: string
+	sektorkode: string
+	formaal: string
+	organisasjonsnavn: string
+	stiftelsesdato: string
+	telefon: string
+	epost: string
+	nettside: string
+	maalform: string
+	adresser: Array<{
+		id: number
+		adressetype: string
+		adresselinjer: string[]
+		postnr: string
+		poststed: string
+		kommunenr: string
+		landkode: string
+		vegadresseId: string
+	}>
+	underenheter: any[]
+}
+
 export type AdresseFasteData = {
 	adresselinje1?: string
 	adresselinje2?: string

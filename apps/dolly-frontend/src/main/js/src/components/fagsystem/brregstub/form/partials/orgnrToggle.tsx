@@ -6,7 +6,10 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { useDollyFasteDataOrganisasjoner, useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import {
+	useDollyFasteDataOrganisasjoner,
+	useDollyOrganisasjoner,
+} from '@/utils/hooks/useDollyOrganisasjoner'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import Loading from '@/components/ui/loading/Loading'
 import { getOrgType } from '@/utils/OrgUtils'
@@ -30,7 +33,7 @@ export const OrgnrToggle = ({
 		useDollyFasteDataOrganisasjoner()
 
 	const { organisasjoner: brukerOrganisasjoner, loading: brukerOrganisasjonerLoading } =
-		useOrganisasjoner(currentBruker?.brukerId)
+		useDollyOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(brukerOrganisasjoner)
 
 	const orgnr = formMethods.watch(`${path}.orgNr`)

@@ -5,7 +5,7 @@ import { validation } from './validation'
 import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { DetaljertSykemelding } from '@/components/fagsystem/sykdom/form/partials/DetaljertSykemelding'
-import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useDollyOrganisasjoner'
 
 export const sykdomAttributt = 'sykemelding'
 
