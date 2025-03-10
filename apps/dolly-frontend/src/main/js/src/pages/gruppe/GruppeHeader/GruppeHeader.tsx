@@ -62,9 +62,6 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 	const deleteGruppe = (id: number) => {
 		dispatch(actions.remove(id))
 	}
-	const getGruppeExcelFil = (id: number) => {
-		dispatch(actions.getGruppeExcelFil(id))
-	}
 
 	const erLaast = gruppe.erLaast
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
@@ -157,12 +154,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 								eksisterendeTags={gruppe.tags}
 							/>
 						)}
-						<EksporterExcel
-							exportId={gruppe.id}
-							filPrefix={gruppe.id}
-							action={getGruppeExcelFil}
-							loading={isFetchingExcel}
-						/>
+						<EksporterExcel gruppeId={gruppe.id} />
 						{!gruppe.erEierAvGruppe && <FavoriteButton groupId={gruppe.id} />}
 					</div>
 				</div>
