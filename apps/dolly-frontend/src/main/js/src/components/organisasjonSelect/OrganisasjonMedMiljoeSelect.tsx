@@ -27,9 +27,9 @@ export const OrganisasjonMedMiljoeSelect = ({
 }: OrgProps) => {
 	const options =
 		miljoeOptions &&
-		miljoeOptions?.Q?.concat(miljoeOptions?.T)?.map((value: { id: string; label: string }) => ({
-			value: value.id,
-			label: value.label,
+		miljoeOptions?.Q?.map((value: { id: string; label: string }) => ({
+			value: value?.id,
+			label: value?.label,
 		}))
 
 	return (
