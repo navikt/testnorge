@@ -7,16 +7,10 @@ import cn from 'classnames'
 import Icon from '@/components/ui/icon/Icon'
 
 type OrgHeaderProps = {
-	antallOrganisasjoner: number
-	getOrgExcelFil: Function
-	isFetchingExcel: boolean
+	antallOrganisasjoner: number | null
 }
 
-const OrganisasjonHeader = ({
-	antallOrganisasjoner,
-	getOrgExcelFil,
-	isFetchingExcel,
-}: OrgHeaderProps) => {
+const OrganisasjonHeader = ({ antallOrganisasjoner }: OrgHeaderProps) => {
 	const {
 		currentBruker: { brukerId, brukernavn },
 	} = useCurrentBruker()
@@ -34,12 +28,7 @@ const OrganisasjonHeader = ({
 					</div>
 					<div className="gruppe-header__border" />
 					<div className="gruppe-header__actions">
-						<EksporterExcel
-							exportId={brukerId}
-							filPrefix={'org'}
-							action={getOrgExcelFil}
-							loading={isFetchingExcel}
-						/>
+						<EksporterExcel brukerId={brukerId} />
 					</div>
 				</div>
 			</header>
