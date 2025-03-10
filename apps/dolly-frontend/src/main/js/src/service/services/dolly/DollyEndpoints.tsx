@@ -46,10 +46,6 @@ export default class DollyEndpoints {
 		return `${tagsBase}/gruppe/${gruppeId}`
 	}
 
-	static getTags() {
-		return `${tagsBase}`
-	}
-
 	static getIdentTags(ident) {
 		return `${tagsBase}/ident/${ident}`
 	}
@@ -112,14 +108,6 @@ export default class DollyEndpoints {
 
 	static personoppslagMange(identer) {
 		return `${personoppslagBase}/identer?identer=${arrayToString(identer).replaceAll(' ', '')}`
-	}
-
-	static gruppeExcelFil(gruppeId) {
-		return `${uri}/excel/gruppe/${gruppeId}`
-	}
-
-	static orgExcelFil(brukerId) {
-		return `${uri}/excel/organisasjoner?brukerId=${brukerId}`
 	}
 
 	//TESTPERSON-CONTROLLER

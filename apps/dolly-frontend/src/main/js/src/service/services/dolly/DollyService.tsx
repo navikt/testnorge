@@ -6,10 +6,6 @@ export default {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},
 
-	getGruppeByUserId(userId) {
-		return Request.get(Endpoints.gruppeByUser(userId))
-	},
-
 	createGruppe(data) {
 		return Request.post(Endpoints.gruppe(), data)
 	},
@@ -52,10 +48,6 @@ export default {
 
 	updateIdentIbruk(ident, ibruk) {
 		return Request.put(Endpoints.identIbruk(ident, ibruk))
-	},
-
-	createRelasjon(ident, data) {
-		return Request.put(Endpoints.kobleIdenter(ident), data)
 	},
 
 	createBestillingLeggTilPaaPerson(ident, data) {
@@ -101,10 +93,6 @@ export default {
 		return Request.get(Endpoints.bestillingerFragment(fragment))
 	},
 
-	getBestilling(bestillingId) {
-		return Request.get(Endpoints.bestillingStatus(bestillingId))
-	},
-
 	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	},
@@ -144,10 +132,6 @@ export default {
 		return Request.get(Endpoints.personoppslagMange(identer))
 	},
 
-	getTransaksjonid(system, ident, bestillingsid) {
-		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
-	},
-
 	//* Organisasjoner
 
 	createOrganisasjonBestilling(data) {
@@ -164,15 +148,6 @@ export default {
 
 	getTagsForIdent(ident) {
 		return Request.get(Endpoints.getIdentTags(ident))
-	},
-
-	//* Excel
-	getExcelFil(groupId) {
-		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
-	},
-
-	getOrgExcelFil(brukerId) {
-		return Request.getExcel(Endpoints.orgExcelFil(brukerId))
 	},
 
 	importerRelatertPerson(groupId, ident, master) {
