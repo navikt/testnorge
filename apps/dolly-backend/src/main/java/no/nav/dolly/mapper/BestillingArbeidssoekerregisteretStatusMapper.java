@@ -6,6 +6,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +34,7 @@ public final class BestillingArbeidssoekerregisteretStatusMapper {
                             if (statusIdents.containsKey(decodedStatus)) {
                                 statusIdents.get(decodedStatus).add(progress.getIdent());
                             } else {
-                                statusIdents.put(decodedStatus, Set.of(progress.getIdent()));
+                                statusIdents.put(decodedStatus, new HashSet<>(Set.of(progress.getIdent())));
                             }
                         });
             }
