@@ -121,7 +121,9 @@ export const BVOptions = (
 	}
 
 	if (mal) {
-		bestType = TYPE.NY_BESTILLING_FRA_MAL
+		if (bestType === TYPE.NY_BESTILLING) {
+			bestType = TYPE.NY_BESTILLING_FRA_MAL
+		}
 		initialValues = {
 			...initialValuesBasedOnMal(mal, dollyEnvironments),
 			...initialValues,
