@@ -3,7 +3,7 @@ import * as _ from 'lodash-es'
 import { Adresse, Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'
-import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { useDollyOrganisasjoner } from '@/utils/hooks/useDollyOrganisasjoner'
 import { OrgforvalterApi } from '@/service/Api'
 import { useFormContext } from 'react-hook-form'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
@@ -157,7 +157,7 @@ export const EgneOrganisasjoner = ({
 		}
 	}, [orgnr])
 
-	const { organisasjoner, loading, error } = useOrganisasjoner(currentBruker?.brukerId)
+	const { organisasjoner, loading, error } = useDollyOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
 	const harEgneOrganisasjoner = egneOrganisasjoner && egneOrganisasjoner.length > 0
 	const validEnhetstyper = ['BEDR', 'AAFY']

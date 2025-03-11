@@ -107,7 +107,9 @@ const GruppeOversikt: React.FC = () => {
 					className="page-header flexbox--align-center--justify-start"
 				>
 					<h1>Grupper</h1>
-					<Hjelpetekst placement={bottom}>temp</Hjelpetekst>
+					<Hjelpetekst placement={bottom}>
+						Gruppene inneholder alle personene dine (FNR/DNR/NPID).
+					</Hjelpetekst>
 				</div>
 			</div>
 

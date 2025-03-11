@@ -60,7 +60,9 @@ export const PdlPersonForm = ({
 	initialNyIdent = null,
 	initialEksisterendePerson = null,
 }: PdlPersonValues) => {
-	const { gruppeId } = useParams()
+	const { gruppeId: gruppeIdParam } = useParams()
+	const formGruppeId = formMethods.watch('gruppeId')
+	const gruppeId = formGruppeId || gruppeIdParam
 	const gruppe = useAsync(async () => {
 		return await DollyApi.getGruppeById(gruppeId)
 	}, [])

@@ -23,6 +23,8 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 			.first()
 			.click()
 
+		await page.waitForTimeout(1500)
+
 		await page.route('**/tags', async (route) => {
 			await route.fulfill({ status: 201 })
 		})
