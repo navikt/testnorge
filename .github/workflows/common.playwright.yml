@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: blob-report-${{ matrix.shardIndex }}
-          path: blob-report
+          path: ${{ inputs.working-directory }}/src/main/js/blob-report
           retention-days: 1
   
   merge-reports:
@@ -57,7 +57,7 @@ jobs:
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: all-blob-reports
+          path: ${{ inputs.working-directory }}/src/main/js/all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
 
@@ -104,4 +104,4 @@ jobs:
           else
             echo "Failed tests: $failed_tests 🔹" >> $GITHUB_STEP_SUMMARY
           fi
-          echo "Se hele rapporten [her](https://cdn.nav.no/tsm/${{ github.repository }}/${{ github.run_number }}/playwright-report/index.html)." >> $GITHUB_STEP_SUMMARY
+          echo "Se hele rapporten [her](https://cdn.nav.no/dolly/${{ github.repository }}/${{ github.run_number }}/playwright-report/index.html)." >> $GITHUB_STEP_SUMMARY
