@@ -83,6 +83,8 @@ const extractBestillingstatusKode = (
 }
 
 function getBestillingTag(data: Bestilling) {
+	if (data?.status?.filter((status) => status.id === 'PDLIMPORT')?.length > 0)
+		return 'Import (Tenor)'
 	if (data?.bestilling?.pdldata?.opprettNyPerson) return 'Ny bestilling'
 	if (data?.opprettetFraId) return 'Gjenopprett bestilling'
 	if (data?.gjenopprettetFraIdent) return 'Gjenopprett person'
