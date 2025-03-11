@@ -1,5 +1,10 @@
 name: dolly-frontend
 
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
 on:
   push:
     paths:
@@ -21,6 +26,10 @@ jobs:
     uses: ./.github/workflows/common.playwright.yml
     with:
       working-directory: "apps/dolly-frontend"
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
