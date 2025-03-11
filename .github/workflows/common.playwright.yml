@@ -9,6 +9,12 @@ on:
     secrets:
       READER_TOKEN:
         required: true
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
 jobs:
   playwright-tests:
     timeout-minutes: 15
