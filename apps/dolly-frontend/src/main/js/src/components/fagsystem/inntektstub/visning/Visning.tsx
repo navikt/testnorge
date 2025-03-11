@@ -84,13 +84,14 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 					<React.Fragment>
 						<div className="person-visning_content">
 							<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
-							<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
-							<TitleValue title="Virksomhet navn" value={virksomhetNavn} />
 							<TitleValue
-								title="Opplysningspliktig (orgnr/id)"
-								value={inntektsinformasjon.opplysningspliktig}
+								title="Virksomhet"
+								value={`${inntektsinformasjon?.virksomhet} - ${virksomhetNavn}`}
 							/>
-							<TitleValue title="Opplysningspliktig navn" value={opplysningspliktigNavn} />
+							<TitleValue
+								title="Opplysningspliktig"
+								value={`${inntektsinformasjon.opplysningspliktig} - ${opplysningspliktigNavn}`}
+							/>
 							<TitleValue
 								title="Rapporteringstidspunkt"
 								value={formatDateTime(inntektsinformasjon.rapporteringsdato)}

@@ -126,7 +126,7 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 						)}
 					</div>
 
-					<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
+					{arbeidsforhold.arbeidsgiver && <Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />}
 
 					<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
 

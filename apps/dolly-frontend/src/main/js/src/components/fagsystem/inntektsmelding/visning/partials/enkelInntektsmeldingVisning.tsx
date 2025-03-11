@@ -74,15 +74,13 @@ export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 									/>
 									<TitleValue title="Ytelse" value={codeToNorskLabel(inntekt.ytelse)} />
 									<TitleValue
-										title="Virksomhet (orgnr)"
-										value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
+										title="Virksomhet"
+										value={`${inntekt.arbeidsgiver?.orgnummer} - ${virksomhetNavn}`}
 									/>
-									<TitleValue title="Virksomhet navn" value={virksomhetNavn} />
 									<TitleValue
-										title="Opplysningspliktig virksomhet"
-										value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
+										title="Opplysningspliktig"
+										value={`${inntekt.arbeidsgiver.virksomhetsnummer} - ${opplysningspliktigNavn}`}
 									/>
-									<TitleValue title="Opplysningspliktig navn" value={opplysningspliktigNavn} />
 									<TitleValue
 										title="Innsendingstidspunkt"
 										value={formatDate(inntekt?.avsendersystem?.innsendingstidspunkt)}
