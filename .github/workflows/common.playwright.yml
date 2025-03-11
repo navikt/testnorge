@@ -85,7 +85,7 @@ jobs:
           source: ${{ inputs.working-directory }}/src/main/js/playwright-report
           destination: /${{ github.repository }}/${{ github.run_number }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+      #          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
 
       - name: Merge to json report
         working-directory: ${{ inputs.working-directory }}/src/main/js
