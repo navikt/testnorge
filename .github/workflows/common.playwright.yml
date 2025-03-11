@@ -64,9 +64,11 @@ jobs:
           merge-multiple: true
 
       - name: Merge into HTML Report
+        working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npx playwright merge-reports --reporter html ./all-blob-reports
 
       - name: Upload HTML report
+        working-directory: ${{ inputs.working-directory }}/src/main/js
         uses: actions/upload-artifact@v4
         with:
           name: html-report--attempt-${{ github.run_attempt }}
@@ -74,6 +76,7 @@ jobs:
           retention-days: 14
 
       - name: Upload HTML report to CDN
+        working-directory: ${{ inputs.working-directory }}/src/main/js
         uses: nais/deploy/actions/cdn-upload/v2@master
         with:
           team: dolly
@@ -83,9 +86,11 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
 
       - name: Merge to json report
+        working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npx playwright merge-reports --reporter json  ./all-blob-reports > playwright-report/report.json
 
       - name: Make fancy GHA Summary
+        working-directory: ${{ inputs.working-directory }}/src/main/js
         run: |
           total_tests=$(jq '.stats.expected + .stats.unexpected' playwright-report/report.json)
           passed_tests=$(jq '.stats.expected' playwright-report/report.json)
