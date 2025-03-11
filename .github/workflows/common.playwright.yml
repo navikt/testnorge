@@ -39,6 +39,7 @@ jobs:
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
+        working-directory: ${{ inputs.working-directory }}/src/main/js
         with:
           name: blob-report-${{ matrix.shardIndex }}
           path: blob-report
@@ -47,6 +48,7 @@ jobs:
   merge-reports:
     if: ${{ !cancelled() }}
     needs: [ playwright-tests ]
+    working-directory: ${{ inputs.working-directory }}/src/main/js
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
