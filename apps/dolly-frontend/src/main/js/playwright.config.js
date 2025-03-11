@@ -18,11 +18,23 @@ export default defineConfig({
 	// One worker on CI to make tests more stable
 	workers: process.env.CI ? 1 : 3,
 
-	reporter: 'html',
-	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+	reporter: [
+		[
+			'html',
+			{
+				attachments: true,
+				outputFolder: 'playwright-report',
+			},
+		],
+	],
+
 	use: {
 		baseURL: 'http://localhost:5678/',
 		trace: 'on-first-retry',
+		screenshot: {
+			mode: 'on',
+			fullPage: true,
+		},
 	},
 
 	/* Configure projects for major browsers */
