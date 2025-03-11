@@ -82,7 +82,7 @@ jobs:
         uses: nais/deploy/actions/cdn-upload/v2@master
         with:
           team: dolly
-          source: playwright-report
+          source: ${{ inputs.working-directory }}/src/main/js/playwright-report
           destination: /${{ github.repository }}/${{ github.run_number }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
