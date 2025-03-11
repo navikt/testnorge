@@ -20,10 +20,9 @@ export default defineConfig({
 
 	reporter: [
 		[
-			'html',
+			process.env.CI ? 'blob' : 'html',
 			{
 				attachments: true,
-				outputFolder: 'playwright-report',
 			},
 		],
 	],
