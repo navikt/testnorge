@@ -15,9 +15,6 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_FULLFOER_BESTILLING).click()
 
-		// TODO: SLETT DENNE, FORCE FAIL AV TEST
-		await page.getByTestId(TestComponentSelectors.BUTTON_MINSIDE_ENDRE_MALNAVN).click()
-
 		// Testing av tags
 		await page.goto('gruppe')
 		await page
