@@ -36,9 +36,9 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 10
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
@@ -48,9 +48,9 @@ spec:
       runtime: java
   readiness:
     path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 10
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   prometheus:
     enabled: true
     path: /internal/metrics
