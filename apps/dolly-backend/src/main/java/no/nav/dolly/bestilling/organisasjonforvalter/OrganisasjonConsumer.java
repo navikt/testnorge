@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.command.GetOrganisasjonComm
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.*;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -15,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
@@ -88,10 +87,10 @@ public class OrganisasjonConsumer {
 
     @Timed(name = "providers", tags = {"operation", "organisasjon-opprett"})
     public ResponseEntity<BestillingResponse> postOrganisasjon(BestillingRequest bestillingRequest) {
-
         var navCallId = getNavCallId();
         log.info("Organisasjon oppretting sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
-        return tokenService.exchange(serverProperties)
+        return tokenService
+                .exchange(serverProperties)
                 .flatMap(token -> webClient
                         .post()
                         .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_FORVALTER_URL).build())
@@ -102,8 +101,7 @@ public class OrganisasjonConsumer {
                         .bodyValue(bestillingRequest)
                         .retrieve()
                         .toEntity(BestillingResponse.class)
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException)))
+                        .retryWhen(WebClientError.is5xxException()))
                 .block();
     }
 
@@ -116,8 +114,8 @@ public class OrganisasjonConsumer {
     }
 
     private ResponseEntity<DeployResponse> sendDeployOrganisasjonRequest(DeployRequest deployRequest, String callId) {
-
-        return tokenService.exchange(serverProperties)
+        return tokenService
+                .exchange(serverProperties)
                 .flatMap(token -> webClient
                         .post()
                         .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_DEPLOYMENT_URL).build())
@@ -128,8 +126,7 @@ public class OrganisasjonConsumer {
                         .bodyValue(deployRequest)
                         .retrieve()
                         .toEntity(DeployResponse.class)
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException)))
+                        .retryWhen(WebClientError.is5xxException()))
                 .block();
     }
 

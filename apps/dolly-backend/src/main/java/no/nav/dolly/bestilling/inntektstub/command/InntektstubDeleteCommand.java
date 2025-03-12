@@ -1,14 +1,13 @@
 package no.nav.dolly.bestilling.inntektstub.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -25,8 +24,8 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
     private final String token;
 
     public Flux<String> call() {
-
-        return webClient.delete()
+        return webClient
+                .delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(DELETE_INNTEKTER_URL)
                         .queryParam(NORSKE_IDENTER_QUERY, identer)
@@ -37,7 +36,7 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
                 .bodyToFlux(Void.class)
                 .map(respons -> "")
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

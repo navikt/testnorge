@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -32,7 +31,8 @@ public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
         body.add("file", histarkRequest.getFile());
         body.add("metadata", histarkRequest.getMetadata().toString());
 
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(builder ->
                         builder.path("/api/saksmapper/import") // requestParam metadata er overflødig
                                 .build())
@@ -46,12 +46,13 @@ public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
                     return response;
                 })
                 .doOnNext(response -> log.info("Responsebody fra histark: {}", response))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(throwable -> Mono.just(HistarkResponse.builder()
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))
                         .build()));
+
     }
+
 }

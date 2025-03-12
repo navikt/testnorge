@@ -3,19 +3,16 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -29,11 +26,10 @@ public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterRes
     private final String miljoe;
     private final String token;
 
+    @Override
     public Mono<PensjonforvalterResponse> call() {
-
         var callId = generateCallId();
         log.info("Pensjon samboer annuller periodeId {}, callId: {}", periodeId, callId);
-
         return webClient
                 .put()
                 .uri(uriBuilder -> uriBuilder
@@ -46,8 +42,7 @@ public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterRes
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, periodeId, HttpStatus.valueOf(response.getStatusCode().value())))
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, periodeId, error)));
     }
 

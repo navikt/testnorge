@@ -2,13 +2,12 @@ package no.nav.skattekortservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.skattekortservice.dto.SokosRequest;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -25,7 +24,6 @@ public class SokosPostCommand implements Callable<Mono<String>> {
 
     @Override
     public Mono<String> call() {
-
         return webClient
                 .post()
                 .uri(SOKOS_URL)
@@ -35,7 +33,7 @@ public class SokosPostCommand implements Callable<Mono<String>> {
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

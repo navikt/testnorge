@@ -2,13 +2,12 @@ package no.nav.dolly.consumer.norg2.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -22,8 +21,9 @@ public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
 
     @Override
     public Mono<Norg2EnhetResponse> call() {
-
-        return webClient.get().uri(uriBuilder -> uriBuilder
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
                         .path(NAVKONTOR_URL)
                         .build(geografiskOmraade))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -34,7 +34,7 @@ public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
                         .httpStatus(WebClientFilter.getStatus(error))
                         .avvik(WebClientFilter.getMessage(error))
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

@@ -2,8 +2,8 @@ package no.nav.testnav.libs.commands;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 public class GetHelsepersonellCommand implements Callable<HelsepersonellListeDTO> {
+
     private final WebClient webClient;
     private final String accessToken;
 
@@ -26,8 +27,8 @@ public class GetHelsepersonellCommand implements Callable<HelsepersonellListeDTO
                 .retrieve()
                 .bodyToMono(HelsepersonellListeDTO.class)
                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .block();
     }
+
 }

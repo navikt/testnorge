@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
@@ -24,8 +23,7 @@ public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRes
 
     private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidstaker/arbeidsforhold";
     private static final String ARBEIDSFORHOLD_TYPE = "arbeidsforholdtype";
-    private static final String ARBEIDSFORHOLD_AVAIL =
-            "forenkletOppgjoersordning, " +
+    private static final String ARBEIDSFORHOLD_AVAIL = "forenkletOppgjoersordning, " +
             "frilanserOppdragstakerHonorarPersonerMm, " +
             "maritimtArbeidsforhold, " +
             "ordinaertArbeidsforhold";
@@ -58,7 +56,7 @@ public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRes
                         .miljo(miljoe)
                         .error(error)
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

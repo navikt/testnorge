@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdldata.command;
 import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClientRequest;
-import reactor.util.retry.Retry;
 
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
@@ -32,7 +32,6 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
     private final String token;
 
     public Flux<PdlResponse> call() {
-
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
@@ -53,12 +52,12 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
                         .build())
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on POST of ident %s".formatted(ident)))
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Flux.just(PdlResponse.builder()
                         .ident(ident)
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))
                         .build()));
     }
+
 }

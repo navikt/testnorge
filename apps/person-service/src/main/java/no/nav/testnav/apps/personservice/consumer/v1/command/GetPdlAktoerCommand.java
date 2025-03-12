@@ -1,24 +1,20 @@
 package no.nav.testnav.apps.personservice.consumer.v1.command;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personservice.consumer.v1.header.PdlHeaders;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlAktoer;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Request;
-import no.nav.testnav.apps.personservice.consumer.v1.header.PdlHeaders;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -61,7 +57,8 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
 
         return webClient
                 .post()
-                .uri(uriBuilder -> uriBuilder.path(url)
+                .uri(uriBuilder -> uriBuilder
+                        .path(url)
                         .path("/graphql")
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
@@ -71,7 +68,8 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .retrieve()
                 .bodyToMono(PdlAktoer.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
+
     }
+
 }

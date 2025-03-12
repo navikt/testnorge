@@ -3,15 +3,14 @@ package no.nav.dolly.bestilling.instdata.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -30,8 +29,8 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
 
     @Override
     public Mono<InstdataResponse> call() {
-
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(INSTDATA_URL)
                         .queryParam(ENVIRONMENTS, miljoe)
@@ -55,7 +54,7 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                         .feilmelding(WebClientFilter.getMessage(error))
                         .environments(List.of(miljoe))
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

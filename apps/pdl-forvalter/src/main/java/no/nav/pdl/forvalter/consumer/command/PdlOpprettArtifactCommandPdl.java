@@ -1,10 +1,10 @@
 package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,13 +12,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 
-@Slf4j
 @RequiredArgsConstructor
 public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
 
@@ -31,7 +27,6 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
 
     @Override
     public Flux<OrdreResponseDTO.HendelseDTO> call() {
-
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).build())
@@ -47,9 +42,9 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                         .status(PdlStatus.OK)
                         .hendelseId(response.getHendelseId())
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(errorHandling(error, id)));
     }
+
 }

@@ -3,13 +3,11 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pdl.GraphQLRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -42,8 +40,7 @@ public class GetPdlPersonerCommand implements Callable<Mono<PdlPersonBolk>> {
                         .fromValue(new GraphQLRequest(query, Map.of("identer", identer))))
                 .retrieve()
                 .bodyToMono(PdlPersonBolk.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
-
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

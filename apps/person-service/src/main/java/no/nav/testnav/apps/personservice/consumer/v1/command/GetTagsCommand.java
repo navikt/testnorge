@@ -3,14 +3,12 @@ package no.nav.testnav.apps.personservice.consumer.v1.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.v1.header.PdlHeaders;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -27,7 +25,6 @@ public class GetTagsCommand implements Callable<Set<String>> {
     @Override
     public Set<String> call() {
         log.info("Henter tags for ident {}", ident);
-
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/bestilling/tags").build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -35,8 +32,8 @@ public class GetTagsCommand implements Callable<Set<String>> {
                 .header(PdlHeaders.NAV_PERSONIDENT, ident)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .block();
     }
+
 }

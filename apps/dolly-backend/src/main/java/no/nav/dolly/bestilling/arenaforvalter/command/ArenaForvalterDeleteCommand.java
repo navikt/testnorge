@@ -2,23 +2,20 @@ package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.arenaforvalter.dto.InaktiverResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
@@ -35,8 +32,9 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
 
     @Override
     public Mono<InaktiverResponse> call() {
-
-        return webClient.delete().uri(
+        return webClient
+                .delete()
+                .uri(
                         uriBuilder -> uriBuilder
                                 .path(ARENAFORVALTER_BRUKER)
                                 .queryParam("miljoe", environment)
@@ -58,7 +56,7 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

@@ -2,14 +2,13 @@ package no.nav.dolly.bestilling.personservice.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -26,7 +25,6 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
 
     @Override
     public Flux<PdlPersonBolk> call() {
-
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -37,9 +35,9 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
                 .retrieve()
                 .bodyToFlux(PdlPersonBolk.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
     }
+
 }

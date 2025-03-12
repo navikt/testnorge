@@ -3,14 +3,13 @@ package no.nav.dolly.bestilling.kontoregisterservice.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.SlettKontoRequestDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -26,8 +25,8 @@ public class KontoregisterDeleteCommand implements Callable<Mono<KontoregisterRe
 
     @Override
     public Mono<KontoregisterResponseDTO> call() {
-
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(KONTOREGISTER_API_URL)
                         .build())
@@ -44,7 +43,7 @@ public class KontoregisterDeleteCommand implements Callable<Mono<KontoregisterRe
                         .status(WebClientFilter.getStatus(error))
                         .feilmelding(WebClientFilter.getMessage(error))
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

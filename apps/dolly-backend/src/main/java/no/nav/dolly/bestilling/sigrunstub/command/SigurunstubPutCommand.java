@@ -4,13 +4,12 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -33,10 +32,9 @@ public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>>
 
     @Override
     public Mono<SigrunstubResponse> call() {
-
-        return webClient.put().uri(uriBuilder -> uriBuilder
-                        .path(url)
-                        .build())
+        return webClient
+                .put()
+                .uri(uriBuilder -> uriBuilder.path(url).build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
@@ -57,7 +55,7 @@ public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>>
                         .status(WebClientFilter.getStatus(error))
                         .melding(WebClientFilter.getMessage(error))
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

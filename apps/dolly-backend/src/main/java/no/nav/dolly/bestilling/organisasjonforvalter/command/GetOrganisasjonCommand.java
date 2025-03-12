@@ -2,12 +2,11 @@ package no.nav.dolly.bestilling.organisasjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -25,7 +24,6 @@ public class GetOrganisasjonCommand implements Callable<Flux<OrganisasjonDetalje
 
     @Override
     public Flux<OrganisasjonDetaljer> call() {
-
         return webClient
                 .get()
                 .uri(uriBuilder ->
@@ -36,8 +34,8 @@ public class GetOrganisasjonCommand implements Callable<Flux<OrganisasjonDetalje
                 .retrieve()
                 .bodyToFlux(OrganisasjonDetaljer.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Flux.empty());
     }
+
 }

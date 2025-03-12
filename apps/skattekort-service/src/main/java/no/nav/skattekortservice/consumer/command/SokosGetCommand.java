@@ -2,12 +2,11 @@ package no.nav.skattekortservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.skattekortservice.dto.SokosResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -24,7 +23,6 @@ public class SokosGetCommand implements Callable<Flux<SokosResponse>> {
 
     @Override
     public Flux<SokosResponse> call() {
-
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(SOKOS_URL)
@@ -34,7 +32,7 @@ public class SokosGetCommand implements Callable<Flux<SokosResponse>> {
                 .retrieve()
                 .bodyToFlux(SokosResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

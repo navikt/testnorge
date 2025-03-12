@@ -3,12 +3,11 @@ package no.nav.dolly.bestilling.skjermingsregister.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -24,9 +23,9 @@ public class SkjermingsregisterPutCommand implements Callable<Mono<SkjermingData
 
     @Override
     public Mono<SkjermingDataResponse> call() {
-        return webClient.put().uri(uriBuilder -> uriBuilder
-                        .path(SKJERMINGSREGISTER_URL)
-                        .build())
+        return webClient
+                .put()
+                .uri(uriBuilder -> uriBuilder.path(SKJERMINGSREGISTER_URL).build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .bodyValue(skjermingsDataRequest)
                 .retrieve()
@@ -36,7 +35,7 @@ public class SkjermingsregisterPutCommand implements Callable<Mono<SkjermingData
                         .error(WebClientFilter.getMessage(error))
                         .build()))
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

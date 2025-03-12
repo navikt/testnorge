@@ -2,12 +2,11 @@ package no.nav.dolly.elastic.consumer.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -21,15 +20,15 @@ public class ElasticDeleteCommand implements Callable<Mono<JsonNode>> {
 
     @Override
     public Mono<JsonNode> call() {
-
-        return webClient.delete()
+        return webClient
+                .delete()
                 .uri(builder -> builder.path(ELASTIC_SETTINGS_URL)
                         .build(index))
                 .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

@@ -1,21 +1,18 @@
 package no.nav.dolly.bestilling.dokarkiv.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
@@ -29,8 +26,9 @@ public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
 
     @Override
     public Mono<List<String>> call() {
-
-        return webClient.get().uri(
+        return webClient
+                .get()
+                .uri(
                         uriBuilder -> uriBuilder
                                 .path(DOKARKIV_PROXY_ENVIRONMENTS)
                                 .build())
@@ -43,7 +41,7 @@ public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
                 .map(Arrays::asList)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(List.of("q1", "q2", "q4")))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

@@ -2,9 +2,9 @@ package no.nav.dolly.bestilling.pdldata.command;
 
 import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClientRequest;
-import reactor.util.retry.Retry;
 
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
@@ -23,7 +22,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
-@Slf4j
 @RequiredArgsConstructor
 public class PdlDataOppdateringCommand implements Callable<Flux<PdlResponse>> {
 
@@ -35,7 +33,6 @@ public class PdlDataOppdateringCommand implements Callable<Flux<PdlResponse>> {
     private final String token;
 
     public Flux<PdlResponse> call() {
-
         return webClient
                 .put()
                 .uri(PDL_FORVALTER_PERSONER_URL, ident)
@@ -59,7 +56,7 @@ public class PdlDataOppdateringCommand implements Callable<Flux<PdlResponse>> {
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

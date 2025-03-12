@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -31,8 +32,8 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
     private final String token;
     private final PensjonPoppInntektRequest pensjonPoppInntektRequest;
 
+    @Override
     public Flux<PensjonforvalterResponse> call() {
-
         var callId = generateCallId();
         log.info("Popp lagre inntekt {}, callId: {}", pensjonPoppInntektRequest, callId);
         return webClient
@@ -51,8 +52,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error ->
                         Mono.just(PensjonforvalterResponse.builder()
                                 .status(pensjonPoppInntektRequest.getMiljoer().stream()
@@ -70,4 +70,5 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                                         .toList())
                                 .build()));
     }
+
 }

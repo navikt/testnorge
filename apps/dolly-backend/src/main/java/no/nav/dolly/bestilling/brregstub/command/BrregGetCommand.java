@@ -2,14 +2,13 @@ package no.nav.dolly.bestilling.brregstub.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
@@ -26,8 +25,9 @@ public class BrregGetCommand implements Callable<Mono<RolleoversiktTo>> {
 
     @Override
     public Mono<RolleoversiktTo> call() {
-
-        return webClient.get().uri(uriBuilder -> uriBuilder
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
                         .path(ROLLEOVERSIKT_URL).build())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -38,7 +38,7 @@ public class BrregGetCommand implements Callable<Mono<RolleoversiktTo>> {
                         .error(WebClientFilter.getMessage(error))
                         .build()))
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

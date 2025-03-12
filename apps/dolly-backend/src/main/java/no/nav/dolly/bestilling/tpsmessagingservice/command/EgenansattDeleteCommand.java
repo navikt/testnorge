@@ -3,14 +3,13 @@ package no.nav.dolly.bestilling.tpsmessagingservice.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -31,10 +30,9 @@ public class EgenansattDeleteCommand implements Callable<Flux<TpsMeldingResponse
 
     @Override
     public Flux<TpsMeldingResponseDTO> call() {
-
         log.trace("Sender delete request på ident: {} til TPS messaging service", ident);
-
-        return webClient.delete()
+        return webClient
+                .delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(EGENANSATT_URL)
                         .queryParamIfPresent(MILJOER_PARAM, nonNull(miljoer) ? Optional.of(miljoer) : Optional.empty())
@@ -43,11 +41,11 @@ public class EgenansattDeleteCommand implements Callable<Flux<TpsMeldingResponse
                 .retrieve()
                 .bodyToFlux(TpsMeldingResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO.builder()
                         .status("FEIL")
                         .utfyllendeMelding(WebClientFilter.getMessage(throwable))
                         .build()));
     }
+
 }

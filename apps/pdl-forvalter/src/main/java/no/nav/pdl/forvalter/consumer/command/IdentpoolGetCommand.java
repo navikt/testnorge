@@ -1,24 +1,20 @@
 package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.IdentpoolStatusDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
-@Slf4j
 @RequiredArgsConstructor
 public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
 
@@ -32,7 +28,6 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
 
     @Override
     public Mono<IdentpoolStatusDTO> call() {
-
         return webClient
                 .get()
                 .uri(builder -> builder.path(url).build())
@@ -41,8 +36,7 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
                 .header(PERSONIDENTIFIKATOR, ident)
                 .retrieve()
                 .bodyToMono(IdentpoolStatusDTO.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException webClientResponseException) {
@@ -58,7 +52,6 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
     }
 
     protected static String getMessage(Throwable error) {
-
         return error instanceof WebClientResponseException webClientResponseException ?
                 webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
                 error.getMessage();

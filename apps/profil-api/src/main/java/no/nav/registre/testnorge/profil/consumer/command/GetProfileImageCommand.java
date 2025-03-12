@@ -1,18 +1,15 @@
 package no.nav.registre.testnorge.profil.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
-@Slf4j
 @RequiredArgsConstructor
 public class GetProfileImageCommand implements Callable<Mono<byte[]>> {
 
@@ -34,7 +31,7 @@ public class GetProfileImageCommand implements Callable<Mono<byte[]>> {
                 )
                 .bodyToMono(byte[].class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

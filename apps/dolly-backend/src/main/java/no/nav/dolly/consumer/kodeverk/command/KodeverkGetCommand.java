@@ -2,21 +2,17 @@ package no.nav.dolly.consumer.kodeverk.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
-
-    private static final String KODEVERK_URL = "/api/v1/kodeverk";
-    private static final String KODEVERK = "kodeverk";
 
     private final WebClient webClient;
     private final String kodeverk;
@@ -24,10 +20,11 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
 
     @Override
     public Mono<KodeverkDTO> call() {
-
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(KODEVERK_URL)
-                        .queryParam(KODEVERK, kodeverk)
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/api/v1/kodeverk")
+                        .queryParam("kodeverk", kodeverk)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
@@ -38,11 +35,11 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
                 })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(KodeverkDTO.builder()
-                                .kodeverknavn(kodeverk)
-                                .status(WebClientFilter.getStatus(error))
-                                .message(WebClientFilter.getMessage(error))
+                        .kodeverknavn(kodeverk)
+                        .status(WebClientFilter.getStatus(error))
+                        .message(WebClientFilter.getMessage(error))
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

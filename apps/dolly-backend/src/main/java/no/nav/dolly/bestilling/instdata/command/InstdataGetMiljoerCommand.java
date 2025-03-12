@@ -2,14 +2,13 @@ package no.nav.dolly.bestilling.instdata.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.instdata.domain.MiljoerResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -25,8 +24,8 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
 
     @Override
     public Mono<List<String>> call() {
-
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(INSTMILJO_URL)
                         .build())
@@ -37,7 +36,7 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
                 .map(MiljoerResponse::getInstitusjonsoppholdEnvironments)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(List.of("q1", "q2")))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

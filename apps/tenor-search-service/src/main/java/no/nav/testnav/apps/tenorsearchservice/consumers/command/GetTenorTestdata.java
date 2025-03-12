@@ -7,14 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -73,13 +72,13 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                             .build();
                 })
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(TenorResponse.builder()
                         .status(WebClientFilter.getStatus(error))
                         .error(WebClientFilter.getMessage(error))
                         .query(query)
                         .build()));
+
     }
 
     private Integer getAntall(Integer antall, InfoType type) {
