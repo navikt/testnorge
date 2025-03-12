@@ -53,7 +53,7 @@ spec:
     path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   observability:
     logging:
       destinations:
@@ -65,7 +65,7 @@ spec:
     path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -74,10 +74,11 @@ spec:
     max: 2
   resources:
     requests:
-      cpu: 200m
-      memory: 500Mi
+      cpu: 50m
+      memory: 1024Mi
     limits:
-      memory: 2000Mi
+      cpu: 500m
+      memory: 2048Mi
   ingresses:
     - "https://testnav-organisasjon-forvalter.intern.dev.nav.no"
   kafka:

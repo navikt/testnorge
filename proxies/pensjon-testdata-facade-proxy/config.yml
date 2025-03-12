@@ -66,7 +66,7 @@ spec:
     path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   observability:
     logging:
       destinations:
@@ -78,15 +78,16 @@ spec:
     path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   replicas:
     min: 1
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
+      cpu: 100m
       memory: 2048Mi
   envFrom:
     - secret: azure-testnav-pensjon-testdata-facade-proxy-trygdeetaten
