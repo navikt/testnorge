@@ -3,12 +3,10 @@ package no.nav.testnav.apps.apptilganganalyseservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.BlobDTO;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Base64;
 import java.util.concurrent.Callable;
 
@@ -34,8 +32,7 @@ public class GetBlobFromPathAndRefCommand implements Callable<Mono<byte[]>> {
                 )
                 .retrieve()
                 .bodyToMono(BlobDTO.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .map(blob -> Base64.getMimeDecoder().decode(blob.getContent()));
     }
 }
