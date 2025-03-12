@@ -44,11 +44,12 @@ spec:
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
   resources:
-    limits:
-      memory: 2048Mi
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 50m
+      memory: 600Mi
+    limits:
+      cpu: 400m
+      memory: 2048Mi
   image: "{{image}}"
   ingresses:
     - "https://testnav-endringsmelding.intern.dev.nav.no"

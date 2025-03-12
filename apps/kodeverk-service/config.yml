@@ -58,9 +58,10 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 2048Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
+      cpu: 100m
       memory: 2048Mi
   ingresses:
     - "https://testnav-kodeverk-service.intern.dev.nav.no"

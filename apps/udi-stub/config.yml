@@ -52,11 +52,12 @@ spec:
   vault:
     enabled: true
   resources:
-    limits:
-      memory: 2048Mi
     requests:
+      cpu: 20m
+      memory: 800Mi
+    limits:
       cpu: 200m
-      memory: 1024Mi
+      memory: 2048Mi
   ingresses:
     - "https://udi-stub.dev.adeo.no"
     - "https://udi-stub.dev.intern.nav.no" # dev-fss
