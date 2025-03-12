@@ -61,7 +61,7 @@ spec:
           - name: testnav-bruker-service-dev-db
   resources:
     requests:
-      cpu: 20m
+      cpu: 50m
       memory: 800Mi
     limits:
       cpu: 200m
