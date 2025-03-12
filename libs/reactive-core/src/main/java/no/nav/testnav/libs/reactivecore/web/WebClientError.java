@@ -5,10 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.net.SocketException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -20,6 +24,11 @@ import java.util.function.Predicate;
 @UtilityClass
 @Slf4j
 public class WebClientError {
+
+    private static final Predicate<Throwable> IS_5XX = throwable -> throwable instanceof WebClientResponseException webClientResponseException &&
+            webClientResponseException.getStatusCode().is5xxServerError() ||
+            throwable instanceof WebClientRequestException webClientRequestException &&
+                    webClientRequestException.getCause() instanceof SocketException;
 
     /**
      * <p>Returns a {@link Retry} that will retry on the given exception type, for a given number of times, after a given set of seconds.</p>
@@ -55,6 +64,10 @@ public class WebClientError {
         return is(throwable -> true);
     }
 
+    public static Retry is5xxException() {
+        return is(IS_5XX);
+    }
+
     /**
      * Log an error. Example use is {@code .doOnError(webClientErrorHandler::log)}.
      *
@@ -64,6 +77,25 @@ public class WebClientError {
     public static Mono<Throwable> log(Throwable throwable) {
         log.error(throwable.getMessage(), throwable);
         return Mono.error(throwable);
+    }
+
+    /**
+     * Handler intended for use as a {@link WebClient.Builder#defaultStatusHandler}.
+     *
+     * @param response The response.
+     * @return A {@link Mono} that will throw a {@link ResponseStatusException} with the status code and reason.
+     */
+    static Mono<Throwable> handle(ClientResponse response) {
+        var request = response.request();
+        var exception = new ResponseStatusException(
+                response.statusCode(),
+                "Error on %s to %s: %s".formatted(request.getMethod().name(), request.getURI(), response.statusCode())
+        );
+        log.error("CATO: {}", exception.getMessage(), exception);
+        for (var suppressed : exception.getSuppressed()) {
+            log.error("CATO-SUPPRESSED: {}", suppressed.getMessage(), suppressed);
+        }
+        return Mono.error(exception);
     }
 
     /**

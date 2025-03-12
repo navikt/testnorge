@@ -9,6 +9,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ClientRequestObservationConvention;
 import org.springframework.web.reactive.function.client.DefaultClientRequestObservationConvention;
@@ -37,6 +38,7 @@ class WebClientAutoConfiguration {
                     observationRegistry.getClass().getCanonicalName()
             );
             return builder
+                    .defaultStatusHandler(HttpStatusCode::isError, WebClientError::handle)
                     .observationConvention(new DefaultClientRequestObservationConvention())
                     .observationRegistry(observationRegistry)
                     .clientConnector(
