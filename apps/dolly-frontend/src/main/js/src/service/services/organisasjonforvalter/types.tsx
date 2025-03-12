@@ -48,6 +48,17 @@ export type OrganisasjonForvalterData = {
 	q2: OrganisasjonForvalterMiljoeData
 }
 
+export type AdresseOrgForvalter = {
+	id: number
+	adressetype: string
+	adresselinjer: string[]
+	postnr: string
+	poststed: string
+	kommunenr: string
+	landkode: string
+	vegadresseId: string
+}
+
 export type OrganisasjonForvalterMiljoeData = {
 	id: number
 	organisasjonsnummer: string
@@ -61,16 +72,7 @@ export type OrganisasjonForvalterMiljoeData = {
 	epost: string
 	nettside: string
 	maalform: string
-	adresser: Array<{
-		id: number
-		adressetype: string
-		adresselinjer: string[]
-		postnr: string
-		poststed: string
-		kommunenr: string
-		landkode: string
-		vegadresseId: string
-	}>
+	adresser: AdresseOrgForvalter[]
 	underenheter: any[]
 }
 

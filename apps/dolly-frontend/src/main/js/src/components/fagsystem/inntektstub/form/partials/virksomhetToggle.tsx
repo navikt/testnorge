@@ -15,7 +15,6 @@ import {
 } from '@/utils/hooks/useDollyOrganisasjoner'
 import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import { useBoolean } from 'react-use'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { arbeidsgiverToggleValues, getOrgType, handleManualOrgChange } from '@/utils/OrgUtils'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
@@ -62,7 +61,6 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 		formMethods.watch('inntektstub.inntektsinformasjon')?.length,
 	])
 
-	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(virksomhetPath) || null)
@@ -122,7 +120,6 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 					<OrganisasjonMedMiljoeSelect
 						path={`${path}.virksomhet`}
 						parentPath={path}
-						miljoeOptions={aktiveMiljoer}
 						success={success}
 						loading={loading}
 						onTextBlur={(event) => {
@@ -139,20 +136,6 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 								opplysningspliktigPath,
 							)
 						}}
-						onMiljoeChange={(event) => {
-							formMethods.setValue(`${path}.organisasjonMiljoe`, event.value)
-							handleManualOrgChange(
-								orgnummer,
-								event.value,
-								formMethods,
-								virksomhetPath,
-								setLoading,
-								setSuccess,
-								organisasjon,
-								opplysningspliktigPath,
-							)
-						}}
-						formMethods={formMethods}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.privat && (
