@@ -505,6 +505,7 @@ const selectOptions = {
 		{ value: 'INNVILGET', label: 'Innvilget' },
 		{ value: 'AVSLATT', label: 'Avslått' },
 		{ value: 'TRUKKET', label: 'Trukket' },
+		{ value: 'VENTER_PAA_FELLESORDNINGEN', label: 'Venter på fellesordningen' },
 	],
 
 	// PDL vergemaal:
