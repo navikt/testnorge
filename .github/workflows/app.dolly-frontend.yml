@@ -19,6 +19,10 @@ on:
 jobs:
   playwright:
     uses: ./.github/workflows/common.playwright.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
     with:
       working-directory: "apps/dolly-frontend"
     secrets:
@@ -26,6 +30,10 @@ jobs:
 
   workflow:
     uses: ./.github/workflows/common.workflow.frontend.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
     with:
       working-directory: "apps/dolly-frontend"
       deploy-tag: "#deploy-frontend"
