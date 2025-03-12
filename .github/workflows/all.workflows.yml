@@ -42,7 +42,6 @@ permissions:
   id-token: write
 
 jobs:
-
   backend:
     if: inputs.workflow == 'backend'
     uses: ./.github/workflows/common.workflow.backend.yml
