@@ -66,9 +66,10 @@ spec:
     max: 2
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 50m
+      memory: 800Mi
     limits:
+      cpu: 200m
       memory: 2048Mi
   envFrom:
     - secret: google-sql-organisasjon-bestilling-service

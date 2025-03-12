@@ -50,10 +50,10 @@ spec:
       value: dev
   resources:
     requests:
-      cpu: 200m
-      memory: 4000Mi
+      cpu: 100m
+      memory: 1000Mi
     limits:
-      memory: 5000Mi
+      memory: 2000Mi
   accessPolicy:
     inbound:
       rules:

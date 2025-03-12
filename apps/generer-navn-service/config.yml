@@ -71,9 +71,10 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 50m
+      memory: 600Mi
     limits:
+      cpu: 200m
       memory: 2048Mi
   ingresses:
     - "https://generer-navn-service.intern.dev.nav.no"

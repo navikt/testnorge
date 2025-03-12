@@ -54,9 +54,10 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
+      cpu: 100m
       memory: 2048Mi
   envFrom:
     - secret: google-sql-testnav-app-tilgang-analyse-service

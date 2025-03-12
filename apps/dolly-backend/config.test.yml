@@ -109,9 +109,10 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 200m
+      cpu: 100m
       memory: 1024Mi
     limits:
+      CPU: 1000m
       memory: 2048Mi
   gcp:
     sqlInstances:
