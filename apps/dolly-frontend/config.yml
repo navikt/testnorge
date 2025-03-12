@@ -101,10 +101,11 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 500m
+      cpu: 200m
       memory: 1024Mi
     limits:
-      memory: 2048Mi
+      cpu: 1000m
+      memory: 3072Mi
   image: "{{image}}"
   envFrom:
     - secret: idporten-dolly-prod

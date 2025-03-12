@@ -24,7 +24,7 @@ spec:
     path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   observability:
     logging:
       destinations:
@@ -36,7 +36,7 @@ spec:
     path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -50,10 +50,11 @@ spec:
       value: prod
   resources:
     requests:
-      cpu: 200m
-      memory: 4000Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
-      memory: 5000Mi
+      cpu: 200m
+      memory: 2048Mi
   accessPolicy:
     inbound:
       rules:
