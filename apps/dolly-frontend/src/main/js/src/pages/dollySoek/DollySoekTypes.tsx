@@ -10,7 +10,7 @@ export type ResponseIdenter = {
 }
 
 export type SoekRequest = {
-	typer: Array<string>
+	registreRequest: Array<string>
 	personRequest: {
 		sivilstand: string
 		addressebeskyttelse: string

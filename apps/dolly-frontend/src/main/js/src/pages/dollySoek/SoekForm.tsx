@@ -5,7 +5,7 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Accordion, Button } from '@navikt/ds-react'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
-import { useSoekIdenter, useSoekTyper } from '@/utils/hooks/usePersonSoek'
+// import { useSoekIdenter, useSoekTyper } from '@/utils/hooks/usePersonSoek'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import * as _ from 'lodash-es'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -19,9 +19,10 @@ import {
 	SoekKategori,
 } from '@/components/ui/soekForm/SoekForm'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import { usePersonerSearch, usePersonerTyper } from '@/utils/hooks/useDollySearch'
 
 const initialValues = {
-	typer: [],
+	registreRequest: [],
 	personRequest: {
 		identtype: null,
 		kjoenn: null,
@@ -61,9 +62,11 @@ const initialValues = {
 
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null as any)
-	const { result, loading, error, mutate } = useSoekIdenter(request)
+	// const { result, loading, error, mutate } = useSoekIdenter(request)
+	const { result, loading, error, mutate } = usePersonerSearch(request)
 
-	const { typer, loading: loadingTyper } = useSoekTyper()
+	// const { typer, loading: loadingTyper } = useSoekTyper()
+	const { typer, loading: loadingTyper } = usePersonerTyper()
 
 	const personPath = 'personRequest'
 
@@ -103,14 +106,14 @@ export const SoekForm = () => {
 		mutate()
 	}
 
-	const antallFagsystemer = watch('typer')?.length
+	const antallFagsystemer = watch('registreRequest')?.length
 
 	const getAntallRequest = (liste: Array<string>) => {
 		let antall = 0
 		liste.forEach((item) => {
 			watch(`personRequest.${item}`) && antall++
 		})
-		if (liste?.includes('harSkjerming') && watch('typer')?.includes('SKJERMING')) {
+		if (liste?.includes('harSkjerming') && watch('registreRequest')?.includes('SKJERMING')) {
 			antall++
 		}
 		return antall
@@ -132,7 +135,7 @@ export const SoekForm = () => {
 											<Accordion.Content>
 												<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
 													<FormSelect
-														name="typer"
+														name="registreRequest"
 														placeholder={
 															loadingTyper ? 'Laster fagsystemer ...' : 'Velg fagsystemer ...'
 														}
@@ -141,7 +144,7 @@ export const SoekForm = () => {
 														isMulti={true}
 														size="grow"
 														onChange={(val: SyntheticEvent) => {
-															handleChangeList(val, 'typer')
+															handleChangeList(val, 'registreRequest')
 														}}
 													/>
 												</div>
@@ -237,15 +240,17 @@ export const SoekForm = () => {
 													<FormCheckbox
 														name={`${personPath}.harSkjerming`}
 														label="Har skjerming / er egen ansatt"
-														checked={watch('typer')?.includes('SKJERMING')}
+														checked={watch('registreRequest')?.includes('SKJERMING')}
 														onChange={(val: SyntheticEvent) => {
 															setValue(
-																'typer',
+																'registreRequest',
 																val.target.checked
-																	? [...watch('typer'), 'SKJERMING']
-																	: watch('typer')?.filter((item: string) => item !== 'SKJERMING'),
+																	? [...watch('registreRequest'), 'SKJERMING']
+																	: watch('registreRequest')?.filter(
+																			(item: string) => item !== 'SKJERMING',
+																		),
 															)
-															trigger('typer')
+															trigger('registreRequest')
 															const updatedRequest = watch()
 															if (requestIsEmpty(updatedRequest)) {
 																setRequest(null)

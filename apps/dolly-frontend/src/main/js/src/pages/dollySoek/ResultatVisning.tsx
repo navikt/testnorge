@@ -15,15 +15,18 @@ import { runningE2ETest } from '@/service/services/Request'
 import * as _ from 'lodash-es'
 
 export const ResultatVisning = ({ resultat, soekError }) => {
+	console.log('resultat: ', resultat) //TODO - SLETT MEG
 	const identString = resultat?.identer?.join(',')
 	const { pdlfPersoner, loading: loadingPdlf, error: errorPdlf } = usePdlfPersoner(identString)
 	const { pdlPersoner, loading: loadingPdl, error: errorPdl } = usePdlPersonbolk(identString)
 
-	const personer = resultat?.identer?.map((ident) => {
-		const pdlfPerson = pdlfPersoner?.find((p) => p.person?.ident === ident)
-		const pdlPerson = pdlPersoner?.hentPersonBolk?.find((p) => p.ident === ident)
-		return pdlfPerson || pdlPerson
-	})
+	// const personer = resultat?.identer?.map((ident) => {
+	// 	const pdlfPerson = pdlfPersoner?.find((p) => p.person?.ident === ident)
+	// 	const pdlPerson = pdlPersoner?.hentPersonBolk?.find((p) => p.ident === ident)
+	// 	return pdlfPerson || pdlPerson
+	// })
+
+	const personer = resultat?.personer
 
 	if (_.isEmpty(resultat)) {
 		return (
@@ -60,7 +63,9 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			text: 'Ident',
 			width: '20',
 			formatter: (_cell: any, row: any) => {
-				const ident = row.person?.ident || row.ident
+				const ident = row.hentIdenter?.identer?.find(
+					(i) => i.gruppe === 'FOLKEREGISTERIDENT' && !i.historisk,
+				)?.ident
 				return <DollyCopyButton displayText={ident} copyText={ident} tooltipText={'Kopier ident'} />
 			},
 		},
@@ -68,7 +73,8 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			text: 'Navn',
 			width: '35',
 			formatter: (_cell: any, row: any) => {
-				const navn = row.person?.navn?.[0]
+				// const navn = row.person?.navn?.[0]
+				const navn = row.hentPerson?.navn?.find((i) => !i.metatdata?.historisk)
 				if (!navn) {
 					return <>Ukjent</>
 				}
@@ -82,7 +88,8 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			text: 'Kjønn',
 			width: '10',
 			formatter: (_cell: any, row: any) => {
-				const kjoenn = row.person?.kjoenn?.[0]?.kjoenn
+				// const kjoenn = row.person?.kjoenn?.[0]?.kjoenn
+				const kjoenn = row.hentPerson?.kjoenn?.find((i) => !i.metadata?.historisk)?.kjoenn
 				if (kjoenn === 'MANN' || kjoenn === 'GUTT') {
 					return <>Mann</>
 				} else if (kjoenn === 'KVINNE' || kjoenn === 'JENTE') {
@@ -96,24 +103,31 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			text: 'Alder',
 			width: '10',
 			formatter: (_cell: any, row: any) => {
-				if (
-					!row.person?.foedsel?.[0]?.foedselsdato &&
-					!row.person?.foedselsdato?.[0]?.foedselsdato
-				) {
+				const foedselsdato =
+					row.hentPerson?.foedsel?.find((i) => !i.metadata?.historisk)?.foedselsdato ||
+					row.hentPerson?.foedselsdato?.find((i) => !i.metadata?.historisk)?.foedselsdato
+				const doedsdato = row.hentPerson?.doedsfall?.find((i) => !i.metadata?.historisk)?.doedsdato
+				if (!foedselsdato) {
 					return <>Ukjent</>
 				}
-				const alder = getAlder(
-					row.person?.foedselsdato?.[0]?.foedselsdato || row.person?.foedsel?.[0]?.foedselsdato,
-					row.person?.doedsfall?.[0]?.doedsdato,
-				)
-				return <>{formatAlder(alder, row.person?.doedsfall?.[0]?.doedsdato)}</>
+				const alder = getAlder(foedselsdato, doedsdato)
+				return <>{formatAlder(alder, doedsdato)}</>
 			},
 		},
 		{
 			text: 'Gruppe',
 			width: '20',
 			formatter: (_cell: any, row: any) => {
-				return <NavigerTilPerson ident={row.person?.ident || row.ident} />
+				// return <NavigerTilPerson ident={row.person?.ident || row.ident} />
+				return (
+					<NavigerTilPerson
+						ident={
+							row.hentIdenter?.identer?.find(
+								(i) => i.gruppe === 'FOLKEREGISTERIDENT' && !i.historisk,
+							)?.ident
+						}
+					/>
+				)
 			},
 		},
 	]
@@ -127,7 +141,9 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			data={runningE2ETest() ? pdlfPersoner : personer}
 			columns={columns}
 			iconItem={(person) => {
-				const kjoenn = person.person?.kjoenn?.[0]?.kjoenn
+				// console.log('person: ', person) //TODO - SLETT MEG
+				// const kjoenn = person.person?.kjoenn?.[0]?.kjoenn
+				const kjoenn = person.hentPerson?.kjoenn?.find((i) => !i.metadata?.historisk)?.kjoenn
 				if (kjoenn === 'MANN' || kjoenn === 'GUTT') {
 					return <ManIconItem />
 				} else if (kjoenn === 'KVINNE' || kjoenn === 'JENTE') {
