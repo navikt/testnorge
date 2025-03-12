@@ -290,7 +290,8 @@ public class PensjonData {
         public enum AfpPrivatResultat{
             INNVILGET,
             AVSLATT,
-            TRUKKET
+            TRUKKET,
+            VENTER_PAA_FELLESORDNINGEN
         }
 
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
