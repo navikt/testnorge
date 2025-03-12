@@ -1,10 +1,5 @@
 name: dolly-frontend
 
-permissions:
-  contents: read
-  id-token: write
-  packages: write
-
 on:
   push:
     paths:
@@ -21,15 +16,17 @@ on:
       - ".github/workflows/app.dolly-frontend.yml"
       - ".github/workflows/common.playwright.yml"
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   playwright:
     uses: ./.github/workflows/common.playwright.yml
+    permissions:
+      packages: write
     with:
       working-directory: "apps/dolly-frontend"
-    permissions:
-      contents: read
-      id-token: write
-      packages: write
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
@@ -41,7 +38,4 @@ jobs:
       deploy-tag-test: "#deploy-test-frontend"
       deploy-tag-idporten: "#deploy-idporten-frontend"
       deploy-tag-unstable: "#deploy-unstable-frontend"
-    permissions:
-      contents: read
-      id-token: write
     secrets: inherit
