@@ -64,8 +64,8 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
         log.info("Configuring environment for test profile using dummy values");
 
-        // Disabling Secret Manager (not available when running builds on GitHub).
-        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false");
+        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false"); // Disabling Secret Manager (not available when running builds on GitHub).
+        properties.putIfAbsent("spring.main.banner-mode", "off");
 
         // Setting dummy placeholders.
         Stream
