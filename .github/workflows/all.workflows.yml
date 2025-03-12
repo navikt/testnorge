@@ -61,6 +61,8 @@ jobs:
     uses: ./.github/workflows/common.workflow.frontend.yml
     permissions:
       packages: write
+      contents: read
+      id-token: write
 
     with:
       cluster: ${{ inputs.cluster }}

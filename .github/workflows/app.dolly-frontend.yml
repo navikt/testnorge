@@ -16,15 +16,9 @@ on:
       - ".github/workflows/app.dolly-frontend.yml"
       - ".github/workflows/common.playwright.yml"
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
   playwright:
     uses: ./.github/workflows/common.playwright.yml
-    permissions:
-      packages: write
     with:
       working-directory: "apps/dolly-frontend"
     secrets:
