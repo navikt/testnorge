@@ -55,7 +55,6 @@ spec:
       cpu: 50m
       memory: 800Mi
     limits:
-      cpu: 100m
       memory: 2048Mi
   ingresses:
     - "https://testnav-altinn3-tilgang-proxy.intern.dev.nav.no"
