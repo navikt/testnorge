@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -19,6 +20,7 @@ import java.util.concurrent.Callable;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @RequiredArgsConstructor
+@Slf4j
 public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO>> {
 
     private static final String IDENTPOOL = "Identpool: ";

@@ -43,7 +43,7 @@ public class ArenaforvalterPostArenaBruker implements Callable<Flux<ArenaNyeBruk
                 .bodyToFlux(ArenaNyeBrukereResponse.class)
                 .map(response -> {
                     response.setStatus(HttpStatus.OK);
-                    response.setMiljoe(arenaNyeBrukere.getNyeBrukere().get(0).getMiljoe());
+                    response.setMiljoe(arenaNyeBrukere.getNyeBrukere().getFirst().getMiljoe());
                     return response;
                 })
                 .doOnError(WebClientFilter::logErrorMessage)
@@ -51,7 +51,7 @@ public class ArenaforvalterPostArenaBruker implements Callable<Flux<ArenaNyeBruk
                         Flux.just(ArenaNyeBrukereResponse.builder()
                                 .status(WebClientFilter.getStatus(error))
                                 .feilmelding(WebClientFilter.getMessage(error))
-                                .miljoe(arenaNyeBrukere.getNyeBrukere().get(0).getMiljoe())
+                                .miljoe(arenaNyeBrukere.getNyeBrukere().getFirst().getMiljoe())
                                 .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

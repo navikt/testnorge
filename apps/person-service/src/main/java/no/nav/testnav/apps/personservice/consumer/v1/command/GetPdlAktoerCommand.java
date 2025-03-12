@@ -12,11 +12,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -26,6 +26,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 @RequiredArgsConstructor
 public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
+
+    private static final String FILENAME = "pdl/pdlPersonQuery.graphql";
     private static final String TEMA_GENERELL = "GEN";
 
     private final WebClient webClient;
@@ -40,11 +42,14 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
         variables.put("ident1", ident);
 
         String query = null;
-        InputStream queryStream = Thread.currentThread()
-                .getContextClassLoader()
-                .getResourceAsStream("pdl/pdlPersonQuery.graphql");
+        var stream = Optional
+                .ofNullable(Thread
+                        .currentThread()
+                        .getContextClassLoader()
+                        .getResourceAsStream(FILENAME))
+                .orElseThrow(() -> new IllegalStateException("Finner ikke fil %s".formatted(FILENAME)));
         try {
-            query = new BufferedReader(new InputStreamReader(queryStream, StandardCharsets.UTF_8))
+            query = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))
                     .lines().collect(Collectors.joining("\n"));
         } catch (Exception e) {
             log.error("Lesing av queryressurs feilet", e);

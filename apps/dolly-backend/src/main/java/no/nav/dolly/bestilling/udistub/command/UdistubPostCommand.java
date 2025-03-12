@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -39,7 +40,7 @@ public class UdistubPostCommand implements Callable<Mono<UdiPersonResponse>> {
                 .retrieve()
                 .toEntity(UdiPersonResponse.class)
                 .map(response -> UdiPersonResponse.builder()
-                        .person(response.hasBody() ? response.getBody().getPerson() : null)
+                        .person(Optional.ofNullable(response.getBody()).map(UdiPersonResponse::getPerson).orElse(null))
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .type(UdiPersonResponse.InnsendingType.NEW)
                         .build())

@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -28,14 +29,19 @@ public class UdistubGetCommand implements Callable<Mono<UdiPersonResponse>> {
     public Mono<UdiPersonResponse> call() {
         return webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON)
+                .uri(uriBuilder -> uriBuilder
+                        .path(UDISTUB_PERSON)
                         .pathSegment(ident).build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .toEntity(UdiPersonResponse.class)
-                .map(response -> UdiPersonResponse.builder()
-                        .person(response.hasBody() ? response.getBody().getPerson() : null)
+                .map(response -> UdiPersonResponse
+                        .builder()
+                        .person(Optional
+                                .ofNullable(response.getBody())
+                                .map(UdiPersonResponse::getPerson)
+                                .orElse(null))
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)

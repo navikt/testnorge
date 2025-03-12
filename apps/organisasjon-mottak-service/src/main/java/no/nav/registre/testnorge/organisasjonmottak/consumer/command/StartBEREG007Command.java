@@ -78,8 +78,7 @@ public class StartBEREG007Command implements Callable<Long> {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .body(body)
-                    .exchange()
-                    .flatMap(response -> {
+                    .exchangeToMono(response -> {
                         try {
                             if (!response.statusCode().is2xxSuccessful()) {
                                 return Mono.error(new RuntimeException("Klarer ikke å opprette organiasasjonen. Http status: " + response.statusCode()));
@@ -97,12 +96,11 @@ public class StartBEREG007Command implements Callable<Long> {
                             } else {
                                 return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
                             }
+                        } catch (WebClientResponseException e) {
+                            log.error("Klarer ikke å finne location.\nResponse body: {}.", e.getResponseBodyAsString(), e);
+                            return Mono.error(e);
                         } catch (Exception e) {
-                            log.error(
-                                    "Klarer ikke å finne location.\nResponse body: {}.",
-                                    response.bodyToMono(String.class),
-                                    e
-                            );
+                            log.error("Klarer ikke å finne location.", e);
                             return Mono.error(e);
                         }
                     })
@@ -126,7 +124,7 @@ public class StartBEREG007Command implements Callable<Long> {
 
     private static Resource getFileResource(String content) throws IOException {
         Path tempFile = Files.createTempFile("ereg", ".txt");
-        Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
+        Files.writeString(tempFile, content);
         File file = tempFile.toFile();
         return new FileSystemResource(file);
     }

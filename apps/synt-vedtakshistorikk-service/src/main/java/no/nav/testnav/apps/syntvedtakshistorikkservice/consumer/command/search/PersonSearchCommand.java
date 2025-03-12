@@ -36,7 +36,7 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
                 .toEntity(RESPONSE_TYPE)
                 .flatMap(entity -> {
                     var headers = entity.getHeaders().get(NUMBER_OF_ITEMS_HEADER);
-                    var numberOfItems = headers != null && !headers.isEmpty() ? headers.get(0) : "0";
+                    var numberOfItems = headers != null && !headers.isEmpty() ? headers.getFirst() : "0";
                     return Mono.just(new PersonSearchResponse(Integer.parseInt(numberOfItems), entity.getBody()));
                 })
                 .retryWhen(WebClientError.is5xxException());

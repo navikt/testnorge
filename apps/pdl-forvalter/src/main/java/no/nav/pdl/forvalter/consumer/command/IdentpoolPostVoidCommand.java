@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
 
     private static final String IDENTPOOL = "Identpool: ";

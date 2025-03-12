@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -45,9 +46,10 @@ public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingRespon
                 .body(BodyInserters.fromValue(identer))
                 .retrieve()
                 .toEntity(TagsOpprettingResponse.class)
-                .map(status -> TagsOpprettingResponse.builder()
-                        .message(status.hasBody() ? status.getBody().getMessage() : null)
-                        .details(status.hasBody() ? status.getBody().getDetails() : null)
+                .map(status -> TagsOpprettingResponse
+                        .builder()
+                        .message(Optional.ofNullable(status.getBody()).map(TagsOpprettingResponse::getMessage).orElse(null))
+                        .details(Optional.ofNullable(status.getBody()).map(TagsOpprettingResponse::getDetails).orElse(null))
                         .status(HttpStatus.valueOf(status.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
