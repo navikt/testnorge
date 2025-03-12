@@ -58,7 +58,6 @@ spec:
       cpu: 20m
       memory: 700Mi
     limits:
-      cpu: 200m
       memory: 2048Mi
   ingresses:
     - "https://testnav-jenkins-batch-status-service.intern.dev.nav.no"

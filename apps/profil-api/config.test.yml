@@ -64,7 +64,6 @@ spec:
       cpu: 10m
       memory: 800Mi
     limits:
-      cpu: 200m
       memory: 2048Mi
   ingresses:
     - "https://testnorge-profil-api-dev.intern.dev.nav.no"

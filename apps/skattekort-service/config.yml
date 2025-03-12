@@ -54,7 +54,6 @@ spec:
       cpu: 20m
       memory: 700Mi
     limits:
-      cpu: 200m
       memory: 2048Mi
   ingresses:
     - "https://testnav-skattekort-service.intern.dev.nav.no"

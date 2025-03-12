@@ -72,7 +72,6 @@ spec:
       cpu: 20m
       memory: 800Mi
     limits:
-      cpu: 400m
       memory: 2048Mi
   kafka:
     pool: nav-dev

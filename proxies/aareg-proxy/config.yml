@@ -77,7 +77,6 @@ spec:
       cpu: 50m
       memory: 800Mi
     limits:
-      cpu: 200m
       memory: 2000Mi
   envFrom:
     - secret: azure-trygdeetaten-testnav-aareg-proxy-trygdeetaten

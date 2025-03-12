@@ -62,7 +62,6 @@ spec:
       cpu: 20m
       memory: 800Mi
     limits:
-      cpu: 200m
       memory: 2048Mi
   ingresses:
     - "https://testnav-organisasjon-service.intern.dev.nav.no"

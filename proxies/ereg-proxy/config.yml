@@ -52,7 +52,6 @@ spec:
       cpu: 20m
       memory: 800Mi
     limits:
-      cpu: 100m
       memory: 2048Mi
   ingresses:
     - "https://testnav-ereg-proxy.dev-fss-pub.nais.io"

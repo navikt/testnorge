@@ -65,7 +65,6 @@ spec:
       cpu: 20m
       memory: 800Mi
     limits:
-      cpu: 200m
       memory: 2048Mi
   ingresses:
     - "https://testnav-tenor-search-service.intern.dev.nav.no"

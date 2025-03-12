@@ -58,7 +58,6 @@ spec:
       cpu: 20m
       memory: 800Mi
     limits:
-      cpu: 100m
       memory: 2048Mi
   ingresses:
     - "https://testnav-udistub-proxy.dev-fss-pub.nais.io"

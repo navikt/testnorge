@@ -59,7 +59,6 @@ spec:
       cpu: 10m
       memory: 800Mi
     limits:
-      cpu: 600m
       memory: 2048Mi
   envFrom:
     - secret: teamdolly-slack-secret
