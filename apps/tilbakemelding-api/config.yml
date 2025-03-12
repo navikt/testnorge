@@ -35,7 +35,7 @@ spec:
     path: /internal/health/liveness
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   observability:
     logging:
       destinations:
@@ -47,7 +47,7 @@ spec:
     path: /internal/health/readiness
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -56,10 +56,11 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 100m
-      memory: 1000Mi
+      cpu: 10m
+      memory: 800Mi
     limits:
-      memory: 2000Mi
+      cpu: 600m
+      memory: 2048Mi
   envFrom:
     - secret: teamdolly-slack-secret
   ingresses:

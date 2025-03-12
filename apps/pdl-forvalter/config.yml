@@ -48,10 +48,11 @@ spec:
     max: 10
   resources:
     requests:
-      cpu: 200m
-      memory: 500Mi
+      cpu: 50m
+      memory: 2048Mi
     limits:
-      memory: 2000Mi
+      cpu: 800m
+      memory: 4096Mi
   accessPolicy:
     inbound:
       rules:

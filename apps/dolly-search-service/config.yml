@@ -38,7 +38,7 @@ spec:
     path: /internal/isAlive
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   observability:
     logging:
       destinations:
@@ -50,7 +50,7 @@ spec:
     path: /internal/isReady
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 10
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -59,9 +59,10 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
+      cpu: 50m
       memory: 1024Mi
     limits:
+      cpu: 500m
       memory: 2048Mi
   env:
     - name: SPRING_PROFILES_ACTIVE
