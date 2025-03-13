@@ -52,7 +52,6 @@ spec:
       cpu: 20m
       memory: 800Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   ingresses:
     - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"

@@ -107,7 +107,6 @@ spec:
       cpu: 100m
       memory: 1024Mi
     limits:
-      cpu: 800m
       memory: 2048Mi
   image: "{{image}}"
   env:

@@ -45,7 +45,6 @@ spec:
       cpu: 30m
       memory: 1100Mi
     limits:
-      cpu: 200m
       memory: 2048Mi
   envFrom:
     - secret: testnav-tps-messaging-service

@@ -31,9 +31,9 @@ spec:
         - application: dolly-backend
   liveness:
     path: /internal/health/liveness
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 10
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
@@ -43,9 +43,9 @@ spec:
       runtime: java
   readiness:
     path: /internal/health/readiness
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 10
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -57,7 +57,6 @@ spec:
       cpu: 20m
       memory: 800Mi
     limits:
-      cpu: 400m
       memory: 2000Mi
   ingresses:
     - "https://testnav-helsepersonell-service.intern.dev.nav.no"

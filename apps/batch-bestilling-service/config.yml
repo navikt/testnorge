@@ -52,7 +52,6 @@ spec:
       cpu: 20m
       memory: 600Mi
     limits:
-      cpu: 200m
       memory: 2048Mi
   ingresses:
     - "https://testnav-batch-bestilling-service.intern.dev.nav.no"

@@ -49,7 +49,6 @@ spec:
       cpu: 20m
       memory: 600Mi
     limits:
-      cpu: 100m
       memory: 2048Mi
   ingresses:
     - "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no"

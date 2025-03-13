@@ -48,7 +48,6 @@ spec:
       cpu: 50m
       memory: 600Mi
     limits:
-      cpu: 400m
       memory: 2048Mi
   image: "{{image}}"
   ingresses:
