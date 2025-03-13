@@ -1,9 +1,10 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -12,38 +13,22 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
-
+@RequiredArgsConstructor
 @Slf4j
 public class PostFinnTiltakCommand implements Callable<Mono<NyttVedtakResponse>> {
 
-    private final String miljoe;
-    private final String ident;
-    private final String token;
     private final WebClient webClient;
+    private final String token;
     private final FinnTiltakRequest rettighet;
-
-    public PostFinnTiltakCommand(FinnTiltakRequest rettighet, String token, WebClient webClient) {
-        this.webClient = webClient;
-        this.miljoe = rettighet.getMiljoe();
-        this.ident = rettighet.getPersonident();
-        this.rettighet = rettighet;
-        this.token = token;
-    }
 
     @Override
     public Mono<NyttVedtakResponse> call() {
-        log.info("Henter tiltak for ident {} i miljø {}", ident, miljoe);
-        return webClient.post()
-                .uri(builder ->
-                        builder.path("/api/v1/finntiltak")
-                                .build()
-                )
+        log.info("Henter tiltak for ident {} i miljø {}", rettighet.getPersonident(), rettighet.getMiljoe());
+        return webClient
+                .post()
+                .uri(builder -> builder.path("/api/v1/finntiltak").build())
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .header(AUTHORIZATION, "Bearer " + token)
@@ -52,7 +37,7 @@ public class PostFinnTiltakCommand implements Callable<Mono<NyttVedtakResponse>>
                 .retrieve()
                 .bodyToMono(NyttVedtakResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage);
-
     }
+
 }
 

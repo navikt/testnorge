@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.EndreInnsatsbehovResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -12,13 +12,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsbehovResponse>> {
 
     private final EndreInnsatsbehovRequest request;
@@ -41,4 +37,5 @@ public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsb
                 .bodyToMono(EndreInnsatsbehovResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage);
     }
+
 }

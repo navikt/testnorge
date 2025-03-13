@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -28,12 +28,11 @@ public class SlettArenaBrukerCommand implements Callable<Mono<ResponseEntity<Jso
         log.info("Sletter ident {} fra Arena Forvalter i miljø {}.", personident, miljoe);
         return webClient
                 .delete()
-                .uri(builder ->
-                        builder.path("/api/v1/bruker")
-                                .queryParam("miljoe", miljoe)
-                                .queryParam("personident", personident)
-                                .build()
-                )
+                .uri(builder -> builder
+                        .path("/api/v1/bruker")
+                        .queryParam("miljoe", miljoe)
+                        .queryParam("personident", personident)
+                        .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(Headers.CALL_ID, Headers.NAV_CALL_ID)
                 .header(Headers.CONSUMER_ID, Headers.NAV_CONSUMER_ID)
