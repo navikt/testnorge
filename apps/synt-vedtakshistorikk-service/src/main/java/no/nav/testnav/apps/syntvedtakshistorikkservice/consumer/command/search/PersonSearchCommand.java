@@ -2,9 +2,10 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.search;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.search.PersonSearchResponse;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonSearch;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,7 +30,7 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
     @Override
     public Mono<PersonSearchResponse> call() {
         return webClient.post()
-                .uri(builder -> builder.path("/api/v1/person").build())
+                .uri(builder -> builder.path("/api/v1/legacy").build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(request), PersonSearch.class))
                 .retrieve()
@@ -39,7 +40,9 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
                     var numberOfItems = headers != null && !headers.isEmpty() ? headers.getFirst() : "0";
                     return Mono.just(new PersonSearchResponse(Integer.parseInt(numberOfItems), entity.getBody()));
                 })
-                .retryWhen(WebClientError.is5xxException());
+                .doOnError(WebClientFilter::logErrorMessage)
+                .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(error -> Mono.empty());
     }
 
 }

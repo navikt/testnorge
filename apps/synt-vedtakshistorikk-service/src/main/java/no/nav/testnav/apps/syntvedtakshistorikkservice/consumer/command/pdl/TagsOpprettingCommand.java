@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,7 @@ public class TagsOpprettingCommand implements Callable<Mono<ResponseEntity<JsonN
                 .body(BodyInserters.fromValue(identer))
                 .retrieve()
                 .toEntity(JsonNode.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(WebClientError.is5xxException());
     }
 

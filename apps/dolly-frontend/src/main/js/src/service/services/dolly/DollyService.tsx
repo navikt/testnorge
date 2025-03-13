@@ -6,16 +6,13 @@ export default {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},
 
-	getGruppeByUserId(userId) {
-		return Request.get(Endpoints.gruppeByUser(userId))
-	},
-
 	createGruppe(data) {
 		return Request.post(Endpoints.gruppe(), data)
 	},
 
 	updateGruppe(gruppeId, data) {
-		return Request.put(Endpoints.gruppeById(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.put(Endpoints.gruppeById(valgtGruppe), data)
 	},
 
 	deleteGruppe(gruppeId) {
@@ -23,11 +20,13 @@ export default {
 	},
 
 	createBestilling(gruppeId, data) {
-		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.post(Endpoints.gruppeBestilling(valgtGruppe), data)
 	},
 
 	createBestillingFraEksisterendeIdenter(gruppeId, data) {
-		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(valgtGruppe), data)
 	},
 
 	updateGruppeLaas(gruppeId, data) {
@@ -51,16 +50,13 @@ export default {
 		return Request.put(Endpoints.identIbruk(ident, ibruk))
 	},
 
-	createRelasjon(ident, data) {
-		return Request.put(Endpoints.kobleIdenter(ident), data)
-	},
-
 	createBestillingLeggTilPaaPerson(ident, data) {
 		return Request.put(Endpoints.leggTilPaaPerson(ident), data)
 	},
 
 	createBestillingLeggTilPaaGruppe(gruppeId, data) {
-		return Request.put(Endpoints.leggTilPaaGruppe(gruppeId), data)
+		const valgtGruppe = gruppeId || data.gruppeId
+		return Request.put(Endpoints.leggTilPaaGruppe(valgtGruppe), data)
 	},
 
 	navigerTilPerson(ident) {
@@ -97,10 +93,6 @@ export default {
 		return Request.get(Endpoints.bestillingerFragment(fragment))
 	},
 
-	getBestilling(bestillingId) {
-		return Request.get(Endpoints.bestillingStatus(bestillingId))
-	},
-
 	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	},
@@ -126,7 +118,8 @@ export default {
 	},
 
 	importerPersonerFraPdl: (gruppeId, request) => {
-		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
+		const valgtGruppe = gruppeId || request.gruppeId
+		return Request.post(Endpoints.gruppeBestillingImportFraPdl(valgtGruppe), request)
 	},
 
 	getAktoerFraPdl(aktoerId, pdlMiljoe) {
@@ -137,10 +130,6 @@ export default {
 	},
 	getPersonerFraPdl(identer) {
 		return Request.get(Endpoints.personoppslagMange(identer))
-	},
-
-	getTransaksjonid(system, ident, bestillingsid) {
-		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
 	},
 
 	//* Organisasjoner
@@ -159,15 +148,6 @@ export default {
 
 	getTagsForIdent(ident) {
 		return Request.get(Endpoints.getIdentTags(ident))
-	},
-
-	//* Excel
-	getExcelFil(groupId) {
-		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
-	},
-
-	getOrgExcelFil(brukerId) {
-		return Request.getExcel(Endpoints.orgExcelFil(brukerId))
 	},
 
 	importerRelatertPerson(groupId, ident, master) {

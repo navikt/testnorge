@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,6 +39,7 @@ public class TagsSlettingCommand implements Callable<Mono<ResponseEntity<JsonNod
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .toEntity(JsonNode.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(WebClientError.is5xxException());
     }
 

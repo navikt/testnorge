@@ -5,7 +5,10 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import * as _ from 'lodash-es'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -92,7 +95,7 @@ export const AdressebeskyttelseForm = ({
 }
 
 export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const initialPdlMaster = opts.identMaster !== 'PDLF' && opts?.identtype === 'NPID'
 
 	return (

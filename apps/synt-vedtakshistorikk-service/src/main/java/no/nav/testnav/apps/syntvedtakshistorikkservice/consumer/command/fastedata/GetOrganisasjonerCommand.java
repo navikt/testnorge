@@ -2,6 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.fasteda
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.fastedata.Organisasjon;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -33,6 +34,7 @@ public class GetOrganisasjonerCommand implements Callable<Mono<List<Organisasjon
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(WebClientError.is5xxException());
     }
 

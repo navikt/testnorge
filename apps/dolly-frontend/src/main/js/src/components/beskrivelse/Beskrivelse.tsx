@@ -1,9 +1,8 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import Loading from '@/components/ui/loading/Loading'
-
-import { TextEditor } from '@/components/ui/form/inputs/textEditor/TextEditor'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import React from 'react'
+import { Textarea } from '@navikt/ds-react'
 
 type BeskrivelseProps = {
 	ident: { beskrivelse: string; ident: number }
@@ -25,7 +24,8 @@ export const Beskrivelse = ({
 		return <Loading label="oppdaterer kommentar" />
 	}
 
-	const handleSubmit = (value: string) => {
+	const handleSubmit = (event: any) => {
+		const value = event.target.value
 		updateBeskrivelse(ident, value).then(() => matchMutate(REGEX_BACKEND_GRUPPER))
 		setBeskrivelse(value)
 	}
@@ -33,9 +33,11 @@ export const Beskrivelse = ({
 	return (
 		<React.Fragment>
 			{beskrivelse && <SubOverskrift label="Kommentarer" iconKind="kommentar" />}
-			<TextEditor
-				text={beskrivelse}
-				handleSubmit={handleSubmit}
+			<Textarea
+				style={{ marginBottom: '20px', marginTop: '-7px' }}
+				label={null}
+				defaultValue={beskrivelse}
+				onBlur={handleSubmit}
 				placeholder="Skriv inn kommentar (notat)"
 			/>
 		</React.Fragment>

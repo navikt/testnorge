@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -37,6 +38,7 @@ public class HentVedtakshistorikkCommand implements Callable<Mono<List<Vedtakshi
                 .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(WebClientError.is5xxException());
     }
 

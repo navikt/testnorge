@@ -112,6 +112,9 @@ export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 }
 
 const flatDollyMiljoe = (dollymiljoe) => {
+	if (dollymiljoe?.length) {
+		return dollymiljoe
+	}
 	const miljoeArray = []
 	Object.values(dollymiljoe).forEach((miljoe) => miljoeArray.push(miljoe.id))
 	return miljoeArray

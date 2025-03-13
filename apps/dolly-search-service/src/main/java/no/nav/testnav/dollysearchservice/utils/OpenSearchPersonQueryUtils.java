@@ -110,7 +110,7 @@ public class OpenSearchPersonQueryUtils {
 
     public static void addDoedsfallQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
-        if (isTrue(request.getPersonRequest().getHarDoedsfall())) {
+        if (isTrue(request.getPersonRequest().getErDoed())) {
             queryBuilder
                     .must(nestedMatchQuery("hentPerson.doedsfall", METADATA_HISTORISK, false));
         }
@@ -141,7 +141,7 @@ public class OpenSearchPersonQueryUtils {
                                 .must(nestedMatchQuery("hentPerson.adressebeskyttelse", METADATA_HISTORISK, false))
                                 .must(nestedMatchQuery("hentPerson.adressebeskyttelse", "gradering",
                                         adresse.getAddressebeskyttelse().name())
-                        ));
+                                ));
     }
 
     public static void addHarBostedsadresseQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
@@ -275,7 +275,7 @@ public class OpenSearchPersonQueryUtils {
                         queryBuilder
                                 .must(nestedMatchQuery(BOSTEDSADRESSE, METADATA_HISTORISK, false))
                                 .must(nestedExistQuery(BOSTEDSADRESSE, MATRIKKELADRESSE))
-                        );
+                );
     }
 
     public static void addHarBostedUkjentQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
@@ -286,7 +286,7 @@ public class OpenSearchPersonQueryUtils {
                         queryBuilder
                                 .must(nestedMatchQuery(BOSTEDSADRESSE, METADATA_HISTORISK, false))
                                 .must(nestedExistQuery(BOSTEDSADRESSE, "ukjentBosted"))
-                        );
+                );
     }
 
     public static void addHarDeltBostedQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
@@ -340,8 +340,16 @@ public class OpenSearchPersonQueryUtils {
                     .must(nestedMatchQuery("hentPerson.statsborgerskap", METADATA_HISTORISK, false))
                     .must(nestedMatchQuery("hentPerson.statsborgerskap", "land",
                             request.getPersonRequest().getStatsborgerskap())
-            );
+                    );
         }
+    }
+
+    public static void addPersonStatusQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getPersonStatus())
+                .ifPresent(status -> queryBuilder
+                        .must(nestedMatchQuery("hentPerson.folkeregisterpersonstatus", METADATA_HISTORISK, false))
+                        .must(nestedMatchQuery("hentPerson.folkeregisterpersonstatus", "status", status)));
     }
 
     public static void addHarOppholdQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
@@ -357,7 +365,7 @@ public class OpenSearchPersonQueryUtils {
             queryBuilder
                     .must(nestedMatchQuery(HENT_IDENTER, HISTORISK, false))
                     .must(nestedMatchQuery(HENT_IDENTER, HISTORISK, true)
-            );
+                    );
         }
     }
 
@@ -368,7 +376,14 @@ public class OpenSearchPersonQueryUtils {
                     .must(nestedMatchQuery("hentPerson.kjoenn", METADATA_HISTORISK, false))
                     .must(nestedMatchQuery("hentPerson.kjoenn", "kjoenn",
                             request.getPersonRequest().getKjoenn().name())
-            );
+                    );
+        }
+    }
+
+    public static void addKunLevendePersonerQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+
+        if (isTrue(request.getPersonRequest().getErLevende())) {
+            queryBuilder.mustNot(nestedMatchQuery("hentPerson.doedsfall", METADATA_HISTORISK, false));
         }
     }
 

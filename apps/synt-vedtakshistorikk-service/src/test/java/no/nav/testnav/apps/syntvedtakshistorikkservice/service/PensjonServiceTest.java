@@ -7,8 +7,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponse;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponseDetails;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataStatus;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +36,7 @@ class PensjonServiceTest {
         var miljoe = "TEST";
         var person = PersonDTO.builder()
                 .ident("01016412345")
-                .foedselsdato(FoedselsdatoDTO.builder()
+                .foedselsdato(PersonDTO.FoedselsdatoDTO.builder()
                         .foedselsdato(LocalDate.of(1964, 1, 1))
                         .build())
                 .build();
@@ -66,7 +65,7 @@ class PensjonServiceTest {
         var miljoe = "TEST";
         var person = PersonDTO.builder()
                 .ident("01016412345")
-                .foedselsdato(FoedselsdatoDTO.builder()
+                .foedselsdato(PersonDTO.FoedselsdatoDTO.builder()
                         .foedselsdato(LocalDate.of(1964, 1, 1))
                         .build())
                 .build();

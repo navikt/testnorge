@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataInntekt;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponse;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,9 +29,7 @@ public class PostPensjonTestdataInntektCommand implements Callable<Mono<PensjonT
         log.info("Oppretter ny pensjon testdata inntekt: \n{}", inntekt);
         return webClient
                 .post()
-                .uri(builder ->
-                        builder.path("/api/v1/inntekt").build()
-                )
+                .uri(builder -> builder.path("/api/v1/inntekt").build())
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -38,6 +37,7 @@ public class PostPensjonTestdataInntektCommand implements Callable<Mono<PensjonT
                 .body(BodyInserters.fromPublisher(Mono.just(inntekt), PensjonTestdataInntekt.class))
                 .retrieve()
                 .bodyToMono(PensjonTestdataResponse.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(WebClientError.is5xxException());
     }
 

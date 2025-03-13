@@ -32,9 +32,9 @@ spec:
         - host: testnav-altinn3-tilgang-service.nav.no
   liveness:
     path: /internal/health/liveness
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
@@ -44,16 +44,16 @@ spec:
       runtime: java
   readiness:
     path: /internal/health/readiness
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   replicas:
     min: 1
     max: 1
   resources:
     requests:
-      cpu: 100m
-      memory: 1025Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
   ingresses:

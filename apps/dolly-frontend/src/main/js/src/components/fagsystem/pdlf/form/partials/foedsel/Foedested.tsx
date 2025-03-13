@@ -6,7 +6,10 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
 import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type FoedestedTypes = {
@@ -15,7 +18,7 @@ type FoedestedTypes = {
 }
 
 export const FoedestedForm = ({ formMethods, path }: FoedestedTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	const handleLandChange = (selected: SelectedValue, foededtedPath: string) => {
 		formMethods.setValue(`${foededtedPath}.foedeland`, selected?.value || null)
@@ -54,7 +57,7 @@ export const FoedestedForm = ({ formMethods, path }: FoedestedTypes) => {
 }
 
 export const Foedested = ({ formMethods }: FoedestedTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 
 	return (
 		<div className="flexbox--flex-wrap" style={{ marginBottom: '10px' }}>

@@ -1,11 +1,10 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
+import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselsdatoDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +35,7 @@ class ArenaAapServiceTest {
     private final String fnr1 = "27869949421";
     private final PersonDTO person = PersonDTO.builder()
             .ident(fnr1)
-            .foedselsdato(FoedselsdatoDTO.builder()
+            .foedselsdato(PersonDTO.FoedselsdatoDTO.builder()
                     .foedselsdato(LocalDate.of(1999, 6, 27))
                     .build())
             .build();

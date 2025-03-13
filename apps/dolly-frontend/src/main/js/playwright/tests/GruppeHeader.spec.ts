@@ -12,6 +12,7 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 		await page.getByTestId(TestComponentSelectors.BUTTON_LEGGTILPAAALLE).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_FULLFOER_BESTILLING).click()
 
 		// Testing av tags
@@ -21,6 +22,8 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 			.getByText(/Testytest/)
 			.first()
 			.click()
+
+		await page.waitForTimeout(1500)
 
 		await page.route('**/tags', async (route) => {
 			await route.fulfill({ status: 201 })

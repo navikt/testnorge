@@ -5,15 +5,10 @@ import { Gruppe, useEgneGrupper } from '@/utils/hooks/useGruppe'
 import React from 'react'
 
 interface EksisterendeGruppe {
-	fraGruppe?: number | null
+	fraGruppe?: number
 }
 
-type Options = {
-	value: string
-	label: string
-}
-
-export default ({ fraGruppe = null }: EksisterendeGruppe) => {
+export default ({ fraGruppe }: EksisterendeGruppe) => {
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()

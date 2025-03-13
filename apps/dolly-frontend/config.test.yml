@@ -46,7 +46,7 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-faste-data-service
-        - application: testnav-person-search-service
+        - application: testnav-dolly-search-service
         - application: testnav-person-service
         - application: testnav-sykemelding-api-dev
         - application: testnav-tenor-search-service
@@ -104,7 +104,7 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 500m
+      cpu: 100m
       memory: 1024Mi
     limits:
       memory: 2048Mi

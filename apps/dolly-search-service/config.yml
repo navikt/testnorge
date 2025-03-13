@@ -30,14 +30,15 @@ spec:
         - application: dolly-frontend-dev
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
+        - application: testnav-synt-vedtakshistorikk-service
     outbound:
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
@@ -47,9 +48,9 @@ spec:
       runtime: java
   readiness:
     path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -58,7 +59,7 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
+      cpu: 50m
       memory: 1024Mi
     limits:
       memory: 2048Mi

@@ -3,6 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 import lombok.AllArgsConstructor;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -31,7 +32,7 @@ public class PostDagpengerCommand implements Callable<Mono<DagpengerResponseDTO>
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(BodyInserters.fromPublisher(Mono.just(request), DagpengerRequestDTO.class))
                 .retrieve()
-                .bodyToMono(DagpengerResponseDTO.class);
-
+                .bodyToMono(DagpengerResponseDTO.class)
+                .doOnError(WebClientFilter::logErrorMessage);
     }
 }

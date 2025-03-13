@@ -16,7 +16,10 @@ import {
 	initialForenkletOppgjoersordning,
 } from '../initialValues'
 import { isDate } from 'date-fns'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import * as _ from 'lodash-es'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
@@ -31,7 +34,9 @@ export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }: Arbeidsforhold
 	const { watch, getValues, setValue, trigger } = useFormContext()
 
 	//@ts-ignore
-	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil } = useContext(
+		BestillingsveilederContext,
+	) as BestillingsveilederContextType
 	const tidligereAaregdata = hentAaregEksisterendeData(personFoerLeggTil)
 	const erLaastArbeidsforhold = arbeidsforholdIndex < tidligereAaregdata?.length
 

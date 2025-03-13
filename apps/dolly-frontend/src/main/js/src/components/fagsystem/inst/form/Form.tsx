@@ -7,7 +7,10 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { validation } from '@/components/fagsystem/inst/form/validation'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
@@ -22,7 +25,7 @@ export const instAttributt = 'instdata'
 
 export const InstForm = () => {
 	const formMethods = useFormContext()
-	const opts = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const { personFoerLeggTil }: any = opts
 
 	let excludeDates = []

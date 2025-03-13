@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponse;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,8 +29,7 @@ public class PostPensjonTestdataPersonCommand implements Callable<Mono<PensjonTe
         log.info("Oppretter ny pensjon testdata person: \n{}", person);
         return webClient
                 .post()
-                .uri(builder ->
-                        builder.path("/api/v1/person").build())
+                .uri(builder -> builder.path("/api/v1/person").build())
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -37,6 +37,7 @@ public class PostPensjonTestdataPersonCommand implements Callable<Mono<PensjonTe
                 .body(BodyInserters.fromPublisher(Mono.just(person), PensjonTestdataPerson.class))
                 .retrieve()
                 .bodyToMono(PensjonTestdataResponse.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(WebClientError.is5xxException());
     }
 

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengevedtakDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.dagpenger.Dagpengerettighet;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -34,13 +35,12 @@ public class HentDagpengevedtakCommand implements Callable<Mono<List<Dagpengeved
         log.info("Henter syntetisk dagpengevedtak.");
         return webClient
                 .post()
-                .uri(builder -> builder
-                        .path("/api/v1/vedtak/{rettighet}")
-                        .build(rettighet))
+                .uri(builder -> builder.path("/api/v1/vedtak/{rettighet}").build(rettighet))
                 .header(AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(WebClientError.is5xxException());
     }
 

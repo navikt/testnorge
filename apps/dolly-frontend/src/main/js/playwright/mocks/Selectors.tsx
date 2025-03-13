@@ -1,6 +1,5 @@
 export enum TestComponentSelectors {
 	INPUT_MINSIDE_SOEK_MAL = 'input-minside-mal',
-	INPUT_TESTNORGE_FNR = 'input-testnorge-fnr',
 	INPUT_NAVN = 'input-navn',
 	INPUT_NY_GRUPPE_NAVN = 'input-ny-gruppe-navn',
 	INPUT_NY_GRUPPE_HENSIKT = 'input-ny-gruppe-hensikt',
@@ -27,7 +26,6 @@ export enum TestComponentSelectors {
 	TOGGLE_MIN_SIDE_ORGANISASJON_MALER = 'toggle-min-side-organisasjon-maler',
 	TOGGLE_MIN_SIDE_PERSONER_MALER = 'toggle-min-side-personer-maler',
 	TITLE_VISNING = 'title-visning',
-	TITLE_TESTNORGE = 'title-testnorge',
 	TITLE_SEND_KOMMENTAR = 'title-send-kommentar',
 	TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET = 'title-tenor-organisasjoner-foretaksregisteret',
 	TITLE_TENOR_HEADER_COUNTER = 'title-tenor-header-counter',
@@ -61,7 +59,6 @@ export enum TestComponentSelectors {
 	BUTTON_HEADER_FINNPERSON = 'button-header-finnperson',
 	BUTTON_HEADER_ORGANISASJONER = 'button-header-organisasjoner',
 	BUTTON_HEADER_DOLLYSOEK = 'button-header-dollysoek',
-	BUTTON_HEADER_TESTNORGE = 'button-header-testnorge',
 	BUTTON_HEADER_TENOR = 'button-header-tenor',
 	BUTTON_HEADER_ENDRINGSMELDING = 'button-header-endringsmelding',
 	BUTTON_PROFIL = 'button-minside',

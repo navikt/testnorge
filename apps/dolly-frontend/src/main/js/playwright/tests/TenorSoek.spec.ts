@@ -46,14 +46,6 @@ test.describe('Tenor-søk testing', () => {
 		).toBeVisible()
 		await page.getByTestId(TestComponentSelectors.BUTTON_IMPORTER_PERSONER).click()
 		await page.waitForTimeout(500)
-		await expect(
-			page
-				.locator('h1')
-				.getByText(/Importer person/)
-				.first(),
-		).toBeVisible()
-		await page.getByTestId(TestComponentSelectors.BUTTON_IMPORTER).click()
-		await page.waitForTimeout(500)
 		await expect(page.locator('.bestillingsveileder')).toBeVisible()
 		await page.getByTestId(TestComponentSelectors.BUTTON_AVBRYT).click()
 		await page.waitForTimeout(500)

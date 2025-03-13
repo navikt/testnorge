@@ -3,6 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 import lombok.AllArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.EndreInnsatsbehovResponse;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -37,6 +38,7 @@ public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsb
                 .header(AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
                 .retrieve()
-                .bodyToMono(EndreInnsatsbehovResponse.class);
+                .bodyToMono(EndreInnsatsbehovResponse.class)
+                .doOnError(WebClientFilter::logErrorMessage);
     }
 }

@@ -64,9 +64,9 @@ spec:
           cluster: dev-gcp
   liveness:
     path: /internal/health/liveness
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   observability:
     logging:
       destinations:
@@ -76,16 +76,16 @@ spec:
       runtime: java
   readiness:
     path: /internal/health/readiness
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 20
+    periodSeconds: 10
+    failureThreshold: 20
   replicas:
     min: 1
     max: 1
   resources:
     requests:
-      cpu: 200m
-      memory: 1024Mi
+      cpu: 20m
+      memory: 800Mi
     limits:
       memory: 2048Mi
   envFrom:
