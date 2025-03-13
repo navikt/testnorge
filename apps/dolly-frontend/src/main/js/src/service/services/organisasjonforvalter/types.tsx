@@ -62,6 +62,7 @@ export type AdresseOrgForvalter = {
 export type OrganisasjonForvalterMiljoeData = {
 	id: number
 	organisasjonsnummer: string
+	juridiskEnhet: string
 	enhetstype: string
 	naeringskode: string
 	sektorkode: string

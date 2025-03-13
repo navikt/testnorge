@@ -11,7 +11,7 @@ interface OrgProps {
 	onTextBlur: (event: React.ChangeEvent<any>) => void
 }
 
-export const OrganisasjonMedMiljoeSelect = ({
+export const OrganisasjonForvalterSelect = ({
 	path,
 	parentPath,
 	success,

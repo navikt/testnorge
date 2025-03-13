@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
-import * as _ from 'lodash-es'
+import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/OrganisasjonForvalterSelect'
 import { useFormContext } from 'react-hook-form'
 import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
 import { AdresseOrgForvalter } from '@/service/services/organisasjonforvalter/types'
@@ -27,24 +26,24 @@ export const OrganisasjonTextSelect = ({ path, setEnhetsinfo }: OrganisasjonText
 	const formMethods = useFormContext()
 	const [org, setOrg] = useState()
 	const { organisasjoner, loading, error } = useOrganisasjonForvalter([org])
+	const forvalterOrg = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
 
 	useEffect(() => {
-		const org = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
-		const forretningsAdresse = org?.adresser?.filter(
-			(adresse) => adresse.adressetype === 'FORRETNINGSADRESSE',
+		const forretningsAdresse = forvalterOrg?.adresser?.filter(
+			(adresse) => adresse.adressetype === 'FADR',
 		)?.[0]
-		const postAdresse = org?.adresser?.filter(
-			(adresse) => adresse.adressetype === 'POSTADRESSE',
+		const postAdresse = forvalterOrg?.adresser?.filter(
+			(adresse) => adresse.adressetype === 'PADR',
 		)?.[0]
 		const orgInfo = {
-			value: org?.organisasjonsnummer,
-			orgnr: org?.organisasjonsnummer,
-			navn: org?.organisasjonsnavn,
+			value: forvalterOrg?.organisasjonsnummer,
+			orgnr: forvalterOrg?.organisasjonsnummer,
+			navn: forvalterOrg?.organisasjonsnavn,
 			forretningsAdresse: mapAdresse(forretningsAdresse),
 			postAdresse: mapAdresse(postAdresse),
 		}
 		setEnhetsinfo(orgInfo, parentPath)
-	}, [organisasjoner])
+	}, [forvalterOrg])
 
 	useEffect(() => {
 		if (error) {
@@ -61,22 +60,19 @@ export const OrganisasjonTextSelect = ({ path, setEnhetsinfo }: OrganisasjonText
 			formMethods.setError(`manual.${path}`, { message: 'Skriv inn org' })
 			return
 		}
+		setOrg(org)
 		formMethods.clearErrors(`manual.${path}`)
 		formMethods.clearErrors(path)
 	}
 
 	return (
-		<OrganisasjonMedMiljoeSelect
+		<OrganisasjonForvalterSelect
 			path={path}
 			parentPath={parentPath}
 			success={organisasjoner?.length > 0 && !loading && !error}
 			loading={loading}
 			onTextBlur={(event) => {
-				const value = event?.target?.value
-				if (!_.isEmpty(value)) {
-					setOrg(value)
-					handleChange(value)
-				}
+				handleChange(event.target.value)
 			}}
 		/>
 	)
