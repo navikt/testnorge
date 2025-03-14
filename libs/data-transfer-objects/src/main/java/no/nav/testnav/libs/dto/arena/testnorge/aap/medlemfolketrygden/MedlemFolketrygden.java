@@ -1,12 +1,10 @@
 package no.nav.testnav.libs.dto.arena.testnorge.aap.medlemfolketrygden;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class MedlemFolketrygden {
 

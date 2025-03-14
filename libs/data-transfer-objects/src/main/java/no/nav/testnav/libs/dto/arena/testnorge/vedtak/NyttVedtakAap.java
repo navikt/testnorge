@@ -7,9 +7,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 import no.nav.testnav.libs.dto.aareg.v1.Periode;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.institusjonsopphold.Institusjonsopphold;
@@ -20,8 +21,9 @@ import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

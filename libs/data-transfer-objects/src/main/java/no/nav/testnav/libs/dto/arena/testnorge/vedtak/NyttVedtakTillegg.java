@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.boutgift.Boutgift;
 import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.dagligreise.DagligReise;
@@ -22,8 +22,8 @@ import no.nav.testnav.libs.dto.arena.testnorge.tilleggsstoenad.tilsyn.TilsynFami
 
 import java.util.List;
 
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -3,17 +3,15 @@ package no.nav.testnav.libs.dto.arena.testnorge.vedtak;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.NyBrukerFeil;
 
 import java.util.Collections;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
