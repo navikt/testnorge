@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -16,6 +17,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArenaForvalterGetMiljoeCommand implements Callable<Flux<String>> {
 
     private static final String ARENAFORVALTER_ENVIRONMENTS = "/api/v1/miljoe";
@@ -37,7 +39,7 @@ public class ArenaForvalterGetMiljoeCommand implements Callable<Flux<String>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(String[].class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .flatMapIterable(miljoer -> Arrays.stream(miljoer).toList())
                 .retryWhen(WebClientError.is5xxException());
     }

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.yrkesskade.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.yrkesskade.dto.YrkesskadeResponseDTO;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class YrkesskadePostCommand implements Callable<Mono<YrkesskadeResponseDTO>> {
 
     private static final String YRKESSKADE_URL = "/api/v1/yrkesskader";
@@ -36,7 +38,7 @@ public class YrkesskadePostCommand implements Callable<Mono<YrkesskadeResponseDT
                 .map(response -> YrkesskadeResponseDTO.builder()
                         .status(HttpStatusCode.valueOf(201))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.just(YrkesskadeResponseDTO.builder()
                         .status(WebClientFilter.getStatus(throwable))
                         .melding(WebClientFilter.getMessage(throwable))

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arbeidsplassencv.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -17,6 +18,7 @@ import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenCVStatusDTO>> {
 
     private static final String ARBEIDSPLASSEN_CV_URL = "/rest/v3/cv";
@@ -48,7 +50,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenC
                         .arbeidsplassenCV(response)
                         .uuid(uuid)
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Flux.just(ArbeidsplassenCVStatusDTO.builder()
                         .status(WebClientFilter.getStatus(throwable))

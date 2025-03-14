@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.personservice.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -15,6 +16,7 @@ import java.util.concurrent.Callable;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
 
     private static final String PERSON_SERVICE_URL = "/api/v2/personer/identer";
@@ -34,7 +36,7 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PdlPersonBolk.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());

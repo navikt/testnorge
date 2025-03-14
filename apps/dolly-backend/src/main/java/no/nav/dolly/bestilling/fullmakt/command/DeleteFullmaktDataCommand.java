@@ -42,10 +42,10 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<HttpStatusCode>>
                 .retrieve()
                 .toBodilessEntity()
                 .map(ResponseEntity::getStatusCode)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .doOnSuccess(response -> log.info("Fullmakt with id {} deleted for person with ident {}", fullmaktId, ident))
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

@@ -1,7 +1,9 @@
 package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,6 +21,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SlettePoppInntektCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
     private static final String POPP_DELETE_URL = "/api/v1/popp/person";
@@ -43,7 +46,7 @@ public class SlettePoppInntektCommand implements Callable<Flux<PensjonforvalterR
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(Exception.class, error -> Mono.empty());
     }
 }

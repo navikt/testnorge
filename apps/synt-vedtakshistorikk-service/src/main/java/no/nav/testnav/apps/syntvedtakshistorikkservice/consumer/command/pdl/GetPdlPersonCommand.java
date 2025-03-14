@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pdl.GraphQLRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -16,6 +17,7 @@ import java.util.concurrent.Callable;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
 
     private static final String TEMA = "Tema";
@@ -39,7 +41,7 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
                 .body(BodyInserters.fromValue(new GraphQLRequest(query, Map.of("ident", ident, "historikk", true))))
                 .retrieve()
                 .bodyToMono(PdlPerson.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

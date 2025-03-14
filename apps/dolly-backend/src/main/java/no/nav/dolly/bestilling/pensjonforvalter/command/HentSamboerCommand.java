@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -39,7 +40,7 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToMono(PensjonSamboerResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 

@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.profil.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.dto.AltinnRequestDTO;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -12,6 +13,7 @@ import reactor.core.publisher.Flux;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetPersonOrganisasjonTilgangCommand implements Callable<Flux<OrganisasjonDTO>> {
 
     private final WebClient webClient;
@@ -28,7 +30,7 @@ public class GetPersonOrganisasjonTilgangCommand implements Callable<Flux<Organi
                 .bodyValue(new AltinnRequestDTO(ident))
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

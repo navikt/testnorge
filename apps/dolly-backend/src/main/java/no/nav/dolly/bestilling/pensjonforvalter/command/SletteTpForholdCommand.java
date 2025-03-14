@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -18,6 +19,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
     private static final String PENSJON_TP_PERSON_FORHOLD_URL = "/api/v1/tp/person/forhold";
@@ -43,7 +45,7 @@ public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterRes
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(Exception.class, error -> Mono.empty());
     }
 

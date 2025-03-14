@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.udistub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -17,6 +18,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class UdistubDeleteCommand implements Callable<Mono<UdiPersonResponse>> {
 
     private static final String UDISTUB_PERSON = "/api/v1/person";
@@ -37,7 +39,9 @@ public class UdistubDeleteCommand implements Callable<Mono<UdiPersonResponse>> {
                 .map(response -> UdiPersonResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound), WebClientFilter::logErrorMessage)
+                .doOnError(
+                        throwable -> !(throwable instanceof WebClientResponseException.NotFound),
+                        throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.empty())
                 .retryWhen(WebClientError.is5xxException());
     }

@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.profil.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetProfileImageCommand implements Callable<Mono<byte[]>> {
 
     private final WebClient webClient;
@@ -30,7 +32,7 @@ public class GetProfileImageCommand implements Callable<Mono<byte[]>> {
                                 .map(IllegalStateException::new)
                 )
                 .bodyToMono(byte[].class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

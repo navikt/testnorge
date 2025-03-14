@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.brregstub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -14,6 +15,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class BrregPostCommand implements Callable<Mono<RolleoversiktTo>> {
 
     private static final String ROLLEOVERSIKT_URL = "/api/v2/rolleoversikt";
@@ -35,7 +37,7 @@ public class BrregPostCommand implements Callable<Mono<RolleoversiktTo>> {
                 .onErrorResume(error -> Mono.just(RolleoversiktTo.builder()
                         .error(WebClientFilter.getMessage(error))
                         .build()))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

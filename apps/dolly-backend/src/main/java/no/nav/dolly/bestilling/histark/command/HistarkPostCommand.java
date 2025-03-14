@@ -47,7 +47,7 @@ public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
                 })
                 .doOnNext(response -> log.info("Responsebody fra histark: {}", response))
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.just(HistarkResponse.builder()
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.instdata.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -17,6 +18,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
 
     private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person";
@@ -46,7 +48,7 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .environments(List.of(miljoe))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(InstdataResponse.builder()
                         .personident(instdata.getNorskident())
                         .instdata(instdata)

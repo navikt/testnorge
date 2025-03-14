@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.dokarkiv.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -16,6 +17,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
 
     private final WebClient webClient;
@@ -41,7 +43,7 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
                     return response;
                 })
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(DokarkivResponse.builder()
                         .feilmelding(WebClientFilter.getMessage(error))
                         .miljoe(environment)

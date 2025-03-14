@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class OrganisasjonOrgnummerServiceCommand implements Callable<Mono<String[]>> {
 
     private static final String NUMBER_URL = "/api/v1/orgnummer";
@@ -27,7 +29,7 @@ public class OrganisasjonOrgnummerServiceCommand implements Callable<Mono<String
                 .header("antall", antall.toString())
                 .retrieve()
                 .bodyToMono(String[].class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

@@ -33,9 +33,9 @@ public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpSt
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> HttpStatus.valueOf(response.getStatusCode().value()))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

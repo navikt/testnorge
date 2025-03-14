@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 import reactor.util.retry.RetryBackoffSpec;
 
 import java.net.SocketException;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 /**
@@ -79,15 +79,35 @@ public class WebClientError {
     }
 
     /**
-     * Convenience method for logging an error.
-     * Relies on a {@code .checkpoint()} being set on the {@code webClient} to give meaningful content.
-     *
+     * Convenience method for logging, using {@code .doOnError(throwable -> WebClientError.log(throwable, log))}.
      * @param throwable The error to log.
-     * @param logger    The logger to use, for more relevant log entries.
+     * @param logger The logger to log to, for improved readability. Cannot be resolved from stack trace on call.
      */
-    public static <T> Mono<T> log(Throwable throwable, Logger logger) {
-        logger.error("CATO: {}", throwable.getMessage(), throwable);
-        return Mono.error(throwable);
+    public static void log(Throwable throwable, Logger logger) {
+        if ((throwable instanceof WebClientResponseException webClientResponseException)) {
+            logger.error(
+                    "{}, {}",
+                    throwable.getMessage(),
+                    webClientResponseException.getResponseBodyAsString(),
+                    throwable
+            );
+        } else {
+            logger.error(throwable.getMessage(), throwable);
+        }
     }
+
+    /*public static <T> Mono<T> logX(Throwable throwable, Logger logger) {
+        if ((throwable instanceof WebClientResponseException webClientResponseException)) {
+            logger.error(
+                    "{}, {}",
+                    throwable.getMessage(),
+                    webClientResponseException.getResponseBodyAsString(),
+                    throwable
+            );
+        } else {
+            logger.error(throwable.getMessage(), throwable);
+        }
+        return Mono.error(throwable);
+    }*/
 
 }

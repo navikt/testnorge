@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.krrstub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -19,6 +20,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataResponse>> {
 
     private static final String DIGITAL_KONTAKT_URL = "/api/v2/kontaktinformasjon";
@@ -44,7 +46,7 @@ public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataR
                 .map(response -> DigitalKontaktdataResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(DigitalKontaktdataResponse.builder()
                         .status(WebClientFilter.getStatus(error))
                         .melding(WebClientFilter.getMessage(error))

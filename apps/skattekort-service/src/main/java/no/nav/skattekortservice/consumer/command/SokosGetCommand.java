@@ -1,6 +1,7 @@
 package no.nav.skattekortservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.skattekortservice.dto.SokosResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -13,6 +14,7 @@ import java.util.concurrent.Callable;
 import static org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SokosGetCommand implements Callable<Flux<SokosResponse>> {
 
     private static final String SOKOS_URL = "/api/v1/skattekort/hent/{fnr}";
@@ -31,7 +33,7 @@ public class SokosGetCommand implements Callable<Flux<SokosResponse>> {
                 .header("korrelasjonsid", UUID.randomUUID().toString())
                 .retrieve()
                 .bodyToFlux(SokosResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

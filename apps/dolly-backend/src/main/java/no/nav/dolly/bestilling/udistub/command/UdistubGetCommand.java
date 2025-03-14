@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.udistub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -17,6 +18,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class UdistubGetCommand implements Callable<Mono<UdiPersonResponse>> {
 
     private static final String UDISTUB_PERSON = "/api/v1/person";
@@ -44,7 +46,7 @@ public class UdistubGetCommand implements Callable<Mono<UdiPersonResponse>> {
                                 .orElse(null))
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.just(UdiPersonResponse.builder()
                         .status(throwable instanceof WebClientResponseException webClientResponseException ?
                                 HttpStatus.valueOf(webClientResponseException.getStatusCode().value()) : HttpStatus.INTERNAL_SERVER_ERROR)

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -18,6 +19,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArenaforvalterPostArenadagpenger implements Callable<Flux<ArenaNyeDagpengerResponse>> {
 
     private static final String ARENAFORVALTER_DAGPENGER = "/api/v1/dagpenger";
@@ -46,7 +48,7 @@ public class ArenaforvalterPostArenadagpenger implements Callable<Flux<ArenaNyeD
                     response.setMiljoe(arenaDagpenger.getMiljoe());
                     return response;
                 })
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable ->
                         Flux.just(ArenaNyeDagpengerResponse.builder()
                                 .status(WebClientFilter.getStatus(throwable))

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektstub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -14,6 +15,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class InntektstubDeleteCommand implements Callable<Flux<String>> {
 
     private static final String DELETE_INNTEKTER_URL = "/api/v2/personer";
@@ -35,7 +37,7 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .map(respons -> "")
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

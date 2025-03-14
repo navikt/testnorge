@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAccessListResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -38,7 +39,7 @@ public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnAcces
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(AltinnAccessListResponseDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .doOnSuccess(value -> log.info("Altinn organisasjontilgang opprettet for {}",
                         organisasjon.getData().stream()
                                 .map(data -> data.split(":"))

@@ -1,6 +1,7 @@
 package no.nav.testnav.endringsmeldingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SendDoedsmeldingCommand implements Callable<Mono<DoedsmeldingResponse>> {
 
     private final WebClient webClient;
@@ -34,7 +36,7 @@ public class SendDoedsmeldingCommand implements Callable<Mono<DoedsmeldingRespon
                 .retrieve()
                 .bodyToMono(DoedsmeldingResponse.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

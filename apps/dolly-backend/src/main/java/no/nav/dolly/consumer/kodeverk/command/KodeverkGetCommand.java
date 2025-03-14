@@ -1,6 +1,7 @@
 package no.nav.dolly.consumer.kodeverk.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -12,6 +13,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
 
     private final WebClient webClient;
@@ -33,7 +35,7 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
                     kodeverket.setStatus(HttpStatus.OK);
                     return kodeverket;
                 })
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(KodeverkDTO.builder()
                         .kodeverknavn(kodeverk)
                         .status(WebClientFilter.getStatus(error))

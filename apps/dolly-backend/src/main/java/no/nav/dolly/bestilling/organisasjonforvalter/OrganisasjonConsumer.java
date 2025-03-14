@@ -79,7 +79,7 @@ public class OrganisasjonConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .retrieve()
                         .bodyToMono(OrganisasjonDeployStatus.class)
-                        .doOnError(WebClientFilter::logErrorMessage)
+                        .doOnError(throwable -> WebClientError.log(throwable, log))
                         .onErrorResume(throwable -> Mono.empty())
                 )
                 .block();

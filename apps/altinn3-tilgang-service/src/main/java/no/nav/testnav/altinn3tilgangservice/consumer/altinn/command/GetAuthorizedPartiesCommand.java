@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAuthorizedPartiesRequestDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AuthorizedPartyDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -35,6 +36,6 @@ public class GetAuthorizedPartiesCommand implements Callable<Mono<AuthorizedPart
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(AuthorizedPartyDTO[].class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 }

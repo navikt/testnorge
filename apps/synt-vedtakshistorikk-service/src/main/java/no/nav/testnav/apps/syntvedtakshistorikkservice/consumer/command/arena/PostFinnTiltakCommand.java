@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -36,7 +37,7 @@ public class PostFinnTiltakCommand implements Callable<Mono<NyttVedtakResponse>>
                 .body(BodyInserters.fromPublisher(Mono.just(rettighet), FinnTiltakRequest.class))
                 .retrieve()
                 .bodyToMono(NyttVedtakResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

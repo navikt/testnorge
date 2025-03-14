@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.arbeidsplassencv.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArbeidsplassenDeleteCVCommand implements Callable<Mono<ArbeidsplassenCVStatusDTO>> {
 
     private static final String ARBEIDSPLASSEN_SAMTYKKE_URL = "/rest/samtykke";
@@ -41,7 +42,9 @@ public class ArbeidsplassenDeleteCVCommand implements Callable<Mono<Arbeidsplass
                 .map(status -> ArbeidsplassenCVStatusDTO.builder()
                         .status(HttpStatus.valueOf(status.getStatusCode().value()))
                         .build())
-                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound), WebClientFilter::logErrorMessage)
+                .doOnError(
+                        throwable -> !(throwable instanceof WebClientResponseException.NotFound),
+                        throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Mono.empty());
     }

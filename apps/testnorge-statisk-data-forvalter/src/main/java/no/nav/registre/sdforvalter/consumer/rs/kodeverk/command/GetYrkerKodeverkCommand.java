@@ -1,9 +1,11 @@
 package no.nav.registre.sdforvalter.consumer.rs.kodeverk.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkResponse;
 import no.nav.registre.sdforvalter.util.CallIdUtil;
 import no.nav.registre.sdforvalter.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
@@ -13,6 +15,7 @@ import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.HEADER_NAV_C
 import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.CONSUMER;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetYrkerKodeverkCommand implements Callable<KodeverkResponse> {
     private final WebClient webClient;
 
@@ -27,7 +30,7 @@ public class GetYrkerKodeverkCommand implements Callable<KodeverkResponse> {
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToMono(KodeverkResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .block();
     }
 }

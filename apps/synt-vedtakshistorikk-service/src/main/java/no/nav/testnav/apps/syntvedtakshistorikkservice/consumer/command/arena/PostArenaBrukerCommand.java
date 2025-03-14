@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -48,7 +49,7 @@ public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>
                         REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(NyeBrukereResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

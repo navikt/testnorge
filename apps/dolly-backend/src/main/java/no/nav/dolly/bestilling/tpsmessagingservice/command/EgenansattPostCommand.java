@@ -53,7 +53,7 @@ public class EgenansattPostCommand implements Callable<Flux<TpsMeldingResponseDT
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(TpsMeldingResponseDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO.builder()
                         .status("FEIL")

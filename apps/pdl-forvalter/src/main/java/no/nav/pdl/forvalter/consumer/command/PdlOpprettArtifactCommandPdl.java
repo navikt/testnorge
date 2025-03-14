@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
 
     private final WebClient webClient;
@@ -43,7 +45,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                         .hendelseId(response.getHendelseId())
                         .build()))
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(errorHandling(error, id)));
     }
 

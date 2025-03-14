@@ -37,7 +37,7 @@ public class PostPensjonTestdataPersonCommand implements Callable<Mono<PensjonTe
                 .body(BodyInserters.fromPublisher(Mono.just(person), PensjonTestdataPerson.class))
                 .retrieve()
                 .bodyToMono(PensjonTestdataResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class MiljoerServiceCommand implements Callable<Mono<String[]>> {
 
     private static final String MILJOER_URL = "/api/v1/miljoer";
@@ -26,7 +28,7 @@ public class MiljoerServiceCommand implements Callable<Mono<String[]>> {
                 .retrieve()
                 .bodyToMono(String[].class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.empty());
     }
 

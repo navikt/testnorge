@@ -1,8 +1,10 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import java.util.concurrent.Callable;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> {
 
     private final RettighetRequest rettighet;
@@ -33,7 +36,7 @@ public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> 
                 .body(BodyInserters.fromPublisher(Mono.just(rettighet), RettighetRequest.class))
                 .retrieve()
                 .bodyToMono(NyttVedtakResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

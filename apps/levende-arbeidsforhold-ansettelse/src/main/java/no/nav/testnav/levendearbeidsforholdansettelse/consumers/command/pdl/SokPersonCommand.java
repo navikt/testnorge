@@ -1,6 +1,7 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.pdl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.testnav.levendearbeidsforholdansettelse.provider.PdlMiljoer;
@@ -22,6 +23,7 @@ import static no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.CommonKe
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
 
     private static final String TEMA = "Tema";
@@ -53,7 +55,7 @@ public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
                                 Map.of("paging", paging, "criteria", criteria))))
                 .retrieve()
                 .bodyToFlux(PdlPersonDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());

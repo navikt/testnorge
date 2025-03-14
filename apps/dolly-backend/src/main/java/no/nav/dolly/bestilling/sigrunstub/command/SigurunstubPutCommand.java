@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.sigrunstub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
@@ -21,6 +22,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
@@ -50,7 +52,7 @@ public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>>
                     }
                     return response;
                 })
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
                         .status(WebClientFilter.getStatus(error))
                         .melding(WebClientFilter.getMessage(error))

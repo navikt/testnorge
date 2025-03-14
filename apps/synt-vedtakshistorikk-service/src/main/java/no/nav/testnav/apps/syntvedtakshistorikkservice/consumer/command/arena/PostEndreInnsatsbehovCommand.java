@@ -1,8 +1,10 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.EndreInnsatsbehovResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import java.util.concurrent.Callable;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsbehovResponse>> {
 
     private final EndreInnsatsbehovRequest request;
@@ -35,7 +38,7 @@ public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsb
                 .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
                 .retrieve()
                 .bodyToMono(EndreInnsatsbehovResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

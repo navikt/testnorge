@@ -39,7 +39,7 @@ public class TagsSlettingCommand implements Callable<Mono<ResponseEntity<JsonNod
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .toEntity(JsonNode.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

@@ -1,6 +1,7 @@
 package no.nav.dolly.consumer.brukerservice.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class BrukerServiceGetTilgangCommand implements Callable<Mono<TilgangDTO>> {
 
     private static final String TILGANG_URL = "/api/v1/tilgang";
@@ -30,7 +32,7 @@ public class BrukerServiceGetTilgangCommand implements Callable<Mono<TilgangDTO>
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(TilgangDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(TilgangDTO.builder()
                         .brukere(List.of(brukerId))
                         .build()))

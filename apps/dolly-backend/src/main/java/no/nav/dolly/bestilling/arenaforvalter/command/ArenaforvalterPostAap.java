@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -18,6 +19,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArenaforvalterPostAap implements Callable<Flux<AapResponse>> {
 
     private static final String ARENAFORVALTER_AAP = "/api/v1/aap";
@@ -46,7 +48,7 @@ public class ArenaforvalterPostAap implements Callable<Flux<AapResponse>> {
                     response.setMiljoe(aapRequest.getMiljoe());
                     return response;
                 })
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error ->
                         Flux.just(AapResponse.builder()
                                 .status(WebClientFilter.getStatus(error))

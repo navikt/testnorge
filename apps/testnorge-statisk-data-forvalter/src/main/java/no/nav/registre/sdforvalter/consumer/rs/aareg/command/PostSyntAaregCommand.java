@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -33,7 +34,7 @@ public class PostSyntAaregCommand implements Callable<List<RsAaregSyntetiserings
                 .body(Mono.just(fnrs), REQUEST_TYPE)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> {
                     log.error("Feil under syntetisering");
                     return Mono.just(Collections.emptyList());

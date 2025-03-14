@@ -2,6 +2,7 @@ package no.nav.testnav.levendearbeidsforholdservice.consumers.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class EndreArbeidsforholdCommand implements Callable<Mono<ResponseEntity<Void>>> {
 
     private static final String NAV_ARBEIDSFORHOLD_KILDE = "Dolly-doedsfall-hendelse";
@@ -41,7 +43,7 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<ResponseEntity<
                 .retrieve()
                 .toBodilessEntity()
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 }
 

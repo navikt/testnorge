@@ -1,6 +1,7 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.aareg;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.NavHeaders;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -17,6 +18,7 @@ import java.util.concurrent.Callable;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor
+@Slf4j
 public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>> {
 
     private static final String MILJOE = "q2";
@@ -48,7 +50,7 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
                 .retrieve()
                 .bodyToFlux(Arbeidsforhold.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.empty())
                 .onErrorResume(WebClientResponseException.class, error -> Mono.empty());
     }

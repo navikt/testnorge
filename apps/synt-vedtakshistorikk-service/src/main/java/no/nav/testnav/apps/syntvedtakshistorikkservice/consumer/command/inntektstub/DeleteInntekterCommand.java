@@ -1,6 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.inntektstub;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DeleteInntekterCommand implements Callable<Mono<Void>> {
 
     private final List<String> identer;
@@ -27,7 +30,7 @@ public class DeleteInntekterCommand implements Callable<Mono<Void>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

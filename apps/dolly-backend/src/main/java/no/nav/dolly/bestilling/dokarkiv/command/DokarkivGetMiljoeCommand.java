@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.dokarkiv.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -17,6 +18,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
 
     private static final String DOKARKIV_PROXY_ENVIRONMENTS = "/rest/miljoe";
@@ -39,7 +41,7 @@ public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
                 .retrieve()
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(List.of("q1", "q2", "q4")))
                 .retryWhen(WebClientError.is5xxException());
     }

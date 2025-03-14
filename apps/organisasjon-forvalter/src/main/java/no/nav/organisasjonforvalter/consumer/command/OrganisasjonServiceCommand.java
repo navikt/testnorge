@@ -35,7 +35,7 @@ public class OrganisasjonServiceCommand implements Callable<Flux<OrganisasjonDTO
                 .header(MILJOE, environment)
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.just(OrganisasjonDTO.builder()
                         .error(WebClientFilter.getMessage(throwable))
                         .build()))

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.MaskinportenConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.maskinporten.dto.WellKnown;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -26,7 +27,7 @@ public class GetWellKnownCommand implements Callable<Mono<WellKnown>> {
                 .retrieve()
                 .bodyToMono(WellKnown.class)
                 .doOnSuccess(value -> log.info("WellKnown hentet for maskinporten."))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .cache(Duration.ofDays(1L));
     }
 }

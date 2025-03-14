@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,6 +12,7 @@ import java.util.concurrent.Callable;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PersonExistsGetCommand implements Callable<Flux<Boolean>> {
 
     private static final String PERSON_URL = "/api/v1/personer/{ident}/exists";
@@ -29,7 +31,7 @@ public class PersonExistsGetCommand implements Callable<Flux<Boolean>> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(Boolean.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

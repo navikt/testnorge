@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.kontoregisterservice.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResponseDTO>> {
 
     private static final String KONTOREGISTER_API_URL = "/api/system/v1/oppdater-konto";
@@ -37,7 +39,7 @@ public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResp
                 .map(value -> KontoregisterResponseDTO.builder()
                         .status(HttpStatus.valueOf(value.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(KontoregisterResponseDTO.builder()
                         .status(WebClientFilter.getStatus(error))
                         .feilmelding(WebClientFilter.getMessage(error))

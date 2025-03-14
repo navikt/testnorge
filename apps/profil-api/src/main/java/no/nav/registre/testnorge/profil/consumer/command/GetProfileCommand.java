@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.profil.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetProfileCommand implements Callable<Mono<ProfileDTO>> {
 
     private final WebClient webClient;
@@ -24,7 +26,7 @@ public class GetProfileCommand implements Callable<Mono<ProfileDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(ProfileDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.skattekort.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.dto.skattekortservice.v1.IdentifikatorForEnhetEllerPerson;
@@ -24,6 +25,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SkattekortPostCommand implements Callable<Flux<String>> {
 
     private static final String SKATTEKORT_URL = "/api/v1/skattekort";
@@ -47,7 +49,7 @@ public class SkattekortPostCommand implements Callable<Flux<String>> {
                 .retrieve()
                 .bodyToFlux(String.class)
                 .map(status -> getArbeidsgiverAndYear(request) + ErrorStatusDecoder.encodeStatus(status))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());

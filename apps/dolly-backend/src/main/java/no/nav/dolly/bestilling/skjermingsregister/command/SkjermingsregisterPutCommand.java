@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.skjermingsregister.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -13,6 +14,7 @@ import java.util.concurrent.Callable;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SkjermingsregisterPutCommand implements Callable<Mono<SkjermingDataResponse>> {
 
     private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjerming/dolly";
@@ -34,7 +36,7 @@ public class SkjermingsregisterPutCommand implements Callable<Mono<SkjermingData
                 .onErrorResume(error -> Mono.just(SkjermingDataResponse.builder()
                         .error(WebClientFilter.getMessage(error))
                         .build()))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

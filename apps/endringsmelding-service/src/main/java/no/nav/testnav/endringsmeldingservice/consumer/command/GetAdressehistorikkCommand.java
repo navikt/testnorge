@@ -1,6 +1,7 @@
 package no.nav.testnav.endringsmeldingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetAdressehistorikkCommand implements Callable<Flux<AdressehistorikkDTO>> {
 
     private final WebClient webClient;
@@ -34,7 +36,7 @@ public class GetAdressehistorikkCommand implements Callable<Flux<Adressehistorik
                 .retrieve()
                 .bodyToFlux(AdressehistorikkDTO.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

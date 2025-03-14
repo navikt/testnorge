@@ -1,6 +1,7 @@
 package no.nav.skattekortservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.skattekortservice.dto.SokosRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -14,6 +15,7 @@ import java.util.concurrent.Callable;
 import static org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SokosPostCommand implements Callable<Mono<String>> {
 
     private static final String SOKOS_URL = "/api/v1/skattekort/opprett";
@@ -32,7 +34,7 @@ public class SokosPostCommand implements Callable<Mono<String>> {
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

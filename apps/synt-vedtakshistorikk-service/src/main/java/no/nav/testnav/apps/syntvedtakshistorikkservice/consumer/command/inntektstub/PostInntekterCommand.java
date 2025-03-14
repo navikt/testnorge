@@ -1,7 +1,9 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.inntektstub;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.inntektstub.Inntektsinformasjon;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PostInntekterCommand implements Callable<Mono<List<Inntektsinformasjon>>> {
 
     private final List<Inntektsinformasjon> inntektsinformasjon;
@@ -30,7 +33,7 @@ public class PostInntekterCommand implements Callable<Mono<List<Inntektsinformas
                 .bodyValue(inntektsinformasjon)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

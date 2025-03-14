@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.tagshendelseslager.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -20,6 +21,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingResponse>> {
 
     private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags";
@@ -52,7 +54,7 @@ public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingRespon
                         .details(Optional.ofNullable(status.getBody()).map(TagsOpprettingResponse::getDetails).orElse(null))
                         .status(HttpStatus.valueOf(status.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

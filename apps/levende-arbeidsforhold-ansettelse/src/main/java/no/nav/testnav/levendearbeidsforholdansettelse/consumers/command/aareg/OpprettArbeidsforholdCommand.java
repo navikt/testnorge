@@ -1,6 +1,7 @@
 package no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.aareg;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdResponseDTO;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -16,6 +17,7 @@ import java.util.concurrent.Callable;
 import static io.netty.handler.codec.http.HttpResponseStatus.CREATED;
 
 @RequiredArgsConstructor
+@Slf4j
 public class OpprettArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdResponseDTO>> {
 
     private static final String MILJOE = "q2";
@@ -41,7 +43,7 @@ public class OpprettArbeidsforholdCommand implements Callable<Mono<Arbeidsforhol
                         .payload(payload)
                         .build())
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(ArbeidsforholdResponseDTO.builder()
                         .statusCode(WebClientFilter.getStatus(error))
                         .feilmelding(WebClientFilter.getMessage(error))

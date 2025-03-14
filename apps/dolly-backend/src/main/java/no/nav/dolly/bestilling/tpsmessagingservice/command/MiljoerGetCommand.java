@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.tpsmessagingservice.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class MiljoerGetCommand implements Callable<Mono<List<String>>> {
 
     private static final String MILJOER_URL = "/api/v1/miljoer";
@@ -29,7 +31,7 @@ public class MiljoerGetCommand implements Callable<Mono<List<String>>> {
                 .retrieve()
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .cache(Duration.ofHours(8));
     }

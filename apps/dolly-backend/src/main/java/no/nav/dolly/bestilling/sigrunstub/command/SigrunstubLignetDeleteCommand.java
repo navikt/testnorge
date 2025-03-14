@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.sigrunstub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -19,6 +20,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SigrunstubLignetDeleteCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
@@ -45,7 +47,9 @@ public class SigrunstubLignetDeleteCommand implements Callable<Mono<SigrunstubRe
                         .ident(ident)
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
-                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound), WebClientFilter::logErrorMessage)
+                .doOnError(
+                        throwable -> !(throwable instanceof WebClientResponseException.NotFound),
+                        throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
                         .ident(ident)
                         .status(WebClientFilter.getStatus(error))

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdldata.command;
 
 import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -16,6 +17,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PdlDataSlettCommand implements Callable<Flux<Void>> {
 
     private static final String PDL_FORVALTER_URL = "/api/v1/personer/{ident}";
@@ -34,7 +36,9 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
                 .bodyToFlux(Void.class)
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on DELETE of ident %s".formatted(ident)))
-                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound), WebClientFilter::logErrorMessage)
+                .doOnError(
+                        throwable -> !(throwable instanceof WebClientResponseException.NotFound),
+                        throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Flux.empty());
     }

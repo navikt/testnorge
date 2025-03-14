@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdldata.command;
 
 import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -20,6 +21,7 @@ import static java.lang.String.join;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
 
     private static final String PDL_FORVALTER_PERSONER_URL = "/api/v1/personer";
@@ -43,7 +45,7 @@ public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
                 .retrieve()
                 .bodyToFlux(FullPersonDTO.class)
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on GET of idents %s".formatted(join(",", identer))))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());

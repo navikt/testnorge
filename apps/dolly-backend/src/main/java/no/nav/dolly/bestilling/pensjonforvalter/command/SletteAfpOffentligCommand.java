@@ -1,7 +1,9 @@
 package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SletteAfpOffentligCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
     private static final String AFP_OFFENTLIG_URL = "/{miljoe}/api/mock-oppsett/{ident}";
@@ -42,7 +45,7 @@ public class SletteAfpOffentligCommand implements Callable<Mono<Pensjonforvalter
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, ident, HttpStatus.valueOf(response.getStatusCode().value())))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, ident, error)));
     }
 

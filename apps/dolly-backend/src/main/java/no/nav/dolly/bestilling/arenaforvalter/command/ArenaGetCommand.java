@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -16,6 +17,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
 
     private static final String ARENA_URL = "/{miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse";
@@ -44,7 +46,7 @@ public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
                     status.setMiljoe(miljoe);
                     return status;
                 })
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error ->
                         Mono.just(ArenaStatusResponse.builder()
                                 .status(WebClientFilter.getStatus(error))

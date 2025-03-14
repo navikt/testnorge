@@ -38,7 +38,7 @@ public class HentVedtakshistorikkCommand implements Callable<Mono<List<Vedtakshi
                 .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

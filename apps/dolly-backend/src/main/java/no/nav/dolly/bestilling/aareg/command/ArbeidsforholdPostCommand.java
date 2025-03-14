@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.aareg.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
@@ -18,6 +19,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_ARBEIDSFORHOLD;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArbeidsforholdPostCommand implements Callable<Flux<ArbeidsforholdRespons>> {
 
     private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidsforhold";
@@ -43,7 +45,7 @@ public class ArbeidsforholdPostCommand implements Callable<Flux<ArbeidsforholdRe
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
                         .miljo(miljoe)
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Flux.just(ArbeidsforholdRespons.builder()
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
                         .miljo(miljoe)

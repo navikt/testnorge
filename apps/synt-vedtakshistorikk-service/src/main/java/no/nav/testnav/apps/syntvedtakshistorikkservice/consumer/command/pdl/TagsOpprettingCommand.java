@@ -42,7 +42,7 @@ public class TagsOpprettingCommand implements Callable<Mono<ResponseEntity<JsonN
                 .body(BodyInserters.fromValue(identer))
                 .retrieve()
                 .toEntity(JsonNode.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

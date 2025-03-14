@@ -34,7 +34,7 @@ class SelfCheckCommand implements Callable<Mono<DummyDTO>> {
                 .retrieve()
                 .bodyToMono(DummyDTO.class)
                 .retryWhen(WebClientError.is(HttpClientErrorException.class::isInstance))
-                .checkpoint();
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.dto.InaktiverResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -20,6 +21,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverResponse>> {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
@@ -51,7 +53,7 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
                 .map(resultat -> InaktiverResponse.builder()
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.just(InaktiverResponse.builder()
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))

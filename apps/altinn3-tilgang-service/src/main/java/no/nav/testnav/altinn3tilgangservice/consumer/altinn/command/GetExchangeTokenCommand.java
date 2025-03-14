@@ -2,6 +2,7 @@ package no.nav.testnav.altinn3tilgangservice.consumer.altinn.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ public class GetExchangeTokenCommand implements Callable<Mono<String>> {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .doOnSuccess(response -> log.info("Exchange token hentet fra Altinn"));
     }
 }

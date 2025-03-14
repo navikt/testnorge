@@ -38,7 +38,7 @@ public class SlettArenaBrukerCommand implements Callable<Mono<ResponseEntity<Jso
                 .header(Headers.CONSUMER_ID, Headers.NAV_CONSUMER_ID)
                 .retrieve()
                 .toEntity(JsonNode.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

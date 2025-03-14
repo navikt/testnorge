@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.fastedata;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.fastedata.Organisasjon;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -14,6 +15,7 @@ import java.util.concurrent.Callable;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetOrganisasjonerCommand implements Callable<Mono<List<Organisasjon>>> {
 
     private final String token;
@@ -34,7 +36,7 @@ public class GetOrganisasjonerCommand implements Callable<Mono<List<Organisasjon
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

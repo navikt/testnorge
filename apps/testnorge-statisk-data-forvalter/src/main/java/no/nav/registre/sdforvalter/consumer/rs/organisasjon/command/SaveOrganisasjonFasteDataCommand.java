@@ -30,7 +30,7 @@ public class SaveOrganisasjonFasteDataCommand implements Runnable {
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OrganisasjonDTO.class))
                 .retrieve()
                 .bodyToMono(Void.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .block();
     }

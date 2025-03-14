@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.search;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.search.PersonSearchResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
@@ -17,6 +18,7 @@ import java.util.concurrent.Callable;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>> {
 
     private final PersonSearch request;
@@ -41,7 +43,7 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
                     var numberOfItems = headers != null && !headers.isEmpty() ? headers.getFirst() : "0";
                     return Mono.just(new PersonSearchResponse(Integer.parseInt(numberOfItems), entity.getBody()));
                 })
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.empty());
     }

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.tagshendelseslager.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -16,6 +17,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class HendelseslagerPublishCommand implements Callable<Mono<HendelselagerResponse>> {
 
     private static final String PDL_PUBLISH = "/internal/publish";
@@ -46,7 +48,7 @@ public class HendelseslagerPublishCommand implements Callable<Mono<Hendelselager
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))
                         .build()))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

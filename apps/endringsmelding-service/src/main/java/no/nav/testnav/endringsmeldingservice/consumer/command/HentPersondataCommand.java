@@ -1,6 +1,7 @@
 package no.nav.testnav.endringsmeldingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -12,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class HentPersondataCommand implements Callable<Flux<PersonMiljoeDTO>> {
 
     private final WebClient webClient;
@@ -32,7 +34,7 @@ public class HentPersondataCommand implements Callable<Flux<PersonMiljoeDTO>> {
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

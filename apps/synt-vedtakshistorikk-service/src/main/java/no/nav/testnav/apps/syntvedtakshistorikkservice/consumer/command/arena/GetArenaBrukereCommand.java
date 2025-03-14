@@ -1,7 +1,9 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,6 +14,7 @@ import java.util.concurrent.Callable;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>> {
 
     private final MultiValueMap<String, String> queryParams;
@@ -31,7 +34,7 @@ public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(NyeBrukereResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(throwable -> WebClientError.log(throwable, log));
     }
 
 }

@@ -1,6 +1,7 @@
 package no.nav.dolly.consumer.norg2.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
 
     private static final String NAVKONTOR_URL = "/norg2/api/v1/enhet/navkontor/{geografiskOmraade}";
@@ -29,7 +31,7 @@ public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Norg2EnhetResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(Norg2EnhetResponse.builder()
                         .httpStatus(WebClientFilter.getStatus(error))
                         .avvik(WebClientFilter.getMessage(error))

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.instdata.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.util.TokenXUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
 
     private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person";
@@ -45,8 +47,9 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
                         .ident(ident)
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
-                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.BadRequest),
-                        WebClientFilter::logErrorMessage)
+                .doOnError(
+                        throwable -> !(throwable instanceof WebClientResponseException.BadRequest),
+                        throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(DeleteResponse.builder()
                         .ident(ident)
                         .status(WebClientFilter.getStatus(error))

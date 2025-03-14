@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektsmelding.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -17,6 +18,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class OpprettInntektsmeldingCommand implements Callable<Flux<InntektsmeldingResponse>> {
 
     private final WebClient webClient;
@@ -35,7 +37,7 @@ public class OpprettInntektsmeldingCommand implements Callable<Flux<Inntektsmeld
                 .body(BodyInserters.fromPublisher(Mono.just(request), InntektsmeldingRequest.class))
                 .retrieve()
                 .bodyToFlux(InntektsmeldingResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Flux.just(InntektsmeldingResponse.builder()
                         .fnr(request.getArbeidstakerFnr())
                         .status(WebClientFilter.getStatus(error))

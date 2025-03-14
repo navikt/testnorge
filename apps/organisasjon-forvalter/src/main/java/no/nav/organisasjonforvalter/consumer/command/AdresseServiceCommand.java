@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AdresseServiceCommand implements Callable<Mono<VegadresseDTO[]>> {
 
     private static final String VEGADRESSE_URL = "/api/v1/adresser/veg";
@@ -27,7 +29,7 @@ public class AdresseServiceCommand implements Callable<Mono<VegadresseDTO[]>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(VegadresseDTO[].class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

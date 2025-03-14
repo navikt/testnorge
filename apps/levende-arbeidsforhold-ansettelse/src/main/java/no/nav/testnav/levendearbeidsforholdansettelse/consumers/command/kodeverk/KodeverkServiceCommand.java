@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -36,7 +37,7 @@ public class KodeverkServiceCommand implements Callable<Mono<Map<String, String>
                 .bodyToMono(JsonNode.class)
                 .map(node -> (Map<String, String>) (nonNull(node) ?
                         mapper.convertValue(node.get("kodeverk"), new TypeReference<>(){}) : Mono.empty()))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.empty());
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -45,7 +46,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, HttpStatus.valueOf(response.getStatusCode().value())))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 
