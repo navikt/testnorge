@@ -8,6 +8,7 @@ import {
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import * as _ from 'lodash'
 
 type MiljoDataListe = {
 	miljo: string
@@ -154,39 +155,34 @@ export const useFasteDataOrganisasjon = (orgnummer: string) => {
 	}
 }
 
+const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
+	const validUrls = urls.filter((url) => url !== null) as string[]
+
+	if (validUrls.length === 0) {
+		return []
+	}
+
+	return await Promise.all(
+		validUrls.map((url) =>
+			fetcher(url, { 'Content-Type': 'application/json' }).catch((error) => {
+				throw error
+			}),
+		),
+	)
+}
+
 export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
 	const filteredOrgnummere = orgnummere.filter((orgnummer) => orgnummer !== undefined)
-	if (!filteredOrgnummere || filteredOrgnummere.length === 0) {
-		return {
-			organisasjoner: [],
-			loading: false,
-			error: new Error('Organisasjonsnummer mangler!'),
-		}
-	}
-
 	const urls = filteredOrgnummere.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
-
-	const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
-		const validUrls = urls.filter((url) => url !== null) as string[]
-
-		if (validUrls.length === 0) return []
-
-		return await Promise.all(
-			validUrls.map((url) =>
-				fetcher(url, { 'Content-Type': 'application/json' }).catch((error) => {
-					throw error
-				}),
-			),
-		)
-	}
 
 	const { data, isLoading, error } = useSWR<OrganisasjonForvalterData[], Error>(
 		urls.length > 0 ? urls : null,
 		fetchAllOrganisasjoner,
 	)
+	const dataFiltered = data?.filter((org) => org !== null && !_.isEmpty(org))
 
 	return {
-		organisasjoner: data || [],
+		organisasjoner: dataFiltered || [],
 		loading: isLoading,
 		error: error,
 	}

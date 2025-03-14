@@ -7,15 +7,13 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import {
 	useDollyFasteDataOrganisasjoner,
 	useDollyOrganisasjoner,
-	useFasteDataOrganisasjon,
+	useOrganisasjonForvalter,
 } from '@/utils/hooks/useDollyOrganisasjoner'
 import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import { useBoolean } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
-import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
+import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/OrganisasjonForvalterSelect'
 import styled from 'styled-components'
 import { arbeidsgiverToggleValues, handleManualOrgChange } from '@/utils/OrgUtils'
 
@@ -75,11 +73,13 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 		formMethods.watch('skattekort.arbeidsgiverSkatt')?.length,
 	])
 
-	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
-	const [success, setSuccess] = useBoolean(false)
-	const [loading, setLoading] = useBoolean(false)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(organisasjonPath) || null)
-	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
+	const { organisasjoner, loading, error } = useOrganisasjonForvalter([orgnummer])
+	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
+
+	useEffect(() => {
+		handleManualOrgChange(orgnummer, formMethods, organisasjonPath, null, organisasjon)
+	}, [organisasjon])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
@@ -137,40 +137,14 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 						/>
 					)}
 					{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
-						<OrganisasjonMedMiljoeSelect
+						<OrganisasjonForvalterSelect
 							path={organisasjonPath}
 							parentPath={path}
-							miljoeOptions={aktiveMiljoer}
-							success={success}
+							success={organisasjoner?.length > 0 && !error}
 							loading={loading}
 							onTextBlur={(event) => {
-								const org = event.target.value
-								setOrgnummer(org)
-								handleManualOrgChange(
-									org,
-									formMethods.watch(`${path}.organisasjonMiljoe`),
-									formMethods,
-									organisasjonPath,
-									setLoading,
-									setSuccess,
-									organisasjon,
-									null,
-								)
+								setOrgnummer(event.target.value)
 							}}
-							onMiljoeChange={(event) => {
-								formMethods.setValue(`${path}.organisasjonMiljoe`, event.value)
-								handleManualOrgChange(
-									orgnummer,
-									event.value,
-									formMethods,
-									organisasjonPath,
-									setLoading,
-									setSuccess,
-									organisasjon,
-									null,
-								)
-							}}
-							formMethods={formMethods}
 						/>
 					)}
 					{typeArbeidsgiver === ArbeidsgiverTyper.privat && (

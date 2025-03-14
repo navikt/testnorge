@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import { OrganisasjonToggleGruppe } from '@/components/organisasjonSelect/OrganisasjonToggleGruppe'
 import { EgneOrganisasjoner, getEgneOrganisasjoner } from '@/utils/EgneOrganisasjoner'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -44,8 +43,6 @@ export const OrgnrToggle = ({
 	useEffect(() => {
 		setInputType(getOrgType(orgnr, fasteOrganisasjoner, egneOrganisasjoner))
 	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('brregstub.enheter')?.length])
-
-	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
 	const handleToggleChange = (value: string) => {
 		setInputType(value)
@@ -95,12 +92,7 @@ export const OrgnrToggle = ({
 				/>
 			)}
 			{inputType === ArbeidsgiverTyper.fritekst && (
-				<OrganisasjonTextSelect
-					path={`${path}.orgNr`}
-					aktiveMiljoer={aktiveMiljoer}
-					setEnhetsinfo={setEnhetsinfo}
-					clearEnhetsinfo={clearEnhetsinfo}
-				/>
+				<OrganisasjonTextSelect path={`${path}.orgNr`} setEnhetsinfo={setEnhetsinfo} />
 			)}
 		</div>
 	)
