@@ -1,10 +1,6 @@
 package no.nav.testnav.apps.tenorsearchservice.consumers;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JOSEObjectType;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -31,12 +27,13 @@ import java.util.function.Function;
 @Component
 public class MaskinportenConsumer {
 
-    private final WebClient webClient;
     private final MaskinportenConfig maskinportenConfig;
     private final Mono<AccessToken> accessToken;
 
-    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig, WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.build();
+    public MaskinportenConsumer(
+            MaskinportenConfig maskinportenConfig,
+            WebClient webClient
+    ) {
         this.maskinportenConfig = maskinportenConfig;
         var wellKnownMono = cache(
                 new GetWellKnownCommand(webClient, maskinportenConfig).call(),

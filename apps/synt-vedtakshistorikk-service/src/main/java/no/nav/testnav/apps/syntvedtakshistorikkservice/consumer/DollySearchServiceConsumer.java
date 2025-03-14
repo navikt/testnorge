@@ -21,19 +21,21 @@ public class DollySearchServiceConsumer {
     public DollySearchServiceConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavDollySearchService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
 
     public PersonSearchResponse search(PersonSearch request) {
-
-            return tokenExchange.exchange(serverProperties)
-                    .flatMap(accessToken -> new PersonSearchCommand(request, accessToken.getTokenValue(), webClient).call())
-                    .block();
+        return tokenExchange
+                .exchange(serverProperties)
+                .flatMap(accessToken -> new PersonSearchCommand(request, accessToken.getTokenValue(), webClient).call())
+                .block();
     }
+
 }

@@ -17,11 +17,15 @@ public class SyfosmreglerConsumer {
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
 
-    public SyfosmreglerConsumer(Consumers consumers, WebClient.Builder webClientBuilder, TokenExchange tokenExchange) {
-
+    public SyfosmreglerConsumer(
+            Consumers consumers,
+            WebClient webClient,
+            TokenExchange tokenExchange
+    ) {
         this.properties = consumers.getSykemeldingProxy();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(properties.getUrl())
                 .build();
     }

@@ -35,17 +35,18 @@ public class FullmaktConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavFullmaktProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "fullmakt_createData" })
+    @Timed(name = "providers", tags = {"operation", "fullmakt_createData"})
     public Flux<FullmaktResponse> createFullmaktData(List<RsFullmakt> fullmakter, String ident) {
 
         log.info("Fullmakt opprett {}", fullmakter);
@@ -56,7 +57,7 @@ public class FullmaktConsumer extends ConsumerStatus {
                                 .flatMap(idx -> new PostFullmaktDataCommand(webClient, token.getTokenValue(), ident, fullmakter.get(idx)).call()));
     }
 
-    @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
+    @Timed(name = "providers", tags = {"operation", "fullmakt_getData"})
     public Flux<FullmaktResponse> getFullmaktData(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
@@ -66,7 +67,7 @@ public class FullmaktConsumer extends ConsumerStatus {
                                 token.getTokenValue()).call()));
     }
 
-    @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
+    @Timed(name = "providers", tags = {"operation", "fullmakt_getData"})
     public Mono<HttpStatusCode> deleteFullmaktData(String ident, Integer fullmaktId) {
 
         return tokenService.exchange(serverProperties)

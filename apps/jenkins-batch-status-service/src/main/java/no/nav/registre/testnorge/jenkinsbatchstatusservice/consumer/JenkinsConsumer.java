@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 @Component
 public class JenkinsConsumer {
+
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
@@ -21,11 +22,12 @@ public class JenkinsConsumer {
     public JenkinsConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getJenkins();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

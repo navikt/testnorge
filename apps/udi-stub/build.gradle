@@ -21,8 +21,10 @@ configurations {
 }
 
 dependencies {
+    implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
+    implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:vault"
 
     implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"

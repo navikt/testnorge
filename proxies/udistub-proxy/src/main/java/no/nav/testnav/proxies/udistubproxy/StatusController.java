@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.udistubproxy;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,21 +11,24 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class StatusController {
+
     private static final String TEAM = "orkestrator";
+
+    private final WebClient webClient;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
-        var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
                 "http://udi-stub.dev.intern.nav.no/internal/health/liveness",
                 "http://udi-stub.dev.intern.nav.no/internal/health/readiness",
-                statusWebClient);
-
+                webClient);
         return Map.of(
                 "udi-stub", status
         );
+
     }
 
     public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {

@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 
@@ -54,11 +55,15 @@ class IdportenSecurityConfig {
 
     @SneakyThrows
     @Bean
-    SecurityWebFilterChain configure(ServerHttpSecurity http, ServerOAuth2AuthorizationRequestResolver requestResolver) {
+    SecurityWebFilterChain configure(
+            WebClient webClient,
+            ServerHttpSecurity http,
+            ServerOAuth2AuthorizationRequestResolver requestResolver
+    ) {
         var authenticationSuccessHandler = new DollyAuthenticationSuccessHandler();
-        var authenticationManager = new AuthorizationCodeReactiveAuthenticationManger(JWK.parse(jwk));
+        var authenticationManager = new AuthorizationCodeReactiveAuthenticationManger(webClient, JWK.parse(jwk));
         var logoutSuccessHandler = new LogoutSuccessHandler();
-        logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(wellKnownUrl, postLogoutRedirectUri));
+        logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(webClient, wellKnownUrl, postLogoutRedirectUri));
 
         return http
                 .cors(ServerHttpSecurity.CorsSpec::disable)

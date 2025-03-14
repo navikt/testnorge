@@ -3,14 +3,12 @@ package no.nav.testnav.joarkdokumentservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.joarkdokumentservice.consumer.dto.Response;
-import no.nav.testnav.joarkdokumentservice.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -23,26 +21,23 @@ public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
     private final String journalpostId;
     private final String miljo;
 
-
     @Override
     public Mono<Response> call() {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .path("/{miljo}/graphql")
-                        .build(miljo)
-                )
+                        .build(miljo))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromValue(
                         GraphQLRequest.builder()
                                 .query(GraphQLRequest.getQueryFromFile("schema/safquery-journalpost.graphql"))
                                 .variables(Map.of("journalpostId", journalpostId))
-                                .build()
-                ))
+                                .build()))
                 .retrieve()
                 .bodyToMono(Response.class)
                 .doOnError(throwable -> log.error("Feilet under henting av Journalpost", throwable))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

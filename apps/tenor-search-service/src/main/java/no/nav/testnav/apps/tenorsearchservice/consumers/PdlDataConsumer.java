@@ -18,9 +18,13 @@ public class PdlDataConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
-    public PdlDataConsumer(TokenExchange tokenExchange, Consumers serverProperties,
-                           WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder
+    public PdlDataConsumer(
+            TokenExchange tokenExchange,
+            Consumers serverProperties,
+            WebClient webClient
+    ) {
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getPdlTestdata().getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
@@ -28,8 +32,8 @@ public class PdlDataConsumer {
     }
 
     public Mono<DollyTagsDTO> hasPdlDollyTag(List<String> identer) {
-
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new TagsGetCommand(webClient, identer, token.getTokenValue()).call());
     }
+
 }

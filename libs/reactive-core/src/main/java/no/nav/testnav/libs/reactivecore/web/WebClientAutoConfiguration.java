@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivecore.config;
+package no.nav.testnav.libs.reactivecore.web;
 
 import io.micrometer.observation.ObservationRegistry;
 import io.netty.channel.ChannelOption;
@@ -6,10 +6,9 @@ import io.netty.channel.epoll.EpollChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.metrics.UriStrippingClientRequestObservationConvention;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ClientRequestObservationConvention;
 import org.springframework.web.reactive.function.client.DefaultClientRequestObservationConvention;
@@ -19,24 +18,25 @@ import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
 
-@Configuration
+@AutoConfiguration
 @Slf4j
-public class WebClientConfig {
+class WebClientAutoConfiguration {
 
     @Bean
-    @Primary
-    public WebClient.Builder webClientBuilder(ApplicationContext context) {
+    WebClient webClient(
+            ApplicationContext context,
+            WebClient.Builder builder
+    ) {
 
         try {
 
             var observationRegistry = context.getBean(ObservationRegistry.class);
             log.info(
                     "Using {} with observation registry {}",
-                    WebClient.Builder.class.getCanonicalName(),
+                    builder.getClass().getCanonicalName(),
                     observationRegistry.getClass().getCanonicalName()
             );
-            return WebClient
-                    .builder()
+            return builder
                     .observationConvention(new DefaultClientRequestObservationConvention())
                     .observationRegistry(observationRegistry)
                     .clientConnector(
@@ -53,27 +53,24 @@ public class WebClientConfig {
                                             .option(EpollChannelOption.TCP_KEEPINTVL, 60)
                                             .option(EpollChannelOption.TCP_KEEPCNT, 8)
                                             .responseTimeout(Duration.ofSeconds(10))
-                            ));
+                            ))
+                    .build();
 
         } catch (NoSuchBeanDefinitionException e) {
 
             log.info(
                     "No {} found in context, using {} without any observation registry",
                     ObservationRegistry.class.getCanonicalName(),
-                    WebClient.Builder.class.getCanonicalName()
+                    builder.getClass().getCanonicalName()
             );
-            return WebClient.builder();
+            return builder.build();
 
         }
+
     }
 
     @Bean
-    public WebClient webClient(WebClient.Builder webClientBuilder) {
-        return webClientBuilder.build();
-    }
-
-    @Bean
-    public ClientRequestObservationConvention clientRequestObservationConvention() {
+    ClientRequestObservationConvention clientRequestObservationConvention() {
         return new UriStrippingClientRequestObservationConvention();
     }
 

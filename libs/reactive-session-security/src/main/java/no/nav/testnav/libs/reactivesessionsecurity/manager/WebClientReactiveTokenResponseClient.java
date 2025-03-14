@@ -1,5 +1,7 @@
 package no.nav.testnav.libs.reactivesessionsecurity.manager;
 
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.endpoint.NimbusJwtClientAuthenticationParametersConverter;
@@ -23,9 +25,12 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.Set;
 
+@RequiredArgsConstructor
 class WebClientReactiveTokenResponseClient implements ReactiveOAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> {
 
-    private WebClient webClient = WebClient.builder().build();
+    private final WebClient webClient;
+
+    @Setter
     private NimbusJwtClientAuthenticationParametersConverter<OAuth2AuthorizationCodeGrantRequest> converter;
 
     @Override
@@ -37,14 +42,6 @@ class WebClientReactiveTokenResponseClient implements ReactiveOAuth2AccessTokenR
                 .body(createTokenRequestBody(grantRequest))
                 .exchangeToMono(clientResponse -> readTokenResponse(grantRequest, clientResponse))
         );
-    }
-
-    public void setWebClient(WebClient webClient) {
-        this.webClient = webClient;
-    }
-
-    public void setConverter(NimbusJwtClientAuthenticationParametersConverter<OAuth2AuthorizationCodeGrantRequest> converter) {
-        this.converter = converter;
     }
 
     private ClientRegistration clientRegistration(OAuth2AuthorizationCodeGrantRequest grantRequest) {

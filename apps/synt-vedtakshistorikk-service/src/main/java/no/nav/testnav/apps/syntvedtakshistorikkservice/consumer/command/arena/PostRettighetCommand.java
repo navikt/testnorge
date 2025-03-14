@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -12,13 +12,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> {
 
     private final RettighetRequest rettighet;
@@ -27,11 +23,9 @@ public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> 
 
     @Override
     public Mono<NyttVedtakResponse> call() {
-        return webClient.post()
-                .uri(builder ->
-                        builder.path(rettighet.getArenaForvalterUrlPath())
-                                .build()
-                )
+        return webClient
+                .post()
+                .uri(builder -> builder.path(rettighet.getArenaForvalterUrlPath()).build())
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .header(AUTHORIZATION, "Bearer " + token)
@@ -40,6 +34,6 @@ public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> 
                 .retrieve()
                 .bodyToMono(NyttVedtakResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage);
-
     }
+
 }

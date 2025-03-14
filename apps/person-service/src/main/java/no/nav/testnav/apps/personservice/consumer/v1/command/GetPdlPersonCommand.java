@@ -2,24 +2,21 @@ package no.nav.testnav.apps.personservice.consumer.v1.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personservice.consumer.v1.header.PdlHeaders;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlPerson;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Request;
-import no.nav.testnav.apps.personservice.consumer.v1.header.PdlHeaders;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -29,6 +26,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 @RequiredArgsConstructor
 public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
+
+    private static final String FILENAME = "pdl/pdlQuery.graphql";
     private static final String TEMA_GENERELL = "GEN";
 
     private final WebClient webClient;
@@ -44,11 +43,14 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
         variables.put("historikk", true);
 
         String query = null;
-        InputStream queryStream = Thread.currentThread()
-                .getContextClassLoader()
-                .getResourceAsStream("pdl/pdlQuery.graphql");
+        var stream = Optional
+                .ofNullable(Thread
+                        .currentThread()
+                        .getContextClassLoader()
+                        .getResourceAsStream(FILENAME))
+                .orElseThrow(() -> new IllegalStateException("Finner ikke fil %s".formatted(FILENAME)));
         try {
-            query = new BufferedReader(new InputStreamReader(queryStream, StandardCharsets.UTF_8))
+            query = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))
                     .lines().collect(Collectors.joining("\n"));
         } catch (Exception e) {
             log.error("Lesing av queryressurs feilet", e);
@@ -62,7 +64,8 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
 
         return webClient
                 .post()
-                .uri(uriBuilder -> uriBuilder.path(url)
+                .uri(uriBuilder -> uriBuilder
+                        .path(url)
                         .path("/graphql")
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
@@ -72,7 +75,8 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .retrieve()
                 .bodyToMono(PdlPerson.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
+
     }
+
 }

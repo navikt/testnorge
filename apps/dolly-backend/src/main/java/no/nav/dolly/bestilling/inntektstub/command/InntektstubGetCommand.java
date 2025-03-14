@@ -2,14 +2,12 @@ package no.nav.dolly.bestilling.inntektstub.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -26,8 +24,8 @@ public class InntektstubGetCommand implements Callable<Flux<Inntektsinformasjon>
 
     @Override
     public Flux<Inntektsinformasjon> call() {
-
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(INNTEKTER_URL)
                         .queryParam(NORSKE_IDENTER_QUERY, ident)
@@ -36,7 +34,7 @@ public class InntektstubGetCommand implements Callable<Flux<Inntektsinformasjon>
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToFlux(Inntektsinformasjon.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

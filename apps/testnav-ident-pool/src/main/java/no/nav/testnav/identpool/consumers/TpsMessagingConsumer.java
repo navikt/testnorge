@@ -30,23 +30,21 @@ public class TpsMessagingConsumer {
     public TpsMessagingConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
-
         serverProperties = consumers.getTpsMessagingService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
 
     public Set<TpsStatusDTO> getIdenterStatuser(Set<String> identer) {
-
         return new HashSet<>(getIdenterStatus(new ArrayList<>(identer), Set.of("zz"), status -> !status.getMiljoer().isEmpty()));
     }
 
     public List<TpsStatusDTO> getIdenterProdStatus(Set<String> identer) {
-
         return getIdenterStatus(new ArrayList<>(identer), Set.of(NO_ENV), status -> status.getMiljoer().contains("p"));
     }
 

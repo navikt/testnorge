@@ -21,11 +21,13 @@ public class SyntAaregConsumer {
     private final WebClient webClient;
 
     public SyntAaregConsumer(
+            WebClient webClient,
             @Value("${aareg.pageSize}") int pageSize,
             @Value("${consumers.synthdata-aareg.url}") String syntUrl
     ) {
         this.pageSize = pageSize;
-        this.webClient = WebClient.builder()
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
@@ -35,7 +37,7 @@ public class SyntAaregConsumer {
                 .build();
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aareg-syntetisereren" })
+    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "aareg-syntetisereren"})
     public List<RsAaregSyntetiseringsRequest> getSyntetiserteArbeidsforholdsmeldinger(List<String> identer) {
         List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger = new ArrayList<>();
 

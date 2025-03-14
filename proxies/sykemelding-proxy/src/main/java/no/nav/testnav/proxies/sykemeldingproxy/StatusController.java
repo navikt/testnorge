@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.sykemeldingproxy;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,21 +11,24 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class StatusController {
+
     private static final String TEAM = "Team sykmelding";
+
+    private final WebClient webClient;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
-        var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
                 "http://syfosmregler.teamsykmelding" + "/internal/is_alive",
                 "http://syfosmregler.teamsykmelding" + "/internal/is_ready",
-                statusWebClient);
-
+                webClient);
         return Map.of(
                 "syfosmregler", status
         );
+
     }
 
     public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
