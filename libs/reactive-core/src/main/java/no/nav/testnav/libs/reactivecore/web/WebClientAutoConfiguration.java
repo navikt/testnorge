@@ -5,11 +5,10 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.metrics.UriStrippingClientRequestObservationConvention;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.lang.Nullable;
 import org.springframework.web.reactive.function.client.ClientRequestObservationConvention;
 import org.springframework.web.reactive.function.client.DefaultClientRequestObservationConvention;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,49 +22,47 @@ import java.time.Duration;
 class WebClientAutoConfiguration {
 
     @Bean
-    WebClient webClient(
-            ApplicationContext context,
-            WebClient.Builder builder
-    ) {
+    WebClient webClient(@Nullable ObservationRegistry observationRegistry) {
 
-        try {
-
-            var observationRegistry = context.getBean(ObservationRegistry.class);
-            log.info(
-                    "Using {} with observation registry {}",
-                    builder.getClass().getCanonicalName(),
-                    observationRegistry.getClass().getCanonicalName()
-            );
-            return builder
-                    .observationConvention(new DefaultClientRequestObservationConvention())
-                    .observationRegistry(observationRegistry)
-                    .clientConnector(
-                            new ReactorClientHttpConnector(
-                                    HttpClient
-                                            .create(ConnectionProvider.builder("Testnorge connection pool")
-                                                    .maxConnections(5)
-                                                    .pendingAcquireMaxCount(10000)
-                                                    .pendingAcquireTimeout(Duration.ofSeconds(300))
-                                                    .build())
-                                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-                                            .option(ChannelOption.SO_KEEPALIVE, true)
-                                            .option(EpollChannelOption.TCP_KEEPIDLE, 300)
-                                            .option(EpollChannelOption.TCP_KEEPINTVL, 60)
-                                            .option(EpollChannelOption.TCP_KEEPCNT, 8)
-                                            .responseTimeout(Duration.ofSeconds(10))
-                            ))
-                    .build();
-
-        } catch (NoSuchBeanDefinitionException e) {
+        var builder = WebClient.builder();
+        if (observationRegistry == null) {
 
             log.info(
                     "No {} found in context, using {} without any observation registry",
                     ObservationRegistry.class.getCanonicalName(),
                     builder.getClass().getCanonicalName()
             );
-            return builder.build();
+
+        } else {
+
+            log.info(
+                    "Using {} with observation registry {}",
+                    builder.getClass().getCanonicalName(),
+                    observationRegistry.getClass().getCanonicalName()
+            );
+            builder = builder
+                    .observationConvention(new DefaultClientRequestObservationConvention())
+                    .observationRegistry(observationRegistry);
 
         }
+
+        return builder
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient
+                                .create(ConnectionProvider
+                                        .builder("Dolly Connection Pool")
+                                        .maxConnections(5)
+                                        .pendingAcquireMaxCount(10000)
+                                        .pendingAcquireTimeout(Duration.ofSeconds(300))
+                                        .build())
+                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+                                .option(ChannelOption.SO_KEEPALIVE, true)
+                                .option(EpollChannelOption.TCP_KEEPIDLE, 300) // Note that this is not supported on all platforms.
+                                .option(EpollChannelOption.TCP_KEEPINTVL, 60) // Note that this is not supported on all platforms.
+                                .option(EpollChannelOption.TCP_KEEPCNT, 8) // Note that this is not supported on all platforms.
+                                .responseTimeout(Duration.ofSeconds(10))
+                ))
+                .build();
 
     }
 

@@ -34,7 +34,7 @@ public class DollyLogstashEncoder extends LogstashEncoder {
     private static final Pattern IDENT = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
     private static final Pattern BEARER = Pattern.compile("Bearer [a-zA-Z0-9\\-_.]+");
 
-    private static DateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX");
+    private final DateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX");
 
     private int maxStackTraceLength = 1000;
     private boolean addCauses = true;
@@ -52,14 +52,13 @@ public class DollyLogstashEncoder extends LogstashEncoder {
             g.writeStringField("logger_name", event.getLoggerName());
             g.writeStringField("thread_name", event.getThreadName());
             g.writeStringField("level", event.getLevel().toString());
-            var s = getStackTrace(event);
-            g.writeStringField("stack_trace", s);
+            g.writeStringField("stack_trace", getStackTrace(event));
             g.writeEndObject();
             g.flush();
             o.write('\n');
         } catch (Exception e) {
             // Last resort; we don't have a functioning logger framework.
-            System.err.printf("Failed to encode log event: %n%s%n", e);
+            System.err.println("Failed to encode log event:");
             e.printStackTrace(System.err);
         }
         return o.toByteArray();
@@ -118,10 +117,10 @@ public class DollyLogstashEncoder extends LogstashEncoder {
                 .ofNullable(throwable.getSuppressed())
                 .ifPresent(throwables -> Stream
                         .of(throwables)
-                        .forEach(supressed -> {
-                            writer.append(supressed.getMessage());
+                        .forEach(suppressed -> {
+                            writer.append(suppressed.getMessage());
                             writer.append("\n");
-                            appendStackTraceOf(supressed, writer);
+                            appendStackTraceOf(suppressed, writer);
                         }));
     }
 
