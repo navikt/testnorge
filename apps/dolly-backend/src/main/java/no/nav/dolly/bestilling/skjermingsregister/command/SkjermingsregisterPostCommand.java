@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -33,7 +32,7 @@ public class SkjermingsregisterPostCommand implements Callable<Flux<SkjermingDat
                 .retrieve()
                 .bodyToFlux(SkjermingDataResponse.class)
                 .onErrorResume(error -> Flux.just(SkjermingDataResponse.builder()
-                        .error(WebClientFilter.getMessage(error))
+                        .error(WebClientError.describe(error).getMessage())
                         .build()))
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());

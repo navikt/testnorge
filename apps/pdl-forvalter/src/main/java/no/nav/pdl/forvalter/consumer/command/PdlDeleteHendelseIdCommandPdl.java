@@ -14,7 +14,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
-import static no.nav.testnav.libs.reactivecore.web.WebClientFilter.getMessage;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,8 +49,8 @@ public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
                 .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
                 .onErrorResume(error ->
                         Mono.just(OrdreResponseDTO.HendelseDTO.builder()
-                                .status(getMessage(error).contains(INFO_STATUS) ? PdlStatus.OK : PdlStatus.FEIL)
-                                .error(getMessage(error).contains(INFO_STATUS) ? null : getMessage(error))
+                                .status(WebClientError.describe(error).getMessage().contains(INFO_STATUS) ? PdlStatus.OK : PdlStatus.FEIL)
+                                .error(WebClientError.describe(error).getMessage().contains(INFO_STATUS) ? null : WebClientError.describe(error).getMessage())
                                 .build())
                 );
     }

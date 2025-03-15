@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,8 +50,8 @@ public class ArenaforvalterPostArenaBruker implements Callable<Flux<ArenaNyeBruk
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error ->
                         Flux.just(ArenaNyeBrukereResponse.builder()
-                                .status(WebClientFilter.getStatus(error))
-                                .feilmelding(WebClientFilter.getMessage(error))
+                                .status(WebClientError.describe(error).getStatus())
+                                .feilmelding(WebClientError.describe(error).getMessage())
                                 .miljoe(arenaNyeBrukere.getNyeBrukere().getFirst().getMiljoe())
                                 .build()))
                 .retryWhen(WebClientError.is5xxException());

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -45,7 +44,7 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(DokarkivResponse.builder()
-                        .feilmelding(WebClientFilter.getMessage(error))
+                        .feilmelding(WebClientError.describe(error).getMessage())
                         .miljoe(environment)
                         .build()));
     }

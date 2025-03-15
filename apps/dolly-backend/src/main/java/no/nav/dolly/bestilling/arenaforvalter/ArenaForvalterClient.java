@@ -4,11 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
-import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
-import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
-import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
-import no.nav.dolly.bestilling.arenaforvalter.service.ArenaStansYtelseService;
+import no.nav.dolly.bestilling.arenaforvalter.service.*;
 import no.nav.dolly.bestilling.arenaforvalter.utils.ArenaEksisterendeVedtakUtil;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -17,7 +13,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -28,12 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.AAP;
-import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.AAP115;
-import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.ANDREFEIL;
-import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.BRUKER;
-import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.DAGPENGER;
-import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.fmtResponse;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.*;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
 @Slf4j
@@ -73,7 +64,7 @@ public class ArenaForvalterClient implements ClientRegister {
                         .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
                                 .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                                 .onErrorResume(error ->
-                                        Mono.just(fmtResponse(miljoer, ANDREFEIL, WebClientFilter.getMessage(error))))
+                                        Mono.just(fmtResponse(miljoer, ANDREFEIL, WebClientError.describe(error).getMessage())))
                                 .map(status -> futurePersist(progress, status))));
     }
 

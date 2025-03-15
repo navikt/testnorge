@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.dto.InaktiverResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -55,8 +54,8 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
                         .build())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.just(InaktiverResponse.builder()
-                        .status(WebClientFilter.getStatus(throwable))
-                        .feilmelding(WebClientFilter.getMessage(throwable))
+                        .status(WebClientError.describe(throwable).getStatus())
+                        .feilmelding(WebClientError.describe(throwable).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

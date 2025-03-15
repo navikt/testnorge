@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.yrkesskade.dto.YrkesskadeResponseDTO;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -40,8 +39,8 @@ public class YrkesskadePostCommand implements Callable<Mono<YrkesskadeResponseDT
                         .build())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.just(YrkesskadeResponseDTO.builder()
-                        .status(WebClientFilter.getStatus(throwable))
-                        .melding(WebClientFilter.getMessage(throwable))
+                        .status(WebClientError.describe(throwable).getStatus())
+                        .melding(WebClientError.describe(throwable).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

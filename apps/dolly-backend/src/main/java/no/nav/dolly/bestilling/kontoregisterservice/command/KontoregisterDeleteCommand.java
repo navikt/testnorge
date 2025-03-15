@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.SlettKontoRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,8 +41,8 @@ public class KontoregisterDeleteCommand implements Callable<Mono<KontoregisterRe
                         .build())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(KontoregisterResponseDTO.builder()
-                        .status(WebClientFilter.getStatus(error))
-                        .feilmelding(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .feilmelding(WebClientError.describe(error).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

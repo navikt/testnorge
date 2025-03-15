@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.util.TokenXUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -37,9 +36,9 @@ public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon
                 .retrieve()
                 .bodyToFlux(Inntektsinformasjon.class)
                 .onErrorResume(error -> {
-                    log.error("Lagring av Instdata feilet: {}", WebClientFilter.getMessage(error), error);
+                    log.error("Lagring av Instdata feilet: {}", WebClientError.describe(error).getMessage(), error);
                     return Flux.just(Inntektsinformasjon.builder()
-                            .feilmelding(WebClientFilter.getMessage(error))
+                            .feilmelding(WebClientError.describe(error).getMessage())
                             .build());
                 })
                 .retryWhen(WebClientError.is5xxException());

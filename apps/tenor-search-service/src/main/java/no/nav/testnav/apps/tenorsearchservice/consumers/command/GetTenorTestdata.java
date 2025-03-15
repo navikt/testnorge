@@ -8,7 +8,6 @@ import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -74,8 +73,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(TenorResponse.builder()
-                        .status(WebClientFilter.getStatus(error))
-                        .error(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .error(WebClientError.describe(error).getMessage())
                         .query(query)
                         .build()));
 

@@ -6,7 +6,6 @@ import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAccessListResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -46,8 +45,8 @@ public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnAcces
                                 .map(data -> data[data.length-1])
                                 .collect(Collectors.joining())))
                 .onErrorResume(throwable -> Mono.just(AltinnAccessListResponseDTO.builder()
-                                .status(WebClientFilter.getStatus(throwable))
-                                .feilmelding(WebClientFilter.getMessage(throwable))
+                                .status(WebClientError.describe(throwable).getStatus())
+                                .feilmelding(WebClientError.describe(throwable).getMessage())
                         .build()));
     }
 }

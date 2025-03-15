@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -37,7 +36,7 @@ public class BrregGetCommand implements Callable<Mono<RolleoversiktTo>> {
                 .retrieve()
                 .bodyToMono(RolleoversiktTo.class)
                 .onErrorResume(error -> Mono.just(RolleoversiktTo.builder()
-                        .error(WebClientFilter.getMessage(error))
+                        .error(WebClientError.describe(error).getMessage())
                         .build()))
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());

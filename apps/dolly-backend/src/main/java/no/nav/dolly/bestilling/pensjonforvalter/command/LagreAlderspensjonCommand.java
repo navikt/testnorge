@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -62,10 +61,10 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                                                 .miljo(miljoe)
                                                 .response(PensjonforvalterResponse.Response.builder()
                                                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .status(WebClientFilter.getStatus(error).value())
-                                                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
+                                                                .status(WebClientError.describe(error).getStatus().value())
+                                                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
                                                                 .build())
-                                                        .message(WebClientFilter.getMessage(error))
+                                                        .message(WebClientError.describe(error).getMessage())
                                                         .path(alderspensjonRequest instanceof AlderspensjonVedtakRequest ?
                                                                 PENSJON_AP_VEDTAK_URL : PENSJON_AP_SOKNAD_URL)
                                                         .build())

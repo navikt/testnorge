@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -53,8 +52,8 @@ public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenC
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Flux.just(ArbeidsplassenCVStatusDTO.builder()
-                        .status(WebClientFilter.getStatus(throwable))
-                        .feilmelding(WebClientFilter.getMessage(throwable))
+                        .status(WebClientError.describe(throwable).getStatus())
+                        .feilmelding(WebClientError.describe(throwable).getMessage())
                         .uuid(uuid)
                         .build()));
     }

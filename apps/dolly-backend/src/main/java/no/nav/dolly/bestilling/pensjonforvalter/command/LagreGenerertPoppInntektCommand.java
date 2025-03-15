@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -58,10 +57,10 @@ public class LagreGenerertPoppInntektCommand implements Callable<Flux<Pensjonfor
                                                 .miljo(miljoe)
                                                 .response(PensjonforvalterResponse.Response.builder()
                                                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .status(WebClientFilter.getStatus(error).value())
-                                                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
+                                                                .status(WebClientError.describe(error).getStatus().value())
+                                                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
                                                                 .build())
-                                                        .message(WebClientFilter.getMessage(error))
+                                                        .message(WebClientError.describe(error).getMessage())
                                                         .path(POPP_INNTEKTSKJEMA_URL)
                                                         .build())
                                                 .build())

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -33,8 +32,8 @@ public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
                 .bodyToMono(Norg2EnhetResponse.class)
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(Norg2EnhetResponse.builder()
-                        .httpStatus(WebClientFilter.getStatus(error))
-                        .avvik(WebClientFilter.getMessage(error))
+                        .httpStatus(WebClientError.describe(error).getStatus())
+                        .avvik(WebClientError.describe(error).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

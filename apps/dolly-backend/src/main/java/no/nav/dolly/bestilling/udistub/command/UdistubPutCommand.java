@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,7 +48,7 @@ public class UdistubPutCommand implements Callable<Mono<UdiPersonResponse>> {
                         .person(udiPerson)
                         .status(throwable instanceof WebClientResponseException webClientResponseException ?
                                 HttpStatus.valueOf(webClientResponseException.getStatusCode().value()) : HttpStatus.INTERNAL_SERVER_ERROR)
-                        .reason(WebClientFilter.getMessage(throwable))
+                        .reason(WebClientError.describe(throwable).getMessage())
                         .type(UdiPersonResponse.InnsendingType.UPDATE)
                         .build()))
                 .retryWhen(WebClientError.is5xxException());

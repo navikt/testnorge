@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.consumers.dto.AltinnBrukerRequest;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -30,8 +29,8 @@ public class PostPersonOrganisasjonTilgangCommand implements Callable<Flux<Organ
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
                 .doOnError(error -> log.error("Feilet å hente organisasjon, status: {}, feilmelding: {}",
-                        WebClientFilter.getStatus(error),
-                        WebClientFilter.getMessage(error),
+                        WebClientError.describe(error).getStatus(),
+                        WebClientError.describe(error).getMessage(),
                         error))
                 .retryWhen(WebClientError.is5xxException());
     }

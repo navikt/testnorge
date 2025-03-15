@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,8 +44,8 @@ public class HendelseslagerPublishCommand implements Callable<Mono<Hendelselager
                         .body(resultat.getBody())
                         .build())
                 .onErrorResume(throwable -> Mono.just(HendelselagerResponse.builder()
-                        .status(WebClientFilter.getStatus(throwable))
-                        .feilmelding(WebClientFilter.getMessage(throwable))
+                        .status(WebClientError.describe(throwable).getStatus())
+                        .feilmelding(WebClientError.describe(throwable).getMessage())
                         .build()))
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());

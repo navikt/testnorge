@@ -23,7 +23,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DokumentService;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -105,7 +105,7 @@ public class DokarkivClient implements ClientRegister {
     private Flux<String> getErrors(Throwable error, List<String> miljoer) {
 
         return Flux.fromIterable(miljoer)
-                .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(WebClientFilter.getMessage(error))));
+                .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(WebClientError.describe(error).getMessage())));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

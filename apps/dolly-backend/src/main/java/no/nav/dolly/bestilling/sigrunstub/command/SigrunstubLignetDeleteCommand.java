@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -52,8 +51,8 @@ public class SigrunstubLignetDeleteCommand implements Callable<Mono<SigrunstubRe
                         throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
                         .ident(ident)
-                        .status(WebClientFilter.getStatus(error))
-                        .melding(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .melding(WebClientError.describe(error).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

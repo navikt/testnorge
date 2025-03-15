@@ -15,7 +15,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -116,7 +116,7 @@ public class TpsMessagingClient implements ClientRegister {
                 miljoer.stream()
                         .map(miljoe -> STATUS_FMT.formatted(
                                 miljoe,
-                                "FEIL= " + ErrorStatusDecoder.encodeStatus(WebClientFilter.getMessage(error))))
+                                "FEIL= " + ErrorStatusDecoder.encodeStatus(WebClientError.describe(error).getMessage())))
                         .collect(Collectors.joining(","))));
     }
 

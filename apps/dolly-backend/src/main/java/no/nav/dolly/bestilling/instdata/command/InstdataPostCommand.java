@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,8 +51,8 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                 .onErrorResume(error -> Mono.just(InstdataResponse.builder()
                         .personident(instdata.getNorskident())
                         .instdata(instdata)
-                        .status(WebClientFilter.getStatus(error))
-                        .feilmelding(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .feilmelding(WebClientError.describe(error).getMessage())
                         .environments(List.of(miljoe))
                         .build()))
                 .retryWhen(WebClientError.is5xxException());

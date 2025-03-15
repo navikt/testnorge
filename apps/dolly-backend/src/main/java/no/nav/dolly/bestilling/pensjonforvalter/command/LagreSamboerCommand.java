@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -13,9 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -74,10 +71,10 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                 .miljo(miljoe)
                 .response(PensjonforvalterResponse.Response.builder()
                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                .status(WebClientFilter.getStatus(error).value())
-                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
+                                .status(WebClientError.describe(error).getStatus().value())
+                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
                                 .build())
-                        .message(WebClientFilter.getMessage(error))
+                        .message(WebClientError.describe(error).getMessage())
                         .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();

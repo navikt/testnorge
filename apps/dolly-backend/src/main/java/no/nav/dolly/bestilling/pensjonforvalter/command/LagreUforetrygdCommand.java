@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -59,10 +58,10 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
                                                 .miljo(miljoe)
                                                 .response(PensjonforvalterResponse.Response.builder()
                                                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .status(WebClientFilter.getStatus(error).value())
-                                                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
+                                                                .status(WebClientError.describe(error).getStatus().value())
+                                                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
                                                                 .build())
-                                                        .message(WebClientFilter.getMessage(error))
+                                                        .message(WebClientError.describe(error).getMessage())
                                                         .path(PENSJON_UT_URL)
                                                         .build())
                                                 .build())

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,8 +50,8 @@ public class ArenaforvalterPostAap115 implements Callable<Flux<Aap115Response>> 
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error ->
                         Flux.just(Aap115Response.builder()
-                                .status(WebClientFilter.getStatus(error))
-                                .feilmelding(WebClientFilter.getMessage(error))
+                                .status(WebClientError.describe(error).getStatus())
+                                .feilmelding(WebClientError.describe(error).getMessage())
                                 .miljoe(aap115Request.getMiljoe())
                                 .build()))
                 .retryWhen(WebClientError.is5xxException());

@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingResponseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -47,8 +46,8 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(SykemeldingResponse.builder()
                         .ident(request.getPasient().getIdent())
-                        .status(WebClientFilter.getStatus(error))
-                        .avvik(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .avvik(WebClientError.describe(error).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

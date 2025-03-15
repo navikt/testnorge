@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.util.TokenXUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,8 +51,8 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
                         throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(DeleteResponse.builder()
                         .ident(ident)
-                        .status(WebClientFilter.getStatus(error))
-                        .error(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .error(WebClientError.describe(error).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

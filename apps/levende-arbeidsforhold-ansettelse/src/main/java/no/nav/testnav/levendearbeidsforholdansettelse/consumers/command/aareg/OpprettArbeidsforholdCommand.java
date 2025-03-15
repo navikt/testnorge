@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdResponseDTO;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -45,8 +44,8 @@ public class OpprettArbeidsforholdCommand implements Callable<Mono<Arbeidsforhol
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(ArbeidsforholdResponseDTO.builder()
-                        .statusCode(WebClientFilter.getStatus(error))
-                        .feilmelding(WebClientFilter.getMessage(error))
+                        .statusCode(WebClientError.describe(error).getStatus())
+                        .feilmelding(WebClientError.describe(error).getMessage())
                         .build()));
     }
 

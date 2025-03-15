@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.medl.dto.MedlPostResponse;
 import no.nav.dolly.domain.resultset.medl.MedlData;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,8 +45,8 @@ public class MedlPutCommand implements Callable<Mono<MedlPostResponse>> {
                         .build())
                 .doOnError(throwable -> log.error(throwable.getLocalizedMessage()))
                 .onErrorResume(error -> Mono.just(MedlPostResponse.builder()
-                        .status(WebClientFilter.getStatus(error))
-                        .melding(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .melding(WebClientError.describe(error).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -57,8 +56,8 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Flux.just(PdlResponse.builder()
                         .ident(ident)
-                        .status(WebClientFilter.getStatus(throwable))
-                        .feilmelding(WebClientFilter.getMessage(throwable))
+                        .status(WebClientError.describe(throwable).getStatus())
+                        .feilmelding(WebClientError.describe(throwable).getMessage())
                         .build()));
     }
 

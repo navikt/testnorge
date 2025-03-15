@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,8 +37,8 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(KodeverkDTO.builder()
                         .kodeverknavn(kodeverk)
-                        .status(WebClientFilter.getStatus(error))
-                        .message(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .message(WebClientError.describe(error).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

@@ -21,7 +21,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DokumentService;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -103,7 +103,7 @@ public class HistarkClient implements ClientRegister {
 
     private Mono<String> getErrors(Throwable error) {
 
-        return Mono.just(encodeStatus(WebClientFilter.getMessage(error)));
+        return Mono.just(encodeStatus(WebClientError.describe(error).getMessage()));
     }
 
     private String getStatus(String ident, Long bestillingId, List<HistarkResponse> response) {

@@ -6,7 +6,6 @@ import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.testnav.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

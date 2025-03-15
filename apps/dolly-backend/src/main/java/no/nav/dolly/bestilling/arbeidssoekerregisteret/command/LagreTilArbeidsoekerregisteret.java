@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arbeidssoekerregisteret.dto.ArbeidssoekerregisteretRequest;
 import no.nav.dolly.bestilling.arbeidssoekerregisteret.dto.ArbeidssoekerregisteretResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -43,8 +42,8 @@ public class LagreTilArbeidsoekerregisteret implements Callable<Mono<Arbeidssoek
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Mono.just(
                         ArbeidssoekerregisteretResponse.builder()
-                                .status(WebClientFilter.getStatus(error))
-                                .feilmelding(WebClientFilter.getMessage(error))
+                                .status(WebClientError.describe(error).getStatus())
+                                .feilmelding(WebClientError.describe(error).getMessage())
                                 .build()));
     }
 

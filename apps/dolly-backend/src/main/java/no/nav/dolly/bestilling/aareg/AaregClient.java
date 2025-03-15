@@ -15,7 +15,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -31,9 +31,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendPermisjonPermitteringId;
-import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
-import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.*;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q1_AND_Q2;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q4_TO_Q1;
@@ -84,7 +82,7 @@ public class AaregClient implements ClientRegister {
     private Mono<String> getErrors(Throwable error, Set<String> miljoer) {
 
         return Mono.just(miljoer.stream()
-                .map(miljoe -> "%s:Feil= %s".formatted(miljoe, ErrorStatusDecoder.encodeStatus(WebClientFilter.getMessage(error))))
+                .map(miljoe -> "%s:Feil= %s".formatted(miljoe, ErrorStatusDecoder.encodeStatus(WebClientError.describe(error).getMessage())))
                 .collect(Collectors.joining(",")));
     }
 

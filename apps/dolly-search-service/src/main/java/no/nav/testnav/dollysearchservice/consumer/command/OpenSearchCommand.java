@@ -3,7 +3,6 @@ package no.nav.testnav.dollysearchservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.dollysearchservice.dto.SearchResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -39,8 +38,8 @@ public class OpenSearchCommand implements Callable<Mono<SearchResponse>> {
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(SearchResponse
                         .builder()
-                        .status(WebClientFilter.getStatus(throwable))
-                        .error(WebClientFilter.getMessage(throwable))
+                        .status(WebClientError.describe(throwable).getStatus())
+                        .error(WebClientError.describe(throwable).getMessage())
                         .build()));
     }
 

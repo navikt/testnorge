@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,8 +48,8 @@ public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error ->
                         Mono.just(ArenaStatusResponse.builder()
-                                .status(WebClientFilter.getStatus(error))
-                                .feilmelding(WebClientFilter.getMessage(error))
+                                .status(WebClientError.describe(error).getStatus())
+                                .feilmelding(WebClientError.describe(error).getMessage())
                                 .miljoe(miljoe)
                                 .build()))
                 .retryWhen(WebClientError.is5xxException());

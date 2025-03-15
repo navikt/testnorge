@@ -6,7 +6,6 @@ import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.dto.responses.StatusDTO;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -48,7 +47,7 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
                                 .orgnummer(status.getOrganisasjonsnummer())
                                 .uuid(status.getUuid())
                                 .miljoe(status.getMiljoe())
-                                .feilmelding(WebClientFilter.getMessage(throwable))
+                                .feilmelding(WebClientError.describe(throwable).getMessage())
                                 .build()));
     }
 

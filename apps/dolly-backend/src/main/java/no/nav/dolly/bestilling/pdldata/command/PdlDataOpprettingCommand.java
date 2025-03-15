@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -54,8 +53,8 @@ public class PdlDataOpprettingCommand implements Callable<Flux<PdlResponse>> {
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on POST"))
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(error -> Flux.just(PdlResponse.builder()
-                        .status(WebClientFilter.getStatus(error))
-                        .feilmelding(WebClientFilter.getMessage(error))
+                        .status(WebClientError.describe(error).getStatus())
+                        .feilmelding(WebClientError.describe(error).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

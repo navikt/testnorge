@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -37,7 +36,7 @@ public class OrganisasjonServiceCommand implements Callable<Flux<OrganisasjonDTO
                 .bodyToFlux(OrganisasjonDTO.class)
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .onErrorResume(throwable -> Mono.just(OrganisasjonDTO.builder()
-                        .error(WebClientFilter.getMessage(throwable))
+                        .error(WebClientError.describe(throwable).getMessage())
                         .build()))
                 .retryWhen(WebClientError.is5xxException());
     }

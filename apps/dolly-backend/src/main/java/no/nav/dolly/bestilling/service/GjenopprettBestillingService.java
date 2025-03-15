@@ -18,7 +18,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -106,7 +106,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                                             progress, false)))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
-                                                        WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
+                                                        WebClientError.describe(throwable).getStatus(), WebClientError.describe(throwable).getMessage());
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
                                                 progress.setFeil(error);

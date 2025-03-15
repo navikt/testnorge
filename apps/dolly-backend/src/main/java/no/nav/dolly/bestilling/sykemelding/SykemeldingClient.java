@@ -24,7 +24,7 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.reactivecore.web.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -79,7 +79,7 @@ public class SykemeldingClient implements ClientRegister {
                                         .doOnNext(status -> saveTransaksjonId(status, bestilling.getId()))
                                         .map(this::getStatus))
                                 .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                                .onErrorResume(error -> Mono.just(encodeStatus(WebClientFilter.getMessage(error))))
+                                .onErrorResume(error -> Mono.just(encodeStatus(WebClientError.describe(error).getMessage())))
                                 .collect(Collectors.joining())
                                 .map(status -> futurePersist(progress, status));
                     }
