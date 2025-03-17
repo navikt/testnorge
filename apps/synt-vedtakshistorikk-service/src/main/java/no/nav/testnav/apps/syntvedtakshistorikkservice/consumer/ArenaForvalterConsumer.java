@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.*;
@@ -74,6 +75,7 @@ public class ArenaForvalterConsumer {
         for (var rettighet : rettigheter) {
             NyttVedtakResponse response = null;
             try {
+                log.info("Ny rettighet {}", Json.pretty(rettighet));
                 response = tokenExchange.exchange(serverProperties)
                         .flatMap(accessToken -> new PostRettighetCommand(rettighet, accessToken.getTokenValue(), webClient).call())
                         .block();
