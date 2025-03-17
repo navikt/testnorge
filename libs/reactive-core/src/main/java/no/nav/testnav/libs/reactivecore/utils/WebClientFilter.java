@@ -72,8 +72,14 @@ public class WebClientFilter {
     public static void logErrorMessage(Throwable throwable) {
 
         if ((throwable instanceof WebClientResponseException webClientResponseException)) {
-            log.error("%s, %s".formatted(throwable.getMessage(),
-                    webClientResponseException.getResponseBodyAsString()), throwable);
+
+            if (webClientResponseException.getStatusCode().is5xxServerError()) {
+                    log.error("%s, %s".formatted(throwable.getMessage(),
+                            webClientResponseException.getResponseBodyAsString()), throwable);
+            } else {
+                log.warn("%s, %s".formatted(throwable.getMessage(),
+                        webClientResponseException.getResponseBodyAsString()));
+            }
         } else {
             log.error(throwable.getMessage(), throwable);
         }

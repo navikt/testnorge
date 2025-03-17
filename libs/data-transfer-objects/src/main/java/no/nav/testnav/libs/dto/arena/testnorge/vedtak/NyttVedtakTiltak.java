@@ -6,17 +6,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.andreokonomytelser.AnnenOkonomYtelseTiltak;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
