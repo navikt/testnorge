@@ -30,6 +30,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
 
     @Override
     public Flux<PensjonforvalterResponse> call() {
+
         var callId = generateCallId();
         log.info("Popp lagre inntekt {}, callId: {}", pensjonPoppInntektRequest, callId);
         return webClient
@@ -49,22 +50,31 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error ->
-                        Mono.just(PensjonforvalterResponse.builder()
-                                .status(pensjonPoppInntektRequest.getMiljoer().stream()
-                                        .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment.builder()
-                                                .miljo(miljoe)
-                                                .response(PensjonforvalterResponse.Response.builder()
-                                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .status(WebClientError.describe(error).getStatus().value())
-                                                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
-                                                                .build())
-                                                        .message(WebClientError.describe(error).getMessage())
-                                                        .path(POPP_INNTEKT_URL)
-                                                        .build())
-                                                .build())
-                                        .toList())
-                                .build()));
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(PensjonforvalterResponse
+                            .builder()
+                            .status(pensjonPoppInntektRequest
+                                    .getMiljoer()
+                                    .stream()
+                                    .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment
+                                            .builder()
+                                            .miljo(miljoe)
+                                            .response(PensjonforvalterResponse.Response
+                                                    .builder()
+                                                    .httpStatus(PensjonforvalterResponse.HttpStatus
+                                                            .builder()
+                                                            .status(description.getStatus().value())
+                                                            .reasonPhrase(description.getStatus().getReasonPhrase())
+                                                            .build())
+                                                    .message(description.getMessage())
+                                                    .path(POPP_INNTEKT_URL)
+                                                    .build())
+                                            .build())
+                                    .toList())
+                            .build());
+                });
+
     }
 
 }

@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,15 @@ public class SigrunstubResponse {
     private String ident;
 
     List<OpprettelseTilbakemelding> opprettelseTilbakemeldingsListe;
+
+    public static Mono<SigrunstubResponse> of(WebClientError.Description description, String ident) {
+        return Mono.just(SigrunstubResponse
+                .builder()
+                .ident(ident)
+                .status(description.getStatus())
+                .melding(description.getMessage())
+                .build());
+    }
 
     public List<OpprettelseTilbakemelding> getOpprettelseTilbakemeldingsListe() {
 

@@ -63,8 +63,7 @@ public class ArenaForvalterClient implements ClientRegister {
                         })
                         .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
                                 .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                                .onErrorResume(error ->
-                                        Mono.just(fmtResponse(miljoer, ANDREFEIL, WebClientError.describe(error).getMessage())))
+                                .onErrorResume(error -> Mono.just(fmtResponse(miljoer, ANDREFEIL, WebClientError.describe(error).getMessage())))
                                 .map(status -> futurePersist(progress, status))));
     }
 

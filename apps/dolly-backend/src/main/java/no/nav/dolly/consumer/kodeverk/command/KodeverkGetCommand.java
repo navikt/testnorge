@@ -35,11 +35,14 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
                     return kodeverket;
                 })
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error -> Mono.just(KodeverkDTO.builder()
-                        .kodeverknavn(kodeverk)
-                        .status(WebClientError.describe(error).getStatus())
-                        .message(WebClientError.describe(error).getMessage())
-                        .build()))
+                .onErrorResume(error -> {
+                    var description = WebClientError.describe(error);
+                    return Mono.just(KodeverkDTO.builder()
+                            .kodeverknavn(kodeverk)
+                            .status(description.getStatus())
+                            .message(description.getMessage())
+                            .build());
+                })
                 .retryWhen(WebClientError.is5xxException());
     }
 

@@ -51,11 +51,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenC
                         .build())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> Flux.just(ArbeidsplassenCVStatusDTO.builder()
-                        .status(WebClientError.describe(throwable).getStatus())
-                        .feilmelding(WebClientError.describe(throwable).getMessage())
-                        .uuid(uuid)
-                        .build()));
+                .onErrorResume(throwable -> ArbeidsplassenCVStatusDTO.of(WebClientError.describe(throwable), uuid));
     }
 
 }

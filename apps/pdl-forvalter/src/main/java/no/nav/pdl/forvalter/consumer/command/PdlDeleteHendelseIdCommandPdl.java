@@ -47,11 +47,13 @@ public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
                         .build()))
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
-                .onErrorResume(error ->
-                        Mono.just(OrdreResponseDTO.HendelseDTO.builder()
-                                .status(WebClientError.describe(error).getMessage().contains(INFO_STATUS) ? PdlStatus.OK : PdlStatus.FEIL)
-                                .error(WebClientError.describe(error).getMessage().contains(INFO_STATUS) ? null : WebClientError.describe(error).getMessage())
-                                .build())
-                );
+                .onErrorResume(error -> {
+                    var message = WebClientError.describe(error).getMessage();
+                    return Mono.just(OrdreResponseDTO.HendelseDTO
+                            .builder()
+                            .status(message.contains(INFO_STATUS) ? PdlStatus.OK : PdlStatus.FEIL)
+                            .error(message.contains(INFO_STATUS) ? null : message)
+                            .build());
+                });
     }
 }

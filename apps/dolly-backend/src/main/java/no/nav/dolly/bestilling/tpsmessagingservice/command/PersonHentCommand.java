@@ -40,10 +40,14 @@ public class PersonHentCommand implements Callable<Flux<PersonMiljoeDTO>> {
                     resultat.setIdent(ident);
                     return resultat;
                 })
-                .onErrorResume(throwable -> Mono.just(PersonMiljoeDTO.builder()
-                        .status("FEIL")
-                        .melding(WebClientError.describe(throwable).getStatus().getReasonPhrase())
-                        .utfyllendeMelding(WebClientError.describe(throwable).getMessage())
-                        .build()));
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(PersonMiljoeDTO
+                            .builder()
+                            .status("FEIL")
+                            .melding(description.getStatus().getReasonPhrase())
+                            .utfyllendeMelding(description.getMessage())
+                            .build());
+                });
     }
 }

@@ -28,10 +28,13 @@ public class PostPersonOrganisasjonTilgangCommand implements Callable<Flux<Organ
                 .bodyValue(new AltinnBrukerRequest(ident))
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
-                .doOnError(error -> log.error("Feilet å hente organisasjon, status: {}, feilmelding: {}",
-                        WebClientError.describe(error).getStatus(),
-                        WebClientError.describe(error).getMessage(),
-                        error))
+                .doOnError(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    log.error("Feilet å hente organisasjon, status: {}, feilmelding: {}",
+                            description.getStatus(),
+                            description.getMessage(),
+                            throwable);
+                })
                 .retryWhen(WebClientError.is5xxException());
     }
 

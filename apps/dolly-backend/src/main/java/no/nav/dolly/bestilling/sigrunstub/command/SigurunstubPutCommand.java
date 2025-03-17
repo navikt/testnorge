@@ -52,10 +52,7 @@ public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>>
                     return response;
                 })
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
-                        .status(WebClientError.describe(error).getStatus())
-                        .melding(WebClientError.describe(error).getMessage())
-                        .build()))
+                .onErrorResume(error -> SigrunstubResponse.of(WebClientError.describe(error), null))
                 .retryWhen(WebClientError.is5xxException());
     }
 

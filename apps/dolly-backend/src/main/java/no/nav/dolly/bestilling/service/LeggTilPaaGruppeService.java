@@ -108,8 +108,8 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                                                                                     fase3Klienter(),
                                                                                                     progress, true))))))
                                                     .onErrorResume(throwable -> {
-                                                        var error = errorStatusDecoder.getErrorText(
-                                                                WebClientError.describe(throwable).getStatus(), WebClientError.describe(throwable).getMessage());
+                                                        var description = WebClientError.describe(throwable);
+                                                        var error = errorStatusDecoder.getErrorText(description.getStatus(), description.getMessage());
                                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                                 progress.getId(), error, throwable);
                                                         saveFeil(progress, error);
@@ -148,9 +148,9 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private Flux<String> updateIdent(DollyPerson dollyPerson, BestillingProgress progress) {
 
         transactionHelperService.persister(progress, BestillingProgress::setIdent, dollyPerson.getIdent());
-        identService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent());
-        bestillingProgressService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent());
-        bestillingService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent());
+        identService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent()); // TODO: Check and fix blocking in non-blocking context.
+        bestillingProgressService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent()); // TODO: Check and fix blocking in non-blocking context.
+        bestillingService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent()); // TODO: Check and fix blocking in non-blocking context.
 
         return Flux.just(dollyPerson.getIdent());
     }

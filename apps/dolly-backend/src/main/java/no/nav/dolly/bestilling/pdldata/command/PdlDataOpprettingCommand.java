@@ -52,10 +52,7 @@ public class PdlDataOpprettingCommand implements Callable<Flux<PdlResponse>> {
                         .build())
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on POST"))
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error -> Flux.just(PdlResponse.builder()
-                        .status(WebClientError.describe(error).getStatus())
-                        .feilmelding(WebClientError.describe(error).getMessage())
-                        .build()))
+                .onErrorResume(throwable -> PdlResponse.of(WebClientError.describe(throwable)))
                 .retryWhen(WebClientError.is5xxException());
     }
 

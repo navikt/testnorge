@@ -35,11 +35,10 @@ public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon
                 .bodyValue(inntektsinformasjon)
                 .retrieve()
                 .bodyToFlux(Inntektsinformasjon.class)
-                .onErrorResume(error -> {
-                    log.error("Lagring av Instdata feilet: {}", WebClientError.describe(error).getMessage(), error);
-                    return Flux.just(Inntektsinformasjon.builder()
-                            .feilmelding(WebClientError.describe(error).getMessage())
-                            .build());
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    log.error("Lagring av Instdata feilet: {}", description.getMessage(), throwable);
+                    return Inntektsinformasjon.of(description);
                 })
                 .retryWhen(WebClientError.is5xxException());
     }

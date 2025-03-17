@@ -36,11 +36,7 @@ public class OpenSearchCommand implements Callable<Mono<SearchResponse>> {
                 .retrieve()
                 .bodyToMono(SearchResponse.class)
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> Mono.just(SearchResponse
-                        .builder()
-                        .status(WebClientError.describe(throwable).getStatus())
-                        .error(WebClientError.describe(throwable).getMessage())
-                        .build()));
+                .onErrorResume(throwable -> SearchResponse.of(WebClientError.describe(throwable)));
     }
 
 }

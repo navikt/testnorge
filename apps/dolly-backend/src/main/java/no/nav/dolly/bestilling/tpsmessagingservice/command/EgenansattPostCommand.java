@@ -54,7 +54,8 @@ public class EgenansattPostCommand implements Callable<Flux<TpsMeldingResponseDT
                 .bodyToFlux(TpsMeldingResponseDTO.class)
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO.builder()
+                .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO
+                        .builder()
                         .status("FEIL")
                         .utfyllendeMelding(WebClientError.describe(throwable).getMessage())
                         .build()));

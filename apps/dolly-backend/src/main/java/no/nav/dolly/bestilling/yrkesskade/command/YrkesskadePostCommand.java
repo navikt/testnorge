@@ -38,10 +38,7 @@ public class YrkesskadePostCommand implements Callable<Mono<YrkesskadeResponseDT
                         .status(HttpStatusCode.valueOf(201))
                         .build())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(throwable -> Mono.just(YrkesskadeResponseDTO.builder()
-                        .status(WebClientError.describe(throwable).getStatus())
-                        .melding(WebClientError.describe(throwable).getMessage())
-                        .build()))
+                .onErrorResume(throwable -> YrkesskadeResponseDTO.of(WebClientError.describe(throwable)))
                 .retryWhen(WebClientError.is5xxException());
     }
 

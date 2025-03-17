@@ -49,11 +49,7 @@ public class SigrunstubLignetDeleteCommand implements Callable<Mono<SigrunstubRe
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
-                        .ident(ident)
-                        .status(WebClientError.describe(error).getStatus())
-                        .melding(WebClientError.describe(error).getMessage())
-                        .build()))
+                .onErrorResume(throwable -> SigrunstubResponse.of(WebClientError.describe(throwable), ident))
                 .retryWhen(WebClientError.is5xxException());
     }
 

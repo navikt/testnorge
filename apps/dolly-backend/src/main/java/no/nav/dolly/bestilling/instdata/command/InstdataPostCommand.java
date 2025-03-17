@@ -48,13 +48,7 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                         .environments(List.of(miljoe))
                         .build())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error -> Mono.just(InstdataResponse.builder()
-                        .personident(instdata.getNorskident())
-                        .instdata(instdata)
-                        .status(WebClientError.describe(error).getStatus())
-                        .feilmelding(WebClientError.describe(error).getMessage())
-                        .environments(List.of(miljoe))
-                        .build()))
+                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable), instdata, List.of(miljoe)))
                 .retryWhen(WebClientError.is5xxException());
     }
 

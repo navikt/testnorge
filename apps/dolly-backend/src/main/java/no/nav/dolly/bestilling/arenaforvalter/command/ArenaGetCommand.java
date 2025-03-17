@@ -46,12 +46,7 @@ public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
                     return status;
                 })
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error ->
-                        Mono.just(ArenaStatusResponse.builder()
-                                .status(WebClientError.describe(error).getStatus())
-                                .feilmelding(WebClientError.describe(error).getMessage())
-                                .miljoe(miljoe)
-                                .build()))
+                .onErrorResume(throwable -> ArenaStatusResponse.of(WebClientError.describe(throwable), miljoe))
                 .retryWhen(WebClientError.is5xxException());
     }
 

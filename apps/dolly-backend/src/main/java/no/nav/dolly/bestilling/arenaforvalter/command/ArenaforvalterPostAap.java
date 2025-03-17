@@ -48,12 +48,7 @@ public class ArenaforvalterPostAap implements Callable<Flux<AapResponse>> {
                     return response;
                 })
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error ->
-                        Flux.just(AapResponse.builder()
-                                .status(WebClientError.describe(error).getStatus())
-                                .feilmelding(WebClientError.describe(error).getMessage())
-                                .miljoe(aapRequest.getMiljoe())
-                                .build()))
+                .onErrorResume(throwable -> AapResponse.of(WebClientError.describe(throwable), aapRequest.getMiljoe()))
                 .retryWhen(WebClientError.is5xxException());
     }
 

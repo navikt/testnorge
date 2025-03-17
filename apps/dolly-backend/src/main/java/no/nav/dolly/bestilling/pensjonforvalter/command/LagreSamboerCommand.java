@@ -30,7 +30,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
 
         var callId = generateCallId();
         log.info("Pensjon samboer opprett i {} {}, callId: {}", miljoe, pensjonSamboerRequest, callId);
-       
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -65,22 +65,26 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                 .build();
     }
 
-    private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, Throwable error) {
-
-        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
+    private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, Throwable throwable) {
+        var description = WebClientError.describe(throwable);
+        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment
+                .builder()
                 .miljo(miljoe)
-                .response(PensjonforvalterResponse.Response.builder()
-                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                .status(WebClientError.describe(error).getStatus().value())
-                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
+                .response(PensjonforvalterResponse.Response
+                        .builder()
+                        .httpStatus(PensjonforvalterResponse.HttpStatus
+                                .builder()
+                                .status(description.getStatus().value())
+                                .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(WebClientError.describe(error).getMessage())
+                        .message(description.getMessage())
                         .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();
-
-        return PensjonforvalterResponse.builder()
+        return PensjonforvalterResponse
+                .builder()
                 .status(Collections.singletonList(miljoeResponse))
                 .build();
     }
+
 }

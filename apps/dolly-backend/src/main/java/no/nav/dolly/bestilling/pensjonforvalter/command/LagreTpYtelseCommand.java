@@ -33,6 +33,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
 
     @Override
     public Flux<PensjonforvalterResponse> call() {
+
         var callId = generateCallId();
         log.info("Pensjon lagre TP-ytelse {}, callId: {}", pensjonTpYtelseRequest, callId);
         return webClient
@@ -53,22 +54,31 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error ->
-                        Mono.just(PensjonforvalterResponse.builder()
-                                .status(pensjonTpYtelseRequest.getMiljoer().stream()
-                                        .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment.builder()
-                                                .miljo(miljoe)
-                                                .response(PensjonforvalterResponse.Response.builder()
-                                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .status(WebClientError.describe(error).getStatus().value())
-                                                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
-                                                                .build())
-                                                        .message(WebClientError.describe(error).getMessage())
-                                                        .path(PENSJON_TP_YTELSE_URL)
-                                                        .build())
-                                                .build())
-                                        .toList())
-                                .build()));
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(PensjonforvalterResponse
+                            .builder()
+                            .status(pensjonTpYtelseRequest
+                                    .getMiljoer()
+                                    .stream()
+                                    .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment
+                                            .builder()
+                                            .miljo(miljoe)
+                                            .response(PensjonforvalterResponse.Response
+                                                    .builder()
+                                                    .httpStatus(PensjonforvalterResponse.HttpStatus
+                                                            .builder()
+                                                            .status(description.getStatus().value())
+                                                            .reasonPhrase(description.getStatus().getReasonPhrase())
+                                                            .build())
+                                                    .message(description.getMessage())
+                                                    .path(PENSJON_TP_YTELSE_URL)
+                                                    .build())
+                                            .build())
+                                    .toList())
+                            .build());
+                });
+
     }
 
 }

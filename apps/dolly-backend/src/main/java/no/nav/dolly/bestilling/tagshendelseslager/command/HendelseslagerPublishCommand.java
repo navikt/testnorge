@@ -43,10 +43,7 @@ public class HendelseslagerPublishCommand implements Callable<Mono<Hendelselager
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .body(resultat.getBody())
                         .build())
-                .onErrorResume(throwable -> Mono.just(HendelselagerResponse.builder()
-                        .status(WebClientError.describe(throwable).getStatus())
-                        .feilmelding(WebClientError.describe(throwable).getMessage())
-                        .build()))
+                .onErrorResume(throwable -> HendelselagerResponse.of(WebClientError.describe(throwable)))
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException());
     }

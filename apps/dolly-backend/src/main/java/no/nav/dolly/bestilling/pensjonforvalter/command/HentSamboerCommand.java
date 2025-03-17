@@ -41,21 +41,23 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 
-    private static PensjonSamboerResponse pensjonforvalterResponseFromError(String miljoe, Throwable error) {
-
-        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
+    private static PensjonSamboerResponse pensjonforvalterResponseFromError(String miljoe, Throwable throwable) {
+        var description = WebClientError.describe(throwable);
+        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment
+                .builder()
                 .miljo(miljoe)
-                .response(PensjonforvalterResponse.Response.builder()
+                .response(PensjonforvalterResponse.Response
+                        .builder()
                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                .status(WebClientError.describe(error).getStatus().value())
-                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
+                                .status(description.getStatus().value())
+                                .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(WebClientError.describe(error).getMessage())
+                        .message(description.getMessage())
                         .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();
-
-        return PensjonSamboerResponse.builder()
+        return PensjonSamboerResponse
+                .builder()
                 .status(Collections.singletonList(miljoeResponse))
                 .build();
     }

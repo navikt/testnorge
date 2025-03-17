@@ -54,11 +54,7 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on POST of ident %s".formatted(ident)))
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> Flux.just(PdlResponse.builder()
-                        .ident(ident)
-                        .status(WebClientError.describe(throwable).getStatus())
-                        .feilmelding(WebClientError.describe(throwable).getMessage())
-                        .build()));
+                .onErrorResume(throwable -> PdlResponse.of(WebClientError.describe(throwable)));
     }
 
 }

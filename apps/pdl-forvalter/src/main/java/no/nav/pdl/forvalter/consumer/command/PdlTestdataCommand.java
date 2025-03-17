@@ -13,11 +13,12 @@ public abstract class PdlTestdataCommand implements Callable<Flux<OrdreResponseD
     static final String TEMA = "Tema";
 
     OrdreResponseDTO.HendelseDTO errorHandling(Throwable error, Integer id) {
-
-        return OrdreResponseDTO.HendelseDTO.builder()
+        return OrdreResponseDTO.HendelseDTO
+                .builder()
                 .id(id)
                 .status(PdlStatus.FEIL)
                 .error(WebClientError.describe(error).getMessage())
                 .build();
     }
+
 }

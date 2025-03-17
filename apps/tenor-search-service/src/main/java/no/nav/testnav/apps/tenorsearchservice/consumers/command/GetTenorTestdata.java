@@ -46,7 +46,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                 "query", query,
                 "alle", "*");
 
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(TENOR_QUERY_URL)
                         .queryParam("kql", "{query}")
@@ -64,7 +65,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                     if (nonNull(antall) && antall == 1) {
                         log.info("Mottok tenor response JSON: {}", Json.pretty(response));
                     }
-                    return TenorResponse.builder()
+                    return TenorResponse
+                            .builder()
                             .status(HttpStatus.OK)
                             .data(response)
                             .query(query)
@@ -72,12 +74,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                 })
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error -> Mono.just(TenorResponse.builder()
-                        .status(WebClientError.describe(error).getStatus())
-                        .error(WebClientError.describe(error).getMessage())
-                        .query(query)
-                        .build()));
-
+                .onErrorResume(error -> TenorResponse.of(WebClientError.describe(error), query));
     }
 
     private Integer getAntall(Integer antall, InfoType type) {

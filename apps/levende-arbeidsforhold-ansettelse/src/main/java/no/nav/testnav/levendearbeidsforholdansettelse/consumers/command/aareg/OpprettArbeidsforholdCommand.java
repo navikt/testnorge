@@ -43,10 +43,7 @@ public class OpprettArbeidsforholdCommand implements Callable<Mono<Arbeidsforhol
                         .build())
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error -> Mono.just(ArbeidsforholdResponseDTO.builder()
-                        .statusCode(WebClientError.describe(error).getStatus())
-                        .feilmelding(WebClientError.describe(error).getMessage())
-                        .build()));
+                .onErrorResume(error -> ArbeidsforholdResponseDTO.of(WebClientError.describe(error)));
     }
 
 }

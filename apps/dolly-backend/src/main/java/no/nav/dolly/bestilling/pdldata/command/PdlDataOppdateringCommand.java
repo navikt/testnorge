@@ -53,10 +53,7 @@ public class PdlDataOppdateringCommand implements Callable<Flux<PdlResponse>> {
                         .build())
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on PUT of ident %s".formatted(ident)))
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(throwable -> Flux.just(PdlResponse.builder()
-                        .status(WebClientError.describe(throwable).getStatus())
-                        .feilmelding(WebClientError.describe(throwable).getMessage())
-                        .build()))
+                .onErrorResume(throwable -> PdlResponse.of(WebClientError.describe(throwable)))
                 .retryWhen(WebClientError.is5xxException());
     }
 

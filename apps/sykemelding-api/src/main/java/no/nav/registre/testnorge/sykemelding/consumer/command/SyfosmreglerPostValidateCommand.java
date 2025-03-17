@@ -26,17 +26,22 @@ public class SyfosmreglerPostValidateCommand implements Callable<Mono<Validation
     public Mono<ValidationResultDTO> call() {
 
         log.info("Sender til syfosmregler {}", Json.pretty(receivedSykemelding));
-
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder.path(SYFOSMREGLER_VALIDATE_URL).build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .bodyValue(receivedSykemelding)
                 .retrieve()
                 .bodyToMono(ValidationResultDTO.class)
                 .doOnError(throwable -> WebClientError.log(throwable, log))
-                .onErrorResume(error -> Mono.just(ValidationResultDTO.builder()
-                        .httpStatus(WebClientError.describe(error).getStatus())
-                        .message(WebClientError.describe(error).getMessage())
-                        .build()));
+                .onErrorResume(error -> {
+                    var description = WebClientError.describe(error);
+                    return Mono.just(ValidationResultDTO
+                            .builder()
+                            .httpStatus(description.getStatus())
+                            .message(description.getMessage())
+                            .build());
+                });
+
     }
 }

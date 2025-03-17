@@ -32,6 +32,7 @@ public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterRespo
 
     @Override
     public Flux<PensjonforvalterResponse> call() {
+
         var callId = generateCallId();
         log.info("Pensjon opprett person {}, callId: {}", pensjonPersonRequest, callId);
         return webClient
@@ -52,22 +53,31 @@ public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterRespo
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error ->
-                        Mono.just(PensjonforvalterResponse.builder()
-                                .status(pensjonPersonRequest.getMiljoer().stream()
-                                        .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment.builder()
-                                                .miljo(miljoe)
-                                                .response(PensjonforvalterResponse.Response.builder()
-                                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .status(WebClientError.describe(error).getStatus().value())
-                                                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
-                                                                .build())
-                                                        .message(WebClientError.describe(error).getMessage())
-                                                        .path(PENSJON_OPPRETT_PERSON_URL)
-                                                        .build())
-                                                .build())
-                                        .toList())
-                                .build()));
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(PensjonforvalterResponse
+                            .builder()
+                            .status(pensjonPersonRequest
+                                    .getMiljoer()
+                                    .stream()
+                                    .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment
+                                            .builder()
+                                            .miljo(miljoe)
+                                            .response(PensjonforvalterResponse.Response
+                                                    .builder()
+                                                    .httpStatus(PensjonforvalterResponse.HttpStatus
+                                                            .builder()
+                                                            .status(description.getStatus().value())
+                                                            .reasonPhrase(description.getStatus().getReasonPhrase())
+                                                            .build())
+                                                    .message(description.getMessage())
+                                                    .path(PENSJON_OPPRETT_PERSON_URL)
+                                                    .build())
+                                            .build())
+                                    .toList())
+                            .build());
+                });
+
     }
 
 }

@@ -8,6 +8,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
@@ -20,8 +21,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 
 /**
- * <p>Convenience class for configuring {@link org.springframework.web.reactive.function.client.WebClient} instances.</p>
- * <p>Also includes a non-static (for stack trace) logging handler, for uniform logging muted during retries.</p>
+ * Convenience class for handling error situations when using {@link WebClient} instances.
  */
 @UtilityClass
 @Slf4j

@@ -64,21 +64,25 @@ public class SletteAfpOffentligCommand implements Callable<Mono<Pensjonforvalter
                 .build();
     }
 
-    private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, String ident, Throwable error) {
-
-        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
+    private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, String ident, Throwable throwable) {
+        var description = WebClientError.describe(throwable);
+        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment
+                .builder()
                 .miljo(miljoe)
-                .response(PensjonforvalterResponse.Response.builder()
-                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                .status(WebClientError.describe(error).getStatus().value())
-                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
+                .response(PensjonforvalterResponse.Response
+                        .builder()
+                        .httpStatus(PensjonforvalterResponse.HttpStatus
+                                .builder()
+                                .status(description.getStatus().value())
+                                .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(WebClientError.describe(error).getMessage())
+                        .message(description.getMessage())
                         .path(AFP_OFFENTLIG_URL.replace("{miljoe}", miljoe).replace("{ident}", ident))
                         .build())
                 .build();
-
-        return PensjonforvalterResponse.builder()
+        return PensjonforvalterResponse
+                .builder()
                 .status(Collections.singletonList(miljoeResponse))
                 .build();
-    }}
+    }
+}

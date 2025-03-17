@@ -30,7 +30,6 @@ public class LagrePensjonsavtaleCommand implements Callable<Flux<Pensjonforvalte
 
         var callId = generateCallId();
         log.info("Pensjonsavtale lagre inntekt {}, callId: {}", pensjonsavtaleRequest, callId);
-
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path(PENSJONSAVTALE_URL).build())
                 .header(AUTHORIZATION, "Bearer " + token)
@@ -41,22 +40,31 @@ public class LagrePensjonsavtaleCommand implements Callable<Flux<Pensjonforvalte
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(throwable -> WebClientError.log(throwable, log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error ->
-                        Mono.just(PensjonforvalterResponse.builder()
-                                .status(pensjonsavtaleRequest.getMiljoer().stream()
-                                        .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment.builder()
-                                                .miljo(miljoe)
-                                                .response(PensjonforvalterResponse.Response.builder()
-                                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .status(WebClientError.describe(error).getStatus().value())
-                                                                .reasonPhrase(WebClientError.describe(error).getStatus().getReasonPhrase())
-                                                                .build())
-                                                        .message(WebClientError.describe(error).getMessage())
-                                                        .path(PENSJONSAVTALE_URL)
-                                                        .build())
-                                                .build())
-                                        .toList())
-                                .build()));
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(PensjonforvalterResponse
+                            .builder()
+                            .status(pensjonsavtaleRequest
+                                    .getMiljoer()
+                                    .stream()
+                                    .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment
+                                            .builder()
+                                            .miljo(miljoe)
+                                            .response(PensjonforvalterResponse.Response
+                                                    .builder()
+                                                    .httpStatus(PensjonforvalterResponse.HttpStatus
+                                                            .builder()
+                                                            .status(description.getStatus().value())
+                                                            .reasonPhrase(description.getStatus().getReasonPhrase())
+                                                            .build())
+                                                    .message(description.getMessage())
+                                                    .path(PENSJONSAVTALE_URL)
+                                                    .build())
+                                            .build())
+                                    .toList())
+                            .build());
+                });
+
     }
 
 }

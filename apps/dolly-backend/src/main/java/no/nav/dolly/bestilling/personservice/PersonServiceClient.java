@@ -66,12 +66,13 @@ public class PersonServiceClient {
         );
     }
 
-    private Flux<PersonServiceResponse> getError(Throwable error, DollyPerson person) {
-
-        return Flux.just(PersonServiceResponse.builder()
+    private Flux<PersonServiceResponse> getError(Throwable throwable, DollyPerson person) {
+        var description = WebClientError.describe(throwable);
+        return Flux.just(PersonServiceResponse
+                .builder()
                 .ident(person.getIdent())
-                .formattertMelding("Feil= %s".formatted(ErrorStatusDecoder.encodeStatus(WebClientError.describe(error).getMessage())))
-                .status(WebClientError.describe(error).getStatus())
+                .formattertMelding("Feil= %s".formatted(ErrorStatusDecoder.encodeStatus(description.getMessage())))
+                .status(description.getStatus())
                 .exists(false)
                 .build());
     }

@@ -100,8 +100,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                                                     fase3Klienter(),
                                                                                     progress, true))))))
                                             .onErrorResume(throwable -> {
-                                                var error = errorStatusDecoder.getErrorText(
-                                                        WebClientError.describe(throwable).getStatus(), WebClientError.describe(throwable).getMessage());
+                                                var description = WebClientError.describe(throwable);
+                                                var error = errorStatusDecoder.getErrorText(description.getStatus(), description.getMessage());
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
                                                 saveFeil(progress, error);
