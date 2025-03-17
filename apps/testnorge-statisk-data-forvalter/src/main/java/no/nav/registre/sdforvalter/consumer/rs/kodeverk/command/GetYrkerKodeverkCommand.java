@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkResponse;
 import no.nav.registre.sdforvalter.util.CallIdUtil;
-import no.nav.registre.sdforvalter.util.WebClientFilter;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.*;
 
 @RequiredArgsConstructor
 @Slf4j
