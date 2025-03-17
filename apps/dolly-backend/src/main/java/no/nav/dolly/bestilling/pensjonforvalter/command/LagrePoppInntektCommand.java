@@ -48,7 +48,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                 .bodyValue(pensjonPoppInntektRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);

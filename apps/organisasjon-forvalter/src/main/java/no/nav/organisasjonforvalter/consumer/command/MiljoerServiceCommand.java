@@ -27,7 +27,7 @@ public class MiljoerServiceCommand implements Callable<Mono<String[]>> {
                 .retrieve()
                 .bodyToMono(String[].class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> Mono.empty());
     }
 

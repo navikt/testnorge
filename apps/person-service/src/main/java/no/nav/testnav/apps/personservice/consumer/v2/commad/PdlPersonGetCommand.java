@@ -52,7 +52,7 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
                                 Map.of("ident", ident, "historikk", true))))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());

@@ -35,7 +35,7 @@ public class PostDagpengerCommand implements Callable<Mono<DagpengerResponseDTO>
                 .body(BodyInserters.fromPublisher(Mono.just(request), DagpengerRequestDTO.class))
                 .retrieve()
                 .bodyToMono(DagpengerResponseDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

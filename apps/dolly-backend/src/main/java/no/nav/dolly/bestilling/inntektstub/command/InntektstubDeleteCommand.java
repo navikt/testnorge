@@ -36,7 +36,7 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .map(respons -> "")
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

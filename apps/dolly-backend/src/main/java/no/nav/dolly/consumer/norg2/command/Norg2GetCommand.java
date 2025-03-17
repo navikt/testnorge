@@ -30,7 +30,7 @@ public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Norg2EnhetResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> Norg2EnhetResponse.of(WebClientError.describe(throwable)))
                 .retryWhen(WebClientError.is5xxException());
     }

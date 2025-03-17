@@ -35,7 +35,7 @@ public class GetOrganisasjonerCommand implements Callable<Mono<List<Organisasjon
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

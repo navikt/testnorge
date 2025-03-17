@@ -38,7 +38,7 @@ public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnAcces
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(AltinnAccessListResponseDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .doOnSuccess(value -> log.info("Altinn organisasjontilgang opprettet for {}",
                         organisasjon.getData().stream()
                                 .map(data -> data.split(":"))

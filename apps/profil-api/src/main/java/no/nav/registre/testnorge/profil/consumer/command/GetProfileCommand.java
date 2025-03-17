@@ -25,7 +25,7 @@ public class GetProfileCommand implements Callable<Mono<ProfileDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(ProfileDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

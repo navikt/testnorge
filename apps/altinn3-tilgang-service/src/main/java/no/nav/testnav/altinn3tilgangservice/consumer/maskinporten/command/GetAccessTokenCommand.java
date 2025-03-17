@@ -31,7 +31,7 @@ public class GetAccessTokenCommand implements Callable<Mono<AccessToken>> {
                 .retrieve()
                 .bodyToMono(AccessToken.class)
                 .doOnSuccess(value -> log.info("AccessToken hentet fra maskinporten."))
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .cache(Duration.ofSeconds(10L));
     }
 }

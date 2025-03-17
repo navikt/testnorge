@@ -32,6 +32,6 @@ public class GetBrregEnheterCommand implements Callable<Mono<BrregResponseDTO>> 
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(BrregResponseDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 }

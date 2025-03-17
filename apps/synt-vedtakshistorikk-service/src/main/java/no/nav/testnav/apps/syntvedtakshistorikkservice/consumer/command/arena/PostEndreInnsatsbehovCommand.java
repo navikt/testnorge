@@ -37,7 +37,7 @@ public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsb
                 .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
                 .retrieve()
                 .bodyToMono(EndreInnsatsbehovResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

@@ -36,7 +36,7 @@ public class IdentpoolPostCommand implements Callable<Mono<List<String>>> {
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)
                 .retryWhen(WebClientError.is5xxExceptionThen(new InternalError("Identpool: antall repeterende forsøk nådd")))
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

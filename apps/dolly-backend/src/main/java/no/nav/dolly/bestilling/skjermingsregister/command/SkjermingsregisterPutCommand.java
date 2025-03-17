@@ -33,7 +33,7 @@ public class SkjermingsregisterPutCommand implements Callable<Mono<SkjermingData
                 .toBodilessEntity()
                 .map(result -> SkjermingDataResponse.builder().build())
                 .onErrorResume(throwable -> SkjermingDataResponse.of(WebClientError.describe(throwable)))
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

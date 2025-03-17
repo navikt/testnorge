@@ -31,7 +31,7 @@ public class GetExchangeTokenCommand implements Callable<Mono<String>> {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .doOnSuccess(response -> log.info("Exchange token hentet fra Altinn"));
     }
 }

@@ -52,7 +52,7 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
                 .map(resultat -> InaktiverResponse.builder()
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> InaktiverResponse.of(WebClientError.describe(throwable)))
                 .retryWhen(WebClientError.is5xxException());
     }

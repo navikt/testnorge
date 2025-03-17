@@ -41,7 +41,7 @@ public class PostArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdRe
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
                         .miljo(miljoe)
                         .build())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
                         .arbeidsforhold(arbeidsforhold)
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())

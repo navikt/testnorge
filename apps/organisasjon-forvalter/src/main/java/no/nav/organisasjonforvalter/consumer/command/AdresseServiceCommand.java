@@ -28,7 +28,7 @@ public class AdresseServiceCommand implements Callable<Mono<VegadresseDTO[]>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(VegadresseDTO[].class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

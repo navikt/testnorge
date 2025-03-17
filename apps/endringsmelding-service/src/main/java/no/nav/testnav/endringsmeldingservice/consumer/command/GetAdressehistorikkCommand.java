@@ -35,7 +35,7 @@ public class GetAdressehistorikkCommand implements Callable<Flux<Adressehistorik
                 .retrieve()
                 .bodyToFlux(AdressehistorikkDTO.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

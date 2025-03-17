@@ -35,7 +35,7 @@ public class SendFoedselsmeldingCommand implements Callable<Mono<Foedselsmelding
                 .retrieve()
                 .bodyToMono(FoedselsmeldingResponse.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

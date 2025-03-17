@@ -38,7 +38,7 @@ public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResp
                 .map(value -> KontoregisterResponseDTO.builder()
                         .status(HttpStatus.valueOf(value.getStatusCode().value()))
                         .build())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(KontoregisterResponseDTO

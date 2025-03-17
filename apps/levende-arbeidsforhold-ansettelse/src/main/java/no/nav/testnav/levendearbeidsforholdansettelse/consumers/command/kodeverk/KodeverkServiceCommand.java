@@ -36,7 +36,7 @@ public class KodeverkServiceCommand implements Callable<Mono<Map<String, String>
                 .bodyToMono(JsonNode.class)
                 .map(node -> (Map<String, String>) (nonNull(node) ?
                         mapper.convertValue(node.get("kodeverk"), new TypeReference<>(){}) : Mono.empty()))
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.empty());
     }
 }

@@ -40,7 +40,7 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
                 .body(BodyInserters.fromValue(new GraphQLRequest(query, Map.of("ident", ident, "historikk", true))))
                 .retrieve()
                 .bodyToMono(PdlPerson.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

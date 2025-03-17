@@ -28,7 +28,7 @@ public class GetBrukertilgangCommand implements Callable<Flux<OrganisasjonDTO>> 
                 .bodyValue(new AltinnBrukerRequest(ident))
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(
                         throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty()

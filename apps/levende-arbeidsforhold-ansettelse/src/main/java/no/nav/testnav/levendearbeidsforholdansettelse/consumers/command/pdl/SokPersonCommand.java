@@ -54,7 +54,7 @@ public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
                                 Map.of("paging", paging, "criteria", criteria))))
                 .retrieve()
                 .bodyToFlux(PdlPersonDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());

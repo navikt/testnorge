@@ -31,7 +31,7 @@ public class GetProfileImageCommand implements Callable<Mono<byte[]>> {
                                 .map(IllegalStateException::new)
                 )
                 .bodyToMono(byte[].class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

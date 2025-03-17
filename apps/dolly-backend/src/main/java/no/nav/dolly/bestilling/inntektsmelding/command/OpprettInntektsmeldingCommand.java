@@ -36,7 +36,7 @@ public class OpprettInntektsmeldingCommand implements Callable<Flux<Inntektsmeld
                 .body(BodyInserters.fromPublisher(Mono.just(request), InntektsmeldingRequest.class))
                 .retrieve()
                 .bodyToFlux(InntektsmeldingResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> InntektsmeldingResponse.of(WebClientError.describe(throwable), request.getArbeidstakerFnr(), request.getMiljoe()))
                 .retryWhen(WebClientError.is5xxException());
     }

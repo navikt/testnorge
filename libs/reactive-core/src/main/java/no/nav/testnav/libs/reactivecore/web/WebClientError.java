@@ -18,6 +18,7 @@ import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -85,22 +86,23 @@ public class WebClientError {
     }
 
     /**
-     * Convenience method for logging, using {@code .doOnError(throwable -> WebClientError.log(throwable, log))}.
+     * Convenience method for logging.
      *
-     * @param throwable The error to log.
-     * @param logger    The logger to log to, for improved readability. Cannot be resolved from stack trace on call.
+     * @param logger The logger to log to, for improved readability. Cannot be resolved from stack trace on call.
      */
-    public static void log(Throwable throwable, Logger logger) {
-        if ((throwable instanceof WebClientResponseException webClientResponseException)) {
-            logger.error(
-                    "{}, {}",
-                    throwable.getMessage(),
-                    webClientResponseException.getResponseBodyAsString(),
-                    throwable
-            );
-        } else {
-            logger.error(throwable.getMessage(), throwable);
-        }
+    public static Consumer<Throwable> logTo(Logger logger) {
+        return throwable -> {
+            if ((throwable instanceof WebClientResponseException webClientResponseException)) {
+                logger.error(
+                        "{}, {}",
+                        throwable.getMessage(),
+                        webClientResponseException.getResponseBodyAsString(),
+                        throwable
+                );
+            } else {
+                logger.error(throwable.getMessage(), throwable);
+            }
+        };
     }
 
     /**

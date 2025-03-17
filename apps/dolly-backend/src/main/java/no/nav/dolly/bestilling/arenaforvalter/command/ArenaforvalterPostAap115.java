@@ -47,7 +47,7 @@ public class ArenaforvalterPostAap115 implements Callable<Flux<Aap115Response>> 
                     response.setMiljoe(aap115Request.getMiljoe());
                     return response;
                 })
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> Aap115Response.of(WebClientError.describe(throwable), aap115Request.getMiljoe()))
                 .retryWhen(WebClientError.is5xxException());
     }

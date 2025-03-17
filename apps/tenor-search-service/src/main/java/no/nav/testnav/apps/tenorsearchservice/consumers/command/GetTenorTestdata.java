@@ -72,7 +72,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                             .query(query)
                             .build();
                 })
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> TenorResponse.of(WebClientError.describe(error), query));
     }

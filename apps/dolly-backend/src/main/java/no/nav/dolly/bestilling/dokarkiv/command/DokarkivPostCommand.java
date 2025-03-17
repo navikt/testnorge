@@ -42,7 +42,7 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
                     return response;
                 })
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> DokarkivResponse.of(WebClientError.describe(throwable), environment));
     }
 

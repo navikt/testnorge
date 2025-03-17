@@ -33,7 +33,7 @@ public class GetAccessListMembersCommand implements Callable<Mono<AltinnAccessLi
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(AltinnAccessListResponseDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .doOnSuccess(value -> log.info("Altinn-tilgang hentet"));
     }
 }

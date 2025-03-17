@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProfile name="prod">
+    <springProfile name="prod,local">
         <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
                 <includeMdcKeyName>bestillingId</includeMdcKeyName>
@@ -11,7 +11,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="local">
+    <springProfile name="localX">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
                 <charset>UTF-8</charset>

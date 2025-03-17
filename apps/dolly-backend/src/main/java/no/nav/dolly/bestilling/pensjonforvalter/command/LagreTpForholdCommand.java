@@ -53,7 +53,7 @@ public class LagreTpForholdCommand implements Callable<Flux<PensjonforvalterResp
                 .bodyValue(lagreTpForholdRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);

@@ -34,7 +34,7 @@ public class BrregPostCommand implements Callable<Mono<RolleoversiktTo>> {
                 .retrieve()
                 .bodyToMono(RolleoversiktTo.class)
                 .onErrorResume(throwable -> RolleoversiktTo.of(WebClientError.describe(throwable)))
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

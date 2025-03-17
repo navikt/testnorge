@@ -31,7 +31,7 @@ public class BrukerServiceGetTilgangCommand implements Callable<Mono<TilgangDTO>
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(TilgangDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(TilgangDTO.builder()
                         .brukere(List.of(brukerId))
                         .build()))

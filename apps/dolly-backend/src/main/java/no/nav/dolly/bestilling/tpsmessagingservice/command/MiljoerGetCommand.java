@@ -30,7 +30,7 @@ public class MiljoerGetCommand implements Callable<Mono<List<String>>> {
                 .retrieve()
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .cache(Duration.ofHours(8));
     }

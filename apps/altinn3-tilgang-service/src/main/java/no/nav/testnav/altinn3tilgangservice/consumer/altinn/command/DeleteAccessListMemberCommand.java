@@ -48,6 +48,6 @@ public class DeleteAccessListMemberCommand implements Callable<Mono<AltinnAccess
                                 .map(data -> data.split(":"))
                                 .map(data -> data[data.length - 1])
                                 .collect(Collectors.joining())))
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 }

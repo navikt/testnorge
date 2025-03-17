@@ -33,7 +33,7 @@ public class HentPersondataCommand implements Callable<Flux<PersonMiljoeDTO>> {
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

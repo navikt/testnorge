@@ -36,7 +36,7 @@ public class PostFinnTiltakCommand implements Callable<Mono<NyttVedtakResponse>>
                 .body(BodyInserters.fromPublisher(Mono.just(rettighet), FinnTiltakRequest.class))
                 .retrieve()
                 .bodyToMono(NyttVedtakResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

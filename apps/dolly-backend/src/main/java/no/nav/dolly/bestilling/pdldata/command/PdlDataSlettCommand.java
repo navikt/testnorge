@@ -37,7 +37,7 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on DELETE of ident %s".formatted(ident)))
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
-                        throwable -> WebClientError.log(throwable, log))
+                        WebClientError.logTo(log))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Flux.empty());
     }

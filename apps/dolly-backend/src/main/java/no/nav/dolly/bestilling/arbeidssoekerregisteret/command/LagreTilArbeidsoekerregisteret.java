@@ -39,7 +39,7 @@ public class LagreTilArbeidsoekerregisteret implements Callable<Mono<Arbeidssoek
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> ArbeidssoekerregisteretResponse.of(WebClientError.describe(throwable)));
     }
 

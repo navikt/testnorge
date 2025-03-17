@@ -41,7 +41,7 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
                         .status(value)
                         .build()))
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable ->
                         Mono.just(BestillingStatus.builder()
                                 .orgnummer(status.getOrganisasjonsnummer())

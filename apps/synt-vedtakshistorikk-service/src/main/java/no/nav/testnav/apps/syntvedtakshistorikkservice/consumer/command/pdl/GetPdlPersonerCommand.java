@@ -42,7 +42,7 @@ public class GetPdlPersonerCommand implements Callable<Mono<PdlPersonBolk>> {
                         .fromValue(new GraphQLRequest(query, Map.of("identer", identer))))
                 .retrieve()
                 .bodyToMono(PdlPersonBolk.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

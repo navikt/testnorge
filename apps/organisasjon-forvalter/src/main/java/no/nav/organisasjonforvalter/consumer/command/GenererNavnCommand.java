@@ -30,7 +30,7 @@ public class GenererNavnCommand implements Callable<Flux<NavnDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .bodyToFlux(NavnDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.empty());
     }

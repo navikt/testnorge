@@ -38,7 +38,7 @@ public class ArenaForvalterGetMiljoeCommand implements Callable<Flux<String>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(String[].class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .flatMapIterable(miljoer -> Arrays.stream(miljoer).toList())
                 .retryWhen(WebClientError.is5xxException());
     }

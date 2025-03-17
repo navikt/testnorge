@@ -42,7 +42,7 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
                     var numberOfItems = headers != null && !headers.isEmpty() ? headers.getFirst() : "0";
                     return Mono.just(new PersonSearchResponse(Integer.parseInt(numberOfItems), entity.getBody()));
                 })
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.empty());
     }

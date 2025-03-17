@@ -32,7 +32,7 @@ public class PostInntekterCommand implements Callable<Mono<List<Inntektsinformas
                 .bodyValue(inntektsinformasjon)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

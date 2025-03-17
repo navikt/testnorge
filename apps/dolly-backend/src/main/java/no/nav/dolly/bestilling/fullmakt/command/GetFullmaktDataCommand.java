@@ -41,7 +41,7 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> 
                 .bodyToFlux(FullmaktResponse.class)
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
-                        throwable -> WebClientError.log(throwable, log))
+                        WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Flux.empty());
     }

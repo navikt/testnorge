@@ -35,6 +35,6 @@ public class GetAuthorizedPartiesCommand implements Callable<Mono<AuthorizedPart
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(AuthorizedPartyDTO[].class)
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 }

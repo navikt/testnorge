@@ -45,6 +45,6 @@ public class OrganisasjonBestillingIdsCommand implements Callable<Mono<Status>> 
                         .miljoe(status.getMiljoe())
                         .organisasjonsnummer(status.getOrganisasjonsnummer())
                         .build())
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 }

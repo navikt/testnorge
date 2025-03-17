@@ -35,7 +35,7 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
                 .retrieve()
                 .bodyToMono(MiljoerResponse.class)
                 .map(MiljoerResponse::getInstitusjonsoppholdEnvironments)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(List.of("q1", "q2")))
                 .retryWhen(WebClientError.is5xxException());
     }

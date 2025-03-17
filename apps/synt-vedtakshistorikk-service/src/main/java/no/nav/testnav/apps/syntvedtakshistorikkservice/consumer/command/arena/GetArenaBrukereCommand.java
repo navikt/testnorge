@@ -33,7 +33,7 @@ public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(NyeBrukereResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

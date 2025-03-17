@@ -35,7 +35,7 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PdlPersonBolk.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());

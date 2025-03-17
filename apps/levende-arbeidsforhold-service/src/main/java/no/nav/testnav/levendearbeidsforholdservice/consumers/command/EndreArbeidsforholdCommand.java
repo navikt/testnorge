@@ -42,7 +42,7 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<ResponseEntity<
                 .retrieve()
                 .toBodilessEntity()
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 }
 

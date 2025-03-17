@@ -47,7 +47,7 @@ public class ArbeidsforholdPutCommand implements Callable<Flux<ArbeidsforholdRes
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
                         .miljo(miljoe)
                         .build())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Flux.just(ArbeidsforholdRespons.builder()
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
                         .miljo(miljoe)

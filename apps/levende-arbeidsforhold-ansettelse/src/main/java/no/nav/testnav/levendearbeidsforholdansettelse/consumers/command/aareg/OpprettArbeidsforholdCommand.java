@@ -42,7 +42,7 @@ public class OpprettArbeidsforholdCommand implements Callable<Mono<Arbeidsforhol
                         .payload(payload)
                         .build())
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> ArbeidsforholdResponseDTO.of(WebClientError.describe(error)));
     }
 

@@ -48,7 +48,7 @@ public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>
                         REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(NyeBrukereResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

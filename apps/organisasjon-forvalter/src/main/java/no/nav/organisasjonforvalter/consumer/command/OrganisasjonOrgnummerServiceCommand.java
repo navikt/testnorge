@@ -28,7 +28,7 @@ public class OrganisasjonOrgnummerServiceCommand implements Callable<Mono<String
                 .header("antall", antall.toString())
                 .retrieve()
                 .bodyToMono(String[].class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

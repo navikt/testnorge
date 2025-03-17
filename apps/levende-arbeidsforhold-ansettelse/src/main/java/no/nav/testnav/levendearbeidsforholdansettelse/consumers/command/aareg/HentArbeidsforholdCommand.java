@@ -49,7 +49,7 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
                 .retrieve()
                 .bodyToFlux(Arbeidsforhold.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.empty())
                 .onErrorResume(WebClientResponseException.class, error -> Mono.empty());
     }

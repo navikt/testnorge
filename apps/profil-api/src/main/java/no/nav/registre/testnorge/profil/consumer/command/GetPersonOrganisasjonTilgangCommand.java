@@ -29,7 +29,7 @@ public class GetPersonOrganisasjonTilgangCommand implements Callable<Flux<Organi
                 .bodyValue(new AltinnRequestDTO(ident))
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

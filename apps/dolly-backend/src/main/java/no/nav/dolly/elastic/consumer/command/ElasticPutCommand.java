@@ -31,7 +31,7 @@ public class ElasticPutCommand implements Callable<Mono<String>> {
                 .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

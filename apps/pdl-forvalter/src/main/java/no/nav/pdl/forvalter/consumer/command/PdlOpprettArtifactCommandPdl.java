@@ -44,7 +44,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                         .hendelseId(response.getHendelseId())
                         .build()))
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(errorHandling(error, id)));
     }
 

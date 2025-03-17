@@ -36,7 +36,7 @@ public class SendKansellerDoedsmeldingCommand implements Callable<Mono<Doedsmeld
                 .retrieve()
                 .bodyToMono(DoedsmeldingResponse.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log));
+                .doOnError(WebClientError.logTo(log));
     }
 
 }

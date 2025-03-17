@@ -53,7 +53,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                 .bodyValue(alderspensjonRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable ->
                         Mono.just(PensjonforvalterResponse

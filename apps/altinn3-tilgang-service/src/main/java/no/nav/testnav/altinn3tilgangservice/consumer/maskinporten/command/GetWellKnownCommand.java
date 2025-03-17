@@ -26,7 +26,7 @@ public class GetWellKnownCommand implements Callable<Mono<WellKnown>> {
                 .retrieve()
                 .bodyToMono(WellKnown.class)
                 .doOnSuccess(value -> log.info("WellKnown hentet for maskinporten."))
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .cache(Duration.ofDays(1L));
     }
 }

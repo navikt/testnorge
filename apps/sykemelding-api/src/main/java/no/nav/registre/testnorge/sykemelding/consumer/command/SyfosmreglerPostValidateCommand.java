@@ -33,7 +33,7 @@ public class SyfosmreglerPostValidateCommand implements Callable<Mono<Validation
                 .bodyValue(receivedSykemelding)
                 .retrieve()
                 .bodyToMono(ValidationResultDTO.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> {
                     var description = WebClientError.describe(error);
                     return Mono.just(ValidationResultDTO

@@ -30,7 +30,7 @@ public class PersonExistsGetCommand implements Callable<Flux<Boolean>> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(Boolean.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

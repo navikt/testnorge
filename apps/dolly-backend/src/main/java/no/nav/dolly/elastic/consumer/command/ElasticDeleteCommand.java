@@ -28,7 +28,7 @@ public class ElasticDeleteCommand implements Callable<Mono<JsonNode>> {
                 .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 

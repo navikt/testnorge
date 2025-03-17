@@ -39,7 +39,7 @@ public class KontoregisterDeleteCommand implements Callable<Mono<KontoregisterRe
                 .map(value -> KontoregisterResponseDTO.builder()
                         .status(HttpStatus.valueOf(value.getStatusCode().value()))
                         .build())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> {
                     var description = WebClientError.describe(error);
                     return Mono.just(KontoregisterResponseDTO

@@ -34,7 +34,7 @@ public class GetOrganisasjonCommand implements Callable<Flux<OrganisasjonDetalje
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(OrganisasjonDetaljer.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Flux.empty());
     }

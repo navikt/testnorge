@@ -30,7 +30,7 @@ public class GetYrkerKodeverkCommand implements Callable<KodeverkResponse> {
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToMono(KodeverkResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .block();
     }
 }

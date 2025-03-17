@@ -40,7 +40,7 @@ public class SlettePensjonsavtaleCommand implements Callable<Flux<Pensjonforvalt
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(Exception.class, error -> Mono.empty());
     }
 

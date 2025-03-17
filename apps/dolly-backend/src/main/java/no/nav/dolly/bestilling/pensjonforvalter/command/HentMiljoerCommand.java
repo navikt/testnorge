@@ -39,7 +39,7 @@ public class HentMiljoerCommand implements Callable<Mono<Set<String>>> {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Set<String>>() {
                 })
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(Set.of("q1", "q2")))
                 .cache(Duration.ofHours(1));

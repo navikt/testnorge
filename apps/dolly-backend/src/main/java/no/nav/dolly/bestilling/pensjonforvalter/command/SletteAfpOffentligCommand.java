@@ -42,7 +42,7 @@ public class SletteAfpOffentligCommand implements Callable<Mono<Pensjonforvalter
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, ident, HttpStatus.valueOf(response.getStatusCode().value())))
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, ident, error)));
     }
 

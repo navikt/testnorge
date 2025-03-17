@@ -32,7 +32,7 @@ public class SokosGetCommand implements Callable<Flux<SokosResponse>> {
                 .header("korrelasjonsid", UUID.randomUUID().toString())
                 .retrieve()
                 .bodyToFlux(SokosResponse.class)
-                .doOnError(throwable -> WebClientError.log(throwable, log))
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 
