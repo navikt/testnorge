@@ -9,6 +9,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -18,15 +19,19 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class KodeverkServiceCommand implements Callable<Mono<Map<String, String>>> {
 
+    private static final TypeReference<Map<String, String>> KODEVERK_TYPE = new TypeReference<>() {
+    };
+
     private final WebClient webClient;
     private final String token;
-    private final String kodeverk;  ///api/v1/kodeverk/Yrker/koder
+    private final String kodeverk;
+    /// api/v1/kodeverk/Yrker/koder
     private final ObjectMapper mapper;
 
     @Override
-    public Mono<Map<String, String>> call()  {
-
-        return webClient.get()
+    public Mono<Map<String, String>> call() {
+        return webClient
+                .get()
                 .uri(builder -> builder
                         .path("/api/v1/kodeverk")
                         .queryParam("kodeverk", kodeverk)
@@ -34,8 +39,9 @@ public class KodeverkServiceCommand implements Callable<Mono<Map<String, String>
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .map(node -> (Map<String, String>) (nonNull(node) ?
-                        mapper.convertValue(node.get("kodeverk"), new TypeReference<>(){}) : Mono.empty()))
+                .map(node -> nonNull(node) ?
+                        mapper.convertValue(node.get("kodeverk"), KODEVERK_TYPE) :
+                        HashMap.<String, String>newHashMap(0))
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.empty());
     }
