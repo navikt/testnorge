@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -31,6 +33,8 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Oppholdsadresse: kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, utenlandskAdresse)";
+    private static final String VALIDATION_PROTECTED_ADDRESS = "Oppholdsadresse: Personer med adressebeskyttelse == " +
+            "STRENGT_FORTROLIG skal ikke ha oppholdsadresse";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
@@ -66,6 +70,12 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
 
         }
+        if (FNR == IdenttypeUtility.getIdenttype(person.getIdent()) &&
+                STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                        .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering() &&
+                adresse.countAdresser() > 0) {
+            throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
+        }
 
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
             validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
@@ -86,7 +96,12 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
         if (FNR == IdenttypeUtility.getIdenttype(person.getIdent())) {
 
-            if (oppholdsadresse.countAdresser() == 0) {
+            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+
+                return;
+
+            } else if (oppholdsadresse.countAdresser() == 0) {
                 oppholdsadresse.setVegadresse(new VegadresseDTO());
             }
 

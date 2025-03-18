@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -58,6 +60,26 @@ class OppholdsadresseServiceTest {
 
         assertThat(exception.getMessage(), containsString("kun én adresse skal være satt " +
                 "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
+    }
+
+    @Test
+    void whenAddressProvidedAndStrengtFortrolig_thenThrowExecption() {
+
+        var request = OppholdsadresseDTO.builder()
+                .vegadresse(new VegadresseDTO())
+                .isNew(true)
+                .build();
+
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                oppholdsadresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                                .gradering(STRENGT_FORTROLIG)
+                                .build()))
+                        .build()));
+
+        assertThat(exception.getMessage(), containsString(
+                "Oppholdsadresse: Personer med adressebeskyttelse == STRENGT_FORTROLIG skal ikke ha oppholdsadresse"));
     }
 
     @Test
@@ -112,6 +134,24 @@ class OppholdsadresseServiceTest {
                         .build()));
 
         assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
+    }
+
+    @Test
+    void whenIdenttypeFnrAndStrengtFortrolig_thenMakeNoAdress() {
+
+        var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
+                .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
+                        .isNew(true)
+                        .build())))
+                .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                        .gradering(STRENGT_FORTROLIG)
+                        .build()))
+                .build();
+
+        var target = oppholdsadresseService.convert(request).getFirst();
+
+        assertThat(target.countAdresser(), is(0));
     }
 
     @Test

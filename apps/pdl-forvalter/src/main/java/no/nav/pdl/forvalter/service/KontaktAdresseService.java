@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -24,6 +25,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -95,7 +97,11 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
         if (FNR == IdenttypeUtility.getIdenttype(person.getIdent())) {
 
-            if (kontaktadresse.countAdresser() == 0) {
+            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+                return;
+
+            } else if (kontaktadresse.countAdresser() == 0) {
                 kontaktadresse.setVegadresse(new VegadresseDTO());
             }
 
