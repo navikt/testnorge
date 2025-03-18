@@ -44,6 +44,10 @@ jobs:
           name: blob-report-${{ matrix.shardIndex }}
           path: ${{ inputs.working-directory }}/src/main/js/blob-report
           retention-days: 1
+
+      - name: Run Vitest/RTL tests
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npm run test:vitest-run
   
   merge-reports:
     if: ${{ !cancelled() }}
@@ -106,23 +110,3 @@ jobs:
             echo "Failed tests: $failed_tests 🔹" >> $GITHUB_STEP_SUMMARY
           fi
           echo "Se hele rapporten [her](https://cdn.nav.no/dolly/${{ github.repository }}/${{ github.run_number }}/playwright-report/index.html)." >> $GITHUB_STEP_SUMMARY
-  
-  vitest:
-    if: ${{ !cancelled() }}
-    needs: [ playwright-tests ]
-    runs-on: ubuntu-latest
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: Install dependencies
-        working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npm ci
-      - name: Run Vitest/RTL tests
-        working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npm run test:vitest-run
