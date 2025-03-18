@@ -67,7 +67,6 @@ export enum TestComponentSelectors {
 	BUTTON_FULLFOER_BESTILLING = 'button-fullfoer-bestilling',
 	BUTTON_AVBRYT_BESTILLING = 'button-avbryt-bestilling',
 	BUTTON_IMPORTER_PERSONER = 'button-importer-personer',
-	BUTTON_IMPORTER = 'button-importer',
 	BUTTON_MINSIDE_ENDRE_MALNAVN = 'button-minside-endre-malnavn',
 	BUTTON_MINSIDE_LAGRE_MALNAVN = 'button-minside-lagre-malnavn',
 	BUTTON_LUKK_BESTILLING_RESULTAT = 'button-lukk-bestilling-resultat',

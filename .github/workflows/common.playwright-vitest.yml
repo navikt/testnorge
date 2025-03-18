@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Playwright/Vitest Tests
 on:
   workflow_call:
     inputs:
@@ -106,3 +106,12 @@ jobs:
             echo "Failed tests: $failed_tests 🔹" >> $GITHUB_STEP_SUMMARY
           fi
           echo "Se hele rapporten [her](https://cdn.nav.no/dolly/${{ github.repository }}/${{ github.run_number }}/playwright-report/index.html)." >> $GITHUB_STEP_SUMMARY
+  
+  vitest:
+    if: ${{ !cancelled() }}
+    needs: [ playwright-tests ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Vitest/RTL tests
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npm run vitest

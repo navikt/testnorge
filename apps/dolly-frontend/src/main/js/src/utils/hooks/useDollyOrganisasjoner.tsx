@@ -225,20 +225,12 @@ export const useOrganisasjonBestillingStatus = (
 	erOrganisasjon: boolean,
 	autoRefresh = false,
 ) => {
-	if (!erOrganisasjon) {
-		return {
-			loading: false,
-			error: 'Bestilling er ikke org!',
-		}
+	const shouldFetch = () => {
+		return bestillingId && erOrganisasjon
 	}
-	if (!bestillingId) {
-		return {
-			loading: false,
-			error: 'BestillingId mangler!',
-		}
-	}
+
 	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
-		getOrganisasjonBestillingStatusUrl(bestillingId),
+		shouldFetch() ? getOrganisasjonBestillingStatusUrl(bestillingId) : null,
 		fetcher,
 		{
 			refreshInterval: autoRefresh ? 3000 : 0,
