@@ -118,4 +118,4 @@ jobs:
           node-version: 22.x
       - name: Run Vitest/RTL tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npm run vitest
+        run: npm run test:vitest-run

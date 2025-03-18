@@ -5,9 +5,10 @@ import * as ReactDOM from 'react-dom/client'
 import '@navikt/ds-css'
 import '@/styles/main.less'
 import { RootComponent } from '@/RootComponent'
+import { runningE2ETest } from '@/service/services/Request'
 
 async function enableMocking() {
-	if (process.env.NODE_ENV !== 'development') {
+	if (process.env.NODE_ENV !== 'development' || runningE2ETest()) {
 		return
 	}
 
