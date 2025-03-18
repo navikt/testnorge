@@ -4,7 +4,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -27,7 +26,6 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -95,13 +93,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
         if (FNR == getIdenttype(person.getIdent())) {
 
-            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
-
-                person.setBostedsadresse(null);
-                return;
-
-            } else if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
+            if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
                     person.getInnflytting().stream()
                             .noneMatch(innflytting -> person.getUtflytting().stream()
                                     .anyMatch(utflytting -> innflytting.getInnflyttingsdato()

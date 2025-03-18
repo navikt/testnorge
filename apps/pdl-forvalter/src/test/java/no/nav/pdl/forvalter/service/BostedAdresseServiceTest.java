@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
@@ -22,10 +21,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -204,24 +201,6 @@ class BostedAdresseServiceTest {
         var target = bostedAdresseService.convert(request, null);
 
         assertThat(target.get(1).getGyldigTilOgMed(), is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay())));
-    }
-
-    @Test
-    void whenIdenttypeFnrAndStrengtFortrolig_thenMakeNoAdress() {
-
-        var request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
-                        .isNew(true)
-                        .build())))
-                .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
-                        .gradering(STRENGT_FORTROLIG)
-                        .build()))
-                .build();
-
-        var target = bostedAdresseService.convert(request, null);
-
-        assertThat(target, is(empty()));
     }
 
     @Test
