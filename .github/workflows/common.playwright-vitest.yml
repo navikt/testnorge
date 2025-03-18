@@ -111,6 +111,8 @@ jobs:
     if: ${{ !cancelled() }}
     needs: [ playwright-tests ]
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
