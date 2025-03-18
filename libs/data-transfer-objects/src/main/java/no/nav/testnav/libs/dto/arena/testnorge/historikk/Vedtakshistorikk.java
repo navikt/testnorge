@@ -3,9 +3,8 @@ package no.nav.testnav.libs.dto.arena.testnorge.historikk;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
@@ -15,8 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
