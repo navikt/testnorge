@@ -116,6 +116,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
+      - name: Install dependencies
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npm ci
       - name: Run Vitest/RTL tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm run test:vitest-run
