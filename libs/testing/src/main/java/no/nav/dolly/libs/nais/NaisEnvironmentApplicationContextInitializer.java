@@ -3,9 +3,9 @@ package no.nav.dolly.libs.nais;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.lang.NonNull;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -21,17 +21,27 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
                 .of(environment.getActiveProfiles())
                 .forEach(profile -> {
                     switch (profile) {
-                        case "local", "localdb" -> configureForLocalProfile(environment.getSystemProperties());
-                        case "test" -> configureForTestProfile(environment.getSystemProperties());
-                        default -> configureForOtherProfiles(environment.getSystemProperties());
+                        case "local", "localdb" -> configureForLocalProfile(environment);
+                        case "test" -> configureForTestProfile(environment);
+                        default -> configureForOtherProfiles(environment);
                     }
                 });
 
     }
 
-    private static void configureForLocalProfile(Map<String, Object> properties) {
+    private static void configureForLocalProfile(ConfigurableEnvironment environment) {
 
         log.info("Configuring environment for local profile using Secret Manager");
+        var properties = environment.getSystemProperties();
+
+        // Dynamically load any configured environment variables from NAIS pod.
+        try {
+            new NaisRuntimeEnvironmentConnector(environment)
+                    .getEnvironmentVariables()
+                    .forEach(properties::putIfAbsent);
+        } catch (NaisEnvironmentException e) {
+            log.warn("Failed to dynamically load environment variables using {}", NaisRuntimeEnvironmentConnector.class.getSimpleName(), e);
+        }
 
         // Emulating NAIS provided environment variables.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
@@ -53,9 +63,10 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
     }
 
-    private static void configureForTestProfile(Map<String, Object> properties) {
+    private static void configureForTestProfile(ConfigurableEnvironment environment) {
 
         log.info("Configuring environment for test profile using dummy values");
+        var properties = environment.getSystemProperties();
 
         // Disabling Secret Manager (not available when running builds on GitHub).
         properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false");
@@ -80,9 +91,10 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
     }
 
-    private static void configureForOtherProfiles(Map<String, Object> properties) {
+    private static void configureForOtherProfiles(ConfigurableEnvironment environment) {
 
         log.info("Configuring environment for non-test, non-local profiles");
+        var properties = environment.getSystemProperties();
 
         properties.putIfAbsent("spring.main.banner-mode", "off");
         properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false"); // Unless we actually start using Secret Manager in deployment.
