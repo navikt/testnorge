@@ -46,6 +46,7 @@ jobs:
           retention-days: 1
 
       - name: Run Vitest/RTL tests
+        if: ${{ matrix.shardIndex == 1 }}
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm run test:vitest-run
   
