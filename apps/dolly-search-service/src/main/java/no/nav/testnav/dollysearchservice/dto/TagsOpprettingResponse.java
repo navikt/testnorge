@@ -18,6 +18,7 @@ public class TagsOpprettingResponse {
 
     private String message;
     private List<Detaljert> details;
+    private List<String> identer;
 
     @Data
     @Builder

@@ -46,6 +46,7 @@ public class TagsPostCommand implements Callable<Mono<TagsOpprettingResponse>> {
                 .map(status -> TagsOpprettingResponse.builder()
                         .message(status.hasBody() ? status.getBody().getMessage() : null)
                         .details(status.hasBody() ? status.getBody().getDetails() : null)
+                        .identer(identer)
                         .status(HttpStatus.valueOf(status.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
