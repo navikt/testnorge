@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shardIndex: [ 1, 2, 3 ]
-        shardTotal: [ 3 ]
+        shardIndex: [ 1, 2, 3, 4 ]
+        shardTotal: [ 4 ]
     env:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
@@ -112,6 +112,10 @@ jobs:
     needs: [ playwright-tests ]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
       - name: Run Vitest/RTL tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm run vitest
