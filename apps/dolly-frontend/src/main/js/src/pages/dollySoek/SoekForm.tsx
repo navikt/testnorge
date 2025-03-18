@@ -5,7 +5,6 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Accordion, Button } from '@navikt/ds-react'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
-// import { useSoekIdenter, useSoekTyper } from '@/utils/hooks/usePersonSoek'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import * as _ from 'lodash-es'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -23,6 +22,9 @@ import { usePersonerSearch, usePersonerTyper } from '@/utils/hooks/useDollySearc
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 const initialValues = {
+	side: 0,
+	antall: 10,
+	seed: null,
 	registreRequest: [],
 	personRequest: {
 		identtype: null,
@@ -67,10 +69,8 @@ const initialValues = {
 
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null as any)
-	// const { result, loading, error, mutate } = useSoekIdenter(request)
+	const [visAntall, setVisAntall] = useState(10)
 	const { result, loading, error, mutate } = usePersonerSearch(request)
-
-	// const { typer, loading: loadingTyper } = useSoekTyper()
 	const { typer, loading: loadingTyper } = usePersonerTyper()
 
 	const personPath = 'personRequest'
@@ -87,12 +87,21 @@ export const SoekForm = () => {
 		setRequest(watch())
 		mutate()
 	}
+
 	const handleChange = (value: any, path: string) => {
 		setValue(path, value)
-		trigger(path)
+		setValue('side', 0)
+		setValue('seed', null)
+		trigger()
 		const updatedRequest = watch()
-		if (requestIsEmpty(updatedRequest)) {
+		if (
+			requestIsEmpty({
+				personRequest: updatedRequest.personRequest,
+				registreRequest: updatedRequest.registreRequest,
+			})
+		) {
 			setRequest(null)
+			setVisAntall(10)
 		} else {
 			setRequest(updatedRequest)
 		}
@@ -101,14 +110,26 @@ export const SoekForm = () => {
 
 	const handleChangeList = (value: any, path: string) => {
 		const list = value.map((item: any) => item.value)
-		setValue(path, list)
-		trigger(path)
+		handleChange(list, path)
+	}
+
+	const handleChangeSide = (side: number) => {
+		setValue('side', side - 1)
+		setValue('seed', result.seed)
+		trigger()
 		const updatedRequest = watch()
-		if (requestIsEmpty(updatedRequest)) {
-			setRequest(null)
-		} else {
-			setRequest(updatedRequest)
-		}
+		setRequest(updatedRequest)
+		mutate()
+	}
+
+	const handleChangeAntall = (antall: number) => {
+		setValue('antall', antall.value)
+		setValue('side', 0)
+		setValue('seed', result.seed)
+		trigger()
+		setVisAntall(antall.value)
+		const updatedRequest = watch()
+		setRequest(updatedRequest)
 		mutate()
 	}
 
@@ -295,7 +316,12 @@ export const SoekForm = () => {
 															)
 															trigger('registreRequest')
 															const updatedRequest = watch()
-															if (requestIsEmpty(updatedRequest)) {
+															if (
+																requestIsEmpty({
+																	personRequest: updatedRequest.personRequest,
+																	registreRequest: updatedRequest.registreRequest,
+																})
+															) {
 																setRequest(null)
 															} else {
 																setRequest(updatedRequest)
@@ -597,7 +623,7 @@ export const SoekForm = () => {
 									</Button>
 									{result && (
 										<p style={{ marginRight: 0, marginLeft: 'auto' }}>
-											Viser {result?.identer?.length} av totalt {result?.totalHits} treff
+											Viser {result?.personer?.length} av totalt {result?.totalHits} treff
 										</p>
 									)}
 								</Buttons>
@@ -606,7 +632,14 @@ export const SoekForm = () => {
 					</FormProvider>
 				</Soekefelt>
 			</SoekefeltWrapper>
-			<ResultatVisning resultat={result} soekError={error} />
+			<ResultatVisning
+				resultat={result}
+				loading={loading}
+				soekError={error}
+				visAntall={visAntall}
+				handleChangeSide={handleChangeSide}
+				handleChangeAntall={handleChangeAntall}
+			/>
 		</>
 	)
 }

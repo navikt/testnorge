@@ -5,8 +5,6 @@ import Request from '@/service/services/Request'
 const dollySearchUrl = '/testnav-dolly-search-service/api/v1'
 
 export const usePersonerSearch = (request: SoekRequest) => {
-	console.log('request: ', request) //TODO - SLETT MEG
-
 	const getRegistreRequest = () => {
 		if (!request?.registreRequest || request?.registreRequest.length === 0) {
 			return null
