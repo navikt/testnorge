@@ -82,7 +82,7 @@ class NaisRuntimeEnvironmentConnector {
 
         var pods = getAllPodsInClusterWithName(cluster, applicationName);
         if (pods.isEmpty()) {
-            throw new NaisEnvironmentException("No pods found for %s in %s".formatted(applicationName, cluster));
+            throw new NaisEnvironmentException("No running pods found for application %s in %s".formatted(applicationName, cluster));
         }
         if (pods.size() > 1) {
             log.warn("Multiple pods found for {} in {}, picking {}", applicationName, cluster, pods.getFirst());
