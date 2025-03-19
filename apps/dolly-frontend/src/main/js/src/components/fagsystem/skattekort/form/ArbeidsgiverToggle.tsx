@@ -78,8 +78,17 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
 
 	useEffect(() => {
+		if (!organisasjon) {
+			if (!loading) {
+				formMethods.setError(`manual.${organisasjonPath}`, {
+					message: 'Fant ikke organisasjonen',
+				})
+			}
+			return
+		}
+		formMethods.clearErrors(`manual.${organisasjonPath}`)
 		handleManualOrgChange(orgnummer, formMethods, organisasjonPath, null, organisasjon)
-	}, [organisasjon])
+	}, [organisasjon, loading])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
@@ -89,6 +98,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 			formMethods.setValue(personPath, '')
 			formMethods.setValue(organisasjonPath, undefined)
 		} else {
+			setOrgnummer(null)
 			formMethods.setValue(organisasjonPath, '')
 			formMethods.setValue(personPath, undefined)
 		}
@@ -140,10 +150,12 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 						<OrganisasjonForvalterSelect
 							path={organisasjonPath}
 							parentPath={path}
+							value={orgnummer}
 							success={organisasjoner?.length > 0 && !error}
 							error={error}
 							loading={loading}
 							onTextBlur={(event) => {
+								formMethods.setValue(organisasjonPath, null)
 								setOrgnummer(event.target.value)
 							}}
 						/>
