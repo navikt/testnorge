@@ -52,6 +52,10 @@ export const handleManualOrgChange = (
 		formMethods.setError(`manual.${path}`, { message: 'Skriv inn org' })
 		return
 	}
+	if (!organisasjon) {
+		formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen' })
+		return
+	}
 
 	if (!validEnhetstyper.includes(organisasjon?.enhetstype)) {
 		formMethods.setError(`manual.${path}`, {

@@ -141,6 +141,7 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 							path={organisasjonPath}
 							parentPath={path}
 							success={organisasjoner?.length > 0 && !error}
+							error={error}
 							loading={loading}
 							onTextBlur={(event) => {
 								setOrgnummer(event.target.value)

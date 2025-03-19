@@ -24,11 +24,17 @@ const mapAdresse = (adresse: AdresseOrgForvalter) => {
 
 export const OrganisasjonTextSelect = ({ path, setEnhetsinfo }: OrganisasjonTextSelectProps) => {
 	const formMethods = useFormContext()
-	const [org, setOrg] = useState()
+	const [org, setOrg] = useState(formMethods.watch(path))
 	const { organisasjoner, loading, error } = useOrganisasjonForvalter([org])
 	const forvalterOrg = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
 
 	useEffect(() => {
+		if (!forvalterOrg) {
+			if (!loading) {
+				formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen' })
+			}
+			return
+		}
 		const forretningsAdresse = forvalterOrg?.adresser?.filter(
 			(adresse) => adresse.adressetype === 'FADR',
 		)?.[0]
@@ -43,10 +49,10 @@ export const OrganisasjonTextSelect = ({ path, setEnhetsinfo }: OrganisasjonText
 			postAdresse: mapAdresse(postAdresse),
 		}
 		setEnhetsinfo(orgInfo, parentPath)
-	}, [forvalterOrg])
+	}, [forvalterOrg, loading])
 
 	useEffect(() => {
-		if (error) {
+		if (error && !formMethods.getFieldState(`manual.${path}`)?.error?.message) {
 			formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen' })
 		} else {
 			formMethods.clearErrors(`manual.${path}`)
@@ -56,6 +62,7 @@ export const OrganisasjonTextSelect = ({ path, setEnhetsinfo }: OrganisasjonText
 	const parentPath = path.substring(0, path.lastIndexOf('.'))
 
 	const handleChange = (org: string) => {
+		formMethods.setValue(path, null)
 		if (!org) {
 			formMethods.setError(`manual.${path}`, { message: 'Skriv inn org' })
 			return
@@ -68,6 +75,7 @@ export const OrganisasjonTextSelect = ({ path, setEnhetsinfo }: OrganisasjonText
 	return (
 		<OrganisasjonForvalterSelect
 			path={path}
+			value={org}
 			parentPath={parentPath}
 			success={organisasjoner?.length > 0 && !loading && !error}
 			loading={loading}

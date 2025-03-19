@@ -65,6 +65,15 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
 
 	useEffect(() => {
+		if (!organisasjon) {
+			if (!loading) {
+				formMethods.setError(`manual.${opplysningspliktigPath}`, {
+					message: 'Fant ikke organisasjonen',
+				})
+			}
+			return
+		}
+		formMethods.clearErrors([`manual.${opplysningspliktigPath}`, `manual.${virksomhetPath}`])
 		handleManualOrgChange(
 			orgnummer,
 			formMethods,
@@ -72,12 +81,13 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 			opplysningspliktigPath,
 			organisasjon,
 		)
-	}, [organisasjon])
+	}, [organisasjon, loading])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
-		formMethods.setValue(virksomhetPath, '')
-		formMethods.setValue(opplysningspliktigPath, '')
+		setOrgnummer(null)
+		formMethods.setValue(virksomhetPath, null)
+		formMethods.setValue(opplysningspliktigPath, null)
 		formMethods.clearErrors(`manual.${path}`)
 		formMethods.clearErrors(path)
 	}
@@ -112,25 +122,28 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
 					<OrganisasjonMedArbeidsforholdSelect
 						afterChange={handleOrgChange}
-						path={`${path}.virksomhet`}
+						path={virksomhetPath}
 						label={'Organisasjonsnummer'}
 						placeholder={'Velg organisasjon ...'}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
 					<EgneOrganisasjoner
-						path={`${path}.virksomhet`}
+						path={virksomhetPath}
 						handleChange={handleOrgChange}
 						filterValidEnhetstyper={true}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
 					<OrganisasjonForvalterSelect
-						path={`${path}.virksomhet`}
-						parentPath={path}
-						success={organisasjoner?.length > 0 && !error}
+						value={orgnummer}
+						path={virksomhetPath}
+						parentPath={opplysningspliktigPath}
+						success={formMethods.watch(virksomhetPath) && !error}
 						loading={loading}
 						onTextBlur={(event) => {
+							formMethods.setValue(virksomhetPath, null)
+							formMethods.setValue(opplysningspliktigPath, null)
 							setOrgnummer(event.target.value)
 						}}
 					/>

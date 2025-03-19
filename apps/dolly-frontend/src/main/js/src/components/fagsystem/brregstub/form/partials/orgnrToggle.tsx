@@ -45,6 +45,7 @@ export const OrgnrToggle = ({
 	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('brregstub.enheter')?.length])
 
 	const handleToggleChange = (value: string) => {
+		formMethods.clearErrors([`${path}.orgNr`, `manual.${path}.orgNr`])
 		setInputType(value)
 		clearEnhetsinfo()
 	}
