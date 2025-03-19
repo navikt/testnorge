@@ -38,10 +38,10 @@ public class TagsService {
                     return l1;
                 })
                 .doOnNext(tags -> log.info("Identer som mangler Dolly-tags: {}", String.join(", ", tags)))
-//                .filter(tags -> !tags.isEmpty())
-//                .flatMap(pdlProxyConsumer::setTags)
-//                .filter(response -> response.getStatus().is2xxSuccessful())
-//                .map(TagsOpprettingResponse::getIdenter)
+                .filter(tags -> !tags.isEmpty())
+                .flatMap(pdlProxyConsumer::setTags)
+                .filter(response -> response.getStatus().is2xxSuccessful())
+                .map(TagsOpprettingResponse::getIdenter)
                 .map(resultat -> "Følgende identer mangler DOLLY-tag: %s".formatted(String.join(", ", resultat)))
                 .switchIfEmpty(Mono.just("Fant ingen personer som mangler Dolly-tag"));
     }
