@@ -8,7 +8,7 @@ import { RootComponent } from '@/RootComponent'
 import { runningE2ETest } from '@/service/services/Request'
 
 async function enableMocking() {
-	if (process.env.NODE_ENV !== 'development' || runningE2ETest()) {
+	if (process.env.NODE_ENV !== 'test' || runningE2ETest()) {
 		return
 	}
 
