@@ -57,7 +57,8 @@ public class PdlProxyConsumer {
     public Mono<Map<String, List<String>>> getTags(List<String> identer) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token-> new TagsGetCommand(webClient, identer, token.getTokenValue()).call());
+                .flatMap(token-> new TagsGetCommand(webClient, identer, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Hentet tags for {} personer", response.size()));
     }
 
     public Mono<TagsOpprettingResponse> setTags(List<String> identer) {
