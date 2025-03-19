@@ -36,6 +36,4 @@
         </root>
     </springProfile>
     <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor"/>
-    <logger level="TRACE"
-            name="no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.SaveOpplysningspliktigCommand"/>
 </configuration>

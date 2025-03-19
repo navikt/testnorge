@@ -35,7 +35,7 @@ public class TagsGetCommand implements Callable<Mono<Map<String, List<String>>>>
                         .path(PDL_TAGS_URL)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(PERSONIDENTER, identer.toArray(new String[0]))
+                .header(PERSONIDENTER, identer.toArray(String[]::new))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
