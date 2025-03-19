@@ -39,18 +39,18 @@ public class OpenSearchPersonQueryUtils {
 
     public static void addAlderQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
-        var thisYear = LocalDate.now().getYear();
+        var now = LocalDate.now();
         if (nonNull(request.getPersonRequest().getAlderFom()) || nonNull(request.getPersonRequest().getAlderTom())) {
             queryBuilder.must(QueryBuilders.boolQuery()
                     .must(nestedMatchQuery("hentPerson.foedselsdato", METADATA_HISTORISK, false))
                     .must(QueryBuilders.nestedQuery("hentPerson.foedselsdato",
                             QueryBuilders.boolQuery().must(
-                                    rangeQuery("hentPerson.foedselsdato.foedselsaar",
+                                    rangeQuery("hentPerson.foedselsdato.foedselsdato",
                                             Optional.ofNullable(request.getPersonRequest().getAlderTom())
-                                                    .map(alderTom -> thisYear - alderTom)
+                                                    .map(now::minusYears)
                                                     .orElse(null),
                                             Optional.ofNullable(request.getPersonRequest().getAlderFom())
-                                                    .map(alderFom -> thisYear - alderFom)
+                                                    .map(now::minusYears)
                                                     .orElse(null))), ScoreMode.Avg)));
         }
     }
