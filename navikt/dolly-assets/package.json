@@ -20,7 +20,10 @@
     "vite-tsconfig-paths": "^5.1.4",
     "esbuild": ">=0.25.0"
   },
-  "repository": "https://github.com/navikt/testnorge.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/navikt/testnorge.git"
+  },
   "prettier": {
     "singleQuote": true,
     "semi": true,
