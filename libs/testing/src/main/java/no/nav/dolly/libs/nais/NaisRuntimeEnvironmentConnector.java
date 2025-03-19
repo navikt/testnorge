@@ -126,7 +126,7 @@ class NaisRuntimeEnvironmentConnector {
     private List<String> execute(String command)
             throws NaisEnvironmentException {
 
-        var processBuilder = new ProcessBuilder(command.split(" "));
+        var processBuilder = new ProcessBuilder(command);
         try {
             var process = processBuilder.start();
             var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -144,8 +144,7 @@ class NaisRuntimeEnvironmentConnector {
             log.warn("Interrupted while waiting for command: {}", command, e);
             Thread.currentThread().interrupt();
             return List.of();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new NaisEnvironmentException("Failed to execute command: " + command, e);
         }
 
