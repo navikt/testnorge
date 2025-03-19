@@ -10,11 +10,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -39,11 +36,14 @@ public class TagsService {
                     return l1;
                 })
                 .doOnNext(tags -> log.info("Identer som mangler Dolly-tags: {}", String.join(", ", tags)))
+                .filter(tags -> !tags.isEmpty())
                 .flatMap(pdlDataConsumer::setTags)
                 .filter(response -> response.getStatus().is2xxSuccessful())
                 .map(TagsOpprettingResponse::getIdenter)
                 .map(resultat -> "Lagt til DOLLY-tag på %s".formatted(String.join(", ", resultat)))
+                .switchIfEmpty(Mono.just("Fant ingen personer som mangler Dolly-tag"));
     }
+
     private static List<String> filterTags(Map<String, List<String>> tags) {
 
         return tags.entrySet().stream()

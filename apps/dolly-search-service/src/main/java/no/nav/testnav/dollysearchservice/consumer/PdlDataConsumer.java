@@ -1,7 +1,6 @@
 package no.nav.testnav.dollysearchservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import no.nav.testnav.dollysearchservice.config.Consumers;
 import no.nav.testnav.dollysearchservice.consumer.command.TagsGetCommand;
 import no.nav.testnav.dollysearchservice.consumer.command.TagsPostCommand;
@@ -18,7 +17,6 @@ import java.util.Map;
 import static no.nav.testnav.dollysearchservice.consumer.utils.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Service
-@RequiredArgsConstructor
 public class PdlDataConsumer {
 
     private final WebClient webClient;

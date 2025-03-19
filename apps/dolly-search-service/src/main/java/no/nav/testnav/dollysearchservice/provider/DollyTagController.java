@@ -15,7 +15,7 @@ public class DollyTagController {
 
     private final TagsService tagsService;
     @PutMapping
-    @Operation(description = "Oppdater testnorge-identer, set DOLLY-tag")
+    @Operation(description = "Oppdatere Testnorge-personer, set DOLLY-tag")
     public Mono<String> updateTestnorgeIdenter() {
 
         return tagsService.setDollyTagAlleTestnorgeIdenter();
