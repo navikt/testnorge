@@ -38,6 +38,7 @@ public class TagsGetCommand implements Callable<Mono<Map<String, List<String>>>>
                 .header(PERSONIDENTER, identer.toArray(String[]::new))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

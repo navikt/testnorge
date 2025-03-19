@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TagsService {
 
-    private static final int BOLK_SIZE = 10;
+    private static final int BOLK_SIZE = 100;
 
     private final BestillingQueryService bestillingQueryService;
     private final PdlProxyConsumer pdlProxyConsumer;
@@ -37,11 +37,11 @@ public class TagsService {
                     l1.addAll(l2);
                     return l1;
                 })
-                .doOnNext(tags -> log.info("Identer som mangler Dolly-tags: {}", String.join(", ", tags)))
-                .filter(tags -> !tags.isEmpty())
-                .flatMap(pdlProxyConsumer::setTags)
-                .filter(response -> response.getStatus().is2xxSuccessful())
-                .map(TagsOpprettingResponse::getIdenter)
+//                .doOnNext(tags -> log.info("Identer som mangler Dolly-tags: {}", String.join(", ", tags)))
+//                .filter(tags -> !tags.isEmpty())
+//                .flatMap(pdlProxyConsumer::setTags)
+//                .filter(response -> response.getStatus().is2xxSuccessful())
+//                .map(TagsOpprettingResponse::getIdenter)
                 .map(resultat -> "Følgende identer mangler DOLLY-tag: %s".formatted(String.join(", ", resultat)))
                 .switchIfEmpty(Mono.just("Fant ingen personer som mangler Dolly-tag"));
     }
