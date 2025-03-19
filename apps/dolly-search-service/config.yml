@@ -35,7 +35,7 @@ spec:
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   liveness:
-    path: /internal/isAlive
+    path: /internal/health/liveness
     initialDelay: 20
     periodSeconds: 10
     failureThreshold: 20
@@ -47,7 +47,7 @@ spec:
       enabled: true
       runtime: java
   readiness:
-    path: /internal/isReady
+    path: /internal/health/readiness
     initialDelay: 20
     periodSeconds: 10
     failureThreshold: 20
