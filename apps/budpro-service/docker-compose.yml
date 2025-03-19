@@ -1,0 +1,56 @@
+services:
+  oauth-server:
+    image: ghcr.io/navikt/mock-oauth2-server:2.1.10
+    ports:
+      - "7070:7070"
+    environment:
+      PORT: "7070"
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+  wonderwall:
+    image: ghcr.io/nais/wonderwall:latest
+    ports:
+      - "4000:4000"
+    command: >
+      --openid.client-id=client-id
+      --openid.client-secret=not-so-secret
+      --openid.scopes=client-id
+      --ingress=http://localhost:4000
+      --bind-address=0.0.0.0:4000
+      --upstream-host=localhost:8000
+      --redis.uri=redis://redis:6379
+      --log-level=info
+      --log-format=text
+    restart: on-failure
+    env_file: "${ENV_FILE:-.env}"
+    extra_hosts:
+      # Wonderwall needs to both reach and redirect user agents to the mock-oauth2-server:
+      # - 'mock-oauth2-server:8888' resolves from the container, but is not resolvable for user agents at the host (e.g. during redirects).
+      # - 'localhost:8888' allows user agents to resolve redirects to the mock-oauth2-server, but breaks connectivity from the container itself.
+      # This additional mapping allows the container to reach the mock-oauth2-server at 'localhost' through the host network, as well as allowing user agents to correctly resolve redirects.
+      - localhost:host-gateway
+  texas:
+    image: ghcr.io/nais/texas:latest
+    ports:
+      - "3000:3000"
+    environment:
+      # bind to all interfaces to allow wonderwalled to reach the service
+      # DO NOT DO THIS IN PRODUCTION
+      BIND_ADDRESS: "0.0.0.0:3000"
+      DOWNSTREAM_APP_NAME: myapplication
+      DOWNSTREAM_APP_NAMESPACE: mynamespace
+      DOWNSTREAM_APP_CLUSTER: mycluster
+      NAIS_POD_NAME: myapplication-d34db33f
+    restart: on-failure
+    env_file: "${ENV_FILE:-.env}"
+    extra_hosts:
+      # See explanation in the wonderwall service
+      - localhost:host-gateway
+  otel:
+    image: grafana/otel-lgtm:latest
+    ports:
+      - "3001:3000"
+      - "4317:4317"
+      - "4318:4318"

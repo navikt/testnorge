@@ -2,6 +2,7 @@ package no.nav.dolly.budpro.navn;
 
 import no.nav.dolly.budpro.Consumers;
 import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
+import no.nav.dolly.budpro.texas.TexasService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,13 @@ public class GeneratedNameService {
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
+    private final TexasService texas;
 
     GeneratedNameService(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient webClient
+            WebClient webClient,
+            TexasService texas
     ) {
         serverProperties = consumers.getGenererNavnService();
         this.tokenExchange = tokenExchange;
@@ -27,6 +30,7 @@ public class GeneratedNameService {
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
+        this.texas = texas;
     }
 
     public String[] getNames(Long seed, int number) {
@@ -35,7 +39,8 @@ public class GeneratedNameService {
                 .blockOptional()
                 .orElseThrow(() -> new IllegalStateException("Failed to get token for %s".formatted(serverProperties.getName())))
                 .getTokenValue();
-        var arrayOfDTOs = new GenererNavnCommand(webClient, accessToken, seed, number)
+        var token = texas.getToken("api://dev-gcp.dolly.generer-navn-service/.default");
+        var arrayOfDTOs = new MyGenererNavnCommand(webClient, token, seed, number)
                 .call();
         return Arrays
                 .stream(arrayOfDTOs)

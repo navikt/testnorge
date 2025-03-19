@@ -8,3 +8,7 @@ sonarqube {
         property "sonar.projectName", "testnav-ereg-proxy"
     }
 }
+
+dependencies {
+    implementation "no.nav.testnav.libs:reactive-core"
+}
