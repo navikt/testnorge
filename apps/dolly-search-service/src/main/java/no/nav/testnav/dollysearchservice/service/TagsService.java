@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.consumer.PdlProxyConsumer;
-import no.nav.testnav.dollysearchservice.dto.TagsOpprettingResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,10 +37,6 @@ public class TagsService {
                     return l1;
                 })
                 .doOnNext(tags -> log.info("Identer som mangler Dolly-tags: {}", String.join(", ", tags)))
-                .filter(tags -> !tags.isEmpty())
-                .flatMap(pdlProxyConsumer::setTags)
-                .filter(response -> response.getStatus().is2xxSuccessful())
-                .map(TagsOpprettingResponse::getIdenter)
                 .map(resultat -> "Følgende identer mangler DOLLY-tag: %s".formatted(String.join(", ", resultat)))
                 .switchIfEmpty(Mono.just("Fant ingen personer som mangler Dolly-tag"));
     }
