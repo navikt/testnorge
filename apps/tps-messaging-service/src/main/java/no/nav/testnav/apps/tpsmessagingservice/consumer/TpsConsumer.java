@@ -77,6 +77,11 @@ public abstract class TpsConsumer {
 
     protected abstract String getErrorMessage(Exception e) throws JAXBException;
 
+    public String sendMessage(String melding, String miljoe) {
+
+        return sendMessage(melding, List.of(miljoe)).get(miljoe);
+    }
+
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 
         return miljoer.parallelStream()
