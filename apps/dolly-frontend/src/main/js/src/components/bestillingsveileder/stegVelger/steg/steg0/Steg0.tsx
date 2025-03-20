@@ -75,7 +75,7 @@ const Steg0 = () => {
 	const isOrganisasjon =
 		opts.is?.nyOrganisasjon || opts.is?.nyStandardOrganisasjon || opts.is?.nyOrganisasjonFraMal
 	const isNyIdent = opts.is?.nyBestilling || opts.is?.nyBestillingFraMal
-	const kanVelgeGruppe = opts.is?.leggTil || opts.is?.leggTilPaaGruppe
+	const velgGruppeDisabled = opts.is?.leggTil || opts.is?.leggTilPaaGruppe
 
 	const formGruppeId = formMethods.watch('gruppeId')
 	const rawGruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
@@ -83,7 +83,7 @@ const Steg0 = () => {
 	const numericGruppeId = gruppeId ? parseInt(gruppeId) : null
 
 	useEffect(() => {
-		if (!formGruppeId || typeof formGruppeId === 'string') {
+		if ((!formGruppeId || typeof formGruppeId === 'string') && numericGruppeId) {
 			formMethods.setValue('gruppeId', numericGruppeId)
 		}
 		const contextGruppeId = opts.gruppeId && parseInt(opts.gruppeId)
@@ -91,7 +91,6 @@ const Steg0 = () => {
 			return
 		}
 
-		formMethods.setValue('gruppeId', numericGruppeId)
 		opts.gruppeId = numericGruppeId
 
 		handleAttributeUpdates(formMethods, opts)
@@ -101,14 +100,14 @@ const Steg0 = () => {
 
 	return (
 		<div className="start-bestilling-modal">
-			{(!isOrganisasjon || !kanVelgeGruppe) && (
+			{!isOrganisasjon && !velgGruppeDisabled && (
 				<>
 					{isNyIdent && (
 						<div className="dolly-panel dolly-panel-open">
 							<VelgIdenttype gruppeId={numericGruppeId} />
 						</div>
 					)}
-					{!kanVelgeGruppe && (
+					{!velgGruppeDisabled && (
 						<div className="dolly-panel dolly-panel-open">
 							<VelgGruppe formMethods={formMethods} title="Hvilken gruppe vil du bestille til?" />
 						</div>

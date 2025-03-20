@@ -15,6 +15,7 @@ includeBuild "../../libs/reactive-session-security"
 includeBuild "../../libs/security-core"
 includeBuild "../../libs/security-core"
 includeBuild "../../libs/testing"
+includeBuild '../../.github/workflows'
 
 develocity {
     buildScan {

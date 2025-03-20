@@ -5,7 +5,7 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Icon from '@/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
-import { useOrganisasjonBestillingStatus } from '@/utils/hooks/useOrganisasjoner'
+import { useOrganisasjonBestillingStatus } from '@/utils/hooks/useDollyOrganisasjoner'
 import { useBestillingById } from '@/utils/hooks/useBestilling'
 import {
 	REGEX_BACKEND_BESTILLINGER,
@@ -17,15 +17,15 @@ import { BestillingStatus } from '@/components/bestilling/statusListe/Bestilling
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type ProgresjonProps = {
-	bestillingID: string
-	erOrganisasjon: boolean
+	bestillingID: string | number
+	erOrganisasjon?: boolean
 	cancelBestilling: Function
-	onFinishBestilling: Function
+	onFinishBestilling?: Function
 }
 
 export const BestillingProgresjon = ({
 	bestillingID,
-	erOrganisasjon,
+	erOrganisasjon = false,
 	cancelBestilling,
 	onFinishBestilling,
 }: ProgresjonProps) => {
@@ -49,7 +49,7 @@ export const BestillingProgresjon = ({
 		}
 	}
 
-	function getBestillingStatusText(erSykemelding: boolean) {
+	const getBestillingStatusText = (erSykemelding: boolean) => {
 		if (erSykemelding) {
 			return 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
 		} else {
@@ -62,7 +62,7 @@ export const BestillingProgresjon = ({
 	}
 
 	const ferdigstillBestilling = () => {
-		onFinishBestilling(bestilling || bestillingStatus)
+		onFinishBestilling?.(bestilling || bestillingStatus)
 		if (erOrganisasjon) {
 			mutate(REGEX_BACKEND_ORGANISASJONER)
 		} else {
@@ -126,17 +126,17 @@ export const BestillingProgresjon = ({
 		harBestillingFeilet(sistOppdatert)
 	}, [bestillingStatus, bestilling])
 
-	if (!bestilling) {
-		return null
-	}
 	if (loading) {
 		return <Loading label={'Henter bestilling ...'} />
+	}
+	if (!bestilling) {
+		return null
 	}
 
 	const { percentFinished, tittel, description } = calculateStatus()
 
 	if (percentFinished === 100 && bestilling?.ferdig === true) {
-		onFinishBestilling(bestilling || bestillingStatus)
+		onFinishBestilling?.(bestilling || bestillingStatus)
 		return null
 	}
 

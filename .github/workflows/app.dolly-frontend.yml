@@ -14,11 +14,15 @@ on:
       - "libs/security-core/**"
       - "apps/dolly-frontend/**"
       - ".github/workflows/app.dolly-frontend.yml"
-      - ".github/workflows/common.playwright.yml"
+      - ".github/workflows/common.playwright-vitest.yml"
 
 jobs:
   playwright:
-    uses: ./.github/workflows/common.playwright.yml
+    uses: ./.github/workflows/common.playwright-vitest.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
     with:
       working-directory: "apps/dolly-frontend"
     secrets:
@@ -26,13 +30,14 @@ jobs:
 
   workflow:
     uses: ./.github/workflows/common.workflow.frontend.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
     with:
       working-directory: "apps/dolly-frontend"
       deploy-tag: "#deploy-frontend"
       deploy-tag-test: "#deploy-test-frontend"
       deploy-tag-idporten: "#deploy-idporten-frontend"
       deploy-tag-unstable: "#deploy-unstable-frontend"
-    permissions:
-      contents: read
-      id-token: write
     secrets: inherit

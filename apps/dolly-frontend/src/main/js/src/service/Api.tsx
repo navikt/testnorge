@@ -27,7 +27,6 @@ export const BrregstubApi = BrregstubService
 export const VarslingerApi = VarslingerService
 export const OrgforvalterApi = OrganisasjonForvalterService
 export const OrgserviceApi = OrganisasjonService
-export const OrgTilgangApi = OrganisasjonTilgangService
 export const PersonOrgTilgangApi = PersonOrganisasjonTilgangService
 export const BrukerApi = BrukerService
 export const PdlforvalterApi = PdlForvalterService

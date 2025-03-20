@@ -8,7 +8,7 @@ import { OrganisasjonVisning } from '@/components/fagsystem/organisasjoner/visni
 import { EnhetBestilling, EnhetData } from '@/components/fagsystem/organisasjoner/types'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
-import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { useDollyOrganisasjoner } from '@/utils/hooks/useDollyOrganisasjoner'
 import Loading from '@/components/ui/loading/Loading'
 import { Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -117,7 +117,7 @@ export default function OrganisasjonListe({
 		})
 	}
 
-	const { organisasjoner, loading } = useOrganisasjoner(brukerId)
+	const { organisasjoner, loading } = useDollyOrganisasjoner(brukerId)
 
 	const [filtrertOrgListe, setfiltrertOrgListe] = useState([])
 
