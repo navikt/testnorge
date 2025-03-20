@@ -103,7 +103,7 @@ export const TextInput = ({
 	})
 
 	useEffect(() => {
-		if (input && input !== fieldValue) {
+		if (input !== undefined && input !== fieldValue) {
 			setFieldValue(input)
 		}
 	}, [input])

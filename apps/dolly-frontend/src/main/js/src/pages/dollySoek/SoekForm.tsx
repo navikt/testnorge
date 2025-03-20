@@ -19,7 +19,14 @@ import {
 } from '@/components/ui/soekForm/SoekForm'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { usePersonerSearch, usePersonerTyper } from '@/utils/hooks/useDollySearch'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import {
+	AdresserPaths,
+	AnnetPaths,
+	FamilierelasjonerPaths,
+	IdentifikasjonPaths,
+	PersoniformasjonPaths,
+} from '@/pages/dollySoek/paths'
 
 const initialValues = {
 	side: 0,
@@ -31,6 +38,8 @@ const initialValues = {
 		kjoenn: null,
 		alderFom: null,
 		alderTom: null,
+		// alderFom: '',
+		// alderTom: '',
 		sivilstand: null,
 		erLevende: false,
 		erDoed: false,
@@ -50,6 +59,7 @@ const initialValues = {
 		statsborgerskap: null,
 		personStatus: null,
 		harNyIdentitet: false,
+		harSkjerming: false,
 		adresse: {
 			addressebeskyttelse: null,
 			kommunenummer: null,
@@ -81,18 +91,18 @@ export const SoekForm = () => {
 		mode: 'onChange',
 		defaultValues: initialValuesClone,
 	})
-	const { trigger, watch, handleSubmit, reset, control, setValue } = formMethods
-
-	const preSubmit = () => {
-		setRequest(watch())
-		mutate()
-	}
+	const { trigger, watch, handleSubmit, reset, control, setValue, getValues } = formMethods
+	console.log('request: ', request) //TODO - SLETT MEG
+	// const preSubmit = () => {
+	// 	// setRequest(watch())
+	// 	mutate()
+	// }
 
 	const handleChange = (value: any, path: string) => {
 		setValue(path, value)
 		setValue('side', 0)
 		setValue('seed', null)
-		trigger()
+		// trigger()
 		const updatedRequest = watch()
 		if (
 			requestIsEmpty({
@@ -116,20 +126,50 @@ export const SoekForm = () => {
 	const handleChangeSide = (side: number) => {
 		setValue('side', side - 1)
 		setValue('seed', result.seed)
-		trigger()
+		// trigger()
 		const updatedRequest = watch()
 		setRequest(updatedRequest)
 		mutate()
 	}
 
-	const handleChangeAntall = (antall: number) => {
+	const handleChangeAntall = (antall: { value: number }) => {
 		setValue('antall', antall.value)
 		setValue('side', 0)
 		setValue('seed', result.seed)
-		trigger()
+		// trigger()
 		setVisAntall(antall.value)
 		const updatedRequest = watch()
 		setRequest(updatedRequest)
+		mutate()
+	}
+
+	//TODO: nullstill registreRequest?
+	const emptyCategory = (paths: string[]) => {
+		paths.forEach((path) => {
+			setValue(path, _.get(initialValues, path))
+			// trigger(path)
+		})
+		setValue('side', 0)
+		setValue('seed', null)
+		const updatedRequest = watch()
+		// console.log('updatedRequest: ', updatedRequest) //TODO - SLETT MEG
+		if (
+			requestIsEmpty({
+				personRequest: updatedRequest.personRequest,
+				registreRequest: updatedRequest.registreRequest,
+			})
+		) {
+			console.log('tom!!!') //TODO - SLETT MEG
+			setRequest(null)
+			// console.log('request: ', request) //TODO - SLETT MEG
+			// reset()
+			setVisAntall(10)
+			// mutate()
+		} else {
+			console.log('ikke tom!!!') //TODO - SLETT MEG
+			setRequest(updatedRequest)
+		}
+		// trigger()
 		mutate()
 	}
 
@@ -138,9 +178,12 @@ export const SoekForm = () => {
 	const getAntallRequest = (liste: Array<string>) => {
 		let antall = 0
 		liste.forEach((item) => {
-			watch(`personRequest.${item}`) && antall++
+			watch(item) && antall++
 		})
-		if (liste?.includes('harSkjerming') && watch('registreRequest')?.includes('SKJERMING')) {
+		if (
+			liste?.includes('personRequest.harSkjerming') &&
+			watch('registreRequest')?.includes('SKJERMING')
+		) {
 			antall++
 		}
 		return antall
@@ -151,13 +194,19 @@ export const SoekForm = () => {
 			<SoekefeltWrapper>
 				<Soekefelt>
 					<FormProvider {...formMethods}>
-						<Form control={control} onSubmit={() => handleSubmit(preSubmit(request))}>
+						{/*<Form control={control} onSubmit={() => handleSubmit(preSubmit(request))}>*/}
+						<Form control={control} onSubmit={() => handleSubmit()}>
 							<>
 								<div className="flexbox--flex-wrap">
 									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
 										<Accordion.Item defaultOpen={true}>
 											<Accordion.Header>
-												<Header title="Fagsystemer" antall={antallFagsystemer} />
+												<Header
+													title="Fagsystemer"
+													antall={antallFagsystemer}
+													paths={['registreRequest']}
+													emptyCategory={emptyCategory}
+												/>
 											</Accordion.Header>
 											<Accordion.Content>
 												<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
@@ -183,21 +232,10 @@ export const SoekForm = () => {
 											>
 												<Header
 													title="Personinformasjon"
-													antall={getAntallRequest([
-														'kjoenn',
-														'statsborgerskap',
-														'personStatus',
-														'alderFom',
-														'alderTom',
-														'erLevende',
-														'erDoed',
-														'harVerge',
-														'harInnflytting',
-														'harUtflytting',
-														'harSikkerhetstiltak',
-														'harTilrettelagtKommunikasjon',
-														'harSkjerming',
-													])}
+													antall={getAntallRequest(PersoniformasjonPaths)}
+													paths={PersoniformasjonPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -230,18 +268,22 @@ export const SoekForm = () => {
 															handleChange(val?.value || null, `${personPath}.personStatus`)
 														}
 													/>
+													{/*<DollyTextInput*/}
 													<FormTextInput
 														name={`${personPath}.alderFom`}
 														placeholder="Skriv inn alder f.o.m ..."
 														type="number"
+														value={watch(`${personPath}.alderFom`)}
 														onChange={(val: SyntheticEvent) =>
 															handleChange(val?.target?.value || null, `${personPath}.alderFom`)
 														}
 													/>
+													{/*<DollyTextInput*/}
 													<FormTextInput
 														name={`${personPath}.alderTom`}
 														placeholder="Skriv inn alder t.o.m ..."
 														type="number"
+														value={watch(`${personPath}.alderTom`)}
 														onChange={(val: SyntheticEvent) =>
 															handleChange(val?.target?.value || null, `${personPath}.alderTom`)
 														}
@@ -341,19 +383,10 @@ export const SoekForm = () => {
 											<Accordion.Header>
 												<Header
 													title="Adresser"
-													antall={getAntallRequest([
-														'adresse.kommunenummer',
-														'adresse.postnummer',
-														'adresse.bydelsnummer',
-														'adresse.addressebeskyttelse',
-														'adresse.harBydelsnummer',
-														'adresse.harBostedsadresse',
-														'adresse.harUtenlandsadresse',
-														'adresse.harMatrikkelAdresse',
-														'adresse.harUkjentAdresse',
-														'adresse.harKontaktadresse',
-														'adresse.harOppholdsadresse',
-													])}
+													antall={getAntallRequest(AdresserPaths)}
+													paths={AdresserPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -457,14 +490,10 @@ export const SoekForm = () => {
 											<Accordion.Header>
 												<Header
 													title="Familierelasjoner"
-													antall={getAntallRequest([
-														'sivilstand',
-														'harBarn',
-														'harForeldre',
-														'harDoedfoedtBarn',
-														'harForeldreAnsvar',
-														'adresse.harDeltBosted',
-													])}
+													antall={getAntallRequest(FamilierelasjonerPaths)}
+													paths={FamilierelasjonerPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -520,12 +549,10 @@ export const SoekForm = () => {
 											<Accordion.Header>
 												<Header
 													title="Identifikasjon"
-													antall={getAntallRequest([
-														'identtype',
-														'harFalskIdentitet',
-														'harUtenlandskIdentifikasjonsnummer',
-														'harNyIdentitet',
-													])}
+													antall={getAntallRequest(IdentifikasjonPaths)}
+													paths={IdentifikasjonPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -570,10 +597,10 @@ export const SoekForm = () => {
 											<Accordion.Header>
 												<Header
 													title="Annet"
-													antall={getAntallRequest([
-														'harOpphold',
-														'harKontaktinformasjonForDoedsbo',
-													])}
+													antall={getAntallRequest(AnnetPaths)}
+													paths={AnnetPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -602,7 +629,8 @@ export const SoekForm = () => {
 								</div>
 								<Buttons className="flexbox--flex-wrap">
 									<Button
-										onClick={() => handleSubmit(preSubmit())}
+										// onClick={() => handleSubmit(preSubmit())}
+										onClick={() => handleSubmit()}
 										variant="primary"
 										disabled={loading || !result}
 										loading={loading}
@@ -614,7 +642,7 @@ export const SoekForm = () => {
 										data-testid={TestComponentSelectors.BUTTON_NULLSTILL_SOEK}
 										onClick={() => {
 											setRequest(null)
-											reset(null)
+											reset()
 										}}
 										variant="secondary"
 										disabled={!result}

@@ -6,10 +6,14 @@ export type ResponseIdenter = {
 		windowSize: number
 		identer: Array<string>
 		error: string
+		seed?: string
 	}
 }
 
 export type SoekRequest = {
+	side: number
+	antall: number
+	seed: string
 	registreRequest: Array<string>
 	personRequest: {
 		identtype: string
