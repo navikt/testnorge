@@ -36,6 +36,7 @@ import static no.nav.testnav.dollysearchservice.config.CachingConfig.CACHE_REGIS
 public class BestillingQueryService {
 
     private static final int QUERY_SIZE = 10000;
+    private static final String TESTNORGE_FORMAT = "\\d{2}[8-9]\\d{8}";
 
     @Value("${open.search.index}")
     private String dollyIndex;
@@ -59,9 +60,11 @@ public class BestillingQueryService {
 
         var queryBuilder = QueryBuilders.boolQuery();
 
-        queryBuilder.must(QueryBuilders.regexpQuery("identer", "\\d{2}[8-9]\\d{8}"));
+        queryBuilder.must(QueryBuilders.regexpQuery("identer", TESTNORGE_FORMAT));
 
-        return execQuery(queryBuilder);
+        return execQuery(queryBuilder).stream()
+                .filter(ident -> ident.matches(TESTNORGE_FORMAT))
+                .collect(Collectors.toSet());
     }
 
     private Set<String> execQuery(QueryBuilder query) {

@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Playwright/Vitest Tests
 on:
   workflow_call:
     inputs:
@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shardIndex: [ 1, 2, 3 ]
-        shardTotal: [ 3 ]
+        shardIndex: [ 1, 2, 3, 4 ]
+        shardTotal: [ 4 ]
     env:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
@@ -44,6 +44,11 @@ jobs:
           name: blob-report-${{ matrix.shardIndex }}
           path: ${{ inputs.working-directory }}/src/main/js/blob-report
           retention-days: 1
+
+      - name: Run Vitest/RTL tests
+        if: ${{ matrix.shardIndex == 1 }}
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npm run test:vitest-run
   
   merge-reports:
     if: ${{ !cancelled() }}

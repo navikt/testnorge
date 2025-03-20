@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.dollysearchservice.consumer.OpenSearchConsumer;
+import no.nav.testnav.dollysearchservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import org.opensearch.common.unit.TimeValue;
@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class OpenSearchQueryService {
 
-    private final OpenSearchConsumer openSearchConsumer;
+    private final PdlProxyConsumer pdlProxyConsumer;
     private final ObjectMapper objectMapper;
 
     @Value("${open.search.pdl-index}")
@@ -42,7 +42,7 @@ public class OpenSearchQueryService {
             request.setAntall(10);
         }
 
-        var personSoekResponse = Mono.from(openSearchConsumer.search(
+        var personSoekResponse = Mono.from(pdlProxyConsumer.search(
                         no.nav.testnav.dollysearchservice.dto.SearchRequest.builder()
                                 .query(
                                         new org.opensearch.action.search.SearchRequest()

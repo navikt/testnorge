@@ -75,6 +75,7 @@ export const Select = ({
 			ref?.current?.focus?.()
 		}
 	}, [autoFocus])
+
 	const val = formMethods?.watch(name)
 	let formValue = isMulti
 		? options?.filter?.((o) => val?.some((el) => el === o?.value))
@@ -103,7 +104,7 @@ export const Select = ({
 				options={options}
 				name={name}
 				inputId={id || name}
-				placeholder={placeholder}
+				placeholder={isLoading || options?.length === 0 ? 'Henter verdier ...' : placeholder}
 				filterOption={createFilter({ ignoreAccents: false })}
 				className={cn('basic-single', className)}
 				classNamePrefix={classNamePrefix}
@@ -140,7 +141,27 @@ export const Select = ({
 }
 
 export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: SelectProps) => {
-	const { kodeverk: kodeverkResult, loading } = useKodeverk(kodeverk)
+	const [numRetries, setNumRetries] = React.useState(0)
+	const { kodeverk: kodeverkResult, loading, error, mutate } = useKodeverk(kodeverk)
+
+	useEffect(() => {
+		if (!loading && kodeverkResult?.length === 0 && numRetries < 3) {
+			setTimeout(() => {
+				setNumRetries(numRetries + 1)
+				console.warn('Retry loading kodeverk: ' + kodeverk)
+				mutate()
+			}, 1000)
+		}
+	}, [loading, kodeverkResult])
+
+	if (loading) {
+		return <Select {...rest} isLoading={true} />
+	}
+
+	if (error) {
+		return <Select {...rest} feil={error} />
+	}
+
 	const getSortedKodeverk = (kodeverkVerdier) => {
 		if (label === 'Bostedskommune') {
 			const kodeverkClone = _.cloneDeep(kodeverkVerdier)
