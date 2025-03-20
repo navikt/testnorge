@@ -2,10 +2,10 @@
 <configuration>
     <springProfile name="prod,dev">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
+            <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
-                    
+
                     <maxLength>10280</maxLength>
                     <shortenedClassNameLength>20</shortenedClassNameLength>
                     <exclude>^sun\.reflect\..*\.invoke</exclude>
@@ -36,6 +36,4 @@
         </root>
     </springProfile>
     <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor"/>
-    <logger level="TRACE"
-            name="no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.SaveOpplysningspliktigCommand"/>
 </configuration>

@@ -13,7 +13,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.buildTestnorgeIdentSearchQuery;
@@ -35,7 +34,6 @@ public class IdenterSearchService {
 
         return personQueryService.execQuery(new SearchRequest(), query)
                 .map(this::formatResponse)
-                .map(this::filterRegister)
                 .flatMapMany(Flux::fromIterable);
     }
 
@@ -64,17 +62,6 @@ public class IdenterSearchService {
 
         return response.getPersoner().stream()
                 .map(person -> mapperFacade.map(person, IdentdataDTO.class))
-                .toList();
-    }
-
-    private List<IdentdataDTO> filterRegister(List<IdentdataDTO> identdataDTO) {
-
-        var identer = bestillingQueryService.execRegisterQuery(SearchRequest.builder()
-                .identer(identdataDTO.stream().map(IdentdataDTO::getIdent).collect(Collectors.toSet()))
-                .build());
-
-        return identdataDTO.stream()
-                .filter(identdata -> identer.contains(identdata.getIdent()))
                 .toList();
     }
 }
