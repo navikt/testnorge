@@ -21,11 +21,10 @@ public class XmlMessagingController {
 
     @PostMapping
     @Operation(description = "Send xml-melding til en kø")
-    public String sendXml(@RequestParam String miljoe,
-                          @RequestParam String queue,
+    public String sendXml(@RequestParam String queue,
                           @RequestBody String xml) {
 
-        return xmlService.sendXml(miljoe, queue, xml);
+        return xmlService.sendXml(queue, xml);
     }
 
     @GetMapping
