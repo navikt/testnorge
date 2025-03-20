@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/soekForm/SoekForm'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { usePersonerSearch, usePersonerTyper } from '@/utils/hooks/useDollySearch'
-import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	AdresserPaths,
 	AnnetPaths,
@@ -38,8 +38,6 @@ const initialValues = {
 		kjoenn: null,
 		alderFom: null,
 		alderTom: null,
-		// alderFom: '',
-		// alderTom: '',
 		sivilstand: null,
 		erLevende: false,
 		erDoed: false,
@@ -92,17 +90,11 @@ export const SoekForm = () => {
 		defaultValues: initialValuesClone,
 	})
 	const { trigger, watch, handleSubmit, reset, control, setValue, getValues } = formMethods
-	console.log('request: ', request) //TODO - SLETT MEG
-	// const preSubmit = () => {
-	// 	// setRequest(watch())
-	// 	mutate()
-	// }
 
 	const handleChange = (value: any, path: string) => {
 		setValue(path, value)
 		setValue('side', 0)
 		setValue('seed', null)
-		// trigger()
 		const updatedRequest = watch()
 		if (
 			requestIsEmpty({
@@ -126,7 +118,6 @@ export const SoekForm = () => {
 	const handleChangeSide = (side: number) => {
 		setValue('side', side - 1)
 		setValue('seed', result.seed)
-		// trigger()
 		const updatedRequest = watch()
 		setRequest(updatedRequest)
 		mutate()
@@ -136,40 +127,36 @@ export const SoekForm = () => {
 		setValue('antall', antall.value)
 		setValue('side', 0)
 		setValue('seed', result.seed)
-		// trigger()
 		setVisAntall(antall.value)
 		const updatedRequest = watch()
 		setRequest(updatedRequest)
 		mutate()
 	}
 
-	//TODO: nullstill registreRequest?
 	const emptyCategory = (paths: string[]) => {
 		paths.forEach((path) => {
 			setValue(path, _.get(initialValues, path))
-			// trigger(path)
+			if (path === 'personRequest.harSkjerming') {
+				setValue(
+					'registreRequest',
+					watch('registreRequest')?.filter((item: string) => item !== 'SKJERMING'),
+				)
+			}
 		})
 		setValue('side', 0)
 		setValue('seed', null)
 		const updatedRequest = watch()
-		// console.log('updatedRequest: ', updatedRequest) //TODO - SLETT MEG
 		if (
 			requestIsEmpty({
 				personRequest: updatedRequest.personRequest,
 				registreRequest: updatedRequest.registreRequest,
 			})
 		) {
-			console.log('tom!!!') //TODO - SLETT MEG
 			setRequest(null)
-			// console.log('request: ', request) //TODO - SLETT MEG
-			// reset()
 			setVisAntall(10)
-			// mutate()
 		} else {
-			console.log('ikke tom!!!') //TODO - SLETT MEG
 			setRequest(updatedRequest)
 		}
-		// trigger()
 		mutate()
 	}
 
@@ -194,8 +181,7 @@ export const SoekForm = () => {
 			<SoekefeltWrapper>
 				<Soekefelt>
 					<FormProvider {...formMethods}>
-						{/*<Form control={control} onSubmit={() => handleSubmit(preSubmit(request))}>*/}
-						<Form control={control} onSubmit={() => handleSubmit()}>
+						<Form control={control} onSubmit={handleSubmit}>
 							<>
 								<div className="flexbox--flex-wrap">
 									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
@@ -268,7 +254,6 @@ export const SoekForm = () => {
 															handleChange(val?.value || null, `${personPath}.personStatus`)
 														}
 													/>
-													{/*<DollyTextInput*/}
 													<FormTextInput
 														name={`${personPath}.alderFom`}
 														placeholder="Skriv inn alder f.o.m ..."
@@ -278,7 +263,6 @@ export const SoekForm = () => {
 															handleChange(val?.target?.value || null, `${personPath}.alderFom`)
 														}
 													/>
-													{/*<DollyTextInput*/}
 													<FormTextInput
 														name={`${personPath}.alderTom`}
 														placeholder="Skriv inn alder t.o.m ..."
@@ -423,8 +407,8 @@ export const SoekForm = () => {
 															<FormSelect
 																name={`${adressePath}.addressebeskyttelse`}
 																options={Options('gradering')}
-																size="large"
-																placeholder="Velg adressebeskyttelse ..."
+																size="xlarge"
+																placeholder="Velg adressebeskyttelse (kode 6/7) ..."
 																onChange={(val: SyntheticEvent) =>
 																	handleChange(
 																		val?.value || null,
@@ -629,8 +613,7 @@ export const SoekForm = () => {
 								</div>
 								<Buttons className="flexbox--flex-wrap">
 									<Button
-										// onClick={() => handleSubmit(preSubmit())}
-										onClick={() => handleSubmit()}
+										onClick={handleSubmit}
 										variant="primary"
 										disabled={loading || !result}
 										loading={loading}
