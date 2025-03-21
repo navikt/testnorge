@@ -32,7 +32,9 @@ type DollyModalProps = {
 }
 
 // Set the app element for accessibility
-Modal.setAppElement('#root')
+if (process.env.NODE_ENV !== 'test') {
+	Modal.setAppElement('#root')
+}
 
 export const DollyModal: React.FC<DollyModalProps> = ({
 	children,
