@@ -87,6 +87,7 @@ public abstract class TpsConsumer {
         var port = isPreprod(miljoe) ? portPreprod : portTest;
         var username = isPreprod(miljoe) ? usernamePreprod : usernameTest;
         var password = isPreprod(miljoe) ? passwordPreprod : passwordTest;
+        log.info("Sender melding {} til channelname {} i miljø {} host {} port {}", melding, channelName, miljoe, host, port);
 
         try {
             return new TpsMeldingCommand(

@@ -27,6 +27,7 @@ public class XmlService {
 
         return QUEUES.stream()
                 .flatMap(queue -> MILJOER.stream().map(miljoe -> queue.replace("<miljø>", miljoe)))
+                .sorted()
                 .toList();
     }
 
