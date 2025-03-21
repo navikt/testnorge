@@ -3,7 +3,7 @@ package no.nav.testnav.kodeverkservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.kodeverkservice.dto.KodeverkBetydningerResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -35,7 +35,7 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkBetydningerResp
                         .queryParam("ekskluderUgyldige", true)
                         .queryParam("spraak", "nb")
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .retrieve()

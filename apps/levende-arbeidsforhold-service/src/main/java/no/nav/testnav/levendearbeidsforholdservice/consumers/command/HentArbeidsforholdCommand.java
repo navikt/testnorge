@@ -5,8 +5,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.servletcore.headers.NavHeaders;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -44,7 +44,7 @@ public class HentArbeidsforholdCommand implements Callable<Flux<Arbeidsforhold>>
                                 "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold",
                                 "ordinaertArbeidsforhold")
                         .build(MILJOE))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(NAV_PERSON_IDENT, ident)
                 .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
                 .header(NavHeaders.NAV_CALL_ID, getNavCallId())

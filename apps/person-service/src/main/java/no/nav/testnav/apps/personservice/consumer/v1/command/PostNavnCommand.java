@@ -7,7 +7,7 @@ import no.nav.testnav.apps.personservice.consumer.v1.pdl.HendelseDTO;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.NavnDTO;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -31,7 +31,7 @@ public class PostNavnCommand implements Callable<Mono<HendelseDTO>> {
                 .uri("/pdl-testdata/api/v1/bestilling/navn")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromPublisher(Mono.just(body), NavnDTO.class))
                 .retrieve()
                 .bodyToMono(HendelseDTO.class)

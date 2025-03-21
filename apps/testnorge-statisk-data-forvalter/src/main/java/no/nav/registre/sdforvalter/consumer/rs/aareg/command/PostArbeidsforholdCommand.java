@@ -6,7 +6,7 @@ import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdResp
 import no.nav.registre.sdforvalter.util.CallIdUtil;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -31,7 +31,7 @@ public class PostArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdRe
                 .uri(uriBuilder -> uriBuilder.path(AAREGDATA_URL)
                         .build(miljoe))
                 .header(HEADER_NAV_ARBEIDSFORHOLD, CallIdUtil.generateCallId())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromValue(arbeidsforhold))
                 .retrieve()
                 .bodyToMono(Arbeidsforhold.class)

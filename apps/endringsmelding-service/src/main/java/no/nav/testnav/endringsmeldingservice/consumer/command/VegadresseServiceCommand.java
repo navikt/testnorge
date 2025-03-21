@@ -3,6 +3,7 @@ package no.nav.testnav.endringsmeldingservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,7 +29,7 @@ public class VegadresseServiceCommand implements Callable<Flux<VegadresseDTO>> {
                 .uri(builder -> builder.path(ADRESSER_VEG_URL).build())
                 .header("antall", "1")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(VegadresseDTO.class)
                 .retryWhen(WebClientError.is5xxException())

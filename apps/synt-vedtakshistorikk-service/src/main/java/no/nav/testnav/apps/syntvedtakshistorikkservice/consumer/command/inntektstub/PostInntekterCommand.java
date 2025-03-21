@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.inntektstub.Inntektsinformasjon;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -28,7 +28,7 @@ public class PostInntekterCommand implements Callable<Mono<List<Inntektsinformas
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path("/api/v2/inntektsinformasjon").build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(inntektsinformasjon)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)

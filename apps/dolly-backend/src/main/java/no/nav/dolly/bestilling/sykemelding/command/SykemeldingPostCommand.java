@@ -6,8 +6,7 @@ import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingResponseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -30,8 +29,8 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(DETALJERT_SYKEMELDING_URL).build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(SykemeldingResponseDTO.class)

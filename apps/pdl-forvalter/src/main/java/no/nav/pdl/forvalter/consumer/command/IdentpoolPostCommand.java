@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +39,7 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
                 .uri(builder -> builder.path(url).query(query).build())
                 .body(BodyInserters.fromValue(body))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(String[].class)
                 .flatMap(identer -> Mono.just(Arrays.stream(identer)

@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.sykemelding.dto.ReceivedSykemeldingDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.ValidationResultDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -20,7 +20,7 @@ public class SyfosmreglerPostValidateCommand implements Callable<Mono<Validation
 
     private final WebClient webClient;
     private final ReceivedSykemeldingDTO receivedSykemelding;
-    private final String accessToken;
+    private final String token;
 
     @Override
     public Mono<ValidationResultDTO> call() {
@@ -29,7 +29,7 @@ public class SyfosmreglerPostValidateCommand implements Callable<Mono<Validation
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(SYFOSMREGLER_VALIDATE_URL).build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(receivedSykemelding)
                 .retrieve()
                 .bodyToMono(ValidationResultDTO.class)

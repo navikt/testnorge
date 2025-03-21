@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +24,7 @@ public class TestmiljoerServiceCommand implements Callable<Mono<List<String>>> {
         return webClient
                 .get()
                 .uri(builder -> builder.path(MILJOER_URL).build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)

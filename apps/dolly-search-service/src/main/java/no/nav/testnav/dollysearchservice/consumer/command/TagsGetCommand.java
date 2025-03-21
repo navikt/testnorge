@@ -3,8 +3,8 @@ package no.nav.testnav.dollysearchservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +33,7 @@ public class TagsGetCommand implements Callable<Mono<Map<String, List<String>>>>
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(PERSONIDENTER, identer.toArray(String[]::new))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)

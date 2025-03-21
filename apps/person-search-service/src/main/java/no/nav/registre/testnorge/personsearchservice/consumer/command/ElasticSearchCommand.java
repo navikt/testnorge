@@ -3,13 +3,13 @@ package no.nav.registre.testnorge.personsearchservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.personsearchservice.model.SearchResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
-import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -31,7 +31,7 @@ public class ElasticSearchCommand implements Callable<Flux<SearchResponse>> {
                         .path(SEARCH_URL)
                         .build(index))
                 .header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromValue(body))
                 .retrieve()
                 .bodyToFlux(SearchResponse.class)

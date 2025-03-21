@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -15,14 +15,14 @@ import java.util.concurrent.Callable;
 public class GetProfileCommand implements Callable<Mono<ProfileDTO>> {
 
     private final WebClient webClient;
-    private final String accessToken;
+    private final String token;
 
     @Override
     public Mono<ProfileDTO> call() {
         return webClient
                 .get()
                 .uri(builder -> builder.path("/v1.0/me/").build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(ProfileDTO.class)
                 .doOnError(WebClientError.logTo(log))

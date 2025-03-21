@@ -5,7 +5,7 @@ import no.nav.testnav.libs.data.kontoregister.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -31,7 +31,7 @@ public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseD
                         .path(KONTOREGISTER_API_URL)
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(body)
                 .retrieve()
                 .toEntity(KontoDTO.class)

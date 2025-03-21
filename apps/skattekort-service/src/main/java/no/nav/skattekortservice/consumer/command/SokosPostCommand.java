@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.skattekortservice.dto.SokosRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
-
-import static org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +27,7 @@ public class SokosPostCommand implements Callable<Mono<String>> {
         return webClient
                 .post()
                 .uri(SOKOS_URL)
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header("korrelasjonsid", UUID.randomUUID().toString())
                 .body(BodyInserters.fromValue(request))
                 .retrieve()

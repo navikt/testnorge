@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.organisajonbestilling.v1.ItemDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -29,7 +29,7 @@ public class GetOrdreCommand implements Callable<List<ItemDTO>> {
                     .uri(builder -> builder
                             .path("/api/v1/order/{ordreId}/items")
                             .build(ordreId))
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .headers(WebClientHeader.bearer(token))
                     .retrieve()
                     .bodyToMono(ItemDTO[].class)
                     .retryWhen(WebClientError.is5xxException())

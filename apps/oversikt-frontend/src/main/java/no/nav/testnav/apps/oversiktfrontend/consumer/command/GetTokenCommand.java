@@ -2,7 +2,7 @@ package no.nav.testnav.apps.oversiktfrontend.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -22,7 +22,7 @@ public class GetTokenCommand implements Callable<Mono<String>> {
                 .uri(builder -> builder
                         .path("/api/v1/brukere/{id}/token")
                         .build(id))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(String.class)
                 .retryWhen(WebClientError.is5xxException());
