@@ -56,10 +56,8 @@ jobs:
           git config --global user.name "$GITHUB_ACTOR"
           
           npm version patch
+          git push --follow-tags
           npm publish
-          git add .
-          git commit -m "chore: release new version"
-          git push origin
         working-directory: ${{ inputs.working-directory }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
