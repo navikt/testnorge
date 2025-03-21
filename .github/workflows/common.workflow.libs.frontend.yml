@@ -49,8 +49,17 @@ jobs:
         if: |
           (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs')) &&
           (!contains(github.event.head_commit.message, '[skip ci]'))
-        run: npm version patch && npm publish
+        run: |
+          echo Release started by $GITHUB_ACTOR
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+          git config --global user.email "dolly@nav.no"
+          git config --global user.name "$GITHUB_ACTOR"
+          
+          git fetch
+          git pull
+          npm version patch
+          npm publish
+          git push --follow-tags
         working-directory: ${{ inputs.working-directory }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        

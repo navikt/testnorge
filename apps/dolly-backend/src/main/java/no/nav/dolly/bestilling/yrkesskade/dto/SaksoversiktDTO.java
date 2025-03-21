@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatusCode;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,6 +23,14 @@ public class SaksoversiktDTO {
     private String melding;
 
     private List<Sak> saker;
+
+    public static Mono<SaksoversiktDTO> of(WebClientError.Description description) {
+        return Mono.just(SaksoversiktDTO
+                .builder()
+                .status(description.getStatus())
+                .melding(description.getMessage())
+                .build());
+    }
 
     public List<Sak> getSaker() {
 

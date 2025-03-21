@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAccessListResponseDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -33,7 +33,7 @@ public class GetAccessListMembersCommand implements Callable<Mono<AltinnAccessLi
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(AltinnAccessListResponseDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
                 .doOnSuccess(value -> log.info("Altinn-tilgang hentet"));
     }
 }

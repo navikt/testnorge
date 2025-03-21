@@ -8,18 +8,15 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Tag("integration")
 class BrukerServiceIntegrationTest {
@@ -29,7 +26,7 @@ class BrukerServiceIntegrationTest {
     public static MockWebServer mockBackEnd;
 
     private ObjectMapper objectMapper;
-    private WebClient webClient;
+    private WebClient webClient = WebClient.builder().build();
     private TokendingsClient tokendingsClient;
 
     @BeforeAll
@@ -47,8 +44,11 @@ class BrukerServiceIntegrationTest {
     void initialize() {
         String baseUrl = String.format("http://localhost:%s",
                 mockBackEnd.getPort());
-        tokendingsClient = new TokendingsClient(baseUrl);
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+        tokendingsClient = new TokendingsClient(webClient, baseUrl);
+        this.webClient = webClient
+                .mutate()
+                .baseUrl(baseUrl)
+                .build();
         objectMapper = new ObjectMapper();
     }
 
@@ -60,8 +60,10 @@ class BrukerServiceIntegrationTest {
                         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .setBody(objectMapper.writeValueAsString(new AccessToken("test"))));
 
-        var token = tokendingsClient.generateToken("dev-gcp:dolly:testnav-bruker-service", PID).block();
-
+        var token = tokendingsClient
+                        .generateToken("dev-gcp:dolly:testnav-bruker-service", PID)
+                        .block();
+        assert token != null;
 
         // Create user
         var expected = new BrukerDTO(null, "username", ORGNUMMER, null, null);
@@ -71,15 +73,17 @@ class BrukerServiceIntegrationTest {
                         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .setBody(objectMapper.writeValueAsString(expected)));
 
-        var bruker = webClient.post()
+        var bruker = webClient
+                .post()
                 .uri("/api/v1/brukere")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
                 .body(BodyInserters.fromValue(expected))
                 .retrieve()
                 .bodyToMono(BrukerDTO.class)
                 .block();
+        assert bruker != null;
 
-        Assertions.assertThat(bruker)
+        assertThat(bruker)
                 .usingRecursiveComparison()
                 .comparingOnlyFields("brukernavn", "organisasjonsnummer")
                 .isEqualTo(expected);
@@ -128,7 +132,10 @@ class BrukerServiceIntegrationTest {
                 .bodyToMono(BrukerDTO.class)
                 .block();
 
-        Assertions.assertThat(updatedUser.brukernavn()).isEqualTo("new-username");
+        assertThat(updatedUser)
+                .isNotNull()
+                .extracting(BrukerDTO::brukernavn)
+                .isEqualTo("new-username");
 
         mockBackEnd.enqueue(
                 new MockResponse().setResponseCode(200)

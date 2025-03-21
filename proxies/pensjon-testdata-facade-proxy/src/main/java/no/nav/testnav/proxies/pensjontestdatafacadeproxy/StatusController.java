@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.pensjontestdatafacadeproxy;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,22 +12,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
+@RequiredArgsConstructor
 public class StatusController {
+
     private static final String TEAM_PENSJON_TESTDATA = "Team Pentek (pensjontestdata)";
+
+    private final WebClient webClient;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
-        var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
                 "https://pensjon-testdata-facade.dev.adeo.no/isAlive",
                 "https://pensjon-testdata-facade.dev.adeo.no/isReady",
-                statusWebClient);
-
+                webClient);
         var statusMap = new ConcurrentHashMap<String, TestnavStatusResponse>();
         statusMap.put("pensjon-testdata", pensjonStatus);
-
         return statusMap;
+
     }
 
     public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {

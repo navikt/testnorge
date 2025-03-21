@@ -31,15 +31,17 @@ public class OrganisasjonConsumer {
     public OrganisasjonConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         miljoerServerProperties = consumers.getTestnavMiljoerService();
         organisasjonServerProperties = consumers.getTestnavOrganisasjonService();
         this.tokenExchange = tokenExchange;
-        this.organisasjonWebClient = webClientBuilder
+        this.organisasjonWebClient = webClient
+                .mutate()
                 .baseUrl(organisasjonServerProperties.getUrl())
                 .build();
-        this.miljoerWebClient = webClientBuilder
+        this.miljoerWebClient = webClient
+                .mutate()
                 .baseUrl(miljoerServerProperties.getUrl())
                 .build();
     }

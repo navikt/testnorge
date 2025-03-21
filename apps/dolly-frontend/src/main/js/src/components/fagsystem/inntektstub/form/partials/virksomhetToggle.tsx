@@ -11,12 +11,10 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import {
 	useDollyFasteDataOrganisasjoner,
 	useDollyOrganisasjoner,
-	useFasteDataOrganisasjon,
+	useOrganisasjonForvalter,
 } from '@/utils/hooks/useDollyOrganisasjoner'
-import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
-import { useBoolean } from 'react-use'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { arbeidsgiverToggleValues, getOrgType, handleManualOrgChange } from '@/utils/OrgUtils'
+import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/OrganisasjonForvalterSelect'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -62,16 +60,34 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 		formMethods.watch('inntektstub.inntektsinformasjon')?.length,
 	])
 
-	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
-	const [success, setSuccess] = useBoolean(false)
-	const [loading, setLoading] = useBoolean(false)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(virksomhetPath) || null)
-	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
+	const { organisasjoner, loading, error } = useOrganisasjonForvalter([orgnummer])
+	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
+
+	useEffect(() => {
+		if (!organisasjon) {
+			if (!loading) {
+				formMethods.setError(`manual.${opplysningspliktigPath}`, {
+					message: 'Fant ikke organisasjonen',
+				})
+			}
+			return
+		}
+		formMethods.clearErrors([`manual.${opplysningspliktigPath}`, `manual.${virksomhetPath}`])
+		handleManualOrgChange(
+			orgnummer,
+			formMethods,
+			virksomhetPath,
+			opplysningspliktigPath,
+			organisasjon,
+		)
+	}, [organisasjon, loading])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
-		formMethods.setValue(virksomhetPath, '')
-		formMethods.setValue(opplysningspliktigPath, '')
+		setOrgnummer(null)
+		formMethods.setValue(virksomhetPath, null)
+		formMethods.setValue(opplysningspliktigPath, null)
 		formMethods.clearErrors(`manual.${path}`)
 		formMethods.clearErrors(path)
 	}
@@ -106,53 +122,30 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
 					<OrganisasjonMedArbeidsforholdSelect
 						afterChange={handleOrgChange}
-						path={`${path}.virksomhet`}
+						path={virksomhetPath}
 						label={'Organisasjonsnummer'}
 						placeholder={'Velg organisasjon ...'}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
 					<EgneOrganisasjoner
-						path={`${path}.virksomhet`}
+						path={virksomhetPath}
 						handleChange={handleOrgChange}
 						filterValidEnhetstyper={true}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
-					<OrganisasjonMedMiljoeSelect
-						path={`${path}.virksomhet`}
-						parentPath={path}
-						miljoeOptions={aktiveMiljoer}
-						success={success}
+					<OrganisasjonForvalterSelect
+						value={orgnummer}
+						path={virksomhetPath}
+						parentPath={opplysningspliktigPath}
+						success={formMethods.watch(virksomhetPath) && !error}
 						loading={loading}
 						onTextBlur={(event) => {
-							const org = event.target.value
-							setOrgnummer(org)
-							handleManualOrgChange(
-								org,
-								formMethods.watch(`${path}.organisasjonMiljoe`),
-								formMethods,
-								virksomhetPath,
-								setLoading,
-								setSuccess,
-								organisasjon,
-								opplysningspliktigPath,
-							)
+							formMethods.setValue(virksomhetPath, null)
+							formMethods.setValue(opplysningspliktigPath, null)
+							setOrgnummer(event.target.value)
 						}}
-						onMiljoeChange={(event) => {
-							formMethods.setValue(`${path}.organisasjonMiljoe`, event.value)
-							handleManualOrgChange(
-								orgnummer,
-								event.value,
-								formMethods,
-								virksomhetPath,
-								setLoading,
-								setSuccess,
-								organisasjon,
-								opplysningspliktigPath,
-							)
-						}}
-						formMethods={formMethods}
 					/>
 				)}
 				{typeArbeidsgiver === ArbeidsgiverTyper.privat && (

@@ -3,7 +3,7 @@
 
     <springProfile name="prod,dev">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
+            <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
                 <maxStackTraceLength>-1</maxStackTraceLength>
                 <addCauses>true</addCauses>
                 <stackTraceIncludePrefix>-</stackTraceIncludePrefix>

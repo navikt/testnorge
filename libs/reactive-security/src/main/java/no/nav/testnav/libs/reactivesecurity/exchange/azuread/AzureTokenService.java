@@ -32,17 +32,19 @@ public class AzureTokenService implements TokenService {
     private final GetAuthenticatedToken getAuthenticatedToken;
 
     public AzureTokenService(
+            WebClient webClient,
             String proxyHost,
             AzureClientCredential azureClientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init AzureAd token exchange.");
 
-        WebClient.Builder builder = WebClient
-                .builder()
+        this.getAuthenticatedToken = getAuthenticatedToken;
+        this.clientCredential = azureClientCredential;
+        var builder = webClient
+                .mutate()
                 .baseUrl(azureClientCredential.getTokenEndpoint())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-
         if (proxyHost != null) {
             log.trace("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
@@ -56,8 +58,6 @@ public class AzureTokenService implements TokenService {
             ));
         }
         this.webClient = builder.build();
-        this.getAuthenticatedToken = getAuthenticatedToken;
-        this.clientCredential = azureClientCredential;
     }
 
     @Override
@@ -100,8 +100,8 @@ public class AzureTokenService implements TokenService {
 
     public static class Test extends AzureTokenService {
 
-        public Test(String proxyHost, AzureClientCredential azureClientCredential, GetAuthenticatedToken getAuthenticatedToken) {
-            super(proxyHost, azureClientCredential, getAuthenticatedToken);
+        public Test(WebClient webClient, String proxyHost, AzureClientCredential azureClientCredential, GetAuthenticatedToken getAuthenticatedToken) {
+            super(webClient, proxyHost, azureClientCredential, getAuthenticatedToken);
         }
 
         @Override

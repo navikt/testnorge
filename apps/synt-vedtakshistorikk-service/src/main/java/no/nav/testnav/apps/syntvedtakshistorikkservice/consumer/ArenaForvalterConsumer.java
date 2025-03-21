@@ -3,13 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.GetArenaBrukereCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostArenaBrukerCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostDagpengerCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostEndreInnsatsbehovCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostFinnTiltakCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostRettighetCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.SlettArenaBrukerCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.*;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
@@ -27,11 +21,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.isNull;
@@ -45,16 +35,14 @@ public class ArenaForvalterConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
-    private static final String MOTTA_DAGPENGESOKNAD_PATH = "/api/v1/mottadagpengesoknad";
-    private static final String MOTTA_DAGPENGEVEDTAK_PATH = "/api/v1/mottadagpengevedtak";
-    private static final String DAGPENGEVEDTAK_PATH = "/api/v1/dagpenger";
-
     public ArenaForvalterConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavArenaForvalterenProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
@@ -63,7 +51,7 @@ public class ArenaForvalterConsumer {
     public NyeBrukereResponse sendBrukereTilArenaForvalter(List<NyBruker> nyeBrukere) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(accessToken -> new PostArenaBrukerCommand(nyeBrukere, accessToken.getTokenValue(), webClient).call())
+                .flatMap(accessToken -> new PostArenaBrukerCommand(webClient, nyeBrukere, accessToken.getTokenValue()).call())
                 .block();
     }
 
@@ -114,7 +102,7 @@ public class ArenaForvalterConsumer {
     public NyttVedtakResponse finnTiltak(FinnTiltakRequest rettighet) {
         try {
             return tokenExchange.exchange(serverProperties)
-                    .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet, accessToken.getTokenValue(), webClient).call())
+                    .flatMap(accessToken -> new PostFinnTiltakCommand(webClient, accessToken.getTokenValue(), rettighet).call())
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke hente tiltak for ident {} i miljø {}", rettighet.getPersonident(), rettighet.getMiljoe(), e);
@@ -212,17 +200,17 @@ public class ArenaForvalterConsumer {
 
     public DagpengerResponseDTO opprettMottaDagpengerSoknad(DagpengerRequestDTO soknad) {
         log.info("Sender inn motta dagpengesoknad til Arena-forvalteren");
-        return opprettDagpenger(soknad, MOTTA_DAGPENGESOKNAD_PATH);
+        return opprettDagpenger(soknad, "/api/v1/mottadagpengesoknad");
     }
 
     public DagpengerResponseDTO opprettMottaDagpengerVedtak(DagpengerRequestDTO vedtak) {
         log.info("Sender inn motta dagpengevedtak til Arena-forvalteren");
-        return opprettDagpenger(vedtak, MOTTA_DAGPENGEVEDTAK_PATH);
+        return opprettDagpenger(vedtak, "/api/v1/mottadagpengevedtak");
     }
 
     public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak) {
         log.info("Sender inn dagpengevedtak til Arena-forvalteren");
-        return opprettDagpenger(vedtak, DAGPENGEVEDTAK_PATH);
+        return opprettDagpenger(vedtak, "/api/v1/dagpenger");
     }
 
     private DagpengerResponseDTO opprettDagpenger(DagpengerRequestDTO request, String path) {

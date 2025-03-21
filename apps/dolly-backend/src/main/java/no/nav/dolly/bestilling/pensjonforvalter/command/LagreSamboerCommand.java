@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -12,9 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -32,7 +30,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
 
         var callId = generateCallId();
         log.info("Pensjon samboer opprett i {} {}, callId: {}", miljoe, pensjonSamboerRequest, callId);
-       
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -45,7 +43,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, HttpStatus.valueOf(response.getStatusCode().value())))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 
@@ -67,22 +65,26 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                 .build();
     }
 
-    private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, Throwable error) {
-
-        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
+    private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, Throwable throwable) {
+        var description = WebClientError.describe(throwable);
+        var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment
+                .builder()
                 .miljo(miljoe)
-                .response(PensjonforvalterResponse.Response.builder()
-                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                .status(WebClientFilter.getStatus(error).value())
-                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
+                .response(PensjonforvalterResponse.Response
+                        .builder()
+                        .httpStatus(PensjonforvalterResponse.HttpStatus
+                                .builder()
+                                .status(description.getStatus().value())
+                                .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(WebClientFilter.getMessage(error))
+                        .message(description.getMessage())
                         .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();
-
-        return PensjonforvalterResponse.builder()
+        return PensjonforvalterResponse
+                .builder()
                 .status(Collections.singletonList(miljoeResponse))
                 .build();
     }
+
 }

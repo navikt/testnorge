@@ -1,19 +1,18 @@
 package no.nav.testnav.joarkdokumentservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.joarkdokumentservice.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 public class GetPDFCommand implements Callable<Mono<byte[]>> {
+
     private final WebClient webClient;
     private final String token;
     private final String journalpostId;
@@ -33,8 +32,7 @@ public class GetPDFCommand implements Callable<Mono<byte[]>> {
                 .accept(MediaType.APPLICATION_PDF)
                 .retrieve()
                 .bodyToMono(byte[].class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(
                         throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty()

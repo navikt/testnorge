@@ -1,13 +1,10 @@
 package no.nav.dolly.bestilling.arenaforvalter.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +29,15 @@ public class AapResponse extends ArenaResponse {
 
     @Schema(description = "liste over AAP hvor oppretting feilet")
     private List<NyAapFeilV1> nyeAapFeilList;
+
+    public static Flux<AapResponse> of(WebClientError.Description description, String miljoe) {
+        return Flux.just(AapResponse
+                .builder()
+                .status(description.getStatus())
+                .feilmelding(description.getMessage())
+                .miljoe(miljoe)
+                .build());
+    }
 
     public List<Aap> getNyeAap() {
 
