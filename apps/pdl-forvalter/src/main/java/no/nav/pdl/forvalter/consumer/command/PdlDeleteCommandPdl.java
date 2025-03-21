@@ -5,19 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
-
-import java.time.Duration;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
-import static no.nav.testnav.libs.reactivecore.utils.WebClientFilter.getMessage;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +28,6 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
 
     @Override
     public Flux<OrdreResponseDTO.HendelseDTO> call() {
-
         return webClient
                 .delete()
                 .uri(builder -> builder.path(url)
@@ -48,14 +43,16 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
                         .status(PdlStatus.OK)
                         .deletedOpplysninger(response.getDeletedOpplysninger())
                         .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
-                .onErrorResume(error ->
-                        Mono.just(OrdreResponseDTO.HendelseDTO.builder()
-                                .status(getMessage(error).contains(INFO_STATUS) ? PdlStatus.OK : PdlStatus.FEIL)
-                                .error(getMessage(error).contains(INFO_STATUS) ? null : getMessage(error))
-                                .build())
-                );
+                .onErrorResume(throwable -> {
+                    var message = WebClientError.describe(throwable).getMessage();
+                    return Mono.just(OrdreResponseDTO.HendelseDTO
+                            .builder()
+                            .status(message.contains(INFO_STATUS) ? PdlStatus.OK : PdlStatus.FEIL)
+                            .error(message.contains(INFO_STATUS) ? null : message)
+                            .build());
+                });
     }
+
 }

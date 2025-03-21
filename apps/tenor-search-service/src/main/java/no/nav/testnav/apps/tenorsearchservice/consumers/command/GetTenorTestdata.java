@@ -7,14 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -48,7 +46,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                 "query", query,
                 "alle", "*");
 
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(TENOR_QUERY_URL)
                         .queryParam("kql", "{query}")
@@ -66,20 +65,16 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                     if (nonNull(antall) && antall == 1) {
                         log.info("Mottok tenor response JSON: {}", Json.pretty(response));
                     }
-                    return TenorResponse.builder()
+                    return TenorResponse
+                            .builder()
                             .status(HttpStatus.OK)
                             .data(response)
                             .query(query)
                             .build();
                 })
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .onErrorResume(error -> Mono.just(TenorResponse.builder()
-                        .status(WebClientFilter.getStatus(error))
-                        .error(WebClientFilter.getMessage(error))
-                        .query(query)
-                        .build()));
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(error -> TenorResponse.of(WebClientError.describe(error), query));
     }
 
     private Integer getAntall(Integer antall, InfoType type) {

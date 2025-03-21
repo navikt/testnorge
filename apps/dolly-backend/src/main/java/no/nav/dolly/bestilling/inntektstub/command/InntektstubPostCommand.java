@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.util.TokenXUtil;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -27,8 +25,8 @@ public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon
 
     @Override
     public Flux<Inntektsinformasjon> call() {
-
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(INNTEKTER_URL)
                         .build())
@@ -37,13 +35,12 @@ public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon
                 .bodyValue(inntektsinformasjon)
                 .retrieve()
                 .bodyToFlux(Inntektsinformasjon.class)
-                .onErrorResume(error -> {
-                    log.error("Lagring av Instdata feilet: {}", WebClientFilter.getMessage(error), error);
-                    return Flux.just(Inntektsinformasjon.builder()
-                            .feilmelding(WebClientFilter.getMessage(error))
-                            .build());
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    log.error("Lagring av Instdata feilet: {}", description.getMessage(), throwable);
+                    return Inntektsinformasjon.of(description);
                 })
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

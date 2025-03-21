@@ -23,9 +23,9 @@ class NonBeanJwtDecoder {
     private final ResourceServerProperties resourceServerProperties;
     private final WebClient proxyWebClient;
 
-    NonBeanJwtDecoder(ResourceServerProperties resourceServerProperties, String proxyHost) {
+    NonBeanJwtDecoder(WebClient webClient, ResourceServerProperties resourceServerProperties, String proxyHost) {
         this.resourceServerProperties = resourceServerProperties;
-        this.proxyWebClient = buildProxyWebClient(proxyHost);
+        this.proxyWebClient = buildProxyWebClient(webClient, proxyHost);
     }
 
     public ReactiveJwtDecoder jwtDecoder() {
@@ -49,8 +49,8 @@ class NonBeanJwtDecoder {
 
     }
 
-    private WebClient buildProxyWebClient(String proxyHost) {
-        var builder = WebClient.builder();
+    private WebClient buildProxyWebClient(WebClient webClient, String proxyHost) {
+        var builder = webClient.mutate();
         if (proxyHost != null) {
             log.trace("Setter opp proxy host {} for jwt decoder.", proxyHost);
             var uri = URI.create(proxyHost);

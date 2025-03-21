@@ -43,6 +43,9 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
             log.warn("Failed to dynamically load environment variables using {}", NaisRuntimeEnvironmentConnector.class.getSimpleName(), e);
         }
 
+        // Enable all actuator endpoints.
+        properties.putIfAbsent("management.endpoints.web.exposure.include", "*");
+
         // Emulating NAIS provided environment variables.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
@@ -68,8 +71,8 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         log.info("Configuring environment for test profile using dummy values");
         var properties = environment.getSystemProperties();
 
-        // Disabling Secret Manager (not available when running builds on GitHub).
-        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false");
+        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false"); // Disabling Secret Manager (not available when running builds on GitHub).
+        properties.putIfAbsent("spring.main.banner-mode", "off");
 
         // Setting dummy placeholders.
         Stream

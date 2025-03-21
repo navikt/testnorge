@@ -35,24 +35,25 @@ public class InntektstubConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavInntektstubProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_getInntekter"})
     public Flux<Inntektsinformasjon> getInntekter(String ident) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_deleteInntekter"})
     public Mono<List<String>> deleteInntekter(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
@@ -65,7 +66,7 @@ public class InntektstubConsumer extends ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_postInntekter"})
     public Flux<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
         log.info("Sender inntektstub: {}", inntektsinformasjon);

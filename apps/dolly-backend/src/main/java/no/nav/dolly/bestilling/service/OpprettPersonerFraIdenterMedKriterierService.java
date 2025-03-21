@@ -17,7 +17,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
@@ -103,8 +103,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                                                     fase3Klienter(),
                                                                                     progress, true))))))
                                             .onErrorResume(throwable -> {
-                                                var error = errorStatusDecoder.getErrorText(
-                                                        WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
+                                                var description = WebClientError.describe(throwable);
+                                                var error = errorStatusDecoder.getErrorText(description.getStatus(), description.getMessage());
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
                                                 saveFeil(progress, error);

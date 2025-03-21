@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Component
 public class OrganisasjonFasteDataConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
@@ -28,11 +29,12 @@ public class OrganisasjonFasteDataConsumer {
             Consumers consumers,
             TokenExchange tokenExchange,
             GenererNavnConsumer genererNavnConsumer,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavOrganisasjonFasteDataService();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.genererNavnConsumer = genererNavnConsumer;

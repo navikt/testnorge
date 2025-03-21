@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
@@ -13,11 +13,12 @@ public abstract class PdlTestdataCommand implements Callable<Flux<OrdreResponseD
     static final String TEMA = "Tema";
 
     OrdreResponseDTO.HendelseDTO errorHandling(Throwable error, Integer id) {
-
-        return OrdreResponseDTO.HendelseDTO.builder()
+        return OrdreResponseDTO.HendelseDTO
+                .builder()
                 .id(id)
                 .status(PdlStatus.FEIL)
-                .error(WebClientFilter.getMessage(error))
+                .error(WebClientError.describe(error).getMessage())
                 .build();
     }
+
 }

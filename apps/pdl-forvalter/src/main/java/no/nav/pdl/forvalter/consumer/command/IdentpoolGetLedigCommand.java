@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,16 +13,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO>> {
 
     private static final String IDENTPOOL = "Identpool: ";
@@ -35,7 +33,6 @@ public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO
 
     @Override
     public Flux<IdentpoolLedigDTO> call() {
-
         return webClient
                 .get()
                 .uri(builder -> builder.path(IS_AVAIL_URL).build())
@@ -48,8 +45,7 @@ public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO
                         .ident(ident)
                         .ledig(isTrue(result))
                         .build())
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException exception) {

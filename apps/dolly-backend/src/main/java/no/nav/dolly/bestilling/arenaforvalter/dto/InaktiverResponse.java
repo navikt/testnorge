@@ -1,11 +1,9 @@
 package no.nav.dolly.bestilling.arenaforvalter.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Mono;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -17,4 +15,13 @@ public class InaktiverResponse extends ArenaResponse {
     public InaktiverResponse(HttpStatus status, String miljoe, String feilmelding) {
         super(status, miljoe, feilmelding);
     }
+
+    public static Mono<InaktiverResponse> of(WebClientError.Description description) {
+        return Mono.just(InaktiverResponse
+                .builder()
+                .status(description.getStatus())
+                .feilmelding(description.getMessage())
+                .build());
+    }
+
 }

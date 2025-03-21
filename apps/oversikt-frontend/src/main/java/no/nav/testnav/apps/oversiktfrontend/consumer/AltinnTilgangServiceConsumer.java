@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 public class AltinnTilgangServiceConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
@@ -24,12 +25,13 @@ public class AltinnTilgangServiceConsumer {
     public AltinnTilgangServiceConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder,
-            GetAuthenticatedUserId getAuthenticatedUserId) {
-
+            WebClient webClient,
+            GetAuthenticatedUserId getAuthenticatedUserId
+    ) {
         serverProperties = consumers.getTestnavAltinn3TilgangService();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.getAuthenticatedUserId = getAuthenticatedUserId;

@@ -23,10 +23,11 @@ public class OrganisasjonBestillingConsumer {
     public OrganisasjonBestillingConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getOrganisasjonBestillingService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
@@ -35,10 +36,10 @@ public class OrganisasjonBestillingConsumer {
     public Flux<BestillingStatus> getBestillingStatus(Status status) {
 
         return Flux.from(tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new OrganisasjonBestillingStatusCommand(webClient, status,
-                        token.getTokenValue()).call()))
+                        .flatMap(token -> new OrganisasjonBestillingStatusCommand(webClient, status,
+                                token.getTokenValue()).call()))
                 .doOnNext(response ->
-                        log.info("Mottatt response fra Organisasjon-Bestilling-Service: {}",response));
+                        log.info("Mottatt response fra Organisasjon-Bestilling-Service: {}", response));
     }
 
     public Flux<Status> getBestillingId(Status status) {

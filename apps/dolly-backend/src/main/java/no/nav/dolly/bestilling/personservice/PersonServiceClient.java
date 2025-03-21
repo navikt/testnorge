@@ -17,7 +17,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,12 +66,13 @@ public class PersonServiceClient {
         );
     }
 
-    private Flux<PersonServiceResponse> getError(Throwable error, DollyPerson person) {
-
-        return Flux.just(PersonServiceResponse.builder()
+    private Flux<PersonServiceResponse> getError(Throwable throwable, DollyPerson person) {
+        var description = WebClientError.describe(throwable);
+        return Flux.just(PersonServiceResponse
+                .builder()
                 .ident(person.getIdent())
-                .formattertMelding("Feil= %s".formatted(ErrorStatusDecoder.encodeStatus(WebClientFilter.getMessage(error))))
-                .status(WebClientFilter.getStatus(error))
+                .formattertMelding("Feil= %s".formatted(ErrorStatusDecoder.encodeStatus(description.getMessage())))
+                .status(description.getStatus())
                 .exists(false)
                 .build());
     }

@@ -1,11 +1,9 @@
 package no.nav.dolly.bestilling.brregstub.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,6 +26,13 @@ public class RolleoversiktTo {
     private NavnTo navn;
     private List<Integer> understatuser;
     private String error;
+
+    public static Mono<RolleoversiktTo> of(WebClientError.Description description) {
+        return Mono.just(RolleoversiktTo
+                .builder()
+                .error(description.getMessage())
+                .build());
+    }
 
     public List<Integer> getUnderstatuser() {
         if (isNull(understatuser)) {

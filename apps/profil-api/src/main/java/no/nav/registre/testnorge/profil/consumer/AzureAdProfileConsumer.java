@@ -27,31 +27,31 @@ public class AzureAdProfileConsumer {
     private final String url;
 
     public AzureAdProfileConsumer(
-            @Value("${http.proxy:#{null}}") String proxyHost,
+            @Value("${HTTP_PROXY:#{null}}") String proxyHost,
             @Value("${api.azuread.url}") String url,
             AzureAdTokenService azureAdTokenService,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         this.url = url;
         this.azureAdTokenService = azureAdTokenService;
-        WebClient.Builder builder = webClientBuilder
+        var builder = webClient
+                .mutate()
                 .baseUrl(url)
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build());
-
         if (proxyHost != null) {
             log.trace("Setter opp proxy host {} for Azure Ad", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
-                HttpClient
-                    .create()
-                    .proxy(proxy -> proxy
-                        .type(ProxyProvider.Proxy.HTTP)
-                        .host(uri.getHost())
-                        .port(uri.getPort()))
+                    HttpClient
+                            .create()
+                            .proxy(proxy -> proxy
+                                    .type(ProxyProvider.Proxy.HTTP)
+                                    .host(uri.getHost())
+                                    .port(uri.getPort()))
             ));
         }
         this.webClient = builder.build();

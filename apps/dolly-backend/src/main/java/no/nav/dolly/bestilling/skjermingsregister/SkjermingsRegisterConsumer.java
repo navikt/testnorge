@@ -38,17 +38,18 @@ public class SkjermingsRegisterConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavSkjermingsregisterProxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "skjermingsdata-slett" })
+    @Timed(name = "providers", tags = {"operation", "skjermingsdata-slett"})
     public Mono<List<SkjermingDataResponse>> deleteSkjerming(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
@@ -64,7 +65,7 @@ public class SkjermingsRegisterConsumer extends ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "skjermingsdata-oppdater" })
+    @Timed(name = "providers", tags = {"operation", "skjermingsdata-oppdater"})
     public Mono<SkjermingDataResponse> oppdaterPerson(SkjermingDataRequest skjerming) {
 
         log.info("Sender forespørsel om skjerming for ident {}: {}", skjerming.getPersonident(), Json.pretty(skjerming));

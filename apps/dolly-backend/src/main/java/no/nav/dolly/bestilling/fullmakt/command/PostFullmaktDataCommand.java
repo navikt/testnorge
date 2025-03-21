@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.util.RequestHeaderUtil;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,14 +13,10 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.http.util.TextUtils.isBlank;
 
@@ -45,7 +41,8 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                     .build());
         }
 
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(POST_FULLMAKT_URL)
                         .build())
@@ -57,17 +54,16 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(FullmaktResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
                 .doOnError(throwable -> {
-                    if (throwable instanceof WebClientResponseException ex) {
-                        if (ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                            log.error("Bad request mot repr-fullmakt, response: {}", ex.getResponseBodyAsString());
-                        }
+                    if (throwable instanceof WebClientResponseException ex && ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                        log.error("Bad request mot repr-fullmakt, response: {}", ex.getResponseBodyAsString());
                     }
                 })
                 .doOnSuccess(response -> log.info("Fullmakt opprettet for person {}, response: {}", ident, response))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(WebClientFilter::logErrorMessage);
+                .retryWhen(WebClientError.is5xxException())
+                .doOnError(WebClientError.logTo(log));
+
     }
+
 }

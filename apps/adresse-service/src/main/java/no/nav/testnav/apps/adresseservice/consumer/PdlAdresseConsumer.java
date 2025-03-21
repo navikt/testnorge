@@ -19,10 +19,12 @@ public class PdlAdresseConsumer {
     public PdlAdresseConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient.Builder webClientBuilder) {
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getPdlServices();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
@@ -32,4 +34,5 @@ public class PdlAdresseConsumer {
                 .flatMap(token -> new PdlAdresseSoekCommand(webClient, adresseQuery, token.getTokenValue()).call())
                 .block();
     }
+
 }
