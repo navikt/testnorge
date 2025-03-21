@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.oversiktfrontend.consumer.dto.AltinnBrukerRequest;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -22,7 +22,7 @@ public class GetAltinnBrukertilgangTilgangCommand implements Callable<Flux<Organ
         return webClient
                 .post()
                 .uri("/api/v1/brukertilgang")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(new AltinnBrukerRequest(ident))
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)

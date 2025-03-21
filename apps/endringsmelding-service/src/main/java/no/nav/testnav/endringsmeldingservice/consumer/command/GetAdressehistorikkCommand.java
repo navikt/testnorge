@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -30,7 +30,7 @@ public class GetAdressehistorikkCommand implements Callable<Flux<Adressehistorik
                         .path("/api/v1/personer/adressehistorikk")
                         .queryParam("miljoer", miljoer)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToFlux(AdressehistorikkDTO.class)

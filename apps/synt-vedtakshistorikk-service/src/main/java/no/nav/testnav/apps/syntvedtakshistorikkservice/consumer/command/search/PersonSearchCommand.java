@@ -6,6 +6,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.search.
 import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.data.dollysearchservice.v1.legacy.PersonSearch;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,8 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +32,7 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
         return webClient
                 .post()
                 .uri(builder -> builder.path("/api/v1/legacy").build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromPublisher(Mono.just(request), PersonSearch.class))
                 .retrieve()
                 .toEntity(RESPONSE_TYPE)
