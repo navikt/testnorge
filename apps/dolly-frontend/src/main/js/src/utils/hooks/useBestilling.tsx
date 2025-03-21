@@ -119,24 +119,16 @@ export const useIkkeFerdigBestillingerGruppe = (
 }
 
 export const useBestillingById = (
-	bestillingId: string,
+	bestillingId: string | number,
 	erOrganisasjon = false,
 	autoRefresh = false,
 ) => {
-	if (!bestillingId) {
-		return {
-			loading: false,
-			error: 'BestillingId mangler!',
-		}
+	const shouldFetch = () => {
+		return bestillingId && !erOrganisasjon
 	}
-	if (erOrganisasjon) {
-		return {
-			loading: false,
-			error: 'Bestilling er org!',
-		}
-	}
+
 	const { data, isLoading, error } = useSWR<Bestilling, Error>(
-		getBestillingByIdUrl(bestillingId),
+		shouldFetch() ? getBestillingByIdUrl(bestillingId) : null,
 		fetcher,
 		{
 			refreshInterval: autoRefresh ? 1000 : null,

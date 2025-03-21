@@ -87,7 +87,7 @@ export const TextInput = ({
 		getFieldState,
 	} = useFormContext()
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-	const { onChange, onBlur } = register(name)
+	const { onChange, onBlur } = name ? register(name) : {}
 	const input = props.input || props.value
 	const [fieldValue, setFieldValue] = useState(props.input || watch(name) || '')
 	const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)

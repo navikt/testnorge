@@ -14,6 +14,8 @@
       ]
     },
     "types": [
+      "@vitest/browser/providers/playwright",
+      "vitest/globals",
       "vite/client",
       "node",
       "./support"

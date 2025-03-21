@@ -1,3 +1,10 @@
+dolly:
+  nais:
+    name: testnav-synthdata-meldekort-proxy
+    variables:
+      - AZURE_NAV_APP_CLIENT_ID
+      - AZURE_NAV_APP_CLIENT_SECRET
+
 spring:
   config:
     import: "sm://"
