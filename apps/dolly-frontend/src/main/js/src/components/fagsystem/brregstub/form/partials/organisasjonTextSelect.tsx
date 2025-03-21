@@ -1,89 +1,87 @@
-import React, { useState } from 'react'
-import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
-import { useBoolean } from 'react-use'
-import { OrgserviceApi } from '@/service/Api'
-import { OrgInfoAdresse } from '@/service/services/organisasjonservice/types'
-import * as _ from 'lodash-es'
+import React, { useEffect, useState } from 'react'
+import { OrganisasjonForvalterSelect } from '@/components/organisasjonSelect/OrganisasjonForvalterSelect'
 import { useFormContext } from 'react-hook-form'
+import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
+import { AdresseOrgForvalter } from '@/service/services/organisasjonforvalter/types'
 
-interface OrgnanisasjonTextSelectProps {
+interface OrganisasjonTextSelectProps {
 	path: string
-	aktiveMiljoer: string[]
 	setEnhetsinfo: (org: any, path: string) => {}
-	clearEnhetsinfo: () => void
 }
 
-const mapAdresse = (adresse: OrgInfoAdresse) => {
+const mapAdresse = (adresse: AdresseOrgForvalter) => {
 	if (!adresse) {
 		return null
 	}
 	return {
-		adresselinje1: adresse.adresselinje1,
-		kommunenr: adresse.kommunenummer,
+		adresselinje1: adresse.adresselinjer?.[0],
+		kommunenr: adresse.kommunenr,
 		landkode: adresse.landkode,
-		postnr: adresse.postnummer,
+		postnr: adresse.postnr,
 		poststed: adresse.poststed,
 	}
 }
 
-export const OrganisasjonTextSelect = ({
-	path,
-	aktiveMiljoer,
-	setEnhetsinfo,
-}: OrgnanisasjonTextSelectProps) => {
+export const OrganisasjonTextSelect = ({ path, setEnhetsinfo }: OrganisasjonTextSelectProps) => {
 	const formMethods = useFormContext()
-	const [success, setSuccess] = useBoolean(false)
-	const [loading, setLoading] = useBoolean(false)
-	const [orgnummer, setOrgnummer] = useState(formMethods.watch(path) || null)
+	const [org, setOrg] = useState(formMethods.watch(path))
+	const { organisasjoner, loading, error } = useOrganisasjonForvalter([org])
+	const forvalterOrg = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
+
+	useEffect(() => {
+		if (!forvalterOrg) {
+			if (!loading) {
+				formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen' })
+			}
+			return
+		}
+		const forretningsAdresse = forvalterOrg?.adresser?.filter(
+			(adresse) => adresse.adressetype === 'FADR',
+		)?.[0]
+		const postAdresse = forvalterOrg?.adresser?.filter(
+			(adresse) => adresse.adressetype === 'PADR',
+		)?.[0]
+		const orgInfo = {
+			value: forvalterOrg?.organisasjonsnummer,
+			orgnr: forvalterOrg?.organisasjonsnummer,
+			navn: forvalterOrg?.organisasjonsnavn,
+			forretningsAdresse: mapAdresse(forretningsAdresse),
+			postAdresse: mapAdresse(postAdresse),
+		}
+		setEnhetsinfo(orgInfo, parentPath)
+	}, [forvalterOrg, loading])
+
+	useEffect(() => {
+		if (error && !formMethods.getFieldState(`manual.${path}`)?.error?.message) {
+			formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen' })
+		} else {
+			formMethods.clearErrors(`manual.${path}`)
+		}
+	}, [error])
 
 	const parentPath = path.substring(0, path.lastIndexOf('.'))
 
-	const handleChange = (org: string, miljoe: string) => {
-		if (!org || !miljoe) {
-			formMethods.setError(`manual.${path}`, { message: !org ? 'Skriv inn org' : 'Velg miljø' })
+	const handleChange = (org: string) => {
+		formMethods.setValue(path, null)
+		if (!org) {
+			formMethods.setError(`manual.${path}`, { message: 'Skriv inn org' })
 			return
 		}
+		setOrg(org)
 		formMethods.clearErrors(`manual.${path}`)
 		formMethods.clearErrors(path)
-		setLoading(true)
-		setSuccess(false)
-		formMethods.setValue(`${parentPath}.organisasjonMiljoe`, miljoe)
-		OrgserviceApi.getOrganisasjonInfo(org, miljoe)
-			.then((response) => {
-				const orgInfo = {
-					value: response.data.orgnummer,
-					orgnr: response.data.orgnummer,
-					navn: response.data.navn,
-					forretningsAdresse: mapAdresse(response.data.forretningsadresser),
-					postAdresse: mapAdresse(response.data.postadresse),
-				}
-				setEnhetsinfo(orgInfo, parentPath)
-				setLoading(false)
-				setSuccess(true)
-			})
-			.catch(() => {
-				setLoading(false)
-				formMethods.setError(`manual.${path}`, { message: 'Fant ikke organisasjonen i ' + miljoe })
-			})
 	}
 
 	return (
-		<OrganisasjonMedMiljoeSelect
+		<OrganisasjonForvalterSelect
 			path={path}
+			value={org}
 			parentPath={parentPath}
-			miljoeOptions={aktiveMiljoer}
-			success={success}
+			success={organisasjoner?.length > 0 && !loading && !error}
 			loading={loading}
 			onTextBlur={(event) => {
-				if (!_.isEmpty(event?.target?.value)) {
-					setOrgnummer(event.target.value)
-					handleChange(event.target.value, formMethods.watch(`${parentPath}.organisasjonMiljoe`))
-				}
+				handleChange(event.target.value)
 			}}
-			onMiljoeChange={(event) => {
-				handleChange(orgnummer, event.value)
-			}}
-			formMethods={formMethods}
 		/>
 	)
 }
