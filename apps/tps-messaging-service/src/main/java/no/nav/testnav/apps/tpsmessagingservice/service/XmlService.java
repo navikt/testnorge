@@ -17,10 +17,10 @@ public class XmlService {
 
     private final XmlMeldingConsumer xmlMeldingConsumer;
 
-    public String sendXml(String queue, String xml) {
+    public String sendXml(String xml, String queue) {
 
         validateQueue(queue);
-        return xmlMeldingConsumer.sendMessage(queue, xml);
+        return xmlMeldingConsumer.sendMessage(xml, queue);
     }
 
     public List<String> getQueues() {

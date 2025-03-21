@@ -24,7 +24,7 @@ public class XmlMessagingController {
     public String sendXml(@RequestParam String queue,
                           @RequestBody String xml) {
 
-        return xmlService.sendXml(queue, xml);
+        return xmlService.sendXml(xml, queue);
     }
 
     @GetMapping
