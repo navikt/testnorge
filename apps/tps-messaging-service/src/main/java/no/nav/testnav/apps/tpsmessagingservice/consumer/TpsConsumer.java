@@ -80,21 +80,15 @@ public abstract class TpsConsumer {
 
     public String sendMessage(String melding, String queue) {
 
-        var channelName = queue.replace(PREFIX_MQ_QUEUES, "");
-        var miljoe = channelName.replaceAll("_[0-9,A-Z_.]+", "");
-        var queManager = isPreprod(miljoe) ? queueManagerPreprod : queueManagerTest;
-        var host = isPreprod(miljoe) ? hostPreprod : hostTest;
-        var port = isPreprod(miljoe) ? portPreprod : portTest;
-        var username = isPreprod(miljoe) ? usernamePreprod : usernameTest;
-        var password = isPreprod(miljoe) ? passwordPreprod : passwordTest;
-        log.info("Sender melding {} til channelname {} i miljø {} host {} port {}", melding, channelName, miljoe, host, port);
+        var miljoe = queue.replace(PREFIX_MQ_QUEUES, "").replaceAll("_[0-9,A-Z_.]+", "");
+        log.info("Sender TpsMelding: {} til miljoe {}", melding, miljoe);
 
         try {
             return new TpsMeldingCommand(
-                    connectionFactoryFactory.createConnectionFactory(new QueueManager(queManager, host, port, channelName)),
+                    connectionFactoryFactory.createConnectionFactory(getQueueManager(miljoe)),
                     queue,
-                    username,
-                    password,
+                    isPreprod(miljoe) ? usernamePreprod : usernameTest,
+                    isPreprod(miljoe) ? passwordPreprod : passwordTest,
                     melding).call();
 
         } catch (JMSException e) {
