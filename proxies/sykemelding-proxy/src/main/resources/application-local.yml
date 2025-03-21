@@ -1,7 +1,6 @@
 dolly:
   nais:
-    cluster: dev-fss
-    name: testnav-saf-proxy
+    name: testnav-sykemelding-proxy
     variables:
       - AZURE_TRYGDEETATEN_APP_CLIENT_ID
       - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
