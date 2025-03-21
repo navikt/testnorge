@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: tps-messaging-frontend
+    description: App for å sende meldinger generelt til tps
+  config:
+    import: "classpath:dolly-application.yml"
+  security:
+    oauth2:
+      client:
+        registration:
+          aad:
+            client-id:  ${AZURE_APP_CLIENT_ID}
+            client-secret:  ${AZURE_APP_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid,  ${AZURE_APP_CLIENT_ID}/.default
+        provider:
+          aad:
+            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+
+consumers:
+  tps-messaging-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tps-messaging-service
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
+  testnorge-profil-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnorge-profil-api
+    url: http://testnorge-profil-api.dolly.svc.cluster.local
+
+
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure:
+            security:
+              reactive:
+                ReactiveUserDetailsServiceAutoConfiguration: OFF
