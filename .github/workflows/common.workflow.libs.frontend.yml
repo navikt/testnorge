@@ -55,6 +55,7 @@ jobs:
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
           
+          git fetch
           git pull
           npm version patch
           npm publish
