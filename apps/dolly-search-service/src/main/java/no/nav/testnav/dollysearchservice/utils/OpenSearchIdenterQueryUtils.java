@@ -62,8 +62,8 @@ public class OpenSearchIdenterQueryUtils {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.navn",
                                 QueryBuilders.boolQuery()
-                                        .should(regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*"))
-                                        .should(regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*"))
+                                        .should(regexpQuery(PERSON_FORNAVN, ".*" + values.getFirst() + ".*"))
+                                        .should(regexpQuery(PERSON_ETTERNAVN, ".*" + values.getFirst() + ".*"))
                                         .minimumShouldMatch(1),
                                 ScoreMode.Avg));
 
@@ -85,13 +85,8 @@ public class OpenSearchIdenterQueryUtils {
 
     public static void addIdenterQuery(BoolQueryBuilder queryBuilder, Set<String> identer) {
 
-        var now = System.currentTimeMillis();
-        var arr = new String[identer.size()];
-
         queryBuilder
-                .must(nestedTermsQuery(HENT_IDENTER, "ident", identer.toArray(arr)));
-
-        log.info("Konvertering av liste til array tok {} ms", System.currentTimeMillis() - now);
+                .must(nestedTermsQuery(HENT_IDENTER, "ident", identer.toArray(String[]::new)));
     }
 
     private static void addIdentQuery(BoolQueryBuilder queryBuilder, IdentSearch search) {

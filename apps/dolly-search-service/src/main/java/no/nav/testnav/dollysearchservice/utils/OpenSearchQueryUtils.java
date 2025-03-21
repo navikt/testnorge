@@ -15,7 +15,7 @@ public class OpenSearchQueryUtils {
     public static final String NAVSPERSONIDENTIFIKATOR = "hentPerson.navspersonidentifikator";
     public static final String CONCAT = "%s.%s";
 
-    public static QueryBuilder rangeQuery(String field, Integer value1, Integer value2) {
+    public static QueryBuilder rangeQuery(String field, Object value1, Object value2) {
 
         return QueryBuilders.rangeQuery(field).from(value1).to(value2);
     }

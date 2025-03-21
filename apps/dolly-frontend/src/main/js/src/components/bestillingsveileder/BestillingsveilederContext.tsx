@@ -1,9 +1,6 @@
 import React from 'react'
 
-export const BestillingsveilederContext = __preserveRef(
-	'BestillingsveilederContext',
-	React.createContext(undefined),
-)
+export const BestillingsveilederContext = React.createContext(undefined)
 
 export interface BestillingsveilederContextType {
 	gruppeId?: string
