@@ -1,15 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DoedsfallDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,17 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.DOED;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FORSVUNNET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.IKKE_BOSATT;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.MIDLERTIDIG;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.UTFLYTTET;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class FolkeregisterPersonstatusServiceTest {
@@ -42,14 +25,19 @@ class FolkeregisterPersonstatusServiceTest {
     @Test
     void whenValueProvided_thenKeepValue() {
 
-        var target = folkeregisterPersonstatusService.convert(
-                PersonDTO.builder()
-                        .ident(FNR_IDENT)
-                        .folkeregisterPersonstatus(List.of(FolkeregisterPersonstatusDTO.builder()
-                                .status(FORSVUNNET)
-                                .isNew(true)
-                                .build()))
-                        .build()).getFirst();
+        var target = folkeregisterPersonstatusService
+                .convert(
+                        PersonDTO
+                                .builder()
+                                .ident(FNR_IDENT)
+                                .folkeregisterPersonstatus(List.of(FolkeregisterPersonstatusDTO
+                                        .builder()
+                                        .status(FORSVUNNET)
+                                        .isNew(true)
+                                        .gyldigFraOgMed(LocalDateTime.now())
+                                        .build()))
+                                .build())
+                .getFirst();
 
         assertThat(target.getStatus(), is(equalTo(FORSVUNNET)));
     }

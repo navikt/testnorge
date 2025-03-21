@@ -14,10 +14,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.nonNull;
@@ -187,23 +184,30 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
     protected static void setGyldigTilOgMed(PersonDTO person) {
 
-        person.setFolkeregisterPersonstatus(new ArrayList<>(person.getFolkeregisterPersonstatus().stream()
+        var newStatus = new ArrayList<>(person
+                .getFolkeregisterPersonstatus()
+                .stream()
                 .filter(status -> nonNull(status.getGyldigFraOgMed()))
-                .sorted(Comparator.comparing(FolkeregisterPersonstatusDTO::getGyldigFraOgMed).reversed())
-                .toList()));
+                .sorted(Comparator
+                        .comparing(FolkeregisterPersonstatusDTO::getGyldigFraOgMed)
+                        .reversed())
+                .toList());
+        person.setFolkeregisterPersonstatus(newStatus);
 
         var folkeregisterPersonstatus = person.getFolkeregisterPersonstatus();
         ArtifactUtils.renumberId(folkeregisterPersonstatus);
 
         for (var i = folkeregisterPersonstatus.size() - 1; i >= 0; i--) {
-
             if (i - 1 >= 0) {
                 fixGyldigTilOgMed(folkeregisterPersonstatus.get(i), folkeregisterPersonstatus.get(i - 1));
                 fixGyldigFraOgMed(folkeregisterPersonstatus.get(i), folkeregisterPersonstatus.get(i - 1));
             }
         }
 
-        folkeregisterPersonstatus.getFirst().setGyldigTilOgMed(null);
+        Optional
+                .ofNullable(folkeregisterPersonstatus.getFirst())
+                .ifPresent(first -> first.setGyldigTilOgMed(null));
+
     }
 
     private static void fixGyldigTilOgMed(FolkeregisterPersonstatusDTO statusA, FolkeregisterPersonstatusDTO statusB) {
