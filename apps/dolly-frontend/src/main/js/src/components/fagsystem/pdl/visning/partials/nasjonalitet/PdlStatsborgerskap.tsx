@@ -44,11 +44,13 @@ export const PdlStatsborgerskap = ({ statsborgerskapListe }: VisningProps) => {
 	)
 
 	return (
-		<ArrayHistorikk
-			component={StatsborgerskapVisning}
-			data={gyldigeStatsborgerskap}
-			historiskData={historiskeStatsborgerskap}
-			header="Statsborgerskap"
-		/>
+		<div style={{ marginTop: '-15px' }}>
+			<ArrayHistorikk
+				component={StatsborgerskapVisning}
+				data={gyldigeStatsborgerskap}
+				historiskData={historiskeStatsborgerskap}
+				header="Statsborgerskap"
+			/>
+		</div>
 	)
 }
