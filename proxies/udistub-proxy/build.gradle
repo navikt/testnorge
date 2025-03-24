@@ -15,4 +15,5 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-proxy"
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
 }
