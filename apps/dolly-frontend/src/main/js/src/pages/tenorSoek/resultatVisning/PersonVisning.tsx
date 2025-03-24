@@ -10,7 +10,7 @@ import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPe
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { TjenestepensjonsavtaleVisning } from '@/pages/tenorSoek/resultatVisning/TjenestepensjonsavtaleVisning'
 import { SkattemeldingVisning } from '@/pages/tenorSoek/resultatVisning/SkattemeldingVisning'
-import { ArbeidsforholdVisning } from '@/pages/tenorSoek/resultatVisning/ArbeidsforholdVisning'
+import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonArbeidsforholdVisning'
 
 type PersonVisningProps = {
 	person: any
@@ -61,7 +61,6 @@ export const PersonVisning = ({
 		dokument.identifikator?.includes(ident),
 	)
 
-	// console.log('personData: ', personData) //TODO - SLETT MEG
 	return (
 		<PersonVisningWrapper>
 			<Box background="surface-default" padding="3" borderRadius="medium">
@@ -85,7 +84,7 @@ export const PersonVisning = ({
 				/>
 				<SkattemeldingVisning data={personData?.tenorRelasjoner?.skattemelding} />
 				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
-				<ArbeidsforholdVisning data={personData?.tenorRelasjoner?.arbeidsforhold} />
+				<OrganisasjonArbeidsforholdVisning data={personData?.tenorRelasjoner?.arbeidsforhold} />
 			</Box>
 		</PersonVisningWrapper>
 	)
