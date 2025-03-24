@@ -1,5 +1,6 @@
 package no.nav.registre.testnav.inntektsmeldingservice.service;
 
+import io.swagger.v3.core.util.Json;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class InntektsmeldingService {
             String navCallId,
             InntektsmeldingRequest request
     ) {
+        log.info("Mottatt forspørsel om å opprette inntektsmelding for arbeidstaker: {}", Json.pretty(request));
         var dokumentListe = request
                 .inntekter()
                 .stream()
