@@ -39,7 +39,7 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 				label: navn,
 			})),
 		)
-		?.sort((first, second) => (first.label > second.label ? 1 : -1))
+		?.sort?.((first, second) => (first.label > second.label ? 1 : -1))
 
 	return _.uniqBy(navnOptions, 'label')
 }
