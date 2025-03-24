@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.DokmotConsumer;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.GenererInntektsmeldingConsumer;
-import no.nav.registre.testnav.inntektsmeldingservice.controller.InntektsmeldingRequest;
 import no.nav.registre.testnav.inntektsmeldingservice.factories.RsAltinnInntektsmeldingFactory;
 import no.nav.registre.testnav.inntektsmeldingservice.factories.RsJoarkMetadataFactory;
 import no.nav.registre.testnav.inntektsmeldingservice.repository.InntektsmeldingRepository;
@@ -14,6 +13,7 @@ import no.nav.registre.testnav.inntektsmeldingservice.repository.model.Inntektsm
 import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
@@ -37,11 +37,11 @@ public class InntektsmeldingService {
     ) {
         log.info("Mottatt forspørsel om å opprette inntektsmelding for arbeidstaker: {}", Json.pretty(request));
         var dokumentListe = request
-                .inntekter()
+                .getInntekter()
                 .stream()
-                .map(melding -> lagInntektDokument(melding, request.arbeidstakerFnr()))
+                .map(melding -> lagInntektDokument(melding, request.getArbeidstakerFnr()))
                 .toList();
-        return dokmotConsumer.opprettJournalpost(request.miljoe(), dokumentListe, navCallId);
+        return dokmotConsumer.opprettJournalpost(request.getMiljoe(), dokumentListe, navCallId);
     }
 
     private InntektDokument lagInntektDokument(

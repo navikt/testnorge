@@ -5,6 +5,7 @@ import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,14 +35,14 @@ public class InntektsmeldingController {
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request
     ) {
-        log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.arbeidstakerFnr(), request.miljoe(), Json.pretty(request));
+        log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.getArbeidstakerFnr(), request.getMiljoe(), Json.pretty(request));
 
         validerInntektsmelding(request);
 
         try {
             List<ProsessertInntektDokument> prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
             return new InntektsmeldingResponse(
-                    request.arbeidstakerFnr(),
+                    request.getArbeidstakerFnr(),
                     prosessertInntektDokuments
                             .stream()
                             .map(ProsessertInntektDokument::toResponse)
@@ -54,7 +55,7 @@ public class InntektsmeldingController {
     }
 
     private void validerInntektsmelding(InntektsmeldingRequest dollyRequest) {
-        for (var inntekt : dollyRequest.inntekter()) {
+        for (var inntekt : dollyRequest.getInntekter()) {
             var arbeidsgiver = inntekt.getArbeidsgiver();
             var arbeidsgiverPrivat = inntekt.getArbeidsgiverPrivat();
 
