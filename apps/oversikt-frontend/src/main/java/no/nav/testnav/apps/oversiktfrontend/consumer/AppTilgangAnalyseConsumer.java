@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class AppTilgangAnalyseConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
@@ -24,11 +25,12 @@ public class AppTilgangAnalyseConsumer {
     public AppTilgangAnalyseConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavAppTilgangAnalyseService();
         this.tokenExchange = tokenExchange;
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -2,8 +2,9 @@ package no.nav.dolly.bestilling.pdldata.command;
 
 import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClientRequest;
-import reactor.util.retry.Retry;
 
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
@@ -21,6 +21,7 @@ import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
 
     private static final String PDL_FORVALTER_ORDRE_URL = "/api/v1/personer/{ident}/ordre";
@@ -32,7 +33,6 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
     private final String token;
 
     public Flux<PdlResponse> call() {
-
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
@@ -52,13 +52,9 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
                         .status(HttpStatus.OK)
                         .build())
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on POST of ident %s".formatted(ident)))
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .onErrorResume(throwable -> Flux.just(PdlResponse.builder()
-                        .ident(ident)
-                        .status(WebClientFilter.getStatus(throwable))
-                        .feilmelding(WebClientFilter.getMessage(throwable))
-                        .build()));
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(throwable -> PdlResponse.of(WebClientError.describe(throwable)));
     }
+
 }

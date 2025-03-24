@@ -88,7 +88,7 @@ const KategoriEmptyButtonWrapper = styled.div`
 `
 
 export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy }: HeaderProps) => {
-	const antallValgt = antall ? antall : getAntallRequest(paths, getValues)
+	const antallValgt = typeof antall === 'number' ? antall : getAntallRequest(paths, getValues)
 	return (
 		<KategoriHeader data-testid={dataCy}>
 			<span>{title}</span>

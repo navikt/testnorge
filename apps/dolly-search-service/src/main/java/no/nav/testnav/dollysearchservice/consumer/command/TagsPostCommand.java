@@ -3,18 +3,16 @@ package no.nav.testnav.dollysearchservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.TagsOpprettingResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -30,7 +28,6 @@ public class TagsPostCommand implements Callable<Mono<TagsOpprettingResponse>> {
     private final String token;
 
     public Mono<TagsOpprettingResponse> call() {
-
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -43,14 +40,21 @@ public class TagsPostCommand implements Callable<Mono<TagsOpprettingResponse>> {
                 .body(BodyInserters.fromValue(identer))
                 .retrieve()
                 .toEntity(TagsOpprettingResponse.class)
-                .map(status -> TagsOpprettingResponse.builder()
-                        .message(status.hasBody() ? status.getBody().getMessage() : null)
-                        .details(status.hasBody() ? status.getBody().getDetails() : null)
+                .map(status -> TagsOpprettingResponse
+                        .builder()
+                        .message(Optional
+                                .ofNullable(status.getBody())
+                                .map(TagsOpprettingResponse::getMessage)
+                                .orElse(null))
+                        .details(Optional
+                                .ofNullable(status.getBody())
+                                .map(TagsOpprettingResponse::getDetails)
+                                .orElse(null))
                         .identer(identer)
                         .status(HttpStatus.valueOf(status.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

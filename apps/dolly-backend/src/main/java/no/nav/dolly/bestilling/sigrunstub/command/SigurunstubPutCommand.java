@@ -1,16 +1,15 @@
 package no.nav.dolly.bestilling.sigrunstub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -22,6 +21,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
@@ -33,10 +33,9 @@ public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>>
 
     @Override
     public Mono<SigrunstubResponse> call() {
-
-        return webClient.put().uri(uriBuilder -> uriBuilder
-                        .path(url)
-                        .build())
+        return webClient
+                .put()
+                .uri(uriBuilder -> uriBuilder.path(url).build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
@@ -52,12 +51,9 @@ public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>>
                     }
                     return response;
                 })
-                .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
-                        .status(WebClientFilter.getStatus(error))
-                        .melding(WebClientFilter.getMessage(error))
-                        .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(error -> SigrunstubResponse.of(WebClientError.describe(error), null))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

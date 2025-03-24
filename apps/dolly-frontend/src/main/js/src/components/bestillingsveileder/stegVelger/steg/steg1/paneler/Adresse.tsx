@@ -82,7 +82,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			},
 		},
 		adressebeskyttelse: {
-			label: 'Adressebeskyttelse',
+			label: 'Adressebeskyttelse (kode 6/7)',
 			checked: has(paths.adressebeskyttelse),
 			add() {
 				set(paths.adressebeskyttelse, [getInitialAdressebeskyttelse(initialMaster)])

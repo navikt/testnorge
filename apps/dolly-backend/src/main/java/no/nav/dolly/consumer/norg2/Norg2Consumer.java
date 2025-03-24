@@ -27,17 +27,18 @@ public class Norg2Consumer extends ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavNorg2Proxy();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
+    @Timed(name = "providers", tags = {"operation", "detaljertsykemelding_opprett"})
     public Mono<Norg2EnhetResponse> getNorgEnhet(String geografiskTilhoerighet) {
 
         return tokenService.exchange(serverProperties)

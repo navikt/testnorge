@@ -55,11 +55,11 @@ jobs:
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
           
+          git fetch
+          git pull
           npm version patch
           npm publish
-          git add .
-          git commit -m "chore: release new version"
-          git push origin
+          git push --follow-tags
         working-directory: ${{ inputs.working-directory }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

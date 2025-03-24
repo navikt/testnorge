@@ -7,7 +7,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import org.reactivestreams.Publisher;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,15 @@ public class ArenaNyeBrukereResponse extends ArenaResponse {
         super(status, miljoe, feilmelding);
         this.arbeidsokerList = arbeidsokerList;
         this.nyBrukerFeilList = nyBrukerFeilList;
+    }
+
+    public static Publisher<ArenaNyeBrukereResponse> of(WebClientError.Description description, String miljoe) {
+        return Flux.just(ArenaNyeBrukereResponse
+                .builder()
+                .status(description.getStatus())
+                .feilmelding(description.getMessage())
+                .miljoe(miljoe)
+                .build());
     }
 
     public List<ArenaBruker> getArbeidsokerList() {

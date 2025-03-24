@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Flux;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -23,6 +25,14 @@ public class PdlResponse {
     private String jsonNode;
     private HttpStatus status;
     private String feilmelding;
+
+    public static Flux<PdlResponse> of(WebClientError.Description description) {
+        return Flux.just(PdlResponse
+                .builder()
+                .status(description.getStatus())
+                .feilmelding(description.getMessage())
+                .build());
+    }
 
     @JsonIgnore
     public boolean isFinnesIkke() {

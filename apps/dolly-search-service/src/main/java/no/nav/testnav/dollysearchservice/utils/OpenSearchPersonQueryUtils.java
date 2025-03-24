@@ -171,7 +171,7 @@ public class OpenSearchPersonQueryUtils {
                 );
     }
 
-    public static BoolQueryBuilder addAdresseQuery(String field, String value) {
+    private static BoolQueryBuilder addAdresseQuery(String field, String value) {
 
         return QueryBuilders.boolQuery()
                 .should(QueryBuilders.boolQuery()
@@ -274,7 +274,7 @@ public class OpenSearchPersonQueryUtils {
                 .ifPresent(boadresse ->
                         queryBuilder
                                 .must(nestedMatchQuery(BOSTEDSADRESSE, METADATA_HISTORISK, false))
-                                .must(nestedExistQuery(BOSTEDSADRESSE, MATRIKKELADRESSE))
+                                .must(nestedExistQuery(BOSTEDSADRESSE, MATRIKKELADRESSE + ".matrikkelId"))
                 );
     }
 

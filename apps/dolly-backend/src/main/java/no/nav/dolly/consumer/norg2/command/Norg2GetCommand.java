@@ -1,17 +1,17 @@
 package no.nav.dolly.consumer.norg2.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
 
     private static final String NAVKONTOR_URL = "/norg2/api/v1/enhet/navkontor/{geografiskOmraade}";
@@ -22,19 +22,17 @@ public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
 
     @Override
     public Mono<Norg2EnhetResponse> call() {
-
-        return webClient.get().uri(uriBuilder -> uriBuilder
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
                         .path(NAVKONTOR_URL)
                         .build(geografiskOmraade))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Norg2EnhetResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(Norg2EnhetResponse.builder()
-                        .httpStatus(WebClientFilter.getStatus(error))
-                        .avvik(WebClientFilter.getMessage(error))
-                        .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(throwable -> Norg2EnhetResponse.of(WebClientError.describe(throwable)))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 @Component
 public class OrganisasjonConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
@@ -26,12 +27,13 @@ public class OrganisasjonConsumer {
     public OrganisasjonConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavOrganisasjonService();
         this.tokenExchange = tokenExchange;
         this.executor = Executors.newFixedThreadPool(serverProperties.getThreads());
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -2,11 +2,12 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = 'commands'
+rootProject.name = "commands"
 
 includeBuild "../../plugins/java"
 
-includeBuild '../data-transfer-objects'
+includeBuild "../data-transfer-objects"
+includeBuild "../reactive-core"
 
 develocity {
     buildScan {

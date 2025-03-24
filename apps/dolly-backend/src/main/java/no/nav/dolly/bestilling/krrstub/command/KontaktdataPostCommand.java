@@ -1,18 +1,17 @@
 package no.nav.dolly.bestilling.krrstub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -20,6 +19,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataResponse>> {
 
     private static final String DIGITAL_KONTAKT_URL = "/api/v2/kontaktinformasjon";
@@ -30,8 +30,8 @@ public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataR
 
     @Override
     public Mono<DigitalKontaktdataResponse> call() {
-
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(DIGITAL_KONTAKT_URL)
                         .build())
@@ -45,12 +45,9 @@ public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataR
                 .map(response -> DigitalKontaktdataResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(DigitalKontaktdataResponse.builder()
-                        .status(WebClientFilter.getStatus(error))
-                        .melding(WebClientFilter.getMessage(error))
-                        .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(throwable -> DigitalKontaktdataResponse.of(WebClientError.describe(throwable)))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

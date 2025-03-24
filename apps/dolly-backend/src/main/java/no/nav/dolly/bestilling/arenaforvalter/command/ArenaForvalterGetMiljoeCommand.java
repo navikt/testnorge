@@ -1,24 +1,22 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ArenaForvalterGetMiljoeCommand implements Callable<Flux<String>> {
 
     private static final String ARENAFORVALTER_ENVIRONMENTS = "/api/v1/miljoe";
@@ -28,8 +26,9 @@ public class ArenaForvalterGetMiljoeCommand implements Callable<Flux<String>> {
 
     @Override
     public Flux<String> call() {
-
-        return webClient.get().uri(
+        return webClient
+                .get()
+                .uri(
                         uriBuilder -> uriBuilder
                                 .path(ARENAFORVALTER_ENVIRONMENTS)
                                 .build())
@@ -39,9 +38,9 @@ public class ArenaForvalterGetMiljoeCommand implements Callable<Flux<String>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(String[].class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
                 .flatMapIterable(miljoer -> Arrays.stream(miljoer).toList())
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

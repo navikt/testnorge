@@ -3,14 +3,12 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -32,17 +30,15 @@ public class HentVedtakshistorikkCommand implements Callable<Mono<List<Vedtakshi
     @Override
     public Mono<List<Vedtakshistorikk>> call() {
         log.info("Henter vedtakshistorikk.");
-        return webClient.post()
-                .uri(builder ->
-                        builder.path("/api/v1/vedtakshistorikk")
-                                .build()
-                )
+        return webClient
+                .post()
+                .uri(builder -> builder.path("/api/v1/vedtakshistorikk").build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

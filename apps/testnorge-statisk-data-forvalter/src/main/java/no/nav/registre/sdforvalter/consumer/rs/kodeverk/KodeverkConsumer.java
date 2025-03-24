@@ -9,13 +9,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class KodeverkConsumer {
+
     private final WebClient webClient;
 
     public KodeverkConsumer(
             Consumers consumers,
-            WebClient.Builder webClientBuilder
+            WebClient webClient
     ) {
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .exchangeStrategies(ExchangeStrategies
                         .builder()
                         .codecs(configurer -> configurer

@@ -6,21 +6,28 @@ export type ResponseIdenter = {
 		windowSize: number
 		identer: Array<string>
 		error: string
+		seed?: string
 	}
 }
 
 export type SoekRequest = {
-	typer: Array<string>
+	side: number
+	antall: number
+	seed: string
+	registreRequest: Array<string>
 	personRequest: {
+		identtype: string
+		kjoenn: string
+		alderFom: number
+		alderTom: number
 		sivilstand: string
-		addressebeskyttelse: string
+		erLevende: boolean
+		erDoed: boolean
 		harBarn: boolean
 		harForeldre: boolean
 		harDoedfoedtBarn: boolean
 		harForeldreAnsvar: boolean
 		harVerge: boolean
-		harFullmakt: boolean
-		harDoedsfall: boolean
 		harInnflytting: boolean
 		harUtflytting: boolean
 		harKontaktinformasjonForDoedsbo: boolean
@@ -30,18 +37,21 @@ export type SoekRequest = {
 		harSikkerhetstiltak: boolean
 		harOpphold: boolean
 		statsborgerskap: string
+		personStatus: string
 		harNyIdentitet: boolean
-		bostedsadresse: {
+		adresse: {
+			addressebeskyttelse: string
 			kommunenummer: string
 			postnummer: string
 			bydelsnummer: string
 			harBydelsnummer: boolean
 			harUtenlandsadresse: boolean
-			harMatrikkelAdresse: boolean
+			harMatrikkeladresse: boolean
 			harUkjentAdresse: boolean
+			harDeltBosted: boolean
+			harBostedsadresse: boolean
+			harKontaktadresse: boolean
+			harOppholdsadresse: boolean
 		}
-		harDeltBosted: boolean
-		harKontaktadresse: boolean
-		harOppholdsadresse: boolean
 	}
 }

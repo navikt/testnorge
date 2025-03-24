@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -40,10 +40,14 @@ public class PersonHentCommand implements Callable<Flux<PersonMiljoeDTO>> {
                     resultat.setIdent(ident);
                     return resultat;
                 })
-                .onErrorResume(throwable -> Mono.just(PersonMiljoeDTO.builder()
-                        .status("FEIL")
-                        .melding(WebClientFilter.getStatus(throwable).getReasonPhrase())
-                        .utfyllendeMelding(WebClientFilter.getMessage(throwable))
-                        .build()));
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(PersonMiljoeDTO
+                            .builder()
+                            .status("FEIL")
+                            .melding(description.getStatus().getReasonPhrase())
+                            .utfyllendeMelding(description.getMessage())
+                            .build());
+                });
     }
 }

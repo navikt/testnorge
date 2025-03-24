@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.synthdatameldekortproxy;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import no.nav.testnav.proxies.synthdatameldekortproxy.config.Consumers;
 import org.springframework.http.MediaType;
@@ -11,27 +12,25 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class StatusController {
+
     private static final String TEAM = "Team Dolly";
 
-    private final String url;
-
-    public StatusController(Consumers consumers) {
-        url = consumers.getSyntMeldekort().getUrl();
-    }
+    private final WebClient webClient;
+    private final Consumers consumers;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
-        var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                url + "/internal/isAlive",
-                url + "/internal/isReady",
-                statusWebClient);
-
+                consumers.getSyntMeldekort().getUrl() + "/internal/isAlive",
+                consumers.getSyntMeldekort().getUrl() + "/internal/isReady",
+                webClient);
         return Map.of(
                 "synthdata-arena-meldekort", status
         );
+
     }
 
     public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {

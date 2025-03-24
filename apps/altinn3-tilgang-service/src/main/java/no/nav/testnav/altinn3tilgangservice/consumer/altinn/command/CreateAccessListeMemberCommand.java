@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.altinn3tilgangservice.config.AltinnConfig;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.AltinnAccessListResponseDTO;
 import no.nav.testnav.altinn3tilgangservice.consumer.altinn.dto.OrganisasjonCreateDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,15 +38,12 @@ public class CreateAccessListeMemberCommand implements Callable<Mono<AltinnAcces
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(AltinnAccessListResponseDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
                 .doOnSuccess(value -> log.info("Altinn organisasjontilgang opprettet for {}",
                         organisasjon.getData().stream()
                                 .map(data -> data.split(":"))
-                                .map(data -> data[data.length-1])
+                                .map(data -> data[data.length - 1])
                                 .collect(Collectors.joining())))
-                .onErrorResume(throwable -> Mono.just(AltinnAccessListResponseDTO.builder()
-                                .status(WebClientFilter.getStatus(throwable))
-                                .feilmelding(WebClientFilter.getMessage(throwable))
-                        .build()));
+                .onErrorResume(throwable -> AltinnAccessListResponseDTO.of(WebClientError.describe(throwable)));
     }
 }

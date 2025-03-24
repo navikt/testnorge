@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Mono;
 
 @Data
 @Builder
@@ -32,4 +34,13 @@ public class Norg2EnhetResponse {
 
     private HttpStatus httpStatus;
     private String avvik;
+
+    public static Mono<Norg2EnhetResponse> of(WebClientError.Description description) {
+        return Mono.just(Norg2EnhetResponse
+                .builder()
+                .httpStatus(description.getStatus())
+                .avvik(description.getMessage())
+                .build());
+    }
+
 }
