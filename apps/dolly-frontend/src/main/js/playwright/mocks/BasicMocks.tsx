@@ -2296,3 +2296,146 @@ export const tenorSoekOrganisasjonTestdataMock = {
 	query: 'organisasjonsnummer:312345678',
 	error: null,
 }
+
+export const dollySearchMock = {
+	antall: 1,
+	error: null,
+	personer: [
+		{
+			hentIdenter: {
+				identer: [
+					{
+						ident: '12345678912',
+						historisk: false,
+						gruppe: 'FOLKEREGISTERIDENT',
+					},
+				],
+			},
+			hentPerson: {
+				foedsel: [
+					{
+						foedselsaar: 1992,
+						foedselsdato: '1992-01-11',
+						foedeland: 'NOR',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: 'c8eb5066-14ec-4bf7-acb5-365cae1deaf3',
+						},
+					},
+				],
+				kjoenn: [
+					{
+						kjoenn: 'MANN',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: '017a6239-91c2-463b-b9d1-1e732c3db5e5',
+						},
+					},
+				],
+				navn: [
+					{
+						fornavn: 'Cafe',
+						etternavn: 'Test',
+						gyldigFraOgMed: '2022-10-03',
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T11:57:40',
+							gyldighetstidspunkt: '2022-10-03T11:57:40',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:40',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: '764dc813-3c85-42c3-abb6-472f6f30d953',
+						},
+					},
+				],
+				vergemaalEllerFremtidsfullmakt: [
+					{
+						type: 'forvaltningUtenforVergemaal',
+						embete: 'Statsforvalteren i Innlandet',
+						vergeEllerFullmektig: {
+							navn: {
+								fornavn: 'Testesen',
+								etternavn: 'Cafe',
+							},
+							motpartsPersonident: '23456789123',
+							omfangetErInnenPersonligOmraade: true,
+						},
+						folkeregistermetadata: {
+							ajourholdstidspunkt: '2022-10-03T00:00',
+							gyldighetstidspunkt: '2022-10-03T11:57:42',
+							kilde: 'Dolly',
+						},
+						metadata: {
+							endringer: [
+								{
+									kilde: 'Dolly',
+									registrert: '2022-10-03T11:57:42',
+									registrertAv: 'Folkeregisteret',
+									systemkilde: 'FREG',
+									type: 'OPPRETT',
+								},
+							],
+							historisk: false,
+							master: 'FREG',
+							opplysningsId: 'f80d7429-dec4-49af-b933-88d07a143017',
+						},
+					},
+				],
+			},
+		},
+	],
+	seed: 1111,
+	side: 0,
+	totalHits: 1,
+}
+
+export const fagsystemTyperMock = [
+	{
+		type: 'AAREG',
+		beskrivelse: 'Arbeidsgiver/arbeidstaker-register (AAREG)',
+	},
+	{
+		type: 'ARBEIDSPLASSENCV',
+		beskrivelse: 'Arbeidsplassen CV',
+	},
+]

@@ -5,7 +5,6 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Accordion, Button } from '@navikt/ds-react'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
-import { useSoekIdenter, useSoekTyper } from '@/utils/hooks/usePersonSoek'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import * as _ from 'lodash-es'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -19,21 +18,34 @@ import {
 	SoekKategori,
 } from '@/components/ui/soekForm/SoekForm'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import { usePersonerSearch, usePersonerTyper } from '@/utils/hooks/useDollySearch'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import {
+	AdresserPaths,
+	AnnetPaths,
+	FamilierelasjonerPaths,
+	IdentifikasjonPaths,
+	PersoniformasjonPaths,
+} from '@/pages/dollySoek/paths'
 
 const initialValues = {
-	typer: [],
+	side: 0,
+	antall: 10,
+	seed: null,
+	registreRequest: [],
 	personRequest: {
 		identtype: null,
 		kjoenn: null,
+		alderFom: null,
+		alderTom: null,
 		sivilstand: null,
-		addressebeskyttelse: null,
+		erLevende: false,
+		erDoed: false,
 		harBarn: false,
 		harForeldre: false,
 		harDoedfoedtBarn: false,
 		harForeldreAnsvar: false,
 		harVerge: false,
-		harFullmakt: false,
-		harDoedsfall: false,
 		harInnflytting: false,
 		harUtflytting: false,
 		harKontaktinformasjonForDoedsbo: false,
@@ -43,47 +55,55 @@ const initialValues = {
 		harSikkerhetstiltak: false,
 		harOpphold: false,
 		statsborgerskap: null,
+		personStatus: null,
 		harNyIdentitet: false,
-		bostedsadresse: {
+		harSkjerming: false,
+		adresse: {
+			addressebeskyttelse: null,
 			kommunenummer: null,
 			postnummer: null,
 			bydelsnummer: null,
 			harBydelsnummer: false,
 			harUtenlandsadresse: false,
-			harMatrikkelAdresse: false,
+			harMatrikkeladresse: false,
 			harUkjentAdresse: false,
+			harDeltBosted: false,
+			harBostedsadresse: false,
+			harKontaktadresse: false,
+			harOppholdsadresse: false,
 		},
-		harDeltBosted: false,
-		harKontaktadresse: false,
-		harOppholdsadresse: false,
 	},
 }
 
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null as any)
-	const { result, loading, error, mutate } = useSoekIdenter(request)
-
-	const { typer, loading: loadingTyper } = useSoekTyper()
+	const [visAntall, setVisAntall] = useState(10)
+	const { result, loading, error, mutate } = usePersonerSearch(request)
+	const { typer, loading: loadingTyper } = usePersonerTyper()
 
 	const personPath = 'personRequest'
+	const adressePath = 'personRequest.adresse'
 
 	const initialValuesClone = _.cloneDeep(initialValues)
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: initialValuesClone,
 	})
-	const { trigger, watch, handleSubmit, reset, control, setValue } = formMethods
+	const { trigger, watch, handleSubmit, reset, control, setValue, getValues } = formMethods
 
-	const preSubmit = () => {
-		setRequest(watch())
-		mutate()
-	}
 	const handleChange = (value: any, path: string) => {
 		setValue(path, value)
-		trigger(path)
+		setValue('side', 0)
+		setValue('seed', null)
 		const updatedRequest = watch()
-		if (requestIsEmpty(updatedRequest)) {
+		if (
+			requestIsEmpty({
+				personRequest: updatedRequest.personRequest,
+				registreRequest: updatedRequest.registreRequest,
+			})
+		) {
 			setRequest(null)
+			setVisAntall(10)
 		} else {
 			setRequest(updatedRequest)
 		}
@@ -92,25 +112,65 @@ export const SoekForm = () => {
 
 	const handleChangeList = (value: any, path: string) => {
 		const list = value.map((item: any) => item.value)
-		setValue(path, list)
-		trigger(path)
+		handleChange(list, path)
+	}
+
+	const handleChangeSide = (side: number) => {
+		setValue('side', side - 1)
+		setValue('seed', result.seed)
 		const updatedRequest = watch()
-		if (requestIsEmpty(updatedRequest)) {
+		setRequest(updatedRequest)
+		mutate()
+	}
+
+	const handleChangeAntall = (antall: { value: number }) => {
+		setValue('antall', antall.value)
+		setValue('side', 0)
+		setValue('seed', result.seed)
+		setVisAntall(antall.value)
+		const updatedRequest = watch()
+		setRequest(updatedRequest)
+		mutate()
+	}
+
+	const emptyCategory = (paths: string[]) => {
+		paths.forEach((path) => {
+			setValue(path, _.get(initialValues, path))
+			if (path === 'personRequest.harSkjerming') {
+				setValue(
+					'registreRequest',
+					watch('registreRequest')?.filter((item: string) => item !== 'SKJERMING'),
+				)
+			}
+		})
+		setValue('side', 0)
+		setValue('seed', null)
+		const updatedRequest = watch()
+		if (
+			requestIsEmpty({
+				personRequest: updatedRequest.personRequest,
+				registreRequest: updatedRequest.registreRequest,
+			})
+		) {
 			setRequest(null)
+			setVisAntall(10)
 		} else {
 			setRequest(updatedRequest)
 		}
 		mutate()
 	}
 
-	const antallFagsystemer = watch('typer')?.length
+	const antallFagsystemer = watch('registreRequest')?.length
 
 	const getAntallRequest = (liste: Array<string>) => {
 		let antall = 0
 		liste.forEach((item) => {
-			watch(`personRequest.${item}`) && antall++
+			watch(item) && antall++
 		})
-		if (liste?.includes('harSkjerming') && watch('typer')?.includes('SKJERMING')) {
+		if (
+			liste?.includes('personRequest.harSkjerming') &&
+			watch('registreRequest')?.includes('SKJERMING')
+		) {
 			antall++
 		}
 		return antall
@@ -121,18 +181,23 @@ export const SoekForm = () => {
 			<SoekefeltWrapper>
 				<Soekefelt>
 					<FormProvider {...formMethods}>
-						<Form control={control} onSubmit={() => handleSubmit(preSubmit(request))}>
+						<Form control={control} onSubmit={handleSubmit}>
 							<>
 								<div className="flexbox--flex-wrap">
 									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
 										<Accordion.Item defaultOpen={true}>
 											<Accordion.Header>
-												<Header title="Fagsystemer" antall={antallFagsystemer} />
+												<Header
+													title="Fagsystemer"
+													antall={antallFagsystemer}
+													paths={['registreRequest']}
+													emptyCategory={emptyCategory}
+												/>
 											</Accordion.Header>
 											<Accordion.Content>
 												<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
 													<FormSelect
-														name="typer"
+														name="registreRequest"
 														placeholder={
 															loadingTyper ? 'Laster fagsystemer ...' : 'Velg fagsystemer ...'
 														}
@@ -141,7 +206,7 @@ export const SoekForm = () => {
 														isMulti={true}
 														size="grow"
 														onChange={(val: SyntheticEvent) => {
-															handleChangeList(val, 'typer')
+															handleChangeList(val, 'registreRequest')
 														}}
 													/>
 												</div>
@@ -153,18 +218,10 @@ export const SoekForm = () => {
 											>
 												<Header
 													title="Personinformasjon"
-													antall={getAntallRequest([
-														'kjoenn',
-														'statsborgerskap',
-														'harVerge',
-														'harFullmakt',
-														'harDoedsfall',
-														'harInnflytting',
-														'harUtflytting',
-														'harSikkerhetstiltak',
-														'harTilrettelagtKommunikasjon',
-														'harSkjerming',
-													])}
+													antall={getAntallRequest(PersoniformasjonPaths)}
+													paths={PersoniformasjonPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -188,19 +245,55 @@ export const SoekForm = () => {
 															handleChange(val?.value || null, `${personPath}.statsborgerskap`)
 														}
 													/>
+													<FormSelect
+														name={`${personPath}.personStatus`}
+														options={Options('personstatus')}
+														size="medium"
+														placeholder="Velg personstatus ..."
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val?.value || null, `${personPath}.personStatus`)
+														}
+													/>
+													<FormTextInput
+														name={`${personPath}.alderFom`}
+														placeholder="Skriv inn alder f.o.m ..."
+														type="number"
+														value={watch(`${personPath}.alderFom`)}
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val?.target?.value || null, `${personPath}.alderFom`)
+														}
+													/>
+													<FormTextInput
+														name={`${personPath}.alderTom`}
+														placeholder="Skriv inn alder t.o.m ..."
+														type="number"
+														value={watch(`${personPath}.alderTom`)}
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val?.target?.value || null, `${personPath}.alderTom`)
+														}
+													/>
+													<FormCheckbox
+														name={`${personPath}.erLevende`}
+														label="Er levende"
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val.target.checked, `${personPath}.erLevende`)
+														}
+														disabled={watch(`${personPath}.erDoed`)}
+													/>
+													<FormCheckbox
+														name={`${personPath}.erDoed`}
+														label="Er død"
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val.target.checked, `${personPath}.erDoed`)
+														}
+														disabled={watch(`${personPath}.erLevende`)}
+													/>
 													<FormCheckbox
 														data-testid={TestComponentSelectors.TOGGLE_HAR_VERGE}
 														name={`${personPath}.harVerge`}
 														label="Har verge"
 														onChange={(val: SyntheticEvent) =>
 															handleChange(val.target.checked, `${personPath}.harVerge`)
-														}
-													/>
-													<FormCheckbox
-														name={`${personPath}.harDoedsfall`}
-														label="Har dødsfall"
-														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harDoedsfall`)
 														}
 													/>
 													<FormCheckbox
@@ -237,17 +330,24 @@ export const SoekForm = () => {
 													<FormCheckbox
 														name={`${personPath}.harSkjerming`}
 														label="Har skjerming / er egen ansatt"
-														checked={watch('typer')?.includes('SKJERMING')}
+														checked={watch('registreRequest')?.includes('SKJERMING')}
 														onChange={(val: SyntheticEvent) => {
 															setValue(
-																'typer',
+																'registreRequest',
 																val.target.checked
-																	? [...watch('typer'), 'SKJERMING']
-																	: watch('typer')?.filter((item: string) => item !== 'SKJERMING'),
+																	? [...watch('registreRequest'), 'SKJERMING']
+																	: watch('registreRequest')?.filter(
+																			(item: string) => item !== 'SKJERMING',
+																		),
 															)
-															trigger('typer')
+															trigger('registreRequest')
 															const updatedRequest = watch()
-															if (requestIsEmpty(updatedRequest)) {
+															if (
+																requestIsEmpty({
+																	personRequest: updatedRequest.personRequest,
+																	registreRequest: updatedRequest.registreRequest,
+																})
+															) {
 																setRequest(null)
 															} else {
 																setRequest(updatedRequest)
@@ -267,18 +367,10 @@ export const SoekForm = () => {
 											<Accordion.Header>
 												<Header
 													title="Adresser"
-													antall={getAntallRequest([
-														'bostedsadresse.kommunenummer',
-														'bostedsadresse.postnummer',
-														'bostedsadresse.bydelsnummer',
-														'addressebeskyttelse',
-														'bostedsadresse.harBydelsnummer',
-														'bostedsadresse.harUtenlandsadresse',
-														'bostedsadresse.harMatrikkelAdresse',
-														'bostedsadresse.harUkjentAdresse',
-														'harKontaktadresse',
-														'harOppholdsadresse',
-													])}
+													antall={getAntallRequest(AdresserPaths)}
+													paths={AdresserPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -286,107 +378,93 @@ export const SoekForm = () => {
 													<div className="flexbox--full-width">
 														<div className="flexbox--flex-wrap">
 															<FormSelect
-																name={`${personPath}.bostedsadresse.kommunenummer`}
+																name={`${adressePath}.kommunenummer`}
 																kodeverk={AdresseKodeverk.Kommunenummer}
 																size="large"
 																placeholder="Velg kommunenummer ..."
 																onChange={(val: SyntheticEvent) =>
-																	handleChange(
-																		val?.value || null,
-																		`${personPath}.bostedsadresse.kommunenummer`,
-																	)
+																	handleChange(val?.value || null, `${adressePath}.kommunenummer`)
 																}
 															/>
 															<FormSelect
-																name={`${personPath}.bostedsadresse.postnummer`}
+																name={`${adressePath}.postnummer`}
 																kodeverk={AdresseKodeverk.Postnummer}
 																size="large"
 																placeholder="Velg postnummer ..."
 																onChange={(val: SyntheticEvent) =>
-																	handleChange(
-																		val?.value || null,
-																		`${personPath}.bostedsadresse.postnummer`,
-																	)
+																	handleChange(val?.value || null, `${adressePath}.postnummer`)
 																}
 															/>
 															<FormSelect
-																name={`${personPath}.bostedsadresse.bydelsnummer`}
+																name={`${adressePath}.bydelsnummer`}
 																kodeverk={GtKodeverk.BYDEL}
 																size="large"
 																placeholder="Velg bydelsnummer ..."
 																onChange={(val: SyntheticEvent) =>
-																	handleChange(
-																		val?.value || null,
-																		`${personPath}.bostedsadresse.bydelsnummer`,
-																	)
+																	handleChange(val?.value || null, `${adressePath}.bydelsnummer`)
 																}
 															/>
 															<FormSelect
-																name={`${personPath}.addressebeskyttelse`}
+																name={`${adressePath}.addressebeskyttelse`}
 																options={Options('gradering')}
-																size="large"
-																placeholder="Velg adressebeskyttelse ..."
+																size="xlarge"
+																placeholder="Velg adressebeskyttelse (kode 6/7) ..."
 																onChange={(val: SyntheticEvent) =>
 																	handleChange(
 																		val?.value || null,
-																		`${personPath}.addressebeskyttelse`,
+																		`${adressePath}.addressebeskyttelse`,
 																	)
 																}
 															/>
 														</div>
 													</div>
 													<FormCheckbox
-														name={`${personPath}.bostedsadresse.harBydelsnummer`}
-														label="Har bydelsnummer"
+														name={`${adressePath}.harBostedsadresse`}
+														label="Har bostedsadresse"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(
-																val.target.checked,
-																`${personPath}.bostedsadresse.harBydelsnummer`,
-															)
+															handleChange(val.target.checked, `${adressePath}.harBostedsadresse`)
 														}
 													/>
 													<FormCheckbox
-														name={`${personPath}.bostedsadresse.harUtenlandsadresse`}
-														label="Har utenlandsadresse"
-														onChange={(val: SyntheticEvent) =>
-															handleChange(
-																val.target.checked,
-																`${personPath}.bostedsadresse.harUtenlandsadresse`,
-															)
-														}
-													/>
-													<FormCheckbox
-														name={`${personPath}.bostedsadresse.harMatrikkelAdresse`}
-														label="Har matrikkeladresse"
-														onChange={(val: SyntheticEvent) =>
-															handleChange(
-																val.target.checked,
-																`${personPath}.bostedsadresse.harMatrikkelAdresse`,
-															)
-														}
-													/>
-													<FormCheckbox
-														name={`${personPath}.bostedsadresse.harUkjentAdresse`}
-														label="Har ukjent adresse"
-														onChange={(val: SyntheticEvent) =>
-															handleChange(
-																val.target.checked,
-																`${personPath}.bostedsadresse.harUkjentAdresse`,
-															)
-														}
-													/>
-													<FormCheckbox
-														name={`${personPath}.harKontaktadresse`}
-														label="Har kontaktadresse"
-														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harKontaktadresse`)
-														}
-													/>
-													<FormCheckbox
-														name={`${personPath}.harOppholdsadresse`}
+														name={`${adressePath}.harOppholdsadresse`}
 														label="Har oppholdsadresse"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harOppholdsadresse`)
+															handleChange(val.target.checked, `${adressePath}.harOppholdsadresse`)
+														}
+													/>
+													<FormCheckbox
+														name={`${adressePath}.harKontaktadresse`}
+														label="Har kontaktadresse"
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val.target.checked, `${adressePath}.harKontaktadresse`)
+														}
+													/>
+													<FormCheckbox
+														name={`${adressePath}.harMatrikkelAdresse`}
+														label="Har matrikkeladresse"
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val.target.checked, `${adressePath}.harMatrikkelAdresse`)
+														}
+													/>
+													<FormCheckbox
+														name={`${adressePath}.harUtenlandsadresse`}
+														label="Har utenlandsadresse"
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val.target.checked, `${adressePath}.harUtenlandsadresse`)
+														}
+													/>
+													<FormCheckbox
+														name={`${adressePath}.harUkjentAdresse`}
+														label="Har ukjent adresse"
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val.target.checked, `${adressePath}.harUkjentAdresse`)
+														}
+													/>
+													<FormCheckbox
+														name={`${adressePath}.harBydelsnummer`}
+														label="Har bydelsnummer"
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val.target.checked, `${adressePath}.harBydelsnummer`)
 														}
 													/>
 												</SoekKategori>
@@ -396,14 +474,10 @@ export const SoekForm = () => {
 											<Accordion.Header>
 												<Header
 													title="Familierelasjoner"
-													antall={getAntallRequest([
-														'sivilstand',
-														'harBarn',
-														'harForeldre',
-														'harDoedfoedtBarn',
-														'harForeldreAnsvar',
-														'harDeltBosted',
-													])}
+													antall={getAntallRequest(FamilierelasjonerPaths)}
+													paths={FamilierelasjonerPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -446,10 +520,10 @@ export const SoekForm = () => {
 														}
 													/>
 													<FormCheckbox
-														name={`${personPath}.harDeltBosted`}
+														name={`${adressePath}.harDeltBosted`}
 														label="Har delt bosted"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harDeltBosted`)
+															handleChange(val.target.checked, `${adressePath}.harDeltBosted`)
 														}
 													/>
 												</SoekKategori>
@@ -459,12 +533,10 @@ export const SoekForm = () => {
 											<Accordion.Header>
 												<Header
 													title="Identifikasjon"
-													antall={getAntallRequest([
-														'identtype',
-														'harFalskIdentitet',
-														'harUtenlandskIdentifikasjonsnummer',
-														'harNyIdentitet',
-													])}
+													antall={getAntallRequest(IdentifikasjonPaths)}
+													paths={IdentifikasjonPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -509,10 +581,10 @@ export const SoekForm = () => {
 											<Accordion.Header>
 												<Header
 													title="Annet"
-													antall={getAntallRequest([
-														'harOpphold',
-														'harKontaktinformasjonForDoedsbo',
-													])}
+													antall={getAntallRequest(AnnetPaths)}
+													paths={AnnetPaths}
+													getValues={getValues}
+													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
 											<Accordion.Content>
@@ -541,7 +613,7 @@ export const SoekForm = () => {
 								</div>
 								<Buttons className="flexbox--flex-wrap">
 									<Button
-										onClick={() => handleSubmit(preSubmit())}
+										onClick={handleSubmit}
 										variant="primary"
 										disabled={loading || !result}
 										loading={loading}
@@ -553,7 +625,7 @@ export const SoekForm = () => {
 										data-testid={TestComponentSelectors.BUTTON_NULLSTILL_SOEK}
 										onClick={() => {
 											setRequest(null)
-											reset(null)
+											reset()
 										}}
 										variant="secondary"
 										disabled={!result}
@@ -562,7 +634,7 @@ export const SoekForm = () => {
 									</Button>
 									{result && (
 										<p style={{ marginRight: 0, marginLeft: 'auto' }}>
-											Viser {result?.identer?.length} av totalt {result?.totalHits} treff
+											Viser {result?.personer?.length} av totalt {result?.totalHits} treff
 										</p>
 									)}
 								</Buttons>
@@ -571,7 +643,14 @@ export const SoekForm = () => {
 					</FormProvider>
 				</Soekefelt>
 			</SoekefeltWrapper>
-			<ResultatVisning resultat={result} soekError={error} />
+			<ResultatVisning
+				resultat={result}
+				loading={loading}
+				soekError={error}
+				visAntall={visAntall}
+				handleChangeSide={handleChangeSide}
+				handleChangeAntall={handleChangeAntall}
+			/>
 		</>
 	)
 }

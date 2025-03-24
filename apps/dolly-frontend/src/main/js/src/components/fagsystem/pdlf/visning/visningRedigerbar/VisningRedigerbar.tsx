@@ -134,6 +134,7 @@ export const VisningRedigerbar = ({
 	const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 	const DisplayFormErrors = lazy(() => import('@/utils/DisplayFormErrors'))
 
+	const visFormState = devEnabled || erDollyAdmin()
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
@@ -402,7 +403,7 @@ export const VisningRedigerbar = ({
 				{visningModus === Modus.Skriv && (
 					<Form onSubmit={(data) => handleSubmit(data)}>
 						<>
-							{(devEnabled || erDollyAdmin()) && (
+							{visFormState && (
 								<>
 									<Suspense fallback={<Loading label="Laster komponenter" />}>
 										<DisplayFormState />

@@ -39,18 +39,20 @@ export const PdlInnflytting = ({ innflytting }: VisningProps) => {
 	}
 
 	const gyldigeInnflyttinger = innflytting?.filter(
-		(flytting: InnflyttingTilNorge) => !flytting.metadata?.historisk
+		(flytting: InnflyttingTilNorge) => !flytting.metadata?.historisk,
 	)
 	const historiskeInnflyttinger = innflytting?.filter(
-		(flytting: InnflyttingTilNorge) => flytting.metadata?.historisk
+		(flytting: InnflyttingTilNorge) => flytting.metadata?.historisk,
 	)
 
 	return (
-		<ArrayHistorikk
-			component={Innflytting}
-			data={gyldigeInnflyttinger}
-			historiskData={historiskeInnflyttinger}
-			header="Innvandret"
-		/>
+		<div style={{ marginTop: '-10px' }}>
+			<ArrayHistorikk
+				component={Innflytting}
+				data={gyldigeInnflyttinger}
+				historiskData={historiskeInnflyttinger}
+				header="Innvandret"
+			/>
+		</div>
 	)
 }
