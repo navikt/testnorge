@@ -11,4 +11,5 @@ sonarqube {
 
 dependencies {
     implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-proxy"
 }
