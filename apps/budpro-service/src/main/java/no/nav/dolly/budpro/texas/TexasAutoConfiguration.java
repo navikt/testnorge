@@ -2,6 +2,7 @@ package no.nav.dolly.budpro.texas;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -9,24 +10,32 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Optional;
 
 @Configuration
+@EnableConfigurationProperties(TexasConsumers.class)
 @Slf4j
 public class TexasAutoConfiguration {
 
     @Bean
     TexasService texasService(
             WebClient webClient,
-            @Value("${dolly.texas.url.token:}") String url
+            @Value("${dolly.texas.url.token:}") String tokenUrl,
+            @Value("${dolly.texas.url.exchange:}") String exchangeUrl,
+            @Value("${dolly.texas.url.introspect:}") String introspectUrl,
+            TexasConsumers texasConsumers
     ) {
-        var texasUrl = Optional
+        return new TexasService(
+                webClient,
+                resolve(tokenUrl, "NAIS_TOKEN_ENDPOINT", "Neither dolly.texas.url.token or NAIS_TOKEN_ENDPOINT is set"),
+                resolve(exchangeUrl, "NAIS_TOKEN_EXCHANGE_ENDPOINT", "Neither dolly.texas.url.exchange or NAIS_TOKEN_EXCHANGE_ENDPOINT is set"),
+                resolve(introspectUrl, "NAIS_TOKEN_INTROSPECTION_ENDPOINT", "Neither dolly.texas.url.introspect or NAIS_TOKEN_INTROSPECTION_ENDPOINT is set"),
+                texasConsumers);
+    }
+
+    private static String resolve(String url, String fallback, String message)
+            throws TexasException {
+        return Optional
                 .ofNullable(url)
-                .orElseGet(() -> Optional
-                        .ofNullable(System.getProperty("NAIS_TOKEN_ENDPOINT"))
-                        .orElseThrow(() -> new IllegalStateException("Neither dolly.texas.url.token or NAIS_TOKEN_ENDPOINT is set")));
-        var texasWebClient = webClient
-                .mutate()
-                .baseUrl(texasUrl)
-                .build();
-        return new TexasService(texasWebClient);
+                .or(() -> Optional.ofNullable(System.getProperty(fallback)))
+                .orElseThrow(() -> new TexasException(message));
     }
 
 }

@@ -2,16 +2,13 @@ package no.nav.dolly.budpro.navn;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.budpro.texas.TexasService;
 import no.nav.dolly.budpro.texas.TexasToken;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -39,9 +36,7 @@ public class MyGenererNavnCommand implements Callable<NavnDTO[]> {
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                                 .retrieve()
                                 .bodyToMono(NavnDTO[].class)
-                                .retryWhen(Retry
-                                        .backoff(3, Duration.ofSeconds(5))
-                                        .filter(WebClientFilter::is5xxException)))
+                                .retryWhen(WebClientError.is5xxException()))
                 .block();
     }
 

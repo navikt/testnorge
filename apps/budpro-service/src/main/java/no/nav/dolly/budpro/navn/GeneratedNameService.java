@@ -1,7 +1,7 @@
 package no.nav.dolly.budpro.navn;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.budpro.Consumers;
-import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
 import no.nav.dolly.budpro.texas.TexasService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Arrays;
 
 @Service
+@Slf4j
 public class GeneratedNameService {
 
     private final ServerProperties serverProperties;
@@ -39,7 +40,7 @@ public class GeneratedNameService {
                 .blockOptional()
                 .orElseThrow(() -> new IllegalStateException("Failed to get token for %s".formatted(serverProperties.getName())))
                 .getTokenValue();
-        var token = texas.getToken("api://dev-gcp.dolly.generer-navn-service/.default");
+        var token = texas.getToken("generer-navn-service");
         var arrayOfDTOs = new MyGenererNavnCommand(webClient, token, seed, number)
                 .call();
         return Arrays
