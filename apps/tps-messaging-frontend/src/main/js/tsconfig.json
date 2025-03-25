@@ -1,18 +1,24 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "target": "es5",
-    "module": "es6",
-    "sourceMap": true,
-    "moduleResolution": "node",
-    "jsx": "react",
-    "noImplicitAny": true,
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "allowJs": false,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "removeComments": true,
+    "esModuleInterop": false,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    }
-  }
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }

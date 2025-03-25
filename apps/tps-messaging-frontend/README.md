@@ -1,4 +1,4 @@
-# Endringsmelding-frontend
+# Tps-Messaging-frontend
 
 Frontend for kunne sende meldinger til TPS. For å benytte denne appen må brukeren være logget inn med en bruker registrert på
 azure-applikasjonen `dev-gcp:dolly:tps-messaging-frontend`.

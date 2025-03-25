@@ -1,9 +1,8 @@
 {
-  "name": "endringsmelding-frontend",
-  "version": "1.2.30",
+  "name": "tps-messaging-frontend",
+  "version": "1.0.1",
   "private": true,
   "description": "",
-  "homepage": "http:///",
   "license": "ISC",
   "author": "",
   "type": "module",
@@ -14,9 +13,11 @@
   },
   "dependencies": {
     "@navikt/dolly-komponenter": "^1.3.33",
+    "@navikt/ds-css": "^7.4.0",
     "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^7.12.2",
     "@navikt/fnrvalidator": "^2.0.7",
+    "react-hook-form": "^7.53.1",
     "axios": "^1.8.2",
     "classnames": "^2.3.1",
     "cors": "^2.8.5",
@@ -36,32 +37,17 @@
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.0.0",
     "babel-plugin-styled-components": "^2.0.7",
+    "esbuild": ">=0.25.0",
     "isomorphic-fetch": "^3.0.0",
     "less": "^4.1.3",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.6.1",
     "prettier": "^3.0.1",
     "swr": "^2.0.0",
-    "typescript": "^5.0.2",
+    "typescript": "^5.8.2",
     "vite": "^6.1.0",
     "vite-plugin-svgr": "^4.0.0",
-    "vite-tsconfig-paths": "^5.0.1",
-    "esbuild": ">=0.25.0"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "vite-tsconfig-paths": "^5.0.1"
   },
   "prettier": {
     "singleQuote": true,

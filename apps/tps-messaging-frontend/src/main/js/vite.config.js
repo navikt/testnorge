@@ -1,4 +1,4 @@
-import { defineConfig, splitVendorChunkPlugin } from 'vite';
+import { defineConfig } from 'vite';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import { resolve } from 'path';
@@ -10,28 +10,28 @@ export default defineConfig(({ mode }) => ({
   base: '/',
   build: {
     outDir: 'build',
-    cssCodeSplit: false,
+    cssCodeSplit: false
   },
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '~': resolve(__dirname, './src'),
-    },
+      '~': resolve(__dirname, './src')
+    }
   },
   server: mode === 'local-dev' && {
     proxy: {
       '/oauth2/authorization/aad': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        secure: false,
+        secure: false
       },
       '/tps-messaging-service/api/v1': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        secure: false,
-      },
+        secure: false
+      }
     },
-    port: 3000,
+    port: 3000
   },
-  plugins: [react(), svgr(), viteTsconfigPaths(), splitVendorChunkPlugin()],
+  plugins: [react(), svgr(), viteTsconfigPaths()]
 }));

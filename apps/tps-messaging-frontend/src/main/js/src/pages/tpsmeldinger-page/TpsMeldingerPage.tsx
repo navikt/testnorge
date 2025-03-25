@@ -1,45 +1,65 @@
 import React from 'react';
-import {Page, SelectFormItem} from '@navikt/dolly-komponenter';
-import {Tabs} from '@navikt/ds-react';
-import styled from 'styled-components';
-import {getQueues} from "@/service/SendTpsMeldingService";
+import { Page } from '@navikt/dolly-komponenter';
+import { useTpsMessagingXml } from '../../hooks/useTpsMessaging';
+import { Controller, useForm } from 'react-hook-form';
+import { sendTpsMelding } from '../../service/SendTpsMeldingService';
+import { Button, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 
-const StyledPanel = styled(Tabs.Panel)`
-  background-color: hsl(0deg 0% 100%);
-  padding: 1rem 1rem 1rem 1rem;
-  border-radius: 4px;
-`;
+
+const onValidSubmit = async (values: any) => {
+  await sendTpsMelding(values.queue, values.message);
+};
 
 export const TpsMeldingerPage = () => {
-  var queses = getQueues();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm({
+    shouldFocusError: true,
+    defaultValues: {
+      queue: '',
+      melding: ''
+    }
+  });
+  const { queues, loading, error } = useTpsMessagingXml();
+
+  if (loading) return <p>Henter køer...</p>;
+
+  if (error) return <p>Noe gikk galt, kontakt team Dolly...</p>;
 
   return (
     <Page>
-      <SelectFormItem
-          label="Meldingskøer"
-          htmlId="melding-queue-select"
-          onChange={(value) => setIdentType(value && value.length > 0 ? value[0] : '')}
-          options={queues}
-      />
-      {/*<Tabs defaultValue="fødselsmelding" size="medium">*/}
-      {/*  <Tabs.List>*/}
-      {/*    <Tabs.Tab value="fødselsmelding" label="Fødselsmelding 1" />*/}
-      {/*    <Tabs.Tab value="dødsmelding" label="Dødsmelding 1" />*/}
-      {/*  </Tabs.List>*/}
-      {/*  <StyledPanel*/}
-      {/*    value={'fødselsmelding'}*/}
-      {/*    style={{ borderTop: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }}*/}
-      {/*  >*/}
-      {/*    <FodselsmeldingForm />*/}
-      {/*  </StyledPanel>*/}
-      {/*  <StyledPanel*/}
-      {/*    value={'dødsmelding'}*/}
-      {/*    style={{ borderTop: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }}*/}
-      {/*  >*/}
-      {/*    <DodsmeldingForm />*/}
-      {/*  </StyledPanel>*/}
-      {/*</Tabs>*/}
+      <VStack as="form" gap="8" onSubmit={handleSubmit(onValidSubmit)}>
+        <Controller
+          control={control}
+          rules={{ required: 'Du må velge minst en kø.' }}
+          name="queue"
+          render={({ field }) => (
+            <UNSAFE_Combobox
+              id={'kø'}
+              label="Meldingskø"
+              {...field}
+              error={errors.queue?.message}
+              options={queues}
+              shouldAutocomplete
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          rules={{ required: 'XML melding kan ikke være tom' }}
+          name="melding"
+          render={({ field }) => (
+            <Textarea label={'XML melding'}
+                      {...field}
+                      error={errors.melding?.message} />
+          )}
+        />
+        <div>
+          <Button type="submit">Send inn</Button>
+        </div>
+      </VStack>
     </Page>
   );
 };
-
