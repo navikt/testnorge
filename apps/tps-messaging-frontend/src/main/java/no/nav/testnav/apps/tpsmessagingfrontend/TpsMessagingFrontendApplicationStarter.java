@@ -37,12 +37,6 @@ public class TpsMessagingFrontendApplicationStarter {
     private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(TpsMessagingFrontendApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -50,6 +44,12 @@ public class TpsMessagingFrontendApplicationStarter {
                 .route(createRoute(consumers.getTpsMessagingService(), "tps-messaging-service"))
                 .route(createRoute(consumers.getTestnorgeProfilApi()))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(TpsMessagingFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
