@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProfile name="prod,local">
-        <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
-                <includeMdcKeyName>bestillingId</includeMdcKeyName>
+                <maxStackTraceLength>-1</maxStackTraceLength>
+                <addCauses>true</addCauses>
             </encoder>
         </appender>
         <root level="INFO">
-            <appender-ref ref="JSON"/>
+            <appender-ref ref="stdout_json"/>
         </root>
     </springProfile>
 </configuration>
