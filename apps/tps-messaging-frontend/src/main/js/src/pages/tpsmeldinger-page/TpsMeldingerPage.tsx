@@ -14,7 +14,7 @@ export const TpsMeldingerPage = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors: formErrors }
   } = useForm({
     shouldFocusError: true,
     defaultValues: {
@@ -23,6 +23,10 @@ export const TpsMeldingerPage = () => {
     }
   });
   const { queues, loading, error } = useTpsMessagingXml();
+
+  if (formErrors) {
+    console.warn(formErrors);
+  }
 
   if (loading) return <p>Henter køer...</p>;
 
