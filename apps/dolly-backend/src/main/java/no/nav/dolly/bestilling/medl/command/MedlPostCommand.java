@@ -4,16 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.medl.dto.MedlPostResponse;
 import no.nav.dolly.domain.resultset.medl.MedlData;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -30,8 +28,8 @@ public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
 
     @Override
     public Mono<MedlPostResponse> call() {
-
-        return webClient.post()
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(MEDL_URL)
                         .build())
@@ -48,11 +46,8 @@ public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
                             .build();
                 })
                 .doOnError(throwable -> log.error(throwable.getLocalizedMessage()))
-                .onErrorResume(error -> Mono.just(MedlPostResponse.builder()
-                        .status(WebClientFilter.getStatus(error))
-                        .melding(WebClientFilter.getMessage(error))
-                        .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .onErrorResume(throwable -> MedlPostResponse.of(WebClientError.describe(throwable)))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

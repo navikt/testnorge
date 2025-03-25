@@ -25,11 +25,14 @@ public class PersonServiceConsumer {
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
-    public PersonServiceConsumer(Consumers consumers, TokenExchange tokenExchange,
-                                 WebClient.Builder webClientBuilder) {
-
+    public PersonServiceConsumer(
+            Consumers consumers,
+            TokenExchange tokenExchange,
+            WebClient webClient
+    ) {
         this.serverProperties = consumers.getPersonService();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;

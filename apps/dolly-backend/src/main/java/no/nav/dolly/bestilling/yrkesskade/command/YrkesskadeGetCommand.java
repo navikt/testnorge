@@ -1,19 +1,19 @@
 package no.nav.dolly.bestilling.yrkesskade.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.yrkesskade.dto.SaksoversiktDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class YrkesskadeGetCommand implements Callable<Mono<SaksoversiktDTO>> {
 
     private static final String YRKESSKADE_URL = "/api/v1/yrkesskader/{ident}";
@@ -24,7 +24,6 @@ public class YrkesskadeGetCommand implements Callable<Mono<SaksoversiktDTO>> {
 
     @Override
     public Mono<SaksoversiktDTO> call() {
-
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(YRKESSKADE_URL)
@@ -38,12 +37,9 @@ public class YrkesskadeGetCommand implements Callable<Mono<SaksoversiktDTO>> {
                         .status(HttpStatusCode.valueOf(200))
                         .saker(resultat.getSaker())
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(throwable -> Mono.just(SaksoversiktDTO.builder()
-                                .status(WebClientFilter.getStatus(throwable))
-                                .melding(WebClientFilter.getMessage(throwable))
-                                .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(throwable -> SaksoversiktDTO.of(WebClientError.describe(throwable)))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

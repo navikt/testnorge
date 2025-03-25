@@ -1,10 +1,11 @@
 package no.nav.registre.sdforvalter.consumer.rs.aareg.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdRespons;
 import no.nav.registre.sdforvalter.util.CallIdUtil;
-import no.nav.registre.sdforvalter.util.WebClientFilter;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -16,6 +17,7 @@ import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.HEADER_NAV_C
 import static no.nav.registre.sdforvalter.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdRespons>> {
 
     private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidstaker/arbeidsforhold";
@@ -48,7 +50,7 @@ public class GetArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdRes
                         .eksisterendeArbeidsforhold(Arrays.asList(arbeidsforhold1))
                         .miljo(miljoe)
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
                         .miljo(miljoe)
                         .error(error)

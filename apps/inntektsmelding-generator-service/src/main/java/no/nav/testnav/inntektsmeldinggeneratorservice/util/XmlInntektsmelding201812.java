@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter.toBigDecimal;
 import static no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter.toBigInteger;
 import static no.nav.testnav.inntektsmeldinggeneratorservice.util.XmlConverter.toCamelCase;
@@ -250,7 +251,8 @@ public class XmlInntektsmelding201812 {
         return new Arbeidsforhold(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class,
                         toCamelCase(arbeidsforhold.getArbeidsforholdId())),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, toLocalDate(arbeidsforhold.getFoersteFravaersdag())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, nonNull(arbeidsforhold.getFoersteFravaersdag()) ?
+                        LocalDate.parse(arbeidsforhold.getFoersteFravaersdag()) : null),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beregnetInntekt"), Inntekt.class, createInntekt(arbeidsforhold.getBeregnetInntekt())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "avtaltFerieListe"), AvtaltFerieListe.class, createAvtaltFerieListe(arbeidsforhold.getAvtaltFerieListe())),
                 new JAXBElement<>(

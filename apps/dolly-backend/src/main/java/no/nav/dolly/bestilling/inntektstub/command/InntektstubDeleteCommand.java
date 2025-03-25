@@ -1,20 +1,20 @@
 package no.nav.dolly.bestilling.inntektstub.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
+@Slf4j
 public class InntektstubDeleteCommand implements Callable<Flux<String>> {
 
     private static final String DELETE_INNTEKTER_URL = "/api/v2/personer";
@@ -25,8 +25,8 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
     private final String token;
 
     public Flux<String> call() {
-
-        return webClient.delete()
+        return webClient
+                .delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(DELETE_INNTEKTER_URL)
                         .queryParam(NORSKE_IDENTER_QUERY, identer)
@@ -36,8 +36,8 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .map(respons -> "")
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

@@ -5,20 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingResponseDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse>> {
 
     private static final String DETALJERT_SYKEMELDING_URL = "/api/v1/sykemeldinger";
@@ -29,10 +27,9 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
 
     @Override
     public Mono<SykemeldingResponse> call() {
-
-        return webClient.post().uri(uriBuilder -> uriBuilder
-                        .path(DETALJERT_SYKEMELDING_URL)
-                        .build())
+        return webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path(DETALJERT_SYKEMELDING_URL).build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(request)
@@ -46,13 +43,9 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                                 .detaljertSykemeldingRequest(request)
                                 .build())
                         .build())
-                .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(SykemeldingResponse.builder()
-                        .ident(request.getPasient().getIdent())
-                        .status(WebClientFilter.getStatus(error))
-                        .avvik(WebClientFilter.getMessage(error))
-                        .build()))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(error -> SykemeldingResponse.of(WebClientError.describe(error), request.getPasient().getIdent()))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }

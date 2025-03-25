@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -22,6 +24,14 @@ public class SearchResponse {
 
     private HttpStatus status;
     private String error;
+
+    public static Mono<SearchResponse> of(WebClientError.Description description) {
+        return Mono.just(SearchResponse
+                .builder()
+                .status(description.getStatus())
+                .error(description.getMessage())
+                .build());
+    }
 
     @Data
     @NoArgsConstructor

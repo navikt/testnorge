@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ public class SyntAaregConsumerTest {
     private final String fnr2 = "02020202020";
     private SyntAaregConsumer syntAaregConsumer;
     private MockWebServer mockWebServer;
+    private WebClient webClient;
 
     @Before
     public void setUp() throws IOException {
@@ -40,8 +42,7 @@ public class SyntAaregConsumerTest {
         this.mockWebServer.start();
         Dispatcher dispatcher = getDispatcher();
         mockWebServer.setDispatcher(dispatcher);
-        syntAaregConsumer = new SyntAaregConsumer(2,
-                mockWebServer.url("/synt-aareg").toString());
+        syntAaregConsumer = new SyntAaregConsumer(webClient, 2, mockWebServer.url("/synt-aareg").toString());
     }
 
     @Test

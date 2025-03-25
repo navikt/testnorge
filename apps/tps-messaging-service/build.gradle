@@ -9,15 +9,13 @@ sonarqube {
     }
 }
 
-configurations.implementation {
-    exclude group: "io.netty", module: "netty-transport-native-epoll" // Avoid native Linux/Mac on non-Linux/Mac systems.
-}
-
 dependencies {
     implementation "no.nav.testnav.libs:data-transfer-search-objects"
+    implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-security"
+    implementation "no.nav.testnav.libs:testing"
 
     implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:$versions.navFellesregister"
     implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:$versions.navFellesregister"
@@ -33,7 +31,7 @@ dependencies {
     implementation "com.ibm.icu:icu4j:74.2"
     implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
     implementation "com.sun.xml.bind:jaxb-core:$versions.jaxb"
-    implementation "io.netty:netty-transport-native-epoll" // See above exclusion.
+    implementation "io.netty:netty-transport-native-epoll"
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
     implementation "org.aspectj:aspectjweaver:$versions.jweaver"

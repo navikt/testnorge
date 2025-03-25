@@ -1,9 +1,10 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -14,7 +15,8 @@ import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Slf4j
 public class PostDagpengerCommand implements Callable<Mono<DagpengerResponseDTO>> {
 
     private final DagpengerRequestDTO request;
@@ -33,6 +35,7 @@ public class PostDagpengerCommand implements Callable<Mono<DagpengerResponseDTO>
                 .body(BodyInserters.fromPublisher(Mono.just(request), DagpengerRequestDTO.class))
                 .retrieve()
                 .bodyToMono(DagpengerResponseDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage);
+                .doOnError(WebClientError.logTo(log));
     }
+
 }

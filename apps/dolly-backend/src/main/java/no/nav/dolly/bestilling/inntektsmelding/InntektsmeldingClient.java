@@ -19,7 +19,7 @@ import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -76,7 +76,7 @@ public class InntektsmeldingClient implements ClientRegister {
 
         return Flux.fromIterable(environments)
                 .map(env -> STATUS_FMT.formatted(env,
-                        encodeStatus(WebClientFilter.getMessage(error))));
+                        encodeStatus(WebClientError.describe(error).getMessage())));
     }
 
     @Override
@@ -157,7 +157,7 @@ public class InntektsmeldingClient implements ClientRegister {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            log.error("Feilet å konvertere domument fra inntektsmelding", e);
+            log.error("Feilet å konvertere dokument fra inntektsmelding", e);
         }
         return null;
     }

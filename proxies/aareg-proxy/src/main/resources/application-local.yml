@@ -9,9 +9,3 @@ dolly:
 spring:
   config:
     import: "sm://"
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"

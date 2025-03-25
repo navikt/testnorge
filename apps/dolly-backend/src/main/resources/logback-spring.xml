@@ -2,7 +2,7 @@
 <configuration>
     <springProfile name="prod,dev">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
+            <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
                 <maxStackTraceLength>-1</maxStackTraceLength>
                 <addCauses>true</addCauses>
 <!--                <stackTraceIncludePrefix>-</stackTraceIncludePrefix>-->
@@ -47,4 +47,5 @@
     <logger level="TRACE" name="com.intellij.util.net.ssl"/>
     <logger level="ERROR" name="reactor.netty.transport.TransportConnector"/>
     <logger level="DEBUG" name="reactor.netty.http.client.HttpClient"/>
+    <logger level="DEBUG" name="no.nav.testnav.libs.reactivecore.logging.WebClientLogger"/>
 </configuration>

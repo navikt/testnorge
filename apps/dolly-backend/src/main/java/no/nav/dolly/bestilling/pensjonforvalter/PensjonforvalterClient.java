@@ -16,7 +16,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -26,10 +26,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.ANNET;
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PENSJON_FORVALTER;
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SEP;
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SYSTEM;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.*;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 @Slf4j
@@ -90,7 +87,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return Flux.fromIterable(miljoer)
                 .map(miljo -> "%s%s:Feil= %s".formatted(ANNET, miljo,
-                        encodeStatus(WebClientFilter.getMessage(throwable))));
+                        encodeStatus(WebClientError.describe(throwable).getMessage())));
     }
 
     @Override

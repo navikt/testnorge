@@ -13,8 +13,9 @@ public class BrregConsumer {
 
     private final WebClient webClient;
 
-    public BrregConsumer(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder
+    public BrregConsumer(WebClient webClient) {
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(BRREG_URL)
                 .build();
     }

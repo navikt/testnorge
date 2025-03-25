@@ -24,10 +24,11 @@ public class TilbakemeldingConsumer {
     public TilbakemeldingConsumer(
             Consumers consumers,
             AccessService accessService,
-            WebClient.Builder webClientBuilder) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnorgeTilbakemeldingApi();
-        this.webClient = webClientBuilder
+        this.webClient = webClient
+                .mutate()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.accessService = accessService;

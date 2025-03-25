@@ -1,15 +1,14 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pdl.GraphQLRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -17,6 +16,7 @@ import java.util.concurrent.Callable;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
 
     private static final String TEMA = "Tema";
@@ -37,13 +37,11 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .header(CALL_ID, NAV_CALL_ID + ": " + UUID.randomUUID())
                 .header(TEMA, TEMA_GENERELL)
-                .body(BodyInserters
-                        .fromValue(new GraphQLRequest(query, Map.of("ident", ident, "historikk", true))))
+                .body(BodyInserters.fromValue(new GraphQLRequest(query, Map.of("ident", ident, "historikk", true))))
                 .retrieve()
                 .bodyToMono(PdlPerson.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
-
+                .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException());
     }
+
 }
