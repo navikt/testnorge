@@ -19,6 +19,11 @@ spring:
             issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
 
 consumers:
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-bruker-service
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
   tps-messaging-service:
     cluster: dev-gcp
     namespace: dolly
