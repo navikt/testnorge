@@ -15,7 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
-class ApplicationContextTest extends DollyApplicationContextTest {
+class RouteLocatorTest extends DollyApplicationContextTest {
 
     private static final String GET_TOKEN_BODY = """
             {

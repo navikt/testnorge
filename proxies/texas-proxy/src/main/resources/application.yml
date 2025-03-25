@@ -16,3 +16,9 @@ spring:
     gateway:
       httpclient:
         response-timeout: 600s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,gateway,prometheus
