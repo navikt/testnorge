@@ -23,10 +23,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
         - application: testnav-budpro-service
+  liveness:
     path: /internal/health/liveness
-    initialDelay: 20
-    periodSeconds: 10
-    failureThreshold: 20
   observability:
     logging:
       destinations:
