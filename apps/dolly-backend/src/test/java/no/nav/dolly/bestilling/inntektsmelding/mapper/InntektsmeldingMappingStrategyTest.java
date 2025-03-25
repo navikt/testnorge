@@ -266,7 +266,7 @@ class InntektsmeldingMappingStrategyTest {
         assertThat(target.getBeregnetInntekt().getAarsakVedEndring(),
                 is(equalTo(AarsakBeregnetInntektEndringKodeListe.TARIFFENDRING.name())));
         assertThat(target.getBeregnetInntekt().getBeloep(), is(equalTo(1.0)));
-        assertThat(target.getFoersteFravaersdag(), is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getFoersteFravaersdag(), is(equalTo(START_DATO)));
         assertThat(target.getGraderingIForeldrepengerListe().getFirst().getArbeidstidprosent(), is(equalTo(100)));
         assertThat(target.getGraderingIForeldrepengerListe().getFirst().getPeriode().getFom(), is(equalTo(START_DATO.atStartOfDay())));
         assertThat(target.getGraderingIForeldrepengerListe().getFirst().getPeriode().getTom(), is(equalTo(SLUTT_DATO.atStartOfDay())));
