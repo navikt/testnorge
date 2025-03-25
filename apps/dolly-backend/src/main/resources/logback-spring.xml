@@ -47,4 +47,5 @@
     <logger level="TRACE" name="com.intellij.util.net.ssl"/>
     <logger level="ERROR" name="reactor.netty.transport.TransportConnector"/>
     <logger level="DEBUG" name="reactor.netty.http.client.HttpClient"/>
+    <logger level="DEBUG" name="no.nav.testnav.libs.reactivecore.logging.WebClientLogger"/>
 </configuration>

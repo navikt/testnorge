@@ -172,7 +172,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.RsArbeidsforhold rsArbeidsforhold,
                                         RsArbeidsforhold arbeidsforhold, MappingContext context) {
 
-                        arbeidsforhold.setFoersteFravaersdag(toLocalDateTime(rsArbeidsforhold.getFoersteFravaersdag()));
+                        arbeidsforhold.setFoersteFravaersdag(nonNull(rsArbeidsforhold.getFoersteFravaersdag())?
+                                rsArbeidsforhold.getFoersteFravaersdag().toString() : null);
                     }
                 })
                 .exclude("foersteFravaersdag")
