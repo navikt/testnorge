@@ -33,9 +33,8 @@ public class InntektsmeldingService {
 
     public List<ProsessertInntektDokument> opprettInntektsmelding(
             String navCallId,
-            InntektsmeldingRequest request
-    ) {
-        log.info("Mottatt forspørsel om å opprette inntektsmelding for arbeidstaker: {}", Json.pretty(request));
+            InntektsmeldingRequest request) {
+
         var dokumentListe = request
                 .getInntekter()
                 .stream()
@@ -46,9 +45,12 @@ public class InntektsmeldingService {
 
     private InntektDokument lagInntektDokument(
             RsInntektsmeldingRequest rsInntektsmelding,
-            String ident
-    ) {
-        var xmlString = genererInntektsmeldingConsumer.getInntektsmeldingXml201812(RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident));
+            String ident) {
+
+        var inntektsmelding = RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident);
+        log.info("Inntektsmelding json {}", Json.pretty(inntektsmelding));
+
+        var xmlString = genererInntektsmeldingConsumer.getInntektsmeldingXml201812(inntektsmelding);
         var model = repository.save(new InntektsmeldingModel());
         log.info("Inntektsmelding generert med id: {}.\n{}", model.getId(), xmlString);
         return InntektDokument
