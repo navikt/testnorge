@@ -166,19 +166,6 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(RsInntektsmelding.RsArbeidsforhold.class, RsArbeidsforhold.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(RsInntektsmelding.RsArbeidsforhold rsArbeidsforhold,
-                                        RsArbeidsforhold arbeidsforhold, MappingContext context) {
-
-                        arbeidsforhold.setFoersteFravaersdag(toLocalDateTime(rsArbeidsforhold.getFoersteFravaersdag()));
-                    }
-                })
-                .exclude("foersteFravaersdag")
-                .byDefault()
-                .register();
-
         factory.classMap(RsInntektsmelding.RsDelvisFravaer.class, RsDelvisFravaer.class)
                 .customize(new CustomMapper<>() {
                     @Override

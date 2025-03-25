@@ -9,12 +9,15 @@ import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.Inntektsmeldin
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @RestController
 @RequestMapping(
@@ -31,16 +34,16 @@ public class InntektsmeldingController {
     }
 
     @PostMapping
-    InntektsmeldingResponse genererMeldingForIdent(
+    public InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
-            @RequestBody InntektsmeldingRequest request
-    ) {
+            @RequestBody InntektsmeldingRequest request) {
+
         log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.getArbeidstakerFnr(), request.getMiljoe(), Json.pretty(request));
 
         validerInntektsmelding(request);
 
         try {
-            List<ProsessertInntektDokument> prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
+            var prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
             return new InntektsmeldingResponse(
                     request.getArbeidstakerFnr(),
                     prosessertInntektDokuments
@@ -55,6 +58,7 @@ public class InntektsmeldingController {
     }
 
     private void validerInntektsmelding(InntektsmeldingRequest dollyRequest) {
+
         for (var inntekt : dollyRequest.getInntekter()) {
             var arbeidsgiver = inntekt.getArbeidsgiver();
             var arbeidsgiverPrivat = inntekt.getArbeidsgiverPrivat();
