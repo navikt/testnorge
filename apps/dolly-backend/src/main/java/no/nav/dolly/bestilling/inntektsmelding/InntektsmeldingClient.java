@@ -157,7 +157,7 @@ public class InntektsmeldingClient implements ClientRegister {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            log.error("Feilet å konvertere domument fra inntektsmelding", e);
+            log.error("Feilet å konvertere dokument fra inntektsmelding", e);
         }
         return null;
     }

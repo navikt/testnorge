@@ -43,6 +43,8 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static java.util.Objects.nonNull;
+
 @XmlRegistry
 public class ObjectFactory {
     private static final String NAMESPACE_URI = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211";
@@ -469,8 +471,9 @@ public class ObjectFactory {
             scope = Arbeidsforhold.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement createArbeidsforholdFoersteFravaersdag(LocalDate value) {
-        return new JAXBElement<>(_ArbeidsforholdFoersteFravaersdag_QNAME, LocalDate.class, Arbeidsforhold.class, value);
+    public JAXBElement createArbeidsforholdFoersteFravaersdag(String value) {
+        return new JAXBElement<>(_ArbeidsforholdFoersteFravaersdag_QNAME, LocalDate.class, Arbeidsforhold.class,
+                nonNull(value) ? LocalDate.parse(value) : null);
     }
 
     @XmlElementDecl(
