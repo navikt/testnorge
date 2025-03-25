@@ -108,10 +108,14 @@ export const TextInput = ({
 		}
 	}, [input])
 
+	useEffect(() => {
+		setFieldValue(watch(name))
+	}, [watch(name)])
+
 	return (
 		<>
 			<input
-				value={fieldValue}
+				value={fieldValue || ''}
 				autoFocus={autoFocus}
 				disabled={isDisabled}
 				type={props.type || 'text'}
