@@ -8,6 +8,9 @@ metadata:
 spec:
   port: 8080
   azure:
+    sidecar:
+      enabled: true
+      autoLogin: true
     application:
       enabled: true
       tenant: nav.no
