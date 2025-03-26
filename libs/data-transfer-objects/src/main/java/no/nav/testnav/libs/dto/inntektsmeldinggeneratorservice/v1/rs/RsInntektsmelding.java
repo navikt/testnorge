@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +31,7 @@ public class RsInntektsmelding {
     private RsRefusjon refusjon;
     private RsOmsorgspenger omsorgspenger;
     private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
-    private LocalDateTime startdatoForeldrepengeperiode;
+    private String startdatoForeldrepengeperiode;
     private List<RsNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
     private List<RsNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
     private List<RsPeriode> pleiepengerPerioder;

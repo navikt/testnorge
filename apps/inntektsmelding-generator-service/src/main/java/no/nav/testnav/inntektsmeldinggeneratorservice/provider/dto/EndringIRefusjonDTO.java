@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class EndringIRefusjonDTO implements ToXmlElement<EndringIRefusjon> {
     @JsonProperty
-    private LocalDate endringsdato;
+    private String endringsdato;
     @JsonProperty
     private Double refusjonsbeloepPrMnd;
 
