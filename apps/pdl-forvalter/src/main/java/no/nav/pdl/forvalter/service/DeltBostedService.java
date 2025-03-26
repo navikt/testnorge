@@ -11,9 +11,11 @@ import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UkjentBostedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -60,25 +62,54 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
     public void handle(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
 
         if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(hovedperson))) {
+
             if (deltBosted.countAdresser() > 0) {
                 prepAdresser(deltBosted);
             } else {
+                personRepository.findByIdent(hovedperson.getSivilstand().stream()
+                        .filter(SivilstandDTO::isGift)
+                        .map(SivilstandDTO::getRelatertVedSivilstand)
+
+            }
+        } else {
+
+            if (deltBosted.countAdresser() > 0) {
+                prepAdresser(deltBosted);
+
+            } else {
                 var boadresser = personRepository.findByIdentIn(hovedperson.getForelderBarnRelasjon().stream()
-                        .filter(ForelderBarnRelasjonDTO::isBarn)
-                        .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
-                        .toList(), Pageable.unpaged()).stream()
+                                .filter(ForelderBarnRelasjonDTO::isBarn)
+                                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
+                                .toList(), Pageable.unpaged()).stream()
                         .map(DbPerson::getPerson)
                         .map(PersonDTO::getBostedsadresse)
                         .map(adresser -> !adresser.isEmpty() ? adresser.getFirst() : null)
                         .filter(Objects::nonNull)
                         .toList();
+
                 boadresser.forEach(boadresse -> {
                     if (!hovedperson.getBostedsadresse().isEmpty() &&
                             !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse)) {
-                        deltBosted
+
+                        setAdresse(deltBosted, boadresse);
                     }
-                })
+                });
             }
+        }
+    }
+
+    private void setAdresse(DeltBostedDTO deltBosted, BostedadresseDTO boadresse) {
+
+        deltBosted.setAdresseIdentifikatorFraMatrikkelen(boadresse.getAdresseIdentifikatorFraMatrikkelen());
+
+        if (nonNull(boadresse.getVegadresse())) {
+            deltBosted.setVegadresse(mapperFacade.map(boadresse.getVegadresse(), VegadresseDTO.class));
+
+        } else if (nonNull(boadresse.getMatrikkeladresse())) {
+            deltBosted.setMatrikkeladresse(mapperFacade.map(boadresse.getMatrikkeladresse(), MatrikkeladresseDTO.class));
+
+        } else if (nonNull(boadresse.getUkjentBosted())) {
+            deltBosted.setUkjentBosted(mapperFacade.map(boadresse.getUkjentBosted(), UkjentBostedDTO.class));
         }
     }
 
@@ -179,17 +210,16 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         List<String> foreldre;
         if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(person))) {
 
+            foreldre = Stream.of(Stream.of(person.getIdent()), person.getSivilstand().stream()
+                            .filter(SivilstandDTO::isGift)
+                            .map(SivilstandDTO::getRelatertVedSivilstand))
+                    .flatMap(Function.identity())
+                    .toList();
+        } else {
+
             foreldre = person.getForelderBarnRelasjon().stream()
                     .filter(ForelderBarnRelasjonDTO::isBarn)
                     .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
-                    .toList();
-
-        } else {
-
-            foreldre = Stream.of(Stream.of(person.getIdent()), person.getSivilstand().stream()
-                    .filter(SivilstandDTO::isGift)
-                    .map(SivilstandDTO::getRelatertVedSivilstand))
-                    .flatMap(Function.identity())
                     .toList();
         }
 
@@ -204,7 +234,8 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                 .filter(Objects::nonNull)
                 .toList();
 
-        if (adresser.size() != 2 || (isEqualAdresse(adresser.get(0), adresser.get(1)) && artifact.countAdresser() != 1)) {
+        if (artifact.countAdresser() != 1 ||
+                (adresser.size() == 2 && isEqualAdresse(adresser.get(0), adresser.get(1)))) {
             throw new InvalidRequestException(VALIDATION_ADRESSER_ERROR);
         }
     }
