@@ -17,6 +17,7 @@ public class ValidateArtifactsService {
 
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final BostedAdresseService bostedAdresseService;
+    private final DeltBostedService deltBostedService;
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final DoedsfallService doedsfallService;
     private final FalskIdentitetService falskIdentitetService;
@@ -48,6 +49,7 @@ public class ValidateArtifactsService {
                         validate(kjoennService, person.getKjoenn(), person),
                         validate(innflyttingService, person.getInnflytting()),
                         validate(bostedAdresseService, person.getBostedsadresse(), person),
+                        validate(deltBostedService, person.getDeltBosted(), person),
                         validate(foedselsdatoService, person.getFoedselsdato(), person),
                         validate(foedestedService, person.getFoedested(), person),
                         validate(statsborgerskapService, person.getStatsborgerskap()),
