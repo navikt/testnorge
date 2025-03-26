@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm ci
+      - name: Install Playwright Browsers
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npx playwright install --with-deps
       - name: Run Vitest/RTL tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm run test:vitest-run
