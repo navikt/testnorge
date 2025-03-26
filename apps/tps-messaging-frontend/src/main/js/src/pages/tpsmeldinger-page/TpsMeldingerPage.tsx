@@ -6,12 +6,20 @@ import { sendTpsMelding } from '../../service/SendTpsMeldingService';
 import { Alert, Button, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import { XMLValidator } from 'fast-xml-parser';
 import PrettyCode from '../../components/PrettyCode';
+import AlertWithCloseButton from '../../components/AlertWithCloseButton';
 
 export const TpsMeldingerPage = () => {
   const onValidSubmit = (values: any) => {
-    sendTpsMelding(values.queue, values.melding).then((response) => {
-      setSuccessMessage(response);
-    });
+    setIsSending(true);
+    setErrorResponse('');
+    sendTpsMelding(values.queue, values.melding)
+      .then((response) => {
+        setSuccessMessage(response);
+        setIsSending(false);
+      })
+      .catch((error: Error) => {
+        setErrorResponse(error?.message);
+      });
   };
 
   const {
@@ -27,6 +35,8 @@ export const TpsMeldingerPage = () => {
   });
   const { queues, loading, error } = useTpsMessagingXml();
   const [successMessage, setSuccessMessage] = React.useState('');
+  const [isSending, setIsSending] = React.useState(false);
+  const [errorResponse, setErrorResponse] = React.useState('');
 
   if (formErrors) {
     console.warn(formErrors);
@@ -96,16 +106,21 @@ export const TpsMeldingerPage = () => {
           )}
         />
         <div>
-          <Button type="submit">Send inn</Button>
+          <Button type="submit" loading={isSending} disabled={isSending}>
+            Send inn
+          </Button>
         </div>
         {successMessage && (
-          <Alert closeButton={true} variant={'success'}>
+          <AlertWithCloseButton variant={'success'}>
             {XMLValidator.validate(successMessage) ? (
               <PrettyCode codeString={successMessage} language="xml" />
             ) : (
               successMessage
             )}
-          </Alert>
+          </AlertWithCloseButton>
+        )}
+        {errorResponse && (
+          <AlertWithCloseButton variant={'error'}>errorResponse</AlertWithCloseButton>
         )}
       </VStack>
     </Page>
