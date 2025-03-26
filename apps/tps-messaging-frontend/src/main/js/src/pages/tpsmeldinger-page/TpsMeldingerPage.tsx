@@ -3,14 +3,17 @@ import { Page } from '@navikt/dolly-komponenter';
 import { useTpsMessagingXml } from '../../hooks/useTpsMessaging';
 import { Controller, useForm } from 'react-hook-form';
 import { sendTpsMelding } from '../../service/SendTpsMeldingService';
-import { Button, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
+import { Alert, Button, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 
-
-const onValidSubmit = async (values: any) => {
-  await sendTpsMelding(values.queue, values.message);
-};
 
 export const TpsMeldingerPage = () => {
+
+  const onValidSubmit = (values: any) => {
+    sendTpsMelding(values.queue, values.message).then(response => {
+      setSuccessMessage('Melding sendt! ' + r);
+    });
+  };
+
   const {
     handleSubmit,
     control,
@@ -23,6 +26,7 @@ export const TpsMeldingerPage = () => {
     }
   });
   const { queues, loading, error } = useTpsMessagingXml();
+  const [successMessage, setSuccessMessage] = React.useState(null);
 
   if (formErrors) {
     console.warn(formErrors);
@@ -44,7 +48,7 @@ export const TpsMeldingerPage = () => {
               id={'kø'}
               label="Meldingskø"
               {...field}
-              error={errors.queue?.message}
+              error={formErrors.queue?.message}
               options={queues}
               shouldAutocomplete
             />
@@ -56,13 +60,15 @@ export const TpsMeldingerPage = () => {
           name="melding"
           render={({ field }) => (
             <Textarea label={'XML melding'}
+                      id={'melding'}
                       {...field}
-                      error={errors.melding?.message} />
+                      error={formErrors.melding?.message} />
           )}
         />
         <div>
           <Button type="submit">Send inn</Button>
         </div>
+        {successMessage && <Alert variant={'success'}>{successMessage}</Alert>}
       </VStack>
     </Page>
   );
