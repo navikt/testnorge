@@ -30,18 +30,4 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Vitest/RTL tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npm run test:vitest-ci-run
-      - name: Generate test report summary
-        working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: |
-          echo "## Vitest Test Summary" >> $GITHUB_STEP_SUMMARY
-          if [ -f "vitest-result.json" ]; then
-            total=$(jq '.numTotalTests' vitest-result.json)
-            passed=$(jq '.numPassedTests' vitest-result.json)
-            failed=$(jq '.numFailedTests' vitest-result.json)
-            echo "Total tests: $total" >> $GITHUB_STEP_SUMMARY
-            echo "Passed tests: $passed ✅" >> $GITHUB_STEP_SUMMARY
-            echo "Failed tests: $failed $([ "$failed" -gt 0 ] && echo "❌" || echo "🔹")" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "No test report file found" >> $GITHUB_STEP_SUMMARY
-          fi
+        run: npm run test:vitest-run
