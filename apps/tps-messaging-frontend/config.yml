@@ -41,7 +41,7 @@ spec:
     outbound:
       rules:
         - application: testnav-tps-messaging-service
-        - application: testnav-profil-api
+        - application: testnorge-profil-api
   resources:
     requests:
       cpu: 50m
