@@ -78,6 +78,7 @@ const initialValues = {
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null as any)
 	const [visAntall, setVisAntall] = useState(10)
+	const [soekPaagaar, setSoekPaagaar] = useState(false)
 	const { result, loading, error, mutate } = usePersonerSearch(request)
 	const { typer, loading: loadingTyper } = usePersonerTyper()
 
@@ -92,6 +93,7 @@ export const SoekForm = () => {
 	const { trigger, watch, handleSubmit, reset, control, setValue, getValues } = formMethods
 
 	const handleChange = (value: any, path: string) => {
+		setSoekPaagaar(true)
 		setValue(path, value)
 		setValue('side', 0)
 		setValue('seed', null)
@@ -107,7 +109,7 @@ export const SoekForm = () => {
 		} else {
 			setRequest(updatedRequest)
 		}
-		mutate()
+		mutate().then(() => setSoekPaagaar(false))
 	}
 
 	const handleChangeList = (value: any, path: string) => {
@@ -615,8 +617,8 @@ export const SoekForm = () => {
 									<Button
 										onClick={handleSubmit}
 										variant="primary"
-										disabled={loading || !result}
-										loading={loading}
+										disabled={loading || soekPaagaar || !result}
+										loading={loading || soekPaagaar}
 										type="submit"
 									>
 										Hent nye treff
@@ -632,7 +634,7 @@ export const SoekForm = () => {
 									>
 										Nullstill søk
 									</Button>
-									{result && (
+									{result && !loading && !soekPaagaar && (
 										<p style={{ marginRight: 0, marginLeft: 'auto' }}>
 											Viser {result?.personer?.length} av totalt {result?.totalHits} treff
 										</p>
@@ -645,7 +647,7 @@ export const SoekForm = () => {
 			</SoekefeltWrapper>
 			<ResultatVisning
 				resultat={result}
-				loading={loading}
+				loading={loading || soekPaagaar}
 				soekError={error}
 				visAntall={visAntall}
 				handleChangeSide={handleChangeSide}
