@@ -1,0 +1,44 @@
+name: Vitest Tests
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        type: string
+        description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
+        required: true
+    secrets:
+      READER_TOKEN:
+        required: true
+
+jobs:
+  vitest:
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
+      - name: Install dependencies
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npm ci
+      - name: Run Vitest/RTL tests
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npm run test:vitest-run
+      - name: Generate test report summary
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: |
+          echo "## Vitest Test Summary" >> $GITHUB_STEP_SUMMARY
+          if [ -f "vitest-result.json" ]; then
+            total=$(jq '.numTotalTests' vitest-result.json)
+            passed=$(jq '.numPassedTests' vitest-result.json)
+            failed=$(jq '.numFailedTests' vitest-result.json)
+            echo "Total tests: $total" >> $GITHUB_STEP_SUMMARY
+            echo "Passed tests: $passed ✅" >> $GITHUB_STEP_SUMMARY
+            echo "Failed tests: $failed $([ "$failed" -gt 0 ] && echo "❌" || echo "🔹")" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No test report file found" >> $GITHUB_STEP_SUMMARY
+          fi
