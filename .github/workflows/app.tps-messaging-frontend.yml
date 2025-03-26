@@ -10,8 +10,19 @@ on:
       - "libs/security-core/**"
       - "apps/tps-messaging-frontend/**"
       - ".github/workflows/app.tps-messaging-frontend.yml"
+      - ".github/workflows/common.vitest.yml"
 
 jobs:
+  vitest:
+    uses: ./.github/workflows/common.vitest.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
+    with:
+      working-directory: "apps/tps-messaging-frontend"
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
   workflow:
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
