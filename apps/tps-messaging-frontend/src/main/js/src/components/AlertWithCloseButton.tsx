@@ -1,4 +1,5 @@
 import { Alert, AlertProps } from '@navikt/ds-react';
+import React from 'react';
 
 const AlertWithCloseButton = ({
   children,
