@@ -12,11 +12,21 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class TexasController {
 
-    private final TexasService service;
+    private final Texas texas;
 
-    @GetMapping("/token")
-    Mono<TexasToken> getToken(String consumerName) {
-        return service.getToken(consumerName);
+    @GetMapping("/get")
+    Mono<TexasToken> get(String consumerName) {
+        return texas.getToken(consumerName);
+    }
+
+    @GetMapping("/exchange")
+    Mono<TexasToken> exchange(String consumerName, String token) {
+        return texas.exchangeToken(consumerName, token);
+    }
+
+    @GetMapping("/introspect")
+    Mono<String> introspect(String token) {
+        return texas.introspect(token);
     }
 
 }

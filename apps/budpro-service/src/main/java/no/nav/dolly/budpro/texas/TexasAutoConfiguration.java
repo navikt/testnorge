@@ -15,18 +15,18 @@ import java.util.Optional;
 public class TexasAutoConfiguration {
 
     @Bean
-    TexasService texasService(
+    Texas texasService(
             WebClient webClient,
             @Value("${dolly.texas.url.token:}") String tokenUrl,
             @Value("${dolly.texas.url.exchange:}") String exchangeUrl,
             @Value("${dolly.texas.url.introspect:}") String introspectUrl,
             TexasConsumers texasConsumers
     ) {
-        return new TexasService(
+        return new Texas(
                 webClient,
-                resolve(tokenUrl, "NAIS_TOKEN_ENDPOINT", "Neither dolly.texas.url.token or NAIS_TOKEN_ENDPOINT is set"),
-                resolve(exchangeUrl, "NAIS_TOKEN_EXCHANGE_ENDPOINT", "Neither dolly.texas.url.exchange or NAIS_TOKEN_EXCHANGE_ENDPOINT is set"),
-                resolve(introspectUrl, "NAIS_TOKEN_INTROSPECTION_ENDPOINT", "Neither dolly.texas.url.introspect or NAIS_TOKEN_INTROSPECTION_ENDPOINT is set"),
+                resolve(tokenUrl, "NAIS_TOKEN_ENDPOINT", "Neither dolly.texas.url.token nor NAIS_TOKEN_ENDPOINT is set"),
+                resolve(exchangeUrl, "NAIS_TOKEN_EXCHANGE_ENDPOINT", "Neither dolly.texas.url.exchange nor NAIS_TOKEN_EXCHANGE_ENDPOINT is set"),
+                resolve(introspectUrl, "NAIS_TOKEN_INTROSPECTION_ENDPOINT", "Neither dolly.texas.url.introspect nor NAIS_TOKEN_INTROSPECTION_ENDPOINT is set"),
                 texasConsumers);
     }
 

@@ -1,9 +1,6 @@
 package no.nav.dolly.budpro.texas;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +11,15 @@ import java.util.Optional;
 @Configuration
 @ConfigurationProperties(prefix = "dolly")
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@Setter(AccessLevel.PACKAGE)
+@Getter
+@Setter
 @ToString
 @Slf4j
 class TexasConsumers {
 
+    /**
+     * List of consumers intended for use with Texas.
+     */
     private List<TexasConsumer> consumers;
 
     public Optional<TexasConsumer> get(String name) {
