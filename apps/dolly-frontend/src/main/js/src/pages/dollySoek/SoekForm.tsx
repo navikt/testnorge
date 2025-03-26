@@ -34,6 +34,7 @@ const initialValues = {
 	seed: null,
 	registreRequest: [],
 	personRequest: {
+		ident: null,
 		identtype: null,
 		kjoenn: null,
 		alderFom: null,
@@ -543,6 +544,15 @@ export const SoekForm = () => {
 											</Accordion.Header>
 											<Accordion.Content>
 												<SoekKategori>
+													<FormTextInput
+														name={`${personPath}.ident`}
+														placeholder="Skriv inn ident ..."
+														size="large"
+														value={watch(`${personPath}.ident`)}
+														onChange={(val: SyntheticEvent) =>
+															handleChange(val?.target?.value || null, `${personPath}.ident`)
+														}
+													/>
 													<FormSelect
 														name={`${personPath}.identtype`}
 														options={Options('identtype')}
