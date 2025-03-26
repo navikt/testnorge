@@ -30,7 +30,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Vitest/RTL tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npm run test:vitest-run
+        run: npm run test:vitest-ci-run
       - name: Generate test report summary
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: |
