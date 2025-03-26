@@ -5,28 +5,28 @@ import { Controller, useForm } from 'react-hook-form';
 import { sendTpsMelding } from '../../service/SendTpsMeldingService';
 import { Alert, Button, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 
-
 export const TpsMeldingerPage = () => {
-
   const onValidSubmit = (values: any) => {
-    sendTpsMelding(values.queue, values.message).then(response => {
-      setSuccessMessage('Melding sendt! ' + response);
+    sendTpsMelding(values.queue, values.melding).then((response) => {
+      setSuccessMessage(response);
+      reset();
     });
   };
 
   const {
+    reset,
     handleSubmit,
     control,
-    formState: { errors: formErrors }
+    formState: { errors: formErrors },
   } = useForm({
     shouldFocusError: true,
     defaultValues: {
       queue: '',
-      melding: ''
-    }
+      melding: '',
+    },
   });
   const { queues, loading, error } = useTpsMessagingXml();
-  const [successMessage, setSuccessMessage] = React.useState(null);
+  const [successMessage, setSuccessMessage] = React.useState('');
 
   if (formErrors) {
     console.warn(formErrors);
@@ -38,16 +38,22 @@ export const TpsMeldingerPage = () => {
 
   return (
     <Page>
-      <VStack as="form" gap="8" onSubmit={handleSubmit(onValidSubmit)}>
+      <VStack as="form" gap="4" onSubmit={handleSubmit(onValidSubmit)}>
         <Controller
           control={control}
           rules={{ required: 'Du må velge minst en kø.' }}
           name="queue"
           render={({ field }) => (
             <UNSAFE_Combobox
-              id={'kø'}
+              id={'queue'}
               label="Meldingskø"
-              {...field}
+              name={field.name}
+              ref={field.ref}
+              onToggleSelected={(option, isSelected) => {
+                if (isSelected) {
+                  field.onChange(option);
+                }
+              }}
               error={formErrors.queue?.message}
               options={queues}
               shouldAutocomplete
@@ -59,10 +65,12 @@ export const TpsMeldingerPage = () => {
           rules={{ required: 'XML melding kan ikke være tom' }}
           name="melding"
           render={({ field }) => (
-            <Textarea label={'XML melding'}
-                      id={'melding'}
-                      {...field}
-                      error={formErrors.melding?.message} />
+            <Textarea
+              label={'XML melding'}
+              id={'melding'}
+              {...field}
+              error={formErrors.melding?.message}
+            />
           )}
         />
         <div>
