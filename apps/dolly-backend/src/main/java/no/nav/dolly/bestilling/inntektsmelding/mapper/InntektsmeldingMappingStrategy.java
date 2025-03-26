@@ -104,7 +104,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                         inntektsmelding.getAvsendersystem().setSystemnavn("Dolly");
                         inntektsmelding.getAvsendersystem().setSystemversjon("2.0");
 
-                        inntektsmelding.setStartdatoForeldrepengeperiode(toLocalDateTime(rsInntektsmelding.getStartdatoForeldrepengeperiode()));
+                        inntektsmelding.setStartdatoForeldrepengeperiode(nonNull(rsInntektsmelding.getStartdatoForeldrepengeperiode())?
+                                rsInntektsmelding.getStartdatoForeldrepengeperiode().toString() : null);
 
                         inntektsmelding.setArbeidsforhold(mapperFacade.map(rsInntektsmelding.getArbeidsforhold(), RsArbeidsforhold.class));
 

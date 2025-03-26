@@ -90,7 +90,8 @@ public class XmlInntektsmelding201812 {
                         SykepengerIArbeidsgiverperioden.class,
                         createSykepengerIArbeidsgiverperioden(melding.getSykepengerIArbeidsgiverperioden())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "startdatoForeldrepengerperiode"),
-                        LocalDate.class, toLocalDate(melding.getStartdatoForeldrepengeperiode())),
+                        LocalDate.class, nonNull(melding.getStartdatoForeldrepengeperiode()) ?
+                        LocalDate.parse(melding.getStartdatoForeldrepengeperiode()) : null),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "opphoerAvNaturalyrelseListe"),
                         OpphoerAvNaturalytelseListe.class,
                         createOpphoerAvNaturalytelseListe(melding.getOpphoerAvNaturalytelseListe())),
