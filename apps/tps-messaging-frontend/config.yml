@@ -17,6 +17,7 @@ spec:
       claims:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
+          - id: 21c9abee-4bc7-4077-9aba-6049c760d094
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30

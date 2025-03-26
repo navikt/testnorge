@@ -34,7 +34,14 @@ export const TpsMeldingerPage = () => {
 
   if (loading) return <p>Henter køer...</p>;
 
-  if (error) return <p>Noe gikk galt, kontakt team Dolly...</p>;
+  if (error)
+    return (
+      <Alert variant={'error'}>
+        Noe gikk galt... Ta kontakt med team{' '}
+        <a href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</a> på Slack eller på epost
+        dolly@nav.no.
+      </Alert>
+    );
 
   return (
     <Page>
