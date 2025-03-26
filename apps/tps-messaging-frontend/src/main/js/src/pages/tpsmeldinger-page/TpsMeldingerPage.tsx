@@ -4,17 +4,17 @@ import { useTpsMessagingXml } from '../../hooks/useTpsMessaging';
 import { Controller, useForm } from 'react-hook-form';
 import { sendTpsMelding } from '../../service/SendTpsMeldingService';
 import { Alert, Button, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
+import { XMLValidator } from 'fast-xml-parser';
+import PrettyCode from '../../components/PrettyCode';
 
 export const TpsMeldingerPage = () => {
   const onValidSubmit = (values: any) => {
     sendTpsMelding(values.queue, values.melding).then((response) => {
       setSuccessMessage(response);
-      reset();
     });
   };
 
   const {
-    reset,
     handleSubmit,
     control,
     formState: { errors: formErrors },
@@ -41,7 +41,7 @@ export const TpsMeldingerPage = () => {
       <VStack as="form" gap="4" onSubmit={handleSubmit(onValidSubmit)}>
         <Controller
           control={control}
-          rules={{ required: 'Du må velge minst en kø.' }}
+          rules={{ required: 'Du må velge en kø.' }}
           name="queue"
           render={({ field }) => (
             <UNSAFE_Combobox
@@ -55,18 +55,33 @@ export const TpsMeldingerPage = () => {
                 }
               }}
               error={formErrors.queue?.message}
-              options={queues}
+              options={queues || []}
+              allowNewValues
               shouldAutocomplete
             />
           )}
         />
         <Controller
           control={control}
-          rules={{ required: 'XML melding kan ikke være tom' }}
+          rules={{
+            required: 'Melding kan ikke være tom',
+            validate: {
+              xmlFormat: (value, formValues) => {
+                if (!value || !formValues.queue?.includes('xml')) {
+                  return true;
+                }
+                const result = XMLValidator.validate(value);
+                return (
+                  result === true ||
+                  'Ugyldig XML-format. Kontroller at XML-koden er korrekt formatert, eller velg en kø som ikke krever XML.'
+                );
+              },
+            },
+          }}
           name="melding"
           render={({ field }) => (
             <Textarea
-              label={'XML melding'}
+              label={'TPS melding'}
               id={'melding'}
               {...field}
               error={formErrors.melding?.message}
@@ -76,7 +91,15 @@ export const TpsMeldingerPage = () => {
         <div>
           <Button type="submit">Send inn</Button>
         </div>
-        {successMessage && <Alert variant={'success'}>{successMessage}</Alert>}
+        {successMessage && (
+          <Alert closeButton={true} variant={'success'}>
+            {XMLValidator.validate(successMessage) ? (
+              <PrettyCode codeString={successMessage} language="xml" />
+            ) : (
+              successMessage
+            )}
+          </Alert>
+        )}
       </VStack>
     </Page>
   );
