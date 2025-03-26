@@ -10,7 +10,7 @@ export const TpsMeldingerPage = () => {
 
   const onValidSubmit = (values: any) => {
     sendTpsMelding(values.queue, values.message).then(response => {
-      setSuccessMessage('Melding sendt! ' + r);
+      setSuccessMessage('Melding sendt! ' + response);
     });
   };
 
