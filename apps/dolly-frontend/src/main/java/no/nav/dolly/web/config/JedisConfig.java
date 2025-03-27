@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile({"prod", "dev", "idporten"})
+@Profile("idporten")
 @Import(OidcRedisSessionConfiguration.class)
 class JedisConfig {
 
