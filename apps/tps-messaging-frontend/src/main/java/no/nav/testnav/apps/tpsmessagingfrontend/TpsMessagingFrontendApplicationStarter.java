@@ -26,8 +26,8 @@ import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
+        FrontendConfig.class,
         SecureOAuth2ServerToServerConfiguration.class,
-        FrontendConfig.class
 })
 @SpringBootApplication
 @EnableWebFluxSecurity
