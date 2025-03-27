@@ -58,6 +58,9 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
             }
         }
 
+        if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(person))) {
+            person.setDeltBosted(null);
+        }
         return person.getDeltBosted();
     }
 
@@ -91,7 +94,14 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                     .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
                     .collect(Collectors.toSet());
 
-
+           personRepository.findByIdentIn(barna, Pageable.unpaged()).stream()
+                   .map(DbPerson::getPerson)
+                   .filter(person -> person.getForelderBarnRelasjon().stream()
+                           .anyMatch(forelder ->
+                                   forelder.getIdentForRelasjon().equals(foreldre.getFirst().getIdent()) ||
+                                   forelder.getIdentForRelasjon().equals(foreldre.get(1).getIdent())))
+                   .forEach(person -> person.getDeltBosted()
+                           .addFirst(mapperFacade.map(deltBosted, DeltBostedDTO.class)));
 
         } else {
             // DeltBosted for barn, settes på barnet
@@ -269,7 +279,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                 .filter(Objects::nonNull)
                 .toList();
 
-        if (artifact.countAdresser() != 1 ||
+        if (artifact.countAdresser() > 1 ||
                 (adresser.size() == 2 && isEqualAdresse(adresser.get(0), adresser.get(1)))) {
             throw new InvalidRequestException(VALIDATION_ADRESSER_ERROR);
         }
