@@ -90,21 +90,23 @@ public class BrukerService {
         saveGruppe(gruppe);
         gruppe.getFavorisertAv().remove(bruker);
 
-        return  bruker;
+        return bruker;
     }
 
+    @Transactional(readOnly = true)
     public List<Bruker> fetchBrukere() {
 
-        var bruker = fetchOrCreateBruker();
-        if (bruker.getBrukertype() == AZURE) {
+        var brukeren = fetchOrCreateBruker();log.info("Hentet current bruker: id {} brukertype {}", brukeren.getBrukerId(), brukeren.getBrukertype());
 
+        if (brukeren.getBrukertype() == AZURE) {
             return brukerRepository.findAllByOrderById();
-        } else {
 
-            return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+        } else {
+            var brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
                     .map(TilgangDTO::getBrukere)
-                    .map(brukerRepository::findAllByBrukerIdIn)
                     .block();
+
+            return brukerRepository.findAllByBrukerIdInOrderByBrukernavn(brukere);
         }
     }
 
