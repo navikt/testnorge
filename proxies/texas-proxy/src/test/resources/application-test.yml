@@ -1,0 +1,3 @@
+NAIS_TOKEN_ENDPOINT: http://localhost:${wiremock.server.port}/api/v1/token
+NAIS_TOKEN_EXCHANGE_ENDPOINT: http://localhost:${wiremock.server.port}/api/v1/token/exchange
+NAIS_TOKEN_INTROSPECTION_ENDPOINT: http://localhost:${wiremock.server.port}/api/v1/introspect

@@ -1,0 +1,20 @@
+name: texas-proxy
+
+on:
+  push:
+    paths:
+      - "plugins/**"
+      - "libs/testing/**"
+      - "proxies/texas-proxy/**"
+      - ".github/workflows/proxy.texas-proxy.yml"
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "proxies/texas-proxy"
+      deploy-tag: "#deploy-texas-proxy"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
