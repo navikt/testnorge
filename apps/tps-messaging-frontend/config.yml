@@ -15,12 +15,12 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-tps-messaging.intern.dev.nav.no/login/oauth2/code/aad"
+        - "https://testnav-tps-messaging.ekstern.dev.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
-          - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
-          - id: 21c9abee-4bc7-4077-9aba-6049c760d094
+          - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c # Dolly team
+          - id: 21c9abee-4bc7-4077-9aba-6049c760d094 # Tps messaging frontend access
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30
@@ -54,5 +54,4 @@ spec:
       memory: 2048Mi
   image: "{{image}}"
   ingresses:
-    - "https://testnav-tps-messaging.intern.dev.nav.no"
     - "https://testnav-tps-messaging.ekstern.dev.nav.no"
