@@ -20,7 +20,7 @@ public class NaturalYtelseDetaljerDTO implements ToXmlElement<NaturalytelseDetal
     @JsonProperty
     private String naturalytelseType;
     @JsonProperty
-    private LocalDate fom;
+    private String fom;
     @JsonProperty
     private Double beloepPrMnd;
 

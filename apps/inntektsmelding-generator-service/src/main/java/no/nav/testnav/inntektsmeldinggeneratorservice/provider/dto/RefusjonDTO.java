@@ -18,7 +18,7 @@ public class RefusjonDTO implements ToXmlElement<Refusjon> {
     @JsonProperty
     private Double refusjonsbeloepPrMnd;
     @JsonProperty
-    private LocalDate refusjonsopphoersdato;
+    private String refusjonsopphoersdato;
     @JsonProperty
     private List<EndringIRefusjonDTO> endringIRefusjonListe;
 
