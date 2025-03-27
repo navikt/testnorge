@@ -1,8 +1,8 @@
-package no.nav.dolly.budpro.texas;
+package no.nav.dolly.libs.texas;
 
 public class TexasException extends RuntimeException {
 
-    TexasException(String message) {
+    public TexasException(String message) {
         super(message);
     }
 

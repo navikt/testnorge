@@ -1,10 +1,11 @@
-package no.nav.dolly.budpro.texas;
+package no.nav.dolly.libs.texas;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,9 @@ class TexasConsumers {
     private List<TexasConsumer> consumers;
 
     public Optional<TexasConsumer> get(String name) {
-        return consumers
+        return Optional
+                .ofNullable(consumers)
+                .orElse(Collections.emptyList())
                 .stream()
                 .filter(consumer -> consumer.getName().equals(name))
                 .findFirst();

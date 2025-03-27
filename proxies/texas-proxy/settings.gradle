@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = "texas-proxy"
 
+includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/testing"
 includeBuild "../../plugins/java"
 

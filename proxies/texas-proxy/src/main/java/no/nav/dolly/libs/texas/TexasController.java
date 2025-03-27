@@ -1,9 +1,7 @@
-package no.nav.dolly.budpro.texas;
+package no.nav.dolly.libs.texas;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.libs.texas.Texas;
-import no.nav.dolly.libs.texas.TexasToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,4 +1,4 @@
-package no.nav.dolly.budpro.texas;
+package no.nav.dolly.libs.texas;
 
 import lombok.Getter;
 import lombok.Setter;

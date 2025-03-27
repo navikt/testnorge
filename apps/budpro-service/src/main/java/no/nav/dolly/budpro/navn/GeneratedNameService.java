@@ -2,7 +2,7 @@ package no.nav.dolly.budpro.navn;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.budpro.texas.Texas;
+import no.nav.dolly.libs.texas.Texas;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

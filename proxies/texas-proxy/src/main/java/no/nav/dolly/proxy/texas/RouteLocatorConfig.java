@@ -32,9 +32,6 @@ class RouteLocatorConfig {
         return builder
                 .routes()
                 .route(r -> r
-                        .path("/api/v1/token")
-                                .uri(tokenEndpoint))
-                .route(r -> r
                         .path("/api/v1/token/exchange")
                         .uri(tokenExchangeEndpoint))
                 .route(r -> r
