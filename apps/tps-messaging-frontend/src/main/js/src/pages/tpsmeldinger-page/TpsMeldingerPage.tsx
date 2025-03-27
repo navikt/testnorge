@@ -3,10 +3,24 @@ import { Page } from '@navikt/dolly-komponenter';
 import { useTpsMessagingXml } from '../../hooks/useTpsMessaging';
 import { Controller, useForm } from 'react-hook-form';
 import { sendTpsMelding } from '../../service/SendTpsMeldingService';
-import { Alert, Button, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
+import { Alert, Button, CopyButton, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import { XMLValidator } from 'fast-xml-parser';
 import PrettyCode from '../../components/PrettyCode';
 import AlertWithCloseButton from '../../components/AlertWithCloseButton';
+
+const xmlQueueDefaultValue =
+  '<?xml version="1.0" encoding="ISO-8859-1"?>\n' +
+  '<tpsPersonData>\n' +
+  '<tpsServiceRutine>\n' +
+  '<serviceRutinenavn>FS03-FDNUMMER-PERSDATA-O</serviceRutinenavn>\n' +
+  '<fnr>12345678901</fnr>\n' +
+  '<aksjonsDato></aksjonsDato>\n' +
+  '<aksjonsKode>A</aksjonsKode>\n' +
+  '<aksjonsKode2>0</aksjonsKode2>\n' +
+  '</tpsServiceRutine>\n' +
+  '</tpsPersonData>';
+
+const infoQueueDefaultValue = 'FS03-FDNUMMER-PERSDATA-O;12345678901;;A;0';
 
 export const TpsMeldingerPage = () => {
   const onValidSubmit = (values: any) => {
@@ -24,6 +38,7 @@ export const TpsMeldingerPage = () => {
   };
 
   const {
+    setValue,
     handleSubmit,
     control,
     formState: { errors: formErrors },
@@ -70,6 +85,12 @@ export const TpsMeldingerPage = () => {
               onToggleSelected={(option, isSelected) => {
                 if (isSelected) {
                   field.onChange(option);
+                  setValue(
+                    'melding',
+                    option?.toUpperCase()?.includes('XML')
+                      ? xmlQueueDefaultValue
+                      : infoQueueDefaultValue,
+                  );
                 }
               }}
               error={formErrors.queue?.message}
@@ -85,7 +106,10 @@ export const TpsMeldingerPage = () => {
             required: 'Melding kan ikke være tom',
             validate: {
               xmlFormat: (value, formValues) => {
-                if (!value || !formValues.queue?.includes('xml')) {
+                if (
+                  !value ||
+                  (!formValues.queue?.includes('xml') && !formValues.queue?.includes('XML'))
+                ) {
                   return true;
                 }
                 const result = XMLValidator.validate(value);
@@ -112,13 +136,16 @@ export const TpsMeldingerPage = () => {
           </Button>
         </div>
         {successMessage && (
-          <AlertWithCloseButton variant={'success'}>
-            {XMLValidator.validate(successMessage) ? (
-              <PrettyCode codeString={successMessage} language="xml" />
-            ) : (
-              successMessage
-            )}
-          </AlertWithCloseButton>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <CopyButton copyText={successMessage} variant={'action'} />
+            <AlertWithCloseButton variant={'success'}>
+              {XMLValidator.validate(successMessage) ? (
+                <PrettyCode codeString={successMessage} language="xml" />
+              ) : (
+                <p>{successMessage}</p>
+              )}
+            </AlertWithCloseButton>
+          </div>
         )}
         {errorResponse && (
           <AlertWithCloseButton variant={'error'}>{errorResponse}</AlertWithCloseButton>

@@ -18,20 +18,20 @@ export default defineConfig(({ mode }) => ({
       '~': resolve(__dirname, './src'),
     },
   },
-  server: mode === 'local-dev' && {
-    proxy: {
-      '/oauth2/authorization/aad': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/tps-messaging-service/api/v1': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-    port: 3000,
-  },
+  // server: mode === 'local-dev' && {
+  //   proxy: {
+  //     '/oauth2/authorization/aad': {
+  //       target: 'http://localhost:8080',
+  //       changeOrigin: true,
+  //       secure: false,
+  //     },
+  //     '/tps-messaging-service/api/v1': {
+  //       target: 'http://localhost:8080',
+  //       changeOrigin: true,
+  //       secure: false,
+  //     },
+  //   },
+  //   port: 3000,
+  // },
   plugins: [react(), svgr(), viteTsconfigPaths()],
 }));

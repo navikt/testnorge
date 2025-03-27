@@ -7,7 +7,10 @@ import App from './App';
 async function main() {
   if (process.env.NODE_ENV === 'development') {
     const { worker } = await import('../__tests__/mocks/browser');
-    worker.start({ onUnhandledRequest: 'bypass' });
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+    });
+    console.log('MSW initialized');
   }
 }
 
