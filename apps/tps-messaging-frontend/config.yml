@@ -55,3 +55,4 @@ spec:
   image: "{{image}}"
   ingresses:
     - "https://testnav-tps-messaging.intern.dev.nav.no"
+    - "https://testnav-tps-messaging.ekstern.dev.nav.no"
