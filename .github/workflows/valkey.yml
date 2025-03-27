@@ -1,16 +1,16 @@
-name: Deploy redis
+name: Deploy Valkey
 
 on:
   push:
     branches:
       - master
     paths:
-      - '.nais/redis.yml'
+      - '.nais/valkey.yml'
   workflow_dispatch:
 
 jobs:
-  deploy-redis:
-    name: Deploy redis
+  deploy:
+    name: Deploy Valkey
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,4 +20,4 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: ".nais/redis.yml"
+          RESOURCE: ".nais/valkey.yml"
