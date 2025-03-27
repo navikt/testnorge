@@ -91,6 +91,8 @@ export const TpsMeldingerPage = () => {
                       ? xmlQueueDefaultValue
                       : infoQueueDefaultValue,
                   );
+                  setSuccessMessage('');
+                  setErrorResponse('');
                 }
               }}
               error={formErrors.queue?.message}
@@ -131,7 +133,15 @@ export const TpsMeldingerPage = () => {
           )}
         />
         <div>
-          <Button type="submit" loading={isSending} disabled={isSending}>
+          <Button
+            onClick={() => {
+              setSuccessMessage('');
+              setErrorResponse('');
+            }}
+            type="submit"
+            loading={isSending}
+            disabled={isSending}
+          >
             Send inn
           </Button>
         </div>
