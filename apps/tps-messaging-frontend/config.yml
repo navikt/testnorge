@@ -23,8 +23,9 @@ spec:
           - id: 21c9abee-4bc7-4077-9aba-6049c760d094 # Tps messaging frontend access
   liveness:
     path: /internal/health/liveness
-    periodSeconds: 30
-    initialDelay: 30
+    initialDelay: 20
+    periodSeconds: 2
+    failureThreshold: 140
   observability:
     logging:
       destinations:
@@ -34,7 +35,9 @@ spec:
       runtime: java
   readiness:
     path: /internal/health/readiness
-    initialDelay: 30
+    initialDelay: 20
+    periodSeconds: 2
+    failureThreshold: 140
   prometheus:
     enabled: true
     path: /internal/metrics
