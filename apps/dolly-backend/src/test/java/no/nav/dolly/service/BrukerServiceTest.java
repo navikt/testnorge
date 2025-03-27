@@ -9,7 +9,6 @@ import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -71,9 +70,9 @@ class BrukerServiceTest {
                 brukerService.fetchBruker(BRUKERID));
     }
 
-    @Disabled
     @Test
-    void getBruker_KallerRepoHentBrukere() {
+    void fetchBrukere() {
+        when(brukerRepository.save(any())).thenReturn(Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
         brukerService.fetchBrukere();
         verify(brukerRepository).findAllByOrderById();
     }
@@ -103,8 +102,6 @@ class BrukerServiceTest {
 
         Bruker hentetBruker = brukerService.leggTilFavoritt(ID);
 
-        verify(brukerRepository).save(bruker);
-
         assertThat(hentetBruker, is(bruker));
         assertThat(hentetBruker.getFavoritter().size(), is(1));
 
@@ -125,13 +122,11 @@ class BrukerServiceTest {
         testgruppe.setFavorisertAv(new HashSet<>(singletonList(bruker)));
         testgruppe2.setFavorisertAv(new HashSet<>(singletonList(bruker)));
 
-        when(testgruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
+        when(testgruppeRepository.findById(ID)).thenReturn(Optional.of(testgruppe));
         when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
         Bruker hentetBruker = brukerService.fjernFavoritt(ID);
-
-        verify(brukerRepository).save(bruker);
 
         assertThat(hentetBruker, is(bruker));
         assertThat(hentetBruker.getFavoritter().size(), is(1));
@@ -142,15 +137,6 @@ class BrukerServiceTest {
         )));
 
         assertThat(testgruppe.getFavorisertAv().isEmpty(), is(true));
-    }
-
-    @Disabled
-    @Test
-    void fetchBrukere() {
-
-        brukerService.fetchBrukere();
-
-        verify(brukerRepository).findAllByOrderById();
     }
 
     @Test

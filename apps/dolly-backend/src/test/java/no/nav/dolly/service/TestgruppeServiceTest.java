@@ -24,7 +24,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -32,19 +31,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -143,27 +136,6 @@ class TestgruppeServiceTest {
     }
 
     @Test
-    void fetchTestgrupperByTFavoritterOfBruker() {
-        Testgruppe tg1 = Testgruppe.builder().id(1L).navn("test1").build();
-        Testgruppe tg2 = Testgruppe.builder().id(2L).navn("test2").build();
-        Testgruppe tg3 = Testgruppe.builder().id(3L).navn("test3").build();
-
-        Bruker bruker = Bruker.builder()
-                .favoritter(new HashSet<>(asList(tg1, tg2, tg3)))
-                .navIdent(BRUKERID)
-                .build();
-
-        when(brukerService.fetchBruker(any())).thenReturn(bruker);
-        when(testgruppeRepository.findAllByOpprettetAvIn(anyList(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(tg1, tg2, tg3)));
-
-        Page<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(0, 10, BRUKERID);
-
-        assertThat(grupper.getContent(), hasItem(hasProperty("id", equalTo(1L))));
-        assertThat(grupper.getContent(), hasItem(hasProperty("id", equalTo(2L))));
-        assertThat(grupper.getContent(), hasItem(hasProperty("id", equalTo(3L))));
-    }
-
-    @Test
     void saveGruppeTilDB_returnererTestgruppeHvisTestgruppeFinnes() {
         Testgruppe g = new Testgruppe();
         when(testgruppeRepository.save(any())).thenReturn(g);
@@ -209,18 +181,11 @@ class TestgruppeServiceTest {
     }
 
     @Test
-    void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
-        Assertions.assertThrows(NotFoundException.class, () ->
-                testgruppeService.fetchGrupperByIdsIn(singletonList(anyLong())));
-    }
-
-    @Test
     void oppdaterTestgruppe_sjekkAtDBKalles() {
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").build();
 
         when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
-        when(brukerService.fetchBruker(anyString())).thenReturn(Bruker.builder().navIdent("brukerId").build());
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
         verify(testgruppeRepository).save(testGruppe);
     }

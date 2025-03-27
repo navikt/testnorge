@@ -18,14 +18,10 @@ import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
-import static no.nav.dolly.domain.jpa.Bruker.Brukertype.BANKID;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -43,8 +39,7 @@ public class BrukerService {
     public Bruker fetchBruker(String brukerId) {
 
         return brukerRepository.findBrukerByBrukerId(brukerId)
-                .orElseGet(() -> brukerRepository.findBrukerByNavIdent(brukerId.toUpperCase())
-                        .orElseThrow(() -> new NotFoundException("Bruker ikke funnet")));
+                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
     }
 
     public Bruker fetchOrCreateBruker(String brukerId) {
@@ -54,9 +49,6 @@ public class BrukerService {
         }
         try {
             var bruker = fetchBruker(brukerId);
-            var brukere = brukerRepository.fetchEidAv(bruker);
-            bruker.getFavoritter().addAll(brukere.stream().map(Bruker::getFavoritter)
-                    .flatMap(Collection::stream).collect(Collectors.toSet()));
 
             oppdaterBrukernavn(bruker);
 
@@ -72,7 +64,7 @@ public class BrukerService {
         return fetchOrCreateBruker(null);
     }
 
-    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
     public Bruker createBruker() {
         return brukerRepository.save(getAuthUser(getUserInfo));
     }
@@ -80,69 +72,40 @@ public class BrukerService {
     @Transactional
     public Bruker leggTilFavoritt(Long gruppeId) {
 
-        Bruker bruker = fetchBruker(getUserId(getUserInfo));
-        List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
-        brukere.add(bruker);
-        if (brukere.stream().map(Bruker::getFavoritter)
-                .flatMap(Collection::stream)
-                .noneMatch(testgruppe -> testgruppe.getId().equals(gruppeId))) {
+        var bruker = fetchBruker(getUserId(getUserInfo));
 
-            Testgruppe gruppe = fetchTestgruppe(gruppeId);
-            gruppe.getFavorisertAv().add(bruker);
-            bruker.getFavoritter().add(gruppe);
-        }
+        var gruppe = fetchTestgruppe(gruppeId);
+        gruppe.getFavorisertAv().add(bruker);
+        bruker.getFavoritter().add(gruppe);
 
-        return brukerRepository.save(bruker);
+        return bruker;
     }
 
     public Bruker fjernFavoritt(Long gruppeId) {
 
-        Bruker bruker = fetchBruker(getUserId(getUserInfo));
-        Testgruppe gruppe = fetchTestgruppe(gruppeId);
-
-        List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
-        brukere.stream()
-                .filter(bruker1 -> gruppe.getFavorisertAv().stream().anyMatch(bruker2 -> bruker2.equals(bruker1)))
-                .forEach(bruker1 -> {
-                    gruppe.getFavorisertAv().remove(bruker1);
-                    bruker1.getFavoritter().remove(gruppe);
-                    brukerRepository.save(bruker1);
-                });
+        var bruker = fetchBruker(getUserId(getUserInfo));
+        var gruppe = fetchTestgruppe(gruppeId);
 
         bruker.getFavoritter().remove(gruppe);
         saveGruppe(gruppe);
         gruppe.getFavorisertAv().remove(bruker);
-        return brukerRepository.save(bruker);
+
+        return  bruker;
     }
 
     public List<Bruker> fetchBrukere() {
 
-        List<Bruker> brukere;
+        var bruker = fetchOrCreateBruker();
+        if (bruker.getBrukertype() == AZURE) {
 
-        var brukeren = fetchOrCreateBruker();
-        if (brukeren.getBrukertype() != BANKID) {
-
-            brukere = brukerRepository.findAllByOrderById();
+            return brukerRepository.findAllByOrderById();
         } else {
 
-            brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
+            return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                     .map(TilgangDTO::getBrukere)
                     .map(brukerRepository::findAllByBrukerIdIn)
                     .block();
         }
-
-        var brukereMap = brukere.stream()
-                .collect(Collectors.toMap(Bruker::getId, bruker -> bruker));
-
-        brukereMap.values().stream()
-                .filter(bruker -> nonNull(bruker.getEidAv()))
-                .forEach(bruker -> brukereMap.get(bruker.getEidAv().getId())
-                        .getFavoritter()
-                        .addAll(bruker.getFavoritter()));
-
-        return brukereMap.values().stream()
-                .filter(bruker -> isNull(bruker.getEidAv()))
-                .toList();
     }
 
     public void sletteBrukerFavoritterByGroupId(Long groupId) {
@@ -158,10 +121,6 @@ public class BrukerService {
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getMessage(), e);
         }
-    }
-
-    public List<Bruker> fetchEidAv(Bruker bruker) {
-        return brukerRepository.fetchEidAv(bruker);
     }
 
     private void oppdaterBrukernavn(Bruker bruker) {

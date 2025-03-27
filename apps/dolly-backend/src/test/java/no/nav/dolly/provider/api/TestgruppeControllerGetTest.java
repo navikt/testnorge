@@ -54,11 +54,8 @@ class TestgruppeControllerGetTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.antallElementer").value(2))
                 .andExpect(jsonPath("$.contents.length()").value(2))
-                .andExpect(jsonPath("$.contents[?(@.favorittIGruppen == false)].navn").value(testgruppe1.getNavn()))
-                .andExpect(jsonPath("$.contents[?(@.favorittIGruppen == true)].navn").value(testgruppe2.getNavn()))
                 .andExpect(jsonPath("$.favoritter.length()").value(1))
-                .andExpect(jsonPath("$.favoritter..navn").value(testgruppe2.getNavn()))
-                .andExpect(jsonPath("$.favoritter..favorittIGruppen").value(true));
+                .andExpect(jsonPath("$.favoritter..navn").value(testgruppe2.getNavn()));
 
     }
 

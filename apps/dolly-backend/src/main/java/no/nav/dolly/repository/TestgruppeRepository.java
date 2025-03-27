@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +20,9 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
 
     Optional<TestgruppeUtenIdenter> findByIdOrderById(Long id);
 
-    List<Testgruppe> findAllById(Iterable<Long> ids);
-
     Testgruppe save(Testgruppe testgruppe);
 
-    Page<Testgruppe> findAllByOpprettetAvIn(Collection<Bruker> brukere, Pageable pageable);
+    Page<Testgruppe> findAllByOpprettetAv(Bruker brukere, Pageable pageable);
 
     Page<Testgruppe> findAllByOrderByIdDesc(Pageable pageable);
 
