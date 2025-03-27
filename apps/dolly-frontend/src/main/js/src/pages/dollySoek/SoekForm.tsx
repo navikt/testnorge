@@ -77,14 +77,16 @@ const initialValues = {
 }
 
 export const SoekForm = () => {
-	const [request, setRequest] = useState(null as any)
+	const [request, setRequest] = useState(initialValues)
 	const [visAntall, setVisAntall] = useState(10)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
+
 	const { result, loading, error, mutate } = usePersonerSearch(request)
 	const { typer, loading: loadingTyper } = usePersonerTyper()
 
 	const personPath = 'personRequest'
 	const adressePath = 'personRequest.adresse'
+	const maxTotalHits = 10000
 
 	const initialValuesClone = _.cloneDeep(initialValues)
 	const formMethods = useForm({
@@ -99,17 +101,7 @@ export const SoekForm = () => {
 		setValue('side', 0)
 		setValue('seed', null)
 		const updatedRequest = watch()
-		if (
-			requestIsEmpty({
-				personRequest: updatedRequest.personRequest,
-				registreRequest: updatedRequest.registreRequest,
-			})
-		) {
-			setRequest(null)
-			setVisAntall(10)
-		} else {
-			setRequest(updatedRequest)
-		}
+		setRequest(updatedRequest)
 		mutate().then(() => setSoekPaagaar(false))
 	}
 
@@ -120,7 +112,7 @@ export const SoekForm = () => {
 
 	const handleChangeSide = (side: number) => {
 		setValue('side', side - 1)
-		setValue('seed', result.seed)
+		setValue('seed', result?.seed)
 		const updatedRequest = watch()
 		setRequest(updatedRequest)
 		mutate()
@@ -129,7 +121,7 @@ export const SoekForm = () => {
 	const handleChangeAntall = (antall: { value: number }) => {
 		setValue('antall', antall.value)
 		setValue('side', 0)
-		setValue('seed', result.seed)
+		setValue('seed', result?.seed)
 		setVisAntall(antall.value)
 		const updatedRequest = watch()
 		setRequest(updatedRequest)
@@ -137,6 +129,7 @@ export const SoekForm = () => {
 	}
 
 	const emptyCategory = (paths: string[]) => {
+		setSoekPaagaar(true)
 		paths.forEach((path) => {
 			setValue(path, _.get(initialValues, path))
 			if (path === 'personRequest.harSkjerming') {
@@ -149,18 +142,24 @@ export const SoekForm = () => {
 		setValue('side', 0)
 		setValue('seed', null)
 		const updatedRequest = watch()
-		if (
-			requestIsEmpty({
-				personRequest: updatedRequest.personRequest,
-				registreRequest: updatedRequest.registreRequest,
-			})
-		) {
-			setRequest(null)
-			setVisAntall(10)
-		} else {
-			setRequest(updatedRequest)
-		}
-		mutate()
+		setRequest(updatedRequest)
+		mutate().then(() => setSoekPaagaar(false))
+	}
+
+	const emptySearch = () => {
+		setSoekPaagaar(true)
+		setRequest(initialValues)
+		reset()
+		mutate().then(() => setSoekPaagaar(false))
+	}
+
+	const getNewResult = () => {
+		setSoekPaagaar(true)
+		setValue('side', 0)
+		setValue('seed', null)
+		const updatedRequest = watch()
+		setRequest(updatedRequest)
+		mutate().then(() => setSoekPaagaar(false))
 	}
 
 	const antallFagsystemer = watch('registreRequest')?.length
@@ -442,13 +441,14 @@ export const SoekForm = () => {
 															handleChange(val.target.checked, `${adressePath}.harKontaktadresse`)
 														}
 													/>
-													<FormCheckbox
-														name={`${adressePath}.harMatrikkelAdresse`}
-														label="Har matrikkeladresse"
-														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${adressePath}.harMatrikkelAdresse`)
-														}
-													/>
+													{/*//Soek paa matrikkeladresse fungerer for tiden ikke*/}
+													{/*<FormCheckbox*/}
+													{/*	name={`${adressePath}.harMatrikkelAdresse`}*/}
+													{/*	label="Har matrikkeladresse"*/}
+													{/*	onChange={(val: SyntheticEvent) =>*/}
+													{/*		handleChange(val.target.checked, `${adressePath}.harMatrikkelAdresse`)*/}
+													{/*	}*/}
+													{/*/>*/}
 													<FormCheckbox
 														name={`${adressePath}.harUtenlandsadresse`}
 														label="Har utenlandsadresse"
@@ -487,7 +487,9 @@ export const SoekForm = () => {
 												<SoekKategori>
 													<FormSelect
 														name={`${personPath}.sivilstand`}
-														options={Options('sivilstandType')}
+														options={Options('sivilstandType')?.filter(
+															(item) => item.value !== 'SAMBOER',
+														)}
 														size="large"
 														placeholder="Velg sivilstand ..."
 														onChange={(val: SyntheticEvent) =>
@@ -625,9 +627,10 @@ export const SoekForm = () => {
 								</div>
 								<Buttons className="flexbox--flex-wrap">
 									<Button
-										onClick={handleSubmit}
+										onClick={getNewResult}
 										variant="primary"
-										disabled={loading || soekPaagaar || !result}
+										disabled={loading || soekPaagaar || !result || result?.totalHits < maxTotalHits}
+										title={result?.totalHits < maxTotalHits ? 'Alle treff vises' : ''}
 										loading={loading || soekPaagaar}
 										type="submit"
 									>
@@ -635,18 +638,15 @@ export const SoekForm = () => {
 									</Button>
 									<Button
 										data-testid={TestComponentSelectors.BUTTON_NULLSTILL_SOEK}
-										onClick={() => {
-											setRequest(null)
-											reset()
-										}}
+										onClick={emptySearch}
 										variant="secondary"
 										disabled={!result}
 									>
-										Nullstill søk
+										Tøm felter
 									</Button>
 									{result && !loading && !soekPaagaar && (
 										<p style={{ marginRight: 0, marginLeft: 'auto' }}>
-											Viser {result?.personer?.length} av totalt {result?.totalHits} treff
+											Viser {result?.personer?.length} av {result?.totalHits} treff
 										</p>
 									)}
 								</Buttons>

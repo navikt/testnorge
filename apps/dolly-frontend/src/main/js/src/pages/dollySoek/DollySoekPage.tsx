@@ -10,8 +10,7 @@ export default () => {
 				<Title title="Søk etter personer i Dolly" />
 				<Hjelpetekst placement={bottom}>
 					Her kan du søke etter personer i Dolly ut fra ulike søkekriterier. Slik kan du gjenbruke
-					eksisterende personer til nye formål. Søket blir gjort mot bestillinger, og returnerer 10
-					tilfeldige personer som passer søkekriteriene.
+					eksisterende personer til nye formål.
 				</Hjelpetekst>
 			</div>
 			<SoekForm />
