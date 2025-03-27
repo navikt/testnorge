@@ -1,5 +1,6 @@
 package no.nav.dolly.web.provider.web;
 
+import io.valkey.Jedis;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -13,7 +14,6 @@ import org.springframework.web.server.session.DefaultWebSessionManager;
 import org.springframework.web.server.session.WebSessionManager;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
