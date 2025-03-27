@@ -6,8 +6,8 @@ import no.nav.testnav.apps.tpsmessagingfrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesessionsecurity.config.OidcInMemorySessionConfiguration;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,7 +26,7 @@ import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
-        OidcInMemorySessionConfiguration.class,
+        SecureOAuth2ServerToServerConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
@@ -56,7 +56,7 @@ public class TpsMessagingFrontendApplicationStarter {
         return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
                 .apply(exchange -> {
                     return tokenExchange
-                            .exchange(serverProperties, exchange)
+                            .exchange(serverProperties)
                             .map(AccessToken::getTokenValue);
                 });
     }
