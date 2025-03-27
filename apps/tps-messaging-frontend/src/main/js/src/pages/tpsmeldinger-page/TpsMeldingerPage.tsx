@@ -11,15 +11,16 @@ import AlertWithCloseButton from '../../components/AlertWithCloseButton';
 export const TpsMeldingerPage = () => {
   const onValidSubmit = (values: any) => {
     setIsSending(true);
+    setSuccessMessage('');
     setErrorResponse('');
     sendTpsMelding(values.queue, values.melding)
       .then((response) => {
         setSuccessMessage(response);
-        setIsSending(false);
       })
       .catch((error: Error) => {
         setErrorResponse(error?.message);
-      });
+      })
+      .finally(() => setIsSending(false));
   };
 
   const {
