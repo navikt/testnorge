@@ -31,11 +31,13 @@ spec:
     outbound:
       rules:
         - application: dolly-backend-dev
-        - application: dolly-dev-redis-session
         - application: generer-navn-service
         - application: testnav-adresse-service
+        - application: testnav-altinn3-tilgang-service
         - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-bruker-service-dev
+        - application: testnav-dolly-search-service
         - application: testnav-helsepersonell-service
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
@@ -44,17 +46,15 @@ spec:
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter-dev
-        - application: testnav-dolly-search-service
         - application: testnav-person-service
+        - application: testnav-skattekort-service
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service-dev
+        - application: testnav-yrkesskade-proxy
         - application: testnorge-profil-api-dev
         - application: testnorge-tilbakemelding-api
-        - application: testnav-skattekort-service
-        - application: testnav-yrkesskade-proxy
-        - application: testnav-altinn3-tilgang-service
-        - application: testnav-arbeidssoekerregisteret-proxy
+        - application: valkey-dolly-dev-session
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
