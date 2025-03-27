@@ -59,8 +59,8 @@ jobs:
     if: inputs.workflow == 'frontend'
     uses: ./.github/workflows/common.workflow.frontend.yml
     permissions:
+      id-token: write
       packages: write
-
     with:
       cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"

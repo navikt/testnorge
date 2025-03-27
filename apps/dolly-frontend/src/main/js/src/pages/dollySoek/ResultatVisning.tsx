@@ -33,16 +33,6 @@ export const ResultatVisning = ({
 		)
 	}
 
-	if (_.isEmpty(resultat)) {
-		return (
-			<ContentContainer>
-				<Alert variant="info" size="small" inline>
-					Ingen søk er gjort
-				</Alert>
-			</ContentContainer>
-		)
-	}
-
 	if (resultat?.error || soekError) {
 		return (
 			<ContentContainer>
