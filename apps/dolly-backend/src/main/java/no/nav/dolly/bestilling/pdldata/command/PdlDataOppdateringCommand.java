@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -41,8 +40,8 @@ public class PdlDataOppdateringCommand implements Callable<Flux<PdlResponse>> {
                     HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
                     reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
                 })
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(body))
                 .retrieve()

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -33,7 +33,7 @@ public class PersonHentCommand implements Callable<Flux<PersonMiljoeDTO>> {
                         .queryParam(MILJOER_PARAM, miljoer)
                         .build())
                 .bodyValue(ident)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)
                 .map(resultat -> {

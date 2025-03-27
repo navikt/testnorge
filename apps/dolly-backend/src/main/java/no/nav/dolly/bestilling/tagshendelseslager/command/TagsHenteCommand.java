@@ -3,8 +3,7 @@ package no.nav.dolly.bestilling.tagshendelseslager.command;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -31,8 +30,8 @@ public class TagsHenteCommand implements Callable<Mono<JsonNode>> {
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header(PERSONIDENT, ident)
                 .retrieve()
                 .bodyToMono(JsonNode.class)

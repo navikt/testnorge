@@ -3,7 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.consumers.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -25,7 +25,7 @@ public class FinnesIDollyGetCommand implements Callable<Mono<FinnesDTO>> {
                         .path("/api/v1/ident/finnes")
                         .queryParam("identer", identer)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(FinnesDTO.class)
                 .retryWhen(WebClientError.is5xxException());

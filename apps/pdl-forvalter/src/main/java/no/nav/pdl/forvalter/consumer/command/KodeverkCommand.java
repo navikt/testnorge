@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,7 +31,7 @@ public class KodeverkCommand implements Callable<Mono<KodeverkDTO>> {
                         .queryParam("kodeverk", kodeverknavn)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(KodeverkDTO.class)
                 .doFinally(value -> log.info("Kodeverk {} hentet", kodeverknavn))

@@ -4,8 +4,7 @@ import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -29,8 +28,8 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
         return webClient
                 .delete()
                 .uri(PDL_FORVALTER_URL, ident)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .retryWhen(WebClientError.is5xxException())

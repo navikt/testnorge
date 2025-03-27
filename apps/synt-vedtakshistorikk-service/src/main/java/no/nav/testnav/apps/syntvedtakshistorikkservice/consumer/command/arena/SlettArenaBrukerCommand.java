@@ -5,13 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
-
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class SlettArenaBrukerCommand implements Callable<Mono<ResponseEntity<Jso
                         .queryParam("miljoe", miljoe)
                         .queryParam("personident", personident)
                         .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(Headers.CALL_ID, Headers.NAV_CALL_ID)
                 .header(Headers.CONSUMER_ID, Headers.NAV_CONSUMER_ID)
                 .retrieve()

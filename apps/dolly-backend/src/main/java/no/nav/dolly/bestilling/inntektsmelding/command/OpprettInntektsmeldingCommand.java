@@ -7,6 +7,8 @@ import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.Inntektsmeldin
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -28,8 +30,8 @@ public class OpprettInntektsmeldingCommand implements Callable<Flux<Inntektsmeld
         return webClient
                 .post()
                 .uri("/api/v1/inntektsmelding")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header("Nav-Call-Id", callId)
                 .bodyValue(request)
                 .retrieve()

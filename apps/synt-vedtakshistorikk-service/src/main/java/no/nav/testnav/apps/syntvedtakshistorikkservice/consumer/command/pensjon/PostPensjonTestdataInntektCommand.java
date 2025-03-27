@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataInntekt;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -21,7 +22,7 @@ public class PostPensjonTestdataInntektCommand implements Callable<Mono<PensjonT
 
     private final WebClient webClient;
     private final PensjonTestdataInntekt inntekt;
-    private final String idToken;
+    private final String token;
 
     @Override
     public Mono<PensjonTestdataResponse> call() {
@@ -32,7 +33,7 @@ public class PostPensjonTestdataInntektCommand implements Callable<Mono<PensjonT
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, "Bearer " + idToken)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromPublisher(Mono.just(inntekt), PensjonTestdataInntekt.class))
                 .retrieve()
                 .bodyToMono(PensjonTestdataResponse.class)

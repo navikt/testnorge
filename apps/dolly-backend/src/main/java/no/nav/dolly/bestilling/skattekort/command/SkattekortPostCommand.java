@@ -7,7 +7,7 @@ import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.dto.skattekortservice.v1.IdentifikatorForEnhetEllerPerson;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -20,7 +20,6 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.ACCEPT;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
@@ -42,8 +41,8 @@ public class SkattekortPostCommand implements Callable<Flux<String>> {
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(request)
                 .retrieve()
                 .bodyToFlux(String.class)

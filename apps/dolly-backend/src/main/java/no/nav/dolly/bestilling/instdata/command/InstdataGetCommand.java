@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -40,8 +40,8 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
                         .build())
                 .header(INST_IDENT, ident)
                 .header(HttpHeaders.ACCEPT, "application/json")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, List<Instdata>>>() {
                 })

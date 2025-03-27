@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.brukerservice.consumer.dto.AltinnBrukerRequest;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -24,7 +24,7 @@ public class GetBrukertilgangCommand implements Callable<Flux<OrganisasjonDTO>> 
     public Flux<OrganisasjonDTO> call() {
         return webClient.post()
                 .uri(builder -> builder.path("/api/v1/brukertilgang").build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(new AltinnBrukerRequest(ident))
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)

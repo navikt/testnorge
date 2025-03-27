@@ -3,7 +3,7 @@ package no.nav.dolly.web.consumers.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.web.consumers.dto.BrukerDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -21,7 +21,7 @@ public class GetBrukerCommand implements Callable<Mono<BrukerDTO>> {
         return webClient
                 .get()
                 .uri(builder -> builder.path("/api/v1/brukere").queryParam("organisasjonsnummer", orgnummer).build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(BrukerDTO.class)
                 .next()

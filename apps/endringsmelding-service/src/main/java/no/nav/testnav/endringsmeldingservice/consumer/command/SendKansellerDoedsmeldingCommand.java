@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -31,7 +31,7 @@ public class SendKansellerDoedsmeldingCommand implements Callable<Mono<Doedsmeld
                         .path("/api/v1/personer/doedsmelding")
                         .queryParam("miljoer", miljoer)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromValue(person))
                 .retrieve()
                 .bodyToMono(DoedsmeldingResponse.class)

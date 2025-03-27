@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,8 +35,8 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<HttpStatusCode>>
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("fnr", ident)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toBodilessEntity()
                 .map(ResponseEntity::getStatusCode)

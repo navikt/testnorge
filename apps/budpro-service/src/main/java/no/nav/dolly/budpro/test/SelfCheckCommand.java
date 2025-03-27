@@ -30,7 +30,7 @@ class SelfCheckCommand implements Callable<Mono<DummyDTO>> {
                         .path("/failure/get")
                         .queryParam("httpStatus", "402")
                         .build())
-                //.headers(WebClientHeaders.bearer(token))
+                //.headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(DummyDTO.class)
                 .retryWhen(WebClientError.is(HttpClientErrorException.class::isInstance))

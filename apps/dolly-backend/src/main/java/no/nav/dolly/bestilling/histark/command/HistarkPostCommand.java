@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,7 +13,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
 @Slf4j
@@ -35,7 +35,7 @@ public class HistarkPostCommand implements Callable<Mono<HistarkResponse>> {
                 .uri(builder ->
                         builder.path("/api/saksmapper/import") // requestParam metadata er overflødig
                                 .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(fromMultipartData(body))
                 .retrieve()

@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -41,8 +40,8 @@ public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingRespon
                         .path(PDL_TAGS_URL)
                         .queryParam(TAGS, tagVerdier)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(identer))
                 .retrieve()

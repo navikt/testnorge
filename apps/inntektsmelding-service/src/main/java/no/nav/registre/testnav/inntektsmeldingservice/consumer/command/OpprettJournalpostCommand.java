@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -12,8 +13,6 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @AllArgsConstructor
@@ -31,7 +30,7 @@ public class OpprettJournalpostCommand implements Callable<Mono<DokmotResponse>>
                 .post()
                 .uri(builder -> builder.path("/api/{miljo}/v1/journalpost").build(miljo))
                 .header("Nav-Call-Id", navCallId)
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .acceptCharset(StandardCharsets.UTF_8)
                 .body(BodyInserters.fromPublisher(Mono.just(request), DokmotRequest.class))
                 .retrieve()

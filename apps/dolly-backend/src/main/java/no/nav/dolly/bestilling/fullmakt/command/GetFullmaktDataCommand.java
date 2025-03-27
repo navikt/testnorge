@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -35,8 +34,8 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> 
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("fnr", ident)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(FullmaktResponse.class)
                 .doOnError(

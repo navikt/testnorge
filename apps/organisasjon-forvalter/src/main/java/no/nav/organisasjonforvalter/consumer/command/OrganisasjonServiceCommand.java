@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,7 +30,7 @@ public class OrganisasjonServiceCommand implements Callable<Flux<OrganisasjonDTO
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(STATUS_URL)
                         .build(orgnummer))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(MILJOE, environment)
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)

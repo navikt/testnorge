@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.joarkdokumentservice.consumer.dto.Response;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -28,7 +28,7 @@ public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
                 .uri(uriBuilder -> uriBuilder
                         .path("/{miljo}/graphql")
                         .build(miljo))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromValue(
                         GraphQLRequest.builder()
                                 .query(GraphQLRequest.getQueryFromFile("schema/safquery-journalpost.graphql"))

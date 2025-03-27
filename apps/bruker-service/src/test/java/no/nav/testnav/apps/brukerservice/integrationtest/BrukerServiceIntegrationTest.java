@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.integrationtest.client.TokendingsClient;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -76,7 +76,7 @@ class BrukerServiceIntegrationTest {
         var bruker = webClient
                 .post()
                 .uri("/api/v1/brukere")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
+                .headers(WebClientHeader.bearer(token.getTokenValue()))
                 .body(BodyInserters.fromValue(expected))
                 .retrieve()
                 .bodyToMono(BrukerDTO.class)
@@ -96,7 +96,7 @@ class BrukerServiceIntegrationTest {
         // Login user
         var userJwt = webClient.post()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}/token").build(bruker.id()))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
+                .headers(WebClientHeader.bearer(token.getTokenValue()))
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -109,8 +109,8 @@ class BrukerServiceIntegrationTest {
         // Change username
         webClient.patch()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}/brukernavn").build(bruker.id()))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
-                .header(UserConstant.USER_HEADER_JWT, userJwt)
+                .headers(WebClientHeader.bearer(token.getTokenValue()))
+                .headers(WebClientHeader.jwt(userJwt))
                 .body(BodyInserters.fromValue(
                         "new-username"
                 ))
@@ -126,8 +126,8 @@ class BrukerServiceIntegrationTest {
         // Get updated user
         var updatedUser = webClient.get()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}").build(bruker.id()))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
-                .header(UserConstant.USER_HEADER_JWT, userJwt)
+                .headers(WebClientHeader.bearer(token.getTokenValue()))
+                .headers(WebClientHeader.jwt(userJwt))
                 .retrieve()
                 .bodyToMono(BrukerDTO.class)
                 .block();
@@ -145,8 +145,8 @@ class BrukerServiceIntegrationTest {
         // Delete user
         webClient.delete()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}").build(bruker.id()))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
-                .header(UserConstant.USER_HEADER_JWT, userJwt)
+                .headers(WebClientHeader.bearer(token.getTokenValue()))
+                .headers(WebClientHeader.jwt(userJwt))
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
