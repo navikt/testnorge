@@ -3,7 +3,7 @@ import { Page } from '@navikt/dolly-komponenter';
 import { useTpsMessagingXml } from '../../hooks/useTpsMessaging';
 import { Controller, useForm } from 'react-hook-form';
 import { sendTpsMelding } from '../../service/SendTpsMeldingService';
-import { Alert, Button, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
+import { Alert, Button, CopyButton, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import { XMLValidator } from 'fast-xml-parser';
 import PrettyCode from '../../components/PrettyCode';
 import AlertWithCloseButton from '../../components/AlertWithCloseButton';
@@ -62,21 +62,24 @@ export const TpsMeldingerPage = () => {
           rules={{ required: 'Du må velge en kø.' }}
           name="queue"
           render={({ field }) => (
-            <UNSAFE_Combobox
-              id={'queue'}
-              label="Meldingskø"
-              name={field.name}
-              ref={field.ref}
-              onToggleSelected={(option, isSelected) => {
-                if (isSelected) {
-                  field.onChange(option);
-                }
-              }}
-              error={formErrors.queue?.message}
-              options={queues || []}
-              allowNewValues
-              shouldAutocomplete
-            />
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
+              <CopyButton copyText={field.value} />
+              <UNSAFE_Combobox
+                id={'queue'}
+                label="Meldingskø"
+                name={field.name}
+                ref={field.ref}
+                onToggleSelected={(option, isSelected) => {
+                  if (isSelected) {
+                    field.onChange(option);
+                  }
+                }}
+                error={formErrors.queue?.message}
+                options={queues || []}
+                allowNewValues
+                shouldAutocomplete
+              />
+            </div>
           )}
         />
         <Controller
@@ -121,7 +124,7 @@ export const TpsMeldingerPage = () => {
           </AlertWithCloseButton>
         )}
         {errorResponse && (
-          <AlertWithCloseButton variant={'error'}>errorResponse</AlertWithCloseButton>
+          <AlertWithCloseButton variant={'error'}>{errorResponse}</AlertWithCloseButton>
         )}
       </VStack>
     </Page>

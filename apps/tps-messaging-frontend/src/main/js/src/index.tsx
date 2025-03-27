@@ -4,10 +4,19 @@ import './index.css';
 import '@navikt/ds-css';
 import App from './App';
 
-const root = createRoot(document.getElementById('root'));
+async function main() {
+  if (process.env.NODE_ENV === 'development') {
+    const { worker } = await import('../__tests__/mocks/browser');
+    worker.start({ onUnhandledRequest: 'bypass' });
+  }
+}
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+main().then(() => {
+  const root = createRoot(document.getElementById('root'));
+
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  );
+});

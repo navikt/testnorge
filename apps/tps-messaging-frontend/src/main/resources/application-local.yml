@@ -20,7 +20,6 @@ spring:
         provider:
           aad:
             issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-
 consumers:
   tps-messaging-service:
     url: https://testnav-tps-messaging-service.intern.dev.nav.no
