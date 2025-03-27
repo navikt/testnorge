@@ -10,11 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BrukerRepository extends Repository<Bruker, Long> {
-    void deleteByBrukerId(String brukerId);
 
     Bruker save(Bruker bruker);
 
     List<Bruker> findAllByOrderById();
+
+    List<Bruker> findAllByBrukerIdIn(List<String> brukerId);
 
     Optional<Bruker> findBrukerByBrukerId(String brukerId);
 

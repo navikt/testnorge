@@ -2,6 +2,8 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.BANKID;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -35,6 +38,7 @@ public class BrukerService {
     private final BrukerRepository brukerRepository;
     private final TestgruppeRepository testgruppeRepository;
     private final GetUserInfo getUserInfo;
+    private final BrukerServiceConsumer brukerServiceConsumer;
 
     public Bruker fetchBruker(String brukerId) {
 
@@ -113,7 +117,20 @@ public class BrukerService {
 
     public List<Bruker> fetchBrukere() {
 
-        var brukere = brukerRepository.findAllByOrderById();
+        List<Bruker> brukere;
+
+        var brukeren = fetchOrCreateBruker();
+        if (brukeren.getBrukertype() != BANKID) {
+
+            brukere = brukerRepository.findAllByOrderById();
+        } else {
+
+            brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .map(brukerRepository::findAllByBrukerIdIn)
+                    .block();
+        }
+
         var brukereMap = brukere.stream()
                 .collect(Collectors.toMap(Bruker::getId, bruker -> bruker));
 
