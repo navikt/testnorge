@@ -49,7 +49,6 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
-    @Cacheable(CACHE_BRUKER)
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
     public List<RsBrukerAndGruppeId> getAllBrukere() {

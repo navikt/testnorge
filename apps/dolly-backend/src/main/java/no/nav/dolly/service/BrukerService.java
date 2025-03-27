@@ -96,7 +96,8 @@ public class BrukerService {
     @Transactional(readOnly = true)
     public List<Bruker> fetchBrukere() {
 
-        var brukeren = fetchOrCreateBruker();log.info("Hentet current bruker: id {} brukertype {}", brukeren.getBrukerId(), brukeren.getBrukertype());
+        var brukeren = fetchOrCreateBruker();
+        log.info("Hentet current bruker: id {} brukertype {}", brukeren.getBrukerId(), brukeren.getBrukertype());
 
         if (brukeren.getBrukertype() == AZURE) {
             return brukerRepository.findAllByOrderById();
