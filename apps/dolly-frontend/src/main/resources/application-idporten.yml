@@ -4,8 +4,8 @@ IDPORTEN_ISSUER_PROD: https://idporten.no
 spring:
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: 6379
+      host: ${VALKEY_HOST_VALKEY_DOLLY_SESSION}
+      port: ${VALKEY_PORT_VALKEY_DOLLY_SESSION}
   session:
     timeout: 60m
   security:

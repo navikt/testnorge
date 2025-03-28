@@ -1,5 +1,4 @@
 POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.intern.dev.nav.no/login
-REDIS_HOST: valkey-dolly-session.dolly.svc.cluster.local
 
 spring:
   application:

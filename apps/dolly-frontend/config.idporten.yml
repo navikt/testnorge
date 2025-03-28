@@ -70,6 +70,9 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: idporten.no
+  valkey:
+    - instance: valkey-dolly-session
+      access: readwrite
 
   liveness:
     path: /internal/health/liveness
