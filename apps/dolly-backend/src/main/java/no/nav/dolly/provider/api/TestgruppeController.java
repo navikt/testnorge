@@ -125,6 +125,7 @@ public class TestgruppeController {
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
     @Operation(description = "Hent testgrupper")
+    @Transactional(readOnly = true)
     public RsTestgruppePage getTestgrupper(
             @RequestParam(value = "pageNo", required = false, defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", required = false, defaultValue = "10000") Integer pageSize, @RequestParam(name = "brukerId", required = false) String brukerId) {
         return testgruppeService.getTestgruppeByBrukerId(pageNo, pageSize, brukerId);

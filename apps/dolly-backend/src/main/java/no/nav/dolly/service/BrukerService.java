@@ -16,7 +16,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -48,11 +47,7 @@ public class BrukerService {
             brukerId = getUserId(getUserInfo);
         }
         try {
-            var bruker = fetchBruker(brukerId);
-
-            oppdaterBrukernavn(bruker);
-
-            return bruker;
+            return fetchBruker(brukerId);
 
         } catch (NotFoundException e) {
             return createBruker();
@@ -69,7 +64,6 @@ public class BrukerService {
         return brukerRepository.save(getAuthUser(getUserInfo));
     }
 
-    @Transactional
     public Bruker leggTilFavoritt(Long gruppeId) {
 
         var bruker = fetchBruker(getUserId(getUserInfo));
@@ -93,7 +87,6 @@ public class BrukerService {
         return bruker;
     }
 
-    @Transactional(readOnly = true)
     public List<Bruker> fetchBrukere() {
 
         var brukeren = fetchOrCreateBruker();
@@ -113,26 +106,6 @@ public class BrukerService {
 
     public void sletteBrukerFavoritterByGroupId(Long groupId) {
         brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
-    }
-
-    public void saveBrukerTilDB(Bruker b) {
-
-        try {
-            brukerRepository.save(b);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Bruker DB constraint er brutt! Kan ikke lagre bruker. Error: " + e.getMessage(), e);
-        } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getMessage(), e);
-        }
-    }
-
-    private void oppdaterBrukernavn(Bruker bruker) {
-
-        String hentetBrukernavn = getAuthUser(getUserInfo).getBrukernavn();
-        if (!bruker.getBrukernavn().equals(hentetBrukernavn)) {
-            bruker.setBrukernavn(hentetBrukernavn);
-            brukerRepository.save(bruker);
-        }
     }
 
     private Testgruppe fetchTestgruppe(Long gruppeId) {

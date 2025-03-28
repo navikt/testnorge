@@ -3,7 +3,6 @@ package no.nav.dolly.service;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -81,13 +79,6 @@ class BrukerServiceTest {
     void fetchOrCreateBruker_saveKallesVedNotFoundException() {
         brukerService.fetchOrCreateBruker("tullestring");
         verify(brukerRepository).save(any());
-    }
-
-    @Test
-    void saveBrukerTilDB_kasterExceptionNarDBConstrainBrytes() {
-        when(brukerRepository.save(any(Bruker.class))).thenThrow(DataIntegrityViolationException.class);
-        Assertions.assertThrows(ConstraintViolationException.class, () ->
-                brukerService.saveBrukerTilDB(Bruker.builder().build()));
     }
 
     @Test
