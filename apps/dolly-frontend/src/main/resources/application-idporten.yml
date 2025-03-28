@@ -6,6 +6,11 @@ spring:
     redis:
       host: ${VALKEY_HOST_VALKEY_DOLLY_SESSION}
       port: ${VALKEY_PORT_VALKEY_DOLLY_SESSION}
+      username: ${VALKEY_USERNAME_VALKEY_DOLLY_SESSION}
+      password: ${VALKEY_PASSWORD_VALKEY_DOLLY_SESSION}
+      jedis:
+        pool:
+          enabled: true
   session:
     timeout: 60m
   security:
