@@ -43,7 +43,7 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
