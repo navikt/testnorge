@@ -8,16 +8,6 @@ permissions:
   id-token: write
 
 jobs:
-
-  valkey-dolly-dev-session:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: dev-gcp
-          RESOURCE: ".nais/valkey-dolly-dev-session.yml"
-
   valkey-dolly-session:
     runs-on: ubuntu-latest
     steps:
