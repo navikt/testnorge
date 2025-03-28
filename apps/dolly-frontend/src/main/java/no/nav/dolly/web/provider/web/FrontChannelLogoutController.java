@@ -1,7 +1,9 @@
 package no.nav.dolly.web.provider.web;
 
 import io.valkey.Jedis;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -23,21 +25,30 @@ import java.util.Optional;
 @RequestMapping("/oauth2/logout")
 @RequiredArgsConstructor
 @Profile("idporten")
+@Slf4j
 public class FrontChannelLogoutController {
 
     private final WebSessionManager webSessionManager;
     private final Jedis jedis;
 
+    @PostConstruct
+    void postConstruct() {
+        log.info("postConstruct");
+    }
+
     @GetMapping()
     public Mono<Void> logout(@RequestParam String sid) {
 
         var sessionIds = getAllSessionIds();
+        log.info("Logout request for sid: {}, found {} session(s)", sid, sessionIds.size());
         var manager = (DefaultWebSessionManager) this.webSessionManager;
-        var sessions = Flux.concat(sessionIds
+        var mapped = sessionIds
                 .stream()
                 .map(sessionId -> manager.getSessionStore().retrieveSession(sessionId))
-                .toList());
-        return sessions
+                .toList();
+        log.info("Invalidating {} session(s)", mapped.size());
+        return Flux
+                .concat(mapped)
                 .filter(session -> session.getAttribute("SPRING_SECURITY_CONTEXT") != null)
                 .filter(session -> Optional
                         .ofNullable(session.getAttribute("SPRING_SECURITY_CONTEXT"))
@@ -50,6 +61,10 @@ public class FrontChannelLogoutController {
                         .map(token -> token.<String>getClaim("sid"))
                         .map(claim -> claim.equals(sid))
                         .orElse(false))
+                .doOnEach(signal -> log.info("Invalidating session {}", Optional
+                        .ofNullable(signal.get())
+                        .map(WebSession::getId)
+                        .orElse("?")))
                 .flatMap(WebSession::invalidate)
                 .then();
 
