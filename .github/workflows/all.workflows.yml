@@ -26,7 +26,11 @@ on:
         required: true
       force-deploy:
         type: boolean
-        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below! Note: For dolly-frontend, this will also deploy idporten."
+        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below!"
+        default: false
+      force-deploy-idporten:
+        type: boolean
+        description: "Deploy to idporten? Make sure the effective working directory contains a config.idporten.yml! Note: Only relevant for dolly-frontend."
         default: false
       force-deploy-test:
         type: boolean
@@ -68,7 +72,7 @@ jobs:
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
-      force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy }}
+      force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy-idporten }}
       force-deploy-unstable: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy-test }}
       sonar-enabled: ${{ inputs.sonar-enabled }}
     secrets: inherit
