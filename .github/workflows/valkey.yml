@@ -1,15 +1,15 @@
-name: Deploy Valkey (valkey-dolly-session)
+name: Deploy Valkey
 
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
-  deploy:
-    name: Deploy Valkey
+  valkey-dolly-session:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: nais/deploy/actions/deploy@v2
