@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Profile("idporten")
 @Slf4j
-public class FrontChannelLogoutController {
+class FrontChannelLogoutController {
 
     private final WebSessionManager webSessionManager;
     private final Jedis jedis;
@@ -36,8 +36,14 @@ public class FrontChannelLogoutController {
         log.info("postConstruct");
     }
 
+    /**
+     * Manually invalidate all sessions for the given sid. Note that the sessions are set elsewhere through Spring, see {@code IdportenSecurityConfig}.
+     *
+     * @param sid sid to invalidate.
+     * @return Mono<Void> to indicate completion.
+     */
     @GetMapping()
-    public Mono<Void> logout(@RequestParam String sid) {
+    Mono<Void> logout(@RequestParam String sid) {
 
         var sessionIds = getAllSessionIds();
         log.info("Logout request for sid: {}, found {} session(s)", sid, sessionIds.size());
