@@ -26,11 +26,11 @@ on:
         required: true
       force-deploy:
         type: boolean
-        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below! Note: For dolly-frontend, this will also deploy with config.idporten.yml."
+        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below! Note: For dolly-frontend, this will also deploy idporten."
         default: false
       force-deploy-test:
         type: boolean
-        description: "Deploy to test? Make sure the effective working directory contains a config.test.yml! Note: For dolly-frontend, this will also deploy with config.unstable.yml."
+        description: "Deploy to test? Make sure the effective working directory contains a config.test.yml! Note: For dolly-frontend, this will also deploy unstable."
         default: false
       sonar-enabled:
         type: boolean
