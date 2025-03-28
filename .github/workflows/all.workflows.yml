@@ -37,14 +37,13 @@ on:
         description: "Run Sonar scan?"
         default: false
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
   backend:
     if: inputs.workflow == 'backend'
     uses: ./.github/workflows/common.workflow.backend.yml
+    permissions:
+      contents: read
+      id-token: write
     with:
       cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
@@ -59,6 +58,7 @@ jobs:
     if: inputs.workflow == 'frontend'
     uses: ./.github/workflows/common.workflow.frontend.yml
     permissions:
+      contents: read
       id-token: write
       packages: write
     with:
