@@ -1,4 +1,4 @@
-name: Playwright/Vitest Tests
+name: Playwright Tests
 on:
   workflow_call:
     inputs:
@@ -44,11 +44,6 @@ jobs:
           name: blob-report-${{ matrix.shardIndex }}
           path: ${{ inputs.working-directory }}/src/main/js/blob-report
           retention-days: 1
-
-      - name: Run Vitest/RTL tests
-        if: ${{ matrix.shardIndex == 1 }}
-        working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npm run test:vitest-run
   
   merge-reports:
     if: ${{ !cancelled() }}
@@ -85,7 +80,6 @@ jobs:
           source: ${{ inputs.working-directory }}/src/main/js/playwright-report
           destination: /${{ github.repository }}/${{ github.run_number }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      #          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
 
       - name: Merge to json report
         working-directory: ${{ inputs.working-directory }}/src/main/js

@@ -64,6 +64,7 @@ spec:
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter
         - application: testnav-pdl-forvalter-dev
+        - application: testnav-tps-messaging-frontend
         - application: tps-forvalteren
           cluster: dev-fss
         - application: tps-forvalteren-dev

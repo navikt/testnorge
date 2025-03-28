@@ -14,11 +14,22 @@ on:
       - "libs/security-core/**"
       - "apps/dolly-frontend/**"
       - ".github/workflows/app.dolly-frontend.yml"
-      - ".github/workflows/common.playwright-vitest.yml"
+      - ".github/workflows/common.playwright.yml"
+      - ".github/workflows/common.vitest.yml"
 
 jobs:
   playwright:
-    uses: ./.github/workflows/common.playwright-vitest.yml
+    uses: ./.github/workflows/common.playwright.yml
+    permissions:
+      packages: write
+      id-token: write
+      contents: read
+    with:
+      working-directory: "apps/dolly-frontend"
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
+  vitest:
+    uses: ./.github/workflows/common.vitest.yml
     permissions:
       packages: write
       id-token: write

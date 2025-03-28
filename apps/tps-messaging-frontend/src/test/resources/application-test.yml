@@ -1,0 +1,6 @@
+consumers:
+  testnav-bruker-service:
+    cluster: test
+    namespace: test
+    name: testnav-bruker-service
+    url: http://dummy-url
