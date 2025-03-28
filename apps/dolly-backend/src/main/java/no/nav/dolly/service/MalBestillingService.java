@@ -5,11 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.MalBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingSimple;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -29,7 +33,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -37,6 +43,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
@@ -49,6 +56,7 @@ public class MalBestillingService {
     private static final String EMPTY_JSON = "{}";
 
     private final BestillingMalRepository bestillingMalRepository;
+    private final BrukerServiceConsumer brukerServiceConsumer;
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
@@ -285,5 +293,34 @@ public class MalBestillingService {
                 Arrays.stream(miljoer.split(","))
                         .collect(Collectors.toSet()) :
                 Collections.emptySet();
+    }
+
+    public RsMalBestillingSimple getMalBestillingOversikt() {
+
+        List<MalBestillingFragment> maler;
+        var brukeren = brukerService.fetchOrCreateBruker();
+        if (brukeren.getBrukertype() == AZURE) {
+            maler =  bestillingMalRepository.findAllByBrukertypeAzure();
+
+        } else {
+            var brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .block();
+
+            maler = bestillingMalRepository.findAllByBrukerIdIn(brukere);
+        }
+
+        return RsMalBestillingSimple.builder()
+                .brukereMedMaler(
+                        maler.stream()
+                                .map(MalBestillingFragment::getMalBruker)
+                                .filter(Objects::nonNull)
+                                .map(malBruker -> malBruker.split(":"))
+                                .map(malBruker -> RsMalBestillingSimple.MalBruker.builder()
+                                        .brukernavn(malBruker[0])
+                                        .brukerId(malBruker[1])
+                                        .build())
+                                .toList())
+                .build();
     }
 }

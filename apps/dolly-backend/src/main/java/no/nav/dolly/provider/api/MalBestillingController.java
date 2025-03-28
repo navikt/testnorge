@@ -3,6 +3,7 @@ package no.nav.dolly.provider.api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingSimple;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.service.MalBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -38,11 +39,20 @@ public class MalBestillingController {
 
     @Cacheable(value = CACHE_BESTILLING_MAL)
     @GetMapping
+    @Transactional
     @Operation(description = "Hent mal-bestilling, kan filtreres på en bruker")
     public RsMalBestillingWrapper getMalBestillinger(@RequestParam(required = false) String brukerId) {
 
         return isBlank(brukerId) ?
                 malBestillingService.getMalBestillinger() : malBestillingService.getMalbestillingByUser(brukerId);
+    }
+
+    @GetMapping("/oversikt")
+    @Transactional(readOnly = true)
+    @Operation(description = "Hent oversikt bestillinger")
+    public RsMalBestillingSimple getMalBestillinger() {
+
+        return malBestillingService.getMalBestillingOversikt();
     }
 
     @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
