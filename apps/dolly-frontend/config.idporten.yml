@@ -71,7 +71,7 @@ spec:
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: idporten.no
   valkey:
-    - instance: idporten-session
+    - instance: valkey-dolly-session
       access: readwrite
 
   liveness:
