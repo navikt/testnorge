@@ -42,7 +42,7 @@ public class MalBestillingController {
 
     @Cacheable(value = CACHE_BESTILLING_MAL)
     @GetMapping
-    @Transactional
+    @Transactional(readOnly = true)
     @Operation(description = "Hent mal-bestilling, kan filtreres på en bruker")
     public RsMalBestillingWrapper getMalBestillinger(@RequestParam(required = false) String brukerId) {
 
@@ -52,7 +52,7 @@ public class MalBestillingController {
 
     @Cacheable(value = CACHE_BESTILLING_MAL)
     @GetMapping("/brukerId/{brukerId}")
-    @Transactional
+    @Transactional(readOnly = true)
     @Operation(description = "Hent mal-bestilling, for angitt brukerId, evt ALLE eller FELLES")
     public List<RsMalBestilling> getMalBestillingerBrukerId(@PathVariable("brukerId") String brukerId) {
 
