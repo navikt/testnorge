@@ -5,7 +5,7 @@ export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
-    public data?: unknown
+    public data?: unknown,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -22,13 +22,17 @@ export class NetworkError extends Error {
 // Shared error handler function
 const handleAxiosError = (error: unknown, url: string): never => {
   if (axios.isAxiosError(error)) {
-    const { response, request } = error;
+    const { response, request, message } = error;
 
     if (response) {
       const { status, data } = response;
       switch (status) {
         case 400:
-          throw new ApiError(status, `Bad request: ${data?.message || 'Invalid input'}`, data);
+          throw new ApiError(
+            status,
+            `Bad request: ${data?.message || message || 'Invalid input'}`,
+            data,
+          );
         case 401:
           throw new ApiError(status, 'Unauthorized: Authentication required', data);
         case 403:
@@ -40,7 +44,11 @@ const handleAxiosError = (error: unknown, url: string): never => {
           throw new NotFoundError();
         default:
           if (status >= 500) {
-            throw new ApiError(status, `Server error (${status}): The server failed to process the request`, data);
+            throw new ApiError(
+              status,
+              `Server error (${status}): ${message || 'The server failed to process the request'}`,
+              data,
+            );
           } else {
             throw new ApiError(status, `Request failed with status ${status}`, data);
           }
@@ -55,7 +63,7 @@ const handleAxiosError = (error: unknown, url: string): never => {
 
 export const fetcher = async <TResponse extends any = unknown>(
   url: string,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): Promise<TResponse> => {
   try {
     const response = await axios.get<TResponse>(url, { headers });
@@ -68,7 +76,7 @@ export const fetcher = async <TResponse extends any = unknown>(
 export const postData = async <TResponse = unknown, TRequest = unknown>(
   url: string,
   body: TRequest,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): Promise<TResponse> => {
   try {
     const response = await axios.post<TResponse>(url, body, { headers });

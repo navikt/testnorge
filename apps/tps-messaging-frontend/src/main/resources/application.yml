@@ -28,7 +28,6 @@ consumers:
     name: testnorge-profil-api
     url: http://testnorge-profil-api.dolly.svc.cluster.local
 
-
 logging:
   level:
     org:
