@@ -2,6 +2,7 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bestilling.MalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.MalBestillingFragment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,11 +22,39 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
     List<BestillingMal> findByBruker(Bruker bruker);
 
     @Query(value = """
+            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+                               bm.sist_oppdatert sistOppdatert, b.brukernavn, b.bruker_id brukerId
+                        from bestilling_mal bm
+            join bruker b on bm.bruker_id = b.id
+            where b.bruker_id = :brukerId
+            order by bm.mal_navn;
+            """, nativeQuery = true)
+    List<MalBestilling> findAllByBrukerId(@Param("brukerId") String brukerId);
+
+    @Query(value = """
+            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+                               bm.sist_oppdatert sistOppdatert
+                        from bestilling_mal bm
+            where bm.bruker_id is null
+            order by bm.mal_navn;
+            """, nativeQuery = true)
+    List<MalBestilling> findAllByBrukerIsNull();
+
+    @Query(value = """
+            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+                               bm.sist_oppdatert sistOppdatert, b.brukernavn, b.bruker_id brukerId
+                        from bestilling_mal bm
+            left outer join bruker b on bm.bruker_id = b.id
+            order by bm.mal_navn, b.brukernavn
+            """, nativeQuery = true)
+    List<MalBestilling> findAllBy();
+
+    @Query(value = """
             select (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
-                and b.brukertype = 'AZURE'                                                  
+                and b.brukertype = 'AZURE'
                 group by malBruker
-                order by malBruker 
+                order by malBruker
             """, nativeQuery = true)
     List<MalBestillingFragment> findAllByBrukertypeAzure();
 
@@ -34,7 +63,7 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
                 join bestilling_mal bm on b.id = bm.bruker_id
                 and b.bruker_id in :brukerIds
                 group by malBruker
-                order by malBruker 
+                order by malBruker
             """, nativeQuery = true)
     List<MalBestillingFragment> findAllByBrukerIdIn(@Param("brukerIds") List<String> brukerIds);
 }
