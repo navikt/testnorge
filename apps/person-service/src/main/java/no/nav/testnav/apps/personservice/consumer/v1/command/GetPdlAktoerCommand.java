@@ -6,6 +6,7 @@ import no.nav.testnav.apps.personservice.consumer.v1.header.PdlHeaders;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlAktoer;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Request;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,8 +21,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -66,7 +65,7 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                         .path(url)
                         .path("/graphql")
                         .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(PdlHeaders.HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID())
                 .header(PdlHeaders.TEMA, TEMA_GENERELL)
                 .contentType(MediaType.APPLICATION_JSON)

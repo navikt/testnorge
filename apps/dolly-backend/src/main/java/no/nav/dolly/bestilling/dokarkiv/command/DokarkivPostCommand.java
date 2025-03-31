@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -13,7 +13,6 @@ import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,8 +31,8 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
                         builder.path("/api/{miljo}/v1/journalpost")
                                 .queryParam("forsoekFerdigstill", isTrue(dokarkivRequest.getFerdigstill()))
                                 .build(environment))
-                .header(AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(dokarkivRequest)
                 .retrieve()
                 .bodyToMono(DokarkivResponse.class)

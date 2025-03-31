@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pdl.GraphQLRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -34,7 +35,7 @@ public class GetPdlPersonerCommand implements Callable<Mono<PdlPersonBolk>> {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(GRAPHQL_URL).build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .header(CALL_ID, NAV_CALL_ID + ": " + UUID.randomUUID())
                 .header(TEMA, TEMA_GENERELL)

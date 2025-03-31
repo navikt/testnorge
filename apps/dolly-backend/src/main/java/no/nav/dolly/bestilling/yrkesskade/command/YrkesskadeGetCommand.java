@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.yrkesskade.dto.SaksoversiktDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,7 +29,7 @@ public class YrkesskadeGetCommand implements Callable<Mono<SaksoversiktDTO>> {
                 .uri(uriBuilder -> uriBuilder.path(YRKESSKADE_URL)
                         .build(ident))
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header("ident", ident)
                 .retrieve()
                 .bodyToMono(SaksoversiktDTO.class)

@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.SlettKontoRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,7 +31,7 @@ public class KontoregisterDeleteCommand implements Callable<Mono<KontoregisterRe
                         .path(KONTOREGISTER_API_URL)
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(new SlettKontoRequestDTO(ident, "Dolly"))
                 .retrieve()
                 .toBodilessEntity()
