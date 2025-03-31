@@ -7,6 +7,4 @@ public interface MalBestilling {
     String getMalBestilling();
     String getMiljoer();
     String getSistOppdatert();
-    String getBrukernavn();
-    String getBrukerId();
 }
