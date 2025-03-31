@@ -31,7 +31,10 @@ public class GetProfileImageCommand implements Callable<Mono<byte[]>> {
                                 .map(IllegalStateException::new)
                 )
                 .bodyToMono(byte[].class)
-                .doOnError(WebClientError.logTo(log))
+                .doOnError(e -> !e
+                                .getMessage()
+                                .contains("Microsoft.Fast.Profile.Core.Exception.ImageNotFoundException"),
+                        WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
 
