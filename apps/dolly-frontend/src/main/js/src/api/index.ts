@@ -9,7 +9,7 @@ import { Logger } from '@/logger/Logger'
 
 const fetchRetry = fetch_retry(originalFetch)
 
-const allowForbidden = ['testnav-arbeidsplassencv', 'testnav-fullmakt', 'infostripe', 'norg2']
+const logoutForbidden = ['dolly-backend']
 
 export const multiFetcherAll = (urlListe, headers = null) =>
 	Promise.all(
@@ -130,7 +130,7 @@ export const fetcher = (url, headers) =>
 		.catch((reason) => {
 			if (
 				(reason?.response?.status === 401 || reason?.response?.status === 403) &&
-				!allowForbidden.some((value) => url.includes(value))
+				logoutForbidden.some((value) => url.includes(value))
 			) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
@@ -161,7 +161,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
 			if (!response.ok && response?.status !== 404 && !runningE2ETest()) {
-				if (response?.status === 401 && !allowForbidden.some((value) => url.includes(value))) {
+				if (response?.status === 401 && logoutForbidden.some((value) => url.includes(value))) {
 					console.error('Auth feilet, navigerer til login')
 					navigateToLogin()
 				}
@@ -191,7 +191,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			window.location.href = response.url
 		}
 		if (!response.ok && !runningE2ETest()) {
-			if (response?.status === 401 && !allowForbidden.some((value) => url.includes(value))) {
+			if (response?.status === 401 && logoutForbidden.some((value) => url.includes(value))) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}
