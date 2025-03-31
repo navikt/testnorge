@@ -65,6 +65,7 @@ describe('TpsMeldingerPage', () => {
 
     await user.click(screen.getByLabelText('Meldingskø'));
     await user.click(screen.getByText('queue1'));
+    await user.clear(screen.getByLabelText('TPS melding'));
     await user.click(screen.getByRole('button', { name: 'Send inn' }));
 
     await waitFor(() => {
@@ -131,6 +132,7 @@ describe('TpsMeldingerPage', () => {
 
     await user.click(screen.getByLabelText('Meldingskø'));
     await user.click(screen.getByText('queue1'));
+    await user.clear(screen.getByLabelText('TPS melding'));
     await user.type(screen.getByLabelText('TPS melding'), '<xml>Test message</xml>');
 
     await user.click(screen.getByRole('button', { name: 'Send inn' }));
@@ -195,6 +197,7 @@ describe('TpsMeldingerPage', () => {
     await user.click(screen.getByText('info-queue'));
 
     // Enter invalid XML
+    await user.clear(screen.getByLabelText('TPS melding'));
     await user.type(screen.getByLabelText('TPS melding'), 'Tilfeldig info-tekst');
 
     // Submit form
@@ -262,6 +265,7 @@ describe('TpsMeldingerPage', () => {
     });
     await user.click(addOptionElement);
 
+    await user.clear(screen.getByLabelText('TPS melding'));
     await user.type(screen.getByLabelText('TPS melding'), 'Test message content');
 
     await user.click(screen.getByRole('button', { name: 'Send inn' }));
