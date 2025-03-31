@@ -343,6 +343,7 @@ public class MalBestillingService {
                     bestillingMalRepository.findAllByBrukerIsNull() :
                     bestillingMalRepository.findAllByBrukerId(brukerId);
 
+        log.info("Hentet {} maler for brukerId {}", malBestillinger.size(), brukerId);
         return mapperFacade.mapAsList(malBestillinger, RsMalBestilling.class);
     }
 }

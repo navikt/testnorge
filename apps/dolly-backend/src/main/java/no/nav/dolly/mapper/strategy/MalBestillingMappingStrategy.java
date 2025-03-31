@@ -28,6 +28,8 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(MalBestilling kilde, RsMalBestilling destinasjon, MappingContext context) {
 
+                        log.info("Mapper malbestilling med Id: {}", kilde.getId());
+
                         destinasjon.setId(kilde.getId());
                         destinasjon.setMalNavn(kilde.getMalNavn());
                         destinasjon.setMiljoer(kilde.getMiljoer());
