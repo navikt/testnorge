@@ -23,6 +23,11 @@ export class NetworkError extends Error {
 const handleAxiosError = (error: unknown, url: string): never => {
   if (axios.isAxiosError(error)) {
     const { response, request, message } = error;
+    console.log('error:'); //TODO - SLETT MEG
+    console.error(error);
+
+    console.log('resp:'); //TODO - SLETT MEG
+    console.warn(response);
 
     if (response) {
       const { status, data } = response;
