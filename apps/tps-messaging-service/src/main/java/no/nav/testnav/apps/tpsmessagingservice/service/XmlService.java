@@ -2,6 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.XmlMeldingConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class XmlService {
         if (MILJOER.stream()
                 .noneMatch(miljoe -> queue.matches("QA\\.%s_[0-9,A-Z_.]+".formatted(miljoe)))) {
 
-            throw new IllegalArgumentException("Kønavn %s er ikke gyldig!".formatted(queue));
+            throw new BadRequestException("Kønavn %s er ikke gyldig!".formatted(queue));
         }
     }
 }
