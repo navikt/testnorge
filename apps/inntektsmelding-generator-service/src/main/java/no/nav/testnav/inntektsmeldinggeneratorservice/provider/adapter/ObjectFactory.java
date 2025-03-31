@@ -36,6 +36,7 @@ import no.nav.testnav.inntektsmeldinggeneratorservice.binding.Skjemainnhold;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.SykepengerIArbeidsgiverperioden;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.UtsettelseAvForeldrepenger;
 import no.nav.testnav.inntektsmeldinggeneratorservice.binding.UtsettelseAvForeldrepengerListe;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
@@ -44,6 +45,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @XmlRegistry
 public class ObjectFactory {
@@ -222,8 +224,9 @@ public class ObjectFactory {
             scope = EndringIRefusjon.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement createEndringIRefusjonEndringsdato(LocalDate value) {
-        return new JAXBElement<>(_EndringIRefusjonEndringsdato_QNAME, LocalDate.class, EndringIRefusjon.class, value);
+    public JAXBElement createEndringIRefusjonEndringsdato(String value) {
+        return new JAXBElement<>(_EndringIRefusjonEndringsdato_QNAME, LocalDate.class, EndringIRefusjon.class,
+                isNotBlank(value) ? LocalDate.parse(value) : null);
     }
 
     @XmlElementDecl(
@@ -414,8 +417,9 @@ public class ObjectFactory {
             scope = DelvisFravaer.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement createDelvisFravaerDato(LocalDate value) {
-        return new JAXBElement<>(_DelvisFravaerDato_QNAME, LocalDate.class, DelvisFravaer.class, value);
+    public JAXBElement createDelvisFravaerDato(String value) {
+        return new JAXBElement<>(_DelvisFravaerDato_QNAME, LocalDate.class, DelvisFravaer.class, isNotBlank(value) ?
+                LocalDate.parse(value) : null);
     }
 
     @XmlElementDecl(
@@ -433,8 +437,9 @@ public class ObjectFactory {
             scope = Periode.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement createPeriodeFom(LocalDate value) {
-        return new JAXBElement<>(_PeriodeFom_QNAME, LocalDate.class, Periode.class, value);
+    public JAXBElement createPeriodeFom(String value) {
+        return new JAXBElement<>(_PeriodeFom_QNAME, LocalDate.class, Periode.class,
+                isNotBlank(value) ? LocalDate.parse(value) : null);
     }
 
     @XmlElementDecl(
@@ -443,8 +448,9 @@ public class ObjectFactory {
             scope = Periode.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement createPeriodeTom(LocalDate value) {
-        return new JAXBElement<>(_PeriodeTom_QNAME, LocalDate.class, Periode.class, value);
+    public JAXBElement createPeriodeTom(String value) {
+        return new JAXBElement<>(_PeriodeTom_QNAME, LocalDate.class, Periode.class,
+                isNotBlank(value) ? LocalDate.parse(value) : null);
     }
 
     @XmlElementDecl(
@@ -473,7 +479,7 @@ public class ObjectFactory {
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
     public JAXBElement createArbeidsforholdFoersteFravaersdag(String value) {
         return new JAXBElement<>(_ArbeidsforholdFoersteFravaersdag_QNAME, LocalDate.class, Arbeidsforhold.class,
-                nonNull(value) ? LocalDate.parse(value) : null);
+                isNotBlank(value) ? LocalDate.parse(value) : null);
     }
 
     @XmlElementDecl(
@@ -536,8 +542,9 @@ public class ObjectFactory {
             scope = NaturalytelseDetaljer.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createNaturalytelseDetaljerFom(LocalDate value) {
-        return new JAXBElement<>(_PeriodeFom_QNAME, LocalDate.class, NaturalytelseDetaljer.class, value);
+    public JAXBElement<LocalDate> createNaturalytelseDetaljerFom(String value) {
+        return new JAXBElement<>(_PeriodeFom_QNAME, LocalDate.class, NaturalytelseDetaljer.class,
+                isNotBlank(value) ? LocalDate.parse(value) : null);
     }
 
     @XmlElementDecl(
@@ -555,8 +562,9 @@ public class ObjectFactory {
             scope = Refusjon.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createRefusjonRefusjonsopphoersdato(LocalDate value) {
-        return new JAXBElement<>(_RefusjonRefusjonsopphoersdato_QNAME, LocalDate.class, Refusjon.class, value);
+    public JAXBElement<LocalDate> createRefusjonRefusjonsopphoersdato(String value) {
+        return new JAXBElement<>(_RefusjonRefusjonsopphoersdato_QNAME, LocalDate.class, Refusjon.class,
+                isNotBlank(value) ? LocalDate.parse(value) : null);
     }
 
     @XmlElementDecl(

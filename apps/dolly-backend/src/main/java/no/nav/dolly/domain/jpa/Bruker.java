@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -65,19 +64,9 @@ public class Bruker implements Serializable {
     @Column(name = "EPOST")
     private String epost;
 
-    @Column(name = "NAV_IDENT", length = 10)
-    private String navIdent;
-
-    @Column(name = "MIGRERT")
-    private Boolean migrert;
-
     @Column(name = "BRUKERTYPE")
     @Enumerated(EnumType.STRING)
     private Brukertype brukertype;
-
-    @ManyToOne
-    @JoinColumn(name = "EID_AV_ID")
-    private Bruker eidAv;
 
     @Transient
     @Builder.Default
@@ -109,10 +98,7 @@ public class Bruker implements Serializable {
                 .append(brukerId, bruker.brukerId)
                 .append(brukernavn, bruker.brukernavn)
                 .append(epost, bruker.epost)
-                .append(navIdent, bruker.navIdent)
-                .append(migrert, bruker.migrert)
                 .append(brukertype, bruker.brukertype)
-                .append(eidAv, bruker.eidAv)
                 .isEquals();
     }
 
@@ -124,10 +110,7 @@ public class Bruker implements Serializable {
                 .append(brukerId)
                 .append(brukernavn)
                 .append(epost)
-                .append(navIdent)
-                .append(migrert)
                 .append(brukertype)
-                .append(eidAv)
                 .toHashCode();
     }
 
