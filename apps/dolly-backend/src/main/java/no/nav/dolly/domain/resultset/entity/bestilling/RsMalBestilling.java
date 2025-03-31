@@ -17,6 +17,4 @@ public class RsMalBestilling {
     private JsonNode malBestilling;
     private String miljoer;
     private String sistOppdatert;
-    private String brukernavn;
-    private String brukerId;
 }

@@ -103,7 +103,6 @@ public class MalBestillingService {
                 .toList());
 
         return malBestillingWrapper;
-
     }
 
     @Transactional(readOnly = true)
@@ -306,10 +305,6 @@ public class MalBestillingService {
             return RsMalBestillingSimple.builder()
                     .brukereMedMaler(Stream.of(List.of(
                                             MalBruker.builder()
-                                                    .brukernavn(ALLE)
-                                                    .brukerId(ALLE)
-                                                    .build(),
-                                            MalBruker.builder()
                                                     .brukernavn(ANONYM)
                                                     .brukerId(ANONYM)
                                                     .build()),
@@ -344,10 +339,10 @@ public class MalBestillingService {
 
     public List<RsMalBestilling> getMalBestillingerBrukerId(String brukerId) {
 
-        return mapperFacade.mapAsList(switch (brukerId) {
-            case ALLE -> bestillingMalRepository.findAllBy();
-            case ANONYM -> bestillingMalRepository.findAllByBrukerIsNull();
-            default -> bestillingMalRepository.findAllByBrukerId(brukerId);
-        }, RsMalBestilling.class);
+        var malBestillinger =  ANONYM.equals(brukerId) ?
+                    bestillingMalRepository.findAllByBrukerIsNull() :
+                    bestillingMalRepository.findAllByBrukerId(brukerId);
+
+        return mapperFacade.mapAsList(malBestillinger, RsMalBestilling.class);
     }
 }

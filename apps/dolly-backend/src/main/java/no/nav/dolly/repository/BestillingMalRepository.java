@@ -23,7 +23,7 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
 
     @Query(value = """
             select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
-                               bm.sist_oppdatert sistOppdatert, b.brukernavn, b.bruker_id brukerId
+                               bm.sist_oppdatert sistOppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
             where b.bruker_id = :brukerId
@@ -39,15 +39,6 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
             order by bm.mal_navn;
             """, nativeQuery = true)
     List<MalBestilling> findAllByBrukerIsNull();
-
-    @Query(value = """
-            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
-                               bm.sist_oppdatert sistOppdatert, b.brukernavn, b.bruker_id brukerId
-                        from bestilling_mal bm
-            left outer join bruker b on bm.bruker_id = b.id
-            order by bm.mal_navn, b.brukernavn
-            """, nativeQuery = true)
-    List<MalBestilling> findAllBy();
 
     @Query(value = """
             select (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
