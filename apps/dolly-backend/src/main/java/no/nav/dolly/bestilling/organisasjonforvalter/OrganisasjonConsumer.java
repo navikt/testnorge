@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.*;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,6 @@ import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @Service
@@ -32,7 +31,6 @@ public class OrganisasjonConsumer {
     private static final String ORGANISASJON_FORVALTER_URL = "/api/v2/organisasjoner";
     private static final String ORGANISASJON_DEPLOYMENT_URL = ORGANISASJON_FORVALTER_URL + "/ordre";
     private static final String ORGANISASJON_STATUS_URL = ORGANISASJON_FORVALTER_URL + "/ordrestatus";
-    private static final String BEARER = "Bearer ";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -72,8 +70,8 @@ public class OrganisasjonConsumer {
                                 uriBuilder.path(ORGANISASJON_STATUS_URL)
                                         .queryParam("orgnumre", orgnumre)
                                         .build())
-                        .header(AUTHORIZATION, BEARER + token.getTokenValue())
-                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                        .headers(WebClientHeader.bearer(token.getTokenValue()))
+                        .headers(WebClientHeader.jwt(getUserJwt()))
                         .header(HEADER_NAV_CALL_ID, navCallId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .retrieve()
@@ -93,8 +91,8 @@ public class OrganisasjonConsumer {
                 .flatMap(token -> webClient
                         .post()
                         .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_FORVALTER_URL).build())
-                        .header(AUTHORIZATION, BEARER + token.getTokenValue())
-                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                        .headers(WebClientHeader.bearer(token.getTokenValue()))
+                        .headers(WebClientHeader.jwt(getUserJwt()))
                         .header(HEADER_NAV_CALL_ID, navCallId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .bodyValue(bestillingRequest)
@@ -118,8 +116,8 @@ public class OrganisasjonConsumer {
                 .flatMap(token -> webClient
                         .post()
                         .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_DEPLOYMENT_URL).build())
-                        .header(AUTHORIZATION, BEARER + token.getTokenValue())
-                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                        .headers(WebClientHeader.bearer(token.getTokenValue()))
+                        .headers(WebClientHeader.jwt(getUserJwt()))
                         .header(HEADER_NAV_CALL_ID, callId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .bodyValue(deployRequest)

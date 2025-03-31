@@ -3,8 +3,8 @@ package no.nav.testnav.apps.tenorsearchservice.consumers.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +33,7 @@ public class TagsGetCommand implements Callable<Mono<DollyTagsDTO>> {
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(PERSONIDENTER, String.join(",", identer))
                 .retrieve()
                 .bodyToMono(TYPE)
