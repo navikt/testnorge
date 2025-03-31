@@ -25,7 +25,7 @@ class JedisConfig {
             @Value("${spring.data.redis.host}") String host,
             @Value("${spring.data.redis.port}") Integer port,
             @Value("${spring.data.redis.username}") String username,
-            @Value("${spring.data.redis.password") CharSequence password
+            @Value("${spring.data.redis.password}") CharSequence password
     ) {
         log.info("Connecting to Jedis on {}:{}", host, port);
         var config = DefaultJedisClientConfig
