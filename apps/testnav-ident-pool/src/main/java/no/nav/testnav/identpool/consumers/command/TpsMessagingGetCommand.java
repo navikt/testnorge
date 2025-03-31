@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.dto.TpsIdentStatusDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,7 +41,7 @@ public class TpsMessagingGetCommand implements Callable<Flux<TpsIdentStatusDTO>>
                         .queryParamIfPresent(MILJOER, nonNull(envs) ? Optional.of(envs) : Optional.empty())
                         .queryParam(INCLUDE_PROD, includeProd)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(TpsIdentStatusDTO.class)
                 .retryWhen(WebClientError.is5xxException())

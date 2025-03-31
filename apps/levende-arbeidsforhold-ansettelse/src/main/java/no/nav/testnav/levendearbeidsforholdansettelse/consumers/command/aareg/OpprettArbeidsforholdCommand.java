@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.ArbeidsforholdResponseDTO;
 import no.nav.testnav.libs.dto.levendearbeidsforhold.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ public class OpprettArbeidsforholdCommand implements Callable<Mono<Arbeidsforhol
                 .uri(builder -> builder.path("/{miljoe}/api/v1/arbeidsforhold")
                         .build(MILJOE))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header("Nav-Arbeidsforhold-Kildereferanse", "Dolly-automatisk-ansettelse")
                 .bodyValue(requests)
                 .retrieve()

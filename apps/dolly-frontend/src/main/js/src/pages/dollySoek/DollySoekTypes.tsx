@@ -16,6 +16,7 @@ export type SoekRequest = {
 	seed: string
 	registreRequest: Array<string>
 	personRequest: {
+		ident: string
 		identtype: string
 		kjoenn: string
 		alderFom: number
@@ -39,6 +40,7 @@ export type SoekRequest = {
 		statsborgerskap: string
 		personStatus: string
 		harNyIdentitet: boolean
+		harSkjerming: boolean
 		adresse: {
 			addressebeskyttelse: string
 			kommunenummer: string

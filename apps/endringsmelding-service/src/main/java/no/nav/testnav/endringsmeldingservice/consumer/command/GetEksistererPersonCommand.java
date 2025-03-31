@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.IdentMiljoeDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -30,7 +30,7 @@ public class GetEksistererPersonCommand implements Callable<Flux<IdentMiljoeDTO>
                         .queryParamIfPresent("miljoer", Optional.ofNullable(miljoer))
                         .queryParam("includeProd", false)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(IdentMiljoeDTO.class)
                 .retryWhen(WebClientError.is5xxException())

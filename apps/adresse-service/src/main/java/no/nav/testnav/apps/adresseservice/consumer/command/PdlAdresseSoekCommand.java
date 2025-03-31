@@ -7,6 +7,7 @@ import no.nav.testnav.apps.adresseservice.dto.PdlAdresseResponse;
 import no.nav.testnav.apps.adresseservice.exception.BadRequestException;
 import no.nav.testnav.apps.adresseservice.exception.NotFoundException;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -33,7 +34,7 @@ public class PdlAdresseSoekCommand implements Callable<Mono<PdlAdresseResponse>>
                 .uri(builder -> builder.path("/pdl-api/graphql").build())
                 .body(BodyInserters.fromValue(query))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(TEMA, TemaGrunnlag.GEN.name())
                 .retrieve()
                 .bodyToMono(PdlAdresseResponse.class)
