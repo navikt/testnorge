@@ -22,22 +22,13 @@ export class NetworkError extends Error {
 // Shared error handler function
 const handleAxiosError = (error: unknown, url: string): never => {
   if (axios.isAxiosError(error)) {
-    const { response, request, message } = error;
-    console.log('error:'); //TODO - SLETT MEG
-    console.error(error);
-
-    console.log('resp:'); //TODO - SLETT MEG
-    console.warn(response);
+    const { response, request } = error;
 
     if (response) {
       const { status, data } = response;
       switch (status) {
         case 400:
-          throw new ApiError(
-            status,
-            `Bad request: ${data?.message || message || 'Invalid input'}`,
-            data,
-          );
+          throw new ApiError(status, `Bad request: ${data?.message || 'Invalid input'}`, data);
         case 401:
           throw new ApiError(status, 'Unauthorized: Authentication required', data);
         case 403:
@@ -51,11 +42,15 @@ const handleAxiosError = (error: unknown, url: string): never => {
           if (status >= 500) {
             throw new ApiError(
               status,
-              `Server error (${status}): ${message || 'The server failed to process the request'}`,
+              `Server error (${status}): ${data?.message || 'The server failed to process the request'}`,
               data,
             );
           } else {
-            throw new ApiError(status, `Request failed with status ${status}`, data);
+            throw new ApiError(
+              status,
+              `Request failed with status ${status}: ${data?.message}`,
+              data,
+            );
           }
       }
     } else if (request) {
