@@ -7,6 +7,7 @@ import { Alert, Button, CopyButton, Textarea, UNSAFE_Combobox, VStack } from '@n
 import { XMLValidator } from 'fast-xml-parser';
 import PrettyCode from '../../components/PrettyCode';
 import AlertWithCloseButton from '../../components/AlertWithCloseButton';
+import './TpsMeldingerPage.less';
 
 const xmlQueueDefaultValue =
   '<?xml version="1.0" encoding="ISO-8859-1"?>\n' +
@@ -25,8 +26,7 @@ const infoQueueDefaultValue = 'FS03-FDNUMMER-PERSDATA-O;12345678901;;A;0';
 export const TpsMeldingerPage = () => {
   const onValidSubmit = (values: any) => {
     setIsSending(true);
-    setSuccessMessage('');
-    setErrorResponse('');
+    resetResponse();
     sendTpsMelding(values.queue, values.melding)
       .then((response) => {
         setSuccessMessage(response);
@@ -53,6 +53,11 @@ export const TpsMeldingerPage = () => {
   const [successMessage, setSuccessMessage] = React.useState('');
   const [isSending, setIsSending] = React.useState(false);
   const [errorResponse, setErrorResponse] = React.useState('');
+
+  const resetResponse = () => {
+    setSuccessMessage('');
+    setErrorResponse('');
+  };
 
   if (formErrors) {
     console.warn(formErrors);
@@ -91,8 +96,7 @@ export const TpsMeldingerPage = () => {
                       ? xmlQueueDefaultValue
                       : infoQueueDefaultValue,
                   );
-                  setSuccessMessage('');
-                  setErrorResponse('');
+                  resetResponse();
                 }
               }}
               error={formErrors.queue?.message}
@@ -135,8 +139,7 @@ export const TpsMeldingerPage = () => {
         <div>
           <Button
             onClick={() => {
-              setSuccessMessage('');
-              setErrorResponse('');
+              resetResponse();
             }}
             type="submit"
             loading={isSending}
@@ -146,9 +149,9 @@ export const TpsMeldingerPage = () => {
           </Button>
         </div>
         {successMessage && (
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <CopyButton copyText={successMessage} variant={'action'} />
-            <AlertWithCloseButton variant={'success'}>
+          <div className={'navds-combobox__wrapper'} style={{ minWidth: '740px' }}>
+            <CopyButton className={'copy-button'} copyText={successMessage} variant={'action'} />
+            <AlertWithCloseButton onClose={resetResponse} variant={'success'}>
               {XMLValidator.validate(successMessage) ? (
                 <PrettyCode codeString={successMessage} language="xml" />
               ) : (
@@ -158,7 +161,9 @@ export const TpsMeldingerPage = () => {
           </div>
         )}
         {errorResponse && (
-          <AlertWithCloseButton variant={'error'}>{errorResponse}</AlertWithCloseButton>
+          <AlertWithCloseButton onClose={resetResponse} variant={'error'}>
+            {errorResponse}
+          </AlertWithCloseButton>
         )}
       </VStack>
     </Page>
