@@ -9,6 +9,7 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
@@ -100,8 +101,11 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                            .anyMatch(forelder ->
                                    forelder.getIdentForRelasjon().equals(foreldre.getFirst().getIdent()) ||
                                    forelder.getIdentForRelasjon().equals(foreldre.get(1).getIdent())))
-                   .forEach(person -> person.getDeltBosted()
-                           .addFirst(mapperFacade.map(deltBosted, DeltBostedDTO.class)));
+                   .forEach(person -> {
+                       deltBosted.setId(person.getDeltBosted().size() + 1);
+                       person.getDeltBosted()
+                           .addFirst(mapperFacade.map(deltBosted, DeltBostedDTO.class));
+                   });
 
         } else {
             // DeltBosted for barn, settes på barnet
@@ -145,6 +149,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
 
     private void setAdresse(DeltBostedDTO deltBosted, BostedadresseDTO boadresse) {
 
+        deltBosted.setMaster(DbVersjonDTO.Master.FREG);
         deltBosted.setAdresseIdentifikatorFraMatrikkelen(boadresse.getAdresseIdentifikatorFraMatrikkelen());
 
         if (nonNull(boadresse.getVegadresse())) {
