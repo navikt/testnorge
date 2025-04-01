@@ -46,6 +46,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
+import static no.nav.dolly.config.CachingConfig.CACHE_LEGACY_BESTILLING_MAL;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
@@ -159,7 +160,12 @@ public class MalBestillingService {
             oppdateEksisterende.setMiljoer(bestilling.getMiljoer());
         }
 
-        cacheManager.getCache(CACHE_BESTILLING_MAL).clear();
+        if (nonNull(cacheManager.getCache(CACHE_BESTILLING_MAL))) {
+            cacheManager.getCache(CACHE_BESTILLING_MAL).clear();
+        }
+        if (nonNull(cacheManager.getCache(CACHE_LEGACY_BESTILLING_MAL))) {
+            cacheManager.getCache(CACHE_LEGACY_BESTILLING_MAL).clear();
+        }
     }
 
     @Transactional
@@ -343,7 +349,6 @@ public class MalBestillingService {
                     bestillingMalRepository.findAllByBrukerIsNull() :
                     bestillingMalRepository.findAllByBrukerId(brukerId);
 
-        log.info("Hentet {} maler for brukerId {}", malBestillinger.size(), brukerId);
         return mapperFacade.mapAsList(malBestillinger, RsMalBestilling.class);
     }
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
+import static no.nav.dolly.config.CachingConfig.CACHE_LEGACY_BESTILLING_MAL;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @RequestMapping(value = "/api/v1/malbestilling")
@@ -31,7 +32,7 @@ public class MalBestillingController {
 
     private final MalBestillingService malBestillingService;
 
-    @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING_MAL, CACHE_LEGACY_BESTILLING_MAL}, allEntries = true)
     @PostMapping(value = "/ident/{ident}")
     @Operation(description = "Opprett ny mal-bestilling fra ident")
     public RsMalBestillingUtenFavoritter createTemplateFromIdent(@PathVariable String ident,
@@ -40,7 +41,7 @@ public class MalBestillingController {
         return malBestillingService.createFromIdent(ident, malNavn);
     }
 
-    @Cacheable(value = CACHE_BESTILLING_MAL)
+    @Cacheable(value = CACHE_LEGACY_BESTILLING_MAL)
     @GetMapping
     @Transactional(readOnly = true)
     @Operation(description = "Hent mal-bestilling, kan filtreres på en bruker")
@@ -67,7 +68,7 @@ public class MalBestillingController {
         return malBestillingService.getMalBestillingOversikt();
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING_MAL, CACHE_LEGACY_BESTILLING_MAL}, allEntries = true)
     @PostMapping
     @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
     @Transactional
@@ -76,7 +77,7 @@ public class MalBestillingController {
         return malBestillingService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING_MAL, CACHE_LEGACY_BESTILLING_MAL}, allEntries = true)
     @DeleteMapping("/id/{id}")
     @Operation(description = "Slett mal-bestilling")
     @Transactional
@@ -85,7 +86,7 @@ public class MalBestillingController {
         malBestillingService.deleteMalBestillingByID(id);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING_MAL, CACHE_LEGACY_BESTILLING_MAL}, allEntries = true)
     @PutMapping("/id/{id}")
     @Operation(description = "Rediger mal-bestilling")
     @Transactional

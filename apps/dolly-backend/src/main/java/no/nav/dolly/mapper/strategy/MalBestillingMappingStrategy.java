@@ -3,7 +3,6 @@ package no.nav.dolly.mapper.strategy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class MalBestillingMappingStrategy implements MappingStrategy {
@@ -27,8 +25,6 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(MalBestilling kilde, RsMalBestilling destinasjon, MappingContext context) {
-
-                        log.info("Mapper malbestilling med Id: {}", kilde.getId());
 
                         destinasjon.setId(kilde.getId());
                         destinasjon.setMalNavn(kilde.getMalNavn());
