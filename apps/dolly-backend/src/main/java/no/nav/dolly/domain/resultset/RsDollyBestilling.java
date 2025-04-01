@@ -24,12 +24,14 @@ import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
+import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntekt;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 
 import java.lang.reflect.InvocationTargetException;
@@ -67,6 +69,7 @@ public class RsDollyBestilling {
     private List<RsInstdata> instdata;
     private List<RsAareg> aareg;
     private List<RsLignetInntekt> sigrunstub;
+    private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
     private InntektMultiplierWrapper inntektstub;
     private Arenadata arenaforvalter;
