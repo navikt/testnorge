@@ -1,10 +1,8 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
 
-const getMalerUrl = '/dolly-backend/api/v1/malbestilling'
-const getOrganisasjonMalerUrl = '/dolly-backend/api/v1/organisasjon/bestilling/malbestilling'
-
 const malbestillingUrl = '/dolly-backend/api/v1/malbestilling'
+const getOrganisasjonMalerUrl = '/dolly-backend/api/v1/organisasjon/bestilling/malbestilling'
 
 export type Mal = {
 	malNavn: string
@@ -34,7 +32,7 @@ export const useMalbestillingOversikt = () => {
 	}
 }
 
-export const useMalbestillingBruker = (brukerId: string) => {
+export const useMalbestillingBruker = (brukerId?: string) => {
 	const { data, isLoading, error, mutate } = useSWR<Mal[], Error>(
 		`${malbestillingUrl}/brukerId/${brukerId}`,
 		fetcher,
@@ -42,25 +40,6 @@ export const useMalbestillingBruker = (brukerId: string) => {
 
 	return {
 		maler: data,
-		loading: isLoading,
-		error: error,
-		mutate: mutate,
-	}
-}
-
-export const useDollyMalerBrukerOgMalnavn = (brukerId?: string, malNavn?: string) => {
-	const { data, isLoading, error, mutate } = useSWR<MalResponse, Error>(
-		brukerId && `${getMalerUrl}?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
-		fetcher,
-	)
-
-	const maler =
-		data?.malbestillinger && Object.values(data.malbestillinger)?.length > 0
-			? Object.values(data.malbestillinger)?.[0]
-			: []
-
-	return {
-		maler: maler,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,
