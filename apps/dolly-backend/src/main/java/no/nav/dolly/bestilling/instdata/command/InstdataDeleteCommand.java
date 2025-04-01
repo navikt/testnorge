@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.util.TokenXUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -38,7 +38,7 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
                         .queryParam(ENVIRONMENTS, miljoer)
                         .build())
                 .header(INST_IDENT, ident)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
                 .retrieve()
                 .toBodilessEntity()

@@ -33,7 +33,7 @@ const isSummer = month >= 5 && month <= 7
 const isFall = month >= 8 && month <= 10
 const isWinter = month === 0 || month === 1
 const isChristmas = month === 11
-const isEaster = month === 3 && (day > 10 || day < 22)
+const isEaster = month === 3 && day > 10 && day < 22
 const isFaarikaal = month === 8 && day > 23 && weekDay === 4
 
 const DefaultBackground = styled.div`

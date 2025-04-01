@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -35,8 +34,8 @@ public class UdistubPostCommand implements Callable<Mono<UdiPersonResponse>> {
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))
                 .retrieve()
                 .toEntity(UdiPersonResponse.class)

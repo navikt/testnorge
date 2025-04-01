@@ -5,7 +5,7 @@ import no.nav.testnav.apps.personservice.consumer.v1.header.PdlHeaders;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.FoedselsdatoDTO;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.HendelseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,7 +28,7 @@ public class OpprettFoedselsdatoCommand implements Callable<Mono<HendelseDTO>> {
                 .uri("/pdl-testdata/api/v1/bestilling/foedselsdato")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, ident)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromPublisher(Mono.just(dto), FoedselsdatoDTO.class))
                 .retrieve()
                 .bodyToMono(HendelseDTO.class)

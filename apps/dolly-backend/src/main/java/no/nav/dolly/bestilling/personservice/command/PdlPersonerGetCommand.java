@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -11,8 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,7 +31,7 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
                         .path(PERSON_SERVICE_URL)
                         .queryParam("identer", identer)
                         .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(PdlPersonBolk.class)
                 .doOnError(WebClientError.logTo(log))

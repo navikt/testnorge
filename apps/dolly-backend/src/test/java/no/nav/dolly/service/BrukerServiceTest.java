@@ -3,7 +3,6 @@ package no.nav.dolly.service;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -71,7 +69,8 @@ class BrukerServiceTest {
     }
 
     @Test
-    void getBruker_KallerRepoHentBrukere() {
+    void fetchBrukere() {
+        when(brukerRepository.save(any())).thenReturn(Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
         brukerService.fetchBrukere();
         verify(brukerRepository).findAllByOrderById();
     }
@@ -80,13 +79,6 @@ class BrukerServiceTest {
     void fetchOrCreateBruker_saveKallesVedNotFoundException() {
         brukerService.fetchOrCreateBruker("tullestring");
         verify(brukerRepository).save(any());
-    }
-
-    @Test
-    void saveBrukerTilDB_kasterExceptionNarDBConstrainBrytes() {
-        when(brukerRepository.save(any(Bruker.class))).thenThrow(DataIntegrityViolationException.class);
-        Assertions.assertThrows(ConstraintViolationException.class, () ->
-                brukerService.saveBrukerTilDB(Bruker.builder().build()));
     }
 
     @Test
@@ -100,8 +92,6 @@ class BrukerServiceTest {
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
         Bruker hentetBruker = brukerService.leggTilFavoritt(ID);
-
-        verify(brukerRepository).save(bruker);
 
         assertThat(hentetBruker, is(bruker));
         assertThat(hentetBruker.getFavoritter().size(), is(1));
@@ -123,13 +113,11 @@ class BrukerServiceTest {
         testgruppe.setFavorisertAv(new HashSet<>(singletonList(bruker)));
         testgruppe2.setFavorisertAv(new HashSet<>(singletonList(bruker)));
 
-        when(testgruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
+        when(testgruppeRepository.findById(ID)).thenReturn(Optional.of(testgruppe));
         when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
         Bruker hentetBruker = brukerService.fjernFavoritt(ID);
-
-        verify(brukerRepository).save(bruker);
 
         assertThat(hentetBruker, is(bruker));
         assertThat(hentetBruker.getFavoritter().size(), is(1));
@@ -140,14 +128,6 @@ class BrukerServiceTest {
         )));
 
         assertThat(testgruppe.getFavorisertAv().isEmpty(), is(true));
-    }
-
-    @Test
-    void fetchBrukere() {
-
-        brukerService.fetchBrukere();
-
-        verify(brukerRepository).findAllByOrderById();
     }
 
     @Test

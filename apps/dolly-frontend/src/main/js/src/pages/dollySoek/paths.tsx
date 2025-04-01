@@ -38,6 +38,7 @@ export const FamilierelasjonerPaths = [
 ]
 
 export const IdentifikasjonPaths = [
+	'personRequest.ident',
 	'personRequest.identtype',
 	'personRequest.harFalskIdentitet',
 	'personRequest.harUtenlandskIdentifikasjonsnummer',

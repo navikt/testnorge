@@ -5,11 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.MalBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingSimple;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingSimple.MalBruker;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingUtenFavoritter;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -29,14 +35,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
+import static no.nav.dolly.config.CachingConfig.CACHE_LEGACY_BESTILLING_MAL;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
@@ -49,6 +60,7 @@ public class MalBestillingService {
     private static final String EMPTY_JSON = "{}";
 
     private final BestillingMalRepository bestillingMalRepository;
+    private final BrukerServiceConsumer brukerServiceConsumer;
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
@@ -69,7 +81,7 @@ public class MalBestillingService {
                         .stream()
                         .map(bestillingMal -> {
                             try {
-                                return RsMalBestilling.builder()
+                                return RsMalBestillingUtenFavoritter.builder()
                                         .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
                                         .malNavn(bestillingMal.getMalNavn())
                                         .miljoer(bestillingMal.getMiljoer())
@@ -82,17 +94,16 @@ public class MalBestillingService {
                                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
                             }
                         })
-                        .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
+                        .sorted(Comparator.comparing(RsMalBestillingUtenFavoritter::getMalNavn))
                         .toList()));
 
         malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
         malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
                 .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
+                .sorted(Comparator.comparing(RsMalBestillingUtenFavoritter::getMalNavn))
                 .toList());
 
         return malBestillingWrapper;
-
     }
 
     @Transactional(readOnly = true)
@@ -108,7 +119,7 @@ public class MalBestillingService {
                         .stream()
                         .map(bestillingMal -> {
                             try {
-                                return RsMalBestilling.builder()
+                                return RsMalBestillingUtenFavoritter.builder()
                                         .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
                                         .miljoer(bestillingMal.getMiljoer())
                                         .malNavn(bestillingMal.getMalNavn())
@@ -121,7 +132,7 @@ public class MalBestillingService {
                                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
                             }
                         })
-                        .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
+                        .sorted(Comparator.comparing(RsMalBestillingUtenFavoritter::getMalNavn))
                         .toList()));
 
         return RsMalBestillingWrapper.builder()
@@ -149,11 +160,16 @@ public class MalBestillingService {
             oppdateEksisterende.setMiljoer(bestilling.getMiljoer());
         }
 
-        cacheManager.getCache(CACHE_BESTILLING_MAL).clear();
+        if (nonNull(cacheManager.getCache(CACHE_BESTILLING_MAL))) {
+            cacheManager.getCache(CACHE_BESTILLING_MAL).clear();
+        }
+        if (nonNull(cacheManager.getCache(CACHE_LEGACY_BESTILLING_MAL))) {
+            cacheManager.getCache(CACHE_LEGACY_BESTILLING_MAL).clear();
+        }
     }
 
     @Transactional
-    public RsMalBestilling saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
+    public RsMalBestillingUtenFavoritter saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
         var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
 
@@ -174,7 +190,7 @@ public class MalBestillingService {
             malbestilling = maler.getFirst();
         }
 
-        return mapperFacade.map(malbestilling, RsMalBestilling.class);
+        return mapperFacade.map(malbestilling, RsMalBestillingUtenFavoritter.class);
     }
 
     @Transactional
@@ -187,23 +203,23 @@ public class MalBestillingService {
     }
 
     @Transactional
-    public RsMalBestilling updateMalNavnById(Long id, String nyttMalNavn) {
+    public RsMalBestillingUtenFavoritter updateMalNavnById(Long id, String nyttMalNavn) {
 
         bestillingMalRepository.findById(id)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Malbestilling med id %d ble ikke funnet".formatted(id)));
 
         bestillingMalRepository.updateMalNavnById(id, nyttMalNavn);
-        var oppdatertMalBestilling = new AtomicReference<RsMalBestilling>();
+        var oppdatertMalBestilling = new AtomicReference<RsMalBestillingUtenFavoritter>();
 
         bestillingMalRepository.findById(id)
                 .ifPresentOrElse(malBestilling ->
-                        oppdatertMalBestilling.set(mapperFacade.map(malBestilling, RsMalBestilling.class)), null);
+                        oppdatertMalBestilling.set(mapperFacade.map(malBestilling, RsMalBestillingUtenFavoritter.class)), null);
         return oppdatertMalBestilling.get();
     }
 
     @Transactional
-    public RsMalBestilling createFromIdent(String ident, String name) {
+    public RsMalBestillingUtenFavoritter createFromIdent(String ident, String name) {
 
         var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
 
@@ -244,7 +260,7 @@ public class MalBestillingService {
             akkumulertMal.setBestKriterier(toJson(aggregertRequest));
         }
 
-        return mapperFacade.map(akkumulertMal, RsMalBestilling.class);
+        return mapperFacade.map(akkumulertMal, RsMalBestillingUtenFavoritter.class);
     }
 
     public static String getBruker(Bruker bruker) {
@@ -285,5 +301,54 @@ public class MalBestillingService {
                 Arrays.stream(miljoer.split(","))
                         .collect(Collectors.toSet()) :
                 Collections.emptySet();
+    }
+
+    public RsMalBestillingSimple getMalBestillingOversikt() {
+
+        var brukeren = brukerService.fetchOrCreateBruker();
+        if (brukeren.getBrukertype() == AZURE) {
+
+            return RsMalBestillingSimple.builder()
+                    .brukereMedMaler(Stream.of(List.of(
+                                            MalBruker.builder()
+                                                    .brukernavn(ANONYM)
+                                                    .brukerId(ANONYM)
+                                                    .build()),
+                                    mapFragment(bestillingMalRepository.findAllByBrukertypeAzure()))
+                            .flatMap(List::stream)
+                            .toList())
+                    .build();
+
+        } else {
+            var brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .block();
+
+            return RsMalBestillingSimple.builder()
+                    .brukereMedMaler(mapFragment(bestillingMalRepository.findAllByBrukerIdIn(brukere)))
+                    .build();
+        }
+    }
+
+    private static List<MalBruker> mapFragment(List<MalBestillingFragment> malBestillingFragment) {
+
+        return malBestillingFragment.stream()
+                .map(MalBestillingFragment::getMalBruker)
+                .filter(Objects::nonNull)
+                .map(malBruker -> malBruker.split(":"))
+                .map(malBruker -> MalBruker.builder()
+                        .brukernavn(malBruker[0])
+                        .brukerId(malBruker[1])
+                        .build())
+                .toList();
+    }
+
+    public List<RsMalBestilling> getMalBestillingerBrukerId(String brukerId) {
+
+        var malBestillinger =  ANONYM.equals(brukerId) ?
+                    bestillingMalRepository.findAllByBrukerIsNull() :
+                    bestillingMalRepository.findAllByBrukerId(brukerId);
+
+        return mapperFacade.mapAsList(malBestillinger, RsMalBestilling.class);
     }
 }
