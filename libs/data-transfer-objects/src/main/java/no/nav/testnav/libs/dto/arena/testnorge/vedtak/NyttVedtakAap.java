@@ -69,6 +69,10 @@ public class NyttVedtakAap extends NyttVedtak {
         return RettighetType.AAP;
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Periode {
 
         private String periodeKode;
