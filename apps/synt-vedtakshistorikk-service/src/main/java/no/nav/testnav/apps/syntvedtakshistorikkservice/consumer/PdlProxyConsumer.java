@@ -94,23 +94,22 @@ public class PdlProxyConsumer {
     }
 
     public boolean createTags(List<String> identer, List<Tags> tags) {
-        return true;
-//        try {
-//            if (isNull(identer) || identer.isEmpty()) return false;
-//            var response = tokenExchange.exchange(serverProperties)
-//                    .flatMap(accessToken -> new TagsOpprettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
-//                    .block();
-//
-//            if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
-//                var status = isNull(response) ? "" : "Status: " + response.getStatusCode();
-//                log.error("Feil i opprettelse av tag(s) på ident(er): {}", status);
-//                return false;
-//            }
-//            return true;
-//        } catch (Exception e) {
-//            log.error("Feil i opprettelse av tag(s) på ident(er): ", e);
-//            return false;
-//        }
+        try {
+            if (isNull(identer) || identer.isEmpty()) return false;
+            var response = tokenExchange.exchange(serverProperties)
+                    .flatMap(accessToken -> new TagsOpprettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
+                    .block();
+
+            if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
+                var status = isNull(response) ? "" : "Status: " + response.getStatusCode();
+                log.error("Feil i opprettelse av tag(s) på ident(er): {}", status);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            log.error("Feil i opprettelse av tag(s) på ident(er): ", e);
+            return false;
+        }
     }
 
     public boolean deleteTags(List<String> identer, List<Tags> tags) {
