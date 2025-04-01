@@ -17,6 +17,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 @NoArgsConstructor(force = true)
 public class PersonRequest {
 
+    private String ident;
+
     private Identtype identtype;
     private KjoennDTO.Kjoenn kjoenn;
     private Integer alderFom;

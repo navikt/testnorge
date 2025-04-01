@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.batchbestillingservice.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -28,7 +28,7 @@ public class GetAktiveBestillingerCommand implements Callable<Flux<Object>> {
                         .path("/api/v1/bestilling/gruppe/{gruppeId}/ikkeferdig")
                         .build(gruppeId)
                 )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(Object.class)
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,

@@ -23,6 +23,7 @@ spec:
         - application: dolly-backend
         - application: dolly-frontend
         - application: dolly-idporten
+        - application: testnav-tps-messaging-frontend
         - application: testnav-oversikt-frontend
     outbound:
       rules:

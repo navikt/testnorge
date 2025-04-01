@@ -101,9 +101,9 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                 if (isNull(sivilstand.getNyRelatertPerson().getAlder()) &&
                         isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
                         isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
-
-                    sivilstand.getNyRelatertPerson().setFoedtFoer(now().minusYears(30));
-                    sivilstand.getNyRelatertPerson().setFoedtEtter(now().minusYears(60));
+                    var foedselsdato = FoedselsdatoUtility.getFoedselsdato(hovedperson);
+                    sivilstand.getNyRelatertPerson().setFoedtFoer(foedselsdato.plusYears(2));
+                    sivilstand.getNyRelatertPerson().setFoedtEtter(foedselsdato.minusYears(2));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
                     KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream().findFirst()

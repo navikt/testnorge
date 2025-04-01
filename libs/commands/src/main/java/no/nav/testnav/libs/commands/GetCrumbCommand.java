@@ -3,7 +3,7 @@ package no.nav.testnav.libs.commands;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
@@ -18,7 +18,7 @@ public class GetCrumbCommand implements Callable<JenkinsCrumb> {
         return webClient
                 .get()
                 .uri("/crumbIssuer/api/json")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(JenkinsCrumb.class)
                 .retryWhen(WebClientError.is5xxException())

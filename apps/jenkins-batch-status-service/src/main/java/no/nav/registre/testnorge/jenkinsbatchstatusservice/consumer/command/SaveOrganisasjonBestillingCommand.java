@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
@@ -18,7 +18,7 @@ public class SaveOrganisasjonBestillingCommand implements Callable<Long> {
         return webClient
                 .put()
                 .uri(builder -> builder.path("/api/v1/order/{uuid}").build(uuid))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(Long.class)
                 .retryWhen(WebClientError.is5xxException())

@@ -274,7 +274,7 @@ public class OpenSearchPersonQueryUtils {
                 .ifPresent(boadresse ->
                         queryBuilder
                                 .must(nestedMatchQuery(BOSTEDSADRESSE, METADATA_HISTORISK, false))
-                                .must(nestedExistQuery(BOSTEDSADRESSE, MATRIKKELADRESSE + ".matrikkelId"))
+                                .must(nestedExistQuery(BOSTEDSADRESSE, MATRIKKELADRESSE))
                 );
     }
 

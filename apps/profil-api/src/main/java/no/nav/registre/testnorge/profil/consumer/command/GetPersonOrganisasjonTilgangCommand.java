@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.dto.AltinnRequestDTO;
 import no.nav.testnav.libs.dto.altinn3.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -25,7 +25,7 @@ public class GetPersonOrganisasjonTilgangCommand implements Callable<Flux<Organi
                 .post()
                 .uri(builder -> builder.path("/api/v1/brukertilgang")
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .bodyValue(new AltinnRequestDTO(ident))
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)

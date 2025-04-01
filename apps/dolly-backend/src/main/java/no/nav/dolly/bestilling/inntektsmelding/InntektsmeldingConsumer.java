@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
+import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -30,12 +31,14 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
     public InntektsmeldingConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient webClient
+            WebClient webClient,
+            WebClientLogger webClientLogger
     ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavInntektsmeldingService();
-        this.webClient = webClient
-                .mutate()
+        var webClientBuilder = webClient.mutate();
+        webClientLogger.customize(webClientBuilder);
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

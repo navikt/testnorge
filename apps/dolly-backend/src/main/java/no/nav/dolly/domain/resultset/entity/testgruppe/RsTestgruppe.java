@@ -35,7 +35,6 @@ public class RsTestgruppe {
     private Integer antallIBruk;
 
     private boolean erEierAvGruppe;
-    private boolean favorittIGruppen;
     private Boolean erLaast;
     private String laastBeskrivelse;
 
