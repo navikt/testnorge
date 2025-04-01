@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class DelvisFravearDTO implements ToXmlElement<DelvisFravaer> {
     @JsonProperty
-    private LocalDate dato;
+    private String dato;
     @JsonProperty
     private Double timer;
 

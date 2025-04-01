@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @EnableWebSecurity
 @SpringBootApplication
-@Import({ApplicationCoreConfig.class})
+@Import({ ApplicationCoreConfig.class })
 public class ProfilApiApplicationStarter {
     public static void main(String[] args) {
         new SpringApplicationBuilder(ProfilApiApplicationStarter.class)
