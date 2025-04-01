@@ -4,23 +4,44 @@ import { fetcher } from '@/api'
 const getMalerUrl = '/dolly-backend/api/v1/malbestilling'
 const getOrganisasjonMalerUrl = '/dolly-backend/api/v1/organisasjon/bestilling/malbestilling'
 
+const malbestillingUrl = '/dolly-backend/api/v1/malbestilling'
+
 export type Mal = {
 	malNavn: string
 	id: number
-	bestilling: any
+	malBestilling: any
 }
 
 type MalResponse = {
 	malbestillinger: [string, Mal[]]
 }
 
-export const useDollyMaler = () => {
-	const { data, isLoading, error, mutate } = useSWR<MalResponse, Error>(getMalerUrl, fetcher, {
-		fallbackData: { malbestillinger: ['TEMP', []] },
-	})
+type OversiktResponse = {
+	brukereMedMaler: Array<{ brukernavn: string; brukerId: string }>
+}
+
+export const useMalbestillingOversikt = () => {
+	const { data, isLoading, error, mutate } = useSWR<OversiktResponse, Error>(
+		`${malbestillingUrl}/oversikt`,
+		fetcher,
+	)
 
 	return {
-		maler: data?.malbestillinger,
+		brukere: data?.brukereMedMaler,
+		loading: isLoading,
+		error: error,
+		mutate: mutate,
+	}
+}
+
+export const useMalbestillingBruker = (brukerId: string) => {
+	const { data, isLoading, error, mutate } = useSWR<Mal[], Error>(
+		`${malbestillingUrl}/brukerId/${brukerId}`,
+		fetcher,
+	)
+
+	return {
+		maler: data,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,
