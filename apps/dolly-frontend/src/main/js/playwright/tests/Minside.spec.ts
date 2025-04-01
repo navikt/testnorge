@@ -1,8 +1,5 @@
 import { expect, test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { brukerMalerEndretMock } from '#/mocks/BasicMocks'
-
-const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\?brukerId/)
 
 test.describe('Minside mal testing', () => {
 	test('passes', async ({ page }) => {
@@ -22,6 +19,7 @@ test.describe('Minside mal testing', () => {
 
 		await page.getByTestId(TestComponentSelectors.CHECKBOX_KONTAKT_ANONYM).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_SEND_MELDING).click()
+
 		await page.getByTestId(TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL).fill('mal')
 		await page.getByTestId(TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL).clear()
 		await page.getByTestId(TestComponentSelectors.TOGGLE_MIN_SIDE_ORGANISASJON_MALER).click()
@@ -34,10 +32,6 @@ test.describe('Minside mal testing', () => {
 		await page
 			.getByTestId(TestComponentSelectors.INPUT_MINSIDE_ENDRE_MALNAVN)
 			.fill('Nytt navn på mal')
-
-		await page.route(brukerMaler, async (route) => {
-			await route.fulfill({ body: JSON.stringify(brukerMalerEndretMock) })
-		})
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_MINSIDE_LAGRE_MALNAVN).click()
 	})

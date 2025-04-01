@@ -16,7 +16,6 @@ export default ({ brukerId }: { brukerId: string }) => {
 	const [underRedigering, setUnderRedigering] = useState([])
 
 	const { maler: egneMaler, loading, mutate } = useMalbestillingBruker(brukerId)
-
 	const {
 		maler: egneOrgMaler,
 		loading: orgLoading,
