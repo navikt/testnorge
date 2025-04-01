@@ -6,7 +6,6 @@ import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import Icon from '@/components/ui/icon/Icon'
-import { SoekTypeValg, VelgSoekTypeToggle } from '@/pages/gruppeOversikt/VelgSoekTypeToggle'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Highlighter from 'react-highlight-words'
 import styled from 'styled-components'
@@ -15,6 +14,11 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/ducks/finnPerson'
 import { useDispatch, useSelector } from 'react-redux'
 import { identerSearch } from '@/service/services/dollysearch/DollySearch'
+
+enum SoekTypeValg {
+	PERSON = 'Person',
+	BESTILLING = 'Bestilling',
+}
 
 type Person = {
 	ident: string
@@ -190,14 +194,11 @@ const FinnPersonBestilling = () => {
 	}
 
 	// @ts-ignore
-	const [options, fetchOptions]: Promise<Option[]> = useAsyncFn(
-		async (tekst) => {
-			return soekType === SoekTypeValg.BESTILLING
-				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
-				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
-		},
-		[soekType],
-	)
+	const [options, fetchOptions]: Promise<Option[]> = useAsyncFn(async (tekst) => {
+		return soekType === SoekTypeValg.BESTILLING
+			? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
+			: soekPersoner(tekst).catch((err: Error) => setError(err.message))
+	}, [])
 
 	const handleChange = (tekst: string) => {
 		dispatch(resetFeilmelding())
@@ -241,7 +242,6 @@ const FinnPersonBestilling = () => {
 					data-testid={TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING}
 					className="finnperson-container skjemaelement"
 				>
-					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
 					{/*@ts-ignore*/}
 					<StyledAsyncSelect
 						data-testid={TestComponentSelectors.SELECT_PERSON_SEARCH}
@@ -259,11 +259,7 @@ const FinnPersonBestilling = () => {
 						onChange={(e: Option) => setSearchQuery(e?.value)}
 						backspaceRemovesValue={true}
 						label="Person"
-						placeholder={
-							soekType === SoekTypeValg.PERSON
-								? 'Søk etter navn, ident eller aktør-ID'
-								: 'Søk etter bestilling'
-						}
+						placeholder={'Søk etter navn, ident, aktør-ID eller bestilling'}
 						noOptionsMessage={() => 'Ingen treff'}
 					/>
 				</div>
