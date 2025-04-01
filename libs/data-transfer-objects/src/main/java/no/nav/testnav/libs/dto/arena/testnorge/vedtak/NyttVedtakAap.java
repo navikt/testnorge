@@ -15,6 +15,7 @@ import no.nav.testnav.libs.dto.arena.testnorge.aap.gensaksopplysninger.Saksopply
 import no.nav.testnav.libs.dto.arena.testnorge.aap.institusjonsopphold.Institusjonsopphold;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.medisinskopplysning.MedisinskOpplysning;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.medlemfolketrygden.MedlemFolketrygden;
+import no.nav.testnav.libs.dto.arena.testnorge.aap.periode.Periode;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.andreokonomytelser.AndreOkonomYtelser;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 
@@ -67,19 +68,5 @@ public class NyttVedtakAap extends NyttVedtak {
     @Override
     public RettighetType getRettighetType() {
         return RettighetType.AAP;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class Periode {
-
-        private String periodeKode;
-        private Integer endringPeriodeTeller;
-        private String endringPeriodeBegrunnelse;
-        private String nullstill;
-        private Integer endringUnntakTeller;
-        private String endringUnntakBegrunnelse;
     }
 }

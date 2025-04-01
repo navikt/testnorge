@@ -118,14 +118,6 @@ public class RequestUtils {
         }
 
         vedtak.setBegrunnelse(BEGRUNNELSE);
-        vedtak.setPeriode(NyttVedtakAap.Periode.builder()
-                .periodeKode("")
-                .endringPeriodeTeller(null)
-                .endringPeriodeBegrunnelse("")
-                .nullstill("")
-                .endringUnntakTeller(null)
-                .endringUnntakBegrunnelse("")
-                .build());
 
         var rettighetRequest = new RettighetUngUfoerRequest(Collections.singletonList(vedtak));
         rettighetRequest.setPersonident(personident);
