@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity
 @SpringBootApplication
 public class TpsMessagingServiceApplicationStarter {
-  
+
     public static void main(String[] args) {
         new SpringApplicationBuilder(TpsMessagingServiceApplicationStarter.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
