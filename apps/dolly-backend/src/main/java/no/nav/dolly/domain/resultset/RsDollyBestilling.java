@@ -31,7 +31,6 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntekt;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 
 import java.lang.reflect.InvocationTargetException;
@@ -69,8 +68,8 @@ public class RsDollyBestilling {
     private List<RsInstdata> instdata;
     private List<RsAareg> aareg;
     private List<RsLignetInntekt> sigrunstub;
-    private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
+    private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     private InntektMultiplierWrapper inntektstub;
     private Arenadata arenaforvalter;
     private RsUdiPerson udistub;
@@ -107,6 +106,13 @@ public class RsDollyBestilling {
             sigrunstub = new ArrayList<>();
         }
         return sigrunstub;
+    }
+
+    public List<RsSummertSkattegrunnlag> getSigrunstubSummertSkattegrunnlag() {
+        if (isNull(sigrunstubSummertSkattegrunnlag)) {
+            sigrunstubSummertSkattegrunnlag = new ArrayList<>();
+        }
+        return sigrunstubSummertSkattegrunnlag;
     }
 
     public List<RsPensjonsgivendeForFolketrygden> getSigrunstubPensjonsgivende() {
