@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,130 +16,71 @@ import java.time.LocalDateTime;
 public class RsSummertSkattegrunnlag {
 
     private LocalDateTime ajourholdstidspunkt;
-                "grunnlag":[
+    private List<Grunnlag> grunnlag;
+    private String inntektsaar;
+    private List<KildeskattPaaLoennGrunnlag> kildeskattPaaLoennGrunnlag;
+    private LocalDate skatteoppgjoersdato;
+    private Boolean skjermet;
+    private String stadie;
+    private List<SvalbardGrunnlag> svalbardGrunnlag;
 
-    {
-        "andelOverfoertFraBarn":9007199254740991,
-            "beloep":9007199254740991,
-            "kategori":"string",
-            "spesifisering": [
-        {
-            "type":"string"
-        },
-        {
-            "type":"string"
-        },
-        {
-            "type":"string",
-                "aarForFoerstegangsregistrering":"string",
-                "antattMarkedsverdi":9007199254740991,
-                "antattVerdiSomNytt":9007199254740991,
-                "beloep":9007199254740991,
-                "eierandel":0.1,
-                "fabrikatnavn":"string",
-                "formuesverdi":9007199254740991,
-                "formuesverdiForFormuesandel":9007199254740991,
-                "registreringsnummer":"string"
-        }
-          ],
-        "tekniskNavn":"string"
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SvalbardGrunnlag {
+
+        private Integer andelOverfoertFraBarn;
+        private Integer beloep;
+        private String kategori;
+        private List<Kjoeretoey> spesifisering;
+
+        private String tekniskNavn;
     }
-      ],
-              "inntektsaar":"string",
-              "kildeskattPaaLoennGrunnlag":[
 
-    {
-        "andelOverfoertFraBarn":9007199254740991,
-            "beloep":9007199254740991,
-            "kategori":"string",
-            "spesifisering": [
-        {
-            "type":"string"
-        },
-        {
-            "type":"string"
-        },
-        {
-            "type":"string",
-                "aarForFoerstegangsregistrering":"string",
-                "antattMarkedsverdi":9007199254740991,
-                "antattVerdiSomNytt":9007199254740991,
-                "beloep":9007199254740991,
-                "eierandel":0.1,
-                "fabrikatnavn":"string",
-                "formuesverdi":9007199254740991,
-                "formuesverdiForFormuesandel":9007199254740991,
-                "registreringsnummer":"string"
-        }
-          ],
-        "tekniskNavn":"string"
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class KildeskattPaaLoennGrunnlag {
+
+        private Integer andelOverfoertFraBarn;
+        private Integer beloep;
+        private String kategori;
+        private List<Kjoeretoey> spesifisering;
+
+        private String tekniskNavn;
     }
-      ],
-              "personidentifikator":"string",
-              "skatteoppgjoersdato":"2025-04-01",
-              "skjermet":true,
-              "stadie":"string",
-              "svalbardGrunnlag":[
 
-    {
-        "andelOverfoertFraBarn":9007199254740991,
-            "beloep":9007199254740991,
-            "kategori":"string",
-            "spesifisering": [
-        {
-            "type":"string"
-        },
-        {
-            "type":"string"
-        },
-        {
-            "type":"string",
-                "aarForFoerstegangsregistrering":"string",
-                "antattMarkedsverdi":9007199254740991,
-                "antattVerdiSomNytt":9007199254740991,
-                "beloep":9007199254740991,
-                "eierandel":0.1,
-                "fabrikatnavn":"string",
-                "formuesverdi":9007199254740991,
-                "formuesverdiForFormuesandel":9007199254740991,
-                "registreringsnummer":"string"
-        }
-          ],
-        "tekniskNavn":"string"
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Grunnlag {
+
+        private Integer andelOverfoertFraBarn;
+        private Integer beloep;
+        private String kategori;
+        private List<Kjoeretoey> spesifisering;
+
+        private String tekniskNavn;
     }
-      ]
-}
-  ]
-          }
 
-public static class Grunnlag {
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Kjoeretoey {
 
-    private Integer andelOverfoertFraBarn;
-    private Integer beloep;
-    private String kategori;
-    private String spesifisering;
-
-    {
-        "type":"string"
-    },
-
-    {
-        "type":"string"
-    },
-
-    {
-        "type":"string",
-            "aarForFoerstegangsregistrering":"string",
-            "antattMarkedsverdi":9007199254740991,
-            "antattVerdiSomNytt":9007199254740991,
-            "beloep":9007199254740991,
-            "eierandel":0.1,
-            "fabrikatnavn":"string",
-            "formuesverdi":9007199254740991,
-            "formuesverdiForFormuesandel":9007199254740991,
-            "registreringsnummer":"string"
+        private String type;
+        private String aarForFoerstegangsregistrering;
+        private Integer antattMarkedsverdi;
+        private Integer antattVerdiSomNytt;
+        private Integer beloep;
+        private Double eierandel;
+        private String fabrikatnavn;
+        private Integer formuesverdi;
+        private Integer formuesverdiForFormuesandel;
+        private String registreringsnummer;
     }
-          ],
-    private String tekniskNavn;
-}
 }

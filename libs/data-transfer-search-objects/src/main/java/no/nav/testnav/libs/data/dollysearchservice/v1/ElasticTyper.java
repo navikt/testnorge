@@ -31,6 +31,7 @@ public enum ElasticTyper {
     PEN_UT("Pensjon - Uføretrygd (UT)"),
     SIGRUN_LIGNET("Sigrunstub - Lignet skatteinntekt"),
     SIGRUN_PENSJONSGIVENDE("Sigrunstub - Pensjonsgivende inntekt"),
+    SIGRUN_SUMMERT("Sigrunstub - Summert skattegrunnlag"),
     SKATTEKORT("Skattekort (SOKOS)"),
     SKJERMING("Skjermingsregisteret"),
     SYKEMELDING("Sykemelding"),

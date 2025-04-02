@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -21,7 +22,6 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @Slf4j
 public class SigrunstubLignetDeleteCommand implements Callable<Mono<SigrunstubResponse>> {
 
-    private static final String CONSUMER = "Dolly";
     private static final String SIGRUNSTUB_DELETE_URL = "/api/v1/slett";
 
     private final WebClient webClient;

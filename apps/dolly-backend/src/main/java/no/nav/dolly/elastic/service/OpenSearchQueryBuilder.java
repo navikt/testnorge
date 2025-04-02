@@ -115,6 +115,7 @@ public class OpenSearchQueryBuilder {
             case KRRSTUB -> QueryBuilders.existsQuery("krrstub");
             case SIGRUN_LIGNET -> QueryBuilders.existsQuery("sigrunstub");
             case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.existsQuery("sigrunstubPensjonsgivende");
+            case SIGRUN_SUMMERT ->  QueryBuilders.existsQuery("sigrunstubSummertSkattegrunnlag");
             case ARENA_AAP -> QueryBuilders.existsQuery("arenaforvalter.aap");
             case ARENA_AAP115 -> QueryBuilders.existsQuery("arenaforvalter.aap115");
             case ARENA_DAGP -> QueryBuilders.existsQuery("arenaforvalter.dagpenger");

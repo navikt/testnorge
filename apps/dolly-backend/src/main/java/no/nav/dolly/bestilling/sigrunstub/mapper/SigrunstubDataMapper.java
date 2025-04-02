@@ -9,9 +9,11 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.KodeverknavnGrunnlag;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
+import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
@@ -81,6 +83,17 @@ public class SigrunstubDataMapper implements MappingStrategy {
                         }
                     }
                 })
+                .register();
+
+        factory.classMap(RsSummertSkattegrunnlag.class, SigrunstubSummertskattegrunnlagRequest.SummertSkattegrunnlag.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsSummertSkattegrunnlag kilde, SigrunstubSummertskattegrunnlagRequest.SummertSkattegrunnlag destinasjon, MappingContext context) {
+
+                        destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
+                    }
+                })
+                .byDefault()
                 .register();
     }
 }
