@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest;
-import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest.SummertSkattegrunnlag;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -56,8 +56,8 @@ public class SigrunStubClient implements ClientRegister {
                     context.setProperty("ident", dollyPerson.getIdent());
 
                     var skattegrunnlag = SigrunstubSummertskattegrunnlagRequest.builder()
-                            .summertSkattegrunnlag(
-                                    mapperFacade.mapAsList(summertSkattegrunnlag, SummertSkattegrunnlag.class, context)
+                            .summertskattegrunnlag(
+                                    mapperFacade.mapAsList(summertSkattegrunnlag, Summertskattegrunnlag.class, context)
                             ).build();
 
                     return sigrunStubConsumer.createSigrunstubSummertSkattegrunnlag(skattegrunnlag)

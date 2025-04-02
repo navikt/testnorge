@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest;
-import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest.SummertSkattegrunnlag;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
@@ -34,7 +34,7 @@ public class SigurunstubPostSummertSkattegrunnlagCommand implements Callable<Mon
     @Override
     public Mono<SigrunstubResponse> call() {
         return webClient
-                .put()
+                .post()
                 .uri(uriBuilder -> uriBuilder.path(SKATTEGRUNNLAG_URL).build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
@@ -45,8 +45,8 @@ public class SigurunstubPostSummertSkattegrunnlagCommand implements Callable<Mon
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> SigrunstubResponse.builder()
-                        .ident(request.getSummertSkattegrunnlag().stream()
-                                .map(SummertSkattegrunnlag::getPersonidentifikator)
+                        .ident(request.getSummertskattegrunnlag().stream()
+                                .map(Summertskattegrunnlag::getPersonidentifikator)
                                 .findFirst()
                                 .orElse(null))
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))

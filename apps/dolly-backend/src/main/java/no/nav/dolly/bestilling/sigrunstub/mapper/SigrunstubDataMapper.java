@@ -85,10 +85,10 @@ public class SigrunstubDataMapper implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(RsSummertSkattegrunnlag.class, SigrunstubSummertskattegrunnlagRequest.SummertSkattegrunnlag.class)
+        factory.classMap(RsSummertSkattegrunnlag.class, SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsSummertSkattegrunnlag kilde, SigrunstubSummertskattegrunnlagRequest.SummertSkattegrunnlag destinasjon, MappingContext context) {
+                    public void mapAtoB(RsSummertSkattegrunnlag kilde, SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag destinasjon, MappingContext context) {
 
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
                     }

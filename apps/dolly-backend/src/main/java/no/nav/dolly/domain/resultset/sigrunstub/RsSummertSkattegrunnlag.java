@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.sigrunstub;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,39 +19,12 @@ public class RsSummertSkattegrunnlag {
     private LocalDateTime ajourholdstidspunkt;
     private List<Grunnlag> grunnlag;
     private String inntektsaar;
-    private List<KildeskattPaaLoennGrunnlag> kildeskattPaaLoennGrunnlag;
+    private List<Grunnlag> kildeskattPaaLoennGrunnlag;
     private LocalDate skatteoppgjoersdato;
     private Boolean skjermet;
+    @Schema(description = "verdi fra kodeverk \"Skattegrunnlag stadie\"")
     private String stadie;
-    private List<SvalbardGrunnlag> svalbardGrunnlag;
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SvalbardGrunnlag {
-
-        private Integer andelOverfoertFraBarn;
-        private Integer beloep;
-        private String kategori;
-        private List<Kjoeretoey> spesifisering;
-
-        private String tekniskNavn;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class KildeskattPaaLoennGrunnlag {
-
-        private Integer andelOverfoertFraBarn;
-        private Integer beloep;
-        private String kategori;
-        private List<Kjoeretoey> spesifisering;
-
-        private String tekniskNavn;
-    }
+    private List<Grunnlag> svalbardGrunnlag;
 
     @Data
     @Builder
@@ -60,9 +34,10 @@ public class RsSummertSkattegrunnlag {
 
         private Integer andelOverfoertFraBarn;
         private Integer beloep;
+        @Schema(description = "verdi fra kodeverk \"Summert skattegrunnlag - kategori\"")
         private String kategori;
         private List<Kjoeretoey> spesifisering;
-
+        @Schema(description = "verdi fra kodeverk \"Summert skattegrunnlag\"")
         private String tekniskNavn;
     }
 
@@ -72,7 +47,7 @@ public class RsSummertSkattegrunnlag {
     @AllArgsConstructor
     public static class Kjoeretoey {
 
-        private String type;
+        private Type type;
         private String aarForFoerstegangsregistrering;
         private Integer antattMarkedsverdi;
         private Integer antattVerdiSomNytt;
@@ -82,5 +57,11 @@ public class RsSummertSkattegrunnlag {
         private Integer formuesverdi;
         private Integer formuesverdiForFormuesandel;
         private String registreringsnummer;
+    }
+
+    public enum Type {
+        EiendelerOgFasteEiendommer,
+        Kjoeretoey,
+        Spesifisering
     }
 }
