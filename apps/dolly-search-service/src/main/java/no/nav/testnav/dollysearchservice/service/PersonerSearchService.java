@@ -13,10 +13,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -35,7 +37,11 @@ public class PersonerSearchService {
                 no.nav.testnav.dollysearchservice.dto.SearchRequest.class);
         request.setRegistreRequest(registreRequest);
 
-        var identer = bestillingQueryService.execRegisterQuery(request);
+        var identer = Optional.ofNullable(searchRequest.getPersonRequest())
+                .filter(personRequest -> isNotBlank(personRequest.getIdent()))
+                .map(personrequest -> Set.of(personrequest.getIdent()))
+                .orElse(bestillingQueryService.execRegisterQuery(request));
+
         request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);

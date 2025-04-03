@@ -171,7 +171,7 @@ public class OpenSearchPersonQueryUtils {
                 );
     }
 
-    public static BoolQueryBuilder addAdresseQuery(String field, String value) {
+    private static BoolQueryBuilder addAdresseQuery(String field, String value) {
 
         return QueryBuilders.boolQuery()
                 .should(QueryBuilders.boolQuery()

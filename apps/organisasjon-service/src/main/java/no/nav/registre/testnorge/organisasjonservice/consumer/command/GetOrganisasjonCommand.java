@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -32,7 +32,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                             .queryParam("inkluderHistorikk", false)
                             .build(miljo, orgnummer)
                     )
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .headers(WebClientHeader.bearer(token))
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
                     .doOnSuccess(response -> log.info("Response: {}", Json.pretty(response)))

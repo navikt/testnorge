@@ -19,9 +19,9 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class RsMalBestillingWrapper {
 
-    private Map<String, List<RsMalBestilling>> malbestillinger;
+    private Map<String, List<RsMalBestillingUtenFavoritter>> malbestillinger;
 
-    public Map<String, List<RsMalBestilling>> getMalbestillinger() {
+    public Map<String, List<RsMalBestillingUtenFavoritter>> getMalbestillinger() {
 
         if (isNull(malbestillinger)) {
             malbestillinger = new TreeMap<>();

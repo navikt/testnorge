@@ -133,20 +133,11 @@ public class TestgruppeService {
         }
     }
 
-    public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer) {
-        List<Testgruppe> grupper = testgruppeRepository.findAllById(grupperIDer);
-        if (!grupper.isEmpty()) {
-            return grupper;
-        }
-        throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
-    }
-
     public Page<Testgruppe> fetchTestgrupperByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
-        Bruker bruker = brukerService.fetchBruker(brukerId);
-        List<Bruker> eidAvBruker = brukerService.fetchEidAv(bruker);
-        eidAvBruker.add(bruker);
 
-        return testgruppeRepository.findAllByOpprettetAvIn(eidAvBruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
+        var bruker = brukerService.fetchBruker(brukerId);
+
+        return testgruppeRepository.findAllByOpprettetAv(bruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
