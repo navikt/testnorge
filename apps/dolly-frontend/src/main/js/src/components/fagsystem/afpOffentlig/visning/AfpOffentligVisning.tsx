@@ -8,7 +8,7 @@ import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
-import { useTpOrdning } from '@/utils/hooks/usePensjon'
+import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon'
 import {
 	AfpOffentligTypes,
 	BeloepTypes,
@@ -37,7 +37,7 @@ export const sjekkManglerAfpOffentligData = (afpOffentligData: Array<MiljoDataTy
 }
 
 export const showTpNavn = (tpId: string) => {
-	const { tpOrdningData } = useTpOrdning()
+	const { tpOrdningData } = useTpOrdningKodeverk()
 	const tpOrdning = tpOrdningData?.find((tpOrdning: any) => tpOrdning.value === tpId)
 	if (tpOrdning) {
 		return tpOrdning.label
