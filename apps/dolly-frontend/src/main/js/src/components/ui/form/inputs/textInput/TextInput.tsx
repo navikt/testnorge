@@ -108,10 +108,6 @@ export const TextInput = ({
 		}
 	}, [input])
 
-	useEffect(() => {
-		setFieldValue(watch(name))
-	}, [watch(name)])
-
 	return (
 		<>
 			<input
