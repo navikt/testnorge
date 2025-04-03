@@ -5,7 +5,11 @@ import lombok.Getter;
 @Getter
 public enum ElasticTyper {
 
-    AAREG("Arbeidsgiver/arbeidstaker-register (AAREG)"),
+    ARBEIDSFORHOLD("Arbeidsforhold"),
+    ARBEIDSFORHOLD_FORENKLET("Arbeidsforhold - Forenklet"),
+    ARBEIDSFORHOLD_FRILANS("Arbeidsforhold - Frilans"),
+    ARBEIDSFORHOLD_MARITIMT("Arbeidsforhold - Maritimt"),
+    ARBEIDSFORHOLD_ORDINAERT("Arbeidsforhold - Ordinært"),
     ARBEIDSPLASSENCV("Arbeidsplassen CV"),
     ARBEIDSSOEKERREGISTERET("Arbeidssøkerregisteret"),
     ARENA_AAP("Arena AAP ytelse"),
