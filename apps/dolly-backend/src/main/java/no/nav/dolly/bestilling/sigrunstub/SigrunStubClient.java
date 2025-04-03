@@ -30,6 +30,8 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class SigrunStubClient implements ClientRegister {
 
+    private static final String IDENT = "ident";
+
     private final SigrunStubConsumer sigrunStubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
@@ -53,7 +55,7 @@ public class SigrunStubClient implements ClientRegister {
                 .flatMap(summertSkattegrunnlag -> {
 
                     var context = MappingContextUtils.getMappingContext();
-                    context.setProperty("ident", dollyPerson.getIdent());
+                    context.setProperty(IDENT, dollyPerson.getIdent());
 
                     var skattegrunnlag = SigrunstubSummertskattegrunnlagRequest.builder()
                             .summertskattegrunnlag(
@@ -73,7 +75,7 @@ public class SigrunStubClient implements ClientRegister {
                 .flatMap(pensjonsgivende -> {
 
                     var context = MappingContextUtils.getMappingContext();
-                    context.setProperty("ident", dollyPerson.getIdent());
+                    context.setProperty(IDENT, dollyPerson.getIdent());
 
                     var skattegrunnlag =
                             mapperFacade.mapAsList(pensjonsgivende, SigrunstubPensjonsgivendeInntektRequest.class, context);
@@ -91,7 +93,7 @@ public class SigrunStubClient implements ClientRegister {
                 .flatMap(lignetInntekt -> {
 
                     var context = MappingContextUtils.getMappingContext();
-                    context.setProperty("ident", dollyPerson.getIdent());
+                    context.setProperty(IDENT, dollyPerson.getIdent());
 
                     var skattegrunnlag =
                             mapperFacade.mapAsList(lignetInntekt, SigrunstubLignetInntektRequest.class, context);
@@ -132,7 +134,7 @@ public class SigrunStubClient implements ClientRegister {
     private String getStatus(SigrunstubResponse response) {
 
         log.info("Response fra Sigrunstub med data {} ", response);
-        return isNull(response.getStatus()) ?
+        return isNull(response.getStatus()) || response.isOK() ?
                 getStatus(response.getOpprettelseTilbakemeldingsListe()) :
                 ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding()));
     }
