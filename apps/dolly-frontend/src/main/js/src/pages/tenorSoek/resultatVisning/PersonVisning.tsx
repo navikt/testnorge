@@ -10,6 +10,7 @@ import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPe
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { TjenestepensjonsavtaleVisning } from '@/pages/tenorSoek/resultatVisning/TjenestepensjonsavtaleVisning'
 import { SkattemeldingVisning } from '@/pages/tenorSoek/resultatVisning/SkattemeldingVisning'
+import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonArbeidsforholdVisning'
 
 type PersonVisningProps = {
 	person: any
@@ -83,6 +84,7 @@ export const PersonVisning = ({
 				/>
 				<SkattemeldingVisning data={personData?.tenorRelasjoner?.skattemelding} />
 				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
+				<OrganisasjonArbeidsforholdVisning data={personData?.tenorRelasjoner?.arbeidsforhold} />
 			</Box>
 		</PersonVisningWrapper>
 	)
