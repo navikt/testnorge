@@ -201,6 +201,9 @@ public class BestillingProgress implements Serializable {
                 .append(getKontoregisterStatus(), that.getKontoregisterStatus())
                 .append(getPdlPersonStatus(), that.getPdlPersonStatus())
                 .append(getArbeidsplassenCVStatus(), that.getArbeidsplassenCVStatus())
+                .append(getSkattekortStatus(), that.getSkattekortStatus())
+                .append(getYrkesskadeStatus(), that.getYrkesskadeStatus())
+                .append(getArbeidssoekerregisteretStatus(), that.getArbeidssoekerregisteretStatus())
                 .append(getMaster(), that.getMaster())
                 .append(getFeil(), that.getFeil())
                 .isEquals();
@@ -236,6 +239,9 @@ public class BestillingProgress implements Serializable {
                 .append(getKontoregisterStatus())
                 .append(getPdlPersonStatus())
                 .append(getArbeidsplassenCVStatus())
+                .append(getSkattekortStatus())
+                .append(getYrkesskadeStatus())
+                .append(getArbeidssoekerregisteretStatus())
                 .append(getMaster())
                 .append(getFeil())
                 .toHashCode();
@@ -271,6 +277,9 @@ public class BestillingProgress implements Serializable {
                 ", kontoregisterStatus='" + kontoregisterStatus + '\'' +
                 ", pdlPersonStatus='" + pdlPersonStatus + '\'' +
                 ", arbeidsplassenCVStatus='" + arbeidsplassenCVStatus + '\'' +
+                ", skattekortStatus='" + skattekortStatus + '\'' +
+                ", yrkesskadeStatus='" + yrkesskadeStatus + '\'' +
+                ", arbeidssoekerregisteretStatus=" + arbeidssoekerregisteretStatus + '\'' +
                 ", master=" + master +
                 ", isPdlSync=" + isPdlSync +
                 ", feil='" + feil + '\'' +
