@@ -7,7 +7,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
 
 const TpYtelseVisning = ({ data }) => {
@@ -17,7 +17,7 @@ const TpYtelseVisning = ({ data }) => {
 		<DollyFieldArray data={data} nested>
 			{(ytelse, idx) => (
 				<div className="person-visning_content" key={idx}>
-					<TitleValue title="Type" value={ytelse?.type} />
+					<TitleValue title="Type" value={showLabel('tjenestepensjonYtelseType', ytelse?.type)} />
 					<TitleValue title="Dato innmeldt" value={formatDate(ytelse?.datoInnmeldtYtelseFom)} />
 					<TitleValue
 						title="Dato iverksatt f.o.m"
