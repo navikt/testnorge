@@ -425,6 +425,7 @@ public class BestillingService {
                 .pensjonforvalter(request.getPensjonforvalter())
                 .sigrunstub(request.getSigrunstub())
                 .sigrunstubPensjonsgivende(request.getSigrunstubPensjonsgivende())
+                .sigrunstubSummertSkattegrunnlag(request.getSigrunstubSummertSkattegrunnlag())
                 .skattekort(request.getSkattekort())
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())

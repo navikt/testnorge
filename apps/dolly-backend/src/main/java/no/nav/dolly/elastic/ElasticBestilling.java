@@ -23,6 +23,7 @@ import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
+import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
@@ -66,6 +67,8 @@ public class ElasticBestilling implements Persistable<Long> {
     private List<RsLignetInntekt> sigrunstub;
     @Field
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
+    @Field
+    private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     @Field
     private InntektMultiplierWrapper inntektstub;
     @Field
