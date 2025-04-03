@@ -1,5 +1,5 @@
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import { useAlleBrukere, useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useAlleBrukere } from '@/utils/hooks/useBruker'
 import { Gruppe, useEgneGrupper } from '@/utils/hooks/useGruppe'
 import React, { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -15,15 +15,10 @@ type Options = {
 
 export default ({ fraGruppe = null }: AlleGrupper) => {
 	const formMethods = useFormContext()
-	const { currentBruker } = useCurrentBruker()
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
 	const [valgtBruker, setValgtBruker] = useState(formMethods?.watch('bruker') || null)
 
-	const filteredBrukerliste = brukere?.filter(
-		(bruker) => bruker.brukerId !== currentBruker.brukerId,
-	)
-
-	const brukerOptions = filteredBrukerliste?.map((bruker) => {
+	const brukerOptions = brukere?.map((bruker) => {
 		return {
 			value: bruker?.brukerId,
 			label: bruker?.brukernavn,

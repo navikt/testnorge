@@ -96,6 +96,16 @@ export const Select = ({
 		}
 	}
 
+	const getPlaceholder = () => {
+		if (isLoading) {
+			return 'Henter verdier ...'
+		} else if (options?.length === 0) {
+			return 'Ingen tilgjengelige verdier'
+		}
+		return placeholder
+	}
+	const placeholderText = getPlaceholder()
+
 	return (
 		<span data-testid={rest['data-testid']}>
 			<ReactSelect
@@ -104,7 +114,7 @@ export const Select = ({
 				options={options}
 				name={name}
 				inputId={id || name}
-				placeholder={isLoading || options?.length === 0 ? 'Henter verdier ...' : placeholder}
+				placeholder={placeholderText}
 				filterOption={createFilter({ ignoreAccents: false })}
 				className={cn('basic-single', className)}
 				classNamePrefix={classNamePrefix}

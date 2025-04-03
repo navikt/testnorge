@@ -61,24 +61,11 @@ const malBestilling = {
 		egenAnsattDatoFom: '2022-09-06T10:24:03',
 	},
 }
-export const brukerMalerMock = {
-	malbestillinger: {
-		testbruker: [
-			{
-				id: 1,
-				malNavn: 'Teste Playwright',
-				bestilling: malBestilling,
-				bruker: gjeldendeAzureBrukerMock,
-			},
-		],
-	},
-}
-
-export const brukerMalerEndretMock = [
+export const brukerMalerMock = [
 	{
 		id: 1,
-		malNavn: 'Nytt navn på mal',
-		bestilling: malBestilling,
+		malNavn: 'Teste Playwright',
+		malBestilling: malBestilling,
 		bruker: gjeldendeAzureBrukerMock,
 	},
 ]
@@ -892,8 +879,6 @@ export const joarkDokumentMock =
 	'</melding>\n'
 
 export const varslingerVelkommenResponseMock = [{ varslingId: 'VELKOMMEN_TIL_DOLLY' }]
-
-export const malerMock = { malbestillinger: ['Playwright, Testytest', []] }
 
 export const testnorgeMalBestillinger = [
 	{
