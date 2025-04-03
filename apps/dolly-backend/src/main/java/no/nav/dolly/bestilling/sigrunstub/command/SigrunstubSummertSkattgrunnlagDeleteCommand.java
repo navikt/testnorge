@@ -20,24 +20,25 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SigrunstubPensjonsgivendeDeleteCommand implements Callable<Mono<SigrunstubResponse>> {
+public class SigrunstubSummertSkattgrunnlagDeleteCommand implements Callable<Mono<SigrunstubResponse>> {
 
-    private static final String SIGRUNSTUB_DELETE_URL = "/api/v1/pensjonsgivendeinntektforfolketrygden";
+    private static final String SIGRUNSTUB_DELETE_URL = "/api/v2/summertskattegrunnlag";
 
     private final WebClient webClient;
     private final String ident;
     private final String token;
 
-    @Override
     public Mono<SigrunstubResponse> call() {
         return webClient
                 .delete()
-                .uri(uriBuilder -> uriBuilder.path(SIGRUNSTUB_DELETE_URL).build())
+                .uri(uriBuilder -> uriBuilder
+                        .path(SIGRUNSTUB_DELETE_URL)
+                        .build())
                 .header(HEADER_NAV_CALL_ID, CallIdUtil.generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header("norskident", ident)
                 .headers(WebClientHeader.bearer(token))
                 .headers(WebClientHeader.jwt(getUserJwt()))
+                .header("personidentifikator", ident)
                 .retrieve()
                 .toBodilessEntity()
                 .map(resultat -> SigrunstubResponse.builder()

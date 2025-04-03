@@ -4,7 +4,7 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialMocksvar } from '@/components/fagsystem/afpOffentlig/initialValues'
-import { useMuligeDirektekall, useTpOrdning } from '@/utils/hooks/usePensjon'
+import { useMuligeDirektekall, useTpOrdningKodeverk } from '@/utils/hooks/usePensjon'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -22,7 +22,7 @@ export const AfpOffentligForm = () => {
 		return null
 	}
 
-	const { tpOrdningData } = useTpOrdning()
+	const { tpOrdningData } = useTpOrdningKodeverk()
 	const { direktekallData } = useMuligeDirektekall()
 
 	const valgteDirektekall = formMethods.watch(`${afpOffentligPath}.direktekall`)

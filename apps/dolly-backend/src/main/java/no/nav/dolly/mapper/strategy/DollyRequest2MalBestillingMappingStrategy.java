@@ -40,11 +40,8 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("navSyntetiskIdent", "navSyntetiskIdent")
                 .field("pdldata", "pdldata")
                 .field("pensjonforvalter", "pensjonforvalter")
-                .field("sigrunstub", "sigrunstub")
-                .field("sigrunstubPensjonsgivende", "sigrunstubPensjonsgivende")
                 .field("skjerming", "skjerming")
                 .field("sykemelding", "sykemelding")
-                .field("tpsMessaging", "tpsMessaging")
                 .field("udistub", "udistub")
                 .field("arbeidssoekerregisteret", "arbeidssoekerregisteret")
 
@@ -57,6 +54,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getInstdata().addAll(request.getInstdata());
                         akkumulert.getSigrunstub().addAll(request.getSigrunstub());
                         akkumulert.getSigrunstubPensjonsgivende().addAll(request.getSigrunstubPensjonsgivende());
+                        akkumulert.getSigrunstubSummertSkattegrunnlag().addAll(request.getSigrunstubSummertSkattegrunnlag());
                         akkumulert.getYrkesskader().addAll(request.getYrkesskader());
                         akkumulert.getDokarkiv().addAll(request.getDokarkiv());
                         if (nonNull(request.getHistark())) {

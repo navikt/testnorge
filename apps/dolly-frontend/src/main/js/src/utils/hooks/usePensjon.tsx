@@ -77,7 +77,7 @@ export const usePensjonFacadeGenerer = (body: any) => {
 	}
 }
 
-export const useTpOrdning = () => {
+export const useTpOrdningKodeverk = () => {
 	const { data, isLoading, error } = useSWR<any, Error>(tpOrdningUrl, fetcher)
 
 	const options = data?.map((tpOrdning: any) => ({

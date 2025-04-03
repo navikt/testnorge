@@ -1,6 +1,6 @@
 {
   "name": "dolly",
-  "version": "3.1.5",
+  "version": "3.1.4",
   "type": "module",
   "description": "",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "test:playwright-dev": "playwright test --ui",
     "test:playwright-run": "vite build && playwright test",
     "test:playwright-debug": "playwright test --debug",
-    "test:vitest-debug": "vitest --watch",
+    "test:vitest-debug": "vitest",
     "test:vitest-run": "vitest --browser.headless --run",
     "test:browser": "vitest --workspace=vitest.config.ts"
   },
