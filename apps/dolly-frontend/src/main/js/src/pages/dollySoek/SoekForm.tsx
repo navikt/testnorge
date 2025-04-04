@@ -33,6 +33,7 @@ const initialValues = {
 	antall: 10,
 	seed: null,
 	registreRequest: [],
+	miljoer: [],
 	personRequest: {
 		ident: null,
 		identtype: null,
@@ -192,7 +193,7 @@ export const SoekForm = () => {
 												<Header
 													title="Fagsystemer"
 													antall={antallFagsystemer}
-													paths={['registreRequest']}
+													paths={['registreRequest', 'miljoer']}
 													emptyCategory={emptyCategory}
 												/>
 											</Accordion.Header>
@@ -209,6 +210,19 @@ export const SoekForm = () => {
 														size="grow"
 														onChange={(val: SyntheticEvent) => {
 															handleChangeList(val, 'registreRequest')
+														}}
+													/>
+												</div>
+												<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
+													<FormSelect
+														name="miljoer"
+														placeholder="Velg miljøer ..."
+														title="Miljøer"
+														options={Options('miljoer')}
+														isMulti={true}
+														size="large"
+														onChange={(val: SyntheticEvent) => {
+															handleChangeList(val, 'miljoer')
 														}}
 													/>
 												</div>

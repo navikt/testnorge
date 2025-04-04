@@ -855,6 +855,12 @@ const selectOptions = {
 		{ value: 'GODKJENT', label: 'Godkjent' },
 		{ value: 'AVSLAG', label: 'Avslag' },
 	],
+
+	miljoer: [
+		{ value: 'q1', label: 'Q1' },
+		{ value: 'q2', label: 'Q2' },
+		{ value: 'q4', label: 'Q4' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]
