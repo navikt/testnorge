@@ -16,6 +16,7 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
+        - application: dolly-texas-proxy
   azure:
     application:
       allowAllUsers: true
