@@ -10,6 +10,7 @@ public class PersonArtifactService {
 
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final BostedAdresseService bostedAdresseService;
+    private final DeltBostedService deltBostedService;
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final DoedsfallService doedsfallService;
     private final FalskIdentitetService falskIdentitetService;
@@ -66,6 +67,7 @@ public class PersonArtifactService {
         person.setForelderBarnRelasjon(forelderBarnRelasjonService.convert(person));
         person.setForeldreansvar(foreldreansvarService.convert(person));
         person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
+        person.setDeltBosted(deltBostedService.convert(person));
         person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
         person.setNavPersonIdentifikator(navPersonIdentifikatorService.convert(person));
 
