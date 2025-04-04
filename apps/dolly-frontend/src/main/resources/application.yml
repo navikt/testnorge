@@ -1,5 +1,4 @@
 POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.intern.dev.nav.no/login
-REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
   application:
@@ -7,10 +6,6 @@ spring:
     allow-circular-references: true
   config:
     import: "classpath:dolly-application.yml"
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: 6379
   security:
     oauth2:
       resourceserver:
