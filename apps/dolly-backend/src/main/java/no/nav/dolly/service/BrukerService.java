@@ -90,8 +90,6 @@ public class BrukerService {
     public List<Bruker> fetchBrukere() {
 
         var brukeren = fetchOrCreateBruker();
-        log.info("Hentet current bruker: id {} brukertype {}", brukeren.getBrukerId(), brukeren.getBrukertype());
-
         if (brukeren.getBrukertype() == AZURE) {
             return brukerRepository.findAllByOrderById();
 

@@ -10,8 +10,8 @@ import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import {
-	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
+	useMalbestillingBruker,
 } from '@/utils/hooks/useMaler'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
@@ -32,7 +32,7 @@ export const App = () => {
 
 	useDollyEnvironments()
 	useBrukerProfil()
-	useDollyMalerBrukerOgMalnavn(currentBruker?.brukerId)
+	useMalbestillingBruker(currentBruker?.brukerId)
 	useDollyOrganisasjonMalerBrukerOgMalnavn(currentBruker?.brukerId)
 
 	useEffect(() => {

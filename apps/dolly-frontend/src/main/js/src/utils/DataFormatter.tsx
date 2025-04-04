@@ -53,8 +53,7 @@ export const formatTenorDate = (dateString: any, formatString?: string) => {
 	const month = dateString.substring(4, 6)
 	const day = dateString.substring(6, 8)
 	const date = new Date(year, month - 1, day)
-
-	return format(date, formatString || defaultDateFormat)
+	return Date.parse(date) ? format(date, formatString || defaultDateFormat) : null
 }
 
 export const formatDateToYear = (date) => {

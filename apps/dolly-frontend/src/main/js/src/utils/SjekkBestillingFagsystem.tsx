@@ -48,6 +48,21 @@ export const harTpBestilling = (bestillingerFagsystemer) => {
 	return tp
 }
 
+export const hentTpYtelseOrdning = (bestillingerFagsystemer) => {
+	let tpOrdning = null
+	bestillingerFagsystemer?.forEach((i) => {
+		const tp = i?.pensjonforvalter?.tp
+		if (tp?.length > 0) {
+			tp.forEach((j) => {
+				if (j?.ytelser?.length > 0) {
+					tpOrdning = j.ordning
+				}
+			})
+		}
+	})
+	return tpOrdning
+}
+
 export const harPoppBestilling = (bestillingerFagsystemer) => {
 	let popp = false
 	bestillingerFagsystemer?.forEach((i) => {

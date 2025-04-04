@@ -3,7 +3,7 @@ package no.nav.testnav.apps.oversiktfrontend.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.oversiktfrontend.consumer.dto.AccessDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -26,7 +26,7 @@ public class GetApplicationAccessCommand implements Callable<Mono<AccessDTO>> {
                         .queryParam("owner", "navikt")
                         .queryParam("repo", repo)
                         .build(name))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(AccessDTO.class)
                 .retryWhen(WebClientError.is5xxException());

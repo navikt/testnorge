@@ -4,9 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.tilbakemeldingapi.config.Consumers;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -35,10 +36,11 @@ public class ProfilApiConsumer {
         log.info("Henter bruker fra Azure.");
         return tokenExchange
                 .exchange(serverProperties)
-                .flatMap(accessToken -> webClient
+                .map(AccessToken::getTokenValue)
+                .flatMap(token -> webClient
                         .get()
                         .uri("/api/v1/profil")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
+                        .headers(WebClientHeader.bearer(token))
                         .retrieve()
                         .bodyToMono(ProfilDTO.class)
                         .retryWhen(WebClientError.is5xxException()))
