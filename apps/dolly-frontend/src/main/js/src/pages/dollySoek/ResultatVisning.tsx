@@ -37,7 +37,7 @@ export const ResultatVisning = ({
 		return (
 			<ContentContainer>
 				<Alert variant={'error'} size={'small'} inline>
-					Feil: {resultat.error || soekError?.message}
+					Feil: {resultat?.error || soekError?.message}
 				</Alert>
 			</ContentContainer>
 		)
