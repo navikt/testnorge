@@ -80,9 +80,10 @@ export const SoekForm = () => {
 	const [request, setRequest] = useState(initialValues)
 	const [visAntall, setVisAntall] = useState(10)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
-
+	// console.log('request: ', request) //TODO - SLETT MEG
 	const { result, loading, error, mutate } = usePersonerSearch(request)
 	const { typer, loading: loadingTyper } = usePersonerTyper()
+	console.log('result: ', result?.personer?.[0]?.hentPerson?.navn?.[0]?.fornavn) //TODO - SLETT MEG
 
 	const personPath = 'personRequest'
 	const adressePath = 'personRequest.adresse'
@@ -93,16 +94,38 @@ export const SoekForm = () => {
 		mode: 'onChange',
 		defaultValues: initialValuesClone,
 	})
-	const { trigger, watch, handleSubmit, reset, control, setValue, getValues } = formMethods
+	const { trigger, watch, reset, control, setValue, getValues } = formMethods
+
+	const values = watch()
+	// console.log('values: ', values) //TODO - SLETT MEG
 
 	const handleChange = (value: any, path: string) => {
 		setSoekPaagaar(true)
-		setValue(path, value)
-		setValue('side', 0)
-		setValue('seed', null)
-		const updatedRequest = watch()
+		// setValue(path, value)
+		// setValue('side', 0)
+		// setValue('seed', null)
+		// const updatedRequest = watch()
+		// const updatedRequest = { ...values }
+		const updatedPersonRequest = { ...values.personRequest, [path]: value }
+		const updatedRequest = { ...values, personRequest: updatedPersonRequest, side: 0, seed: null }
+		// console.log('updatedRequest: ', updatedRequest) //TODO - SLETT MEG
+		//TODO: Tror setRequest + mutate() gjoer at api noen ganger blir kalt dobbelt.
+		//TODO: Naar mutate() er fjernet blir api kalt 1 gang der det foer ble kalt 2 ganger, men 0 ganger der det foer ble kalt 1 gang.
+		//TODO: mutate() gjoer requesten "dirty", og hjelper med aa trigge nytt soek der det er noedvendig.
+
+		// async setRequest({ ...updatedRequest }).then(() => mutate().then(() => setSoekPaagaar(false)))
+		// const cloneRequest = _.cloneDeep(updatedRequest)
+		// setRequest(cloneRequest)
+		// setValue(updatedRequest)
+		reset(updatedRequest)
 		setRequest(updatedRequest)
-		mutate().then(() => setSoekPaagaar(false))
+		// trigger(path)
+
+		// mutate().then(() => setSoekPaagaar(false))
+		// mutate(path, (request) => ({ ...updatedRequest })).then(() => setSoekPaagaar(false))
+		// mutate('data', () => setRequest(updatedRequest)).then(() => setSoekPaagaar(false))
+		//TODO: Loading funker ikke saa bra lenger
+		setSoekPaagaar(false)
 	}
 
 	const handleChangeList = (value: any, path: string) => {
@@ -183,7 +206,8 @@ export const SoekForm = () => {
 			<SoekefeltWrapper>
 				<Soekefelt>
 					<FormProvider {...formMethods}>
-						<Form control={control} onSubmit={handleSubmit}>
+						{/*<Form control={control} onSubmit={handleSubmit}>*/}
+						<Form control={control}>
 							<>
 								<div className="flexbox--flex-wrap">
 									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
@@ -235,7 +259,7 @@ export const SoekForm = () => {
 														size="small"
 														placeholder="Velg kjønn ..."
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val?.value || null, `${personPath}.kjoenn`)
+															handleChange(val?.value || null, 'kjoenn')
 														}
 													/>
 													<FormSelect
@@ -244,7 +268,7 @@ export const SoekForm = () => {
 														size="large"
 														placeholder="Velg statsborgerskap ..."
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val?.value || null, `${personPath}.statsborgerskap`)
+															handleChange(val?.value || null, 'statsborgerskap')
 														}
 													/>
 													<FormSelect
@@ -253,7 +277,7 @@ export const SoekForm = () => {
 														size="medium"
 														placeholder="Velg personstatus ..."
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val?.value || null, `${personPath}.personStatus`)
+															handleChange(val?.value || null, 'personStatus')
 														}
 													/>
 													<FormTextInput
@@ -262,7 +286,7 @@ export const SoekForm = () => {
 														type="number"
 														value={watch(`${personPath}.alderFom`)}
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val?.target?.value || null, `${personPath}.alderFom`)
+															handleChange(val?.target?.value || null, 'alderFom')
 														}
 													/>
 													<FormTextInput
@@ -271,14 +295,14 @@ export const SoekForm = () => {
 														type="number"
 														value={watch(`${personPath}.alderTom`)}
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val?.target?.value || null, `${personPath}.alderTom`)
+															handleChange(val?.target?.value || null, 'alderTom')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.erLevende`}
 														label="Er levende"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.erLevende`)
+															handleChange(val.target.checked, 'erLevende')
 														}
 														disabled={watch(`${personPath}.erDoed`)}
 													/>
@@ -286,7 +310,7 @@ export const SoekForm = () => {
 														name={`${personPath}.erDoed`}
 														label="Er død"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.erDoed`)
+															handleChange(val.target.checked, 'erDoed')
 														}
 														disabled={watch(`${personPath}.erLevende`)}
 													/>
@@ -295,40 +319,38 @@ export const SoekForm = () => {
 														name={`${personPath}.harVerge`}
 														label="Har verge"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harVerge`)
+															handleChange(val.target.checked, 'harVerge')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harInnflytting`}
 														label="Har innflytting"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harInnflytting`)
+															handleChange(val.target.checked, 'harInnflytting')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harUtflytting`}
 														label="Har utflytting"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harUtflytting`)
+															handleChange(val.target.checked, 'harUtflytting')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harSikkerhetstiltak`}
 														label="Har sikkerhetstiltak"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harSikkerhetstiltak`)
+															handleChange(val.target.checked, 'harSikkerhetstiltak')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harTilrettelagtKommunikasjon`}
 														label="Har tilrettelagt kommunikasjon"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(
-																val.target.checked,
-																`${personPath}.harTilrettelagtKommunikasjon`,
-															)
+															handleChange(val.target.checked, 'harTilrettelagtKommunikasjon')
 														}
 													/>
+													{/*TODO: Skriv om onChange her ogsaa*/}
 													<FormCheckbox
 														name={`${personPath}.harSkjerming`}
 														label="Har skjerming / er egen ansatt"
@@ -385,7 +407,7 @@ export const SoekForm = () => {
 																size="large"
 																placeholder="Velg kommunenummer ..."
 																onChange={(val: SyntheticEvent) =>
-																	handleChange(val?.value || null, `${adressePath}.kommunenummer`)
+																	handleChange(val?.value || null, 'kommunenummer')
 																}
 															/>
 															<FormSelect
@@ -394,7 +416,7 @@ export const SoekForm = () => {
 																size="large"
 																placeholder="Velg postnummer ..."
 																onChange={(val: SyntheticEvent) =>
-																	handleChange(val?.value || null, `${adressePath}.postnummer`)
+																	handleChange(val?.value || null, 'postnummer')
 																}
 															/>
 															<FormSelect
@@ -403,7 +425,7 @@ export const SoekForm = () => {
 																size="large"
 																placeholder="Velg bydelsnummer ..."
 																onChange={(val: SyntheticEvent) =>
-																	handleChange(val?.value || null, `${adressePath}.bydelsnummer`)
+																	handleChange(val?.value || null, 'bydelsnummer')
 																}
 															/>
 															<FormSelect
@@ -412,10 +434,7 @@ export const SoekForm = () => {
 																size="xlarge"
 																placeholder="Velg adressebeskyttelse (kode 6/7) ..."
 																onChange={(val: SyntheticEvent) =>
-																	handleChange(
-																		val?.value || null,
-																		`${adressePath}.addressebeskyttelse`,
-																	)
+																	handleChange(val?.value || null, 'addressebeskyttelse')
 																}
 															/>
 														</div>
@@ -424,21 +443,21 @@ export const SoekForm = () => {
 														name={`${adressePath}.harBostedsadresse`}
 														label="Har bostedsadresse"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${adressePath}.harBostedsadresse`)
+															handleChange(val.target.checked, 'harBostedsadresse')
 														}
 													/>
 													<FormCheckbox
 														name={`${adressePath}.harOppholdsadresse`}
 														label="Har oppholdsadresse"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${adressePath}.harOppholdsadresse`)
+															handleChange(val.target.checked, 'harOppholdsadresse')
 														}
 													/>
 													<FormCheckbox
 														name={`${adressePath}.harKontaktadresse`}
 														label="Har kontaktadresse"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${adressePath}.harKontaktadresse`)
+															handleChange(val.target.checked, 'harKontaktadresse')
 														}
 													/>
 													{/*//Soek paa matrikkeladresse fungerer for tiden ikke*/}
@@ -446,28 +465,28 @@ export const SoekForm = () => {
 													{/*	name={`${adressePath}.harMatrikkelAdresse`}*/}
 													{/*	label="Har matrikkeladresse"*/}
 													{/*	onChange={(val: SyntheticEvent) =>*/}
-													{/*		handleChange(val.target.checked, `${adressePath}.harMatrikkelAdresse`)*/}
+													{/*		handleChange(val.target.checked, 'harMatrikkelAdresse')*/}
 													{/*	}*/}
 													{/*/>*/}
 													<FormCheckbox
 														name={`${adressePath}.harUtenlandsadresse`}
 														label="Har utenlandsadresse"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${adressePath}.harUtenlandsadresse`)
+															handleChange(val.target.checked, 'harUtenlandsadresse')
 														}
 													/>
 													<FormCheckbox
 														name={`${adressePath}.harUkjentAdresse`}
 														label="Har ukjent adresse"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${adressePath}.harUkjentAdresse`)
+															handleChange(val.target.checked, 'harUkjentAdresse')
 														}
 													/>
 													<FormCheckbox
 														name={`${adressePath}.harBydelsnummer`}
 														label="Har bydelsnummer"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${adressePath}.harBydelsnummer`)
+															handleChange(val.target.checked, 'harBydelsnummer')
 														}
 													/>
 												</SoekKategori>
@@ -493,42 +512,42 @@ export const SoekForm = () => {
 														size="large"
 														placeholder="Velg sivilstand ..."
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val?.value || null, `${personPath}.sivilstand`)
+															handleChange(val?.value || null, 'sivilstand')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harBarn`}
 														label="Har barn"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harBarn`)
+															handleChange(val.target.checked, 'harBarn')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harForeldre`}
 														label="Har foreldre"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harForeldre`)
+															handleChange(val.target.checked, 'harForeldre')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harDoedfoedtBarn`}
 														label="Har dødfødt barn"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harDoedfoedtBarn`)
+															handleChange(val.target.checked, 'harDoedfoedtBarn')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harForeldreAnsvar`}
 														label="Har foreldreansvar"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harForeldreAnsvar`)
+															handleChange(val.target.checked, 'harForeldreAnsvar')
 														}
 													/>
 													<FormCheckbox
 														name={`${adressePath}.harDeltBosted`}
 														label="Har delt bosted"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${adressePath}.harDeltBosted`)
+															handleChange(val.target.checked, 'harDeltBosted')
 														}
 													/>
 												</SoekKategori>
@@ -552,7 +571,7 @@ export const SoekForm = () => {
 														size="large"
 														value={watch(`${personPath}.ident`)}
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val?.target?.value || null, `${personPath}.ident`)
+															handleChange(val?.target?.value || null, 'ident')
 														}
 													/>
 													<FormSelect
@@ -561,31 +580,28 @@ export const SoekForm = () => {
 														size="small"
 														placeholder="Velg identtype ..."
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val?.value || null, `${personPath}.identtype`)
+															handleChange(val?.value || null, 'identtype')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harFalskIdentitet`}
 														label="Har falsk identitet"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harFalskIdentitet`)
+															handleChange(val.target.checked, 'harFalskIdentitet')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harUtenlandskIdentifikasjonsnummer`}
 														label="Har utenlandsk identitet"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(
-																val.target.checked,
-																`${personPath}.harUtenlandskIdentifikasjonsnummer`,
-															)
+															handleChange(val.target.checked, 'harUtenlandskIdentifikasjonsnummer')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harNyIdentitet`}
 														label="Har ny identitet"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harNyIdentitet`)
+															handleChange(val.target.checked, 'harNyIdentitet')
 														}
 													/>
 												</SoekKategori>
@@ -607,17 +623,14 @@ export const SoekForm = () => {
 														name={`${personPath}.harKontaktinformasjonForDoedsbo`}
 														label="Har kontaktinformasjon for dødsbo"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(
-																val.target.checked,
-																`${personPath}.harKontaktinformasjonForDoedsbo`,
-															)
+															handleChange(val.target.checked, 'harKontaktinformasjonForDoedsbo')
 														}
 													/>
 													<FormCheckbox
 														name={`${personPath}.harOpphold`}
 														label="Har opphold"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, `${personPath}.harOpphold`)
+															handleChange(val.target.checked, 'harOpphold')
 														}
 													/>
 												</SoekKategori>
