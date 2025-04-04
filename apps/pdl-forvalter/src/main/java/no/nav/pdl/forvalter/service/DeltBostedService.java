@@ -67,6 +67,10 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
 
     public void handle(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
 
+        if (isNull(deltBosted.getStartdatoForKontrakt())) {
+            deltBosted.setStartdatoForKontrakt(LocalDateTime.now());
+        }
+
         if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(hovedperson))) {
 
             // DeltBosted for forelder, settes på barnet
@@ -146,10 +150,10 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                     .toList();
     }
 
-
     private void setAdresse(DeltBostedDTO deltBosted, BostedadresseDTO boadresse) {
 
         deltBosted.setMaster(DbVersjonDTO.Master.FREG);
+        deltBosted.setKilde(getKilde(deltBosted));
         deltBosted.setAdresseIdentifikatorFraMatrikkelen(boadresse.getAdresseIdentifikatorFraMatrikkelen());
 
         if (nonNull(boadresse.getVegadresse())) {
@@ -162,7 +166,6 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
             deltBosted.setUkjentBosted(mapperFacade.map(boadresse.getUkjentBosted(), UkjentBostedDTO.class));
         }
     }
-
 
     private static boolean isEqualAdresse(BostedadresseDTO adresse1, BostedadresseDTO adresse2) {
 
