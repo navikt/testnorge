@@ -2,8 +2,11 @@ package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
+import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
+
+import java.util.List;
 
 @UtilityClass
 public class FagsystemQueryUtils {
@@ -54,5 +57,14 @@ public class FagsystemQueryUtils {
             case UDISTUB -> QueryBuilders.existsQuery("udistub");
             case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskader");
         };
+    }
+
+    public static void addMiljoerQuery(BoolQueryBuilder queryBuilder, List<String> miljoer) {
+
+        if (!miljoer.isEmpty()) {
+            var boolQuery = QueryBuilders.boolQuery();
+            miljoer.forEach(miljoe -> boolQuery.must(QueryBuilders.matchQuery("miljoer", miljoe)));
+            queryBuilder.must(boolQuery);
+        }
     }
 }
