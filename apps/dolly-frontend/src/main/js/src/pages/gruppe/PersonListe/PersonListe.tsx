@@ -89,7 +89,7 @@ export default function PersonListe({
 	}
 
 	const getNavnLimited = (tekst) => {
-		const navn = tekst.length > 23 ? tekst.substring(0, 23) + '...' : tekst
+		const navn = tekst.length > 20 ? tekst.substring(0, 20) + '...' : tekst
 		return (
 			<div style={{ maxWidth: '170px' }}>
 				<p>{navn}</p>

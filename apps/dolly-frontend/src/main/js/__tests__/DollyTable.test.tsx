@@ -4,6 +4,8 @@ import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import { MemoryRouter } from 'react-router'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
+import { vi } from 'vitest'
+import { act } from 'react'
 
 vi.mock('@/pages/gruppe/PersonVisning/PersonVisningConnector', () => ({
 	default: () => <div data-testid="person-visning">Person Details</div>,
@@ -177,7 +179,10 @@ dollyTest('calls onHeaderClick when header is clicked', () => {
 	)
 
 	const nameHeader = screen.getByText('Navn')
-	fireEvent.click(nameHeader)
+
+	act(() => {
+		fireEvent.click(nameHeader)
+	})
 
 	expect(onHeaderClickMock).toHaveBeenCalledWith('Navn')
 })
