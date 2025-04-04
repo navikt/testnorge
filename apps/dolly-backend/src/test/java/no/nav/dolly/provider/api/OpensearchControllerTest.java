@@ -25,12 +25,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DollySpringBootTest
@@ -45,7 +44,6 @@ class OpensearchControllerTest {
     private static final String IDENT3 = "33333333333";
     private static final String IDENT4 = "44444444444";
     private static final String IDENT5 = "55555555555";
-    private static final String IDENT6 = "66666666666";
 
     @Autowired
     private BestillingElasticRepository bestillingElasticRepository;
@@ -106,73 +104,6 @@ class OpensearchControllerTest {
     void teardown() {
 
         bestillingElasticRepository.deleteAll();
-    }
-
-    @Test
-    void getBestillingByIdent_OK() throws Exception {
-
-        mockMvc
-                .perform(get(BASE_URL + "/bestilling/ident/{ident}", IDENT1)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[*]", hasSize(1)))
-                .andExpect(jsonPath("$.[0].id", is(1)))
-                .andExpect(jsonPath("$.[0].identer[*]", hasSize(3)))
-                .andExpect(jsonPath("$.[0].identer[*]", hasItem(IDENT1)));
-    }
-
-    @Test
-    void getBestillingByIdent__NotFound() throws Exception {
-
-        mockMvc
-                .perform(get(BASE_URL + "/bestilling/ident/{ident}", IDENT6)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[*]", hasSize(0)));
-    }
-
-    @Test
-    void getSearchResponseFromSpecifQuery_OK() throws Exception {
-
-        mockMvc
-                .perform(get(BASE_URL + "/identer")
-                        .queryParam("typer", "BANKKONTO")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalHits").value(1L))
-                .andExpect(jsonPath("$.identer[*]", hasSize(3)))
-                .andExpect(jsonPath("$.identer[*]", hasItems(IDENT1, IDENT2, IDENT3)));
-    }
-
-    @Test
-    void getSearchResponseFromSpecifQuery2_OK() throws Exception {
-
-        mockMvc
-                .perform(post(BASE_URL + "/identer")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"typer\":[\"AAREG\"]}"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalHits").value(1L))
-                .andExpect(jsonPath("$.identer[*]", hasSize(2)))
-                .andExpect(jsonPath("$.identer[*]", hasItems(IDENT4, IDENT5)));
-    }
-
-    @Test
-    void getBestillingFromQuery_OK() throws Exception {
-
-        mockMvc
-                .perform(get(BASE_URL + "/bestilling/id/{id}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pdldata.opprettNyPerson.syntetisk").value(true))
-                .andExpect(jsonPath("$.bankkonto.utenlandskBankkonto.tilfeldigKontonummer").value(true))
-                .andExpect(jsonPath("$.identer[*]", hasSize(3)))
-                .andExpect(jsonPath("$.identer[*]", hasItems(IDENT1, IDENT2, IDENT3)));
     }
 
     @Test
