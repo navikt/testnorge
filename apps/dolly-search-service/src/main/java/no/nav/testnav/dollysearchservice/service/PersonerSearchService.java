@@ -3,6 +3,7 @@ package no.nav.testnav.dollysearchservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.dollysearchservice.dto.Kategori;
 import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
@@ -33,9 +34,11 @@ public class PersonerSearchService {
 
     public Mono<SearchResponse> search(SearchRequest searchRequest, List<ElasticTyper> registreRequest) {
 
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("registreRequest", registreRequest);
+
         var request = mapperFacade.map(searchRequest,
-                no.nav.testnav.dollysearchservice.dto.SearchRequest.class);
-        request.setRegistreRequest(registreRequest);
+                no.nav.testnav.dollysearchservice.dto.SearchRequest.class, context);
 
         var identer = Optional.ofNullable(searchRequest.getPersonRequest())
                 .filter(personRequest -> isNotBlank(personRequest.getIdent()))

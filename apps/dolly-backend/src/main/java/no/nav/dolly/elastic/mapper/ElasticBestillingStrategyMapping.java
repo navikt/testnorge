@@ -14,8 +14,11 @@ import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Component
@@ -42,6 +45,9 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
 
                                            var dollyBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
                                            mapperFacade.map(dollyBestilling, elasticBestilling);
+
+                                           elasticBestilling.setMiljoer(isNotBlank(bestilling.getMiljoer()) ?
+                                                   List.of(bestilling.getMiljoer().split(",")) : null);
 
                                            elasticBestilling.setIdenter(bestilling.getProgresser().stream()
                                                    .filter(BestillingProgress::isIdentGyldig)

@@ -101,6 +101,8 @@ public class ElasticBestilling implements Persistable<Long> {
     private RsArbeidssoekerregisteret arbeidssoekerregisteret;
     @Field
     private List<String> identer;
+    @Field
+    private List<String> miljoer;
     @Transient
     @JsonIgnore
     private boolean ignore;
