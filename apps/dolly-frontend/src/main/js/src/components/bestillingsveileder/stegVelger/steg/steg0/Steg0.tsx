@@ -97,6 +97,7 @@ const Steg0 = () => {
 	}, [numericGruppeId, formMethods, opts])
 
 	const username = currentBruker?.brukernavn || ''
+	const brukerId = currentBruker?.brukerId || ''
 
 	return (
 		<div className="start-bestilling-modal">
@@ -118,7 +119,7 @@ const Steg0 = () => {
 				{isOrganisasjon ? (
 					<MalVelgerOrganisasjon brukernavn={username} gruppeId={numericGruppeId} />
 				) : (
-					<MalVelgerIdent brukernavn={username} gruppeId={numericGruppeId} />
+					<MalVelgerIdent brukerId={brukerId} gruppeId={numericGruppeId} />
 				)}
 			</div>
 		</div>

@@ -108,11 +108,11 @@ export const MalPanel = ({
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{maler.map(({ malNavn, id, bestilling }) => {
-									const alert = harUtdaterteVerdier(bestilling)
+								{maler.map(({ malNavn, id, malBestilling }) => {
+									const alert = harUtdaterteVerdier(malBestilling)
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
 										{
-											bestilling: bestilling,
+											bestilling: malBestilling,
 										},
 										dollyEnvironments,
 									)

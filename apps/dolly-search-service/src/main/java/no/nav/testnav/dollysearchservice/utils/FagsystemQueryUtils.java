@@ -2,16 +2,29 @@ package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
+import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
+
+import java.util.List;
 
 @UtilityClass
 public class FagsystemQueryUtils {
 
+    private static final String ARBEIDSFORHOLDTYPE = "aareg.arbeidsforholdstype";
+
     public static QueryBuilder getFagsystemQuery(ElasticTyper type) {
 
         return switch (type) {
-            case AAREG -> QueryBuilders.existsQuery("aareg");
+            case ARBEIDSFORHOLD -> QueryBuilders.existsQuery("aareg");
+            case ARBEIDSFORHOLD_FRILANS ->
+                    QueryBuilders.matchQuery(ARBEIDSFORHOLDTYPE, "frilanserOppdragstakerHonorarPersonerMm");
+            case ARBEIDSFORHOLD_ORDINAERT ->
+                    QueryBuilders.matchQuery(ARBEIDSFORHOLDTYPE, "ordinaertArbeidsforhold");
+            case ARBEIDSFORHOLD_MARITIMT ->
+                    QueryBuilders.matchQuery(ARBEIDSFORHOLDTYPE, "maritimtArbeidsforhold");
+            case ARBEIDSFORHOLD_FORENKLET ->
+                    QueryBuilders.matchQuery(ARBEIDSFORHOLDTYPE, "forenkletOppgjoersordning");
             case ARBEIDSPLASSENCV -> QueryBuilders.existsQuery("arbeidsplassenCV");
             case ARBEIDSSOEKERREGISTERET -> QueryBuilders.existsQuery("arbeidssoekerregisteret");
             case ARENA_AAP -> QueryBuilders.existsQuery("arenaforvalter.aap");
@@ -37,12 +50,21 @@ public class FagsystemQueryUtils {
             case PEN_UT -> QueryBuilders.existsQuery("pensjonforvalter.uforetrygd");
             case SIGRUN_LIGNET -> QueryBuilders.existsQuery("sigrunstub");
             case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.existsQuery("sigrunstubPensjonsgivende");
-            case SIGRUN_SUMMERT ->  QueryBuilders.existsQuery("sigrunstubSummertSkattegrunnlag");
+            case SIGRUN_SUMMERT -> QueryBuilders.existsQuery("sigrunstubSummertSkattegrunnlag");
             case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
             case SKJERMING -> QueryBuilders.existsQuery("skjerming");
             case SYKEMELDING -> QueryBuilders.existsQuery("sykemelding");
             case UDISTUB -> QueryBuilders.existsQuery("udistub");
             case YRKESSKADE -> QueryBuilders.existsQuery("yrkesskader");
         };
+    }
+
+    public static void addMiljoerQuery(BoolQueryBuilder queryBuilder, List<String> miljoer) {
+
+        if (!miljoer.isEmpty()) {
+            var boolQuery = QueryBuilders.boolQuery();
+            miljoer.forEach(miljoe -> boolQuery.must(QueryBuilders.matchQuery("miljoer", miljoe)));
+            queryBuilder.must(boolQuery);
+        }
     }
 }

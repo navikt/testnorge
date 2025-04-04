@@ -44,14 +44,17 @@ public class BestillingQueryService {
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
 
-    @Cacheable(cacheNames = CACHE_REGISTRE, key = "#request.registreRequest")
+    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer}")
     public Set<String> execRegisterQuery(SearchRequest request) {
+
 
         var queryBuilder = QueryBuilders.boolQuery();
 
         request.getRegistreRequest().stream()
                 .map(FagsystemQueryUtils::getFagsystemQuery)
                 .forEach(queryBuilder::must);
+
+        FagsystemQueryUtils.addMiljoerQuery(queryBuilder, request.getMiljoer());
 
         return execQuery(queryBuilder);
     }
