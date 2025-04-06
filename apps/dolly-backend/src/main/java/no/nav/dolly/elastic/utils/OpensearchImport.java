@@ -83,8 +83,13 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .takeWhile(bestilling -> hasNotBestilling(bestilling.getId()))
                 .map(bestilling -> mapperFacade.map(bestilling, ElasticBestilling.class))
                 .filter(bestilling -> !bestilling.isIgnore())
-                .doOnNext(bestilling -> antallSkrevet.incrementAndGet())
                 .doOnNext(this::save)
+                .doOnNext(bestilling -> antallSkrevet.incrementAndGet())
+                .doOnNext(bestilling -> {
+                    if (antallSkrevet.get() % 1000 == 0) {
+                        log.info("Skrevet {} bestillinger", antallSkrevet.get());
+                    }
+                })
                 .subscribe();
     }
 
