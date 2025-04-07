@@ -294,7 +294,7 @@ const FinnPersonBestilling = () => {
 						onChange={(e: GroupedOption) => setSearchQuery(e)}
 						backspaceRemovesValue={true}
 						label="Person"
-						placeholder={'Søk etter navn, ident, aktør-ID eller bestilling'}
+						placeholder={'Søk etter navn, ident, aktør-ID, gruppe eller bestilling'}
 						noOptionsMessage={() => 'Ingen treff'}
 					/>
 				</div>
