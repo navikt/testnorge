@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.consumer.PdlProxyConsumer;
+import no.nav.testnav.dollysearchservice.dto.TagsOpprettingResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,12 +18,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TagsService {
 
-    private static final int BOLK_SIZE = 100;
+    private static final int BOLK_SIZE = 10;
 
     private final BestillingQueryService bestillingQueryService;
     private final PdlProxyConsumer pdlProxyConsumer;
 
-    public Mono<String> setDollyTagAlleTestnorgeIdenter() {
+    public Mono<TagsOpprettingResponse> setDollyTagAlleTestnorgeIdenter() {
 
         var identer = bestillingQueryService.execTestnorgeIdenterQuery();
         log.info("Hentet alle testnorge identer: {}", identer.size());
@@ -36,9 +37,12 @@ public class TagsService {
                     l1.addAll(l2);
                     return l1;
                 })
+                .filter(tags -> !tags.isEmpty())
                 .doOnNext(tags -> log.info("Identer som mangler Dolly-tags: {}", String.join(", ", tags)))
-                .map(resultat -> "Følgende identer mangler DOLLY-tag: %s".formatted(String.join(", ", resultat)))
-                .switchIfEmpty(Mono.just("Fant ingen personer som mangler Dolly-tag"));
+                .flatMap(pdlProxyConsumer::setTags)
+                .switchIfEmpty(Mono.just(TagsOpprettingResponse.builder()
+                        .message("Fant ingen personer som mangler Dolly-tag")
+                        .build()));
     }
 
     private static List<String> filterTags(Map<String, List<String>> tags) {
