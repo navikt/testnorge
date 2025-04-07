@@ -9,6 +9,7 @@ import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
 
 import java.security.SecureRandom;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -32,12 +33,17 @@ public class OpenSearchIdenterQueryUtils {
 
     public static BoolQueryBuilder buildTestnorgeIdentSearchQuery(IdentSearch search) {
 
+        var identer = new HashSet<>(search.getIdenter());
+        if (search.getIdent().length() == 11) {
+            identer.add(search.getIdent());
+        }
+
         var queryBuilder = QueryBuilders.boolQuery();
 
         addTagsQueries(queryBuilder, search.getTags());
         addIdentQuery(queryBuilder, search);
         addNameQuery(queryBuilder, search);
-        addIdenterQuery(queryBuilder, search.getIdenter());
+        addIdenterQuery(queryBuilder, identer);
         addRandomScoreQuery(queryBuilder);
 
         return queryBuilder;
