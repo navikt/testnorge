@@ -20,6 +20,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HENT_
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRegexpQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedTermsQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.regexpQuery;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @UtilityClass
@@ -34,7 +35,7 @@ public class OpenSearchIdenterQueryUtils {
     public static BoolQueryBuilder buildTestnorgeIdentSearchQuery(IdentSearch search) {
 
         var identer = new HashSet<>(search.getIdenter());
-        if (search.getIdent().length() == 11) {
+        if (isNotBlank(search.getIdent()) && search.getIdent().length() == 11) {
             identer.add(search.getIdent());
         }
 
