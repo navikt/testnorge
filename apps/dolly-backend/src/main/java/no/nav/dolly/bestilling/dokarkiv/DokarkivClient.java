@@ -122,7 +122,9 @@ public class DokarkivClient implements ClientRegister {
                         transaksjonMappingService.delete(ident, miljoe, DOKARKIV.name(), bestillingId);
                     }
                 })
-                .map(a -> !a);
+                .map(ok -> !ok)
+                .doOnNext(ok -> log.info("Opprett dokument {}", ok))
+                .defaultIfEmpty(true);
     }
 
     private void updateProgress(BestillingProgress progress, Set<String> miljoer) {
