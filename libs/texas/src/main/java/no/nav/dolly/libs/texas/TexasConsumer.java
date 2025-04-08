@@ -15,7 +15,7 @@ public class TexasConsumer {
 
     /**
      * <p>The URL to the service.</p>
-     * <p>Not used by {@code Texas}, but may be used by clients to create a {@code WebClient}.</p>
+     * <p>Not used by {@code Texas}, but may be used by clients to create a {@code WebClient} through {@link Texas#webClient(String)}.</p>
      */
     private String url;
 
