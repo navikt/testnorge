@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
+import no.nav.dolly.bestilling.dokarkiv.dto.TransaksjonIdDTO;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -30,6 +32,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,6 +42,8 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -54,6 +59,7 @@ public class DokarkivClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
     private final PersonServiceConsumer personServiceConsumer;
+    private final SafConsumer safConsumer;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingService transaksjonMappingService;
 
@@ -67,21 +73,20 @@ public class DokarkivClient implements ClientRegister {
             return Flux.from(getPersonData(dollyPerson.getIdent())
                     .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
                             .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
-                                    .flatMap(miljoe -> {
-                                        if (!transaksjonMappingService.existAlready(DOKARKIV,
-                                                dollyPerson.getIdent(), miljoe, bestilling.getId()) || isOpprettEndre) {
-
-                                            return Flux.fromIterable(bestilling.getDokarkiv())
-                                                    .flatMap(dokarkiv ->
-                                                            buildRequest(dokarkiv, person, progress.getBestilling().getId())
-                                                                    .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
-                                                    .collectList()
-                                                    .map(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status));
-
-                                        } else {
-                                            return Mono.just(miljoe + ":OK");
-                                        }
-                                    })
+                                    .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
+                                            .flatMap(isOpprettDokument ->
+                                                    isTrue(isOpprettDokument)
+                                                            ?
+                                                            Flux.fromIterable(bestilling.getDokarkiv())
+                                                                    .flatMap(dokarkiv ->
+                                                                            buildRequest(dokarkiv, person, progress.getBestilling().getId())
+                                                                                    .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
+                                                                    .collectList()
+                                                                    .map(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
+                                                            :
+                                                            Mono.just(miljoe + ":OK")
+                                            )
+                                    )
                                     .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                                     .onErrorResume(error -> getErrors(error, miljoer))
                             ))
@@ -90,6 +95,35 @@ public class DokarkivClient implements ClientRegister {
         } else {
             return Flux.empty();
         }
+    }
+
+    private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {
+
+        if (isTrue(isOpprettEndre)) {
+            return Mono.just(true);
+        }
+        var eksisterende = transaksjonMappingService.getTransaksjonMapping(DOKARKIV.name(), ident, bestillingId);
+        if (eksisterende.isEmpty()) {
+            return Mono.just(true);
+        }
+        return Flux.fromIterable(eksisterende)
+                .doOnNext(transaksjonMapping -> log.info("Eksisterende transaksjonmapping {}", transaksjonMapping))
+                .filter(transaksjonMapping -> transaksjonMapping.getMiljoe().equals(miljoe))
+                .mapNotNull(transaksjon -> fromJson(transaksjon.getTransaksjonId()))
+                .doOnNext(transaksjon -> log.info("Verdi fra transaksjonmapping {}", transaksjon))
+                .flatMap(transaksjoner -> Flux.fromIterable(transaksjoner)
+                        .flatMap(transaksjon -> safConsumer.getDokument(miljoe, transaksjon.getJournalpostId(),
+                                transaksjon.getDokumentInfoId())))
+                .doOnNext(transaksjon -> log.info("Dokument fra arkiv {}", transaksjon))
+                .map(status -> isBlank(status.getFeilmelding()) && isNotBlank(status.getDokument()))
+                .doOnNext(status -> log.info("Dokument eksisterer {}", status))
+                .reduce(false, (a, b) -> a || b)
+                .doOnNext(ok -> {
+                    if (isFalse(ok)) {
+                        transaksjonMappingService.delete(ident, miljoe, DOKARKIV.name());
+                    }
+                })
+                .map(a -> !a);
     }
 
     private void updateProgress(BestillingProgress progress, Set<String> miljoer) {
@@ -144,7 +178,7 @@ public class DokarkivClient implements ClientRegister {
             return String.format("%s:FEIL=Teknisk feil se logg! %s", response.getFirst().getMiljoe(),
 
                     response.stream()
-                            .filter(arkiv -> isNotBlank(arkiv.getFeilmelding()) )
+                            .filter(arkiv -> isNotBlank(arkiv.getFeilmelding()))
                             .map(arkiv -> encodeStatus(errorStatusDecoder.getStatusMessage(arkiv.getFeilmelding())))
                             .findFirst()
                             .orElse("UKJENT"));
@@ -204,5 +238,21 @@ public class DokarkivClient implements ClientRegister {
             log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
         }
         return null;
+    }
+
+    private List<TransaksjonIdDTO> fromJson(JsonNode transaksjon) {
+
+        var transaksjoner = new ArrayList<TransaksjonIdDTO>();
+        transaksjon.iterator()
+                .forEachRemaining(node ->
+                        {
+                            try {
+                                transaksjoner.add(objectMapper.treeToValue(node, TransaksjonIdDTO.class));
+                            } catch (JsonProcessingException e) {
+                                log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
+                            }
+                        }
+                );
+        return transaksjoner;
     }
 }
