@@ -1,3 +1,6 @@
 En proxy for tilgang til Texas.
 
-Kan ikke kjøres opp lokalt, fordi den avhenger av en sidecar som kjører Texas.
+## Lokal kjøring
+* [Generelt.](../../docs/local_general.md)
+
+> **NB:** Applikasjonen kjører på port 8081, slik at den kan kjøres opp ved siden av applikasjoner som kjører på default 8080. Evt. i en `docker-compose.yml`.
