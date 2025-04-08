@@ -3,6 +3,7 @@ import { arrayToString } from '@/utils/DataFormatter'
 const uri = `/dolly-backend/api/v1`
 const kodeverkUri = `/testnav-kodeverk-service/api/v1`
 const personUri = '/person-service/api/v2'
+const dollySearchUrl = '/testnav-dolly-search-service/api/v1'
 
 const groupBase = `${uri}/gruppe`
 const tagsBase = `${uri}/tags`
@@ -187,5 +188,9 @@ export default class DollyEndpoints {
 
 	static malBestillingOrganisasjon(malId, malNavn) {
 		return `${organisasjonBase}/bestilling/malbestilling/${malId}?malNavn=${malNavn}`
+	}
+
+	static personerSearch(registre) {
+		return `${dollySearchUrl}/personer${registre ? registre : ''}`
 	}
 }
