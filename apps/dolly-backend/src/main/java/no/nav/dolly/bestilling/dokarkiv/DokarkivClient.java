@@ -78,7 +78,7 @@ public class DokarkivClient implements ClientRegister {
                                                             ?
                                                             Flux.fromIterable(bestilling.getDokarkiv())
                                                                     .flatMap(dokarkiv ->
-                                                                            buildRequest(dokarkiv, person, progress.getBestilling().getId())
+                                                                            buildRequest(dokarkiv, person, bestilling.getId())
                                                                                     .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
                                                                     .collectList()
                                                                     .map(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
