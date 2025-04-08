@@ -4,11 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.libs.texas.Texas;
-import no.nav.dolly.libs.texas.TexasToken;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -21,21 +18,21 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class GenererNavnCommand implements Callable<NavnDTO[]> {
 
-    private final WebClient webClient;
-    private final Mono<TexasToken> token;
+    private final Texas texas;
     private Long seed;
     private final Integer antall;
 
     @Override
     public NavnDTO[] call() {
-        return webClient
+        return texas
+                .webClient("generer-navn-service")
                 .get()
                 .uri(builder -> builder
                         .path("/api/v1/navn")
                         .queryParamIfPresent("seed", Optional.ofNullable(seed))
                         .queryParam("antall", antall)
                         .build())
-                .headers(Texas.bearer(token))
+                .headers(texas.bearer("generer-navn-service"))
                 .retrieve()
                 .bodyToMono(NavnDTO[].class)
                 .retryWhen(WebClientError.is5xxException())
