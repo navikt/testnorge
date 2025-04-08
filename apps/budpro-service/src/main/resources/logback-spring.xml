@@ -12,16 +12,6 @@
     </springProfile>
 
     <springProfile name="local">
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <charset>UTF-8</charset>
-                <pattern>
-                    %d{HH:mm:ss.SSS} %highlight(%p) | %yellow(%logger{0}): %m%n
-                </pattern>
-            </encoder>
-        </appender>
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-        </root>
+        <include resource="logback-spring-local.xml"/>
     </springProfile>
 </configuration>

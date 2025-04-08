@@ -1,17 +1,18 @@
 dolly:
   consumers:
     - name: generer-navn-service
+      url: https://generer-navn-service.intern.dev.nav.no
       audience: api://dev-gcp.dolly.generer-navn-service/.default
     - name: some-other-service
       audience: api://dev-gcp.dolly.some-other-service/.default
   texas:
     url:
       #token: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token
-      token: http://localhost:8081/api/v1/token
+      token: http://localhost:8081/local/api/v1/token
       #exchange: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token/exchange
-      exchange: http://localhost:8081/api/v1/token/exchange
+      exchange: http://localhost:8081/local/api/v1/token/exchange
       #introspect: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect
-      introspect: https://localhost:8081/api/v1/introspect
+      introspect: https://localhost:8081/local/api/v1/introspect
 
 spring:
   config:
