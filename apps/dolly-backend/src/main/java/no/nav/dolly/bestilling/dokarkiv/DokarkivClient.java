@@ -74,8 +74,7 @@ public class DokarkivClient implements ClientRegister {
                     .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
                             .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
                                     .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
-                                            .flatMap(isOpprettDokument ->
-                                                    isTrue(isOpprettDokument)
+                                            .flatMap(isOpprettDokument -> isTrue(isOpprettDokument)
                                                             ?
                                                             Flux.fromIterable(bestilling.getDokarkiv())
                                                                     .flatMap(dokarkiv ->
@@ -102,10 +101,8 @@ public class DokarkivClient implements ClientRegister {
         if (isTrue(isOpprettEndre)) {
             return Mono.just(true);
         }
+
         var eksisterende = transaksjonMappingService.getTransaksjonMapping(DOKARKIV.name(), ident, bestillingId);
-        if (eksisterende.isEmpty()) {
-            return Mono.just(true);
-        }
         return Flux.fromIterable(eksisterende)
                 .doOnNext(transaksjonMapping -> log.info("Eksisterende transaksjonmapping {}", transaksjonMapping))
                 .filter(transaksjonMapping -> transaksjonMapping.getMiljoe().equals(miljoe))
