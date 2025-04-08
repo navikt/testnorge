@@ -57,6 +57,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -94,11 +95,15 @@ public class BestillingService {
         String gruppeNavn = Arrays.stream(searchQueries)
                 .filter(word -> !word.equals(bestillingID))
                 .collect(Collectors.joining(" "));
-        return Stream.concat(
-                        bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)).stream(),
-                        bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn)).stream())
-                .filter(distinctByKey(RsBestillingFragment::getid))
-                .toList();
+        if (isNoneBlank(gruppeNavn) && isNoneBlank(bestillingID)) {
+            return bestillingRepository.findByIdContainingAndGruppenavnContaining(bestillingID, gruppeNavn);
+        } else {
+            return Stream.concat(
+                            bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)).stream(),
+                            bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn)).stream())
+                    .filter(distinctByKey(RsBestillingFragment::getid))
+                    .toList();
+        }
     }
 
     @Transactional
@@ -435,26 +440,31 @@ public class BestillingService {
                 .build());
     }
 
+    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId) {
+
+        return bestillingProgressRepository.findByBestilling_Id(bestillingId);
+    }
+
     private void lagreDokumenter(RsDollyBestilling request) {
 
-            request.getDokarkiv()
-                    .forEach(tema -> tema
-                            .getDokumenter().forEach(dokument ->
-                                    dokument.getDokumentvarianter().forEach(dokumentVariant -> {
-                                        if (isNotBlank(dokumentVariant.getFysiskDokument())) {
-                                            dokumentVariant.setDokumentReferanse(lagreDokument(dokumentVariant.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_DOKARKIV));
-                                            dokumentVariant.setFysiskDokument(null);
-                                        }
-                                    })));
+        request.getDokarkiv()
+                .forEach(tema -> tema
+                        .getDokumenter().forEach(dokument ->
+                                dokument.getDokumentvarianter().forEach(dokumentVariant -> {
+                                    if (isNotBlank(dokumentVariant.getFysiskDokument())) {
+                                        dokumentVariant.setDokumentReferanse(lagreDokument(dokumentVariant.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_DOKARKIV));
+                                        dokumentVariant.setFysiskDokument(null);
+                                    }
+                                })));
 
         if (nonNull(request.getHistark())) {
             request.getHistark().getDokumenter()
                     .forEach(dokument -> {
-                                if (isNotBlank(dokument.getFysiskDokument())) {
-                                    dokument.setDokumentReferanse(lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK));
-                                    dokument.setFysiskDokument(null);
-                                }
-                            });
+                        if (isNotBlank(dokument.getFysiskDokument())) {
+                            dokument.setDokumentReferanse(lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK));
+                            dokument.setFysiskDokument(null);
+                        }
+                    });
         }
     }
 
@@ -467,12 +477,6 @@ public class BestillingService {
                         .dokumentType(dokumentType)
                         .build())
                 .getId();
-    }
-
-
-    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId) {
-
-        return bestillingProgressRepository.findByBestilling_Id(bestillingId);
     }
 
     private String filterAvailable(Collection<String> environments) {
