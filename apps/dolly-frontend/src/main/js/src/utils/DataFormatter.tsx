@@ -4,7 +4,6 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { convertInputToDate, initDayjs } from '@/components/ui/form/DateFormatUtils'
 
-export const yearFormat = 'yyyy'
 export const defaultDateFormat = 'dd.MM.yyyy'
 export const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm'
 export const defaultDateTimeWithSecondsFormat = 'dd.MM.yyyy HH:mm:ss'
@@ -54,13 +53,6 @@ export const formatTenorDate = (dateString: any, formatString?: string) => {
 	const day = dateString.substring(6, 8)
 	const date = new Date(year, month - 1, day)
 	return Date.parse(date) ? format(date, formatString || defaultDateFormat) : null
-}
-
-export const formatDateToYear = (date) => {
-	if (!date) return date
-	// Parse date if not date
-	if (!isDate(date)) date = new Date(date)
-	return format(date, yearFormat)
 }
 
 // Format dateTime to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA hh:mm)
