@@ -2,8 +2,12 @@ package no.nav.dolly.libs.texas;
 
 public class TexasException extends RuntimeException {
 
-    public TexasException(String message) {
+    TexasException(String message) {
         super(message);
+    }
+
+    TexasException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }
