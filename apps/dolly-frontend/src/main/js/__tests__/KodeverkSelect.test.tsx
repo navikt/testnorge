@@ -4,6 +4,7 @@ import { http, HttpResponse } from 'msw'
 import { dollyTest } from '../vitest.setup'
 import { worker } from './mocks/browser'
 import { userEvent } from '@vitest/browser/context'
+import { act } from 'react'
 
 dollyTest(
 	'renders select with no options on empty list, and retries until options found',
@@ -24,7 +25,9 @@ dollyTest(
 		await waitFor(() => expect(screen.getByText('Velg ...')).toBeInTheDocument(), { timeout: 2000 })
 
 		const select = screen.getByRole('combobox')
-		await userEvent.click(select)
+		await act(async () => {
+			await userEvent.click(select)
+		})
 
 		await waitFor(() => expect(screen.getByText('kodeverk2')).toBeInTheDocument(), {
 			timeout: 2000,

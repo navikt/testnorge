@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { dollyTest } from '../vitest.setup'
 import { userEvent } from '@vitest/browser/context'
-import React from 'react'
+import React, { act } from 'react'
 import { vi } from 'vitest'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import BestillingResultat from '@/components/bestilling/statusListe/BestillingResultat/BestillingResultat'
@@ -35,7 +35,9 @@ dollyTest('renders BestillingResultat and handles confetti appearance/disappeara
 	expect(confettiComponent).toBeInTheDocument()
 
 	const closeButton = screen.getByTestId(TestComponentSelectors.BUTTON_LUKK_BESTILLING_RESULTAT)
-	await userEvent.click(closeButton)
+	await act(async () => {
+		await userEvent.click(closeButton)
+	})
 	expect(lukkBestillingMock).toHaveBeenCalledWith('123')
 })
 
@@ -68,13 +70,15 @@ dollyTest('does not show confetti for unsuccessful bestillinger', async () => {
 		bruker: { brukerId: 'test123' },
 	}
 
-	rerender(
-		<BestillingResultat
-			bestilling={stoppedBestilling}
-			lukkBestilling={lukkBestillingMock}
-			erOrganisasjon={false}
-		/>,
-	)
+	act(() => {
+		rerender(
+			<BestillingResultat
+				bestilling={stoppedBestilling}
+				lukkBestilling={lukkBestillingMock}
+				erOrganisasjon={false}
+			/>,
+		)
+	})
 
 	expect(screen.queryByTestId('confetti')).not.toBeInTheDocument()
 
@@ -86,13 +90,15 @@ dollyTest('does not show confetti for unsuccessful bestillinger', async () => {
 		bruker: { brukerId: 'test123' },
 	}
 
-	rerender(
-		<BestillingResultat
-			bestilling={incompleteBestilling}
-			lukkBestilling={lukkBestillingMock}
-			erOrganisasjon={false}
-		/>,
-	)
+	act(() => {
+		rerender(
+			<BestillingResultat
+				bestilling={incompleteBestilling}
+				lukkBestilling={lukkBestillingMock}
+				erOrganisasjon={false}
+			/>,
+		)
+	})
 
 	expect(screen.queryByTestId('confetti')).not.toBeInTheDocument()
 })

@@ -83,7 +83,7 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 
 	const sortedData = data
 		?.slice()
-		?.sort((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
+		?.sort?.((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
 
 	return (
 		<DollyFieldArray

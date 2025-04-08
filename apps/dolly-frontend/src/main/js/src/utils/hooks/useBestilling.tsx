@@ -73,7 +73,7 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 	)
 
 	const bestillingerSorted = data
-		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
+		?.sort?.((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
 		.reduce((acc: { [key: string]: Bestilling }, curr) => ((acc[curr.id] = curr), acc), {})
 
 	return {
@@ -107,8 +107,8 @@ export const useIkkeFerdigBestillingerGruppe = (
 	const { data, isLoading, error } = useSWR<Bestilling[], Error>(url, fetcher)
 
 	const bestillingerSorted = data
-		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
-		.reduce((acc: { [key: string]: Bestilling }, curr) => ((acc[curr.id] = curr), acc), {})
+		?.sort?.((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
+		?.reduce?.((acc: { [key: string]: Bestilling }, curr) => ((acc[curr.id] = curr), acc), {})
 
 	return {
 		bestillinger: data,
@@ -160,7 +160,7 @@ export const useBestilteMiljoer = (
 	)
 
 	const miljoer = []
-	data?.map((bestilling) => {
+	data?.map?.((bestilling) => {
 		bestilling?.environments?.forEach((miljo) => {
 			if (!miljoer.includes(miljo) && bestilling.status?.find((s) => s.id === fagsystem)) {
 				miljoer.push(miljo)
