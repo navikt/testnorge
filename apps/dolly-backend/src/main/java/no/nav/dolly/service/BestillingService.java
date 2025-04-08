@@ -96,7 +96,7 @@ public class BestillingService {
                 .filter(word -> !word.equals(bestillingID))
                 .collect(Collectors.joining(" "));
         if (isNoneBlank(gruppeNavn) && isNoneBlank(bestillingID)) {
-            return bestillingRepository.findByIdContainingAndGruppenavnContaining(bestillingID, gruppeNavn);
+            return bestillingRepository.findByIdContainingAndGruppeNavnContaining(bestillingID, gruppeNavn);
         } else {
             return Stream.concat(
                             bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)).stream(),

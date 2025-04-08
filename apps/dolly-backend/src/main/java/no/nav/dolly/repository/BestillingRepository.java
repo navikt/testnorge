@@ -4,16 +4,16 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
+public interface BestillingRepository extends JpaRepository<Bestilling, Long> {
 
     @Query(value = "select b.id, g.navn " +
             "from Bestilling b " +
@@ -35,7 +35,14 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
             nativeQuery = true)
     List<RsBestillingFragment> findByGruppenavnContaining(String gruppenavn);
 
-    List<RsBestillingFragment> findByIdContainingAndGruppenavnContaining(String id, String gruppenavn);
+    @Query("select b.id as id, g.navn as navn from Bestilling b " +
+            "join b.gruppe g " +
+            "where cast(b.id as string) like %:id% " +
+            "and g.navn like %:gruppenavn%")
+    List<RsBestillingFragment> findByIdContainingAndGruppeNavnContaining(
+            @Param("id") String id,
+            @Param("gruppenavn") String gruppenavn
+    );
 
     Bestilling save(Bestilling bestilling);
 
