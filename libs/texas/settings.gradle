@@ -2,11 +2,9 @@ plugins {
     id "com.gradle.develocity" version "3.19"
 }
 
-rootProject.name = "texas-proxy"
+rootProject.name = 'texas'
 
 includeBuild "../../libs/reactive-core"
-includeBuild "../../libs/testing"
-includeBuild "../../libs/texas"
 includeBuild "../../plugins/java"
 
 develocity {

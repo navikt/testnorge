@@ -14,7 +14,7 @@ includeBuild "../../libs/servlet-core"
 includeBuild "../../libs/servlet-insecure-security"
 includeBuild "../../libs/servlet-security"
 includeBuild "../../libs/testing"
-includeBuild "../../proxies/texas-proxy"
+includeBuild "../../libs/texas"
 
 develocity {
     buildScan {
