@@ -27,14 +27,14 @@ class TexasRestController {
     @Operation(summary = "Get a token.")
     Mono<TexasToken> token(@RequestBody GetRequest request) {
         verify(request.identity_provider);
-        return texas.get(request.audience);
+        return texas.get(request.target);
     }
 
     @PostMapping("/api/v1/token/exchange")
     @Operation(summary = "Exchange a token.")
     Mono<TexasToken> exchange(@RequestBody ExchangeRequest request) {
         verify(request.identity_provider);
-        return texas.exchange(request.audience, request.user_token);
+        return texas.exchange(request.target, request.user_token);
     }
 
     @PostMapping("/api/v1/introspect")
@@ -52,13 +52,13 @@ class TexasRestController {
 
     private record GetRequest(
             @Schema(defaultValue = "azuread") String identity_provider,
-            @Schema(defaultValue = "api://dev-gcp.dolly.dolly-texas-proxy/.default") String audience
+            @Schema(defaultValue = "api://dev-gcp.dolly.dolly-texas-proxy/.default") String target
     ) {
     }
 
     private record ExchangeRequest(
             @Schema(defaultValue = "azuread") String identity_provider,
-            @Schema(defaultValue = "api://dev-gcp.dolly.generer-navn-service/.default") String audience,
+            @Schema(defaultValue = "api://dev-gcp.dolly.generer-navn-service/.default") String target,
             String user_token
     ) {
     }
