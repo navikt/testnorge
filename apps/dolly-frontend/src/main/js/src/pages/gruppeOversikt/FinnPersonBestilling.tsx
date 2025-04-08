@@ -279,6 +279,8 @@ const FinnPersonBestilling = () => {
 		}
 	})
 
+	const windowHeight = window.innerHeight
+
 	return (
 		<ErrorBoundary>
 			<div>
@@ -298,6 +300,9 @@ const FinnPersonBestilling = () => {
 						isClearable={true}
 						value={null}
 						formatGroupLabel={formatGroupLabel}
+						maxMenuHeight={
+							windowHeight > 800 ? '500px' : `${windowHeight < 500 ? 300 : windowHeight - 400}px`
+						}
 						onChange={(e: GroupedOption) => setSearchQuery(e)}
 						backspaceRemovesValue={true}
 						label="Person"
