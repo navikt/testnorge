@@ -23,7 +23,7 @@ import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
 @RequiredArgsConstructor
 public class DokarkivGetDokument implements Callable<Mono<DokarkivResponse>> {
 
-    private static final String DOKARDI_URL = "/{miljoe}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/pdf";
+    private static final String DOKARDI_URL = "/{miljoe}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/ARKIV";
 
     private final WebClient webClient;
     private final String miljoe;

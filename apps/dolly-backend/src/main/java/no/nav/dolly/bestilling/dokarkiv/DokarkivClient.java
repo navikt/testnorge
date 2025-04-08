@@ -114,13 +114,12 @@ public class DokarkivClient implements ClientRegister {
                 .flatMap(transaksjoner -> Flux.fromIterable(transaksjoner)
                         .flatMap(transaksjon -> safConsumer.getDokument(miljoe, transaksjon.getJournalpostId(),
                                 transaksjon.getDokumentInfoId())))
-                .doOnNext(transaksjon -> log.info("Dokument fra arkiv {}", transaksjon))
                 .map(status -> isBlank(status.getFeilmelding()) && isNotBlank(status.getDokument()))
                 .doOnNext(status -> log.info("Dokument eksisterer {}", status))
                 .reduce(false, (a, b) -> a || b)
                 .doOnNext(ok -> {
                     if (isFalse(ok)) {
-                        transaksjonMappingService.delete(ident, miljoe, DOKARKIV.name());
+                        transaksjonMappingService.delete(ident, miljoe, DOKARKIV.name(), bestillingId);
                     }
                 })
                 .map(a -> !a);
