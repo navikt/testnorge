@@ -35,6 +35,8 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
             nativeQuery = true)
     List<RsBestillingFragment> findByGruppenavnContaining(String gruppenavn);
 
+    List<RsBestillingFragment> findByIdContainingAndGruppenavnContaining(String id, String gruppenavn);
+
     Bestilling save(Bestilling bestilling);
 
     @Query(value = "select position-1 " +
