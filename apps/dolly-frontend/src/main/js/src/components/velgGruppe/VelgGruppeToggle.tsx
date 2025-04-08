@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NyGruppe from './NyGruppe'
 import EksisterendeGruppe from '@/components/velgGruppe/EksisterendeGruppe'
 import { ToggleGroup } from '@navikt/ds-react'
@@ -6,11 +6,13 @@ import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import AlleGrupper from '@/components/velgGruppe/AlleGrupper'
 import { useFormContext } from 'react-hook-form'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useEgneGrupper } from '@/utils/hooks/useGruppe'
 
 interface VelgGruppeToggleProps {
 	fraGruppe?: number
-	gruppevalg: any
-	setGruppevalg: any
+	grupper?: any
+	loading?: boolean
 }
 
 export enum Gruppevalg {
@@ -23,16 +25,16 @@ const StyledToggleGroup = styled(ToggleGroup)`
 	margin-bottom: 10px;
 `
 
-export const VelgGruppeToggle = ({
-	fraGruppe,
-	gruppevalg,
-	setGruppevalg,
-}: VelgGruppeToggleProps) => {
+export const VelgGruppeToggle = ({ fraGruppe, grupper, loading }: VelgGruppeToggleProps) => {
+	const harGrupper = grupper?.antallElementer > 0
+	const [gruppevalg, setGruppevalg] = useState(harGrupper ? Gruppevalg.MINE : Gruppevalg.NY)
+
 	const formMethods = useFormContext()
 	const handleToggleChange = (value: Gruppevalg) => {
 		setGruppevalg(value)
 		formMethods.setValue('gruppeId', null)
 	}
+
 	return (
 		<div className="toggle--wrapper">
 			<StyledToggleGroup size={'small'} value={gruppevalg} onChange={handleToggleChange}>
@@ -60,7 +62,9 @@ export const VelgGruppeToggle = ({
 				</ToggleGroup.Item>
 			</StyledToggleGroup>
 
-			{gruppevalg === Gruppevalg.MINE && <EksisterendeGruppe fraGruppe={fraGruppe} />}
+			{gruppevalg === Gruppevalg.MINE && (
+				<EksisterendeGruppe fraGruppe={fraGruppe} grupper={grupper} loading={loading} />
+			)}
 			{gruppevalg === Gruppevalg.ALLE && <AlleGrupper fraGruppe={fraGruppe} />}
 			{gruppevalg === Gruppevalg.NY && <NyGruppe />}
 		</div>
