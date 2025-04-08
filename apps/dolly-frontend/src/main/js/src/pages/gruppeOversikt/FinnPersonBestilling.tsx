@@ -81,6 +81,10 @@ const FinnPersonBestilling = () => {
 			...provided,
 			paddingBottom: 0,
 		}),
+		container: (provided: any) => ({
+			...provided,
+			width: '450px',
+		}),
 	}
 
 	const navigate = useNavigate()
@@ -122,15 +126,17 @@ const FinnPersonBestilling = () => {
 		if (!tekst) {
 			return []
 		}
-		return DollyApi.getBestillingerFragment(tekst).then((response: ResponsBestilling) => {
-			if (!response?.data || response?.data?.length < 1) {
-				return []
-			}
-			return response.data?.map((resp) => ({
-				value: resp.id,
-				label: `#${resp.id} - ${resp.navn}`,
-			}))
-		})
+		return DollyApi.getBestillingerFragment(tekst.replaceAll('#', '')).then(
+			(response: ResponsBestilling) => {
+				if (!response?.data || response?.data?.length < 1) {
+					return []
+				}
+				return response.data?.map((resp) => ({
+					value: resp.id,
+					label: `#${resp.id} - ${resp.navn}`,
+				}))
+			},
+		)
 	}
 
 	const extractFeilmelding = () => {
@@ -162,7 +168,7 @@ const FinnPersonBestilling = () => {
 	}
 
 	const soekPersoner = async (tekst: string): Promise<Option[]> => {
-		if (!tekst) {
+		if (!tekst || tekst.includes('#')) {
 			return []
 		}
 
@@ -241,6 +247,7 @@ const FinnPersonBestilling = () => {
 
 	const handleChange = (tekst: string) => {
 		dispatch(resetFeilmelding())
+		setError('')
 		setFragment(tekst)
 	}
 
@@ -249,7 +256,7 @@ const FinnPersonBestilling = () => {
 			<span data-testid={TestComponentSelectors.BUTTON_NAVIGER_DOLLY}>
 				<Highlighter
 					textToHighlight={children}
-					searchWords={fragment.split(' ')}
+					searchWords={fragment?.replaceAll('#', '').split(' ')}
 					autoEscape={true}
 					caseSensitive={false}
 				/>
@@ -294,7 +301,7 @@ const FinnPersonBestilling = () => {
 						onChange={(e: GroupedOption) => setSearchQuery(e)}
 						backspaceRemovesValue={true}
 						label="Person"
-						placeholder={'Søk etter navn, ident, aktør-ID, gruppe eller bestilling'}
+						placeholder={'Søk etter navn, ident, aktør-ID, bestilling eller gruppe'}
 						noOptionsMessage={() => 'Ingen treff'}
 					/>
 				</div>
