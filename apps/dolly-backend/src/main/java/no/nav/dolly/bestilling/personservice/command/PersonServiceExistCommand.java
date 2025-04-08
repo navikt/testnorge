@@ -2,8 +2,7 @@ package no.nav.dolly.bestilling.personservice.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -31,8 +30,8 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                 .uri(uriBuilder -> uriBuilder.path(PERSON_URL)
                         .queryParamIfPresent("opplysningId", Optional.ofNullable(opplysningId.isEmpty() ? null : opplysningId))
                         .build(ident))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toEntity(Boolean.class)
                 .map(resultat -> PersonServiceResponse.builder()

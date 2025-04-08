@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.util.TokenXUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -30,7 +30,7 @@ public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon
                 .uri(uriBuilder -> uriBuilder
                         .path(INNTEKTER_URL)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
                 .bodyValue(inntektsinformasjon)
                 .retrieve()

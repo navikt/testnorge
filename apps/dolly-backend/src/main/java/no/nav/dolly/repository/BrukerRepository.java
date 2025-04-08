@@ -10,21 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BrukerRepository extends Repository<Bruker, Long> {
-    void deleteByBrukerId(String brukerId);
 
     Bruker save(Bruker bruker);
 
+    @Query(value = "from Bruker b where b.brukertype='AZURE' order by b.brukernavn")
     List<Bruker> findAllByOrderById();
 
-    Optional<Bruker> findBrukerByBrukerId(String brukerId);
+    List<Bruker> findAllByBrukerIdInOrderByBrukernavn(List<String> brukerId);
 
-    Optional<Bruker> findBrukerByNavIdent(String navIdent);
+    Optional<Bruker> findBrukerByBrukerId(String brukerId);
 
     @Modifying
     @Query(value = "delete from BRUKER_FAVORITTER where gruppe_id = :groupId", nativeQuery = true)
     int deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
-
-    @Query(value = "from Bruker b where b.eidAv = :bruker")
-    List<Bruker> fetchEidAv(@Param("bruker") Bruker bruker);
-
 }

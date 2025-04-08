@@ -27,7 +27,7 @@ class TestidentMappingTest {
 
     @Test
     void mapToRsTestidentIncludingTestgruppe() {
-        Bruker bruker = Bruker.builder().navIdent("ident").build();
+        Bruker bruker = new Bruker();
 
         Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)

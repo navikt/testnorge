@@ -4,13 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +27,7 @@ public class SkjermingsregisterGetCommand implements Callable<Mono<SkjermingData
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(SKJERMINGSREGISTER_URL).build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(PERSONIDENT_HEADER, ident)
                 .retrieve()
                 .bodyToMono(SkjermingDataResponse.class)

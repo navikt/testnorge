@@ -77,7 +77,7 @@ export const usePensjonFacadeGenerer = (body: any) => {
 	}
 }
 
-export const useTpOrdning = () => {
+export const useTpOrdningKodeverk = () => {
 	const { data, isLoading, error } = useSWR<any, Error>(tpOrdningUrl, fetcher)
 
 	const options = data?.map((tpOrdning: any) => ({
@@ -112,7 +112,7 @@ export const useMockOppsett = (miljoer: Array<string>, ident: string, harBestill
 	const { data, isLoading, error } = useSWR<any, Error>(mockOppsettUrl, multiFetcherAfpOffentlig)
 
 	return {
-		mockOppsett: data?.sort((a, b) => a?.miljo?.localeCompare(b?.miljo)),
+		mockOppsett: data?.sort?.((a, b) => a?.miljo?.localeCompare(b?.miljo)),
 		loading: isLoading,
 		error: error,
 	}

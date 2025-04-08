@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static no.nav.dolly.domain.resultset.SystemTyper.SIGRUN_LIGNET;
 import static no.nav.dolly.domain.resultset.SystemTyper.SIGRUN_PENSJONSGIVENDE;
+import static no.nav.dolly.domain.resultset.SystemTyper.SIGRUN_SUMMERT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,6 +23,7 @@ public final class BestillingSigrunStubStatusMapper {
     private static final String SIGRUNSTUB = "SIGRUNSTUB";
     private static final String LIGNET_INNTEKT = "SIGRUN_LIGNET";
     private static final String PENSJONSGIVENDE_INNTEKT = "SIGRUN_PENSJONSGIVENDE";
+    private static final String SUMMERT_SKATTEGRUNNLAG = "SIGRUN_SUMMERT";
 
     public static List<RsStatusRapport> buildSigrunStubStatusMap(List<BestillingProgress> progressList) {
 
@@ -38,6 +40,7 @@ public final class BestillingSigrunStubStatusMapper {
         var statusRapporter = new ArrayList<RsStatusRapport>();
         statusRapporter.addAll(extractStatus(statusMap, LIGNET_INNTEKT, SIGRUN_LIGNET));
         statusRapporter.addAll(extractStatus(statusMap, PENSJONSGIVENDE_INNTEKT, SIGRUN_PENSJONSGIVENDE));
+        statusRapporter.addAll(extractStatus(statusMap, SUMMERT_SKATTEGRUNNLAG, SIGRUN_SUMMERT));
         statusRapporter.addAll(extractStatus(statusMap, SIGRUNSTUB, SystemTyper.SIGRUNSTUB));
 
         return statusRapporter;

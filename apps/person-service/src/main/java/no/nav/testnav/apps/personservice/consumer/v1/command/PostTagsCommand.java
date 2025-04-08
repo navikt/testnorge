@@ -3,6 +3,7 @@ package no.nav.testnav.apps.personservice.consumer.v1.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ public class PostTagsCommand implements Callable<Mono<Void>> {
                         .build()
                 )
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .body(BodyInserters.fromPublisher(Mono.just(ident), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(Void.class)

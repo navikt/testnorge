@@ -135,7 +135,7 @@ public class TestpersonController {
     }
 
     @Operation(description = "Naviger til ønsket testperson")
-    @Transactional
+    @Transactional(readOnly = true)
     @GetMapping("/naviger/{ident}")
     public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 

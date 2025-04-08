@@ -21,7 +21,7 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Testgruppe.class, RsTestgruppeMedBestillingId.class)
-                .customize(new CustomMapper<Testgruppe, RsTestgruppeMedBestillingId>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppeMedBestillingId testgruppeMedBestillingId, MappingContext context) {
                         testgruppeMedBestillingId.setIdenter(testgruppe.getTestidenter().stream()
@@ -30,17 +30,17 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                         .iBruk(isTrue(testident.getIBruk()))
                                         .beskrivelse(testident.getBeskrivelse())
                                         .bestillingId(testident.getBestillingProgress().stream()
-                                                .filter(bestillingProgress ->
-                                                        bestillingProgress.getBestilling().getGruppe().getId().equals(testident.getTestgruppe().getId()))
                                                 .map(BestillingProgress::getBestilling)
+                                                .filter(bestilling ->
+                                                        bestilling.getGruppe().getId().equals(testident.getTestgruppe().getId()))
                                                 .map(Bestilling::getId)
                                                 .sorted(Comparator.reverseOrder())
                                                 .toList())
                                         .master(testident.getMaster())
                                         .bestillinger(testident.getBestillingProgress().stream()
-                                                .filter(bestillingProgress ->
-                                                        bestillingProgress.getBestilling().getGruppe().getId().equals(testident.getTestgruppe().getId()))
                                                 .map(BestillingProgress::getBestilling)
+                                                .filter(bestilling ->
+                                                        bestilling.getGruppe().getId().equals(testident.getTestgruppe().getId()))
                                                 .map(bestilling -> {
                                                     var context2 = new MappingContext.Factory().getContext();
                                                     context2.setProperty("ident", testident.getIdent());

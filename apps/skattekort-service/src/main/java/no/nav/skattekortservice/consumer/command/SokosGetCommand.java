@@ -4,13 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.skattekortservice.dto.SokosResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
-
-import static org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +27,7 @@ public class SokosGetCommand implements Callable<Flux<SokosResponse>> {
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(SOKOS_URL)
                         .build(ident))
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header("korrelasjonsid", UUID.randomUUID().toString())
                 .retrieve()
                 .bodyToFlux(SokosResponse.class)

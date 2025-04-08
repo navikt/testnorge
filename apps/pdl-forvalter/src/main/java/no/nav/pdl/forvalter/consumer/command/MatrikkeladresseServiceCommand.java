@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
@@ -59,7 +60,7 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                 .uri(builder -> builder.path(ADRESSER_VEG_URL).queryParams(getQuery()).build())
                 .header("antall", "1")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(MatrikkeladresseDTO[].class)
                 .retryWhen(WebClientError.is5xxException())

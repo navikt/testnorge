@@ -33,6 +33,7 @@ spec:
         - application: testnav-faste-data-frontend
         - application: testnav-oversikt-frontend
         - application: testnorge-tilbakemelding-api
+        - application: testnav-tps-messaging-frontend
     outbound:
       rules:
         - application: testnav-altinn3-tilgang-proxy

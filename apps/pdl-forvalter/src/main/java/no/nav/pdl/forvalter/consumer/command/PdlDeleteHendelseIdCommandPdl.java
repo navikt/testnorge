@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -35,7 +36,7 @@ public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
                         .queryParam("kilde", "Dolly")
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .header("hendelseId", hendelseId)

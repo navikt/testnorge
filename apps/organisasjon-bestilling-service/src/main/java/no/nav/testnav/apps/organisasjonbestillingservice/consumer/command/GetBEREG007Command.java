@@ -3,7 +3,7 @@ package no.nav.testnav.apps.organisasjonbestillingservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.dto.BuildDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -22,7 +22,7 @@ public class GetBEREG007Command implements Callable<Mono<BuildDTO>> {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path("view/All/job/Start_BEREG007/{buildId}/api/json").build(buildId))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(BuildDTO.class)
                 .retryWhen(WebClientError.is5xxException())

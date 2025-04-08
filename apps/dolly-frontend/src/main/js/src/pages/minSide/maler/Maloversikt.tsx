@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import Loading from '@/components/ui/loading/Loading'
 import { SearchField } from '@/components/searchField/SearchField'
 import {
-	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
+	useMalbestillingBruker,
 } from '@/utils/hooks/useMaler'
 import { Tabs } from '@navikt/ds-react'
 import { MalPanel } from '@/pages/minSide/maler/MalPanel'
@@ -15,7 +15,7 @@ export default ({ brukerId }: { brukerId: string }) => {
 	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
 
-	const { maler: egneMaler, loading, mutate } = useDollyMalerBrukerOgMalnavn(brukerId)
+	const { maler: egneMaler, loading, mutate } = useMalbestillingBruker(brukerId)
 	const {
 		maler: egneOrgMaler,
 		loading: orgLoading,

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.apache.hc.core5.http.ContentType;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -76,7 +77,7 @@ public class StartBEREG007Command implements Callable<Long> {
                     .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
                     .header("Jenkins-Crumb", jenkinsCrumb)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .headers(WebClientHeader.bearer(token))
                     .body(body)
                     .exchangeToMono(response -> {
                         try {

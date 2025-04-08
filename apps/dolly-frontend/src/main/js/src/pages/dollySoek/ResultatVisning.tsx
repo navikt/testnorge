@@ -33,21 +33,11 @@ export const ResultatVisning = ({
 		)
 	}
 
-	if (_.isEmpty(resultat)) {
-		return (
-			<ContentContainer>
-				<Alert variant="info" size="small" inline>
-					Ingen søk er gjort
-				</Alert>
-			</ContentContainer>
-		)
-	}
-
 	if (resultat?.error || soekError) {
 		return (
 			<ContentContainer>
 				<Alert variant={'error'} size={'small'} inline>
-					Feil: {resultat.error || soekError?.message}
+					Feil: {resultat?.error || soekError?.message}
 				</Alert>
 			</ContentContainer>
 		)
@@ -153,15 +143,15 @@ export const ResultatVisning = ({
 			/>
 			<div className="pagination-wrapper">
 				<ItemCountSelect value={visAntall} onChangeHandler={handleChangeAntall} />
-				{resultat.totalHits > resultat.antall && (
+				{resultat?.totalHits > resultat?.antall && (
 					<Fragment>
 						<span className="pagination-label">
-							Viser {startIndex}-{lastIndex} av {resultat.totalHits}
+							Viser {startIndex}-{lastIndex} av {resultat?.totalHits}
 						</span>
 						<Pagination
 							style={{ marginTop: '5px' }}
-							page={resultat.side + 1}
-							count={Math.ceil(resultat.totalHits / visAntall)}
+							page={resultat?.side + 1}
+							count={Math.ceil(resultat?.totalHits / visAntall)}
 							size={'xsmall'}
 							onPageChange={handleChangeSide}
 						/>
