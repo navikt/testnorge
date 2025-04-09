@@ -166,7 +166,7 @@ export const DollyFieldArray = ({
 	return (
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
-				{data.map((curr, idx) => {
+				{data?.map((curr, idx) => {
 					if (nested) {
 						return (
 							<DollyFaBlokkNested key={idx} idx={idx} whiteBackground={whiteBackground}>
@@ -239,7 +239,7 @@ export const FormDollyFieldArray = ({
 	return (
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
-				{values.map((curr, idx) => {
+				{values?.map((curr, idx) => {
 					const showDeleteButton = canBeEmpty ? true : values.length >= 2
 					const path = `${name}.${idx}`
 					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
