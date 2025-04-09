@@ -26,13 +26,16 @@ class RouteLocatorConfig {
 
     @PostConstruct
     void postConstruct() {
-        log.info("Configured using:\nNAIS_TOKEN_ENDPOINT = {}\nNAIS_TOKEN_EXCHANGE_ENDPOINT = {}\nNAIS_TOKEN_INTROSPECTION_ENDPOINT = {}", tokenEndpoint, tokenExchangeEndpoint, tokenIntrospectionEndpoint);
+        log.info("Configured using:\n\tNAIS_TOKEN_ENDPOINT = {}\n\tNAIS_TOKEN_EXCHANGE_ENDPOINT = {}\n\tNAIS_TOKEN_INTROSPECTION_ENDPOINT = {}", tokenEndpoint, tokenExchangeEndpoint, tokenIntrospectionEndpoint);
     }
 
     @Bean
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
+                .route(r -> r
+                        .path("/api/v1/token")
+                        .uri(tokenEndpoint))
                 .route(r -> r
                         .path("/api/v1/token/exchange")
                         .uri(tokenExchangeEndpoint))

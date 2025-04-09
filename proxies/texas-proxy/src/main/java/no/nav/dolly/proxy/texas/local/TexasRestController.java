@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+/**
+ * Simple controller to test the Texas proxy locally.
+ */
 @RestController
 @RequestMapping("/local")
 @Profile("local")

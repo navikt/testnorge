@@ -62,6 +62,10 @@ class RouteLocatorTest extends DollyApplicationContextTest {
     void beforeEach() {
         when(texas.get(anyString()))
                 .thenReturn(Mono.just(new TexasToken("", "", "")));
+        wiremock.stubFor(post(urlEqualTo("/api/v1/token"))
+                .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_JSON_VALUE))
+                .withRequestBody(equalToJson(GET_TOKEN_BODY))
+                .willReturn(aResponse().withStatus(200)));
         wiremock.stubFor(post(urlEqualTo("/api/v1/token/exchange"))
                 .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_JSON_VALUE))
                 .withRequestBody(equalToJson(EXCHANGE_TOKEN_BODY))
@@ -75,7 +79,7 @@ class RouteLocatorTest extends DollyApplicationContextTest {
     @Test
     void testRoutes() {
         assertThat(routeLocator.getRoutes().count().block())
-                .isEqualTo(2);
+                .isEqualTo(3);
 
         client
                 .post()
