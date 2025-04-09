@@ -4,8 +4,9 @@ import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.web.reactive.config.EnableWebFlux;
 
-@EnableWebSecurity
+@EnableWebFlux
 @SpringBootApplication
 public class ApiOversiktServiceApplicationStarter {
 
@@ -14,5 +15,4 @@ public class ApiOversiktServiceApplicationStarter {
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
-
 }

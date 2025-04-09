@@ -5,4 +5,4 @@ spring:
     oauth2:
       resourceserver:
         tokenx:
-          accepted-audience: dev-gcp:dolly:testnav-adresse-service
+          accepted-audience: dev-gcp:dolly:testnav-api-oversikt-service

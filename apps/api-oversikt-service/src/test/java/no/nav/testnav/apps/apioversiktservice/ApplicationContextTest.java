@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.adresseservice;
+package no.nav.testnav.apps.apioversiktservice;
 
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.dolly.libs.test.DollyApplicationContextTest;

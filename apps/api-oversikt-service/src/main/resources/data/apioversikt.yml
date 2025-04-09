@@ -1,0 +1,17 @@
+
+system:
+  aareg:
+    read:
+      - url: https://aareg-services-q1.dev.intern.nav.no/swagger-ui/index.html
+      - url: https://aareg-services-q2.dev.intern.nav.no/swagger-ui/index.html
+      - url: https://aareg-services-q4.dev.intern.nav.no/swagger-ui/index.html
+  dokarkiv:
+    write:
+      - url: https://dokarkiv-q1.dev.intern.nav.no/swagger-ui/index.html
+      - url: https://dokarkiv-q2.dev.intern.nav.no/swagger-ui/index.html
+      - url: https://dokarkiv-q4.dev.intern.nav.no/swagger-ui/index.html
+    read:
+      - url: https://saf-q1.dev.intern.nav.no/swagger-ui/index.html
+      - url: https://saf-q2.dev.intern.nav.no/swagger-ui/index.html
+      - url: https://saf-q4.dev.intern.nav.no/swagger-ui/index.html
+

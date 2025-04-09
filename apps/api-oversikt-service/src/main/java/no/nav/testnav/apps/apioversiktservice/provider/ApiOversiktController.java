@@ -16,8 +16,8 @@ public class ApiOversiktController {
     private final ApiOversiktService apiOversiktService;
 
     @GetMapping
-    public Map<String, String> getApiOversikt() {
+    public String getApiOversikt() {
 
-        apiOversiktService.getDokumeter();
+        return apiOversiktService.getDokumeter();
     }
 }

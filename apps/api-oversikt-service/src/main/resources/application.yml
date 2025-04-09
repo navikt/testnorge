@@ -1,6 +1,7 @@
 spring:
   application:
-    name: api-oversikt-service
+    name: testnav-api-oversikt-service
+    description: Tjeneste som gir oversikt over Dolly-APIer
   config:
     import: "classpath:dolly-application.yml"
   flyway:
@@ -14,3 +15,5 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
+  main:
+    web-application-type: reactive

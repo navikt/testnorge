@@ -12,6 +12,7 @@ sonarqube {
 dependencies {
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:reactive-security"
 
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -19,6 +20,6 @@ dependencies {
 
     implementation "org.aspectj:aspectjweaver:$versions.jweaver"
 
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 }
