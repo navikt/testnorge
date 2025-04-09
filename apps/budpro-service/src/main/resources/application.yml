@@ -13,6 +13,8 @@ dolly:
     - name: generer-navn-service
       url: http://generer-navn-service
       audience: api://dev-gcp.dolly.generer-navn-service/.default
+  texas:
+    preload: true
 
 app:
   security:
