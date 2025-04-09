@@ -37,7 +37,7 @@ public class TexasAutoConfiguration {
             throws TexasException {
         return Optional
                 .ofNullable(url)
-                .or(() -> Optional.ofNullable(System.getProperty(fallback)))
+                .or(() -> Optional.ofNullable(System.getenv(fallback)))
                 .orElseThrow(() -> new TexasException(message));
     }
 
