@@ -159,7 +159,7 @@ export const DollyFieldArray = ({
 	getHeader = null as unknown as Function,
 	whiteBackground = false,
 }) => {
-	if (!data) {
+	if (!data || data.length === 0) {
 		return null
 	}
 
