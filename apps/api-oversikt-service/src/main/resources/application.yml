@@ -3,7 +3,7 @@ spring:
     name: testnav-api-oversikt-service
     description: Tjeneste som gir oversikt over Dolly-APIer
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   flyway:
     enabled: false
   security:
