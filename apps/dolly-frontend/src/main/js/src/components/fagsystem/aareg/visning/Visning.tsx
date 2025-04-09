@@ -179,6 +179,7 @@ export const AaregVisning = ({
 			data: item?.data
 				?.map((data) => {
 					return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ||
+						data?.sporingsinformasjon?.opprettetAv?.includes('srvtestnorge') ||
 						data?.sporingsinformasjon?.opprettetAv?.includes('srvappserver')
 						? data
 						: null
