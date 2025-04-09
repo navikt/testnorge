@@ -167,6 +167,8 @@ export const DollyFieldArray = ({
 		return children(data[0], 0)
 	}
 
+	console.log('header: ', header) //TODO - SLETT MEG
+	console.log('data: ', data) //TODO - SLETT MEG
 	return (
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
