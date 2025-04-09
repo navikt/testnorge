@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 public class ApiOversiktService {
     public void getDokumeter() {
 
+        getClass().getClassLoader().getResourceAsStream("resources/data/apioversikt.csv");
+
 
     }
 }
