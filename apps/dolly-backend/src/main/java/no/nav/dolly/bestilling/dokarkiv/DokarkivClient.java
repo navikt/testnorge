@@ -113,7 +113,7 @@ public class DokarkivClient implements ClientRegister {
                                 transaksjon.getDokumentInfoId())))
                 .map(status -> isBlank(status.getFeilmelding()) && isNotBlank(status.getDokument()))
                 .doOnNext(status -> log.info("Dokument eksisterer {}", status))
-                .reduce(false, (a, b) -> a || b)
+                .reduce(true, (a, b) -> a && b)
                 .doOnNext(ok -> {
                     if (isFalse(ok)) {
                         transaksjonMappingService.delete(ident, miljoe, DOKARKIV.name(), bestillingId);
