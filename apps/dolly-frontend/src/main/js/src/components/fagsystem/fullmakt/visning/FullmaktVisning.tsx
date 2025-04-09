@@ -20,6 +20,8 @@ export const FullmaktVisning = ({ ident }: FullmaktProps) => {
 		}
 	}, [fullmektig])
 
+	console.log('ident: ', ident) //TODO - SLETT MEG
+	console.log('fullmektig: ', fullmektig) //TODO - SLETT MEG
 	if (!fullmektig || fullmektig.length === 0) {
 		return null
 	}
