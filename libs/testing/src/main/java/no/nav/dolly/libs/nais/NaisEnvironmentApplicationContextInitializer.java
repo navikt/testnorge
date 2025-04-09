@@ -68,12 +68,18 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         var properties = environment.getSystemProperties();
 
         properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false"); // Disabling Secret Manager (not available when running builds on GitHub).
-        properties.putIfAbsent("spring.main.banner-mode", "off");
+        properties.putIfAbsent("spring.main.banner-mode", "off"); // Disabling Spring Boot banner.
+        properties.putIfAbsent("dolly.texas.preload", "false"); // Don't preload Texas tokens in test profile.
 
-        // Setting dummy placeholders.
+        // These will be set to value "dummy".
         Stream
                 .of(
                         "spring.cloud.vault.token", // For apps using no.nav.testnav.libs:vault.
+
+                        // For apps using Texas.
+                        "dolly.texas.url.exchange",
+                        "dolly.texas.url.introspect",
+                        "dolly.texas.url.token",
 
                         "ALTINN_API_KEY",
                         "AZURE_OPENID_CONFIG_ISSUER",
