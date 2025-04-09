@@ -1,17 +1,43 @@
-
 system:
-  aareg:
+  - register: aareg
+    namespace: arbeidsforhold
     read:
-      - url: https://aareg-services-q1.dev.intern.nav.no/swagger-ui/index.html
-      - url: https://aareg-services-q2.dev.intern.nav.no/swagger-ui/index.html
-      - url: https://aareg-services-q4.dev.intern.nav.no/swagger-ui/index.html
-  dokarkiv:
+      kubernets-name: aareg-services-nais-{env}
+      url:
+        - https://aareg-services-q1.dev.intern.nav.no/swagger-ui/index.html
+        - https://aareg-services-q2.dev.intern.nav.no/swagger-ui/index.html
+        - https://aareg-services-q4.dev.intern.nav.no/swagger-ui/index.html
+  - register: dokarkiv
+    namespace: teamdokumenthandtering
     write:
-      - url: https://dokarkiv-q1.dev.intern.nav.no/swagger-ui/index.html
-      - url: https://dokarkiv-q2.dev.intern.nav.no/swagger-ui/index.html
-      - url: https://dokarkiv-q4.dev.intern.nav.no/swagger-ui/index.html
+      kubernets-name:
+      url:
+        - https://dokarkiv-q1.dev.intern.nav.no/swagger-ui/index.html
+        - https://dokarkiv-q2.dev.intern.nav.no/swagger-ui/index.html
+        - https://dokarkiv-q4.dev.intern.nav.no/swagger-ui/index.html
     read:
-      - url: https://saf-q1.dev.intern.nav.no/swagger-ui/index.html
-      - url: https://saf-q2.dev.intern.nav.no/swagger-ui/index.html
-      - url: https://saf-q4.dev.intern.nav.no/swagger-ui/index.html
-
+      kubernetes-name: saf-<miljoe>
+      url:
+        - https://saf-q1.dev.intern.nav.no/swagger-ui/index.html
+        - https://saf-q2.dev.intern.nav.no/swagger-ui/index.html
+        - https://saf-q4.dev.intern.nav.no/swagger-ui/index.html
+  - register: arena
+    namespace: teamarenanais
+    cluster: dev-fss
+    write:
+      url: https://arena-forvalteren.dev.intern.nav.no/swagger-ui/index.html
+    read:
+      namespace: teamarenanais
+      kubernetes-name: arena-services-MILJOE
+      url: https://https://arena-ords-q2.dev.intern.nav.no
+      documentation: https://confluence.adeo.no/display/TEAMARENA/Syntetisering+-+Tjenester+som+tilbys
+  - register: inst
+    team: team-rocket
+    name: opphold-testdata
+    cluster: dev-fss
+    read:
+      url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/get
+    write:
+      url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/post
+    delete:
+      url: https://institusjon-opphold-testdata.dev.intern.nav.no/swagger-ui/index.html#/INSTITUSJONSOPPHOLD/delete
