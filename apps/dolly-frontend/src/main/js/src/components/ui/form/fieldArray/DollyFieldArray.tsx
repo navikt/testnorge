@@ -159,7 +159,7 @@ export const DollyFieldArray = ({
 	getHeader = null as unknown as Function,
 	whiteBackground = false,
 }) => {
-	if (!data || data.length === 0) {
+	if (!data || data.length === 0 || Array.isArray(data) === false) {
 		return null
 	}
 
@@ -167,8 +167,9 @@ export const DollyFieldArray = ({
 		return children(data[0], 0)
 	}
 
-	console.log('header: ', header) //TODO - SLETT MEG
 	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('children: ', children) //TODO - SLETT MEG
+
 	return (
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
