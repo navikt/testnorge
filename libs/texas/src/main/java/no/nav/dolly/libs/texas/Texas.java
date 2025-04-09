@@ -1,5 +1,6 @@
 package no.nav.dolly.libs.texas;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,12 @@ public class Texas {
     private final TexasConsumers consumers;
     private final ConcurrentHashMap<String, WebClient> webClientsForConsumers = new ConcurrentHashMap<>();
     private final TexasTokenCache tokenCache = new TexasTokenCache();
+
+    @PostConstruct
+    void postConstruct() {
+        log.info("Using endpoints:\n\tToken: {}\n\tExchange: {}\n\tIntrospect: {}",
+                tokenUrl, exchangeUrl, introspectUrl);
+    }
 
     /**
      * Get a token for a given audience.
