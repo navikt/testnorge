@@ -18,6 +18,9 @@ import java.util.Optional;
 @Slf4j
 class TexasConsumers {
 
+    /**
+     * List of consumers intended for use with Texas.
+     */
     private List<TexasConsumer> consumers;
 
     public Optional<TexasConsumer> get(String name) {

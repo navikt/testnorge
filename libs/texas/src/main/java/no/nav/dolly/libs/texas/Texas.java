@@ -53,14 +53,20 @@ public class Texas {
     private final String tokenUrl;
     private final String exchangeUrl;
     private final String introspectUrl;
+    private final boolean preload;
     private final TexasConsumers consumers;
     private final ConcurrentHashMap<String, WebClient> webClientsForConsumers = new ConcurrentHashMap<>();
     private final TexasTokenCache tokenCache = new TexasTokenCache();
 
     @PostConstruct
     void postConstruct() {
-        log.info("Using endpoints:\n\tToken: {}\n\tExchange: {}\n\tIntrospect: {}",
-                tokenUrl, exchangeUrl, introspectUrl);
+        if (preload) {
+            log.info("Preloading tokens for {} consumer(s)", consumers.getConsumers().size());
+            consumers
+                    .getConsumers()
+                    .forEach(consumer -> get(consumer.getAudience()).block());
+            log.info("Token cache contains {} token(s)", tokenCache.estimatedSize());
+        }
     }
 
     /**

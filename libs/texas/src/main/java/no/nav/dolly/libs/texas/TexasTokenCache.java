@@ -38,6 +38,10 @@ class TexasTokenCache {
         return Mono.fromFuture(future);
     }
 
+    long estimatedSize() {
+        return cache.synchronous().estimatedSize();
+    }
+
     interface TexasTokenLoader {
         Mono<TexasToken> load(String audience);
     }

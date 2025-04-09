@@ -17,9 +17,10 @@ public class TexasAutoConfiguration {
     @Bean
     Texas texasService(
             WebClient webClient,
-            @Value("${dolly.texas.url.token:}") String tokenUrl,
-            @Value("${dolly.texas.url.exchange:}") String exchangeUrl,
-            @Value("${dolly.texas.url.introspect:}") String introspectUrl,
+            @Value("${dolly.texas.url.token:#{null}}") String tokenUrl,
+            @Value("${dolly.texas.url.exchange:#{null}}") String exchangeUrl,
+            @Value("${dolly.texas.url.introspect:#{null}}") String introspectUrl,
+            @Value("${dolly.texas.preload:#{false}}") boolean preload,
             TexasConsumers texasConsumers
     ) {
         return new Texas(
@@ -27,6 +28,7 @@ public class TexasAutoConfiguration {
                 resolve(tokenUrl, "NAIS_TOKEN_ENDPOINT", "Neither dolly.texas.url.token nor NAIS_TOKEN_ENDPOINT is set"),
                 resolve(exchangeUrl, "NAIS_TOKEN_EXCHANGE_ENDPOINT", "Neither dolly.texas.url.exchange nor NAIS_TOKEN_EXCHANGE_ENDPOINT is set"),
                 resolve(introspectUrl, "NAIS_TOKEN_INTROSPECTION_ENDPOINT", "Neither dolly.texas.url.introspect nor NAIS_TOKEN_INTROSPECTION_ENDPOINT is set"),
+                preload,
                 texasConsumers
         );
     }
