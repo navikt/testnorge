@@ -3,6 +3,10 @@ package no.nav.dolly.libs.texas;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * <p>A configured Texas consumer, e.g. a service that uses Texas to obtain an access token.</p>
+ * <p>Configured as one or more {@code dolly.consumers.*}.</p>
+ */
 @Getter
 @Setter
 public class TexasConsumer {
