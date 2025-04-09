@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -20,6 +21,12 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
 public class Texas {
+
+    private static final String CONSUMER_NOT_FOUND = "Consumer '%s' not found";
+    private static final String CONSUMER_NO_URL = "Consumer '%s' has no URL";
+    private static final String GET_FAILED = "Failed to get token using audience '%s'";
+    private static final String EXCHANGE_FAILED = "Failed to exchange token using audience '%s'";
+    private static final String INTROSPECT_FAILED = "Failed to introspect token";
 
     private static final String JSON_TOKEN_REQUEST = StringUtils.trimAllWhitespace("""
             {
@@ -68,7 +75,7 @@ public class Texas {
                         .bodyToMono(TexasToken.class)
                         .retryWhen(WebClientError.is5xxException())
                         .doOnError(WebClientError.logTo(log)))
-                .onErrorMap(error -> new TexasException("Failed to get token using audience '%s'".formatted(audience), error));
+                .onErrorMap(error -> new TexasException(GET_FAILED.formatted(audience), error));
     }
 
     /**
@@ -76,11 +83,13 @@ public class Texas {
      *
      * @param consumerName The configured consumer name.
      * @return A {@link Mono} that emits the token when it is available.
-     * @throws TexasException If the token could not be retrieved.
+     * @throws TexasException If the consumer could not be found, or the token could not be retrieved.
      */
     public Mono<TexasToken> getToken(String consumerName)
             throws TexasException {
-        return get(consumer(consumerName).getAudience());
+        var consumer = consumer(consumerName)
+                .orElseThrow(() -> new TexasException(CONSUMER_NOT_FOUND.formatted(consumerName)));
+        return get(consumer.getAudience());
     }
 
     /**
@@ -102,7 +111,7 @@ public class Texas {
                 .bodyToMono(TexasToken.class)
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorMap(error -> new TexasException("Failed to exchange token using audience '%s'".formatted(audience), error));
+                .onErrorMap(error -> new TexasException(EXCHANGE_FAILED.formatted(audience), error));
     }
 
     /**
@@ -111,11 +120,13 @@ public class Texas {
      * @param consumerName The configured consumer name.
      * @param token        The token to exchange.
      * @return A {@link Mono} that emits the exchanged token when it is available.
-     * @throws TexasException If the token could not be exchanged.
+     * @throws TexasException If the consumer could not be found, or the token could not be exchanged.
      */
     public Mono<TexasToken> exchangeToken(String consumerName, String token)
             throws TexasException {
-        return exchange(consumer(consumerName).getAudience(), token);
+        var consumer = consumer(consumerName)
+                .orElseThrow(() -> new TexasException(CONSUMER_NOT_FOUND.formatted(consumerName)));
+        return exchange(consumer.getAudience(), token);
     }
 
     public Mono<String> introspect(String token)
@@ -129,21 +140,18 @@ public class Texas {
                 .bodyToMono(String.class)
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorMap(error -> new TexasException("Failed to introspect token", error));
+                .onErrorMap(error -> new TexasException(INTROSPECT_FAILED, error));
     }
 
     /**
      * Get a configured consumer by name.
      *
      * @param name The name of the consumer to get, e.g. the value of {@code dolly.consumers.name}.
-     * @return The configured consumer.
-     * @throws TexasException If the consumer is not found.
+     * @return The configured consumer, if any.
      */
-    public TexasConsumer consumer(String name)
+    public Optional<TexasConsumer> consumer(String name)
             throws TexasException {
-        return consumers
-                .get(name)
-                .orElseThrow(() -> new TexasException("Consumer '%s' not found".formatted(name)));
+        return consumers.get(name);
     }
 
     /**
@@ -174,10 +182,10 @@ public class Texas {
                 name -> {
                     var consumer = consumers
                             .get(name)
-                            .orElseThrow(() -> new TexasException("Consumer '%s' not found".formatted(name)));
+                            .orElseThrow(() -> new TexasException(CONSUMER_NOT_FOUND.formatted(name)));
                     var url = consumer.getUrl();
                     if (!StringUtils.hasText(url)) {
-                        throw new TexasException("Consumer '%s' has no URL".formatted(name));
+                        throw new TexasException(CONSUMER_NO_URL.formatted(name));
                     }
                     return webClient
                             .mutate()
