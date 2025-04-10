@@ -12,6 +12,7 @@ system:
     namespace: teampam
     write:
       url: https://pam-cv-api-gcp.intern.dev.nav.no
+      description: https://pam-cv-api-gcp.intern.dev.nav.no/pam-cv-api/internal/swagger
     cluster: dev-gcp
   - register: arbeidssoekerregisteret
     namespace: paw
