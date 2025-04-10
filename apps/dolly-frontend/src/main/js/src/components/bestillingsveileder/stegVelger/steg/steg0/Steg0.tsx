@@ -114,7 +114,9 @@ const Steg0 = () => {
 					)}
 					{!velgGruppeDisabled && (
 						<div className="dolly-panel dolly-panel-open">
-							<VelgGruppe formMethods={formMethods} title="Hvilken gruppe vil du bestille til?" />
+							<div style={{ backgroundColor: 'white', padding: '10px 20px' }}>
+								<VelgGruppe formMethods={formMethods} title="Hvilken gruppe vil du bestille til?" />
+							</div>
 						</div>
 					)}
 				</>

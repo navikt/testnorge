@@ -125,6 +125,11 @@ export const FlyttPersonForm = ({
 		formMethods.trigger('identer')
 	}
 
+	//TODO: Ikke vis error paa gruppe umiddelbart naar modal aapnes
+	//TODO: Ikke vis dobbel error paa ny gruppe
+	console.log('formMethods.watch(): ', formMethods.watch()) //TODO - SLETT MEG
+	console.log('formMethods.formState.errors: ', formMethods.formState.errors) //TODO - SLETT MEG
+
 	return (
 		<>
 			<h1>Flytt personer til gruppe</h1>
@@ -134,7 +139,7 @@ export const FlyttPersonForm = ({
 					title={'Velg hvilken gruppe du ønsker å flytte personer til'}
 					fraGruppe={gruppeId}
 				/>
-				<StyledErrorMessageWithFocus name="gruppe" />
+				<StyledErrorMessageWithFocus name="gruppeId" />
 			</GruppeVelger>
 			<PersonVelger>
 				<PersonKolonne>

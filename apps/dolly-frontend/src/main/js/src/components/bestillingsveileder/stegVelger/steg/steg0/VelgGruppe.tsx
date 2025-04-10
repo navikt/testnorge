@@ -36,14 +36,14 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 	}, [valgtGruppe])
 
 	return (
-		<div style={{ backgroundColor: 'white', padding: '10px 20px' }}>
+		<>
 			<h2>{title}</h2>
 			{loading ? (
 				<Loading label="Laster grupper ..." />
 			) : (
 				<VelgGruppeToggle fraGruppe={fraGruppe} grupper={grupper} />
 			)}
-		</div>
+		</>
 	)
 }
 
