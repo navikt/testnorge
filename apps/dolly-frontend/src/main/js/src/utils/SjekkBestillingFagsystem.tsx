@@ -1,204 +1,129 @@
-export const harAaregBestilling = (bestillingerFagsystemer) => {
-	let aareg = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.aareg) {
-			aareg = true
-		}
-	})
-	return aareg
+type Fagsystem = {
+	aareg?: boolean
+	skattekort?: boolean
+	medl?: boolean
+	udistub?: boolean
+	sigrunstub?: boolean
+	sigrunstubPensjonsgivende?: boolean
+	sigrunstubSummertSkattegrunnlag?: boolean
+	pensjonforvalter?: {
+		tp?: Array<{
+			ordning?: string
+			ytelser?: Array<any>
+		}>
+		inntekt?: any
+		generertInntekt?: any
+		alderspensjon?: boolean
+		pensjonsavtale?: boolean
+		uforetrygd?: boolean
+		afpOffentlig?: boolean
+	}
+	instdata?: boolean
+	dokarkiv?: boolean
+	histark?: boolean
+	arbeidssoekerregisteret?: boolean
+	arbeidsplassenCV?: boolean
+	arenaforvalter?: boolean
+	sykemelding?: boolean
+	yrkesskader?: boolean
+	inntektsmelding?: boolean
 }
 
-export const harSkattekortBestilling = (bestillingerFagsystemer) => {
-	let skattekort = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.skattekort) {
-			skattekort = true
+const harFagsystem = (
+	bestillingerFagsystemer: Fagsystem[],
+	validationFn: (item: Fagsystem) => boolean,
+): boolean => {
+	let exists = false
+	bestillingerFagsystemer?.forEach((item) => {
+		if (validationFn(item)) {
+			exists = true
 		}
 	})
-	return skattekort
+	return exists
 }
 
-export const harMedlBestilling = (bestillingerFagsystemer) => {
-	let medl = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.medl) {
-			medl = true
-		}
-	})
-	return medl
-}
+export const harAaregBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.aareg)
 
-export const harUdistubBestilling = (bestillingerFagsystemer) => {
-	let udistub = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.udistub) {
-			udistub = true
-		}
-	})
-	return udistub
-}
+export const harSkattekortBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.skattekort)
 
-export const harTpBestilling = (bestillingerFagsystemer) => {
-	let tp = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.pensjonforvalter?.tp?.length > 0) {
-			tp = true
-		}
-	})
-	return tp
-}
+export const harMedlBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.medl)
 
-export const hentTpYtelseOrdning = (bestillingerFagsystemer) => {
-	let tpOrdning = null
+export const harUdistubBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.udistub)
+
+export const harSigrunstubBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.sigrunstub)
+
+export const harSigrunstubPensjonsgivendeInntekt = (
+	bestillingerFagsystemer: Fagsystem[],
+): boolean => harFagsystem(bestillingerFagsystemer, (i) => !!i?.sigrunstubPensjonsgivende)
+
+export const harSigrunstubSummertSkattegrunnlag = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.sigrunstubSummertSkattegrunnlag)
+
+export const harTpBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => (i?.pensjonforvalter?.tp?.length || 0) > 0)
+
+export const harPoppBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(
+		bestillingerFagsystemer,
+		(i) => !!i?.pensjonforvalter?.inntekt || !!i?.pensjonforvalter?.generertInntekt,
+	)
+
+export const harApBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.pensjonforvalter?.alderspensjon)
+
+export const harPensjonavtaleBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.pensjonforvalter?.pensjonsavtale)
+
+export const harUforetrygdBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.pensjonforvalter?.uforetrygd)
+
+export const harAfpOffentligBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.pensjonforvalter?.afpOffentlig)
+
+export const harInstBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.instdata)
+
+export const harDokarkivBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.dokarkiv)
+
+export const harHistarkBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.histark)
+
+export const harArbeidssoekerregisteretBestilling = (
+	bestillingerFagsystemer: Fagsystem[],
+): boolean => harFagsystem(bestillingerFagsystemer, (i) => !!i?.arbeidssoekerregisteret)
+
+export const harArbeidsplassenBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.arbeidsplassenCV)
+
+export const harArenaBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.arenaforvalter)
+
+export const harSykemeldingBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.sykemelding)
+
+export const harYrkesskaderBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.yrkesskader)
+
+export const harInntektsmeldingBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.inntektsmelding)
+
+export const hentTpYtelseOrdning = (bestillingerFagsystemer: Fagsystem[]): string | null => {
+	let tpOrdning: string | null = null
 	bestillingerFagsystemer?.forEach((i) => {
 		const tp = i?.pensjonforvalter?.tp
 		if (tp?.length > 0) {
-			tp.forEach((j) => {
+			tp?.forEach((j) => {
 				if (j?.ytelser?.length > 0) {
-					tpOrdning = j.ordning
+					tpOrdning = j.ordning || null
 				}
 			})
 		}
 	})
 	return tpOrdning
-}
-
-export const harPoppBestilling = (bestillingerFagsystemer) => {
-	let popp = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.pensjonforvalter?.inntekt || i?.pensjonforvalter?.generertInntekt) {
-			popp = true
-		}
-	})
-	return popp
-}
-
-export const harApBestilling = (bestillingerFagsystemer) => {
-	let alderspensjon = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.pensjonforvalter?.alderspensjon) {
-			alderspensjon = true
-		}
-	})
-	return alderspensjon
-}
-
-export const harPensjonavtaleBestilling = (bestillingerFagsystemer) => {
-	let pensjonavtale = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.pensjonforvalter?.pensjonsavtale) {
-			pensjonavtale = true
-		}
-	})
-	return pensjonavtale
-}
-
-export const harUforetrygdBestilling = (bestillingerFagsystemer) => {
-	let uforetrygd = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.pensjonforvalter?.uforetrygd) {
-			uforetrygd = true
-		}
-	})
-	return uforetrygd
-}
-
-export const harAfpOffentligBestilling = (bestillingerFagsystemer) => {
-	let afpOffentlig = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.pensjonforvalter?.afpOffentlig) {
-			afpOffentlig = true
-		}
-	})
-	return afpOffentlig
-}
-
-export const harInstBestilling = (bestillingerFagsystemer) => {
-	let inst = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.instdata) {
-			inst = true
-		}
-	})
-	return inst
-}
-
-export const harDokarkivBestilling = (bestillingerFagsystemer) => {
-	let dokarkiv = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.dokarkiv) {
-			dokarkiv = true
-		}
-	})
-	return dokarkiv
-}
-
-export const harHistarkBestilling = (bestillingerFagsystemer) => {
-	let histark = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.histark) {
-			histark = true
-		}
-	})
-	return histark
-}
-
-export const harArbeidssoekerregisteretBestilling = (bestillingerFagsystemer) => {
-	let arbeidssoekerregisteret = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.arbeidssoekerregisteret) {
-			arbeidssoekerregisteret = true
-		}
-	})
-	return arbeidssoekerregisteret
-}
-
-export const harArbeidsplassenBestilling = (bestillingerFagsystemer) => {
-	let arbeidsplassen = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.arbeidsplassenCV) {
-			arbeidsplassen = true
-		}
-	})
-	return arbeidsplassen
-}
-
-export const harArenaBestilling = (bestillingerFagsystemer) => {
-	let arena = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.arenaforvalter) {
-			arena = true
-		}
-	})
-	return arena
-}
-
-export const harSykemeldingBestilling = (bestillingerFagsystemer) => {
-	let sykemelding = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.sykemelding) {
-			sykemelding = true
-		}
-	})
-	return sykemelding
-}
-
-export const harYrkesskaderBestilling = (bestillingerFagsystemer) => {
-	let yrkesskader = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.yrkesskader) {
-			yrkesskader = true
-		}
-	})
-	return yrkesskader
-}
-
-export const harInntektsmeldingBestilling = (bestillingerFagsystemer) => {
-	let inntektsmelding = false
-	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.inntektsmelding) {
-			inntektsmelding = true
-		}
-	})
-	return inntektsmelding
 }

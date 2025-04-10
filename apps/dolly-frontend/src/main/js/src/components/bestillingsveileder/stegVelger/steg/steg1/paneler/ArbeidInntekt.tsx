@@ -15,6 +15,7 @@ import {
 	skattekortAttributt,
 } from '@/components/fagsystem/skattekort/form/Form'
 import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
+import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
 
 export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -40,6 +41,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 				inntektstubAttributt,
 				inntektsmeldingAttributt,
 				sigrunstubPensjonsgivendeAttributt,
+				sigrunstubSummertSkattegrunnlagAttributt,
 				skattekortAttributt,
 			])}
 		>
@@ -54,6 +56,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title="Inntekt (Sigrun)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sigrunstub} />
 				<Attributt attr={sm.attrs.sigrunstubPensjonsgivende} />
+				<Attributt attr={sm.attrs.sigrunstubSummertSkattegrunnlag} />
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektstub)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektstub} />
@@ -84,9 +87,9 @@ ArbeidInntektPanel.initialValues = ({ set, opts, del, has }) => {
 		},
 		sigrunstub: {
 			label: 'Har lignet inntekt',
-			checked: has('sigrunstub'),
+			checked: has(sigrunAttributt),
 			add: () =>
-				set('sigrunstub', [
+				set(sigrunAttributt, [
 					{
 						inntektsaar: new Date().getFullYear(),
 						tjeneste: '',
@@ -94,13 +97,20 @@ ArbeidInntektPanel.initialValues = ({ set, opts, del, has }) => {
 						svalbardGrunnlag: [],
 					},
 				]),
-			remove: () => del('sigrunstub'),
+			remove: () => del(sigrunAttributt),
 		},
 		sigrunstubPensjonsgivende: {
 			label: 'Har pensjonsgivende inntekt',
-			checked: has('sigrunstubPensjonsgivende'),
-			add: () => set('sigrunstubPensjonsgivende', [getInitialSigrunstubPensjonsgivende()]),
-			remove: () => del('sigrunstubPensjonsgivende'),
+			checked: has(sigrunstubPensjonsgivendeAttributt),
+			add: () => set(sigrunstubPensjonsgivendeAttributt, [getInitialSigrunstubPensjonsgivende()]),
+			remove: () => del(sigrunstubPensjonsgivendeAttributt),
+		},
+		sigrunstubSummertSkattegrunnlag: {
+			label: 'Har summert skattegrunnlag',
+			checked: has(sigrunstubSummertSkattegrunnlagAttributt),
+			add: () =>
+				set(sigrunstubSummertSkattegrunnlagAttributt, [getInitialSigrunstubPensjonsgivende()]),
+			remove: () => del(sigrunstubSummertSkattegrunnlagAttributt),
 		},
 		inntektsmelding: {
 			label: 'Har inntektsmelding',

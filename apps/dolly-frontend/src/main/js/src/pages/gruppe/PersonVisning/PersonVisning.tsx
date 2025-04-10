@@ -57,6 +57,8 @@ import {
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
+	harSigrunstubBestilling,
+	harSigrunstubPensjonsgivendeInntekt,
 	harSkattekortBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
@@ -113,6 +115,12 @@ import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
 import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 import { TpYtelse } from '@/components/fagsystem/tjenestepensjon/visning/TpYtelse'
+import {
+	useLignetInntekt,
+	usePensjonsgivendeInntekt,
+	useSummertSkattegrunnlag,
+} from '@/utils/hooks/useSigrunstub'
+import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/visning/Visning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -181,6 +189,25 @@ export default ({
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
+
+	const { loading: loadingSigrunstub, data: sigrunstub } = useLignetInntekt(
+		ident.ident,
+		harSigrunstubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+	)
+
+	const {
+		loading: loadingSigrunstubPensjonsgivendeInntekt,
+		data: sigrunstubPensjonsgivendeInntekt,
+	} = usePensjonsgivendeInntekt(
+		ident.ident,
+		harSigrunstubPensjonsgivendeInntekt(bestillingerFagsystemer) || ident?.master === 'PDL',
+	)
+
+	const { loading: loadingSigrunstubSummertSkattegrunnlag, data: sigrunstubSummertSkattegrunnlag } =
+		useSummertSkattegrunnlag(
+			ident.ident,
+			harSigrunstubSummertSkattegrunnlag(bestillingerFagsystemer) || ident?.master === 'PDL',
+		)
 
 	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(
 		ident.ident,
@@ -299,14 +326,10 @@ export default ({
 		return null
 	}
 
-	const { sigrunstub, sigrunstubPensjonsgivende, inntektstub, brregstub, krrstub } = data
+	const { inntektstub, brregstub, krrstub } = data
 
 	const manglerFagsystemdata = () => {
-		if (
-			[sigrunstub, inntektstub, krrstub].some(
-				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length,
-			)
-		) {
+		if ([inntektstub, krrstub].some((fagsystem) => Array.isArray(fagsystem) && !fagsystem.length)) {
 			return true
 		}
 		if (arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold) {
@@ -396,9 +419,6 @@ export default ({
 
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
-	const importerteRelatertePersoner = relatertePersoner?.filter((ident) =>
-		gruppeIdenter?.includes(ident.id),
-	)
 
 	const getArbeidsplassencvHjemmel = () => {
 		if (!harArbeidsplassenBestilling(bestillingerFagsystemer)) return null
@@ -491,10 +511,14 @@ export default ({
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>
 				)}
-				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
+				<SigrunstubVisning data={sigrunstub} loading={loadingSigrunstub} />
 				<SigrunstubPensjonsgivendeVisning
-					data={sigrunstubPensjonsgivende}
-					loading={loading.sigrunstubPensjonsgivende}
+					data={sigrunstubPensjonsgivendeInntekt}
+					loading={loadingSigrunstubPensjonsgivendeInntekt}
+				/>
+				<SigrunstubSummertSkattegrunnlagVisning
+					data={sigrunstubSummertSkattegrunnlag}
+					loading={loadingSigrunstubPensjonsgivendeInntekt}
 				/>
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning

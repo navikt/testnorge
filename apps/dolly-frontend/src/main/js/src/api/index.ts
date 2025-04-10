@@ -121,7 +121,7 @@ export const sykemeldingFetcher = (url, body) =>
 		return res.data
 	})
 
-export const fetcher = (url, headers) =>
+export const fetcher = (url, headers?) =>
 	axios
 		.get(url, { headers: headers })
 		.then((res) => {
