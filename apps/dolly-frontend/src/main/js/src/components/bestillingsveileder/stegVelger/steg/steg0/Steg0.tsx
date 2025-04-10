@@ -83,7 +83,11 @@ const Steg0 = () => {
 	const numericGruppeId = gruppeId ? parseInt(gruppeId) : null
 
 	useEffect(() => {
-		if ((!formGruppeId || typeof formGruppeId === 'string') && numericGruppeId) {
+		if (
+			(!formGruppeId || typeof formGruppeId === 'string') &&
+			formGruppeId !== '' &&
+			numericGruppeId
+		) {
 			formMethods.setValue('gruppeId', numericGruppeId)
 		}
 		const contextGruppeId = opts.gruppeId && parseInt(opts.gruppeId)

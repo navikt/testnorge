@@ -9,6 +9,7 @@ import {
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useEgneGrupper } from '@/utils/hooks/useGruppe'
 import Loading from '@/components/ui/loading/Loading'
+import { ifPresent } from '@/utils/YupValidations'
 
 type VelgGruppeProps = {
 	formMethods: UseFormReturn
@@ -23,8 +24,7 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
-	// const { grupper, loading } = useEgneGrupper(brukerId)
-	const { grupper, loading } = useEgneGrupper('68e76503-0c49-41d3-bada-126d4d010604') //TODO: Fjern hardkoding av brukerId
+	const { grupper, loading } = useEgneGrupper(brukerId)
 
 	const [valgtGruppe] = useState(gruppeId)
 
@@ -41,12 +41,15 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 			{loading ? (
 				<Loading label="Laster grupper ..." />
 			) : (
-				<VelgGruppeToggle fraGruppe={fraGruppe} grupper={grupper} loading={loading} />
+				<VelgGruppeToggle fraGruppe={fraGruppe} grupper={grupper} />
 			)}
 		</div>
 	)
 }
 
 VelgGruppe.validation = {
-	gruppeId: Yup.number().required('Velg gruppe for bestillingen'),
+	gruppeId: Yup.number()
+		.transform((i, j) => (j === '' ? null : i))
+		.required('Velg gruppe for bestillingen'),
+	bruker: ifPresent('$bruker', Yup.string().required('Velg bruker')),
 }

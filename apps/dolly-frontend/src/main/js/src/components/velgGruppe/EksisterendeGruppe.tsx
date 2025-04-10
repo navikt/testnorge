@@ -1,7 +1,6 @@
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import Loading from '@/components/ui/loading/Loading'
-import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { Gruppe, useEgneGrupper } from '@/utils/hooks/useGruppe'
+import { Gruppe } from '@/utils/hooks/useGruppe'
 import React from 'react'
 
 interface EksisterendeGruppe {

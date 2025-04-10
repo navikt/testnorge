@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { DollyApi } from '@/service/Api'
 import styled from 'styled-components'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { useFormContext } from 'react-hook-form'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 
 const FeedbackText = styled.div`
 	margin-top: 10px;
@@ -18,20 +22,34 @@ export default () => {
 	const [hensikt, setHensikt] = useState('')
 
 	const formMethods = useFormContext()
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const formErrors = formMethods.formState.errors
 
 	useEffect(() => {
 		formMethods.setValue('gruppeId', gruppeId)
 	}, [gruppeId])
 
 	const onHandleSubmit = () => {
-		if (navn.length === 0 || hensikt.length === 0) {
-			setFeilmelding('Navn og hensikt må fylles ut')
+		if (navn.length === 0) {
+			formMethods.setError('gruppeNavn', {
+				message: 'Navn må fylles ut',
+			})
+		} else if (navn.length > 30) {
+			formMethods.setError('gruppeNavn', { message: 'Navn kan maks være 30 bokstaver' })
+		}
+		if (hensikt.length === 0) {
+			formMethods.setError('gruppeHensikt', {
+				message: 'Hensikt må fylles ut',
+			})
+		} else if (hensikt.length > 200) {
+			formMethods.setError('gruppeHensikt', { message: 'Hensikt kan maks være 200 bokstaver' })
+		}
+
+		if (navn.length === 0 || navn.length > 30 || hensikt.length === 0 || hensikt.length > 200) {
+			errorContext?.setShowError(true)
 			return
 		}
-		if (navn.length > 30 || hensikt.length > 200) {
-			setFeilmelding('Navn kan maks være 30 bokstaver og hensikt kan maks være 200 bokstaver')
-			return
-		}
+
 		DollyApi.createGruppe({
 			navn: navn,
 			hensikt: hensikt,
@@ -45,12 +63,14 @@ export default () => {
 			if (data) {
 				setGruppeId(data?.id)
 				setNyGruppe(`${data?.id} - ${data?.navn}`)
+				formMethods.clearErrors('gruppeId')
 			} else {
 				setGruppeId('')
 				setNyGruppe('')
 			}
 		})
 	}
+
 	return (
 		<div className={'ny-gruppe'}>
 			<div className="flexbox--flex-wrap">
@@ -83,6 +103,9 @@ export default () => {
 			<FeedbackText>
 				{nyGruppe.length > 0 && <div>Gruppe ble opprettet: {nyGruppe}</div>}
 				{feilmelding && <div className="error-message">{feilmelding}</div>}
+				{formErrors?.gruppeId && (
+					<div className="error-message">{'Opprett en gruppe med navn og hensikt'}</div>
+				)}
 			</FeedbackText>
 		</div>
 	)
