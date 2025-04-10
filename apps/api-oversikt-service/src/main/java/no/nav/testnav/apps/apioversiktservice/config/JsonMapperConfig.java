@@ -1,4 +1,4 @@
-package no.nav.dolly.config;
+package no.nav.testnav.apps.apioversiktservice.config;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -52,7 +52,9 @@ public class JsonMapperConfig {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+                .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build()
                 .registerModule(new JavaTimeModule())
                 .registerModule(simpleModule);
