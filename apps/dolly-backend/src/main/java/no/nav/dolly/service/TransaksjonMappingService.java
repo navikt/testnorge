@@ -63,6 +63,12 @@ public class TransaksjonMappingService {
         transaksjonMappingRepository.deleteByIdentAndMiljoeAndSystem(ident, miljoe, system);
     }
 
+    @Transactional
+    public void delete(String ident, String miljoe, String system, Long bestillingId) {
+
+        transaksjonMappingRepository.deleteByIdentAndMiljoeAndSystemAndBestillingId(ident, miljoe, system, bestillingId);
+    }
+
     private RsTransaksjonMapping toDTO(TransaksjonMapping transaksjonMapping) {
 
         JsonNode innhold;

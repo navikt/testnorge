@@ -83,7 +83,7 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 
 	const sortedData = data
 		?.slice()
-		?.sort((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
+		?.sort?.((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
 
 	return (
 		<DollyFieldArray
@@ -179,6 +179,7 @@ export const AaregVisning = ({
 			data: item?.data
 				?.map((data) => {
 					return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ||
+						data?.sporingsinformasjon?.opprettetAv?.includes('srvtestnorge') ||
 						data?.sporingsinformasjon?.opprettetAv?.includes('srvappserver')
 						? data
 						: null

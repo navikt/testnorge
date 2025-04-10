@@ -103,7 +103,7 @@ export const usePoppData = (ident, harPoppBestilling) => {
 	)
 
 	return {
-		poppData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		poppData: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
@@ -121,7 +121,7 @@ export const usePensjonsavtaleData = (ident, harPensjonsavtaleBestilling) => {
 	)
 
 	return {
-		pensjonsavtaleData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		pensjonsavtaleData: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
@@ -157,7 +157,7 @@ export const useTpDataYtelse = (ident, ordningNr) => {
 	)
 
 	return {
-		tpDataYtelse: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		tpDataYtelse: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
@@ -189,7 +189,7 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 	const miljoData = getMiljoData()
 
 	return {
-		data: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		data: miljoData?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
@@ -204,7 +204,7 @@ export const useInstData = (ident, harInstBestilling) => {
 	)
 
 	return {
-		instData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		instData: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
@@ -275,7 +275,7 @@ export const useArenaData = (ident: string, harArenaBestilling: boolean) => {
 	)
 
 	return {
-		arenaData: data?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		arenaData: data?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

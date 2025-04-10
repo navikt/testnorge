@@ -95,7 +95,7 @@ export const SelectOptionsFormat = {
 			return options
 		} else if (type === 'telefonLandkoder') {
 			const landkoder =
-				kodeverk?.sort((land1, land2) => {
+				kodeverk?.sort?.((land1, land2) => {
 					if (land1.label > land2.label) return 1
 					else if (land1.label < land2.label) return -1
 				}) || []
