@@ -12,10 +12,12 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 public class DollyHttpSecurity {
 
     /**
-     * Allow access to certain common endpoints ({@code /error}, {@code /internal}, {@code /swagger} etc.) without authentication, protecting all others.
-     * @return A customizer for use as {@code .authorizeHttpRequests(DollyHttpSecurity.withDefaultHttpRequests())}.
+     * Allow access to certain common endpoints ({@code /error}, {@code /internal}, {@code /swagger} etc.) without authentication,
+     * but avoid completing the configuration with {@code .anyRequest().fullyAuthenticated()}, allowing for further configuration.
+     *
+     * @return A customizer for use with {@code .authorizeHttpRequests(...)}.
      */
-    public static Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> withDefaultHttpRequests() {
+    public static Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> allowDefaultHttpRequests() {
         return registry -> registry
                 .requestMatchers(
                         "/error",
@@ -26,9 +28,20 @@ public class DollyHttpSecurity {
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/webjars/**")
-                .permitAll()
-                .anyRequest()
-                .fullyAuthenticated();
+                .permitAll();
+    }
+
+    /**
+     * Allow access to certain common endpoints ({@code /error}, {@code /internal}, {@code /swagger} etc.) without authentication,
+     * protecting all others.
+     *
+     * @return A customizer for use with {@code .authorizeHttpRequests(...)}.
+     */
+    public static Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> withDefaultHttpRequests() {
+        return registry -> {
+            allowDefaultHttpRequests().customize(registry);
+            registry.anyRequest().fullyAuthenticated();
+        };
     }
 
 }
