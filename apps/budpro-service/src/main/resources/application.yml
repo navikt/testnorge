@@ -9,11 +9,11 @@ spring:
           accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
 
 dolly:
-  consumers:
-    - name: generer-navn-service
-      url: http://generer-navn-service
-      audience: api://dev-gcp.dolly.generer-navn-service/.default
   texas:
+    consumers:
+      - name: generer-navn-service
+        url: http://generer-navn-service
+        audience: api://dev-gcp.dolly.generer-navn-service/.default
     preload: true
 
 app:
