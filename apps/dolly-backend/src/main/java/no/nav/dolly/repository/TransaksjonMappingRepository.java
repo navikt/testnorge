@@ -24,6 +24,8 @@ public interface TransaksjonMappingRepository extends CrudRepository<Transaksjon
     @Modifying
     int deleteByIdentAndMiljoeAndSystem(String ident, String miljoe, String system);
 
+    int deleteByIdentAndMiljoeAndSystemAndBestillingId(String ident, String miljoe, String system, Long bestillingId);
+
     @Modifying
     @Query(value = "delete from TransaksjonMapping tm where tm.bestillingId in " +
             "(select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
