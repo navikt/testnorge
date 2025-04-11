@@ -25,12 +25,8 @@ class SecurityConfig {
                 .authorizeExchange(spec -> {
                     DollyServerHttpSecurity.allowDefaultHttpRequests().customize(spec);
                     spec
-                            .pathMatchers(
-                                    "/h2/**",
-                                    "/member/**")
-                            .permitAll()
-                            .anyExchange()
-                            .authenticated();
+                            .pathMatchers("/h2/**", "/member/**").permitAll()
+                            .anyExchange().authenticated();
                 })
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
                 .build();

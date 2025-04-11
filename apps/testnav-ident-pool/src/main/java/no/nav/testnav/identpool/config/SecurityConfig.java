@@ -21,12 +21,10 @@ class SecurityConfig {
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    DollyHttpSecurity.withDefaultHttpRequests().customize(registry);
+                    DollyHttpSecurity.allowDefaultHttpRequests().customize(registry);
                     registry
-                            .requestMatchers(
-                                    "/h2/**",
-                                    "/member/**")
-                            .permitAll();
+                            .requestMatchers("/h2/**", "/member/**").permitAll()
+                            .anyRequest().fullyAuthenticated();
                 })
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()))

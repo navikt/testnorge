@@ -19,18 +19,17 @@ class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        return httpSecurity
+                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    DollyHttpSecurity.withDefaultHttpRequests().customize(registry);
+                    DollyHttpSecurity.allowDefaultHttpRequests().customize(registry);
                     registry
-                            .requestMatchers(
-                                    "/h2/**",
-                                    "/member/**")
-                            .permitAll();
+                            .requestMatchers("/h2/**", "/member/**").permitAll()
+                            .anyRequest().fullyAuthenticated();
                 })
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
-        return httpSecurity.build();
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()))
+                .build();
     }
 }
