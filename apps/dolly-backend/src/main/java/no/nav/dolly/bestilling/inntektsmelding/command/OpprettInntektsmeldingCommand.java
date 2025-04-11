@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpHeaders;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -40,5 +37,4 @@ public class OpprettInntektsmeldingCommand implements Callable<Flux<Inntektsmeld
                 .onErrorResume(throwable -> InntektsmeldingResponse.of(WebClientError.describe(throwable), request.getArbeidstakerFnr(), request.getMiljoe()))
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }

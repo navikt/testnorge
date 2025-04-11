@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.dokarkiv;
+package no.nav.dolly.consumer.dokumentarkiv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetDokument;
@@ -36,10 +36,10 @@ public class SafConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "saf_getDokument"})
-    public Mono<DokarkivResponse> getDokument(String miljoe, String journalpostId, String dokumentInfoId) {
+    public Mono<DokarkivResponse> getDokument(String miljoe, String journalpostId, String dokumentInfoId, String variantFormat) {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new DokarkivGetDokument(webClient,
-                        miljoe, journalpostId, dokumentInfoId, token.getTokenValue()).call());
+                        miljoe, journalpostId, dokumentInfoId, variantFormat, token.getTokenValue()).call());
     }
 }

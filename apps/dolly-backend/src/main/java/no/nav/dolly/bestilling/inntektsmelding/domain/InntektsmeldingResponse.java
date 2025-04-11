@@ -1,9 +1,13 @@
 package no.nav.dolly.bestilling.inntektsmelding.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +27,8 @@ public class InntektsmeldingResponse {
     private String error;
     private String miljoe;
 
-    public static Flux<InntektsmeldingResponse> of(WebClientError.Description description, String fnr, String miljoe) {
-        return Flux.just(InntektsmeldingResponse
+    public static Mono<InntektsmeldingResponse> of(WebClientError.Description description, String fnr, String miljoe) {
+        return Mono.just(InntektsmeldingResponse
                 .builder()
                 .fnr(fnr)
                 .status(description.getStatus())

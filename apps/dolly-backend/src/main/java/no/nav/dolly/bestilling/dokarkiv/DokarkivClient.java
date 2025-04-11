@@ -15,6 +15,7 @@ import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
 import no.nav.dolly.bestilling.dokarkiv.dto.TransaksjonIdDTO;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.config.ApplicationConfig;
+import no.nav.dolly.consumer.dokumentarkiv.SafConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -110,7 +111,7 @@ public class DokarkivClient implements ClientRegister {
                 .doOnNext(transaksjon -> log.info("Verdi fra transaksjonmapping {}", transaksjon))
                 .flatMap(transaksjoner -> Flux.fromIterable(transaksjoner)
                         .flatMap(transaksjon -> safConsumer.getDokument(miljoe, transaksjon.getJournalpostId(),
-                                transaksjon.getDokumentInfoId())))
+                                transaksjon.getDokumentInfoId(), "ARKIV")))
                 .map(status -> isBlank(status.getFeilmelding()) && isNotBlank(status.getDokument()))
                 .doOnNext(status -> log.info("Dokument eksisterer {}", status))
                 .reduce(true, (a, b) -> a && b)
