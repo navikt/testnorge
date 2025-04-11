@@ -27,8 +27,7 @@ public class DollyHttpSecurity {
                         "/v3/api-docs/**",
                         "/webjars/**")
                 .permitAll()
-                .requestMatchers(
-                        "/api/**")
+                .anyRequest()
                 .fullyAuthenticated();
     }
 
