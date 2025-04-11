@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
@@ -92,9 +93,11 @@ public class InntektsmeldingClient implements ClientRegister {
                 .mapNotNull(transaksjon -> fromJson(transaksjon.getTransaksjonId()))
                 .doOnNext(transaksjon -> log.info("Verdi fra transaksjonmapping {}", transaksjon))
                 .filter(transaksjon -> Objects.nonNull(transaksjon.getDokument()))
-                .flatMap(transaksjon -> safConsumer.getDokument(miljoe, transaksjon.getDokument().getJournalpostId(),
-                        transaksjon.getDokument().getDokumentInfoId(), "ORIGINAL"))
-                .map(status -> isBlank(status.getFeilmelding()) && isNotBlank(status.getDokument()))
+                .flatMap(transaksjon -> nonNull(transaksjon.getDokument()) ?
+                        safConsumer.getDokument(miljoe, transaksjon.getDokument().getJournalpostId(),
+                                        transaksjon.getDokument().getDokumentInfoId(), "ORIGINAL")
+                                .map(status -> isBlank(status.getFeilmelding()) && isNotBlank(status.getDokument())) :
+                        Mono.just(false))
                 .doOnNext(status -> log.info("Dokument eksisterer {}", status))
                 .reduce(true, (a, b) -> a && b)
                 .doOnNext(ok -> {
@@ -147,34 +150,32 @@ public class InntektsmeldingClient implements ClientRegister {
                 .postInntektsmelding(inntektsmeldingRequest)
                 .map(response -> {
                     if (isBlank(response.getError())) {
-                        var entries = response
-                                .getDokumenter()
-                                .stream()
-                                .map(dokument -> {
-                                    var gjeldendeInntektRequest = InntektsmeldingRequest
-                                            .builder()
-                                            .arbeidstakerFnr(inntektsmeldingRequest.getArbeidstakerFnr())
-                                            .inntekter(singletonList(inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
-                                            .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
-                                            .miljoe(miljoe)
-                                            .build();
-                                    var json = toJson(TransaksjonMappingDTO
-                                            .builder()
-                                            .request(gjeldendeInntektRequest)
-                                            .dokument(dokument)
-                                            .build());
-                                    return TransaksjonMapping
-                                            .builder()
-                                            .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                            .bestillingId(bestillingid)
-                                            .transaksjonId(json)
-                                            .datoEndret(LocalDateTime.now())
-                                            .miljoe(miljoe)
-                                            .system(INNTKMELD.name())
-                                            .build();
-                                })
-                                .toList();
-                        transaksjonMappingService.saveAll(entries);
+                        transaksjonMappingService.saveAll(
+                                response
+                                        .getDokumenter()
+                                        .stream()
+                                        .map(dokument ->
+                                                TransaksjonMapping
+                                                        .builder()
+                                                        .ident(ident)
+                                                        .bestillingId(bestillingid)
+                                                        .transaksjonId(toJson(TransaksjonMappingDTO
+                                                                .builder()
+                                                                .request(InntektsmeldingRequest
+                                                                        .builder()
+                                                                        .arbeidstakerFnr(ident)
+                                                                        .inntekter(singletonList(inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
+                                                                        .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
+                                                                        .miljoe(miljoe)
+                                                                        .build())
+                                                                .dokument(dokument)
+                                                                .build()))
+                                                        .datoEndret(LocalDateTime.now())
+                                                        .miljoe(miljoe)
+                                                        .system(INNTKMELD.name())
+                                                        .build()
+                                        )
+                                        .toList());
 
                         return miljoe + ":OK";
 
