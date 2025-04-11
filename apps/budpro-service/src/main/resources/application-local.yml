@@ -1,13 +1,9 @@
 dolly:
-  consumers:
-    - name: generer-navn-service
-      url: https://generer-navn-service.intern.dev.nav.no
-      audience: api://dev-gcp.dolly.generer-navn-service/.default
   texas:
-    url:
-      token: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token
-      exchange: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token/exchange
-      introspect: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect
+    consumers:
+      - name: generer-navn-service
+        url: https://generer-navn-service.intern.dev.nav.no
+        audience: api://dev-gcp.dolly.generer-navn-service/.default
 
 spring:
   config:

@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 public class NaisEnvironmentApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     private static final String DUMMY = "dummy";
+    private static final String FALSE = "false";
+    private static final String OFF = "off";
 
     @Override
     public void initialize(@NonNull ConfigurableApplicationContext context) {
@@ -46,6 +48,11 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         // Enable all actuator endpoints.
         properties.putIfAbsent("management.endpoints.web.exposure.include", "*");
 
+        // Point Texas to dolly-texas-proxy.
+        properties.putIfAbsent("dolly.texas.url.token", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token");
+        properties.putIfAbsent("dolly.texas.url.exchange", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token/exchange");
+        properties.putIfAbsent("dolly.texas.url.introspect", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect");
+
         // Emulating NAIS provided environment variables.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", "${sm\\://azure-app-client-id}");
         properties.putIfAbsent("AZURE_APP_CLIENT_SECRET", "${sm\\://azure-app-client-secret}");
@@ -67,9 +74,9 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         log.info("Configuring environment for test profile using dummy values");
         var properties = environment.getSystemProperties();
 
-        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false"); // Disabling Secret Manager (not available when running builds on GitHub).
-        properties.putIfAbsent("spring.main.banner-mode", "off"); // Disabling Spring Boot banner.
-        properties.putIfAbsent("dolly.texas.preload", "false"); // Don't preload Texas tokens in test profile.
+        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", FALSE); // Disabling Secret Manager (not available when running builds on GitHub).
+        properties.putIfAbsent("spring.main.banner-mode", OFF); // Disabling Spring Boot banner.
+        properties.putIfAbsent("dolly.texas.preload", FALSE); // Don't preload Texas tokens in test profile.
 
         // These will be set to value "dummy".
         Stream
@@ -101,8 +108,8 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         log.info("Configuring environment for non-test, non-local profiles");
         var properties = environment.getSystemProperties();
 
-        properties.putIfAbsent("spring.main.banner-mode", "off");
-        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", "false"); // Unless we actually start using Secret Manager in deployment.
+        properties.putIfAbsent("spring.main.banner-mode", OFF);
+        properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", FALSE); // Unless we actually start using Secret Manager in deployment.
 
     }
 
