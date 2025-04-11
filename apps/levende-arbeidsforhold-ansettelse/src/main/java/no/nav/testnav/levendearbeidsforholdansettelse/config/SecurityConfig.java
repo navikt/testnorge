@@ -23,7 +23,7 @@ class SecurityConfig {
         return httpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(spec -> {
-                    DollyServerHttpSecurity.withDefaultHttpRequests().customize(spec);
+                    DollyServerHttpSecurity.allowDefaultHttpRequests().customize(spec);
                     spec
                             .pathMatchers(
                                     "/h2/**",

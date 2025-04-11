@@ -11,9 +11,8 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 public class DollyServerHttpSecurity {
 
     /**
-     * <p>Allow access to certain common endpoints ({@code /error}, {@code /internal}, {@code /swagger} etc.) without authentication, protecting all others.</p>
-     * <p>Customize further as needed after calling this method, if necessary</p>
-     * @return A customizer for use as {@code .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())}.
+     * Allow access to certain common endpoints ({@code /error}, {@code /internal}, {@code /swagger} etc.) without authentication, protecting all others.
+     * @return A customizer for use with {@code .authorizeExchange(...)}.
      */
     public static Customizer<ServerHttpSecurity.AuthorizeExchangeSpec> withDefaultHttpRequests() {
         return spec -> spec
@@ -30,6 +29,24 @@ public class DollyServerHttpSecurity {
                 .anyExchange()
                 .authenticated();
 
+    }
+
+    /**
+     * Allow access to certain common endpoints ({@code /error}, {@code /internal}, {@code /swagger} etc.) without authentication, but avoid completing the configuration with {@code .anyExchange().authenticated()}, allowing for overrides.
+     * @return A customizer for use with {@code .authorizeExchange(...)}.
+     */
+    public static Customizer<ServerHttpSecurity.AuthorizeExchangeSpec> allowDefaultHttpRequests() {
+        return spec -> spec
+                .pathMatchers(
+                        "/error",
+                        "/internal/**",
+                        "/swagger",
+                        "/swagger-resources/**",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/webjars/**")
+                .permitAll();
     }
 
 }
