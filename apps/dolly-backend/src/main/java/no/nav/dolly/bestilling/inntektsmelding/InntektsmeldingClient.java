@@ -31,7 +31,6 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -89,10 +88,9 @@ public class InntektsmeldingClient implements ClientRegister {
         var eksisterende = transaksjonMappingService.getTransaksjonMapping(INNTKMELD.name(), ident, bestillingId);
         return Flux.fromIterable(eksisterende)
                 .doOnNext(transaksjonMapping -> log.info("Eksisterende transaksjonmapping {}", transaksjonMapping))
-                .filter(transaksjonMapping -> transaksjonMapping.getMiljoe().equals(miljoe))
-                .mapNotNull(transaksjon -> fromJson(transaksjon.getTransaksjonId()))
+                .filter(transaksjonMapping -> miljoe.equals(transaksjonMapping.getMiljoe()) || isBlank(transaksjonMapping.getMiljoe()))
+                .map(transaksjon -> fromJson(transaksjon.getTransaksjonId()))
                 .doOnNext(transaksjon -> log.info("Verdi fra transaksjonmapping {}", transaksjon))
-                .filter(transaksjon -> Objects.nonNull(transaksjon.getDokument()))
                 .flatMap(transaksjon -> nonNull(transaksjon.getDokument()) ?
                         safConsumer.getDokument(miljoe, transaksjon.getDokument().getJournalpostId(),
                                         transaksjon.getDokument().getDokumentInfoId(), "ORIGINAL")
@@ -202,7 +200,9 @@ public class InntektsmeldingClient implements ClientRegister {
     private TransaksjonmappingIdDTO fromJson(JsonNode transaksjon) {
 
         try {
-            return objectMapper.treeToValue(transaksjon, TransaksjonmappingIdDTO.class);
+            return nonNull(transaksjon) ?
+                    objectMapper.treeToValue(transaksjon, TransaksjonmappingIdDTO.class) :
+                    new TransaksjonmappingIdDTO();
         } catch (JsonProcessingException e) {
             log.error("Feilet å konvertere transaksjonsId for inntektsmelding", e);
             return new TransaksjonmappingIdDTO();
