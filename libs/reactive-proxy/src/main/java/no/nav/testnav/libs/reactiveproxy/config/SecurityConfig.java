@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.reactiveproxy.config;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-
 
 @Configuration
 @EnableWebFluxSecurity
@@ -22,20 +22,12 @@ public class SecurityConfig {
     private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
+    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(authorizeConfig -> authorizeConfig.pathMatchers(
-                        "/internal/**",
-                        "/webjars/**",
-                        "/swagger-resources/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger",
-                        "/error",
-                        "/swagger-ui.html"
-                ).permitAll().anyExchange().authenticated())
+                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
                 .build();
     }
+
 }

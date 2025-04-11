@@ -1,6 +1,7 @@
 package no.nav.testnav.dollysearchservice.config;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,27 +16,18 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @Profile({"prod", "dev", "local"})
 @RequiredArgsConstructor
-public class SecurityConfig {
+class SecurityConfig {
 
     private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
+    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(authorizeConfig -> authorizeConfig.pathMatchers(
-                                "/internal/**",
-                                "/webjars/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger",
-                                "/error",
-                                "/swagger-ui.html"
-                        ).permitAll()
-                        .anyExchange()
-                        .authenticated())
+                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
                 .build();
     }
+
 }
 
