@@ -22,12 +22,7 @@ class SecurityConfig {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(spec -> {
-                    DollyServerHttpSecurity.allowDefaultHttpRequests().customize(spec);
-                    spec
-                            .pathMatchers("/h2/**", "/member/**").permitAll()
-                            .anyExchange().authenticated();
-                })
+                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests("/h2/**", "/member/**"))
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
                 .build();
     }

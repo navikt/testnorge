@@ -19,12 +19,7 @@ class SecurityConfig {
         return httpSecurity
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(registry -> {
-                    DollyHttpSecurity.allowDefaultHttpRequests().customize(registry);
-                    registry
-                            .requestMatchers("/h2/**").permitAll()
-                            .anyRequest().fullyAuthenticated();
-                })
+                .authorizeHttpRequests(DollyHttpSecurity.withDefaultHttpRequests("/h2/**"))
                 .oauth2ResourceServer(configurer -> configurer.jwt(Customizer.withDefaults()))
                 .build();
     }
