@@ -6,6 +6,7 @@ import no.nav.testnav.levendearbeidsforholdansettelse.domain.dto.PdlPersonDTO;
 import no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.testnav.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -19,7 +20,6 @@ import java.util.concurrent.Callable;
 import static no.nav.testnav.levendearbeidsforholdansettelse.consumers.PdlConsumer.hentQueryResource;
 import static no.nav.testnav.levendearbeidsforholdansettelse.consumers.command.pdl.TemaGrunnlag.GEN;
 import static no.nav.testnav.levendearbeidsforholdansettelse.domain.pdl.CommonKeysAndUtils.*;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -45,7 +45,7 @@ public class SokPersonCommand implements Callable<Flux<PdlPersonDTO>> {
                         .path(pdlMiljoe.equals(PdlMiljoer.Q2) ? "" : "-" + pdlMiljoe.name().toLowerCase())
                         .path(GRAPHQL_URL)
                         .build())
-                .header(AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CONSUMER_ID, DOLLY)
                 .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID())
                 .header(TEMA, GEN.name())

@@ -3,7 +3,6 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -13,6 +12,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
@@ -91,7 +91,7 @@ public class NavigasjonService {
     private RsTestgruppe mapGruppe(Testgruppe testgruppe, String brukerId) {
 
         log.info("BrukerId: {}", brukerId);
-        var context = new MappingContext.Factory().getContext();
+        var context = MappingContextUtils.getMappingContext();
         context.setProperty("brukerId", brukerId);
         return mapperFacade.map(testgruppe, RsTestgruppe.class, context);
     }

@@ -22,6 +22,8 @@ public class DokarkivResponse {
     private boolean journalpostferdigstilt;
     private List<DokumentInfo> dokumenter;
 
+    private String dokument;
+
     private String feilmelding;
     private String miljoe;
 

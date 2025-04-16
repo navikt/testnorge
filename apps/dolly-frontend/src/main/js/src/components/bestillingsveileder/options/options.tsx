@@ -125,8 +125,8 @@ export const BVOptions = (
 			bestType = TYPE.NY_BESTILLING_FRA_MAL
 		}
 		initialValues = {
-			...initialValuesBasedOnMal(mal, dollyEnvironments),
 			...initialValues,
+			...initialValuesBasedOnMal(mal, dollyEnvironments),
 		}
 	}
 

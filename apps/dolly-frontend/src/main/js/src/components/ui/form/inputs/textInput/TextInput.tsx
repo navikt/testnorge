@@ -111,7 +111,7 @@ export const TextInput = ({
 	return (
 		<>
 			<input
-				value={fieldValue}
+				value={fieldValue || ''}
 				autoFocus={autoFocus}
 				disabled={isDisabled}
 				type={props.type || 'text'}

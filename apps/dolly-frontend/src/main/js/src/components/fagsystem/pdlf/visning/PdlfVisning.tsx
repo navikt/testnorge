@@ -198,7 +198,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					ident={ident}
 					erRedigerbar={erRedigerbar}
 				/>
-				{!erDoed && <FullmaktVisning ident={ident} />}
+				{!erDoed && ident && <FullmaktVisning ident={ident} />}
 				<FalskIdentitet data={data?.person?.falskIdentitet} />
 				<UtenlandsId
 					data={data?.person?.utenlandskIdentifikasjonsnummer}

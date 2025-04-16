@@ -8,7 +8,7 @@ import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.http.HttpHeaders;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -58,7 +58,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .queryParamIfPresent("antall", Optional.ofNullable(getAntall(antall, type)))
                         .queryParamIfPresent("side", Optional.ofNullable(side))
                         .build(requestParams))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .map(response -> {

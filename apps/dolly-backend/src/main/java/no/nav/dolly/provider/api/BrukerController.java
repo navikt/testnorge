@@ -36,12 +36,14 @@ public class BrukerController {
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
+    @Transactional(readOnly = true)
     @Operation(description = "Hent Bruker med brukerId")
     public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
+    @Transactional
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
@@ -49,7 +51,7 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
-    @Cacheable(CACHE_BRUKER)
+    @Transactional(readOnly = true)
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
     public List<RsBrukerAndGruppeId> getAllBrukere() {

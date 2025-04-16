@@ -31,6 +31,8 @@ public class SearchRequest {
 
     private List<ElasticTyper> registreRequest;
 
+    private List<String> miljoer;
+
     private Set<String> identer;
 
     public Set<String> getIdenter() {
@@ -39,6 +41,14 @@ public class SearchRequest {
             identer = new HashSet<>();
         }
         return identer;
+    }
+
+    public List<String> getMiljoer() {
+
+        if (isNull(miljoer)) {
+            miljoer = new ArrayList<>();
+        }
+        return miljoer;
     }
 
     public List<ElasticTyper> getRegistreRequest() {

@@ -76,7 +76,7 @@ export const FormCheckbox = ({
 		vis && (
 			<DollyCheckbox
 				size={size}
-				checked={value}
+				checked={value || false}
 				onChange={handleChange}
 				checkboxMargin={checkboxMargin}
 				{...props}

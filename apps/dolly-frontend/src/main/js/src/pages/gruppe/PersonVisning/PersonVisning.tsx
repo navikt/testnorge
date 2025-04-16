@@ -34,7 +34,8 @@ import {
 	useInstData,
 	usePensjonsavtaleData,
 	usePoppData,
-	useTpData,
+	useTpDataForhold,
+	useTpDataYtelse,
 	useTransaksjonIdData,
 } from '@/utils/hooks/useFagsystemer'
 import {
@@ -62,6 +63,7 @@ import {
 	harUdistubBestilling,
 	harUforetrygdBestilling,
 	harYrkesskaderBestilling,
+	hentTpYtelseOrdning,
 } from '@/utils/SjekkBestillingFagsystem'
 import {
 	AlderspensjonVisning,
@@ -110,6 +112,7 @@ import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
 import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
+import { TpYtelse } from '@/components/fagsystem/tjenestepensjon/visning/TpYtelse'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -179,9 +182,14 @@ export default ({
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
-	const { loading: loadingTpData, tpData } = useTpData(
+	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(
 		ident.ident,
 		harTpBestilling(bestillingerFagsystemer),
+	)
+
+	const { loading: loadingTpDataYtelse, tpDataYtelse } = useTpDataYtelse(
+		ident.ident,
+		hentTpYtelseOrdning(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingPensjonsavtaleData, pensjonsavtaleData } = usePensjonsavtaleData(
@@ -307,7 +315,7 @@ export default ({
 		if (poppData && sjekkManglerPensjonData(poppData)) {
 			return true
 		}
-		if (tpData && sjekkManglerTpData(tpData)) {
+		if (tpDataForhold && sjekkManglerTpData(tpDataForhold)) {
 			return true
 		}
 		if (apData && sjekkManglerApData(apData)) {
@@ -522,8 +530,14 @@ export default ({
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<TpVisning
-					data={tpData}
-					loading={loadingTpData}
+					data={tpDataForhold}
+					loading={loadingTpDataForhold}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<TpYtelse
+					data={tpDataYtelse}
+					loading={loadingTpDataYtelse}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>

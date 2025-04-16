@@ -89,7 +89,7 @@ export default function PersonListe({
 	}
 
 	const getNavnLimited = (tekst) => {
-		const navn = tekst.length > 23 ? tekst.substring(0, 23) + '...' : tekst
+		const navn = tekst.length > 20 ? tekst.substring(0, 20) + '...' : tekst
 		return (
 			<div style={{ maxWidth: '170px' }}>
 				<p>{navn}</p>
@@ -217,7 +217,7 @@ export default function PersonListe({
 	})
 
 	if (isFetching || (personListe?.length === 0 && !_.isEmpty(identer))) {
-		return <Loading label="Laster personer" panel />
+		return <Loading label="Laster personer..." panel />
 	}
 
 	if (_.isEmpty(identer)) {
@@ -283,42 +283,44 @@ export default function PersonListe({
 
 	return (
 		<ErrorBoundary>
-			<DollyTable
-				data={personListe}
-				columns={columns}
-				gruppeDetaljer={{
-					antallElementer: gruppeInfo?.antallIdenter,
-					pageSize: sideStoerrelse,
-				}}
-				pagination
-				iconItem={(bruker) => {
-					if (bruker.kjonn === 'MANN' || bruker.kjonn === 'GUTT') {
-						return <ManIconItem />
-					} else if (bruker.kjonn === 'KVINNE' || bruker.kjonn === 'JENTE') {
-						return <WomanIconItem />
-					} else {
-						return <UnknownIconItem />
-					}
-				}}
-				visSide={location?.state?.sidetall || sidetall}
-				visPerson={location?.state?.visPerson || visPerson}
-				hovedperson={location?.state?.hovedperson || hovedperson}
-				onExpand={(bruker) => (
-					<Suspense fallback={<Loading label={'Laster ident...'} />}>
-						<PersonVisningConnector
-							ident={bruker.ident}
-							personId={bruker.identNr}
-							bestillingIdListe={bruker.ident.bestillingId}
-							iLaastGruppe={iLaastGruppe}
-							brukertype={brukertype}
-						/>
-					</Suspense>
+			<span data-testid={TestComponentSelectors.CONTAINER_DOLLY_TABLE}>
+				<DollyTable
+					data={personListe}
+					columns={columns}
+					gruppeDetaljer={{
+						antallElementer: gruppeInfo?.antallIdenter,
+						pageSize: sideStoerrelse,
+					}}
+					pagination
+					iconItem={(bruker) => {
+						if (bruker.kjonn === 'MANN' || bruker.kjonn === 'GUTT') {
+							return <ManIconItem />
+						} else if (bruker.kjonn === 'KVINNE' || bruker.kjonn === 'JENTE') {
+							return <WomanIconItem />
+						} else {
+							return <UnknownIconItem />
+						}
+					}}
+					visSide={location?.state?.sidetall || sidetall}
+					visPerson={location?.state?.visPerson || visPerson}
+					hovedperson={location?.state?.hovedperson || hovedperson}
+					onExpand={(bruker) => (
+						<Suspense fallback={<Loading label={'Laster ident...'} />}>
+							<PersonVisningConnector
+								ident={bruker.ident}
+								personId={bruker.identNr}
+								bestillingIdListe={bruker.ident.bestillingId}
+								iLaastGruppe={iLaastGruppe}
+								brukertype={brukertype}
+							/>
+						</Suspense>
+					)}
+					onHeaderClick={onHeaderClick}
+				/>
+				{isKommentarModalOpen && selectedIdent && (
+					<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />
 				)}
-				onHeaderClick={onHeaderClick}
-			/>
-			{isKommentarModalOpen && selectedIdent && (
-				<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />
-			)}
+			</span>
 		</ErrorBoundary>
 	)
 }

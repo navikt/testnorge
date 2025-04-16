@@ -6,7 +6,7 @@ import { useToggle } from 'react-use'
 import * as _ from 'lodash-es'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Mal, useDollyMaler } from '@/utils/hooks/useMaler'
+import { Mal, useMalbestillingBruker, useMalbestillingOversikt } from '@/utils/hooks/useMaler'
 import { BVOptions } from '@/components/bestillingsveileder/options/options'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { useFormContext } from 'react-hook-form'
@@ -18,36 +18,45 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type MalVelgerProps = {
-	brukernavn: string
+	brukerId: string
 	gruppeId: number | undefined
 }
 
-export function getBrukerOptions(malbestillinger: Record<string, Mal[]>) {
-	return Object.keys(malbestillinger || {}).map((ident) => ({
-		value: ident,
-		label: ident,
+type Brukere = {
+	brukerId: string
+	brukernavn: string
+}
+
+export function getBrukerOptions(brukere: Brukere[] | undefined) {
+	return brukere?.map((bruker) => ({
+		value: bruker.brukerId,
+		label: bruker.brukernavn,
 	}))
 }
 
-export function getMalOptions(malbestillinger: Record<string, Mal[]>, bruker: string) {
-	if (!malbestillinger || !malbestillinger[bruker]) return []
-	return malbestillinger[bruker].map((mal) => ({
+export function getMalOptions(malbestillinger: Mal[] | undefined) {
+	if (!malbestillinger || malbestillinger?.length < 1) return []
+	return malbestillinger.map((mal) => ({
 		value: mal.id,
 		label: mal.malNavn,
-		data: { bestilling: mal.bestilling, malNavn: mal.malNavn, id: mal.id },
+		data: { bestilling: mal.malBestilling, malNavn: mal.malNavn, id: mal.id },
 	}))
 }
 
-export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
+export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formMethods = useFormContext()
-	const { maler, loading } = useDollyMaler()
+
+	const { brukere, loading: loadingBrukere } = useMalbestillingOversikt()
+	const [bruker, setBruker] = useState(brukerId)
+
+	const { maler, loading: loadingMaler } = useMalbestillingBruker(bruker)
+
 	const { dollyEnvironments } = useDollyEnvironments()
-	const [bruker, setBruker] = useState(brukernavn)
 	const [malAktiv, toggleMalAktiv] = useToggle(formMethods.getValues('mal') || false)
 
-	const brukerOptions = getBrukerOptions(maler)
-	const malOptions = getMalOptions(maler, bruker)
+	const brukerOptions = getBrukerOptions(brukere)
+	const malOptions = getMalOptions(maler)
 
 	const handleMalChange = (mal: { value: string; label: string; data: any }) => {
 		if (mal) {
@@ -92,6 +101,8 @@ export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 	)
 	const erGammelSyntSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.syntSykemelding')
 	const erAaregMal = _.has(valgtMal, 'data.bestilling.aareg')
+	const erGammelMal =
+		erGammelFullmaktMal || erGammelAmeldingMal || erGammelSyntSykemeldingMal || erTpsfMal
 
 	return (
 		<div className="ny-bestilling-form_input">
@@ -110,7 +121,7 @@ export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 				<DollySelect
 					name="zIdent"
 					label="Bruker"
-					isLoading={loading}
+					isLoading={loadingBrukere}
 					options={brukerOptions}
 					size="medium"
 					onChange={handleBrukerChange}
@@ -123,7 +134,7 @@ export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 					name="mal"
 					label="Maler"
 					onChange={handleMalChange}
-					isLoading={loading}
+					isLoading={loadingMaler}
 					options={malOptions}
 					size="grow"
 					isDisabled={!malAktiv}
@@ -134,17 +145,12 @@ export const MalVelgerIdent = ({ brukernavn, gruppeId }: MalVelgerProps) => {
 					<NavLink to="/minside">Administrer maler</NavLink>
 				</Button>
 			</div>
-			{erGammelFullmaktMal && (
+			{erGammelMal && (
 				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
 					Denne malen er utdatert, og vil muligens ikke fungere som den skal.
 				</Alert>
 			)}
-			{(erTpsfMal || erGammelAmeldingMal || erGammelSyntSykemeldingMal) && (
-				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
-					Denne malen er utdatert, og vil ikke fungere som den skal.
-				</Alert>
-			)}
-			{erAaregMal && !erGammelAmeldingMal && (
+			{erAaregMal && !erGammelMal && (
 				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
 					Bestillinger med denne malen vil ikke fungere som de skal, da den inneholder Aareg-data.
 				</Alert>

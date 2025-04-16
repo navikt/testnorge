@@ -11,6 +11,7 @@ import {
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { adresseAttributter } from '@/components/fagsystem/pdlf/form/partials/adresser/Adresser'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 export const AdressePanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)
@@ -40,6 +41,8 @@ AdressePanel.heading = 'Adresser'
 
 AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 	const { identtype, identMaster } = opts
+	const { currentBruker } = useCurrentBruker()
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
 	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
@@ -82,7 +85,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			},
 		},
 		adressebeskyttelse: {
-			label: 'Adressebeskyttelse (kode 6/7)',
+			label: bankIdBruker ? 'Adressebeskyttelse (kode 6)' : 'Adressebeskyttelse (kode 6/7)',
 			checked: has(paths.adressebeskyttelse),
 			add() {
 				set(paths.adressebeskyttelse, [getInitialAdressebeskyttelse(initialMaster)])

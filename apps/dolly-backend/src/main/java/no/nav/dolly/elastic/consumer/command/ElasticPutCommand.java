@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -28,7 +29,7 @@ public class ElasticPutCommand implements Callable<Mono<String>> {
                 .put()
                 .uri(builder -> builder.path(ELASTIC_SETTINGS_URL).build(index))
                 .body(BodyInserters.fromValue(params))
-                .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
+                .headers(WebClientHeader.basic(username, password))
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnError(WebClientError.logTo(log))

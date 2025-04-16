@@ -11,11 +11,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import no.nav.testnav.libs.dto.aareg.v1.Periode;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.institusjonsopphold.Institusjonsopphold;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.medisinskopplysning.MedisinskOpplysning;
 import no.nav.testnav.libs.dto.arena.testnorge.aap.medlemfolketrygden.MedlemFolketrygden;
+import no.nav.testnav.libs.dto.arena.testnorge.aap.periode.Periode;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.andreokonomytelser.AndreOkonomYtelser;
 import no.nav.testnav.libs.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 
@@ -31,42 +31,42 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NyttVedtakAap extends NyttVedtak {
 
-    @JsonAlias({ "ANDRE_OKONOM_YTELSER", "andreOkonomYtelser" })
+    @JsonAlias({"ANDRE_OKONOM_YTELSER", "andreOkonomYtelser"})
     private List<AndreOkonomYtelser> andreOkonomYtelserListe;
 
-    @JsonAlias({ "AKTFASEKODE", "aktivitetsfase" })
+    @JsonAlias({"AKTFASEKODE", "aktivitetsfase"})
     private String aktivitetsfase;
 
-    @JsonAlias({ "GEN_SAKSOPPLYSNINGER", "genSaksopplysninger" })
+    @JsonAlias({"GEN_SAKSOPPLYSNINGER", "genSaksopplysninger"})
     private List<Saksopplysning> genSaksopplysninger;
 
-    @JsonAlias({ "INSTITUSJONSOPPHOLD", "institusjonsopphold" })
+    @JsonAlias({"INSTITUSJONSOPPHOLD", "institusjonsopphold"})
     private List<Institusjonsopphold> institusjonsopphold;
 
-    @JsonAlias({ "JUSTERT_FRA", "justertFra" })
+    @JsonAlias({"JUSTERT_FRA", "justertFra"})
     private String justertFra;
 
-    @JsonAlias({ "MEDLEM_FOLKETRYGDEN", "medlemFolketrygden" })
+    @JsonAlias({"MEDLEM_FOLKETRYGDEN", "medlemFolketrygden"})
     private MedlemFolketrygden medlemFolketrygden;
 
-    @JsonAlias({ "PERIODE", "periode" })
+    @JsonAlias({"PERIODE", "periode"})
     private Periode periode;
 
-    @JsonAlias({ "FORVALTER", "forvalter" })
+    @JsonAlias({"FORVALTER", "forvalter"})
     private Forvalter forvalter;
 
-    @JsonAlias({ "UTSKRIFT", "utskrift" })
+    @JsonAlias({"UTSKRIFT", "utskrift"})
     private String utskrift;
 
-    @JsonAlias({ "VEDTAKSVARIANT", "vedtaksvariant" })
+    @JsonAlias({"VEDTAKSVARIANT", "vedtaksvariant"})
     private String vedtaksvariant;
 
-    @JsonAlias({ "MEDISINSK_OPPLYSNING", "medisinskOpplysning" })
+    @JsonAlias({"MEDISINSK_OPPLYSNING", "medisinskOpplysning"})
     private List<MedisinskOpplysning> medisinskOpplysning;
 
     @JsonIgnore
     @Override
-    public RettighetType getRettighetType(){
+    public RettighetType getRettighetType() {
         return RettighetType.AAP;
     }
 }

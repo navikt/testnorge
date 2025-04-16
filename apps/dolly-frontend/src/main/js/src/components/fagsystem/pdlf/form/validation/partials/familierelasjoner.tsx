@@ -160,18 +160,41 @@ const testDeltBostedAdressetype = (value: Yup.StringSchema<string, Yup.AnyObject
 	})
 }
 
-const testSivilstandsdatoBekreftelsesdato = (value) => {
+const testSivilstandsdatoBekreftelsesdato = (value, field) => {
 	return value.test('har-gyldig-sivilstandsdato', (value, testContext) => {
-		let feilmelding = null
+		let feilmeldingSivilstanddato = null
+		let feilmeldingBekreftelsesdato = null
 		const parent = testContext.parent
 		const master = parent?.master
 		const sivilstandsdato = parent?.sivilstandsdato
 		const bekreftelsesdato = parent?.bekreftelsesdato
 
-		if (master === 'PDL' && !sivilstandsdato && !bekreftelsesdato) {
-			feilmelding = 'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+		const giftEllerSamboer = ['GIFT', 'SAMBOER', 'REGISTRERT_PARTNER']
+		const erGiftEllerSamboer = giftEllerSamboer.includes(parent?.type)
+		const uforetrygd = _.get(fullForm, 'pensjonforvalter.uforetrygd')
+		if (
+			uforetrygd?.barnetilleggDetaljer?.barnetilleggType === 'FELLESBARN' &&
+			erGiftEllerSamboer &&
+			!sivilstandsdato &&
+			!bekreftelsesdato
+		) {
+			feilmeldingSivilstanddato = 'Dato er påkrevd for barnetillegg for fellesbarn'
 		}
 
+		if (master === 'PDL' && !sivilstandsdato && !bekreftelsesdato) {
+			feilmeldingSivilstanddato =
+				'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
+			feilmeldingBekreftelsesdato =
+				'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
+		}
+
+		const feilmelding =
+			field === 'sivilstandsdato'
+				? feilmeldingSivilstanddato
+				: field === 'bekreftelsesdato'
+					? feilmeldingBekreftelsesdato
+					: null
 		return feilmelding ? testContext.createError({ message: feilmelding }) : true
 	})
 }
@@ -202,7 +225,7 @@ export const sivilstand = Yup.object({
 	sivilstandsdato: Yup.mixed().when('type', {
 		is: (type) => type === 'SAMBOER',
 		then: () => requiredDate,
-		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable()),
+		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable(), 'sivilstandsdato'),
 	}),
 	relatertVedSivilstand: Yup.string()
 		.test('feltet-mangler', 'Partner er påkrevd', (value, testcontext) => {
@@ -220,7 +243,8 @@ export const sivilstand = Yup.object({
 	bekreftelsesdato: Yup.mixed().when('type', {
 		is: (type) => type === 'SAMBOER',
 		then: () => Yup.mixed().notRequired(),
-		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable()),
+		otherwise: () =>
+			testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable(), 'bekreftelsesdato'),
 	}),
 	borIkkeSammen: Yup.boolean().nullable(),
 	nyRelatertPerson: nyPerson,

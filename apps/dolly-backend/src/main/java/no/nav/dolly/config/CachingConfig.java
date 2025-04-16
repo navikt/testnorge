@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class CachingConfig {
 
     public static final String CACHE_BESTILLING = "bestilling";
+    public static final String CACHE_LEGACY_BESTILLING_MAL = "bestilling-legacy-mal";
     public static final String CACHE_BESTILLING_MAL = "bestilling-mal";
     public static final String CACHE_BRUKER = "bruker";
     public static final String CACHE_GRUPPE = "gruppe";
@@ -25,8 +26,10 @@ public class CachingConfig {
     @Bean
     @Profile({ "dev", "prod" })
     public CacheManager cacheManager(Caffeine caffeine) {
-        var caffeineCacheManager = new CaffeineCacheManager(CACHE_BESTILLING,
+        var caffeineCacheManager = new CaffeineCacheManager(
+                CACHE_BESTILLING,
                 CACHE_BESTILLING_MAL,
+                CACHE_LEGACY_BESTILLING_MAL,
                 CACHE_BRUKER,
                 CACHE_GRUPPE,
                 CACHE_HELSEPERSONELL

@@ -205,7 +205,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	)
 
 	const bestillingerSorted = data
-		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
+		?.sort?.((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
 		.reduce((acc: { [key: string]: Bestillingsstatus }, curr) => ((acc[curr.id] = curr), acc), {})
 
 	return {
@@ -269,7 +269,7 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 	)
 
 	return {
-		arbeidsforhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		arbeidsforhold: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

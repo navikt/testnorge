@@ -17,6 +17,7 @@ import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import DisplayFormState from '@/utils/DisplayFormState'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { Arbeidsforhold } from '@/pages/tenorSoek/soekFormPartials/Arbeidsforhold'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -283,6 +284,35 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
 										<InntektAordningen
+											handleChange={handleChange}
+											handleChangeList={handleChangeList}
+											getValue={watch}
+										/>
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>
+										<Header
+											title="Arbeidsforhold"
+											paths={[
+												'arbeidsforhold.startDatoPeriode.fraOgMed',
+												'arbeidsforhold.startDatoPeriode.tilOgMed',
+												'arbeidsforhold.sluttDatoPeriode.fraOgMed',
+												'arbeidsforhold.sluttDatoPeriode.tilOgMed',
+												'arbeidsforhold.harPermisjoner',
+												'arbeidsforhold.harPermitteringer',
+												'arbeidsforhold.harArbeidsgiver',
+												'arbeidsforhold.harTimerMedTimeloenn',
+												'arbeidsforhold.harUtenlandsopphold',
+												'arbeidsforhold.harHistorikk',
+												'arbeidsforhold.arbeidsforholdstype',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Accordion.Header>
+									<Accordion.Content style={{ paddingRight: '0' }}>
+										<Arbeidsforhold
 											handleChange={handleChange}
 											handleChangeList={handleChangeList}
 											getValue={watch}
