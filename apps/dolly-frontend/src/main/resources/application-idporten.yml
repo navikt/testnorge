@@ -8,6 +8,8 @@ spring:
       port: ${VALKEY_PORT_IDPORTEN}
       username: ${VALKEY_USERNAME_IDPORTEN}
       password: ${VALKEY_PASSWORD_IDPORTEN}
+      ssl:
+        enabled: true
   session:
     timeout: 60m
   security:

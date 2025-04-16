@@ -78,9 +78,6 @@ spec:
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-  valkey:
-    - instance: frontend
-      access: readwrite
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
