@@ -63,7 +63,6 @@ spec:
         - application: testnav-yrkesskade-proxy
         - application: testnorge-profil-api
         - application: testnorge-tilbakemelding-api
-        - application: valkey-dolly-session
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
@@ -79,6 +78,9 @@ spec:
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+  valkey:
+    - instance: frontend
+      access: readwrite
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
