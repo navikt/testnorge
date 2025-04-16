@@ -4,10 +4,10 @@ IDPORTEN_ISSUER_PROD: https://idporten.no
 spring:
   data:
     redis:
-      host: ${VALKEY_HOST_DOLLY_IDPORTEN_SESSION}
-      port: ${VALKEY_PORT_DOLLY_IDPORTEN_SESSION}
-      username: ${VALKEY_USERNAME_DOLLY_IDPORTEN_SESSION}
-      password: ${VALKEY_PASSWORD_DOLLY_IDPORTEN_SESSION}
+      host: ${VALKEY_HOST_IDPORTEN}
+      port: ${VALKEY_PORT_IDPORTEN}
+      username: ${VALKEY_USERNAME_IDPORTEN}
+      password: ${VALKEY_PASSWORD_IDPORTEN}
   session:
     timeout: 60m
   security:

@@ -1,6 +1,14 @@
 #Dev config
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
 
+spring:
+  data:
+    redis:
+      host: ${VALKEY_HOST_TEST}
+      port: ${VALKEY_PORT_TEST}
+      username: ${VALKEY_USERNAME_TEST}
+      password: ${VALKEY_PASSWORD_TEST}
+
 consumers:
   # Konsumenter for dev-miljø
   testnav-altinn3-tilgang-service:

@@ -6,6 +6,12 @@ spring:
     allow-circular-references: true
   config:
     import: "classpath:dolly-application.yml"
+  data:
+    redis:
+      host: ${VALKEY_HOST_FRONTEND}
+      port: ${VALKEY_PORT_FRONTEND}
+      username: ${VALKEY_USERNAME_FRONTEND}
+      password: ${VALKEY_PASSWORD_FRONTEND}
   security:
     oauth2:
       resourceserver:
