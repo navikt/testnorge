@@ -25,12 +25,14 @@ class JedisConfig {
             @Value("${spring.data.redis.host}") String host,
             @Value("${spring.data.redis.port}") Integer port,
             @Value("${spring.data.redis.username}") String username,
-            @Value("${spring.data.redis.password}") CharSequence password
+            @Value("${spring.data.redis.password}") CharSequence password,
+            @Value("${spring.data.redis.ssl.enabled:#{false}") boolean sslEnabled
     ) {
-        log.info("Connecting to Jedis on {}:{}", host, port);
+        log.info("Connecting to Jedis on {}:{}{}", host, port, sslEnabled ? " using SSL" : "");
         var config = DefaultJedisClientConfig
                 .builder()
                 .credentials(new DefaultRedisCredentials(username, password))
+                .ssl(sslEnabled)
                 .build();
         return new Jedis(host, port, config);
     }
