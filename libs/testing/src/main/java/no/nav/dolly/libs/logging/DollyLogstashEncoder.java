@@ -145,12 +145,19 @@ public class DollyLogstashEncoder extends LogstashEncoder {
     }
 
     private static String maskMessage(String message) {
-        var masked = IDENT.matcher(message).replaceAll(match ->
-                match.group().charAt(2) < '4' ?
-                        match.group().substring(0, 6) + "xxxxx" :
-                        match.group().substring(0, 11) + "x"
-        );
-        return BEARER.matcher(masked).replaceAll("Bearer token");
+        if (message == null) {
+            return null;
+        }
+        var masked = IDENT
+                .matcher(message)
+                .replaceAll(match ->
+                        match.group().charAt(2) < '4' ?
+                                match.group().substring(0, 6) + "xxxxx" :
+                                match.group().substring(0, 11) + "x"
+                );
+        return BEARER
+                .matcher(masked)
+                .replaceAll("Bearer token");
     }
 
 }
