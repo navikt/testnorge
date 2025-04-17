@@ -1,10 +1,8 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import groovy.util.logging.Slf4j;
-import io.lettuce.core.ClientOptions;
-import io.lettuce.core.SslOptions;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -58,11 +56,11 @@ class OidcRedisSessionConfiguration {
     }
 
     @Bean
-    LettuceConnectionFactory redisConnectionFactory(RedisStandaloneConfiguration redisStandaloneConfiguration) {
-        var lettuceClientConfiguration =  LettuceClientConfiguration
-                .builder()
-                .useSsl()
-                .build();
+    LettuceConnectionFactory redisConnectionFactory(
+            RedisStandaloneConfiguration redisStandaloneConfiguration,
+            LettuceClientConfiguration lettuceClientConfiguration
+    ) {
+        log.info("Creating new LettuceConnectionFactory");
         return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
 
@@ -74,6 +72,7 @@ class OidcRedisSessionConfiguration {
             @Value("${spring.data.redis.username}") String username,
             @Value("${spring.data.redis.password}") String password
     ) {
+        log.info("Configuring Redis using {}:{}", host, port);
         var config = new RedisStandaloneConfiguration();
         config.setHostName(host);
         config.setPort(port);
@@ -85,11 +84,12 @@ class OidcRedisSessionConfiguration {
     @Bean
     @ConditionalOnMissingBean
     LettuceClientConfiguration lettuceClientConfiguration(
-            @Value("${spring.data.redis.ssl.enabled}" Boolean sslEnabled)
+            @Value("${spring.data.redis.ssl.enabled}") Boolean sslEnabled
     ) {
-        log.info("Setting SSL enabled: {}", sslEnabled);
+        var useSsl = Optional.ofNullable(sslEnabled).orElse(false);
+        log.info("Configuring with SSL enabled: {}", useSsl);
         var config = LettuceClientConfiguration.builder();
-        if (Optional.ofNullable(sslEnabled).orElse(false)) {
+        if (useSsl) {
             config.useSsl();
         }
         return config.build();
@@ -102,9 +102,9 @@ class OidcRedisSessionConfiguration {
 
     @Bean
     RedisSerializer<Object> springSessionRedisSerializer() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return new GenericJackson2JsonRedisSerializer(mapper);
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
     }
 
 }
