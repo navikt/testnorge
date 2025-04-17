@@ -1,5 +1,8 @@
 package no.nav.dolly.web.config;
 
+import io.valkey.DefaultJedisClientConfig;
+import io.valkey.DefaultRedisCredentials;
+import io.valkey.Jedis;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.config.OidcRedisSessionConfiguration;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,9 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-import redis.clients.jedis.DefaultJedisClientConfig;
-import redis.clients.jedis.DefaultRedisCredentials;
-import redis.clients.jedis.Jedis;
 
 /**
  * Usage in {@code FrontChannelLogoutController}.
