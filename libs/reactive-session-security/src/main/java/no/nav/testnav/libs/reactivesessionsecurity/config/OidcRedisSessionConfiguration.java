@@ -105,10 +105,16 @@ public class OidcRedisSessionConfiguration {
     }
 
     @Bean
-    RedisSerializer<Object> springSessionRedisSerializer() {
+    RedisSerializer<Object> springSessionRedisSerializer(ObjectMapper objectMapper) {
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    ObjectMapper objectMapper() {
         var objectMapper = new ObjectMapper();
         objectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return new GenericJackson2JsonRedisSerializer(objectMapper);
+        return objectMapper;
     }
 
 }
