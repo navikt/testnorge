@@ -40,7 +40,7 @@ import java.util.Optional;
 })
 @RequiredArgsConstructor
 @Slf4j
-class OidcRedisSessionConfiguration {
+public class OidcRedisSessionConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
