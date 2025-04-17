@@ -19,11 +19,8 @@ spring:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
             scope: openid
             client-authentication-method: private_key_jwt
-            require-authorization-consent: true
-            require-proof-key: true
         provider:
           idporten:
             issuer-uri: ${IDPORTEN_ISSUER_PROD}

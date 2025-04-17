@@ -1,10 +1,9 @@
 package no.nav.dolly.web.provider.web;
 
-import io.valkey.Jedis;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -18,8 +17,10 @@ import org.springframework.web.server.session.WebSessionManager;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/oauth2/logout")
@@ -29,12 +30,7 @@ import java.util.Optional;
 class FrontChannelLogoutController {
 
     private final WebSessionManager webSessionManager;
-    private final Jedis jedis;
-
-    @PostConstruct
-    void postConstruct() {
-        log.info("postConstruct");
-    }
+    private final LettuceConnectionFactory lettuce;
 
     /**
      * Manually invalidate all sessions for the given sid. Note that the sessions are set elsewhere through Spring, see {@code IdportenSecurityConfig}.
@@ -77,9 +73,15 @@ class FrontChannelLogoutController {
     }
 
     private List<String> getAllSessionIds() {
-        return jedis
-                .keys("*")
+        var keys = Optional
+                .ofNullable(lettuce
+                        .getConnection()
+                        .keyCommands()
+                        .keys("*".getBytes(StandardCharsets.UTF_8)))
+                .orElse(Set.of());
+        return keys
                 .stream()
+                .map(bytes -> new String(bytes, StandardCharsets.UTF_8))
                 .map(session -> session.split(":")[session.split(":").length - 1])
                 .toList();
     }

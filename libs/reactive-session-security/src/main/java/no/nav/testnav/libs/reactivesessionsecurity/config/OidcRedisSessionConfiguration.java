@@ -60,7 +60,6 @@ public class OidcRedisSessionConfiguration {
             RedisStandaloneConfiguration redisStandaloneConfiguration,
             LettuceClientConfiguration lettuceClientConfiguration
     ) {
-        log.info("Creating new LettuceConnectionFactory");
         return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
 
@@ -72,7 +71,7 @@ public class OidcRedisSessionConfiguration {
             @Value("${spring.data.redis.username}") String username,
             @Value("${spring.data.redis.password}") String password
     ) {
-        log.info("Configuring Redis using {}:{}", host, port);
+        log.info("Configuring Lettuce using {}:{}", host, port);
         var config = new RedisStandaloneConfiguration();
         config.setHostName(host);
         config.setPort(port);
@@ -86,8 +85,13 @@ public class OidcRedisSessionConfiguration {
     LettuceClientConfiguration lettuceClientConfiguration(
             @Value("${spring.data.redis.ssl.enabled}") Boolean sslEnabled
     ) {
-        var useSsl = Optional.ofNullable(sslEnabled).orElse(false);
-        log.info("Configuring with SSL enabled: {}", useSsl);
+        var useSsl = Optional
+                .ofNullable(sslEnabled)
+                .orElse(Boolean.FALSE)
+                .equals(Boolean.TRUE);
+        if (!useSsl) {
+            log.warn("Lettuce is NOT configured with spring.data.redis.ssl.enabled=true");
+        }
         var config = LettuceClientConfiguration.builder();
         if (useSsl) {
             config.useSsl();
@@ -101,10 +105,16 @@ public class OidcRedisSessionConfiguration {
     }
 
     @Bean
-    RedisSerializer<Object> springSessionRedisSerializer() {
+    RedisSerializer<Object> springSessionRedisSerializer(ObjectMapper objectMapper) {
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    ObjectMapper objectMapper() {
         var objectMapper = new ObjectMapper();
         objectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return new GenericJackson2JsonRedisSerializer(objectMapper);
+        return objectMapper;
     }
 
 }
