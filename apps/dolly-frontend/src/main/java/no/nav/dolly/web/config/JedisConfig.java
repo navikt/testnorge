@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
+import java.net.URI;
+
 /**
  * Usage in {@code FrontChannelLogoutController}.
  */
@@ -22,19 +24,16 @@ class JedisConfig {
 
     @Bean
     Jedis jedis(
-            @Value("${spring.data.redis.host}") String host,
-            @Value("${spring.data.redis.port}") Integer port,
+            @Value("${spring.data.redus.url}") URI uri,
             @Value("${spring.data.redis.username}") String username,
-            @Value("${spring.data.redis.password}") CharSequence password,
-            @Value("${spring.data.redis.ssl.enabled:#{false}}") boolean sslEnabled
+            @Value("${spring.data.redis.password}") CharSequence password
     ) {
-        log.info("Connecting to Jedis on {}:{}{}", host, port, sslEnabled ? " using SSL" : "");
+        log.info("Connecting to Jedis on {}", uri);
         var config = DefaultJedisClientConfig
                 .builder()
                 .credentials(new DefaultRedisCredentials(username, password))
-                .ssl(sslEnabled)
                 .build();
-        return new Jedis(host, port, config);
+        return new Jedis(uri, config);
     }
 
 }
