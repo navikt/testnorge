@@ -9,6 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "8m"
     nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
     nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
+    nginx.ingress.kubernetes.io/client-header-buffer-size: "100k"
 spec:
   image: "{{image}}"
   port: 8080

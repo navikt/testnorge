@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TagsService {
 
-    private static final int BOLK_SIZE = 10;
+    private static final int BOLK_SIZE = 1000;
 
     private final BestillingQueryService bestillingQueryService;
     private final PdlProxyConsumer pdlProxyConsumer;
