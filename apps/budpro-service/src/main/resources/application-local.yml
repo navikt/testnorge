@@ -1,7 +1,10 @@
+dolly:
+  texas:
+    consumers:
+      - name: generer-navn-service
+        url: https://generer-navn-service.intern.dev.nav.no
+        audience: api://dev-gcp.dolly.generer-navn-service/.default
+
 spring:
   config:
     import: "sm://"
-
-consumers:
-  generer-navn-service:
-    url: "https://generer-navn-service.intern.dev.nav.no"

@@ -28,7 +28,6 @@ public class SecurityConfig {
                             authorize
                                     .requestMatchers(
                                             "/error",
-                                            "/failure/**",
                                             "/internal/**",
                                             "/swagger",
                                             "/swagger-resources/**",
