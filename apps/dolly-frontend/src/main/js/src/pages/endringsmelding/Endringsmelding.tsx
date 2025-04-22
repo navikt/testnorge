@@ -1,4 +1,4 @@
-import Title from '@/components/Title'
+import Title from '../../components/title'
 import './Endringsmelding.less'
 import { LinkPanel } from '@navikt/ds-react'
 

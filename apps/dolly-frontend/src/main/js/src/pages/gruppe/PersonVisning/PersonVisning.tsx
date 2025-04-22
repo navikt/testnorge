@@ -59,6 +59,7 @@ import {
 	harPoppBestilling,
 	harSigrunstubBestilling,
 	harSigrunstubPensjonsgivendeInntekt,
+	harSigrunstubSummertSkattegrunnlag,
 	harSkattekortBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
@@ -518,7 +519,7 @@ export default ({
 				/>
 				<SigrunstubSummertSkattegrunnlagVisning
 					data={sigrunstubSummertSkattegrunnlag}
-					loading={loadingSigrunstubPensjonsgivendeInntekt}
+					loading={loadingSigrunstubSummertSkattegrunnlag}
 				/>
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning

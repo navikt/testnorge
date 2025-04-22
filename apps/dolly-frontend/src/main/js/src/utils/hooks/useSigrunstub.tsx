@@ -6,7 +6,7 @@ const getSigrunstubBaseUrl = () => `/testnav-sigrunstub-proxy/api`
 
 export const usePensjonsgivendeInntektKodeverk = () => {
 	const { data, isLoading, error } = useSWRImmutable<any, Error>(
-		`${getSigrunstubBaseUrl()}/pensjonsgivendeinntektforfolketrygden/kodeverk`,
+		`${getSigrunstubBaseUrl()}/v1/pensjonsgivendeinntektforfolketrygden/kodeverk`,
 		fetcher,
 	)
 
@@ -61,7 +61,7 @@ export const usePensjonsgivendeInntekt = (ident, harPensjonsgivendeInntekt) => {
 export const useSummertSkattegrunnlag = (ident, harSummertSkattegrunnlag) => {
 	const endpoint = `${getSigrunstubBaseUrl()}/v2/summertskattegrunnlag`
 	const { data, error, isLoading } = useSWR(
-		ident && harSummertSkattegrunnlag ? [endpoint, { norskident: ident }] : null,
+		ident && harSummertSkattegrunnlag ? [endpoint, { personIdentifikator: ident }] : null,
 		([url, params]) => fetcher(url, params),
 	)
 
