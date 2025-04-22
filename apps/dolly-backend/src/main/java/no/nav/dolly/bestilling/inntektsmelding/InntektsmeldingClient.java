@@ -200,9 +200,18 @@ public class InntektsmeldingClient implements ClientRegister {
     private TransaksjonmappingIdDTO fromJson(JsonNode transaksjon) {
 
         try {
-            return nonNull(transaksjon) ?
-                    objectMapper.treeToValue(transaksjon, TransaksjonmappingIdDTO.class) :
-                    new TransaksjonmappingIdDTO();
+            if (nonNull(transaksjon)) {
+                var transaksjonMapping = objectMapper.treeToValue(transaksjon, TransaksjonmappingIdDTO.class);
+                if (isNotBlank(transaksjonMapping.getDokumentInfoId())) {
+                    transaksjonMapping.setDokument(TransaksjonmappingIdDTO.Dokument.builder()
+                            .dokumentInfoId(transaksjonMapping.getDokumentInfoId())
+                            .journalpostId(transaksjonMapping.getJournalpostId())
+                            .build());
+                }
+                return transaksjonMapping;
+            } else {
+                return new TransaksjonmappingIdDTO();
+            }
         } catch (JsonProcessingException e) {
             log.error("Feilet å konvertere transaksjonsId for inntektsmelding", e);
             return new TransaksjonmappingIdDTO();

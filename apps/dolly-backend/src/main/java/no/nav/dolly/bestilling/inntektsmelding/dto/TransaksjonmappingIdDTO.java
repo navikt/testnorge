@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TransaksjonmappingIdDTO {
 
+    private String journalpostId;
+    private String dokumentInfoId;
     private Dokument dokument;
 
     @Data
