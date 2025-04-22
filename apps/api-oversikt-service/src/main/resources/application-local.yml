@@ -1,0 +1,8 @@
+spring:
+  config:
+    import: "sm://"
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dev-gcp:dolly:testnav-api-oversikt-service

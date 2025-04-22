@@ -81,6 +81,12 @@ export const useGruppeById = (
 }
 
 export const useGruppeIdenter = (gruppeId) => {
+	if (!gruppeId) {
+		return {
+			loading: false,
+			error: 'GruppeId mangler!',
+		}
+	}
 	const { data, isLoading, error } = useSWR<Gruppe, Error>(
 		gruppeId ? getHelGruppeUrl(gruppeId) : null,
 		fetcher,

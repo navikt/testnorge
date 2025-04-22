@@ -28,6 +28,8 @@ import java.util.function.Predicate;
 @Slf4j
 public class WebClientError {
 
+    private static final String DUAL_PARMS = "{} {}";
+
     private static final Predicate<Throwable> IS_5XX = throwable -> throwable instanceof WebClientResponseException webClientResponseException &&
             webClientResponseException.getStatusCode().is5xxServerError() ||
             throwable instanceof WebClientRequestException webClientRequestException &&
@@ -93,12 +95,20 @@ public class WebClientError {
     public static Consumer<Throwable> logTo(Logger logger) {
         return throwable -> {
             if ((throwable instanceof WebClientResponseException webClientResponseException)) {
-                logger.error(
-                        "{}, {}",
-                        throwable.getMessage(),
-                        webClientResponseException.getResponseBodyAsString(),
-                        throwable
-                );
+                if (webClientResponseException.getStatusCode().is4xxClientError()) {
+                    logger.warn(
+                            DUAL_PARMS,
+                            webClientResponseException.getMessage(),
+                            webClientResponseException.getResponseBodyAsString()
+                    );
+                } else {
+                    logger.error(
+                            DUAL_PARMS,
+                            webClientResponseException.getMessage(),
+                            webClientResponseException.getResponseBodyAsString(),
+                            throwable
+                    );
+                }
             } else {
                 logger.error(throwable.getMessage(), throwable);
             }
@@ -179,8 +189,5 @@ public class WebClientError {
                 }
             }
         }
-
     }
-
-
 }
