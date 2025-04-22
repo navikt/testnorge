@@ -88,7 +88,7 @@ public class InntektsmeldingClient implements ClientRegister {
         var eksisterende = transaksjonMappingService.getTransaksjonMapping(INNTKMELD.name(), ident, bestillingId);
         return Flux.fromIterable(eksisterende)
                 .doOnNext(transaksjonMapping -> log.info("Eksisterende transaksjonmapping {}", transaksjonMapping))
-                .filter(transaksjonMapping -> miljoe.equals(transaksjonMapping.getMiljoe()) || isBlank(transaksjonMapping.getMiljoe()))
+                .filter(transaksjonMapping -> miljoe.equals(transaksjonMapping.getMiljoe()))
                 .map(transaksjon -> fromJson(transaksjon.getTransaksjonId()))
                 .doOnNext(transaksjon -> log.info("Verdi fra transaksjonmapping {}", transaksjon))
                 .flatMap(transaksjon -> nonNull(transaksjon.getDokument()) ?
