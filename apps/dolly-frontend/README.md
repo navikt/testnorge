@@ -8,6 +8,12 @@ Prosjekt for å opprette og konfigurere personer knyttet til fellesregistrene i 
 * [Generelt.](../../docs/local_general.md)
 * [Secret Manager.](../../docs/local_secretmanager.md)
 
+## Valkey
+For å slette en Valkey-instans må den patches. En sletting kan typisk skje ved deploy, ved at man f.eks. endrer navnet til eller fjerner en Valkey-instans. Instans-navnene er på formen `valkey-<namespace>-<instance>`, se [NAIS Console](https://console.nav.cloud.nais.io/team/dolly/valkey). Eksempel for `valkey-dolly-idporten`:
+```
+kubectl patch valkey valkey-dolly-idporten --type json -p='[{"op": "replace", "path": "/spec/terminationProtection", "value": false}]'
+```
+
 ### Javascript
 
 - Følg oppskriften i Java, denne kreves for å kjøre Dolly lokalt
