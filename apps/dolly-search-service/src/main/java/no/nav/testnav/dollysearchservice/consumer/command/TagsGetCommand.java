@@ -16,9 +16,8 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class TagsGetCommand implements Callable<Mono<Map<String, List<String>>>> {
 
-    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags/bolk";
+    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags/hentBolk";
     private static final String PDL_TESTDATA = "/pdl-testdata";
-    private static final String PERSONIDENTER = "Nav-Personidenter";
     private static final ParameterizedTypeReference<Map<String, List<String>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
@@ -28,17 +27,16 @@ public class TagsGetCommand implements Callable<Mono<Map<String, List<String>>>>
 
     public Mono<Map<String, List<String>>> call() {
         return webClient
-                .get()
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .header(PERSONIDENTER, identer.toArray(String[]::new))
+                .bodyValue(identer)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }
