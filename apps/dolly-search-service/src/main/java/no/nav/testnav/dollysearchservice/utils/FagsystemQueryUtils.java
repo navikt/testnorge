@@ -35,6 +35,7 @@ public class FagsystemQueryUtils {
             case BANKKONTO_UTLAND -> QueryBuilders.existsQuery("bankkonto.utenlandskBankkonto");
             case BRREGSTUB -> QueryBuilders.existsQuery("brregstub");
             case DOKARKIV -> QueryBuilders.existsQuery("dokarkiv");
+            case ETTERLATTE ->  QueryBuilders.existsQuery("etterlatteYtelser");
             case FULLMAKT -> QueryBuilders.existsQuery("fullmakt");
             case HISTARK -> QueryBuilders.existsQuery("histark");
             case INNTK -> QueryBuilders.existsQuery("inntektstub");
@@ -48,7 +49,6 @@ public class FagsystemQueryUtils {
             case PEN_PENSJONSAVTALE -> QueryBuilders.existsQuery("pensjonforvalter.pensjonsavtale");
             case PEN_TP -> QueryBuilders.existsQuery("pensjonforvalter.tp");
             case PEN_UT -> QueryBuilders.existsQuery("pensjonforvalter.uforetrygd");
-            case SIGRUN_LIGNET -> QueryBuilders.existsQuery("sigrunstub");
             case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.existsQuery("sigrunstubPensjonsgivende");
             case SIGRUN_SUMMERT -> QueryBuilders.existsQuery("sigrunstubSummertSkattegrunnlag");
             case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
