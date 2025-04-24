@@ -35,7 +35,6 @@ const initialValues = {
 	registreRequest: [],
 	miljoer: [],
 	personRequest: {
-		ident: null,
 		identtype: null,
 		kjoenn: null,
 		alderFom: null,
@@ -544,10 +543,9 @@ export const SoekForm = () => {
 														name={`${adressePath}.harDeltBosted`}
 														label="Har delt bosted"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, 'harDeltBosted')
+															handleChangeAdresse(val.target.checked, 'harDeltBosted')
 														}
 													/>
-													{/*//TODO: Fiks delt bosted naar master er tatt inn*/}
 												</SoekKategori>
 											</Accordion.Content>
 										</Accordion.Item>
@@ -563,15 +561,6 @@ export const SoekForm = () => {
 											</Accordion.Header>
 											<Accordion.Content>
 												<SoekKategori>
-													<FormTextInput
-														name={`${personPath}.ident`}
-														placeholder="Skriv inn ident ..."
-														size="large"
-														value={watch(`${personPath}.ident`)}
-														onBlur={(val: SyntheticEvent) =>
-															handleChange(val?.target?.value || null, 'ident')
-														}
-													/>
 													<FormSelect
 														name={`${personPath}.identtype`}
 														options={Options('identtype')}
