@@ -125,8 +125,6 @@ export const FlyttPersonForm = ({
 		formMethods.trigger('identer')
 	}
 
-	//TODO: Fiks playwright-tester som feiler
-
 	return (
 		<>
 			<h1>Flytt personer til gruppe</h1>
