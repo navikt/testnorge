@@ -14,12 +14,13 @@ import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -40,10 +41,16 @@ public class PersonerSearchService {
         var request = mapperFacade.map(searchRequest,
                 no.nav.testnav.dollysearchservice.dto.SearchRequest.class, context);
 
-        var identer = Optional.ofNullable(searchRequest.getPersonRequest())
-                .filter(personRequest -> isNotBlank(personRequest.getIdent()))
-                .map(personrequest -> Set.of(personrequest.getIdent()))
-                .orElse(bestillingQueryService.execRegisterQuery(request));
+        Set<String> identer;
+        if (isNull(request.getPersonRequest()) || isBlank(request.getPersonRequest().getIdent())) {
+
+            identer = bestillingQueryService.execRegisterCacheQuery(request);
+        } else {
+
+            identer = bestillingQueryService.execRegisterNoCacheQuery(request).stream()
+                    .filter(ident -> ident.equals(request.getPersonRequest().getIdent()))
+                    .collect(Collectors.toSet());
+        }
 
         request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 

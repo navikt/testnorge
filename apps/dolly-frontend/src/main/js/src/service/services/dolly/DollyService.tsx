@@ -231,4 +231,26 @@ export default {
 				throw error
 			})
 	},
+
+	personerSearch(request) {
+		const getRegistreRequest = () => {
+			if (!request?.registreRequest || request?.registreRequest.length === 0) {
+				return null
+			}
+			let url = ''
+			request?.registreRequest?.forEach((type, idx) =>
+				idx === 0 ? (url += `?registreRequest=${type}`) : (url += `&registreRequest=${type}`),
+			)
+			return url
+		}
+		const registre = getRegistreRequest()
+		return Request.post(Endpoints.personerSearch(registre), request)
+			.then((response) => {
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
 }

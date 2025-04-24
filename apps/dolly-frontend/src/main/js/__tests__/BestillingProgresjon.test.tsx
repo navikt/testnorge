@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { BestillingProgresjon } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
-import React from 'react'
+import React, { act } from 'react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { dollyTest } from '../vitest.setup'
 import { userEvent } from '@vitest/browser/context'
@@ -31,15 +31,19 @@ dollyTest('renders Bestillingprogresjon and cancel removes the element', async (
 	)
 
 	const avbrytButton = screen.getByTestId(TestComponentSelectors.BUTTON_AVBRYT_BESTILLING)
-	await userEvent.click(avbrytButton)
+	await act(async () => {
+		await userEvent.click(avbrytButton)
+	})
 
-	rerender(
-		<BestillingProgresjon
-			onFinishBestilling={() => null}
-			bestillingID={null}
-			cancelBestilling={() => bestillinger.pop()}
-		/>,
-	)
+	act(() => {
+		rerender(
+			<BestillingProgresjon
+				onFinishBestilling={() => null}
+				bestillingID={null}
+				cancelBestilling={() => bestillinger.pop()}
+			/>,
+		)
+	})
 
 	expect(screen.queryByText('Bestillingsstatus')).toBeNull()
 })

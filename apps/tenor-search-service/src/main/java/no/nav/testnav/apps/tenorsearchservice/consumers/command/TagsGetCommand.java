@@ -15,9 +15,8 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class TagsGetCommand implements Callable<Mono<DollyTagsDTO>> {
 
-    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags/bolk";
+    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags/hentBolk";
     private static final String PDL_TESTDATA = "/pdl-testdata";
-    private static final String PERSONIDENTER = "Nav-Personidenter";
     private static final ParameterizedTypeReference<Map<String, List<String>>> TYPE = new ParameterizedTypeReference<>() {
     };
 
@@ -28,13 +27,13 @@ public class TagsGetCommand implements Callable<Mono<DollyTagsDTO>> {
     @Override
     public Mono<DollyTagsDTO> call() {
         return webClient
-                .get()
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .header(PERSONIDENTER, String.join(",", identer))
+                .bodyValue(identer)
                 .retrieve()
                 .bodyToMono(TYPE)
                 .map(resultat -> DollyTagsDTO
@@ -43,5 +42,4 @@ public class TagsGetCommand implements Callable<Mono<DollyTagsDTO>> {
                         .build())
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }

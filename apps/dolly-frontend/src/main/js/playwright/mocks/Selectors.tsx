@@ -102,4 +102,5 @@ export enum TestComponentSelectors {
 	EXPANDABLE_PERSONINFORMASJON = 'expandable-personinformasjon',
 	CONTAINER_VALGTE_PERSONER = 'container-valgte-personer',
 	CONTAINER_FINN_PERSON_BESTILLING = 'container-finn-person-bestilling',
+	CONTAINER_DOLLY_TABLE = 'container-dolly-table',
 }

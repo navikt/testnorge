@@ -77,7 +77,7 @@ export default ({ sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
 	if (loadingBruker || loadingGruppe) {
-		return <Loading label="Laster personer" panel />
+		return <Loading label="Laster gruppe..." panel />
 	}
 
 	if (!gruppe) {

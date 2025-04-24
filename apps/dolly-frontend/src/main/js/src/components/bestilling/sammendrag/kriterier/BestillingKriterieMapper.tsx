@@ -60,19 +60,19 @@ const expandable = (
 	objects,
 })
 
+export const getTypePerson = (identNr: string) => {
+	if (parseInt(identNr?.charAt(2)) < 4) {
+		return 'Standard'
+	}
+	return parseInt(identNr?.charAt(2)) > 5 ? 'Test-Norge' : 'NAV-syntetisk'
+}
+
 const mapBestillingsinformasjon = (
 	bestillingsinformasjon: any,
 	data: any[],
 	identtype: any,
 	firstIdent: string,
 ) => {
-	const getTypePerson = () => {
-		if (parseInt(firstIdent?.charAt(2)) < 4) {
-			return 'Standard'
-		}
-		return parseInt(firstIdent?.charAt(2)) > 5 ? 'Test-Norge' : 'NAV-syntetisk'
-	}
-
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
 			header: 'Bestillingsinformasjon',
@@ -85,7 +85,7 @@ const mapBestillingsinformasjon = (
 					'Antall levert',
 					bestillingsinformasjon.antallLevert && bestillingsinformasjon.antallLevert.toString(),
 				),
-				obj('Type person', getTypePerson()),
+				obj('Type person', getTypePerson(firstIdent)),
 				obj('Identtype', identtype),
 				obj('Sist oppdatert', formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)),
 				obj(

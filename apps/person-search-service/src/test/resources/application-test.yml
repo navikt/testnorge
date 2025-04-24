@@ -1,5 +1,0 @@
-elasticsearch:
-  client:
-    username: dummy
-    password: dummy
-    host: dummy
