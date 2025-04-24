@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: api-oversikt-service
+  name: testnav-api-oversikt-service
   namespace: dolly
   labels:
     team: dolly
