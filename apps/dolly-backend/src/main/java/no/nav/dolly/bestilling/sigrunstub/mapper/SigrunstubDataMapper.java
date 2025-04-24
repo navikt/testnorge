@@ -91,6 +91,7 @@ public class SigrunstubDataMapper implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsSummertSkattegrunnlag kilde, SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag destinasjon, MappingContext context) {
+                        log.info("Mottok summertSkattegrunnlag {}", kilde);
 
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
                     }
