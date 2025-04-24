@@ -28,7 +28,7 @@ export const getInitialSummertSkattegrunnlag = () => {
 export const getInitialGrunnlag = () => {
 	return {
 		andelOverfoertFraBarn: null,
-		beloep: null,
+		beloep: 0,
 		kategori: '',
 		tekniskNavn: '',
 		spesifisering: [],
@@ -37,11 +37,11 @@ export const getInitialGrunnlag = () => {
 
 export const getInitialKjoeretoey = () => {
 	return {
-		type: null,
+		type: 'Kjoeretoey',
 		aarForFoerstegangsregistrering: '',
 		antattMarkedsverdi: null,
 		antattVerdiSomNytt: null,
-		beloep: null,
+		beloep: 0,
 		eierandel: null,
 		fabrikatnavn: '',
 		formuesverdi: null,
@@ -73,7 +73,7 @@ export const SigrunstubSummertSkattegrunnlagForm = () => {
 						newEntry={getInitialSummertSkattegrunnlag()}
 						canBeEmpty={false}
 					>
-						{(path) => (
+						{(path: any) => (
 							<>
 								<div className="flexbox--flex-wrap">
 									<FormSelect

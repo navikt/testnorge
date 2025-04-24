@@ -6,7 +6,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 export const KjoeretoeyArrayForm = ({ path }) => (
 	<FormDollyFieldArray
 		name={path}
-		header="Kjøretøy spesifisering"
+		header="Spesifisering"
 		newEntry={getInitialKjoeretoey()}
 		canBeEmpty={true}
 		nested
@@ -15,12 +15,15 @@ export const KjoeretoeyArrayForm = ({ path }) => (
 			<div className="flexbox--flex-wrap sigrun-form" key={idx}>
 				<FormSelect
 					name={`${kjoeretoeyPath}.type`}
+					info={'Foreløpig er det kun støtte for kjøretøy'}
 					size={'large'}
 					label="Type"
+					value={'Kjoeretoey'}
+					isDisabled={true}
 					options={[
-						{ value: 'EiendelerOgFasteEiendommer', label: 'Eiendeler og faste eiendommer' },
-						{ value: 'Kjoeretoey', label: 'Kjøretøy' },
-						{ value: 'Spesifisering', label: 'Spesifisering' },
+						// { value: 'EiendelerOgFasteEiendommer', label: 'Eiendeler og faste eiendommer' },
+						{ value: 'Kjoeretoey', label: 'Kjøretøy' }, //Kun kjøretøy som er støttet foreløpig
+						// { value: 'Spesifisering', label: 'Spesifisering' },
 					]}
 				/>
 				<FormTextInput

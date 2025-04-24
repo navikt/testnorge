@@ -32,6 +32,10 @@ import {
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
 import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
+import {
+	kategoriKodeverk,
+	tekniskNavnKodeverk,
+} from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1249,7 +1253,6 @@ const mapSigrunstubSummertSkattegrunnlag = (bestillingData, data) => {
 			obj('Stadie', skattegrunnlag.stadie),
 		]
 
-		// Add nested items if there are any grunnlag types
 		if (
 			skattegrunnlag.grunnlag?.length > 0 ||
 			skattegrunnlag.kildeskattPaaLoennGrunnlag?.length > 0 ||
@@ -1257,48 +1260,45 @@ const mapSigrunstubSummertSkattegrunnlag = (bestillingData, data) => {
 		) {
 			baseRow.push({
 				nestedItemRows: [
-					// Each entry needs to be an array with label at [0] and mappable items at [1]
-					...(skattegrunnlag.grunnlag?.length > 0
-						? [
-								[
-									{ label: 'Grunnlag', value: '', width: 'medium' },
-									skattegrunnlag.grunnlag.map((g) =>
-										obj(
-											`${g.tekniskNavn || '-'}`,
-											`Kategori: ${g.kategori || '-'}, Beløp: ${g.beloep || '-'}${g.andelOverfoertFraBarn ? ', Andel fra barn: ' + g.andelOverfoertFraBarn : ''}`,
-										),
-									),
-								],
-							]
-						: []),
+					...skattegrunnlag.grunnlag?.map((grunnlag, idx) => {
+						 						return [
+							{ numberHeader: `Grunnlag ${idx + 1}` },
+							[
+								obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
+								obj('Beløp', grunnlag.beloep),
+								obj('Kategori', grunnlag.kategori, kategoriKodeverk),
+								obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
+								obj(
+									'Antall spesifiseringer',
+									grunnlag.spesifisering?.length > 0 && grunnlag.spesifisering?.length,
+								),
+							],
+						]
+					}),
 
-					...(skattegrunnlag.kildeskattPaaLoennGrunnlag?.length > 0
-						? [
-								[
-									{ label: 'Kildeskatt på lønn', value: '', width: 'medium' },
-									skattegrunnlag.kildeskattPaaLoennGrunnlag.map((g) =>
-										obj(
-											`${g.tekniskNavn || '-'}`,
-											`Kategori: ${g.kategori || '-'}, Beløp: ${g.beloep || '-'}${g.andelOverfoertFraBarn ? ', Andel fra barn: ' + g.andelOverfoertFraBarn : ''}`,
-										),
-									),
-								],
-							]
-						: []),
+					...skattegrunnlag.kildeskattPaaLoennGrunnlag?.map((grunnlag, idx) => {
+						return [
+							{ numberHeader: `Kildeskatt på lønnsgrunnlag ${idx + 1}` },
+							[
+								obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
+								obj('Beløp', grunnlag.beloep),
+								obj('Kategori', grunnlag.kategori, kategoriKodeverk),
+								obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
+							],
+						]
+					}),
 
-					...(skattegrunnlag.svalbardGrunnlag?.length > 0
-						? [
-								[
-									{ label: 'Svalbard grunnlag', value: '', width: 'medium' },
-									skattegrunnlag.svalbardGrunnlag.map((g) =>
-										obj(
-											`${g.tekniskNavn || '-'}`,
-											`Kategori: ${g.kategori || '-'}, Beløp: ${g.beloep || '-'}${g.andelOverfoertFraBarn ? ', Andel fra barn: ' + g.andelOverfoertFraBarn : ''}`,
-										),
-									),
-								],
-							]
-						: []),
+					...skattegrunnlag.svalbardGrunnlag?.map((grunnlag, idx) => {
+						return [
+							{ numberHeader: `Svalbard grunnlag ${idx + 1}` },
+							[
+								obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
+								obj('Beløp', grunnlag.beloep),
+								obj('Kategori', grunnlag.kategori, kategoriKodeverk),
+								obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
+							],
+						]
+					}),
 				],
 			})
 		}
@@ -2587,5 +2587,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapHistark(bestillingData, data)
 	mapOrganisasjon(bestillingData, data)
 
+	 
 	return data
 }
