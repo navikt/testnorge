@@ -18,12 +18,15 @@ export default () => {
 	const [nyGruppe, setNyGruppe] = useState('')
 	const [gruppeId, setGruppeId] = useState('')
 	const [feilmelding, setFeilmelding] = useState('')
+
 	const [navn, setNavn] = useState('')
 	const [hensikt, setHensikt] = useState('')
+	const [navnError, setNavnError] = useState(null as unknown as string)
+	const [hensiktError, setHensiktError] = useState(null as unknown as string)
 
 	const formMethods = useFormContext()
-	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const formErrors = formMethods.formState.errors
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 
 	useEffect(() => {
 		formMethods.setValue('gruppeId', gruppeId)
@@ -31,22 +34,16 @@ export default () => {
 
 	const onHandleSubmit = () => {
 		if (navn.length === 0) {
-			formMethods.setError('gruppeNavn', {
-				message: 'Navn må fylles ut',
-			})
+			setNavnError('Navn må fylles ut')
 		} else if (navn.length > 30) {
-			formMethods.setError('gruppeNavn', { message: 'Navn kan maks være 30 bokstaver' })
+			setNavnError('Navn kan maks være 30 bokstaver')
 		}
 		if (hensikt.length === 0) {
-			formMethods.setError('gruppeHensikt', {
-				message: 'Hensikt må fylles ut',
-			})
+			setHensiktError('Hensikt må fylles ut')
 		} else if (hensikt.length > 200) {
-			formMethods.setError('gruppeHensikt', { message: 'Hensikt kan maks være 200 bokstaver' })
+			setHensiktError('Hensikt kan maks være 200 bokstaver')
 		}
-
 		if (navn.length === 0 || navn.length > 30 || hensikt.length === 0 || hensikt.length > 200) {
-			errorContext?.setShowError(true)
 			return
 		}
 
@@ -77,16 +74,24 @@ export default () => {
 				<DollyTextInput
 					name={'gruppeNavn'}
 					data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_NAVN}
-					onChange={(event) => setNavn(event.target.value)}
+					onChange={(event) => {
+						setNavn(event.target.value)
+						setNavnError(null as unknown as string)
+					}}
 					label="NAVN"
 					size="large"
+					manualError={navnError}
 				/>
 				<DollyTextInput
 					name={'gruppeHensikt'}
 					data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_HENSIKT}
-					onChange={(event) => setHensikt(event.target.value)}
+					onChange={(event) => {
+						setHensikt(event.target.value)
+						setHensiktError(null as unknown as string)
+					}}
 					label="HENSIKT"
 					size="large"
+					manualError={hensiktError}
 				/>
 			</div>
 			<NavButton
@@ -103,7 +108,7 @@ export default () => {
 			<FeedbackText>
 				{nyGruppe.length > 0 && <div>Gruppe ble opprettet: {nyGruppe}</div>}
 				{feilmelding && <div className="error-message">{feilmelding}</div>}
-				{formErrors?.gruppeId && (
+				{formErrors?.gruppeId && errorContext && (
 					<div className="error-message">{'Opprett en gruppe med navn og hensikt'}</div>
 				)}
 			</FeedbackText>

@@ -125,10 +125,7 @@ export const FlyttPersonForm = ({
 		formMethods.trigger('identer')
 	}
 
-	//TODO: Ikke vis error paa gruppe umiddelbart naar modal aapnes
-	//TODO: Ikke vis dobbel error paa ny gruppe
-	console.log('formMethods.watch(): ', formMethods.watch()) //TODO - SLETT MEG
-	console.log('formMethods.formState.errors: ', formMethods.formState.errors) //TODO - SLETT MEG
+	//TODO: Fiks playwright-tester som feiler
 
 	return (
 		<>

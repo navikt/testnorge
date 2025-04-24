@@ -545,6 +545,7 @@ export const SoekForm = () => {
 															handleChange(val.target.checked, `${adressePath}.harDeltBosted`)
 														}
 													/>
+													{/*//TODO: Fiks delt bosted naar master er tatt inn*/}
 												</SoekKategori>
 											</Accordion.Content>
 										</Accordion.Item>
