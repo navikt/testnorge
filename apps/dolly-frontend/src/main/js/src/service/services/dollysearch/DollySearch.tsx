@@ -8,7 +8,7 @@ type PdlPerson = {
 const identSearchUrl = `/testnav-dolly-search-service/api/v1`
 
 export const identerSearch = (fragment: string) => {
-	if (!fragment || fragment.length > 11) {
+	if (!fragment) {
 		return null
 	}
 	return Api.fetch(`${identSearchUrl}/identer?fragment=${fragment}`, {
