@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import AlleGrupper from '@/components/velgGruppe/AlleGrupper'
 import { useFormContext } from 'react-hook-form'
+import { runningE2ETest } from '@/service/services/Request'
 
 interface VelgGruppeToggleProps {
 	fraGruppe?: number
@@ -28,7 +29,11 @@ export const VelgGruppeToggle = ({ fraGruppe, grupper }: VelgGruppeToggleProps) 
 	const harGrupper = grupper?.antallElementer > 0
 	const harBrukerValg = formMethods?.watch('bruker')
 	const [gruppevalg, setGruppevalg] = useState(
-		harBrukerValg ? Gruppevalg.ALLE : harGrupper ? Gruppevalg.MINE : Gruppevalg.NY,
+		harBrukerValg
+			? Gruppevalg.ALLE
+			: harGrupper || runningE2ETest()
+				? Gruppevalg.MINE
+				: Gruppevalg.NY,
 	)
 
 	const handleToggleChange = (value: Gruppevalg) => {
