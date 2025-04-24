@@ -17,9 +17,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
-
         - application: dolly-frontend
         - application: dolly-idporten
+        - application: testnav-dolly-search-service
         - application: etterlatte-testdata
           namespace: etterlatte
         - application: testnav-batch-bestilling-service
