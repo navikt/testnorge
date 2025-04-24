@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -46,7 +47,9 @@ public class PersonerSearchService {
             identer = bestillingQueryService.execRegisterCacheQuery(request);
         } else {
 
-            identer = bestillingQueryService.execRegisterNoCacheQuery(request);
+            identer = bestillingQueryService.execRegisterNoCacheQuery(request).stream()
+                    .filter(ident -> ident.equals(request.getPersonRequest().getIdent()))
+                    .collect(Collectors.toSet());
         }
 
         request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
