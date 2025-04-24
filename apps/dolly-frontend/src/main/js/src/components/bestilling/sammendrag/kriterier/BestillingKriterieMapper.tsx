@@ -1261,7 +1261,7 @@ const mapSigrunstubSummertSkattegrunnlag = (bestillingData, data) => {
 			baseRow.push({
 				nestedItemRows: [
 					...skattegrunnlag.grunnlag?.map((grunnlag, idx) => {
-						 						return [
+						return [
 							{ numberHeader: `Grunnlag ${idx + 1}` },
 							[
 								obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
@@ -2587,6 +2587,5 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapHistark(bestillingData, data)
 	mapOrganisasjon(bestillingData, data)
 
-	 
 	return data
 }
