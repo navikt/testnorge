@@ -639,7 +639,7 @@ export const SoekForm = () => {
 									<Button
 										onClick={getNewResult}
 										variant="primary"
-										disabled={soekPaagaar || !result || result?.totalHits < maxTotalHits}
+										disabled={soekPaagaar || !result}
 										title={result?.totalHits < maxTotalHits ? 'Alle treff vises' : ''}
 										loading={soekPaagaar}
 										type="submit"
