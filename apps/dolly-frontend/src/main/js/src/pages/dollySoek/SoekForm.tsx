@@ -35,6 +35,7 @@ const initialValues = {
 	registreRequest: [],
 	miljoer: [],
 	personRequest: {
+		ident: null,
 		identtype: null,
 		kjoenn: null,
 		alderFom: null,
@@ -561,6 +562,23 @@ export const SoekForm = () => {
 											</Accordion.Header>
 											<Accordion.Content>
 												<SoekKategori>
+													<FormTextInput
+														name={`${personPath}.ident`}
+														placeholder="Skriv inn ident ..."
+														size="large"
+														value={watch(`${personPath}.ident`)}
+														onBlur={(val: SyntheticEvent) =>
+															handleChange(val?.target?.value || null, 'ident')
+														}
+													/>
+													<div
+														style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '5px' }}
+													>
+														<Hjelpetekst>
+															Søk på ident gir kun søk på hovedperson og ikke evt. relaterte
+															personer.
+														</Hjelpetekst>
+													</div>
 													<FormSelect
 														name={`${personPath}.identtype`}
 														options={Options('identtype')}
