@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => ({
 		react({
 			babel: {
 				plugins: [
-					// 'babel-plugin-react-compiler', //TODO: Enable when react-compiler exits beta
+					'babel-plugin-react-compiler',
 					[
 						'babel-plugin-styled-components',
 						{
