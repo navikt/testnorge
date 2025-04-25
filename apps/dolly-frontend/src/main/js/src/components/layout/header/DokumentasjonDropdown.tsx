@@ -3,9 +3,7 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { ActionMenu } from '@navikt/ds-react'
 import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
-import { TestComponentSelectors } from '#/mocks/Selectors'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
-import { route } from '@react-router/dev/dist/routes'
 import { useNavigate } from 'react-router'
 
 export const DokumentasjonDropdown = () => {
@@ -48,12 +46,12 @@ export const DokumentasjonDropdown = () => {
 							</DropdownStyledLink>
 						</ActionMenu.Item>
 						<PreloadableActionMenuItem
-							route="/apioversikt"
+							route="/oversikt"
 							// dataTestId={TestComponentSelectors.BUTTON_HEADER_DOLLYSOEK} //TODO: Skriv tester
 							style={{ color: '#212529' }}
 						>
 							<Icon kind="file-code" fontSize="1.5rem" />
-							<DropdownStyledLink href="/apioversikt">API-oversikt</DropdownStyledLink>
+							<DropdownStyledLink href="/oversikt">API-oversikt</DropdownStyledLink>
 						</PreloadableActionMenuItem>
 					</>
 				)}
