@@ -3,6 +3,7 @@ import { Navigate } from 'react-router'
 import GruppeConnector from './pages/gruppe/GruppeConnector'
 import { lazyWithPreload } from './utils/lazyWithPreload'
 import { Bestillingsveileder } from '@/components/bestillingsveileder/Bestillingsveileder'
+import ApiOversiktPage from '@/pages/apiOversikt/ApiOversiktPage'
 
 const OrganisasjonTenorSoekPage = lazyWithPreload(
 	() => import('@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'),
@@ -19,6 +20,7 @@ const OrgtilgangPage = lazyWithPreload(() => import('@/pages/adminPages/Orgtilga
 const LevendeArbeidsforholdPage = lazyWithPreload(
 	() => import('@/pages/adminPages/Levendearbeidsforhold/AppstyringPage'),
 )
+// const ApiOversiktPage = lazyWithPreload(() => import('@/pages/apiOversikt/ApiOversiktPage'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.params?.gruppeId}</span>
 
@@ -113,13 +115,19 @@ const allRoutes = [
 	},
 	{
 		path: '/admin/levendearbeidsforhold',
-		handle: { crumb: () => 'Levende-arbeidsforhold' },
+		handle: { crumb: () => 'Levende arbeidsforhold' },
 		element: LevendeArbeidsforholdPage,
 	},
 	{
 		path: '/nyansettelser',
 		handle: { crumb: () => 'Nyansettelser' },
 		element: NyansettelserPage,
+	},
+	{
+		path: '/apioversikt',
+		handle: { crumb: () => 'API-oversikt' },
+		// element: ApiOversiktPage,
+		element: () => <ApiOversiktPage />,
 	},
 ]
 
