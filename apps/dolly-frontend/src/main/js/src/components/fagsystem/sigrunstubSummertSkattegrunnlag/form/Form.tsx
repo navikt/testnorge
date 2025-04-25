@@ -73,42 +73,48 @@ export const SigrunstubSummertSkattegrunnlagForm = () => {
 						newEntry={getInitialSummertSkattegrunnlag()}
 						canBeEmpty={false}
 					>
-						{(path: any) => (
-							<>
-								<div className="flexbox--flex-wrap">
-									<FormSelect
-										name={`${path}.inntektsaar`}
-										label="Inntektsår"
-										options={getYearRangeOptions(2017, new Date().getFullYear())}
-										isClearable={false}
-									/>
-									<DollyDatepicker
-										name={`${path}.ajourholdstidspunkt`}
-										label="Ajourholdstidspunkt"
-									/>
-									<DollyDatepicker
-										name={`${path}.skatteoppgjoersdato`}
-										label="Skatteoppgjørsdato"
-									/>
-									<FormSelect
-										name={`${path}.stadie`}
-										kodeverk={stadieKodeverk}
-										label="Stadie"
-										isClearable={false}
-									/>
-									<FormCheckbox name={`${path}.skjermet`} label="Skjermet" />
-								</div>
+						{(path: any) => {
+							return (
+								<>
+									<div className="flexbox--flex-wrap">
+										<FormSelect
+											name={`${path}.inntektsaar`}
+											defaultValue={
+												formMethods.getValues(`${path}.inntektsaar`) &&
+												parseInt(formMethods.getValues(`${path}.inntektsaar`))
+											}
+											label="Inntektsår"
+											options={getYearRangeOptions(2017, new Date().getFullYear())}
+											isClearable={false}
+										/>
+										<DollyDatepicker
+											name={`${path}.ajourholdstidspunkt`}
+											label="Ajourholdstidspunkt"
+										/>
+										<DollyDatepicker
+											name={`${path}.skatteoppgjoersdato`}
+											label="Skatteoppgjørsdato"
+										/>
+										<FormSelect
+											name={`${path}.stadie`}
+											kodeverk={stadieKodeverk}
+											label="Stadie"
+											isClearable={false}
+										/>
+										<FormCheckbox name={`${path}.skjermet`} label="Skjermet" />
+									</div>
 
-								<GrunnlagArrayForm path={`${path}.grunnlag`} header="Grunnlag" />
+									<GrunnlagArrayForm path={`${path}.grunnlag`} header="Grunnlag" />
 
-								<GrunnlagArrayForm
-									path={`${path}.kildeskattPaaLoennGrunnlag`}
-									header="Kildeskatt på lønnsgrunnlag"
-								/>
+									<GrunnlagArrayForm
+										path={`${path}.kildeskattPaaLoennGrunnlag`}
+										header="Kildeskatt på lønnsgrunnlag"
+									/>
 
-								<GrunnlagArrayForm path={`${path}.svalbardGrunnlag`} header="Svalbard grunnlag" />
-							</>
-						)}
+									<GrunnlagArrayForm path={`${path}.svalbardGrunnlag`} header="Svalbard grunnlag" />
+								</>
+							)
+						}}
 					</FormDollyFieldArray>
 				</ErrorBoundary>
 			</Panel>

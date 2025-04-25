@@ -24,7 +24,7 @@ export const kodeverkKeyToLabel = (key) => {
 		case 'grunnlag':
 			return 'Grunnlag'
 		case 'spesifisering':
-			return 'Spesifisering (kjøretøy)'
+			return 'Spesifisering'
 		case 'svalbardGrunnlag':
 			return 'Grunnlag Svalbard'
 		case 'kildeskattPaaLoennGrunnlag':
@@ -60,7 +60,7 @@ const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx }) => {
 					)
 				)
 			}
-			if (erDato && (key.includes('Dato') || key.includes('dato'))) {
+			if (erDato) {
 				return <TitleValue title={label} value={formatDate(value)} key={key + idx} />
 			}
 			if (key === 'tekniskNavn') {
@@ -78,7 +78,9 @@ const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx }) => {
 }
 
 export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading }) => {
-	if (loading) return <Loading label="Laster sigrunstub-data" />
+	if (loading) {
+		return <Loading label="Laster sigrunstub-data" />
+	}
 	if (!data) {
 		return null
 	}

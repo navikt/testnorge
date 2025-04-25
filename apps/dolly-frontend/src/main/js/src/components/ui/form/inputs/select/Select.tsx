@@ -22,6 +22,7 @@ type SelectProps = {
 	name: string
 	fieldName?: string
 	value?: any
+	defaultValue?: any
 	className?: any
 	classNamePrefix?: string
 	onChange?: any
@@ -53,6 +54,7 @@ export const Select = ({
 	value,
 	className,
 	classNamePrefix = 'select',
+	defaultValue,
 	isDisabled = false,
 	isLoading = false,
 	isSearchable = true,
@@ -75,6 +77,12 @@ export const Select = ({
 			ref?.current?.focus?.()
 		}
 	}, [autoFocus])
+
+	useEffect(() => {
+		if (defaultValue && options.some((option) => option.value === defaultValue)) {
+			formMethods?.setValue(name, defaultValue)
+		}
+	}, [])
 
 	const val = formMethods?.watch(name)
 	let formValue = isMulti
@@ -110,6 +118,7 @@ export const Select = ({
 		<span data-testid={rest['data-testid']}>
 			<ReactSelect
 				value={!_.isEmpty(formValue) ? formValue : propValue}
+				defaultValue={propValue}
 				autoFocus={autoFocus}
 				options={options}
 				name={name}

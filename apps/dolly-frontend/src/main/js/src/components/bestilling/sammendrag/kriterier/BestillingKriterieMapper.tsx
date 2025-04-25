@@ -1234,6 +1234,22 @@ const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 }
 
 const mapSigrunstubSummertSkattegrunnlag = (bestillingData, data) => {
+	function mapGrunnlag(grunnlag, header) {
+		return [
+			{ numberHeader: header },
+			[
+				obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
+				obj('Beløp', grunnlag.beloep),
+				obj('Kategori', grunnlag.kategori, kategoriKodeverk),
+				obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
+				obj(
+					'Antall spesifiseringer',
+					grunnlag.spesifisering?.length > 0 && grunnlag.spesifisering?.length,
+				),
+			],
+		]
+	}
+
 	const kriterier = bestillingData.sigrunstubSummertSkattegrunnlag
 
 	if (!kriterier) return
@@ -1261,43 +1277,15 @@ const mapSigrunstubSummertSkattegrunnlag = (bestillingData, data) => {
 			baseRow.push({
 				nestedItemRows: [
 					...skattegrunnlag.grunnlag?.map((grunnlag, idx) => {
-						return [
-							{ numberHeader: `Grunnlag ${idx + 1}` },
-							[
-								obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
-								obj('Beløp', grunnlag.beloep),
-								obj('Kategori', grunnlag.kategori, kategoriKodeverk),
-								obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
-								obj(
-									'Antall spesifiseringer',
-									grunnlag.spesifisering?.length > 0 && grunnlag.spesifisering?.length,
-								),
-							],
-						]
+						return mapGrunnlag(grunnlag, `Grunnlag ${idx + 1}`)
 					}),
 
 					...skattegrunnlag.kildeskattPaaLoennGrunnlag?.map((grunnlag, idx) => {
-						return [
-							{ numberHeader: `Kildeskatt på lønnsgrunnlag ${idx + 1}` },
-							[
-								obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
-								obj('Beløp', grunnlag.beloep),
-								obj('Kategori', grunnlag.kategori, kategoriKodeverk),
-								obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
-							],
-						]
+						return mapGrunnlag(grunnlag, `Kildeskatt på lønnsgrunnlag ${idx + 1}`)
 					}),
 
 					...skattegrunnlag.svalbardGrunnlag?.map((grunnlag, idx) => {
-						return [
-							{ numberHeader: `Svalbard grunnlag ${idx + 1}` },
-							[
-								obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
-								obj('Beløp', grunnlag.beloep),
-								obj('Kategori', grunnlag.kategori, kategoriKodeverk),
-								obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
-							],
-						]
+						return mapGrunnlag(grunnlag, `Svalbard grunnlag ${idx + 1}`)
 					}),
 				],
 			})
