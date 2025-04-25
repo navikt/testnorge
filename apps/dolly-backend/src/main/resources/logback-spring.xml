@@ -3,6 +3,7 @@
     <springProfile name="prod,dev">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} - %X{traceId} - %msg%n</pattern>
                 <maxStackTraceLength>-1</maxStackTraceLength>
                 <addCauses>true</addCauses>
 <!--                <stackTraceIncludePrefix>-</stackTraceIncludePrefix>-->
@@ -32,6 +33,7 @@
                 <pattern>
                     %d{HH:mm:ss.SSS} %highlight(%p) | %yellow(%logger{0}): %m%n
                 </pattern>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} - %X{traceId} - %msg%n</pattern>
             </encoder>
         </appender>
         <root level="INFO">
