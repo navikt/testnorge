@@ -142,7 +142,6 @@ public class EtterlatteClient implements ClientRegister {
                 .findFirst().orElse(null);
     }
 
-
     private static String getForelderFraForelder(HashMap<String, PdlPersonBolk.PersonBolk> personer, String ident, Gjenlevende gjenlevende) {
 
         return personer.get(ident).getPerson().getForelderBarnRelasjon().stream()
