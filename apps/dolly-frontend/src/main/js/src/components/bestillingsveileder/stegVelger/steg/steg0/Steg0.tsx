@@ -83,7 +83,11 @@ const Steg0 = () => {
 	const numericGruppeId = gruppeId ? parseInt(gruppeId) : null
 
 	useEffect(() => {
-		if ((!formGruppeId || typeof formGruppeId === 'string') && numericGruppeId) {
+		if (
+			(!formGruppeId || typeof formGruppeId === 'string') &&
+			formGruppeId !== '' &&
+			numericGruppeId
+		) {
 			formMethods.setValue('gruppeId', numericGruppeId)
 		}
 		const contextGruppeId = opts.gruppeId && parseInt(opts.gruppeId)
@@ -110,7 +114,9 @@ const Steg0 = () => {
 					)}
 					{!velgGruppeDisabled && (
 						<div className="dolly-panel dolly-panel-open">
-							<VelgGruppe formMethods={formMethods} title="Hvilken gruppe vil du bestille til?" />
+							<div style={{ backgroundColor: 'white', padding: '10px 20px' }}>
+								<VelgGruppe formMethods={formMethods} title="Hvilken gruppe vil du bestille til?" />
+							</div>
 						</div>
 					)}
 				</>

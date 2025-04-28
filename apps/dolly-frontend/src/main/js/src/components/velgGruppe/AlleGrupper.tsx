@@ -16,7 +16,7 @@ type Options = {
 export default ({ fraGruppe = null }: AlleGrupper) => {
 	const formMethods = useFormContext()
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
-	const [valgtBruker, setValgtBruker] = useState(formMethods?.watch('bruker') || null)
+	const [valgtBruker, setValgtBruker] = useState(formMethods?.watch('bruker') || '')
 
 	const brukerOptions = brukere?.map((bruker) => {
 		return {
@@ -44,8 +44,9 @@ export default ({ fraGruppe = null }: AlleGrupper) => {
 				options={brukerOptions}
 				size="medium"
 				onChange={(bruker) => {
-					formMethods.setValue('bruker', bruker?.value)
-					setValgtBruker(bruker?.value || null)
+					formMethods?.setValue('bruker', bruker?.value)
+					formMethods?.trigger('bruker')
+					setValgtBruker(bruker?.value || '')
 				}}
 				value={valgtBruker || formMethods?.watch('bruker')}
 				isLoading={loadingBrukere}

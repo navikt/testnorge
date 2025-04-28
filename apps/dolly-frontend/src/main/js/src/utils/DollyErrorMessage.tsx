@@ -13,7 +13,7 @@ export const DollyErrorMessage = ({ name }: { name: string }) => {
 	} = useFormContext()
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	return (
-		errorContext.showError && (
+		(!errorContext || errorContext?.showError) && (
 			<ErrorMessage
 				name={name}
 				errors={errors}

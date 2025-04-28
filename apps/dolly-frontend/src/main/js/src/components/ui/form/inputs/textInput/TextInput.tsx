@@ -46,6 +46,7 @@ type TextInputProps = {
 	isDatepicker?: boolean
 	title?: string
 	datepickerOnclick?: Function
+	manualError?: string
 }
 
 const StyledIcon = styled(Icon)`
@@ -96,7 +97,7 @@ export const TextInput = ({
 		getFieldState(name)?.error ||
 		getFieldState(fieldName)?.error ||
 		errors[name]
-	const visFeil = feil && (errorContext?.showError || isTouched)
+	const visFeil = (feil && (errorContext?.showError || isTouched)) || props.manualError
 
 	const css = cn('skjemaelement__input', className, {
 		'skjemaelement__input--harFeil': visFeil,
@@ -152,7 +153,7 @@ export const TextInput = ({
 
 export const DollyTextInput = (props: TextInputProps) => (
 	<InputWrapper {...props}>
-		<Label name={props.name} label={props.label}>
+		<Label name={props.name} label={props.label} manualError={props.manualError}>
 			<TextInput {...props} />
 		</Label>
 	</InputWrapper>
