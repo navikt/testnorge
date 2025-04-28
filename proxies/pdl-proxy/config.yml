@@ -56,21 +56,17 @@ spec:
           cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
-        - application: testnav-person-search-service
-          cluster: dev-gcp
         - application: testnav-synt-sykemelding-api
           cluster: dev-gcp
         - application: testnav-synt-sykemelding-api-dev
-          cluster: dev-gcp
-        - application: testnav-helsepersonell-service
-          cluster: dev-gcp
-        - application: testnav-tenor-search-service
           cluster: dev-gcp
         - application: testnav-levende-arbeidsforhold-ansettelse
           cluster: dev-gcp
         - application: testnav-dolly-search-service
           cluster: dev-gcp
         - application: testnav-dolly-search-service-dev
+          cluster: dev-gcp
+        - application: testnav-tenor-search-service
           cluster: dev-gcp
     outbound:
       rules:

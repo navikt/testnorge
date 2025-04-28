@@ -45,7 +45,7 @@ const ModalContent = styled.div`
 
 export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPersonButtonTypes) => {
 	const formMethods = useForm({
-		defaultValues: { identer: [], gruppeId: '' },
+		defaultValues: { identer: [], gruppeId: undefined },
 		resolver: yupResolver(validation),
 	})
 	const [loading, setLoading] = useState(false)

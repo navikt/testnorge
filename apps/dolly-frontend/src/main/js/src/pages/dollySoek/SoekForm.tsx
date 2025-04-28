@@ -544,7 +544,7 @@ export const SoekForm = () => {
 														name={`${adressePath}.harDeltBosted`}
 														label="Har delt bosted"
 														onChange={(val: SyntheticEvent) =>
-															handleChange(val.target.checked, 'harDeltBosted')
+															handleChangeAdresse(val.target.checked, 'harDeltBosted')
 														}
 													/>
 												</SoekKategori>
@@ -571,6 +571,14 @@ export const SoekForm = () => {
 															handleChange(val?.target?.value || null, 'ident')
 														}
 													/>
+													<div
+														style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '5px' }}
+													>
+														<Hjelpetekst>
+															Søk på ident gir kun søk på hovedperson og ikke evt. relaterte
+															personer.
+														</Hjelpetekst>
+													</div>
 													<FormSelect
 														name={`${personPath}.identtype`}
 														options={Options('identtype')}
@@ -639,7 +647,7 @@ export const SoekForm = () => {
 									<Button
 										onClick={getNewResult}
 										variant="primary"
-										disabled={soekPaagaar || !result || result?.totalHits < maxTotalHits}
+										disabled={soekPaagaar || !result}
 										title={result?.totalHits < maxTotalHits ? 'Alle treff vises' : ''}
 										loading={soekPaagaar}
 										type="submit"
