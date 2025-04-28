@@ -61,9 +61,8 @@ public class EtterlatteClient implements ClientRegister {
                     .map(statusList -> statusList.stream()
                             .filter(status -> !status.is2xxSuccessful())
                             .findFirst().orElse(HttpStatus.OK))
-                    .map(status -> status.is2xxSuccessful() ? "OK" :
-                            "Feil= %d %s".formatted(status.value(), status.getReasonPhrase()))
-                    .map(status -> futurePersist(progress, status)));
+                    .map(status -> futurePersist(progress, status.is2xxSuccessful() ? "OK" :
+                            "Feil= %d %s".formatted(status.value(), status.getReasonPhrase()))));
         }
         return Flux.empty();
     }
