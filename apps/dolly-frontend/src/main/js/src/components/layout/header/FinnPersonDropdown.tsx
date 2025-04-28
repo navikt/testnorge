@@ -8,7 +8,7 @@ import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 export const FinnPersonDropdown = () => {
 	const location = useLocation()
 	const [isActive, setIsActive] = useState(false)
-	console.log('location.pathname: ', location.pathname) //TODO - SLETT MEG
+
 	useEffect(() => {
 		setIsActive(
 			location?.pathname === '/dollysoek' ||
