@@ -61,6 +61,8 @@ public class EtterlatteClient implements ClientRegister {
                     .map(statusList -> statusList.stream()
                             .filter(status -> !status.is2xxSuccessful())
                             .findFirst().orElse(HttpStatus.OK))
+                    .map(status -> status.is2xxSuccessful() ? "OK" :
+                            "Feil= %d %s".formatted(status.value(), status.getReasonPhrase()))
                     .map(status -> futurePersist(progress, status)));
         }
         return Flux.empty();
@@ -72,10 +74,7 @@ public class EtterlatteClient implements ClientRegister {
         // Etterlatte tilbyr pt ikke sletting
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, HttpStatus httpStatus) {
-
-        var status = httpStatus.is2xxSuccessful() ? "OK" :
-                "Feil= %d %s".formatted(httpStatus.value(), httpStatus.getReasonPhrase());
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
             transactionHelperService.persister(progress, BestillingProgress::setEtterlatteStatus, status);
@@ -113,14 +112,14 @@ public class EtterlatteClient implements ClientRegister {
                 .flatMap(personer -> {
                     if (isTrue(FoedselsdatoUtility.isMyndig(personer.get(ident)))) {
                         return Mono.just(VedtakRequestDTO.builder()
-                                        .barn(personer.get(ident).getPerson().getForelderBarnRelasjon().stream()
-                                                .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
-                                                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                .distinct()
-                                                .toList())
-                                        .avdoed(getForelderFraForelder(personer, ident, bolk -> !bolk.getPerson().getDoedsfall().isEmpty()))
-                                        .gjenlevende(getForelderFraForelder(personer, ident, bolk -> bolk.getPerson().getDoedsfall().isEmpty()))
-                                        .build());
+                                .barn(personer.get(ident).getPerson().getForelderBarnRelasjon().stream()
+                                        .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .distinct()
+                                        .toList())
+                                .avdoed(getForelderFraForelder(personer, ident, bolk -> !bolk.getPerson().getDoedsfall().isEmpty()))
+                                .gjenlevende(getForelderFraForelder(personer, ident, bolk -> bolk.getPerson().getDoedsfall().isEmpty()))
+                                .build());
                     } else {
                         return Mono.just(VedtakRequestDTO.builder()
                                 .barn(List.of(personer.get(ident).getIdent()))
