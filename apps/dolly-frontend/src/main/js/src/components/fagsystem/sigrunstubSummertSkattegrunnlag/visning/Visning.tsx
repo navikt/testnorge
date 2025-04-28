@@ -34,7 +34,7 @@ export const kodeverkKeyToLabel = (key) => {
 	}
 }
 
-const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx }) => {
+const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx, whiteBackground }) => {
 	if (!summertSkattegrunnlag) {
 		return null
 	}
@@ -53,8 +53,18 @@ const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx }) => {
 				return (
 					value.length > 0 && (
 						<>
-							<DollyFaBlokk key={key + idx} idx={idx} header={label} number={idx}>
-								<SummertSkattegrunnlagVisning summertSkattegrunnlag={value?.[0]} idx={idx} />
+							<DollyFaBlokk
+								key={key + idx}
+								idx={idx}
+								header={label}
+								number={idx}
+								whiteBackground={whiteBackground}
+							>
+								<SummertSkattegrunnlagVisning
+									summertSkattegrunnlag={value?.[0]}
+									idx={idx}
+									whiteBackground={!whiteBackground}
+								/>
 							</DollyFaBlokk>
 						</>
 					)
@@ -99,7 +109,11 @@ export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading }) => {
 						<DollyFieldArray data={data} header={`Skattegrunnlag`} nested>
 							{(skattegrunnlag, idx) => (
 								<React.Fragment key={idx}>
-									<SummertSkattegrunnlagVisning summertSkattegrunnlag={skattegrunnlag} idx={idx} />
+									<SummertSkattegrunnlagVisning
+										summertSkattegrunnlag={skattegrunnlag}
+										idx={idx}
+										whiteBackground={true}
+									/>
 								</React.Fragment>
 							)}
 						</DollyFieldArray>
