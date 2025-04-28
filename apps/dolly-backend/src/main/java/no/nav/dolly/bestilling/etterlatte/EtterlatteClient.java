@@ -15,6 +15,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.util.TransactionHelperService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -43,10 +44,14 @@ public class EtterlatteClient implements ClientRegister {
                                 context.setProperty("etterlattYtelse", etterlattYtelse);
                                 var nyVedtakRequest = mapperFacade.map(vedtakRequestDTO, VedtakRequestDTO.class, context);
                                 return etterlatteConsumer.opprettVedtak(nyVedtakRequest)
-                                        .map(VedtakResponseDTO::getStatus);
+                                        .map(VedtakResponseDTO::getStatus)
+                                        .map(HttpStatus::valueOf);
                             })
                     )
-                    .reduce("", (a, b) -> "OK")
+                    .collectList()
+                            .map(statusList -> statusList.stream()
+                                    .filter(status -> !status.is2xxSuccessful())
+                                    .findFirst().orElse(HttpStatus.OK))
                     .map(status -> futurePersist(progress, status)));
         }
         return Flux.empty();
@@ -58,7 +63,10 @@ public class EtterlatteClient implements ClientRegister {
         // Etterlatte tilbyr pt ikke sletting
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(BestillingProgress progress, HttpStatus httpStatus) {
+
+        var status = httpStatus.is2xxSuccessful() ? "OK" :
+                "Feil= %d %s".formatted(httpStatus.value(),httpStatus.getReasonPhrase());
 
         return () -> {
             transactionHelperService.persister(progress, BestillingProgress::setEtterlatteStatus, status);
