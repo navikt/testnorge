@@ -74,7 +74,7 @@ const _renderBestillingsDetaljer = (data) => {
 																			className={'flexbox--align-start flexbox--wrap'}
 																			key={'values' + y}
 																		>
-																			{nestedItem?.[1].map((item, z) => {
+																			{nestedItem?.[1]?.map((item, z) => {
 																				return _renderStaticValue(item, z)
 																			})}
 																		</div>
