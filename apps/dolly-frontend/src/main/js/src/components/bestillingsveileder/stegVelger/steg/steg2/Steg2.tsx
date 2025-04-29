@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useContext } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { sigrunAttributt, SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
 import { AaregForm } from '@/components/fagsystem/aareg/form/Form'
@@ -83,7 +82,6 @@ const Steg2: React.FC = () => {
 			<PdlfForm />
 			{getValues('fullmakt') && <FullmaktForm />}
 			{getValues('aareg') && <AaregForm />}
-			{getValues(sigrunAttributt) && <SigrunstubForm />}
 			{getValues(sigrunstubPensjonsgivendeAttributt) && <SigrunstubPensjonsgivendeForm />}
 			{getValues(sigrunstubSummertSkattegrunnlagAttributt) && (
 				<SigrunstubSummertSkattegrunnlagForm />

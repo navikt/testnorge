@@ -30,20 +30,6 @@ export const usePensjonsgivendeInntektSkatteordning = () => {
 	}
 }
 
-export const useLignetInntekt = (ident, harSigrunstub) => {
-	const endpoint = `${getSigrunstubBaseUrl()}/v1/lignetinntekt`
-	const { data, error, isLoading } = useSWR(
-		ident && harSigrunstub ? [endpoint, { personidentifikator: ident }] : null,
-		([url, params]) => fetcher(url, params),
-	)
-
-	return {
-		data: data?.responseList,
-		loading: isLoading,
-		error,
-	}
-}
-
 export const usePensjonsgivendeInntekt = (ident, harPensjonsgivendeInntekt) => {
 	const endpoint = `${getSigrunstubBaseUrl()}/v1/pensjonsgivendeinntektforfolketrygden`
 	const { data, error, isLoading } = useSWR(

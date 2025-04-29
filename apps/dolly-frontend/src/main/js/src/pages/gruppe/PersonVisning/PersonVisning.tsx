@@ -57,7 +57,6 @@ import {
 	harMedlBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
-	harSigrunstubBestilling,
 	harSigrunstubPensjonsgivendeInntekt,
 	harSigrunstubSummertSkattegrunnlag,
 	harSkattekortBestilling,
@@ -105,7 +104,6 @@ import {
 	YrkesskaderVisning,
 } from '@/components/fagsystem/yrkesskader/visning/YrkesskaderVisning'
 import { InntektsmeldingVisning } from '@/components/fagsystem/inntektsmelding/visning/Visning'
-import { SigrunstubVisning } from '@/components/fagsystem/sigrunstub/visning/Visning'
 import { InntektstubVisning } from '@/components/fagsystem/inntektstub/visning/Visning'
 import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
 import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
@@ -116,11 +114,7 @@ import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
 import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
 import { TpYtelse } from '@/components/fagsystem/tjenestepensjon/visning/TpYtelse'
-import {
-	useLignetInntekt,
-	usePensjonsgivendeInntekt,
-	useSummertSkattegrunnlag,
-} from '@/utils/hooks/useSigrunstub'
+import { usePensjonsgivendeInntekt, useSummertSkattegrunnlag } from '@/utils/hooks/useSigrunstub'
 import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/visning/Visning'
 
 const getIdenttype = (ident) => {
@@ -189,11 +183,6 @@ export default ({
 	const { loading: loadingUdistub, udistub } = useUdistub(
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
-	)
-
-	const { loading: loadingSigrunstub, data: sigrunstub } = useLignetInntekt(
-		ident.ident,
-		harSigrunstubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
 	const {
@@ -512,7 +501,6 @@ export default ({
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>
 				)}
-				<SigrunstubVisning data={sigrunstub} loading={loadingSigrunstub} />
 				<SigrunstubPensjonsgivendeVisning
 					data={sigrunstubPensjonsgivendeInntekt}
 					loading={loadingSigrunstubPensjonsgivendeInntekt}

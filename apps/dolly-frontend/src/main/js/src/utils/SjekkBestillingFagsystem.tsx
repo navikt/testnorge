@@ -3,7 +3,6 @@ type Fagsystem = {
 	skattekort?: boolean
 	medl?: boolean
 	udistub?: boolean
-	sigrunstub?: boolean
 	sigrunstubPensjonsgivende?: boolean
 	sigrunstubSummertSkattegrunnlag?: boolean
 	pensjonforvalter?: {
@@ -53,9 +52,6 @@ export const harMedlBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean
 
 export const harUdistubBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.udistub)
-
-export const harSigrunstubBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
-	harFagsystem(bestillingerFagsystemer, (i) => !!i?.sigrunstub)
 
 export const harSigrunstubPensjonsgivendeInntekt = (
 	bestillingerFagsystemer: Fagsystem[],

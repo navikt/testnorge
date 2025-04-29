@@ -1,5 +1,4 @@
 import * as Yup from 'yup'
-import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
 import { AaregForm } from '@/components/fagsystem/aareg/form/Form'
@@ -42,7 +41,6 @@ export const DollyIdentValidation = Yup.object({
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,
 	...ArbeidssoekerregisteretForm.validation,
-	...SigrunstubForm.validation,
 	...SigrunstubPensjonsgivendeForm.validation,
 	...SigrunstubSummertSkattegrunnlagForm.validation,
 	...InntektstubForm.validation,

@@ -300,24 +300,6 @@ export const backendTransaksjonMock = [
 	},
 ]
 
-export const sigrunstubMock = {
-	responseList: [
-		{
-			personidentifikator: '12345678912',
-			grunnlag: [
-				{
-					inntektsaar: '2022',
-					tjeneste: 'Beregnet skatt',
-					grunnlag: 'formuePrimaerbolig',
-					verdi: '12345',
-					testDataEier: '',
-				},
-			],
-			svalbardGrunnlag: [],
-		},
-	],
-}
-
 export const aaregMock = [
 	{
 		navArbeidsforholdId: 3095857,
@@ -1048,16 +1030,6 @@ export const testnorgeMalBestillinger = [
 								identer: ['04916412345', '31816512345'],
 							},
 						],
-					},
-				],
-			},
-			{
-				id: 'SIGRUN_LIGNET',
-				navn: 'Lignet skatteinntekt (Sigrunstub)',
-				statuser: [
-					{
-						melding: 'OK',
-						identer: ['31816512345', '06896512345', '08826512345', '06836312345', '04916412345'],
 					},
 				],
 			},

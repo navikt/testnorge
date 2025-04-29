@@ -3,7 +3,6 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { initialArbeidsforholdOrg } from '@/components/fagsystem/aareg/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { aaregAttributt } from '@/components/fagsystem/aareg/form/Form'
-import { sigrunAttributt } from '@/components/fagsystem/sigrunstub/form/Form'
 import { inntektstubAttributt } from '@/components/fagsystem/inntektstub/form/Form'
 import { inntektsmeldingAttributt } from '@/components/fagsystem/inntektsmelding/form/Form'
 import {
@@ -40,7 +39,6 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 			iconType="arbeid"
 			startOpen={harValgtAttributt(formValues, [
 				aaregAttributt,
-				sigrunAttributt,
 				inntektstubAttributt,
 				inntektsmeldingAttributt,
 				sigrunstubPensjonsgivendeAttributt,
@@ -58,7 +56,6 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Inntekt (Sigrun)" attr={sm.attrs}>
 				<div style={{ display: 'flex', flexWrap: 'wrap' }}>
-					<Attributt attr={sm.attrs.sigrunstub} />
 					<Attributt attr={sm.attrs.sigrunstubPensjonsgivende} />
 					<Attributt attr={sm.attrs.sigrunstubSummertSkattegrunnlag} />
 				</div>
@@ -89,20 +86,6 @@ ArbeidInntektPanel.initialValues = ({ set, opts, del, has }) => {
 			remove() {
 				del('aareg')
 			},
-		},
-		sigrunstub: {
-			label: 'Lignet inntekt',
-			checked: has(sigrunAttributt),
-			add: () =>
-				set(sigrunAttributt, [
-					{
-						inntektsaar: new Date().getFullYear(),
-						tjeneste: '',
-						grunnlag: [],
-						svalbardGrunnlag: [],
-					},
-				]),
-			remove: () => del(sigrunAttributt),
 		},
 		sigrunstubPensjonsgivende: {
 			label: 'Pensjonsgivende inntekt',

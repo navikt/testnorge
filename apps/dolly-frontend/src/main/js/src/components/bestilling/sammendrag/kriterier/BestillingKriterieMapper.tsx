@@ -16,7 +16,6 @@ import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
-	SigrunKodeverk,
 	VergemaalKodeverk,
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
@@ -1134,66 +1133,6 @@ const mapAareg = (bestillingData, data) => {
 		})
 
 		data.push(aareg)
-	}
-}
-
-const mapSigrunStub = (bestillingData, data) => {
-	const sigrunStubKriterier = bestillingData.sigrunstub
-
-	if (sigrunStubKriterier) {
-		// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
-		const flatSigrunStubKriterier = []
-		sigrunStubKriterier.forEach((inntekt) => {
-			const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
-			inntekt.grunnlag &&
-				inntekt.grunnlag.forEach((gr) => {
-					flatSigrunStubKriterier.push({
-						...inntektObj,
-						grunnlag: gr.tekniskNavn,
-						verdi: gr.tekniskNavn === 'skatteoppgjoersdato' ? formatDate(gr.verdi) : gr.verdi,
-						inntektssted: 'Fastlands-Norge',
-					})
-				})
-			inntekt.svalbardGrunnlag &&
-				inntekt.svalbardGrunnlag.forEach((gr) => {
-					flatSigrunStubKriterier.push({
-						...inntektObj,
-						svalbardGrunnlag: gr.tekniskNavn,
-						verdi: gr.verdi,
-						inntektssted: 'Svalbard',
-					})
-				})
-		})
-
-		const sigrunStub = {
-			header: 'Lignet inntekt (Sigrun)',
-			itemRows: [],
-		}
-
-		flatSigrunStubKriterier.forEach((inntekt, i) => {
-			sigrunStub.itemRows.push([
-				{
-					numberHeader: `Inntekt ${i + 1}`,
-				},
-				obj('År', inntekt.inntektsaar),
-				obj(inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Verdi', inntekt.verdi),
-				obj('Tjeneste', uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
-				{
-					label: 'Grunnlag (Fastlands-Norge)',
-					value: inntekt.grunnlag,
-					width: 'xlarge',
-					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste],
-				},
-				{
-					label: 'Grunnlag (Svalbard)',
-					value: inntekt.svalbardGrunnlag,
-					width: 'xlarge',
-					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste],
-				},
-			])
-		})
-
-		data.push(sigrunStub)
 	}
 }
 
@@ -2554,7 +2493,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapFullmakt(bestillingData, data)
 	mapTpsMessaging(bestillingData, data)
 	mapAareg(bestillingData, data)
-	mapSigrunStub(bestillingData, data)
 	mapSigrunstubPensjonsgivende(bestillingData, data)
 	mapSigrunstubSummertSkattegrunnlag(bestillingData, data)
 	mapInntektStub(bestillingData, data)
