@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class MalBestillingController {
     @GetMapping("/oversikt")
     @Transactional(readOnly = true)
     @Operation(description = "Hent oversikt bestillinger")
-    public RsMalBestillingSimple getMalBestillinger() {
+    public Mono<RsMalBestillingSimple> getMalBestillinger() {
 
         return malBestillingService.getMalBestillingOversikt();
     }
