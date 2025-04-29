@@ -33,7 +33,7 @@
                 <pattern>
                     %d{HH:mm:ss.SSS} %highlight(%p) | %yellow(%logger{0}): %m%n
                 </pattern>
-                <pattern>%d{yyyy-MM-dd HH:mm:ss} - %X{traceId} - %msg%n</pattern>
+<!--                <pattern>%d{yyyy-MM-dd HH:mm:ss} - %X{traceId} - %msg%n</pattern>-->
             </encoder>
         </appender>
         <root level="INFO">
