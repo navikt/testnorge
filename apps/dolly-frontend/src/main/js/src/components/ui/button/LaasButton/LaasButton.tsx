@@ -6,6 +6,11 @@ import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import './LaasModal.less'
 import React from 'react'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_GRUPPER,
+	useMatchMutate,
+} from '@/utils/hooks/useMutate'
 
 type LaasButtonProps = {
 	action: Function
@@ -16,6 +21,7 @@ type LaasButtonProps = {
 
 export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonProps) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const matchMutate = useMatchMutate()
 
 	if (loading) {
 		return <Loading label="låser..." />
@@ -43,7 +49,11 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 						<NavButton
 							onClick={() => {
 								closeModal()
-								return action(gruppeId)
+								action(gruppeId)
+								setTimeout(() => {
+									matchMutate(REGEX_BACKEND_GRUPPER)
+									matchMutate(REGEX_BACKEND_BESTILLINGER)
+								}, 500)
 							}}
 							variant={'primary'}
 						>
