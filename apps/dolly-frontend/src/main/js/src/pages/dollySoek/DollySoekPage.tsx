@@ -1,4 +1,4 @@
-import Title from '@/components/Title'
+import Title from '../../components/title'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { SoekForm } from '@/pages/dollySoek/SoekForm'

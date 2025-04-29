@@ -1,4 +1,6 @@
 import * as _ from 'lodash-es'
+import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
+import { sigrunstubPensjonsgivendeAttributt } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 
 export const tpsfAttributter = [
 	'harMellomnavn',
@@ -61,8 +63,8 @@ export const rootPaths = [
 	'arbeidssoekerregisteret',
 	'arbeidsplassenCV',
 	'skjerming',
-	'sigrunstub',
-	'sigrunstubPensjonsgivende',
+	sigrunstubPensjonsgivendeAttributt,
+	sigrunstubSummertSkattegrunnlagAttributt,
 	'pensjonforvalter',
 	'inntektstub',
 	'instdata',

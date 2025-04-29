@@ -16,7 +16,6 @@ import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
-	SigrunKodeverk,
 	VergemaalKodeverk,
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
@@ -32,6 +31,10 @@ import {
 import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 import { showTpNavn } from '@/components/fagsystem/afpOffentlig/visning/AfpOffentligVisning'
 import { showTyperLabel } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
+import {
+	kategoriKodeverk,
+	tekniskNavnKodeverk,
+} from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1133,66 +1136,6 @@ const mapAareg = (bestillingData, data) => {
 	}
 }
 
-const mapSigrunStub = (bestillingData, data) => {
-	const sigrunStubKriterier = bestillingData.sigrunstub
-
-	if (sigrunStubKriterier) {
-		// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
-		const flatSigrunStubKriterier = []
-		sigrunStubKriterier.forEach((inntekt) => {
-			const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
-			inntekt.grunnlag &&
-				inntekt.grunnlag.forEach((gr) => {
-					flatSigrunStubKriterier.push({
-						...inntektObj,
-						grunnlag: gr.tekniskNavn,
-						verdi: gr.tekniskNavn === 'skatteoppgjoersdato' ? formatDate(gr.verdi) : gr.verdi,
-						inntektssted: 'Fastlands-Norge',
-					})
-				})
-			inntekt.svalbardGrunnlag &&
-				inntekt.svalbardGrunnlag.forEach((gr) => {
-					flatSigrunStubKriterier.push({
-						...inntektObj,
-						svalbardGrunnlag: gr.tekniskNavn,
-						verdi: gr.verdi,
-						inntektssted: 'Svalbard',
-					})
-				})
-		})
-
-		const sigrunStub = {
-			header: 'Lignet inntekt (Sigrun)',
-			itemRows: [],
-		}
-
-		flatSigrunStubKriterier.forEach((inntekt, i) => {
-			sigrunStub.itemRows.push([
-				{
-					numberHeader: `Inntekt ${i + 1}`,
-				},
-				obj('År', inntekt.inntektsaar),
-				obj(inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Verdi', inntekt.verdi),
-				obj('Tjeneste', uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
-				{
-					label: 'Grunnlag (Fastlands-Norge)',
-					value: inntekt.grunnlag,
-					width: 'xlarge',
-					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste],
-				},
-				{
-					label: 'Grunnlag (Svalbard)',
-					value: inntekt.svalbardGrunnlag,
-					width: 'xlarge',
-					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste],
-				},
-			])
-		})
-
-		data.push(sigrunStub)
-	}
-}
-
 const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 	const sigrunstubPensjonsgivendeKriterier = bestillingData.sigrunstubPensjonsgivende
 
@@ -1217,7 +1160,7 @@ const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 					}
 					return obj(kodeverkKeyToLabel(key), value?.toString())
 				})
-				sigrunstubPensjonsgivende.itemRows[i][3].nestedItemRows.push([
+				sigrunstubPensjonsgivende.itemRows[i][3]?.nestedItemRows?.push([
 					{
 						numberHeader: `Inntekt ${y + 1}`,
 					},
@@ -1229,6 +1172,69 @@ const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 	}
 }
 
+const mapSigrunstubSummertSkattegrunnlag = (bestillingData, data) => {
+	function mapGrunnlag(grunnlag, header) {
+		return [
+			{ numberHeader: header },
+			[
+				obj('Teknisk navn', `${grunnlag.tekniskNavn}`, tekniskNavnKodeverk),
+				obj('Beløp', grunnlag.beloep),
+				obj('Kategori', grunnlag.kategori, kategoriKodeverk),
+				obj('Andel fra barn', grunnlag.andelOverfoertFraBarn),
+				obj(
+					'Antall spesifiseringer',
+					grunnlag.spesifisering?.length > 0 && grunnlag.spesifisering?.length,
+				),
+			],
+		]
+	}
+
+	const kriterier = bestillingData.sigrunstubSummertSkattegrunnlag
+
+	if (!kriterier) return
+
+	const summertSkattegrunnlag = {
+		header: 'Summert skattegrunnlag (Sigrun)',
+		itemRows: [],
+	}
+
+	kriterier.forEach((skattegrunnlag, i) => {
+		const baseRow = [
+			{ numberHeader: `Summert skattegrunnlag ${i + 1}` },
+			obj('Inntektsår', skattegrunnlag.inntektsaar),
+			obj('Ajourholdstidspunkt', formatDateTime(skattegrunnlag.ajourholdstidspunkt)),
+			obj('Skatteoppgjørsdato', formatDate(skattegrunnlag.skatteoppgjoersdato)),
+			obj('Skjermet', oversettBoolean(skattegrunnlag.skjermet)),
+			obj('Stadie', skattegrunnlag.stadie),
+		]
+
+		if (
+			skattegrunnlag.grunnlag?.length > 0 ||
+			skattegrunnlag.kildeskattPaaLoennGrunnlag?.length > 0 ||
+			skattegrunnlag.svalbardGrunnlag?.length > 0
+		) {
+			baseRow.push({
+				nestedItemRows: [
+					...skattegrunnlag.grunnlag?.map((grunnlag, idx) => {
+						return mapGrunnlag(grunnlag, `Grunnlag ${idx + 1}`)
+					}),
+
+					...skattegrunnlag.kildeskattPaaLoennGrunnlag?.map((grunnlag, idx) => {
+						return mapGrunnlag(grunnlag, `Kildeskatt på lønnsgrunnlag ${idx + 1}`)
+					}),
+
+					...skattegrunnlag.svalbardGrunnlag?.map((grunnlag, idx) => {
+						return mapGrunnlag(grunnlag, `Svalbard grunnlag ${idx + 1}`)
+					}),
+				],
+			})
+		}
+
+		summertSkattegrunnlag.itemRows.push(baseRow)
+	})
+
+	data.push(summertSkattegrunnlag)
+}
 const mapInntektStub = (bestillingData, data) => {
 	const inntektStubKriterier = bestillingData.inntektstub
 
@@ -2487,8 +2493,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapFullmakt(bestillingData, data)
 	mapTpsMessaging(bestillingData, data)
 	mapAareg(bestillingData, data)
-	mapSigrunStub(bestillingData, data)
 	mapSigrunstubPensjonsgivende(bestillingData, data)
+	mapSigrunstubSummertSkattegrunnlag(bestillingData, data)
 	mapInntektStub(bestillingData, data)
 	mapInntektsmelding(bestillingData, data)
 	mapSkattekort(bestillingData, data)

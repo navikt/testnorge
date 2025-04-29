@@ -2,6 +2,8 @@ import * as _ from 'lodash-es'
 import { runningE2ETest } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
+import { sigrunstubPensjonsgivendeAttributt } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
+import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
 
 export const panelError = (attributtPath) => {
 	const {
@@ -79,8 +81,8 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.kontaktinformasjonForDoedsbo',
 		'aareg',
 		'fullmakt',
-		'sigrunstub',
-		'sigrunstubPensjonsgivende',
+		sigrunstubPensjonsgivendeAttributt,
+		sigrunstubSummertSkattegrunnlagAttributt,
 		'inntektstub',
 		'inntektsmelding',
 		'skattekort',

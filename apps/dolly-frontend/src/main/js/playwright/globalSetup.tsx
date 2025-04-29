@@ -32,7 +32,6 @@ import {
 	pensjonTpMock,
 	personFragmentNavigerMock,
 	personFragmentSearchMock,
-	sigrunstubMock,
 	skjermingMock,
 	tagsMock,
 	tpsMessagingMock,
@@ -89,7 +88,6 @@ const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
 const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
 const medl = new RegExp(/testnav-medl-proxy/)
-const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\/brukerId/)
 const oppsummeringsdokService = new RegExp(
 	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/,
@@ -144,7 +142,6 @@ const mockRoutes: RouteInfo[] = [
 	{ url: pensjonTp, response: pensjonTpMock },
 	{ url: pensjonPensjonsavtale, response: pensjonPensjonsavtaleMock },
 	{ url: afpOffentlig, response: afpOffentligMock },
-	{ url: sigrunstub, response: sigrunstubMock },
 	{ url: udistub, response: udistubMock },
 	{ url: kodeverk, response: kodeverkMock },
 	{ url: organisasjonFraMiljoe, response: organisasjonFraMiljoeMock },

@@ -1,4 +1,4 @@
-import Title from '@/components/Title'
+import Title from '../../components/title'
 import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
 import { SoekForm } from '@/pages/tenorSoek/SoekForm'
 import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
