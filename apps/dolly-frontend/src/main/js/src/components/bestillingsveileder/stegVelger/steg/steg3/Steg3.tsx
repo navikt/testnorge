@@ -80,6 +80,7 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 	if (loadingBestilling) {
 		return <Loading label={'Oppretter bestilling ...'} />
 	}
+
 	return (
 		<div>
 			{harAvhukedeAttributter(formMethods.getValues()) && (
@@ -97,16 +98,6 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 					orgTilgang={organisasjonMiljoe}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
-			)}
-			{importTestnorge && opts.gruppe && (
-				<div className="oppsummering">
-					<div className="bestilling-detaljer">
-						<h4>Gruppe for import</h4>
-						<div className="info-text">
-							<div style={{}}>{opts.gruppe.navn}</div>
-						</div>
-					</div>
-				</div>
 			)}
 			{!erOrganisasjon &&
 				!importTestnorge &&

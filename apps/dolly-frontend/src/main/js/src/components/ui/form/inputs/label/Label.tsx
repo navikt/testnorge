@@ -22,6 +22,7 @@ type LabelProps = {
 	info?: string
 	containerClass?: string
 	children: React.ReactNode
+	manualError?: string
 }
 
 export const Label = ({
@@ -31,6 +32,7 @@ export const Label = ({
 	info = null as unknown as string,
 	containerClass = null as unknown as string,
 	children,
+	manualError = null as unknown as string,
 }: LabelProps) => {
 	const {
 		getFieldState,
@@ -44,7 +46,9 @@ export const Label = ({
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const feilmelding = error?.message
 	const wrapClass = cn('skjemaelement', containerClass, {
-		error: Boolean(!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched)),
+		error: Boolean(
+			(!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched)) || manualError,
+		),
 		'label-offscreen': _.isNil(label),
 	})
 
@@ -68,6 +72,11 @@ export const Label = ({
 			{!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched) && (
 				<div role="alert" aria-live="assertive">
 					<div className="skjemaelement__feilmelding">{feilmelding}</div>
+				</div>
+			)}
+			{manualError && (
+				<div role="alert" aria-live="assertive">
+					<div className="skjemaelement__feilmelding">{manualError}</div>
 				</div>
 			)}
 		</div>
