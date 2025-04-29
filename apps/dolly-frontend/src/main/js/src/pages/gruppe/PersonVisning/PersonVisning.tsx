@@ -361,10 +361,8 @@ export default ({
 		const relatertePersoner = []
 
 		data.pdl?.hentPerson?.sivilstand
-			?.filter(
-				(siv) =>
-					!siv?.metadata?.historisk &&
-					['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type),
+			?.filter((siv) =>
+				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type),
 			)
 			?.forEach((person) => {
 				relatertePersoner.push({
@@ -383,10 +381,8 @@ export default ({
 			})
 
 		data.pdl?.hentPerson?.forelderBarnRelasjon
-			?.filter(
-				(forelderBarn) =>
-					!forelderBarn?.metadata?.historisk &&
-					['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle),
+			?.filter((forelderBarn) =>
+				['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle),
 			)
 			?.forEach((person) => {
 				relatertePersoner.push({
