@@ -30,10 +30,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,71 +77,43 @@ public class TagController {
     public Mono<TagsOpprettingResponse> sendTagsPaaGruppe(@RequestBody List<Tags> tags,
                                                           @PathVariable("gruppeId") Long gruppeId) {
 
-        var testgruppe = testgruppeRepository.findById(gruppeId)
-                .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
-
-        var gruppeIdenter = testgruppe.getTestidenter()
-                .stream()
-                .map(Testident::getIdent)
-                .toList();
-
-        var pdlPersonBolk = personServiceConsumer.getPdlPersoner(gruppeIdenter)
-                .filter(pdlBolk -> nonNull(pdlBolk.getData()))
-                .map(PdlPersonBolk::getData)
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Flux::fromIterable)
-                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .map(person -> Stream.of(List.of(person.getIdent()),
-                                person.getPerson().getSivilstand().stream()
-                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                person.getPerson().getForelderBarnRelasjon().stream()
-                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                        .toList(),
-                                person.getPerson().getForeldreansvar().stream()
-                                        .map(ForeldreansvarDTO::getAnsvarlig)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                person.getPerson().getFullmakt().stream()
-                                        .map(FullmaktDTO::getMotpartsPersonident)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
-                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
-                                        .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                person.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                                        .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
-                                        .filter(Objects::nonNull)
-                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                        .filter(Objects::nonNull)
+        return testgruppeRepository.findById(gruppeId)
+                .map(gruppe -> personServiceConsumer.getPdlPersoner(
+                                gruppe.getTestidenter().stream()
+                                        .map(Testident::getIdent)
                                         .toList())
-                        .flatMap(Collection::stream)
-                        .distinct()
-                        .toList())
-                .filter(Objects::nonNull)
-                .flatMap(Flux::fromIterable)
-                .collectList()
-                .block();
-
-        var tagsTilSletting = testgruppe.getTags().stream()
-                .filter(eksisterendeTag -> tags.stream()
-                        .noneMatch(nyTag -> eksisterendeTag.name().equals(nyTag.name())))
-                .toList();
-
-        testgruppe.setTags(tags.isEmpty() ? null
-                : tags.stream()
-                .map(Tags::name)
-                .collect(Collectors.joining(",")));
-
-        if (!tagsTilSletting.isEmpty()) {
-            tagsHendelseslagerConsumer.deleteTags(pdlPersonBolk, tagsTilSletting)
-                    .collectList()
-                    .subscribe();
-        }
-
-        return tagsHendelseslagerConsumer.createTags(pdlPersonBolk, tags);
+                        .filter(pdlBolk -> nonNull(pdlBolk.getData()))
+                        .map(PdlPersonBolk::getData)
+                        .map(PdlPersonBolk.Data::getHentPersonBolk)
+                        .flatMap(Flux::fromIterable)
+                        .filter(personBolk -> nonNull(personBolk.getPerson()))
+                        .map(person -> Stream.of(Stream.of(person.getIdent()),
+                                        person.getPerson().getSivilstand().stream()
+                                                .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                                .filter(Objects::nonNull),
+                                        person.getPerson().getForelderBarnRelasjon().stream()
+                                                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent),
+                                        person.getPerson().getForeldreansvar().stream()
+                                                .map(ForeldreansvarDTO::getAnsvarlig)
+                                                .filter(Objects::nonNull),
+                                        person.getPerson().getFullmakt().stream()
+                                                .map(FullmaktDTO::getMotpartsPersonident)
+                                                .filter(Objects::nonNull),
+                                        person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
+                                                .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                                .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                                .filter(Objects::nonNull),
+                                        person.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                                .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                                .filter(Objects::nonNull)
+                                                .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                                .filter(Objects::nonNull))
+                                .flatMap(Function.identity())
+                                .distinct()
+                                .toList())
+                        .flatMap(Flux::fromIterable)
+                        .collectList()
+                        .flatMap(personBolk -> tagsHendelseslagerConsumer.createTags(personBolk, tags)))
+                .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
     }
 }
