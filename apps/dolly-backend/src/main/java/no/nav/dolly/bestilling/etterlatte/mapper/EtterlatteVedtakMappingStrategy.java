@@ -19,7 +19,7 @@ public class EtterlatteVedtakMappingStrategy implements MappingStrategy {
                     public void mapAtoB(VedtakRequestDTO kilde, VedtakRequestDTO destinasjon, MappingContext context) {
 
                         var etterlatteYtelse = (EtterlatteYtelse) context.getProperty("etterlattYtelse");
-                        destinasjon.setYtelse(etterlatteYtelse.getYtelse());
+                        destinasjon.setType(etterlatteYtelse.getYtelse());
                     }
                 })
                 .byDefault()

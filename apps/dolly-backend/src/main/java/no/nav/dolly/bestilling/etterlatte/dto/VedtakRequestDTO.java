@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class VedtakRequestDTO {
 
-    private EtterlatteYtelse.YtelseType ytelse;
+    private EtterlatteYtelse.YtelseType type;
     private String avdoed;
     private String gjenlevende;
     private List<String> barn;
