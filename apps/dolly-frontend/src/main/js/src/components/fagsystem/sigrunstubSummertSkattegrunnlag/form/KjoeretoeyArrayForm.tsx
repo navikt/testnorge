@@ -2,6 +2,7 @@ import { getInitialKjoeretoey } from '@/components/fagsystem/sigrunstubSummertSk
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 export const KjoeretoeyArrayForm = ({ path }) => (
 	<FormDollyFieldArray
@@ -9,13 +10,13 @@ export const KjoeretoeyArrayForm = ({ path }) => (
 		header="Spesifisering"
 		newEntry={getInitialKjoeretoey()}
 		canBeEmpty={true}
+		whiteBackground={true}
 		nested
 	>
 		{(kjoeretoeyPath, idx) => (
 			<div className="flexbox--flex-wrap sigrun-form" key={idx}>
 				<FormSelect
 					name={`${kjoeretoeyPath}.type`}
-					info={'Foreløpig er det kun støtte for kjøretøy'}
 					size={'large'}
 					label="Type"
 					value={'Kjoeretoey'}
@@ -26,6 +27,9 @@ export const KjoeretoeyArrayForm = ({ path }) => (
 						// { value: 'Spesifisering', label: 'Spesifisering' },
 					]}
 				/>
+				<div style={{ marginLeft: '-25px', marginRight: '20px', paddingTop: '30px' }}>
+					<Hjelpetekst> Foreløpig er det kun støtte for kjøretøy. </Hjelpetekst>
+				</div>
 				<FormTextInput
 					name={`${kjoeretoeyPath}.aarForFoerstegangsregistrering`}
 					label="År for førstegangsreg."

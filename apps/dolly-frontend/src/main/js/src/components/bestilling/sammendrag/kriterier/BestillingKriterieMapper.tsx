@@ -1194,13 +1194,13 @@ const mapSigrunstubSummertSkattegrunnlag = (bestillingData, data) => {
 	if (!kriterier) return
 
 	const summertSkattegrunnlag = {
-		header: 'Summert Skattegrunnlag (Sigrun)',
+		header: 'Summert skattegrunnlag (Sigrun)',
 		itemRows: [],
 	}
 
 	kriterier.forEach((skattegrunnlag, i) => {
 		const baseRow = [
-			{ numberHeader: `Summert Skattegrunnlag ${i + 1}` },
+			{ numberHeader: `Summert skattegrunnlag ${i + 1}` },
 			obj('Inntektsår', skattegrunnlag.inntektsaar),
 			obj('Ajourholdstidspunkt', formatDateTime(skattegrunnlag.ajourholdstidspunkt)),
 			obj('Skatteoppgjørsdato', formatDate(skattegrunnlag.skatteoppgjoersdato)),

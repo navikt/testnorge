@@ -3,10 +3,10 @@ import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate } from '@/utils/DataFormatter'
+import { codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
 import { Alert } from '@navikt/ds-react'
 import * as _ from 'lodash-es'
-import { DollyFaBlokk, DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	kategoriKodeverk,
 	tekniskNavnKodeverk,
@@ -17,7 +17,7 @@ export const kodeverkKeyToLabel = (key) => {
 		return null
 	}
 
-	const filteredLabel = key?.replace('pensjonsgivendeInntektAv', '')
+	const filteredLabel = key.replace('pensjonsgivendeInntektAv', '')
 	const defaultLabel = filteredLabel?.replace(/([A-Z])/g, ' $1')
 
 	switch (key) {
@@ -30,7 +30,7 @@ export const kodeverkKeyToLabel = (key) => {
 		case 'kildeskattPaaLoennGrunnlag':
 			return 'Kildeskatt på lønnsgrunnlag'
 		default:
-			return defaultLabel
+			return codeToNorskLabel(defaultLabel)
 	}
 }
 
@@ -53,19 +53,17 @@ const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx, whiteBackgro
 				return (
 					value.length > 0 && (
 						<>
-							<DollyFaBlokk
-								key={key + idx}
-								idx={idx}
-								header={label}
-								number={idx}
-								whiteBackground={whiteBackground}
-							>
-								<SummertSkattegrunnlagVisning
-									summertSkattegrunnlag={value?.[0]}
-									idx={idx}
-									whiteBackground={!whiteBackground}
-								/>
-							</DollyFaBlokk>
+							<DollyFieldArray data={value} header={label} nested whiteBackground={whiteBackground}>
+								{(grunnlag, idx) => (
+									<div className={'flexbox--flex-wrap'} key={idx}>
+										<SummertSkattegrunnlagVisning
+											summertSkattegrunnlag={grunnlag}
+											idx={idx}
+											whiteBackground={!whiteBackground}
+										/>
+									</div>
+								)}
+							</DollyFieldArray>
 						</>
 					)
 				)
@@ -75,15 +73,23 @@ const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx, whiteBackgro
 			}
 			if (key === 'tekniskNavn') {
 				return (
-					<TitleValue title={label} value={value} key={key + idx} kodeverk={tekniskNavnKodeverk} />
+					<TitleValue
+						title={label}
+						value={codeToNorskLabel(value)}
+						key={key + idx}
+						kodeverk={tekniskNavnKodeverk}
+					/>
 				)
 			}
 			if (key === 'kategori') {
+				return <TitleValue title={label} value={codeToNorskLabel(value)} key={key + idx} />
+			}
+			if (key === 'registreringsnummer') {
 				return (
 					<TitleValue title={label} value={value} key={key + idx} kodeverk={kategoriKodeverk} />
 				)
 			}
-			return <TitleValue title={label} value={value} key={key + idx} />
+			return <TitleValue title={label} value={codeToNorskLabel(value)} key={key + idx} />
 		})
 }
 
@@ -106,13 +112,13 @@ export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading }) => {
 			) : (
 				<ErrorBoundary>
 					<div className="person-visning_content" style={{ marginTop: '-15px' }}>
-						<DollyFieldArray data={data} header={`Skattegrunnlag`} nested>
+						<DollyFieldArray data={data} header={`Skattegrunnlag`}>
 							{(skattegrunnlag, idx) => (
 								<React.Fragment key={idx}>
 									<SummertSkattegrunnlagVisning
 										summertSkattegrunnlag={skattegrunnlag}
 										idx={idx}
-										whiteBackground={true}
+										whiteBackground={false}
 									/>
 								</React.Fragment>
 							)}

@@ -9,7 +9,11 @@ const grunnlagValidation = Yup.object({
 	spesifisering: Yup.array().of(
 		Yup.object({
 			type: requiredString,
-			aarForFoerstegangsregistrering: Yup.string().nullable(),
+			aarForFoerstegangsregistrering: Yup.number()
+				.nullable()
+				.positive(messages.positive)
+				.min(1900, 'Valgt år må være etter 1900')
+				.max(new Date().getFullYear(), 'Valgt år må være senest i år'),
 			antattMarkedsverdi: Yup.number().nullable().integer(),
 			antattVerdiSomNytt: Yup.number().nullable().integer(),
 			beloep: requiredNumber.positive(messages.positive),

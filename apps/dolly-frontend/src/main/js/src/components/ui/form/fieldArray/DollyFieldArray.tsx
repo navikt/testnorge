@@ -140,9 +140,9 @@ export const DollyFaBlokkOrg = ({
 
 export const DollyFaBlokkNested = ({
 	idx,
-	handleRemove,
 	children,
 	whiteBackground,
+	handleRemove = null,
 	showDeleteButton = true,
 }) => (
 	<div className="dfa-blokk-nested">
@@ -231,6 +231,7 @@ export const FormDollyFieldArray = ({
 	handleNewEntry = null,
 	handleRemoveEntry = null,
 	maxEntries = null as unknown as number,
+	whiteBackground = false,
 	maxReachedDescription = null,
 	buttonText = null as unknown as string,
 	errorText = null,
@@ -267,6 +268,7 @@ export const FormDollyFieldArray = ({
 								idx={idx}
 								handleRemove={handleRemove}
 								showDeleteButton={showDeleteButton}
+								whiteBackground={whiteBackground}
 							>
 								{children(path, idx, curr)}
 							</DollyFaBlokkNested>
@@ -295,6 +297,7 @@ export const FormDollyFieldArray = ({
 								hjelpetekst={hjelpetekst}
 								handleRemove={handleRemove}
 								showDeleteButton={showDeleteButton}
+								whiteBackground={whiteBackground}
 							>
 								{children(path, idx, curr, number)}
 							</DollyFaBlokk>

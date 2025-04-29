@@ -59,7 +59,7 @@ export const SigrunstubSummertSkattegrunnlagForm = () => {
 	return (
 		<Vis attributt={sigrunstubSummertSkattegrunnlagAttributt}>
 			<Panel
-				heading="Summert Skattegrunnlag (Sigrun)"
+				heading="Summert skattegrunnlag (Sigrun)"
 				hasErrors={panelError(sigrunstubSummertSkattegrunnlagAttributt)}
 				iconType="sigrun"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [
@@ -69,7 +69,7 @@ export const SigrunstubSummertSkattegrunnlagForm = () => {
 				<ErrorBoundary>
 					<FormDollyFieldArray
 						name={sigrunstubSummertSkattegrunnlagAttributt}
-						header="Summert Skattegrunnlag"
+						header="Summert skattegrunnlag"
 						newEntry={getInitialSummertSkattegrunnlag()}
 						canBeEmpty={false}
 					>
