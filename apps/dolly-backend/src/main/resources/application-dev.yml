@@ -27,5 +27,3 @@ consumers:
   bruker-service:
     name: testnav-bruker-service-dev
     url: http://testnav-bruker-service-dev.dolly.svc.cluster.local
-  etterlatte:
-    url: https://etterlatte-testdata.intern.dev.nav.no
