@@ -1,5 +1,6 @@
 import { expect, test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { laastGruppeMock } from '#/mocks/BasicMocks'
 
 test('Testing av forskjellige actions på gruppeheaderen', async ({ page }) => {
 	await page.goto('gruppe')
@@ -79,6 +80,33 @@ test('Testing av forskjellige actions på gruppeheaderen', async ({ page }) => {
 	await page
 		.getByTestId(TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER)
 		.click()
+})
 
-	// Testing av gjenopprett gruppe funskjonalitet
+test('Testing av laas gruppe funksjonalitet', async ({ page }) => {
+	await page.goto('gruppe')
+	await page
+		.locator('div')
+		.getByText(/Testytest/)
+		.first()
+		.click()
+
+	await page.getByTestId(TestComponentSelectors.BUTTON_LAAS_GRUPPE).click()
+
+	await expect(page.getByText(/låse denne gruppen/)).toBeVisible()
+
+	// Endrer api kall til å returnere låst gruppe
+	await page.route(new RegExp(/\/api\/v1\/gruppe\/1/), async (route) => {
+		await route.fulfill({
+			status: 200,
+			body: JSON.stringify(laastGruppeMock),
+		})
+	})
+
+	await page.getByTestId(TestComponentSelectors.BUTTON_BEKREFT_LAAS).click()
+
+	await expect(page.getByRole('img', { name: 'locked-group' })).toBeVisible()
+
+	await page.reload()
+
+	await expect(page.getByRole('img', { name: 'locked-group' })).toBeVisible()
 })

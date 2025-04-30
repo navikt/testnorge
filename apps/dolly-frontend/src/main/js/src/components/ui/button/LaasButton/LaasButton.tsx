@@ -11,6 +11,7 @@ import {
 	REGEX_BACKEND_GRUPPER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type LaasButtonProps = {
 	action: Function
@@ -29,7 +30,11 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="lock">
+			<Button
+				data-testid={TestComponentSelectors.BUTTON_LAAS_GRUPPE}
+				onClick={openModal}
+				kind={'lock'}
+			>
 				LÅS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
@@ -47,6 +52,7 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 							Nei
 						</NavButton>
 						<NavButton
+							data-testid={TestComponentSelectors.BUTTON_BEKREFT_LAAS}
 							onClick={() => {
 								closeModal()
 								action(gruppeId)

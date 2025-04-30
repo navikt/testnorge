@@ -92,6 +92,8 @@ export enum TestComponentSelectors {
 	BUTTON_TENOR_CLEAR_HEADER = 'button-tenor-clear-options',
 	BUTTON_MODAL_CLOSE = 'button-modal-lukk',
 	BUTTON_VELG_ORG_BRUKER = 'button-velg-org-bruker',
+	BUTTON_LAAS_GRUPPE = 'button-laas-gruppe',
+	BUTTON_BEKREFT_LAAS = 'button-bekreft-laas',
 	SELECT_PERSON_SEARCH = 'select-person-search',
 	SELECT_MAL = 'select-mal',
 	HOVER_MILJOE = 'hover-miljoe',
