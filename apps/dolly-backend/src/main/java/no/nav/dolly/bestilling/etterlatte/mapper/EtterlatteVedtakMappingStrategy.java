@@ -20,6 +20,7 @@ public class EtterlatteVedtakMappingStrategy implements MappingStrategy {
 
                         var etterlatteYtelse = (EtterlatteYtelse) context.getProperty("etterlattYtelse");
                         destinasjon.setType(etterlatteYtelse.getYtelse());
+                        destinasjon.setSoeker(etterlatteYtelse.getSoeker());
                     }
                 })
                 .byDefault()

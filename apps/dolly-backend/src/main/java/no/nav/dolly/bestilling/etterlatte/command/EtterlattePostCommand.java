@@ -19,7 +19,7 @@ import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
 @RequiredArgsConstructor
 public class EtterlattePostCommand implements Callable<Mono<VedtakResponseDTO>> {
 
-    private static final String VEDTAK_URL = "/dolly/opprett-ytelse";
+    private static final String VEDTAK_URL = "/dolly/api/v1/ytelse";
 
     private final WebClient webClient;
     private final VedtakRequestDTO vedtakRequest;

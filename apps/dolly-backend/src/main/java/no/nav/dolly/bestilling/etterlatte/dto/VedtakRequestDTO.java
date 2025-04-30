@@ -18,4 +18,5 @@ public class VedtakRequestDTO {
     private String avdoed;
     private String gjenlevende;
     private List<String> barn;
+    private String soeker;
 }
