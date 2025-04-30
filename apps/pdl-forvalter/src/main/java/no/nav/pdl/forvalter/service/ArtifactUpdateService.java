@@ -237,7 +237,7 @@ public class ArtifactUpdateService {
             if (endretRelasjon && relasjon.isRelatertMedIdentifikator()) {
 
                 var slettePerson = getPerson(relasjon.getIdentForRelasjon());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FAMILIERELASJON_BARN);
+                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FAMILIERELASJON_BARN);
 
                 deletePerson(slettePerson, relasjon.isEksisterendePerson());
 
@@ -603,7 +603,7 @@ public class ArtifactUpdateService {
 
     private DbPerson getPerson(String ident) {
 
-        return personRepository.findByIdent(ident)
+        return personRepository.findByIdent(ident.trim())
                 .orElseThrow(() -> new NotFoundException(String.format(IDENT_NOT_FOUND, ident)));
     }
 
