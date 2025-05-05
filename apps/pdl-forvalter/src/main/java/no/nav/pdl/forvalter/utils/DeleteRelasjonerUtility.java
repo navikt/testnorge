@@ -33,6 +33,24 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.VERGE_MOTTAK
 @UtilityClass
 public class DeleteRelasjonerUtility {
 
+    public static void deleteRelasjoner(DbPerson person, DbPerson relatertPerson, RelasjonType type) {
+
+        var it = person.getRelasjoner().iterator();
+        while (it.hasNext()) {
+            var relasjon = it.next();
+
+            if (isType(relasjon.getRelasjonType(), getRelasjonTyper(type)) &&
+                    relasjon.getRelatertPerson().getIdent().equals(relatertPerson.getIdent())) {
+
+                deleteRelasjon(relatertPerson, person.getIdent(), getRelasjonTyper(relasjon.getRelasjonType()));
+
+                deleteOpplysningstype(person, relatertPerson.getIdent(), relasjon.getRelasjonType());
+                deleteOpplysningstype(relatertPerson, person.getIdent(), relasjon.getRelasjonType());
+                it.remove();
+            }
+        }
+    }
+
     public static void deleteRelasjoner(DbPerson person, RelasjonType type) {
 
         var it = person.getRelasjoner().iterator();
@@ -78,7 +96,7 @@ public class DeleteRelasjonerUtility {
         return Arrays.asList(typer).contains(relasjonType);
     }
 
-    private static RelasjonType[] getRelasjonTyper(RelasjonType relasjonType) {
+    public static RelasjonType[] getRelasjonTyper(RelasjonType relasjonType) {
 
         return switch (relasjonType) {
 
