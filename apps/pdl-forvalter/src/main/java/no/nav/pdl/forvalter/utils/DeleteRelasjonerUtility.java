@@ -78,7 +78,7 @@ public class DeleteRelasjonerUtility {
         return Arrays.asList(typer).contains(relasjonType);
     }
 
-    public static RelasjonType[] getRelasjonTyper(RelasjonType relasjonType) {
+    private static RelasjonType[] getRelasjonTyper(RelasjonType relasjonType) {
 
         return switch (relasjonType) {
 

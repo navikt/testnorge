@@ -282,7 +282,7 @@ public class ArtifactUpdateService {
                         .filter(ansvar1 -> !ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
                         .findFirst()
                         .ifPresent(ansvar1 ->
-                                DeleteRelasjonerUtility.deleteRelasjoner(getPerson(ansvar1.getAnsvarlig()), slettePerson, FORELDREANSVAR_FORELDER));
+                                DeleteRelasjonerUtility.deleteRelasjoner(person, getPerson(ansvar1.getAnsvarlig()), FORELDREANSVAR_FORELDER));
 
                 deletePerson(slettePerson, ansvar.isEksisterendePerson());
 
