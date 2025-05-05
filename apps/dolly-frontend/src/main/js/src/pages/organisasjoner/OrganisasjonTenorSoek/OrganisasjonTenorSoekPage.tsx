@@ -1,4 +1,4 @@
-import Title from '@/components/Title'
+import Title from '../../../components/title'
 import { useTenorOversiktOrganisasjoner } from '@/utils/hooks/useTenorSoek'
 import React, { useEffect, useState } from 'react'
 import { TreffListeOrg } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/TreffListeOrg'

@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useContext } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
 import { AaregForm } from '@/components/fagsystem/aareg/form/Form'
@@ -19,7 +18,10 @@ import {
 } from '@/components/fagsystem/alderspensjon/form/Form'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
 import { UforetrygdForm, uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
-import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
+import {
+	sigrunstubPensjonsgivendeAttributt,
+	SigrunstubPensjonsgivendeForm,
+} from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { SkattekortForm } from '@/components/fagsystem/skattekort/form/Form'
 import { avtalePath, PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
@@ -35,6 +37,10 @@ import {
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { Alert } from '@navikt/ds-react'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
+import {
+	sigrunstubSummertSkattegrunnlagAttributt,
+	SigrunstubSummertSkattegrunnlagForm,
+} from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
@@ -76,8 +82,10 @@ const Steg2: React.FC = () => {
 			<PdlfForm />
 			{getValues('fullmakt') && <FullmaktForm />}
 			{getValues('aareg') && <AaregForm />}
-			{getValues('sigrunstub') && <SigrunstubForm />}
-			{getValues('sigrunstubPensjonsgivende') && <SigrunstubPensjonsgivendeForm />}
+			{getValues(sigrunstubPensjonsgivendeAttributt) && <SigrunstubPensjonsgivendeForm />}
+			{getValues(sigrunstubSummertSkattegrunnlagAttributt) && (
+				<SigrunstubSummertSkattegrunnlagForm />
+			)}
 			{getValues('inntektstub') && <InntektstubForm />}
 			{getValues('inntektsmelding') && <InntektsmeldingForm />}
 			{getValues('skattekort') && <SkattekortForm />}

@@ -7,7 +7,6 @@ import {
 	InntektstubApi,
 	KrrApi,
 	PdlforvalterApi,
-	SigrunApi,
 	SkjermingApi,
 	TpsMessagingApi,
 } from '@/service/Api'
@@ -22,24 +21,6 @@ export const actions = createActions(
 	{
 		getTpsMessaging: [
 			TpsMessagingApi.getTpsPersonInfoAllEnvs,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getSigrun: [
-			SigrunApi.getPerson,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getSigrunPensjonsgivendeInntekt: [
-			SigrunApi.getPensjonsgivendeInntekt,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getSigrunSekvensnr: [
-			SigrunApi.getSekvensnummer,
 			(ident) => ({
 				ident,
 			}),
@@ -101,8 +82,6 @@ export const actions = createActions(
 const initialState = {
 	tpsf: {},
 	tpsMessaging: {},
-	sigrunstub: {},
-	sigrunstubPensjonsgivende: {},
 	inntektstub: {},
 	krrstub: {},
 	pdl: {},
@@ -118,24 +97,8 @@ const initialState = {
 
 export default handleActions(
 	{
-		[onSuccess(actions.getSigrun)](state, action) {
-			state.sigrunstub[action.meta.ident] = action.payload.data.responseList
-		},
-		[onSuccess(actions.getSigrunPensjonsgivendeInntekt)](state, action) {
-			state.sigrunstubPensjonsgivende[action.meta.ident] = action.payload.data
-		},
 		[onSuccess(actions.getTpsMessaging)](state, action) {
 			state.tpsMessaging[action.meta.ident] = action?.payload.data?.[0]?.person
-		},
-		[onSuccess(actions.getSigrunSekvensnr)](state, action) {
-			const inntektData = state.sigrunstub[action.meta.ident]
-			if (inntektData) {
-				state.sigrunstub[action.meta.ident] = inntektData.map((i) => {
-					const sekvens = action.payload.data.find((s) => s.gjelderPeriode === i.inntektsaar)
-					const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
-					return { ...i, sekvensnummer }
-				})
-			}
 		},
 		[onSuccess(actions.getInntektstub)](state, action) {
 			state.inntektstub[action.meta.ident] = action.payload.data
@@ -192,8 +155,6 @@ export default handleActions(
 
 const deleteIdentState = (state, ident) => {
 	delete state.tpsf[ident]
-	delete state.sigrunstub[ident]
-	delete state.sigrunstubPensjonsgivende[ident]
 	delete state.inntektstub[ident]
 	delete state.krrstub[ident]
 	delete state.pdl[ident]
@@ -240,14 +201,6 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 		switch (system) {
 			case 'KRRSTUB':
 				return dispatch(actions.getKrr(personId))
-			case 'SIGRUNSTUB':
-				dispatch(actions.getSigrun(personId))
-				return dispatch(actions.getSigrunSekvensnr(personId))
-			case 'SIGRUN_LIGNET':
-				dispatch(actions.getSigrun(personId))
-				return dispatch(actions.getSigrunSekvensnr(personId))
-			case 'SIGRUN_PENSJONSGIVENDE':
-				return dispatch(actions.getSigrunPensjonsgivendeInntekt(personId))
 			case 'INNTK':
 				return dispatch(actions.getInntektstub(personId))
 			case 'TPS_MESSAGING':
@@ -487,8 +440,6 @@ export const selectDataForIdent = (state, ident) => {
 	return {
 		tpsf: state.fagsystem.tpsf[ident],
 		tpsMessaging: state.fagsystem.tpsMessaging[ident],
-		sigrunstub: state.fagsystem.sigrunstub[ident],
-		sigrunstubPensjonsgivende: state.fagsystem.sigrunstubPensjonsgivende[ident],
 		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],
 		pdl: state.fagsystem.pdl[ident],
