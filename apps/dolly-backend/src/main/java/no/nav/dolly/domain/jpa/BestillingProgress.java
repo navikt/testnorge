@@ -130,6 +130,9 @@ public class BestillingProgress implements Serializable {
     @Column(name = "ARBEIDSSOEKERREGISTERET_STATUS")
     private String arbeidssoekerregisteretStatus;
 
+    @Column(name = "ETTERLATTE_STATUS")
+    private  String etterlatteStatus;
+
     @Column(name = "master")
     @Enumerated(EnumType.STRING)
     private Master master;
@@ -204,6 +207,7 @@ public class BestillingProgress implements Serializable {
                 .append(getSkattekortStatus(), that.getSkattekortStatus())
                 .append(getYrkesskadeStatus(), that.getYrkesskadeStatus())
                 .append(getArbeidssoekerregisteretStatus(), that.getArbeidssoekerregisteretStatus())
+                .append(getEtterlatteStatus(), that.getEtterlatteStatus())
                 .append(getMaster(), that.getMaster())
                 .append(getFeil(), that.getFeil())
                 .isEquals();
@@ -242,6 +246,7 @@ public class BestillingProgress implements Serializable {
                 .append(getSkattekortStatus())
                 .append(getYrkesskadeStatus())
                 .append(getArbeidssoekerregisteretStatus())
+                .append(getEtterlatteStatus())
                 .append(getMaster())
                 .append(getFeil())
                 .toHashCode();
@@ -280,6 +285,7 @@ public class BestillingProgress implements Serializable {
                 ", skattekortStatus='" + skattekortStatus + '\'' +
                 ", yrkesskadeStatus='" + yrkesskadeStatus + '\'' +
                 ", arbeidssoekerregisteretStatus=" + arbeidssoekerregisteretStatus + '\'' +
+                ", etterlatteStatus='" + etterlatteStatus + '\'' +
                 ", master=" + master +
                 ", isPdlSync=" + isPdlSync +
                 ", feil='" + feil + '\'' +
