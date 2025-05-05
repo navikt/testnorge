@@ -16,7 +16,6 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.util.FoedselsdatoUtility;
 import no.nav.dolly.util.TransactionHelperService;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,12 +28,16 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.poi.util.StringUtil.isBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EtterlatteClient implements ClientRegister {
+
+    private static final String OKAY = "OK";
 
     private final TransactionHelperService transactionHelperService;
     private final EtterlatteConsumer etterlatteConsumer;
@@ -53,16 +56,14 @@ public class EtterlatteClient implements ClientRegister {
                                 context.setProperty("etterlattYtelse", etterlattYtelse);
                                 var nyVedtakRequest = mapperFacade.map(vedtakRequestDTO, VedtakRequestDTO.class, context);
                                 return etterlatteConsumer.opprettVedtak(nyVedtakRequest)
-                                        .map(VedtakResponseDTO::getStatus)
-                                        .map(HttpStatus::valueOf);
+                                        .map(EtterlatteClient::decodeResponse);
                             })
                     )
                     .collectList()
                     .map(statusList -> statusList.stream()
-                            .filter(status -> !status.is2xxSuccessful())
-                            .findFirst().orElse(HttpStatus.OK))
-                    .map(status -> futurePersist(progress, status.is2xxSuccessful() ? "OK" :
-                            "Feil= %d %s".formatted(status.value(), status.getReasonPhrase()))));
+                            .filter(status -> !OKAY.equals(status))
+                            .findFirst().orElse(OKAY))
+                    .map(status -> futurePersist(progress, status)));
         }
         return Flux.empty();
     }
@@ -79,6 +80,18 @@ public class EtterlatteClient implements ClientRegister {
             transactionHelperService.persister(progress, BestillingProgress::setEtterlatteStatus, status);
             return progress;
         };
+    }
+
+    private static String decodeResponse(VedtakResponseDTO response) {
+
+        return response.getStatus().is2xxSuccessful() ? OKAY :
+                "Feil= %s%s".formatted(response.getStatus(), getMessage(response));
+    }
+
+    private static String getMessage(VedtakResponseDTO response) {
+
+        return isBlank(response.getMessage()) ? "" :
+                "= %s".formatted(encodeStatus(response.getMessage()));
     }
 
     private Mono<VedtakRequestDTO> getPersoner(String ident) {

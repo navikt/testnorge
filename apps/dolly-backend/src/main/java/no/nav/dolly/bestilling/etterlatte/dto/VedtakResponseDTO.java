@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
 @Data
@@ -13,13 +14,15 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class VedtakResponseDTO {
 
-    private Integer status;
-    private String noekkel;
+    private HttpStatus status;
+    private String message;
 
     public static Mono<VedtakResponseDTO> of(WebClientError.Description description) {
+
         return Mono.just(VedtakResponseDTO
                 .builder()
-                .status(description.getStatus().value())
+                .status(description.getStatus())
+                .message(description.getMessage())
                 .build());
     }
 }
