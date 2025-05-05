@@ -51,24 +51,6 @@ public class DeleteRelasjonerUtility {
         }
     }
 
-    public static void deleteRelasjoner(DbPerson person, RelasjonType type) {
-
-        var it = person.getRelasjoner().iterator();
-        while (it.hasNext()) {
-            var relasjon = it.next();
-
-            if (isType(relasjon.getRelasjonType(), getRelasjonTyper(type))) {
-
-                var relatertPerson = relasjon.getRelatertPerson();
-                deleteRelasjon(relatertPerson, person.getIdent(), getRelasjonTyper(relasjon.getRelasjonType()));
-
-                deleteOpplysningstype(person, relatertPerson.getIdent(), relasjon.getRelasjonType());
-                deleteOpplysningstype(relatertPerson, person.getIdent(), relasjon.getRelasjonType());
-                it.remove();
-            }
-        }
-    }
-
     private static void deleteRelasjon(DbPerson person, String tidligereRelatert, RelasjonType... typer) {
 
         Iterator<DbRelasjon> it = person.getRelasjoner().iterator();
