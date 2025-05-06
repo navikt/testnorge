@@ -1,23 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { ActionMenu } from '@navikt/ds-react'
 import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
-import { useNavigate } from 'react-router'
+import { useLocation } from 'react-router'
 
 export const DokumentasjonDropdown = () => {
 	const { currentBruker } = useCurrentBruker()
+
+	const location = useLocation()
+	const [isActive, setIsActive] = useState(false)
+	useEffect(() => {
+		setIsActive(location?.pathname === '/oversikt')
+	}, [location])
+
 	const isDevVersion =
 		window.location.hostname.includes('frontend') || window.location.hostname.includes('localhost')
 	const apiUrl = isDevVersion
 		? 'https://dolly-backend-dev.intern.dev.nav.no/swagger'
 		: 'https://dolly-backend.intern.dev.nav.no/swagger'
 
-	const navigate = useNavigate()
-
 	return (
-		<ActionMenuWrapper title="Dokumentasjon">
+		<ActionMenuWrapper title="Dokumentasjon" isActive={isActive}>
 			<>
 				<ActionMenu.Item
 					onClick={() =>
@@ -42,7 +47,7 @@ export const DokumentasjonDropdown = () => {
 						<ActionMenu.Item onClick={() => window.open(apiUrl, '_blank', 'noopener')}>
 							<Icon kind="file-code" fontSize="1.5rem" style={{ color: 'black' }} />
 							<DropdownStyledLink href={apiUrl} target="_blank" rel="noopener noreferrer">
-								API-dokumentasjon
+								API-dokumentasjon (Dolly backend)
 							</DropdownStyledLink>
 						</ActionMenu.Item>
 						<PreloadableActionMenuItem

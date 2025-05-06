@@ -10,7 +10,6 @@ export default () => {
 
 	return (
 		<>
-			{/*TODO: Bedre tittel?*/}
 			<h1>API-oversikt</h1>
 			<p>Her finner du en oversikt over alle eksisterende APIer som benyttes i Dolly.</p>
 			<Box background="surface-default" padding="4">
