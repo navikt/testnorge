@@ -37,12 +37,12 @@ const ReadWriteDelete = styled.div`
 	}
 `
 
-const LabelValueVisning = ({ label, value }) => {
+const LabelValueVisning = ({ label, value }: { label: string; value: string }) => {
 	if (!value) {
 		return null
 	}
 
-	const formatValue = (value) => {
+	const formatValue = (value: string) => {
 		if (value.startsWith('http')) {
 			return (
 				<a href={value} target="_blank">
@@ -69,7 +69,7 @@ const LabelValueVisning = ({ label, value }) => {
 	)
 }
 
-const DataVisning = ({ system }) => (
+const DataVisning = ({ system }: { system: any }) => (
 	<>
 		<LabelValueVisning label="register" value={system.register} />
 		<LabelValueVisning label="namespace" value={system.namespace} />
@@ -82,7 +82,7 @@ const DataVisning = ({ system }) => (
 	</>
 )
 
-const ReadWriteDeleteVisning = ({ data, type }) => {
+const ReadWriteDeleteVisning = ({ data, type }: { data: any; type: string }) => {
 	if (!data) {
 		return null
 	}
@@ -106,7 +106,7 @@ const ReadWriteDeleteVisning = ({ data, type }) => {
 	)
 }
 
-export const SystemVisning = ({ system }) => {
+export const SystemVisning = ({ system }: { system: any }) => {
 	return (
 		<>
 			<DataVisning system={system} />

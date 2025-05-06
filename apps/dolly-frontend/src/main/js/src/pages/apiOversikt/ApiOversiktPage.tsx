@@ -20,7 +20,7 @@ export default () => {
 				) : (
 					<Table>
 						<Table.Body>
-							{systemer?.map((system) => {
+							{systemer?.map((system: any) => {
 								return (
 									<Table.ExpandableRow
 										key={system.register}
