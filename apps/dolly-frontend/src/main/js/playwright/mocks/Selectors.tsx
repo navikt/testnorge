@@ -61,6 +61,8 @@ export enum TestComponentSelectors {
 	BUTTON_HEADER_DOLLYSOEK = 'button-header-dollysoek',
 	BUTTON_HEADER_TENOR = 'button-header-tenor',
 	BUTTON_HEADER_ENDRINGSMELDING = 'button-header-endringsmelding',
+	BUTTON_HEADER_DOKUMENTASJON = 'button-header-dokumentasjon',
+	BUTTON_HEADER_OVERSIKT = 'button-header-oversikt',
 	BUTTON_PROFIL = 'button-minside',
 	BUTTON_PROFIL_MINSIDE = 'button-profil-minside',
 	BUTTON_SEND_MELDING = 'button-send-melding',

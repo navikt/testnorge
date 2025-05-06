@@ -5,6 +5,7 @@ import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 import { useLocation } from 'react-router'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const DokumentasjonDropdown = () => {
 	const { currentBruker } = useCurrentBruker()
@@ -22,7 +23,11 @@ export const DokumentasjonDropdown = () => {
 		: 'https://dolly-backend.intern.dev.nav.no/swagger'
 
 	return (
-		<ActionMenuWrapper title="Dokumentasjon" isActive={isActive}>
+		<ActionMenuWrapper
+			title="Dokumentasjon"
+			isActive={isActive}
+			dataTestId={TestComponentSelectors.BUTTON_HEADER_DOKUMENTASJON}
+		>
 			<>
 				<ActionMenu.Item
 					onClick={() =>
@@ -52,7 +57,7 @@ export const DokumentasjonDropdown = () => {
 						</ActionMenu.Item>
 						<PreloadableActionMenuItem
 							route="/oversikt"
-							// dataTestId={TestComponentSelectors.BUTTON_HEADER_DOLLYSOEK} //TODO: Skriv tester
+							dataTestId={TestComponentSelectors.BUTTON_HEADER_OVERSIKT}
 							style={{ color: '#212529' }}
 						>
 							<Icon kind="file-code" fontSize="1.5rem" />
