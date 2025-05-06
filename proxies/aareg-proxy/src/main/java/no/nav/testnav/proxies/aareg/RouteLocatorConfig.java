@@ -27,7 +27,7 @@ import java.util.function.Function;
 @Configuration
 public class RouteLocatorConfig {
 
-    private static final String ENV = "-{env}";
+    private static final String ENV = "{env}";
     private static final String[] MILJOER = { "q1", "q2", "q4"};
 
     @Bean
