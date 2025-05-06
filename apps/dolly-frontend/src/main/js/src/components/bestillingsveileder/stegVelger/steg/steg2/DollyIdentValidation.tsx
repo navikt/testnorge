@@ -1,5 +1,4 @@
 import * as Yup from 'yup'
-import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
 import { AaregForm } from '@/components/fagsystem/aareg/form/Form'
@@ -26,6 +25,7 @@ import { ArbeidssoekerregisteretForm } from '@/components/fagsystem/arbeidssoeke
 import { ifPresent } from '@/utils/YupValidations'
 import SykdomForm from '@/components/fagsystem/sykdom/form/Form'
 import PdlfForm from '@/components/fagsystem/pdlf/form/Form'
+import { SigrunstubSummertSkattegrunnlagForm } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
 
 export const DollyIdentValidation = Yup.object({
 	antall: ifPresent(
@@ -41,8 +41,8 @@ export const DollyIdentValidation = Yup.object({
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,
 	...ArbeidssoekerregisteretForm.validation,
-	...SigrunstubForm.validation,
 	...SigrunstubPensjonsgivendeForm.validation,
+	...SigrunstubSummertSkattegrunnlagForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
 	...SkattekortForm.validation,

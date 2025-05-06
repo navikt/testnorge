@@ -435,6 +435,11 @@ public class PdlPerson {
             return type == SivilstandType.UGIFT ||
                     type == SivilstandType.UOPPGITT;
         }
+
+        public boolean isGjenlevende() {
+            return type == SivilstandType.ENKE_ELLER_ENKEMANN ||
+                    type == SivilstandType.GJENLEVENDE_PARTNER;
+        }
     }
 
     @lombok.Data

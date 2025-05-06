@@ -34,7 +34,15 @@ const DeleteButton = ({ onClick }) => {
 	if (!onClick) {
 		return null
 	}
-	return <Button kind="trashcan" fontSize={'1.4rem'} onClick={onClick} title="Fjern" />
+	return (
+		<Button
+			className={'dolly-delete-button'}
+			kind="trashcan"
+			fontSize={'1.4rem'}
+			onClick={onClick}
+			title="Fjern"
+		/>
+	)
 }
 
 const Numbering = ({ idx, color = numberColor.ARRAY_LEVEL_ONE }) => (
@@ -132,9 +140,9 @@ export const DollyFaBlokkOrg = ({
 
 export const DollyFaBlokkNested = ({
 	idx,
-	handleRemove,
 	children,
 	whiteBackground,
+	handleRemove = null,
 	showDeleteButton = true,
 }) => (
 	<div className="dfa-blokk-nested">
@@ -223,6 +231,7 @@ export const FormDollyFieldArray = ({
 	handleNewEntry = null,
 	handleRemoveEntry = null,
 	maxEntries = null as unknown as number,
+	whiteBackground = false,
 	maxReachedDescription = null,
 	buttonText = null as unknown as string,
 	errorText = null,
@@ -259,6 +268,7 @@ export const FormDollyFieldArray = ({
 								idx={idx}
 								handleRemove={handleRemove}
 								showDeleteButton={showDeleteButton}
+								whiteBackground={whiteBackground}
 							>
 								{children(path, idx, curr)}
 							</DollyFaBlokkNested>
@@ -287,6 +297,7 @@ export const FormDollyFieldArray = ({
 								hjelpetekst={hjelpetekst}
 								handleRemove={handleRemove}
 								showDeleteButton={showDeleteButton}
+								whiteBackground={whiteBackground}
 							>
 								{children(path, idx, curr, number)}
 							</DollyFaBlokk>

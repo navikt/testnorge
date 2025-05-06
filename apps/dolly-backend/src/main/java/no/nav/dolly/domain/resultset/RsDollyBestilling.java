@@ -12,6 +12,7 @@ import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerre
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
@@ -86,6 +87,7 @@ public class RsDollyBestilling {
     private SkattekortRequestDTO skattekort;
     private List<YrkesskadeRequest> yrkesskader;
     private RsArbeidssoekerregisteret arbeidssoekerregisteret;
+    private List<EtterlatteYtelse> etterlatteYtelser;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {
@@ -148,6 +150,13 @@ public class RsDollyBestilling {
             dokarkiv = new ArrayList<>();
         }
         return dokarkiv;
+    }
+
+    public List<EtterlatteYtelse> getEtterlatteYtelser() {
+        if (isNull(etterlatteYtelser)) {
+            etterlatteYtelser = new ArrayList<>();
+        }
+        return etterlatteYtelser;
     }
 
     @JsonIgnore

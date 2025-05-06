@@ -419,6 +419,7 @@ public class BestillingService {
                 .bankkonto(request.getBankkonto())
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
+                .etterlatteYtelser(request.getEtterlatteYtelser())
                 .fullmakt(request.getFullmakt())
                 .histark(request.getHistark())
                 .inntektsmelding(request.getInntektsmelding())

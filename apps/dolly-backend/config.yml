@@ -45,6 +45,8 @@ spec:
         - application: testnav-tps-messaging-service
         - application: testnav-yrkesskade-proxy
         - application: testnorge-profil-api
+        - application: etterlatte-testdata
+          namespace: etterlatte
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io

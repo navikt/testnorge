@@ -48,6 +48,9 @@ export const MalPanel = ({
 		if (_.has(bestilling, 'sykemelding.syntSykemelding')) {
 			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder syntetisk sykemelding, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
 		}
+		if (_.has(bestilling, 'sigrunstub')) {
+			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder sigrunstub med lignet inntekt, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
+		}
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
