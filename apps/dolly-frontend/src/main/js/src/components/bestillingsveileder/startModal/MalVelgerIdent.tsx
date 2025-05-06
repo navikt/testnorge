@@ -101,8 +101,13 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 	)
 	const erGammelSyntSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.syntSykemelding')
 	const erAaregMal = _.has(valgtMal, 'data.bestilling.aareg')
-	const erGammelMal =
-		erGammelFullmaktMal || erGammelAmeldingMal || erGammelSyntSykemeldingMal || erTpsfMal
+	const erLignetInntektMal = _.has(valgtMal, 'data.bestilling.sigrunstub')
+	const erUtdatertMal =
+		erGammelFullmaktMal ||
+		erGammelAmeldingMal ||
+		erGammelSyntSykemeldingMal ||
+		erTpsfMal ||
+		erLignetInntektMal
 
 	return (
 		<div className="ny-bestilling-form_input">
@@ -145,12 +150,12 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 					<NavLink to="/minside">Administrer maler</NavLink>
 				</Button>
 			</div>
-			{erGammelMal && (
+			{erUtdatertMal && (
 				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
 					Denne malen er utdatert, og vil muligens ikke fungere som den skal.
 				</Alert>
 			)}
-			{erAaregMal && !erGammelMal && (
+			{erAaregMal && !erUtdatertMal && (
 				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
 					Bestillinger med denne malen vil ikke fungere som de skal, da den inneholder Aareg-data.
 				</Alert>

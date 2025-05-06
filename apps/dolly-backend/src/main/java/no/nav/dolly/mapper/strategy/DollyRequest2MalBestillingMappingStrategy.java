@@ -57,6 +57,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getSigrunstubSummertSkattegrunnlag().addAll(request.getSigrunstubSummertSkattegrunnlag());
                         akkumulert.getYrkesskader().addAll(request.getYrkesskader());
                         akkumulert.getDokarkiv().addAll(request.getDokarkiv());
+                        akkumulert.getEtterlatteYtelser().addAll(request.getEtterlatteYtelser());
                         if (nonNull(request.getHistark())) {
                             if (isNull(akkumulert.getHistark())) {
                                 akkumulert.setHistark(request.getHistark());

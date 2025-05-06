@@ -8,6 +8,7 @@ import { isDate } from 'date-fns'
  */
 export const messages = {
 	required: 'Feltet er påkrevd',
+	positive: 'Verdien må være større enn 0',
 }
 
 // Dato som kommer fra Maler er av typen String

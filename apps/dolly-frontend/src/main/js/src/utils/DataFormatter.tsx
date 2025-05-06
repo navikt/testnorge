@@ -172,12 +172,12 @@ export const codeToNorskLabel = (value) => {
 		return null
 	}
 	return uppercaseAndUnderscoreToCapitalized(value)
-		.replace('oe', 'ø')
-		.replace('Oe', 'Ø')
-		.replace('ae', 'æ')
-		.replace('Ae', 'Æ')
-		.replace('aa', 'å')
-		.replace('Aa', 'Å')
+		.replaceAll('oe', 'ø')
+		.replaceAll('Oe', 'Ø')
+		.replaceAll('ae', 'æ')
+		.replaceAll('Ae', 'Æ')
+		.replaceAll('aa', 'å')
+		.replaceAll('Aa', 'Å')
 }
 
 export const oversettBoolean = (value) => {

@@ -2,11 +2,15 @@ package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.data.dollysearchservice.v1.ElasticTyper;
+import no.nav.testnav.libs.data.dollysearchservice.v1.PersonRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
 import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @UtilityClass
 public class FagsystemQueryUtils {
@@ -35,6 +39,7 @@ public class FagsystemQueryUtils {
             case BANKKONTO_UTLAND -> QueryBuilders.existsQuery("bankkonto.utenlandskBankkonto");
             case BRREGSTUB -> QueryBuilders.existsQuery("brregstub");
             case DOKARKIV -> QueryBuilders.existsQuery("dokarkiv");
+            case ETTERLATTE ->  QueryBuilders.existsQuery("etterlatteYtelser");
             case FULLMAKT -> QueryBuilders.existsQuery("fullmakt");
             case HISTARK -> QueryBuilders.existsQuery("histark");
             case INNTK -> QueryBuilders.existsQuery("inntektstub");
@@ -48,7 +53,6 @@ public class FagsystemQueryUtils {
             case PEN_PENSJONSAVTALE -> QueryBuilders.existsQuery("pensjonforvalter.pensjonsavtale");
             case PEN_TP -> QueryBuilders.existsQuery("pensjonforvalter.tp");
             case PEN_UT -> QueryBuilders.existsQuery("pensjonforvalter.uforetrygd");
-            case SIGRUN_LIGNET -> QueryBuilders.existsQuery("sigrunstub");
             case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.existsQuery("sigrunstubPensjonsgivende");
             case SIGRUN_SUMMERT -> QueryBuilders.existsQuery("sigrunstubSummertSkattegrunnlag");
             case SKATTEKORT -> QueryBuilders.existsQuery("skattekort");
@@ -64,6 +68,15 @@ public class FagsystemQueryUtils {
         if (!miljoer.isEmpty()) {
             var boolQuery = QueryBuilders.boolQuery();
             miljoer.forEach(miljoe -> boolQuery.must(QueryBuilders.matchQuery("miljoer", miljoe)));
+            queryBuilder.must(boolQuery);
+        }
+    }
+
+    public static void addIdentQuery(BoolQueryBuilder queryBuilder, PersonRequest personRequest) {
+
+        if (nonNull(personRequest) && StringUtils.isNotBlank(personRequest.getIdent())) {
+            var boolQuery = QueryBuilders.boolQuery();
+            boolQuery.must(QueryBuilders.matchQuery("identer", personRequest.getIdent()));
             queryBuilder.must(boolQuery);
         }
     }
