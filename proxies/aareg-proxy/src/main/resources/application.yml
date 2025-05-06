@@ -21,7 +21,7 @@ consumers:
     aareg-services:
       name: aareg-dolly-api-{env}
       namespace: arbeidsforhold
-      url: http://aareg-dolly-api-{env}.arbeidsforhold.svc.nais.local
+      url: http://aareg-dolly-api-{env}.intern.dev.nav.no
       cluster: dev-fss
     aareg-vedlikehold:
       name: aareg-vedlikehold-{env}
