@@ -7,10 +7,10 @@ import { SystemVisning } from '@/pages/apiOversikt/SystemVisning'
 export default () => {
 	const { apiOversikt, loading, error } = useApiOversikt()
 	const systemer = apiOversikt?.data?.system
-	console.log('systemer: ', systemer) //TODO - SLETT MEG
 
 	return (
 		<>
+			{/*TODO: Bedre tittel?*/}
 			<h1>API-oversikt</h1>
 			<p>Her finner du en oversikt over alle eksisterende APIer som benyttes i Dolly.</p>
 			<Box background="surface-default" padding="4">
@@ -20,7 +20,6 @@ export default () => {
 					<Alert variant="warning">{`Feil ved henting av data: ${error}`}</Alert>
 				) : (
 					<Table>
-						{/*<Table.Header></Table.Header>*/}
 						<Table.Body>
 							{systemer?.map((system) => {
 								return (

@@ -4,22 +4,36 @@ import { Box } from '@navikt/ds-react'
 
 const LabelValue = styled.div`
 	display: flex;
-	flex-wrap: wrap;
-	margin-bottom: 0.9rem;
-	align-content: baseline;
+	flex-wrap: nowrap;
+	margin-bottom: 0.8rem;
 
 	&& {
 		h4 {
 			margin: 0;
 			font-size: 0.9em;
+			transform: translateY(15%);
 			text-transform: uppercase;
-			width: 150px;
-			align-self: end;
+			color: #525962;
+			width: 160px;
+			align-self: baseline;
 		}
+		.verdi {
+			width: 80%;
+		}
+	}
+`
 
-		//div {
-		//	font-size: 0.9em;
-		//}
+const ReadWriteDelete = styled.div`
+	margin-top: 1rem;
+	&& {
+		h3 {
+			margin-top: 0;
+			font-size: 1.125rem;
+			text-transform: capitalize;
+		}
+		h4 {
+			width: 148px;
+		}
 	}
 `
 
@@ -27,18 +41,29 @@ const LabelValueVisning = ({ label, value }) => {
 	if (!value) {
 		return null
 	}
-	//TODO: check if value is an array and display it as a list
+
+	const formatValue = (value) => {
+		if (value.startsWith('http')) {
+			return (
+				<a href={value} target="_blank">
+					{value}
+				</a>
+			)
+		}
+		return value
+	}
+
 	return (
 		<LabelValue>
 			<h4>{label}</h4>
 			{Array.isArray(value) ? (
-				<div>
+				<div className="verdi">
 					{value.map((item, idx) => (
-						<div key={item + idx}>{item}</div>
+						<div key={item + idx}>{formatValue(item)}</div>
 					))}
 				</div>
 			) : (
-				<div>{value}</div>
+				<div className="verdi">{formatValue(value)}</div>
 			)}
 		</LabelValue>
 	)
@@ -48,9 +73,12 @@ const DataVisning = ({ system }) => (
 	<>
 		<LabelValueVisning label="register" value={system.register} />
 		<LabelValueVisning label="namespace" value={system.namespace} />
+		<LabelValueVisning label="name" value={system.name} />
 		<LabelValueVisning label="cluster" value={system.cluster} />
 		<LabelValueVisning label="kubernetes-name" value={_.get(system, 'kubernetes-name')} />
-		<LabelValueVisning label="url" value={system.url || system.write?.url} />
+		<LabelValueVisning label="url" value={system.url} />
+		<LabelValueVisning label="documentation" value={system.documentation} />
+		<LabelValueVisning label="description" value={system.description} />
 	</>
 )
 
@@ -58,6 +86,8 @@ const ReadWriteDeleteVisning = ({ data, type }) => {
 	if (!data) {
 		return null
 	}
+
+	const nestedData = _.get(data, type)
 
 	const backgroundColor =
 		type === 'read'
@@ -67,12 +97,12 @@ const ReadWriteDeleteVisning = ({ data, type }) => {
 				: 'surface-danger-subtle'
 
 	return (
-		<>
-			<Box padding="4" background={backgroundColor}>
+		<ReadWriteDelete>
+			<Box padding="3" background={backgroundColor}>
 				<h3>{type}</h3>
-				<DataVisning system={data} />
+				<DataVisning system={nestedData ? { ...data, ...nestedData } : data} />
 			</Box>
-		</>
+		</ReadWriteDelete>
 	)
 }
 
