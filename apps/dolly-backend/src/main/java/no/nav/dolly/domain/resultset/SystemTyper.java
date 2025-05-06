@@ -18,6 +18,7 @@ public enum SystemTyper {
     ARENA_DAGP("Arena dagpenger"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
+    ETTERLATTE("Etterlatte (Gjenny)"),
     FULLMAKT("Fullmakt (Representasjon)"),
     HISTARK("Saksmappearkiv (HISTARK)"),
     INNTK("Inntektskomponenten (INNTK)"),
