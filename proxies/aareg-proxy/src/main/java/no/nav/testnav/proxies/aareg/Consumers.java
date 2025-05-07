@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Configuration
 @ConfigurationProperties(prefix = "consumers")
 @NoArgsConstructor(access = PACKAGE)
-@Setter(PRIVATE)
+@Setter(PACKAGE)
 @Getter(PRIVATE)
 public class Consumers {
 
