@@ -17,19 +17,20 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter(PRIVATE)
 public class Consumers {
 
-    private static final String ENV = "{env}";
+    private static final String ENV = "-{env}";
+    private static final String DASH = "-%s";
 
     private ServerProperties aaregServices;
     private ServerProperties aaregVedlikehold;
 
     public ServerProperties getAaregServices(String env) {
 
-        var environment = "q2".equals(env) ?  "" : "-%s".formatted(env);
+        var environment = "q2".equals(env) ?  "" : DASH.formatted(env);
         return ServerProperties.of(
                 getAaregServices().getCluster(),
                 getAaregServices().getNamespace(),
                 getAaregServices().getName().replace(ENV, environment),
-                getAaregServices().getUrl().replace(ENV, env)
+                getAaregServices().getUrl().replace(ENV, DASH.formatted(env))
         );
     }
 
@@ -38,8 +39,8 @@ public class Consumers {
         return ServerProperties.of(
                 getAaregVedlikehold().getCluster(),
                 getAaregVedlikehold().getNamespace(),
-                getAaregVedlikehold().getName().replace(ENV, env),
-                getAaregVedlikehold().getUrl().replace(ENV, env)
+                getAaregVedlikehold().getName().replace(ENV, DASH.formatted(env)),
+                getAaregVedlikehold().getUrl().replace(ENV, DASH.formatted(env))
         );
     }
 }
