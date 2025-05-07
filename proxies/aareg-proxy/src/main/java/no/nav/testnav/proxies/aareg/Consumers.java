@@ -17,7 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter(PRIVATE)
 public class Consumers {
 
-    private static final String ENV = "{-env}";
+    private static final String ENV = "{env}";
 
     private ServerProperties aaregServices;
     private ServerProperties aaregVedlikehold;
