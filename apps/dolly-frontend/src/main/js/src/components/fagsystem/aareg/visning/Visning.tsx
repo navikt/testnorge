@@ -180,7 +180,8 @@ export const AaregVisning = ({
 				?.map((data) => {
 					return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ||
 						data?.sporingsinformasjon?.opprettetAv?.includes('srvtestnorge') ||
-						data?.sporingsinformasjon?.opprettetAv?.includes('srvappserver')
+						data?.sporingsinformasjon?.opprettetAv?.includes('srvappserver') ||
+						data?.sporingsinformasjon?.opprettetAv?.includes('aareg-dolly-api')
 						? data
 						: null
 				})
