@@ -81,8 +81,10 @@ public class AaregClient implements ClientRegister {
 
     private Mono<String> getErrors(Throwable error, Set<String> miljoer) {
 
+        var decoded = WebClientError.describe(error);
         return Mono.just(miljoer.stream()
-                .map(miljoe -> "%s:Feil= %s".formatted(miljoe, ErrorStatusDecoder.encodeStatus(WebClientError.describe(error).getMessage())))
+                .map(miljoe -> "%s:Feil= %s".formatted(miljoe, ErrorStatusDecoder.encodeStatus(decoded.getStatus() +
+                                (isBlank(decoded.getMessage()) ? "" : "= %s".formatted(decoded.getMessage())))))
                 .collect(Collectors.joining(",")));
     }
 
