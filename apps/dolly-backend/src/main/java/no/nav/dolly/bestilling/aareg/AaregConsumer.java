@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.aareg;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdGetCommand;
@@ -51,14 +52,14 @@ public class AaregConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "aareg_opprettArbeidforhold"})
     public Flux<ArbeidsforholdRespons> opprettArbeidsforhold(Arbeidsforhold request, String miljoe, AccessToken token) {
 
-        log.info("AAREG: Oppretting av arbeidsforhold, miljø {} request {}", miljoe, request);
+        log.info("AAREG: Oppretting av arbeidsforhold, miljø {} request {}", miljoe, Json.pretty(request));
         return new ArbeidsforholdPostCommand(webClient, miljoe, request, token.getTokenValue()).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "aareg_endreArbeidforhold"})
     public Flux<ArbeidsforholdRespons> endreArbeidsforhold(Arbeidsforhold request, String miljoe, AccessToken token) {
 
-        log.info("AAREG: Oppdatering av arbeidsforhold, miljø {} request {}", miljoe, request);
+        log.info("AAREG: Oppdatering av arbeidsforhold, miljø {} request {}", miljoe, Json.pretty(request));
         return new ArbeidsforholdPutCommand(webClient, miljoe, request, token.getTokenValue()).call();
     }
 

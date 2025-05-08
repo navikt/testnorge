@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

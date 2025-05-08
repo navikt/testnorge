@@ -6,6 +6,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.provider.BrukerController;
 import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,7 @@ class BrukerControllerTest {
     @Test
     void fjernFavoritter() {
         RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
-        req.setGruppeId(1l);
+        req.setGruppeId(1L);
         controller.fjernFavoritt(req);
         verify(brukerService).fjernFavoritt(anyLong());
     }
@@ -82,7 +83,7 @@ class BrukerControllerTest {
     @Test
     void leggTilFavoritter() {
         RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
-        req.setGruppeId(1l);
+        req.setGruppeId(1L);
         controller.leggTilFavoritt(req);
         verify(brukerService).leggTilFavoritt(anyLong());
     }

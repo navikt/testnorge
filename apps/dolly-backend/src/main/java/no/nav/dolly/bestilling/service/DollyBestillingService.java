@@ -34,7 +34,6 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -47,7 +46,6 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
-import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -183,7 +181,6 @@ public class DollyBestillingService {
 
         transactionHelperService.oppdaterBestillingFerdig(bestilling.getId(), bestillingService.cleanBestilling());
 
-        MDC.remove(MDC_KEY_BESTILLING);
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
 

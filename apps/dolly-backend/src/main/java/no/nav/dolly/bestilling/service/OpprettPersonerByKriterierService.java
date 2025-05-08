@@ -14,22 +14,17 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Hooks;
-import reactor.core.publisher.Operators;
 
 import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
-import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
@@ -68,8 +63,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     public void executeAsync(Bestilling bestilling) {
 
         log.info("Bestilling med id=#{} og type={} er startet i miljøer {} ...", bestilling.getId(), getBestillingType(bestilling), bestilling.getMiljoer());
-        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
-        Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
         if (nonNull(bestKriterier)) {
