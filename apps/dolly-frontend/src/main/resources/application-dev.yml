@@ -31,4 +31,4 @@ consumers:
     url: http://testnav-dolly-search-service-dev.dolly.svc.cluster.local
   testnav-api-oversikt-service:
     name: testnav-api-oversikt-service
-    url: http://testnav-api-oversikt-service.dolly.svc.cluster.local
+    url: http://testnav-oversikt-service.dolly.svc.cluster.local
