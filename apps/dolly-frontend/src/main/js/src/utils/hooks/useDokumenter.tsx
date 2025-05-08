@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher } from '@/api'
+import { fetcher, imageFetcher } from '@/api'
 
 export const useDokumenterFraMal = (malId: string) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
@@ -40,7 +40,7 @@ export const useJoarkPDF = (journalpostId?: number, dokumentInfoId?: number, mil
 export const useHistarkPDF = (dokumentInfoId?: number) => {
 	const { data, isLoading, error } = useSWR<Blob, Error>(
 		dokumentInfoId ? `/testnav-histark-proxy/api/saksmapper/${dokumentInfoId}/pdf` : null,
-		fetcher,
+		imageFetcher,
 		{
 			revalidateOnFocus: false,
 			headers: {
@@ -51,7 +51,7 @@ export const useHistarkPDF = (dokumentInfoId?: number) => {
 	)
 
 	return {
-		pdf: data,
+		pdfURL: data,
 		loading: isLoading,
 		error,
 	}

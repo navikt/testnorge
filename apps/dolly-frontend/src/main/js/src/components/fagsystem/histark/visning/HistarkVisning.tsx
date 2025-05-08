@@ -1,7 +1,10 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, formatDate } from '@/utils/DataFormatter'
 import Button from '@/components/ui/button/Button'
-import JoarkDokumentService from '@/service/services/JoarkDokumentService'
+import { useHistarkPDF } from '@/utils/hooks/useDokumenter'
+import { useEffect, useState } from 'react'
+import Loading from '@/components/ui/loading/Loading'
+import { CloseableErrorMessage } from '@/utils/DollyErrorMessageWrapper'
 
 type HistarkDokument = {
 	idx: number
@@ -24,9 +27,20 @@ type HistarkDokument = {
 }
 
 export default ({ dokument, dokumentInfoId, idx }: HistarkDokument) => {
+	const [fetchPdf, setFetchPdf] = useState(false)
+	const { pdfURL, loading, error } = useHistarkPDF(fetchPdf ? dokumentInfoId : undefined)
+
+	useEffect(() => {
+		if (pdfURL) {
+			window.open(pdfURL)
+			setFetchPdf(false)
+		}
+	}, [pdfURL])
+
 	if (!dokument) {
 		return null
 	}
+
 	return (
 		<div className="person-visning_content">
 			<TitleValue
@@ -52,14 +66,24 @@ export default ({ dokument, dokumentInfoId, idx }: HistarkDokument) => {
 			>
 				<TitleValue title="Filnavn" value={dokument.filnavn} />
 				<TitleValue title="Dokumentinfo-ID" value={dokumentInfoId} />
-				<Button
-					style={{ marginLeft: 'auto', marginBottom: 'auto' }}
-					className="csv-eksport-btn"
-					kind="file-new-table"
-					onClick={() => JoarkDokumentService.hentHistarkPDF(dokumentInfoId)}
-				>
-					VIS PDF
-				</Button>
+
+				{loading ? (
+					<Loading label="Henter PDF..." />
+				) : error ? (
+					<CloseableErrorMessage
+						message={error?.message || 'Kunne ikke hente PDF'}
+						onClose={() => setFetchPdf(false)}
+					/>
+				) : (
+					<Button
+						style={{ marginLeft: 'auto', marginBottom: 'auto' }}
+						className="csv-eksport-btn"
+						kind="file-new-table"
+						onClick={() => setFetchPdf(true)}
+					>
+						VIS PDF
+					</Button>
+				)}
 			</div>
 		</div>
 	)
