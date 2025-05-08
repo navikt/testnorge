@@ -22,6 +22,10 @@ const createProxyConfig = (routes) => {
 	)
 }
 
+const ReactCompilerConfig = {
+	target: '19',
+}
+
 export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
@@ -68,7 +72,7 @@ export default defineConfig(({ mode }) => ({
 		react({
 			babel: {
 				plugins: [
-					// 'babel-plugin-react-compiler', //TODO: Enable when react-compiler exits beta
+					['babel-plugin-react-compiler', ReactCompilerConfig],
 					[
 						'babel-plugin-styled-components',
 						{
