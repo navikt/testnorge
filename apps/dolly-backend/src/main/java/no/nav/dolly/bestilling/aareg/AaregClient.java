@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.aareg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
@@ -13,6 +12,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -112,7 +112,7 @@ public class AaregClient implements ClientRegister {
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                             Set<String> miljoer, boolean isOpprettEndre) {
 
-        MappingContext context = new MappingContext.Factory().getContext();
+        var context = MappingContextUtils.getMappingContext();
         context.setProperty(IDENT, dollyPerson.getIdent());
 
         var arbeidsforholdRequest = bestilling.getAareg().stream()
