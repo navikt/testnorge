@@ -79,6 +79,7 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.utenlandskIdentifikasjonsnummer',
 		'pdldata.person.nyident',
 		'pdldata.person.kontaktinformasjonForDoedsbo',
+		'etterlatteYtelser',
 		'aareg',
 		'fullmakt',
 		sigrunstubPensjonsgivendeAttributt,
