@@ -31,10 +31,11 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.aareg.util.AaregUtility.*;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendPermisjonPermitteringId;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q1_AND_Q2;
-import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q4_TO_Q1;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -44,6 +45,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
 
+    public static final Set<String> MILJOER_SUPPORTED = Set.of("q1", "q2", "q4");
     public static final String IDENT = "Ident";
     private static final String SYSTEM = "AAREG";
 
@@ -56,9 +58,12 @@ public class AaregClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (!bestilling.getAareg().isEmpty()) {
+        if (!bestilling.getAareg().isEmpty() &&
+                bestilling.getAareg().stream().anyMatch(aareg -> nonNull(aareg.getArbeidsgiver()))) {
 
-            var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
+            var miljoer = bestilling.getEnvironments();
+            miljoer.retainAll(MILJOER_SUPPORTED);
+
             if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
                 miljoer = crossConnect(miljoer, Q1_AND_Q2);
             }
@@ -108,7 +113,11 @@ public class AaregClient implements ClientRegister {
 
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty(IDENT, dollyPerson.getIdent());
-        var arbeidsforholdRequest = mapperFacade.mapAsList(bestilling.getAareg(), Arbeidsforhold.class, context);
+
+        var arbeidsforholdRequest = bestilling.getAareg().stream()
+                .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
+                .map(aareg -> mapperFacade.map(bestilling.getAareg(), Arbeidsforhold.class, context))
+                .toList();
 
         return aaregConsumer.getAccessToken()
                 .flatMapMany(token -> Flux.fromIterable(miljoer)
