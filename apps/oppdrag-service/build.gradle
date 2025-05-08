@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "uk.co.boothen.gradle:gradle-wsimport:0.21"
+    }
+}
+
+plugins {
+    id 'dolly-apps'
+    id "uk.co.boothen.gradle.wsimport" version "0.21"
+}
+
+apply plugin: "uk.co.boothen.gradle.wsimport"
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-oppdrag-service"
+        property "sonar.projectName", "testnav-oppdrag-service"
+    }
+}
+
+wsimport {
+    wsdlSourceRoot = "src/main/resources/schema/eksponering"
+    generatedSourceRoot = "/generated/src/wsdl/main"
+    generatedClassesRoot = "/classes/main"
+    wsdl("oppdragServiceWSBinding.wsdl") {
+        packageName = "no.nav.testnav.oppdragservice.wsdl"
+        xjcarg("-XautoNameResolution")
+    }
+    verbose = true
+    debug = true
+    target = "3.0"
+}
+
+configurations {
+    jaxws
+}
+
+dependencies {
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
+
+    jaxws 'com.sun.xml.ws:jaxws-tools:3.0.0',
+            'jakarta.xml.ws:jakarta.xml.ws-api:3.0.0',
+            'jakarta.xml.bind:jakarta.xml.bind-api:3.0.0',
+            'jakarta.activation:jakarta.activation-api:2.0.0',
+            'com.sun.xml.ws:jaxws-rt:3.0.0'
+
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:servlet-security"
+    implementation "no.nav.testnav.libs:vault"
+
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-web-services"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
+}
