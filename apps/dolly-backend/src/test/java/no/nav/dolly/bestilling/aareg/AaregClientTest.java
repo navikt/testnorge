@@ -29,8 +29,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.HashSet;
-
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -170,7 +168,7 @@ class AaregClientTest {
                 .arbeidsforholdId("1")
                 .isOppdatering(true)
                 .build()));
-        request.setEnvironments(new HashSet<>(singleton(ENV)));
+        request.setEnvironments(singleton(ENV));
 
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
                 .thenReturn(Mono.just(buildArbeidsforhold(true)));

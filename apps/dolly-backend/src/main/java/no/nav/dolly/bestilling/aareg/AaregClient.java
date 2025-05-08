@@ -61,8 +61,9 @@ public class AaregClient implements ClientRegister {
         if (!bestilling.getAareg().isEmpty() &&
                 bestilling.getAareg().stream().anyMatch(aareg -> nonNull(aareg.getArbeidsgiver()))) {
 
-            var miljoer = bestilling.getEnvironments();
-            miljoer.retainAll(MILJOER_SUPPORTED);
+            var miljoer = bestilling.getEnvironments().stream()
+                    .filter(MILJOER_SUPPORTED::contains)
+                    .collect(Collectors.toSet());
 
             if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
                 miljoer = crossConnect(miljoer, Q1_AND_Q2);
