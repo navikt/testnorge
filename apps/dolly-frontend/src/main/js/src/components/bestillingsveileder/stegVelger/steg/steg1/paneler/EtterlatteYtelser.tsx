@@ -4,6 +4,7 @@ import {
 	Attributt,
 	AttributtKategori,
 } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
+import { initialEtterlatteYtelser } from '@/components/fagsystem/gjenny/form/Form'
 
 export const etterlatteYtelserAttributt = 'etterlatteYtelser'
 
@@ -32,7 +33,7 @@ EtterlatteYtelserPanel.initialValues = ({ set, del, has }) => ({
 		label: 'Har etterlatteytelser',
 		checked: has(etterlatteYtelserAttributt),
 		add() {
-			set(etterlatteYtelserAttributt, [{ ytelse: '', soeker: '' }])
+			set(etterlatteYtelserAttributt, [initialEtterlatteYtelser])
 		},
 		remove() {
 			del(etterlatteYtelserAttributt)

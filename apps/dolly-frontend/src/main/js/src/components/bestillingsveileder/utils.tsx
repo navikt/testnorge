@@ -1,6 +1,7 @@
 import * as _ from 'lodash-es'
 import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
 import { sigrunstubPensjonsgivendeAttributt } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
+import { etterlatteYtelserAttributt } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/EtterlatteYtelser'
 
 export const tpsfAttributter = [
 	'harMellomnavn',
@@ -58,6 +59,7 @@ export const rootPaths = [
 	'pdldata.opprettNyPerson.foedtEtter',
 	'pdldata.opprettNyPerson.foedtFoer',
 	'pdlforvalter',
+	etterlatteYtelserAttributt,
 	'aareg',
 	'fullmakt',
 	'arbeidssoekerregisteret',
