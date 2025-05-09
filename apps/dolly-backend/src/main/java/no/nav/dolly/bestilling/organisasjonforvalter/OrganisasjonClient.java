@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
-import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q4_TO_Q1;
-import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -56,7 +54,7 @@ public class OrganisasjonClient {
 
         Set<String> orgnumre = new HashSet<>();
 
-        var miljoer = crossConnect(request.getEnvironments(), Q4_TO_Q1);
+        var miljoer = request.getEnvironments();
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
 
@@ -67,7 +65,7 @@ public class OrganisasjonClient {
                 orgnumre.addAll(requireNonNull(response.getBody()).getOrgnummer());
                 if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId()).isEmpty()) {
                     List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId());
-                    OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
+                    OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.getFirst();
                     organisasjonBestillingProgress.setBestilling(bestilling);
                     organisasjonBestillingProgress.setOrganisasjonsnummer(requireNonNull(response.getBody().getOrgnummer().iterator().next()));
                     organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")));
@@ -88,7 +86,7 @@ public class OrganisasjonClient {
     @Async
     public void gjenopprett(DeployRequest request, OrganisasjonBestilling bestilling) {
 
-        var miljoer = crossConnect(request.getEnvironments(), Q4_TO_Q1);
+        var miljoer = request.getEnvironments();
         organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
                 .bestilling(bestilling)
                 .organisasjonsnummer(request.getOrgnumre().iterator().next())
@@ -121,13 +119,13 @@ public class OrganisasjonClient {
 
                 if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId()).isEmpty()) {
                     List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId());
-                    organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
+                    organisasjonBestillingProgress = organisasjonBestillingProgresses.getFirst();
                 }
 
-                if (deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).get(0).getStatus().name().contains("ERROR")) {
+                if (deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).getFirst().getStatus().name().contains("ERROR")) {
                     organisasjonBestillingService.setBestillingFeil(
                             bestilling.getId(),
-                            deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).get(0).getDetails());
+                            deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).getFirst().getDetails());
                 }
 
                 organisasjonBestillingProgress.setBestilling(bestilling);

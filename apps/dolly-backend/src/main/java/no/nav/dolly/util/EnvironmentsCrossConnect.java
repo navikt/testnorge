@@ -12,14 +12,7 @@ public class EnvironmentsCrossConnect {
     public static Set<String> crossConnect(Set<String> environments, Type type) {
         var connected = new HashSet<>(environments);
         return switch (type) {
-            case Q4_TO_Q1 -> {
-                // Krysskobling av miljøer Q4 -> Q1 etter ønske fra pensjon
-                log.info("Krysskobler miljøer Q4 -> Q1");
-                if (connected.contains("q4")) {
-                    connected.add("q1");
-                }
-                yield connected;
-            }
+
             case Q1_AND_Q2 -> {
                 if (connected.contains("q1")) {
                     log.info("Krysskobler miljøer Q1 -> Q2");
@@ -34,8 +27,6 @@ public class EnvironmentsCrossConnect {
     }
     
     public enum Type {
-        Q4_TO_Q1,
         Q1_AND_Q2
     }
-
 }
