@@ -35,13 +35,13 @@ public class AaregUtility {
         return ArbeidsforholdEksistens.builder()
                 .nyeArbeidsforhold(request.stream()
                         .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                        .noneMatch(response1 ->
-                                                isEqualArbeidsforhold(response1, arbeidsforhold)) ||
+                                .noneMatch(response1 ->
+                                        isEqualArbeidsforhold(response1, arbeidsforhold)) ||
                                 isNotTrue(arbeidsforhold.getIsOppdatering()) && isOpprettEndre)
                         .toList())
                 .eksisterendeArbeidsforhold(request.stream()
                         .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                        .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold))
+                                .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold))
                                 && (isTrue(arbeidsforhold.getIsOppdatering()) || !isOpprettEndre))
                         .toList())
                 .ubestemmeligArbeidsforhold(request.stream()
@@ -91,8 +91,10 @@ public class AaregUtility {
 
     private static boolean isArbeidsforholdAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
 
-        return arbeidsforhold1.getArbeidsavtaler().stream()
-                .allMatch(arbeidsavtale -> arbeidsforhold2.getArbeidsavtaler().stream()
-                .anyMatch(arbeidsavtale::equals));
+        return (isBlank(arbeidsforhold1.getArbeidsforholdId()) ||
+                isBlank(arbeidsforhold2.getArbeidsforholdId())) &&
+                arbeidsforhold1.getArbeidsavtaler().stream()
+                        .allMatch(arbeidsavtale -> arbeidsforhold2.getArbeidsavtaler().stream()
+                                .anyMatch(arbeidsavtale::equals));
     }
 }

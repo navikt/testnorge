@@ -33,10 +33,11 @@ class AaaregUtilityTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"1, false, 1, 0, 1",
+    @CsvSource(value = {"1, false, 1, 0, 1",
             "1, true, 1, 1, 0",
             "2, false, 1, 0, 1",
-            "2, true, 1, 0, 1"})
+            "2, true, 1, 0, 1",
+            "null, true, 1, 1, 0"}, nullValues = "null")
     void arbeidsforholdEksistens_eksisterIkke(String reqArbForholdId, Boolean isOppdatering, String respArbForholdId,
                                               int antallEksisterende, int antallNye) {
 
