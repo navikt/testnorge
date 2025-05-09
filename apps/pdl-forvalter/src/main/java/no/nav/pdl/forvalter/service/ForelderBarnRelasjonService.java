@@ -1,12 +1,14 @@
 package no.nav.pdl.forvalter.service;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.PersonUtenIdentifikatorRequest;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
@@ -16,6 +18,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelatertBiPersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
@@ -130,7 +134,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
 
         if (request.getRelatertPersonsRolle() == Rolle.BARN &&
                 isNotTrue(request.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
-                .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
+                .anyMatch(sivilstand -> isNotBlank(sivilstand.getRelatertVedSivilstand()))) {
 
             request.setRelatertPerson(relasjon.getRelatertPerson());
             request.setRelatertPersonUtenFolkeregisteridentifikator(relasjon.getRelatertPersonUtenFolkeregisteridentifikator());
@@ -142,16 +146,18 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                 default -> request.getMinRolleForPerson();
             });
 
-            var partner = hovedperson.getSivilstand().stream()
-                    .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
-                    .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
-                            .orElseThrow(() -> new NotFoundException("Partner ikke funnet " + sivilstand.getRelatertVedSivilstand())))
-                    .findFirst();
-            if (partner.isPresent()) {
-                partner.get().getPerson().getForelderBarnRelasjon().addFirst(
-                        addForelderBarnRelasjon(request, partner.get().getPerson()));
-                personRepository.save(partner.get());
-            }
+            var partnere = hovedperson.getSivilstand().stream()
+                    .filter(sivilstand -> isNotBlank(sivilstand.getRelatertVedSivilstand()))
+                    .map(SivilstandDato::new)
+                    .sorted(Comparator.comparing(SivilstandDato::getSivilstandsdato).reversed())
+                    .toList();
+
+            personRepository.findByIdent(relasjon.getRelatertPerson())
+                    .map(relatertPerson -> FoedselsdatoUtility.getFoedselsdato(relatertPerson.getPerson()))
+                    .map(foedselsdato -> getPartnerIdent(partnere, foedselsdato))
+                    .flatMap(personRepository::findByIdent)
+                    .ifPresent(partnerPerson -> partnerPerson.getPerson().getForelderBarnRelasjon()
+                            .addFirst(addForelderBarnRelasjon(request, partnerPerson.getPerson())));
         }
 
         if (request.getRelatertPersonsRolle() == Rolle.BARN && nonNull(relasjon.getDeltBosted())) {
@@ -178,9 +184,20 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         return emptyList();
     }
 
+    private static String getPartnerIdent(List<SivilstandDato> partnere, LocalDateTime relatertPersonDato) {
+
+        for (var partnersivilstand : partnere) {
+            if (partnersivilstand.getSivilstandsdato().isBefore(relatertPersonDato)) {
+                return partnersivilstand.getRelatertVedSivilstand();
+            }
+        }
+        return partnere.getLast().getRelatertVedSivilstand();
+    }
+
     private KjoennDTO.Kjoenn getKjoenn(String relatertPerson, RelatertBiPersonDTO utenIdentifikator) {
 
         return isNotBlank(relatertPerson) ?
+
                 KjoennFraIdentUtility.getKjoenn(relatertPerson) :
                 utenIdentifikator.getKjoenn();
     }
@@ -323,5 +340,30 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         relasjon.setMinRolleForPerson(relasjon.getRelatertPersonsRolle());
         relasjon.setRelatertPersonsRolle(rolle);
         return relasjon;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class SivilstandDato {
+
+        private LocalDateTime sivilstandsdato;
+        private String relatertVedSivilstand;
+
+        public SivilstandDato(SivilstandDTO sivilstand) {
+
+            this.sivilstandsdato = getSivilstandDato(sivilstand);
+            this.relatertVedSivilstand = sivilstand.getRelatertVedSivilstand();
+        }
+
+        private static LocalDateTime getSivilstandDato(SivilstandDTO sivilstand) {
+
+            if (nonNull(sivilstand.getSivilstandsdato())) {
+                return sivilstand.getSivilstandsdato();
+            } else if (nonNull(sivilstand.getBekreftelsesdato())) {
+                return sivilstand.getBekreftelsesdato();
+            }
+            return LocalDateTime.now();
+        }
     }
 }

@@ -27,6 +27,7 @@ import java.util.function.Function;
 @Configuration
 public class RouteLocatorConfig {
 
+    private static final String ENV = "{env}";
     private static final String[] MILJOER = { "q1", "q2", "q4"};
 
     @Bean
@@ -44,8 +45,8 @@ public class RouteLocatorConfig {
                             getAuthenticationFilter(tokenService, forEnvironment(consumers.getAaregVedlikehold(), env));
 
                     routes
-                            .route(createReadableRouteToNewEndpoint(env, readableAuthentication))
-                            .route(createWriteableRouteToNewEndpoint(env, writeableAuthentication));
+                            .route(createReadableRouteToNewEndpoint(consumers.getAaregServices().getUrl(), env, readableAuthentication))
+                            .route(createWriteableRouteToNewEndpoint(consumers.getAaregVedlikehold().getUrl(), env, writeableAuthentication));
                 });
         return routes.build();
     }
@@ -58,39 +59,38 @@ public class RouteLocatorConfig {
     }
 
     private static ServerProperties forEnvironment(ServerProperties original, String environment) {
-        var replacement = "q2".equals(environment) ? "" : '-' + environment;
+
         return ServerProperties.of(
                 original.getCluster(),
                 original.getNamespace(),
-                original.getName().replace("-{env}", replacement),
-                original.getUrl().replace("-{env}", replacement)
+                original.getName().replace(ENV, environment),
+                original.getUrl().replace(ENV, environment)
         );
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
+    private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String url, String environment, GatewayFilter authentication) {
 
         return predicateSpec -> predicateSpec
-                .path("/" + miljoe + "/**")
+                .path("/" + environment + "/**")
                 .and()
                 .method(HttpMethod.GET)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
+                        .rewritePath("/" + environment + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri("https://aareg-services-" + miljoe + ".dev.intern.nav.no");
+                .uri(url.replace(ENV, environment));
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
+    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String url, String environment, GatewayFilter authentication) {
 
         return predicateSpec -> predicateSpec
-                .path("/" + miljoe + "/**")
+                .path("/" + environment + "/**")
                 .and()
                 .method(HttpMethod.POST, HttpMethod.PUT)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
+                        .rewritePath("/" + environment + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri("https://aareg-vedlikehold-" + miljoe + ".dev.intern.nav.no");
+                .uri(url.replace(ENV, environment));
     }
-
 }
