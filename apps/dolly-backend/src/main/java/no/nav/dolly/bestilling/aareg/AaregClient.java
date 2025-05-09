@@ -117,7 +117,7 @@ public class AaregClient implements ClientRegister {
 
         var arbeidsforholdRequest = bestilling.getAareg().stream()
                 .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
-                .map(aareg -> mapperFacade.map(bestilling.getAareg(), Arbeidsforhold.class, context))
+                .map(aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context))
                 .toList();
 
         return aaregConsumer.getAccessToken()
