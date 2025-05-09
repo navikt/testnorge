@@ -8,10 +8,10 @@ import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 export const FinnPersonDropdown = () => {
 	const location = useLocation()
 	const [isActive, setIsActive] = useState(false)
+
 	useEffect(() => {
 		setIsActive(
 			location?.pathname === '/dollysoek' ||
-				location?.pathname === '/testnorge' ||
 				location?.pathname === '/nyansettelser' ||
 				location?.pathname === '/tenor/personer/',
 		)
@@ -41,7 +41,7 @@ export const FinnPersonDropdown = () => {
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem route="/nyansettelser" style={{ color: '#212529' }}>
 				<Icon kind="ansettelse" fontSize="1.5rem" />
-				<DropdownStyledLink href="/nyansettelser/">Vis nyansettelser</DropdownStyledLink>
+				<DropdownStyledLink href="/nyansettelser">Vis nyansettelser</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 		</ActionMenuWrapper>
 	)
