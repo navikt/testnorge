@@ -1048,6 +1048,22 @@ const mapTpsMessaging = (bestillingData, data) => {
 	}
 }
 
+const mapEtterlatteYtelser = (bestillingsData, data) => {
+	const etterlatteYtelser = _.get(bestillingsData, 'etterlatteYtelser')
+	if (etterlatteYtelser) {
+		const etterlatteYtelserData = {
+			header: 'Etterlatteytelser',
+			itemRows: etterlatteYtelser.map((item, idx) => {
+				return [
+					{ numberHeader: `Etterlatteytelse ${idx + 1}` },
+					obj('Ytelse', showLabel('etterlatteYtelser', item.ytelse)),
+				]
+			}),
+		}
+		data.push(etterlatteYtelserData)
+	}
+}
+
 export const arbeidsforholdVisning = (arbeidsforhold, i, aaregKriterier, amelding) => [
 	{
 		numberHeader: `Arbeidsforhold ${i + 1}`,
@@ -2492,6 +2508,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 
 	mapFullmakt(bestillingData, data)
 	mapTpsMessaging(bestillingData, data)
+	mapEtterlatteYtelser(bestillingData, data)
 	mapAareg(bestillingData, data)
 	mapSigrunstubPensjonsgivende(bestillingData, data)
 	mapSigrunstubSummertSkattegrunnlag(bestillingData, data)
