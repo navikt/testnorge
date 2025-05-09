@@ -100,7 +100,6 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 		(a: any) => a?.amelding?.length > 0,
 	)
 	const erGammelSyntSykemeldingMal = _.has(valgtMal, 'data.bestilling.sykemelding.syntSykemelding')
-	const erAaregMal = _.has(valgtMal, 'data.bestilling.aareg')
 	const erLignetInntektMal = _.has(valgtMal, 'data.bestilling.sigrunstub')
 	const erUtdatertMal =
 		erGammelFullmaktMal ||
@@ -153,11 +152,6 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 			{erUtdatertMal && (
 				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
 					Denne malen er utdatert, og vil muligens ikke fungere som den skal.
-				</Alert>
-			)}
-			{erAaregMal && !erUtdatertMal && (
-				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
-					Bestillinger med denne malen vil ikke fungere som de skal, da den inneholder Aareg-data.
 				</Alert>
 			)}
 		</div>
