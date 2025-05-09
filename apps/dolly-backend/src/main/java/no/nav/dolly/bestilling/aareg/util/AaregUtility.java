@@ -24,7 +24,8 @@ public class AaregUtility {
 
         return (isArbeidsgiverOrganisasjonAlike(response, request) ||
                 isArbeidsgiverPersonAlike(response, request)) &&
-                response.getArbeidsforholdId().equals(request.getArbeidsforholdId());
+                response.getArbeidsforholdId().equals(request.getArbeidsforholdId()) ||
+                isArbeidsforholdAlike(response, request);
     }
 
     public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,
@@ -86,5 +87,12 @@ public class AaregUtility {
         return arbeidsforhold1.getArbeidsgiver() instanceof Organisasjon organisasjon1 &&
                 arbeidsforhold2.getArbeidsgiver() instanceof Organisasjon organisasjon2 &&
                 organisasjon1.getOrganisasjonsnummer().equals(organisasjon2.getOrganisasjonsnummer());
+    }
+
+    private static boolean isArbeidsforholdAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
+
+        return arbeidsforhold1.getArbeidsavtaler().stream()
+                .allMatch(arbeidsavtale -> arbeidsforhold2.getArbeidsavtaler().stream()
+                .anyMatch(arbeidsavtale::equals));
     }
 }
