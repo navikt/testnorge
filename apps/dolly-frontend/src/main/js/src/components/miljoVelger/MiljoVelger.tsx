@@ -7,7 +7,7 @@ import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
-import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
+import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { Alert } from '@navikt/ds-react'
 import { useFormContext } from 'react-hook-form'
 
@@ -126,7 +126,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 					))}
 				</div>
 			</fieldset>
-			<DollyErrorMessage name="environments" />
+			<DollyErrorMessageWrapper name="environments" />
 		</div>
 	)
 }

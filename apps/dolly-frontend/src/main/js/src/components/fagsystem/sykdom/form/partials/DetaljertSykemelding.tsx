@@ -18,7 +18,7 @@ import { getRandomValue } from '@/components/fagsystem/utils'
 import { useContext, useEffect } from 'react'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
 import { useSykemeldingValidering } from '@/utils/hooks/useSykemelding'
-import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
+import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { useWatch } from 'react-hook-form'
 import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateContext'
 
@@ -127,7 +127,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	return (
 		<div className="flexbox--wrap">
-			<DollyErrorMessage name={'manual.sykemelding.detaljertSykemelding'} />
+			<DollyErrorMessageWrapper name={'manual.sykemelding.detaljertSykemelding'} />
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker name="sykemelding.detaljertSykemelding.startDato" label="Startdato" />
 				<FormCheckbox

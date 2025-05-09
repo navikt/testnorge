@@ -53,6 +53,7 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 
 	const resetEksisterende = () => {
 		setSubmittedIds(null)
+		setInput('')
 		formMethods.setValue('opprettFraIdenter', null)
 	}
 
@@ -85,7 +86,7 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 					type="submit"
 					onClick={onSubmit}
 					variant="primary"
-					disabled={loading}
+					disabled={!input || loading}
 					loading={loading}
 				>
 					Valider identifikatorer

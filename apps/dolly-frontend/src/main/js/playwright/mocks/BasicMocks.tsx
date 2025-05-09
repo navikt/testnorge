@@ -2036,6 +2036,12 @@ export const eksisterendeGruppeMock = {
 	tags: [],
 }
 
+export const laastGruppeMock = {
+	...eksisterendeGruppeMock,
+	erLaast: true,
+	laastBeskrivelse: 'Låst gruppe',
+}
+
 export const histarkMock = {
 	antallSider: 1,
 	enhetsNr: '1234',
