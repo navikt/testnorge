@@ -1,8 +1,13 @@
+dolly:
+  texas:
+    shared:
+      secret: ${AZURE_APP_CLIENT_SECRET}
+
 spring:
   application:
     name: dolly-texas-proxy
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:
