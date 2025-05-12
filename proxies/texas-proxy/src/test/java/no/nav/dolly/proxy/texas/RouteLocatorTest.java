@@ -85,15 +85,27 @@ class RouteLocatorTest extends DollyApplicationContextTest {
                 .post()
                 .uri("/api/v1/token")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Dolly TEST")
                 .bodyValue(GET_TOKEN_BODY)
                 .exchange()
                 .expectStatus()
                 .isOk();
 
+        // No custom auth header.
+        client
+                .post()
+                .uri("/api/v1/token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(GET_TOKEN_BODY)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError();
+
         client
                 .post()
                 .uri("/api/v1/token/exchange")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Dolly TEST")
                 .bodyValue(EXCHANGE_TOKEN_BODY)
                 .exchange()
                 .expectStatus()
@@ -103,6 +115,7 @@ class RouteLocatorTest extends DollyApplicationContextTest {
                 .post()
                 .uri("/api/v1/introspect")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Dolly TEST")
                 .bodyValue(INTROSPECT_TOKEN_BODY)
                 .exchange()
                 .expectStatus()

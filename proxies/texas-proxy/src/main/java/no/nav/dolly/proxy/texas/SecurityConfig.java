@@ -21,8 +21,8 @@ class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .addFilterAt(filter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange(exchange -> exchange
-                        .anyExchange()
-                        .permitAll())
+                        .pathMatchers("/internal/**").permitAll()
+                        .anyExchange().permitAll())
                 .build();
 
     }

@@ -20,6 +20,10 @@ class DollyAuthorizationHeaderFilter implements WebFilter {
     @NonNull
     public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
 
+        if (exchange.getRequest().getPath().value().startsWith("/internal")) {
+            return chain.filter(exchange);
+        }
+
         var header = exchange
                 .getRequest()
                 .getHeaders()
