@@ -1,7 +1,7 @@
 dolly:
   texas:
     shared:
-      secret: ${AZURE_APP_CLIENT_SECRET}
+      secret: ${DOLLY_TEXAS_PROXY_SHARED_SECRET}
 
 spring:
   application:

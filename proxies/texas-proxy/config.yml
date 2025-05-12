@@ -23,6 +23,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
         - application: testnav-budpro-service
+  envFrom:
+    - secret: dolly-texas-proxy-shared-secret
   liveness:
     path: /internal/health/liveness
   observability:
