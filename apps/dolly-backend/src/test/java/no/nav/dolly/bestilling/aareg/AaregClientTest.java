@@ -16,7 +16,6 @@ import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,9 +57,6 @@ class AaregClientTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private AccessToken accessToken;
-
-    @Mock
     private Bruker bruker;
 
     @Mock
@@ -83,6 +79,7 @@ class AaregClientTest {
     private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
 
         return ArbeidsforholdRespons.builder()
+                .miljo(ENV)
                 .eksisterendeArbeidsforhold(singletonList(
                         Arbeidsforhold.builder()
                                 .arbeidstaker(Person.builder()
@@ -140,6 +137,8 @@ class AaregClientTest {
                         .build()));
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
                 .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold());
+        when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
+                .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold().getFirst());
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT)
@@ -175,6 +174,8 @@ class AaregClientTest {
                         .build()));
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
                 .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
+        when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
+                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold().getFirst());
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)

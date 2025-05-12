@@ -9,11 +9,15 @@ import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -28,6 +32,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
 @AutoConfigureWireMock(port = 0)
@@ -40,7 +45,7 @@ class AaregConsumerTest {
 
     @MockitoBean
     @SuppressWarnings("unused")
-    private AccessToken accessToken;
+    private TokenExchange tokenService;
 
     @Autowired
     private AaregConsumer aaregConsumer;
@@ -55,7 +60,7 @@ class AaregConsumerTest {
 
     @BeforeEach
     void setUp() {
-
+        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
         opprettRequest = Arbeidsforhold.builder()
                 .arbeidstaker(Person.builder()
                         .offentligIdent(IDENT)
