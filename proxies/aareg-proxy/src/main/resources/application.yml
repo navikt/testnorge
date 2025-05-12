@@ -21,10 +21,10 @@ consumers:
     aareg-services:
       name: aareg-services-nais-{env}
       namespace: arbeidsforhold
-      url: http://aareg-services-{env}.arbeidsforhold.svc.nais.local
+      url: https://aareg-services-{env}.dev.intern.nav.no
       cluster: dev-fss
     aareg-vedlikehold:
-      name: aareg-vedlikehold-{env}
+      name: aareg-dolly-api-{env}
       namespace: arbeidsforhold
-      url: https://aareg-vedlikehold-{env}.dev.intern.nav.no
+      url: https://aareg-dolly-api-{env}.intern.dev.nav.no
       cluster: dev-fss

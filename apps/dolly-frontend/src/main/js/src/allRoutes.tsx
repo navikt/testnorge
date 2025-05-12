@@ -19,6 +19,7 @@ const OrgtilgangPage = lazyWithPreload(() => import('@/pages/adminPages/Orgtilga
 const LevendeArbeidsforholdPage = lazyWithPreload(
 	() => import('@/pages/adminPages/Levendearbeidsforhold/AppstyringPage'),
 )
+const ApiOversiktPage = lazyWithPreload(() => import('@/pages/apiOversikt/ApiOversiktPage'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.params?.gruppeId}</span>
 
@@ -113,13 +114,18 @@ const allRoutes = [
 	},
 	{
 		path: '/admin/levendearbeidsforhold',
-		handle: { crumb: () => 'Levende-arbeidsforhold' },
+		handle: { crumb: () => 'Levende arbeidsforhold' },
 		element: LevendeArbeidsforholdPage,
 	},
 	{
 		path: '/nyansettelser',
 		handle: { crumb: () => 'Nyansettelser' },
 		element: NyansettelserPage,
+	},
+	{
+		path: '/oversikt',
+		handle: { crumb: () => 'API-oversikt' },
+		element: ApiOversiktPage,
 	},
 ]
 

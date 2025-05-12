@@ -48,4 +48,5 @@ public class Consumers {
     private ServerProperties arbeidssoekerregisteretProxy;
     private ServerProperties brukerService;
     private ServerProperties safProxy;
+    private ServerProperties etterlatte;
 }

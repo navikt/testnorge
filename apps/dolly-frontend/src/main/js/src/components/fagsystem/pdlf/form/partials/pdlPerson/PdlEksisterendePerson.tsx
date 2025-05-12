@@ -52,7 +52,7 @@ export const PdlEksisterendePerson = ({
 		data: pdlOptions,
 		loading: pdlLoading,
 		error: pdlError,
-	} = usePdlOptions(filtrerteIdenter, identMaster)
+	} = usePdlOptions(filtrerteIdenter, identMaster, true)
 
 	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
 	const harNyIdent = eksisterendePersonPath?.includes('nyident')

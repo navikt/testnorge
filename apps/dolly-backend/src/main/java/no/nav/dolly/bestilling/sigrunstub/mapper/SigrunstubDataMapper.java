@@ -44,6 +44,8 @@ public class SigrunstubDataMapper implements MappingStrategy {
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
 
                         if (kilde.getTjeneste() == BEREGNET_SKATT) {
+                            // BEREGNET_SKATT er blitt deprecated hos mottager
+                            destinasjon.setTjeneste(SigrunstubLignetInntektRequest.Tjeneste.SUMMERT_SKATTEGRUNNLAG);
                             addOppgjoersdato(destinasjon.getGrunnlag(), Integer.parseInt(destinasjon.getInntektsaar()) + 1);
                             addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), Integer.parseInt(destinasjon.getInntektsaar()) + 1);
                         }
@@ -89,6 +91,7 @@ public class SigrunstubDataMapper implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsSummertSkattegrunnlag kilde, SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag destinasjon, MappingContext context) {
+                        log.info("Mottok summertSkattegrunnlag {}", kilde);
 
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
                     }

@@ -23,12 +23,13 @@ import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
 @RequiredArgsConstructor
 public class DokarkivGetDokument implements Callable<Mono<DokarkivResponse>> {
 
-    private static final String DOKARDI_URL = "/{miljoe}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/ARKIV";
+    private static final String DOKARDI_URL = "/{miljoe}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/{variantFormat}";
 
     private final WebClient webClient;
     private final String miljoe;
     private final String journalpostId;
     private final String dokumentInfoId;
+    private final String variantFormat;
     private final String token;
 
     @Override
@@ -37,7 +38,7 @@ public class DokarkivGetDokument implements Callable<Mono<DokarkivResponse>> {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(DOKARDI_URL)
-                        .build(miljoe, journalpostId, dokumentInfoId))
+                        .build(miljoe, journalpostId, dokumentInfoId, variantFormat))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(ACCEPT_ENCODING, ContentType.APPLICATION_JSON)

@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.aareg.util;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdEksistens;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
@@ -24,30 +23,25 @@ public class AaregUtility {
 
         return (isArbeidsgiverOrganisasjonAlike(response, request) ||
                 isArbeidsgiverPersonAlike(response, request)) &&
-                response.getArbeidsforholdId().equals(request.getArbeidsforholdId());
+                response.getArbeidsforholdId().equals(request.getArbeidsforholdId()) ||
+                isArbeidsforholdAlike(response, request);
     }
 
-    public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,
-                                                           List<Arbeidsforhold> request,
+    public static ArbeidsforholdEksistens doEksistenssjekk(List<Arbeidsforhold> request,
+                                                           List<Arbeidsforhold> response,
                                                            boolean isOpprettEndre) {
 
         return ArbeidsforholdEksistens.builder()
                 .nyeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                        .noneMatch(response1 ->
-                                                isEqualArbeidsforhold(response1, arbeidsforhold)) ||
+                        .filter(arbeidsforhold -> response.stream()
+                                .noneMatch(response1 ->
+                                        isEqualArbeidsforhold(response1, arbeidsforhold)) ||
                                 isNotTrue(arbeidsforhold.getIsOppdatering()) && isOpprettEndre)
                         .toList())
                 .eksisterendeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                        .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold))
+                        .filter(arbeidsforhold -> response.stream()
+                                .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold))
                                 && (isTrue(arbeidsforhold.getIsOppdatering()) || !isOpprettEndre))
-                        .toList())
-                .ubestemmeligArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .filter(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold) &&
-                                        isNull(arbeidsforhold.getArbeidsforholdId()) && !isOpprettEndre)
-                                .count() > 1L)
                         .toList())
                 .build();
     }
@@ -86,5 +80,14 @@ public class AaregUtility {
         return arbeidsforhold1.getArbeidsgiver() instanceof Organisasjon organisasjon1 &&
                 arbeidsforhold2.getArbeidsgiver() instanceof Organisasjon organisasjon2 &&
                 organisasjon1.getOrganisasjonsnummer().equals(organisasjon2.getOrganisasjonsnummer());
+    }
+
+    private static boolean isArbeidsforholdAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
+
+        return (isBlank(arbeidsforhold1.getArbeidsforholdId()) ||
+                isBlank(arbeidsforhold2.getArbeidsforholdId())) &&
+                arbeidsforhold1.getArbeidsavtaler().stream()
+                        .allMatch(arbeidsavtale -> arbeidsforhold2.getArbeidsavtaler().stream()
+                                .anyMatch(arbeidsavtale::equals));
     }
 }

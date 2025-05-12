@@ -1,7 +1,7 @@
 dolly:
   client:
     general:
-      timeout: 30
+      timeout: 300
 
 spring:
   cache:
@@ -57,3 +57,5 @@ consumers:
   bruker-service:
     name: testnav-bruker-service-dev
     url: https://testnav-bruker-service-dev.intern.dev.nav.no
+  etterlatte:
+    url: https://etterlatte-testdata.intern.dev.nav.no
