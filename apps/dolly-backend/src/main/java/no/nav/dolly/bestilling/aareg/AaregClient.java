@@ -122,11 +122,10 @@ public class AaregClient implements ClientRegister {
                 .flatMap(eksisterende -> Flux.fromIterable(bestilling.getAareg())
                         .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
                         .map(aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context))
-                        .doOnNext(aareg ->log.info("aareg request: {}", aareg))
                         .collectList()
                         .flatMap(arbeidsforholdRequest -> Flux.fromIterable(miljoer)
                                 .flatMap(miljoe -> doInsertOrUpdate(arbeidsforholdRequest, eksisterende.get(miljoe), miljoe, isOpprettEndre))
-                                .collect(Collectors.joining(""))));
+                                .collect(Collectors.joining(","))));
     }
 
     private void updateBestilling(RsDollyUtvidetBestilling bestilling, Collection<List<Arbeidsforhold>> eksisterendeArbeidsforhold) {
