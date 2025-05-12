@@ -4,29 +4,31 @@ import Button from '@/components/ui/button/Button'
 import { useHistarkPDF } from '@/utils/hooks/useDokumenter'
 import { useEffect, useState } from 'react'
 import Loading from '@/components/ui/loading/Loading'
-import { CloseableErrorMessage } from '@/utils/DollyErrorMessageWrapper'
+import { DollyErrorMessage } from '@/utils/DollyErrorMessageWrapper'
 
-type HistarkDokument = {
+export type HistarkDokumentWrapper = {
 	idx: number
 	dokumentInfoId: any
-	dokument: {
-		antallSider: number
-		enhetsNr: string
-		enhetsNavn: string
-		temaKodeSet: string[]
-		fnrEllerOrgnr: string
-		startaar: 2019
-		sluttaar: 2023
-		skanningstidspunkt: Date
-		filnavn: string
-		skanner: string
-		skannerSted: string
-		inneholderKlage: boolean
-		sjekksum: string
-	}
+	dokument: HistarkDokument
 }
 
-export default ({ dokument, dokumentInfoId, idx }: HistarkDokument) => {
+export type HistarkDokument = {
+	antallSider: number
+	enhetsNr: string
+	enhetsNavn: string
+	temaKodeSet: string[]
+	fnrEllerOrgnr: string
+	startaar: 2019
+	sluttaar: 2023
+	skanningstidspunkt: Date
+	filnavn: string
+	skanner: string
+	skannerSted: string
+	inneholderKlage: boolean
+	sjekksum: string
+}
+
+export default ({ dokument, dokumentInfoId, idx }: HistarkDokumentWrapper) => {
 	const [fetchPdf, setFetchPdf] = useState(false)
 	const { pdfURL, loading, error } = useHistarkPDF(fetchPdf ? dokumentInfoId : undefined)
 
@@ -66,24 +68,16 @@ export default ({ dokument, dokumentInfoId, idx }: HistarkDokument) => {
 			>
 				<TitleValue title="Filnavn" value={dokument.filnavn} />
 				<TitleValue title="Dokumentinfo-ID" value={dokumentInfoId} />
-
-				{loading ? (
-					<Loading label="Henter PDF..." />
-				) : error ? (
-					<CloseableErrorMessage
-						message={error?.message || 'Kunne ikke hente PDF'}
-						onClose={() => setFetchPdf(false)}
-					/>
-				) : (
-					<Button
-						style={{ marginLeft: 'auto', marginBottom: 'auto' }}
-						className="csv-eksport-btn"
-						kind="file-new-table"
-						onClick={() => setFetchPdf(true)}
-					>
-						VIS PDF
-					</Button>
-				)}
+				<Button
+					style={{ marginLeft: 'auto', marginBottom: 'auto' }}
+					className="csv-eksport-btn"
+					kind="file-new-table"
+					onClick={() => setFetchPdf(true)}
+				>
+					VIS PDF
+				</Button>
+				{loading && <Loading label="Henter PDF..." />}
+				{error && <DollyErrorMessage message={error?.message || 'Kunne ikke hente PDF'} />}
 			</div>
 		</div>
 	)

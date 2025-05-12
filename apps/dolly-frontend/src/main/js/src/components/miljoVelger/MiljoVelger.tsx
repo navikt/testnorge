@@ -60,8 +60,8 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 
 	const filterEnvironments = (miljoer, erBankIdBruker) => {
 		if (erBankIdBruker) {
-			var bankMiljoer = []
-			for (var i = 0; i < alleredeValgtMiljoe.length; i++) {
+			const bankMiljoer = []
+			for (let i = 0; i < alleredeValgtMiljoe.length; i++) {
 				switch (alleredeValgtMiljoe[i]) {
 					case 'q1':
 						bankMiljoer.push(bankIdQ1)
@@ -113,7 +113,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 			<fieldset name={`Liste over miljøer`}>
 				<StyledH3>Miljøer</StyledH3>
 				<div className="miljo-velger_checkboxes">
-					{filteredEnvironments.map((env) => (
+					{filteredEnvironments.map((env: any) => (
 						<DollyCheckbox
 							key={env.id}
 							id={env.id}

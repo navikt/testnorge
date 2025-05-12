@@ -1,4 +1,3 @@
-import { Dokument, Journalpost } from '@/service/services/JoarkDokumentService'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import styled from 'styled-components'
@@ -6,8 +5,8 @@ import Button from '@/components/ui/button/Button'
 import { showLabel } from '@/utils/DataFormatter'
 import { useEffect, useState } from 'react'
 import Loading from '@/components/ui/loading/Loading'
-import { useJoarkPDF } from '@/utils/hooks/useDokumenter'
-import { CloseableErrorMessage } from '@/utils/DollyErrorMessageWrapper'
+import { Dokument, Journalpost, useJoarkPDF } from '@/utils/hooks/useDokumenter'
+import { DollyErrorMessage } from '@/utils/DollyErrorMessageWrapper'
 
 type Props = {
 	journalpost: Journalpost
@@ -24,7 +23,7 @@ export default ({ journalpost, miljoe }: Props) => {
 		dokumentInfoId?: number
 	}>({})
 
-	const { pdf, loading, error, trigger } = useJoarkPDF(
+	const { pdf, loading, error } = useJoarkPDF(
 		selectedDoc.journalpostId,
 		selectedDoc.dokumentInfoId,
 		miljoe,
@@ -81,27 +80,24 @@ export default ({ journalpost, miljoe }: Props) => {
 							<TitleValue title="Tittel" value={dokument.tittel} />
 							<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
 
-							{isLoading ? (
-								<Loading label="Henter PDF..." />
-							) : hasError ? (
-								<CloseableErrorMessage
-									message={error?.message || 'Kunne ikke hente PDF'}
-									onClose={() => setSelectedDoc({})}
-								/>
-							) : (
-								<Button
-									className="flexbox--align-center csv-eksport-btn"
-									kind="file-new-table"
-									onClick={() =>
-										setSelectedDoc({
-											journalpostId: journalpost.journalpostId,
-											dokumentInfoId: dokument.dokumentInfoId,
-										})
-									}
-								>
-									VIS PDF
-								</Button>
-							)}
+							<Button
+								className="flexbox--align-center csv-eksport-btn"
+								kind="file-new-table"
+								disabled={isLoading || hasError}
+								title={
+									isLoading ? 'Henter PDF...' : hasError ? 'Feil under henting av PDF' : 'Vis PDF'
+								}
+								onClick={() =>
+									setSelectedDoc({
+										journalpostId: journalpost.journalpostId,
+										dokumentInfoId: dokument.dokumentInfoId,
+									})
+								}
+							>
+								VIS PDF
+							</Button>
+							{isLoading && <Loading label="Henter PDF..." />}
+							{hasError && <DollyErrorMessage message={error?.message || 'Kunne ikke hente PDF'} />}
 						</div>
 					)
 				}}
