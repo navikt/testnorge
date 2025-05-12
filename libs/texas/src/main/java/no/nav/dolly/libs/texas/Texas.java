@@ -50,6 +50,7 @@ public class Texas {
             """);
 
     private final WebClient webClient;
+    private final String localSecret;
     private final String tokenUrl;
     private final String exchangeUrl;
     private final String introspectUrl;
@@ -60,6 +61,9 @@ public class Texas {
 
     @PostConstruct
     void postConstruct() {
+        if (localSecret != null) {
+            log.info("Using a local shared secret, which is only meant for running an app locally against texas-proxy");
+        }
         if (preload) {
             log.info("Preloading tokens for {} consumer(s)", consumers.getConsumers().size());
             consumers
@@ -84,6 +88,11 @@ public class Texas {
                         .uri(URI.create(tokenUrl))
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(JSON_TOKEN_REQUEST.formatted(audience))
+                        .headers(headers -> {
+                            if (localSecret != null) {
+                                headers.add(HttpHeaders.AUTHORIZATION, "Dolly " + localSecret);
+                            }
+                        })
                         .retrieve()
                         .bodyToMono(TexasToken.class)
                         .retryWhen(WebClientError.is5xxException())

@@ -23,6 +23,11 @@
       "type": "java.net.URL",
       "defaultValue": "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect",
       "description": "Override the default token introspection URL (NAIS_TOKEN_INTROSPECTION_ENDPOINT) for Texas. Useful when testing locally to point to the Texas proxy."
+    },
+    {
+      "name": "dolly.texas.local.secret",
+      "type": "java.lang.String",
+      "description": "A common secret shared with texas-proxy, for running applications locally. As a backup, the environment variable DOLLY_TEXAS_PROXY_SHARED_SECRET will be used instead, before defaulting to null (as when running in a pod)."
     }
   ]
 }

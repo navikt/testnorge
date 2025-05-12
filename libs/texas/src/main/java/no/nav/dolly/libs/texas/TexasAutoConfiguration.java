@@ -17,6 +17,7 @@ public class TexasAutoConfiguration {
     @Bean
     Texas texasService(
             WebClient webClient,
+            @Value("${dolly.texas.local.secret:${DOLLY_TEXAS_PROXY_SHARED_SECRET:#{null}}}") String localSecret,
             @Value("${dolly.texas.url.token:#{null}}") String tokenUrl,
             @Value("${dolly.texas.url.exchange:#{null}}") String exchangeUrl,
             @Value("${dolly.texas.url.introspect:#{null}}") String introspectUrl,
@@ -25,6 +26,7 @@ public class TexasAutoConfiguration {
     ) {
         return new Texas(
                 webClient,
+                localSecret,
                 resolve(tokenUrl, "NAIS_TOKEN_ENDPOINT", "Neither dolly.texas.url.token nor NAIS_TOKEN_ENDPOINT is set"),
                 resolve(exchangeUrl, "NAIS_TOKEN_EXCHANGE_ENDPOINT", "Neither dolly.texas.url.exchange nor NAIS_TOKEN_EXCHANGE_ENDPOINT is set"),
                 resolve(introspectUrl, "NAIS_TOKEN_INTROSPECTION_ENDPOINT", "Neither dolly.texas.url.introspect nor NAIS_TOKEN_INTROSPECTION_ENDPOINT is set"),
