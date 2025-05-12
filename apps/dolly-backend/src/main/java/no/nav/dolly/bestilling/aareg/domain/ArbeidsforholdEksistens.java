@@ -16,5 +16,4 @@ public class ArbeidsforholdEksistens {
 
     private List<Arbeidsforhold> nyeArbeidsforhold;
     private List<Arbeidsforhold> eksisterendeArbeidsforhold;
-    private List<Arbeidsforhold> ubestemmeligArbeidsforhold;
 }

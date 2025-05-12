@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.aareg.util;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdEksistens;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
@@ -28,27 +27,21 @@ public class AaregUtility {
                 isArbeidsforholdAlike(response, request);
     }
 
-    public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,
-                                                           List<Arbeidsforhold> request,
+    public static ArbeidsforholdEksistens doEksistenssjekk(List<Arbeidsforhold> request,
+                                                           List<Arbeidsforhold> response,
                                                            boolean isOpprettEndre) {
 
         return ArbeidsforholdEksistens.builder()
                 .nyeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
+                        .filter(arbeidsforhold -> response.stream()
                                 .noneMatch(response1 ->
                                         isEqualArbeidsforhold(response1, arbeidsforhold)) ||
                                 isNotTrue(arbeidsforhold.getIsOppdatering()) && isOpprettEndre)
                         .toList())
                 .eksisterendeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
+                        .filter(arbeidsforhold -> response.stream()
                                 .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold))
                                 && (isTrue(arbeidsforhold.getIsOppdatering()) || !isOpprettEndre))
-                        .toList())
-                .ubestemmeligArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .filter(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold) &&
-                                        isNull(arbeidsforhold.getArbeidsforholdId()) && !isOpprettEndre)
-                                .count() > 1L)
                         .toList())
                 .build();
     }

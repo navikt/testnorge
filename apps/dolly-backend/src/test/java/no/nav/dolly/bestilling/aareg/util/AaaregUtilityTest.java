@@ -46,7 +46,7 @@ class AaaregUtilityTest {
                 .eksisterendeArbeidsforhold(List.of(getArbeidsforhold(respArbForholdId, null)))
                 .build();
 
-        var eksistens = AaregUtility.doEksistenssjekk(respons, List.of(arbeidsforhold), true);
+        var eksistens = AaregUtility.doEksistenssjekk(List.of(arbeidsforhold), respons.getEksisterendeArbeidsforhold(), true);
 
         assertThat(eksistens.getEksisterendeArbeidsforhold(), hasSize(antallEksisterende));
         assertThat(eksistens.getNyeArbeidsforhold(), hasSize(antallNye));

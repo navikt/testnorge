@@ -117,14 +117,12 @@ class AaregClientTest {
                                 .bruker(bruker)
                                 .build(), bestillingProgress, false)
                 .subscribe(resultat ->
-                        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
+                        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)));
     }
 
     @Test
     void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerPerson_returnsOK() {
         when(applicationConfig.getClientTimeout()).thenReturn(30L);
-        when(aaregConsumer.getAccessToken())
-                .thenReturn(Mono.just(accessToken));
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
@@ -132,10 +130,10 @@ class AaregClientTest {
                 .build()));
         request.setEnvironments(singleton(ENV));
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
                 .thenReturn(Mono.just(
                         buildArbeidsforhold(false)));
-        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
+        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
                 .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
                         .miljo(ENV)
                         .arbeidsforholdId("1")
@@ -160,8 +158,6 @@ class AaregClientTest {
     @Test
     void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerOrganisasjon_returnsOK() {
         when(applicationConfig.getClientTimeout()).thenReturn(30L);
-        when(aaregConsumer.getAccessToken())
-                .thenReturn(Mono.just(accessToken));
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
@@ -170,9 +166,9 @@ class AaregClientTest {
                 .build()));
         request.setEnvironments(singleton(ENV));
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
                 .thenReturn(Mono.just(buildArbeidsforhold(true)));
-        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
+        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
                 .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
                         .miljo(ENV)
                         .arbeidsforholdId("1")
