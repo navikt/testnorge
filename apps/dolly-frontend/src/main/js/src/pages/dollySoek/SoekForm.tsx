@@ -27,62 +27,24 @@ import {
 	PersoniformasjonPaths,
 } from '@/pages/dollySoek/paths'
 import { DollyApi } from '@/service/Api'
+import { dollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
 
-const initialValues = {
-	side: 0,
-	antall: 10,
-	seed: null,
-	registreRequest: [],
-	miljoer: [],
-	personRequest: {
-		ident: null,
-		identtype: null,
-		kjoenn: null,
-		alderFom: null,
-		alderTom: null,
-		sivilstand: null,
-		erLevende: false,
-		erDoed: false,
-		harBarn: false,
-		harForeldre: false,
-		harDoedfoedtBarn: false,
-		harForeldreAnsvar: false,
-		harVerge: false,
-		harInnflytting: false,
-		harUtflytting: false,
-		harKontaktinformasjonForDoedsbo: false,
-		harUtenlandskIdentifikasjonsnummer: false,
-		harFalskIdentitet: false,
-		harTilrettelagtKommunikasjon: false,
-		harSikkerhetstiltak: false,
-		harOpphold: false,
-		statsborgerskap: null,
-		personStatus: null,
-		harNyIdentitet: false,
-		harSkjerming: false,
-		adresse: {
-			addressebeskyttelse: null,
-			kommunenummer: null,
-			postnummer: null,
-			bydelsnummer: null,
-			harBydelsnummer: false,
-			harUtenlandsadresse: false,
-			harMatrikkeladresse: false,
-			harUkjentAdresse: false,
-			harDeltBosted: false,
-			harBostedsadresse: false,
-			harKontaktadresse: false,
-			harOppholdsadresse: false,
-		},
-	},
-}
+export const dollySoekLocalStorageKey = 'dollySoek'
 
 export const SoekForm = () => {
-	const [request, setRequest] = useState(initialValues)
+	const localStorageValue = localStorage.getItem(dollySoekLocalStorageKey)
+	const initialValues = localStorageValue ? JSON.parse(localStorageValue) : dollySoekInitialValues
+
+	const [formRequest, setFormRequest] = useState(initialValues)
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
 	const [soekError, setSoekError] = useState(null)
 	const [visAntall, setVisAntall] = useState(10)
+
+	const setRequest = (request: any) => {
+		setFormRequest(request)
+		localStorage.setItem(dollySoekLocalStorageKey, JSON.stringify(request))
+	}
 
 	const { typer, loading: loadingTyper } = usePersonerTyper()
 
@@ -101,7 +63,7 @@ export const SoekForm = () => {
 	useEffect(() => {
 		setSoekPaagaar(true)
 		setSoekError(null)
-		DollyApi.personerSearch(request).then((response) => {
+		DollyApi.personerSearch(formRequest).then((response) => {
 			if (response.error) {
 				setResult(null)
 				setSoekError(response.error)
@@ -111,7 +73,7 @@ export const SoekForm = () => {
 				setSoekPaagaar(false)
 			}
 		})
-	}, [request])
+	}, [formRequest])
 
 	const handleChange = (value: any, path: string) => {
 		const updatedPersonRequest = { ...values.personRequest, [path]: value }

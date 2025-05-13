@@ -29,16 +29,32 @@ const NavigateButton = styled(Button)`
 	}
 `
 
+export const tenorSoekLocalStorageKey = 'tenorSoek'
+
 export default () => {
-	const [request, setRequest] = useState({})
+	const initialRequest = localStorage.getItem(tenorSoekLocalStorageKey)
+		? JSON.parse(localStorage.getItem(tenorSoekLocalStorageKey) as string)
+		: {}
+
+	const [formRequest, setFormRequest] = useState(initialRequest)
 	const [state, setState] = useState<any>(initialState)
-	const { response, loading, error, mutate } = useTenorOversikt(request, 10, state.side, state.seed)
+	const { response, loading, error, mutate } = useTenorOversikt(
+		formRequest,
+		10,
+		state.side,
+		state.seed,
+	)
 	const [markertePersoner, setMarkertePersoner] = useState([])
 	const [inkluderPartnere, setInkluderPartnere] = useState(false)
 
 	useEffect(() => {
 		setState(initialState)
-	}, [request])
+	}, [formRequest])
+
+	const setRequest = (request: any) => {
+		setFormRequest(request)
+		localStorage.setItem(tenorSoekLocalStorageKey, JSON.stringify(request))
+	}
 
 	useEffect(() => {
 		if (response?.data?.data?.personer?.length === 0) {

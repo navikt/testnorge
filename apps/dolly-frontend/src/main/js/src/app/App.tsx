@@ -18,6 +18,7 @@ import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
 import { RouteChangeHandler } from '@/RootComponent'
+import { NavigationTitle } from '@/NavigationTitle'
 
 const logout = (feilmelding: string) => {
 	if (!runningE2ETest()) {
@@ -62,6 +63,7 @@ export const App = () => {
 			<main>
 				<ErrorBoundary>
 					<Suspense fallback={<Loading label="Laster inn" />}>
+						<NavigationTitle />
 						<Outlet />
 					</Suspense>
 				</ErrorBoundary>

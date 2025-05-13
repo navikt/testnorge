@@ -4,6 +4,7 @@ import { ActionMenuWrapper, DropdownStyledLink } from './ActionMenuWrapper'
 import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
+import { dollySoekLocalStorageKey } from '@/pages/dollySoek/SoekForm'
 
 export const FinnPersonDropdown = () => {
 	const location = useLocation()
@@ -29,7 +30,12 @@ export const FinnPersonDropdown = () => {
 				style={{ color: '#212529' }}
 			>
 				<Icon kind="search" fontSize="1.5rem" />
-				<DropdownStyledLink href="/dollysoek">Søk i Dolly</DropdownStyledLink>
+				<DropdownStyledLink
+					onClick={() => localStorage.removeItem(dollySoekLocalStorageKey)}
+					href="/dollysoek"
+				>
+					Søk i Dolly
+				</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem
 				route="/tenor/personer"
