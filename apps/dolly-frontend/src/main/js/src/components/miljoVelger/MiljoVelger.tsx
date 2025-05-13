@@ -7,7 +7,7 @@ import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
-import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
+import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { Alert } from '@navikt/ds-react'
 import { useFormContext } from 'react-hook-form'
 
@@ -60,8 +60,8 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 
 	const filterEnvironments = (miljoer, erBankIdBruker) => {
 		if (erBankIdBruker) {
-			var bankMiljoer = []
-			for (var i = 0; i < alleredeValgtMiljoe.length; i++) {
+			const bankMiljoer = []
+			for (let i = 0; i < alleredeValgtMiljoe.length; i++) {
 				switch (alleredeValgtMiljoe[i]) {
 					case 'q1':
 						bankMiljoer.push(bankIdQ1)
@@ -113,7 +113,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 			<fieldset name={`Liste over miljøer`}>
 				<StyledH3>Miljøer</StyledH3>
 				<div className="miljo-velger_checkboxes">
-					{filteredEnvironments.map((env) => (
+					{filteredEnvironments.map((env: any) => (
 						<DollyCheckbox
 							key={env.id}
 							id={env.id}
@@ -126,7 +126,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 					))}
 				</div>
 			</fieldset>
-			<DollyErrorMessage name="environments" />
+			<DollyErrorMessageWrapper name="environments" />
 		</div>
 	)
 }

@@ -1,7 +1,7 @@
 dolly:
   client:
     general:
-      timeout: 30
+      timeout: 300
 
 spring:
   cache:

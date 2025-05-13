@@ -22,7 +22,7 @@ public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpSt
 
     public Mono<HttpStatus> call() {
         return webClient
-                .get()
+                .delete()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/v1/arbeidssoekerregistrering/{identitetsnummer}")
                         .build(ident))
@@ -32,8 +32,7 @@ public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpSt
                 .toBodilessEntity()
                 .map(response -> HttpStatus.valueOf(response.getStatusCode().value()))
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientError.logTo(log));
+                .retryWhen(WebClientError.is5xxException());
     }
 
 }

@@ -67,7 +67,7 @@ export const getTypePerson = (identNr: string) => {
 	if (parseInt(identNr?.charAt(2)) < 4) {
 		return 'Standard'
 	}
-	return parseInt(identNr?.charAt(2)) > 5 ? 'Test-Norge' : 'NAV-syntetisk'
+	return parseInt(identNr?.charAt(2)) > 7 ? 'Test-Norge' : 'NAV-syntetisk'
 }
 
 const mapBestillingsinformasjon = (
