@@ -42,7 +42,7 @@ public class MedlPutCommand implements Callable<Mono<MedlPostResponse>> {
                 .map(response -> MedlPostResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-                .doOnError(throwable -> log.error(throwable.getLocalizedMessage()))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> MedlPostResponse.of(WebClientError.describe(throwable)))
                 .retryWhen(WebClientError.is5xxException());
     }
