@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProfile name="prod">
-        <include resource="logback-spring-team-logs.xml"/>
+        <include resource="logback-spring-prod.xml"/>
     </springProfile>
 
     <springProfile name="local">
