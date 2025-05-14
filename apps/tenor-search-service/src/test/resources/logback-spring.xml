@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProfile name="test">
-        <include resource="logback-spring-local.xml"/>
+        <include resource="logback-spring-console.xml"/>
     </springProfile>
 
     <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
