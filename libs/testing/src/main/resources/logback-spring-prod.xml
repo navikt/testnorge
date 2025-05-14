@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <appender name="default" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder"/>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="default"/>
+    </root>
+</included>

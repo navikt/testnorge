@@ -16,8 +16,6 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
-        - application: logging
-          namespace: nais-system
   azure:
     application:
       allowAllUsers: true

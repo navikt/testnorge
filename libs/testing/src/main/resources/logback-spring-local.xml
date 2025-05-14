@@ -1,43 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
-    <appender name="team-logs" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <charset>UTF-8</charset>
-            <pattern>
-                %d{HH:mm:ss.SSS} %red(SECURE) %highlight(%p) | %yellow(%logger{0}): %m%n
-            </pattern>
-        </encoder>
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-                <marker>TEAM_LOGS</marker>
-            </evaluator>
-            <OnMatch>ACCEPT</OnMatch>
-            <OnMismatch>DENY</OnMismatch>
-        </filter>
-    </appender>
-
-    <appender name="default-json" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="default" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <charset>UTF-8</charset>
             <pattern>
                 %d{HH:mm:ss.SSS} %highlight(%p) | %yellow(%logger{0}): %m%n
             </pattern>
         </encoder>
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-                <marker>TEAM_LOGS</marker>
-            </evaluator>
-            <OnMatch>DENY</OnMatch>
-            <OnMismatch>ACCEPT</OnMismatch>
-        </filter>
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="default-json" />
-        <appender-ref ref="team-logs" />
+        <appender-ref ref="default" />
     </root>
-
-    <logger name="team-logs-logger" level="INFO" additivity="false">
-        <appender-ref ref="team-logs" />
-    </logger>
 </included>
