@@ -1,5 +1,5 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -31,7 +31,7 @@ export const KrrstubForm = () => {
 
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState(formMethods.watch('krrstub.land'))
-	const [mobilnummer, setMobilnummer] = useState(formMethods.watch('values.krrstub.mobil') || '')
+	const [mobilnummer, setMobilnummer] = useState(formMethods.watch('krrstub.mobil') || '')
 	const [showInfoStripe, setShowInfoStripe] = useBoolean(false)
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 
@@ -146,7 +146,7 @@ export const KrrstubForm = () => {
 								/>
 							</div>
 							<FormSelect name="krrstub.spraak" label="Språk" options={Options('spraaktype')} />
-							<FormDatepicker name="krrstub.gyldigFra" label="Kontaktinfo gjelder fra" />
+							<DollyDatepicker name="krrstub.gyldigFra" label="Kontaktinfo gjelder fra" />
 						</>
 					)}
 				</div>
