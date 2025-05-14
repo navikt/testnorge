@@ -5,6 +5,8 @@ plugins {
     id "io.spring.dependency-management" // See ../../../build.gradle for version.
     id "java"
     id "org.springframework.boot" // See ../../../build.gradle for version.
+
+    id "no.nav.budpro.dolly-checker"
 }
 
 configurations {
