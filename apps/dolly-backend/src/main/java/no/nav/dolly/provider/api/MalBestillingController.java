@@ -54,7 +54,7 @@ public class MalBestillingController {
     @Cacheable(value = CACHE_BESTILLING_MAL)
     @GetMapping("/brukerId/{brukerId}")
     @Transactional(readOnly = true)
-    @Operation(description = "Hent mal-bestilling, for angitt brukerId, evt FELLES (for anonyme maler)")
+    @Operation(description = "Hent mal-bestilling, for angitt brukerId, evt ALLE eller FELLES (for anonyme maler)")
     public List<RsMalBestilling> getMalBestillingerBrukerId(@PathVariable("brukerId") String brukerId) {
 
         return malBestillingService.getMalBestillingerBrukerId(brukerId);
