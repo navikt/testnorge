@@ -10,7 +10,7 @@ import no.nav.dolly.mapper.utils.MapperTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -27,8 +27,8 @@ class DigitalKontaktMappingStrategyTest {
     private static final String MOBIL_CORRECT = "+4799990000";
     private static final String SPRAAK = "NO";
     private static final boolean RESERVERT = true;
-    private static final LocalDateTime GYLDIG_FRA = LocalDateTime.of(2018, 1, 1, 0, 0);
-    private static final ZonedDateTime Z_GYLDIG_FRA = ZonedDateTime.of(GYLDIG_FRA, ZoneId.systemDefault());
+    private static final LocalDate GYLDIG_FRA = LocalDate.of(2018, 1, 1);
+    private static final ZonedDateTime Z_GYLDIG_FRA = ZonedDateTime.of(GYLDIG_FRA.atStartOfDay(), ZoneId.of("UTC"));
 
     private MapperFacade mapperFacade;
 
