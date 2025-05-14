@@ -16,6 +16,8 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true
@@ -33,7 +35,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: elastic
+        - id: loki
     autoInstrumentation:
       enabled: true
       runtime: java
