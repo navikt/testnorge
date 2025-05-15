@@ -6,8 +6,14 @@ import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
+import styled from 'styled-components'
 
-export const DollyErrorMessage = ({ name }: { name: string }) => {
+const ErrorMessageText = styled.p`
+	color: #ba3a26;
+	font-style: italic;
+`
+
+export const DollyErrorMessageWrapper = ({ name }: { name: string }) => {
 	const {
 		formState: { errors },
 	} = useFormContext()
@@ -17,8 +23,12 @@ export const DollyErrorMessage = ({ name }: { name: string }) => {
 			<ErrorMessage
 				name={name}
 				errors={errors}
-				render={({ message }) => <p style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</p>}
+				render={({ message }) => <DollyErrorMessage message={message} />}
 			/>
 		)
 	)
 }
+
+export const DollyErrorMessage = ({ message }: { message: string }) => (
+	<ErrorMessageText>{message}</ErrorMessageText>
+)

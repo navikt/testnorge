@@ -100,12 +100,13 @@ public class EtterlatteClient implements ClientRegister {
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
-                .flatMap(personBolk -> personServiceConsumer.getPdlPersoner(
+                .map(PdlPersonBolk.PersonBolk::getPerson)
+                .flatMap(person -> personServiceConsumer.getPdlPersoner(
                         Stream.of(Stream.of(ident),
-                                        personBolk.getPerson().getForelderBarnRelasjon().stream()
+                                        person.getForelderBarnRelasjon().stream()
                                                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
                                                 .filter(Objects::nonNull),
-                                        personBolk.getPerson().getSivilstand().stream()
+                                        person.getSivilstand().stream()
                                                 .filter(sivilstand -> sivilstand.isGift() || sivilstand.isGjenlevende())
                                                 .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
                                                 .filter(Objects::nonNull)
@@ -155,18 +156,26 @@ public class EtterlatteClient implements ClientRegister {
 
     private static String getForelderFraForelder(HashMap<String, PdlPersonBolk.PersonBolk> personer, String ident, Gjenlevende gjenlevende) {
 
-        return personer.get(ident).getPerson().getForelderBarnRelasjon().stream()
-                .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
-                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                .map(personer::get)
-                .map(PdlPersonBolk.PersonBolk::getPerson)
-                .map(PdlPerson.Person::getForelderBarnRelasjon)
-                .flatMap(Collection::stream)
-                .filter(PdlPerson.ForelderBarnRelasjon::isForelder)
-                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                .map(personer::get)
-                .filter(gjenlevende::apply)
-                .map(PdlPersonBolk.PersonBolk::getIdent)
-                .findFirst().orElse(null);
+        return personer.get(ident).getPerson().getForelderBarnRelasjon().isEmpty() ?
+
+                personer.values().stream()
+                        .filter(gjenlevende::apply)
+                        .map(PdlPersonBolk.PersonBolk::getIdent)
+                        .findFirst()
+                        .orElse(null) :
+
+                personer.get(ident).getPerson().getForelderBarnRelasjon().stream()
+                        .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
+                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                        .map(personer::get)
+                        .map(PdlPersonBolk.PersonBolk::getPerson)
+                        .map(PdlPerson.Person::getForelderBarnRelasjon)
+                        .flatMap(Collection::stream)
+                        .filter(PdlPerson.ForelderBarnRelasjon::isForelder)
+                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                        .map(personer::get)
+                        .filter(gjenlevende::apply)
+                        .map(PdlPersonBolk.PersonBolk::getIdent)
+                        .findFirst().orElse(null);
     }
 }

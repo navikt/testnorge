@@ -39,7 +39,7 @@ export const DollyCheckbox = ({
 	wrapperSize = 'grow',
 	checkboxMargin = false,
 	label = '',
-	id = null,
+	id = null as unknown as string,
 	vis = true,
 	...props
 }) =>

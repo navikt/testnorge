@@ -9,7 +9,6 @@ import PleiepengerVisning from './pleiepengerVisning'
 import NaturalytelseVisning from './naturalytelseVisning'
 import {
 	EnkelInntektsmelding,
-	Inntekt,
 	InntektsmeldingData,
 } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -22,22 +21,21 @@ const getHeader = (data: InntektsmeldingData) => {
 	if (!inntekt) {
 		return 'Inntekt'
 	}
-	const arbeidsgiver = inntekt.arbeidsgiver
-		? inntekt.arbeidsgiver?.virksomhetsnummer
-		: inntekt.arbeidsgiverPrivat
-			? inntekt.arbeidsgiverPrivat?.arbeidsgiverFnr
-			: ''
+	const arbeidsgiver =
+		inntekt.arbeidsgiver?.virksomhetsnummer || inntekt.arbeidsgiverPrivat?.arbeidsgiverFnr || ''
+
 	return `Inntekt (${arbeidsgiver})`
 }
 
 export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 	const virksomheter = data.map(
-		(inntekt) => inntekt.request?.inntekter?.[0]?.arbeidsgiver?.orgnummer,
-	)
-	const opplysningspliktigeOrg = data.map(
 		(inntekt) => inntekt.request?.inntekter?.[0]?.arbeidsgiver?.virksomhetsnummer,
 	)
+
 	const { organisasjoner: virksomhetInfo } = useOrganisasjonForvalter(virksomheter)
+	const opplysningspliktigeOrg = virksomhetInfo?.map(
+		(virksomhet) => virksomhet?.q1?.juridiskEnhet || virksomhet?.q2?.juridiskEnhet,
+	)
 	const { organisasjoner: opplysningspliktigInfo } =
 		useOrganisasjonForvalter(opplysningspliktigeOrg)
 	if (!data) {
@@ -75,11 +73,11 @@ export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 									<TitleValue title="Ytelse" value={codeToNorskLabel(inntekt.ytelse)} />
 									<TitleValue
 										title="Virksomhet"
-										value={`${inntekt.arbeidsgiver?.orgnummer} - ${virksomhetNavn}`}
+										value={`${virksomheter?.[idx]} - ${virksomhetNavn}`}
 									/>
 									<TitleValue
 										title="Opplysningspliktig"
-										value={`${inntekt.arbeidsgiver.virksomhetsnummer} - ${opplysningspliktigNavn}`}
+										value={`${opplysningspliktigeOrg?.[idx]} - ${opplysningspliktigNavn}`}
 									/>
 									<TitleValue
 										title="Innsendingstidspunkt"

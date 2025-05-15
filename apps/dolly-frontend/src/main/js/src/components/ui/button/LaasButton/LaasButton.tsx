@@ -6,6 +6,12 @@ import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import './LaasModal.less'
 import React from 'react'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_GRUPPER,
+	useMatchMutate,
+} from '@/utils/hooks/useMutate'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type LaasButtonProps = {
 	action: Function
@@ -16,6 +22,7 @@ type LaasButtonProps = {
 
 export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonProps) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const matchMutate = useMatchMutate()
 
 	if (loading) {
 		return <Loading label="låser..." />
@@ -23,16 +30,17 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="lock">
+			<Button
+				data-testid={TestComponentSelectors.BUTTON_LAAS_GRUPPE}
+				onClick={openModal}
+				kind={'lock'}
+			>
 				LÅS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="laasModal">
 					<div className="laasModal laasModal-content">
-						{
-							// @ts-ignore
-							<Icon size={50} kind="report-problem-circle" />
-						}
+						<Icon size={50} kind="report-problem-circle" />
 						<h1>Lås gruppen</h1>
 						<h4>{children}</h4>
 					</div>
@@ -41,9 +49,14 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 							Nei
 						</NavButton>
 						<NavButton
+							data-testid={TestComponentSelectors.BUTTON_BEKREFT_LAAS}
 							onClick={() => {
 								closeModal()
-								return action(gruppeId)
+								action(gruppeId)
+								setTimeout(() => {
+									matchMutate(REGEX_BACKEND_GRUPPER)
+									matchMutate(REGEX_BACKEND_BESTILLINGER)
+								}, 500)
 							}}
 							variant={'primary'}
 						>

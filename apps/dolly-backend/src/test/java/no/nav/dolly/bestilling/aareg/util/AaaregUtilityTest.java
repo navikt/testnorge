@@ -33,10 +33,11 @@ class AaaregUtilityTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"1, false, 1, 0, 1",
+    @CsvSource(value = {"1, false, 1, 0, 1",
             "1, true, 1, 1, 0",
             "2, false, 1, 0, 1",
-            "2, true, 1, 0, 1"})
+            "2, true, 1, 0, 1",
+            "null, true, 1, 1, 0"}, nullValues = "null")
     void arbeidsforholdEksistens_eksisterIkke(String reqArbForholdId, Boolean isOppdatering, String respArbForholdId,
                                               int antallEksisterende, int antallNye) {
 
@@ -45,7 +46,7 @@ class AaaregUtilityTest {
                 .eksisterendeArbeidsforhold(List.of(getArbeidsforhold(respArbForholdId, null)))
                 .build();
 
-        var eksistens = AaregUtility.doEksistenssjekk(respons, List.of(arbeidsforhold), true);
+        var eksistens = AaregUtility.doEksistenssjekk(List.of(arbeidsforhold), respons.getEksisterendeArbeidsforhold(), true);
 
         assertThat(eksistens.getEksisterendeArbeidsforhold(), hasSize(antallEksisterende));
         assertThat(eksistens.getNyeArbeidsforhold(), hasSize(antallNye));

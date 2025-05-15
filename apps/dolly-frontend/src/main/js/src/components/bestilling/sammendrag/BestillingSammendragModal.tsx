@@ -76,7 +76,7 @@ export const BestillingSammendragModal = ({ bestillinger }) => {
 						</div>
 					)) || <h1>Bestilling #{aktivBestilling?.id}</h1>}
 				</div>
-				<BestillingSammendrag bestilling={aktivBestilling} modal />
+				<BestillingSammendrag bestilling={aktivBestilling} closeModal={closeModal} modal />
 			</DollyModal>
 		</div>
 	)

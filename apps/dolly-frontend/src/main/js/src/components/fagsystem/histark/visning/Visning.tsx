@@ -1,11 +1,11 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import HistarkVisning from './HistarkVisning'
+import HistarkVisning, { HistarkDokument } from './HistarkVisning'
 import Loading from '@/components/ui/loading/Loading'
-import { Journalpost } from '@/service/services/JoarkDokumentService'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
+import { Journalpost } from '@/utils/hooks/useDokumenter'
 
-interface Form {
+type Form = {
 	data?: Array<MiljoDataListe>
 	ident: string
 	loading: boolean
@@ -16,11 +16,25 @@ type MiljoDataListe = {
 	data: Array<Journalpost>
 }
 
+type Transaksjon = {
+	transaksjonId: [
+		{
+			dokumentInfoId: number
+		},
+	]
+}
+
+type HistarkProps = {
+	data: HistarkDokument
+	dokumentInfoId?: number
+	idx: number
+}
+
 const getHeader = (dokument: any) => {
 	return `Dokument (${dokument?.filnavn})`
 }
 
-const Histark = ({ data, dokumentInfoId, idx }) => {
+const Histark = ({ data, dokumentInfoId, idx }: HistarkProps) => {
 	if (!data) return null
 
 	return <HistarkVisning dokument={data} dokumentInfoId={dokumentInfoId} idx={idx} />
@@ -29,7 +43,7 @@ const Histark = ({ data, dokumentInfoId, idx }) => {
 export default ({ data, loading, ident }: Form) => {
 	const { transaksjonsid, loading: loadingTransaksjon } = useTransaksjonsid('HISTARK', ident)
 	let dokumentInfoIder: number[] = []
-	transaksjonsid?.forEach((transaksjon) =>
+	transaksjonsid?.forEach((transaksjon: Transaksjon) =>
 		transaksjon?.transaksjonId.forEach((indreTransaksjon) =>
 			dokumentInfoIder.push(indreTransaksjon.dokumentInfoId),
 		),
@@ -55,7 +69,7 @@ export default ({ data, loading, ident }: Form) => {
 					data={data}
 					expandable={data?.length > 2}
 				>
-					{(dokument, idx) => {
+					{(dokument: HistarkDokument, idx: number) => {
 						return <Histark data={dokument} dokumentInfoId={dokumentInfoIder?.[idx]} idx={idx} />
 					}}
 				</DollyFieldArray>

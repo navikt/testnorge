@@ -1,0 +1,17 @@
+plugins {
+    id "com.gradle.develocity" version "3.19"
+}
+
+rootProject.name = "texas-proxy"
+
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/testing"
+includeBuild "../../libs/texas"
+includeBuild "../../plugins/java"
+
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+    }
+}
