@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder"/>
+    <appender name="team-logs" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>team-logs.nais-system:5170</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"google_cloud_project":"${GOOGLE_CLOUD_PROJECT}","nais_namespace_name":"${NAIS_NAMESPACE}","nais_pod_name":"${HOSTNAME}","nais_container_name":"${NAIS_APP_NAME}"}</customFields>
+            <includeContext>false</includeContext>
+        </encoder>
+    </appender>
+
+    <appender name="default-json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="console"/>
+        <appender-ref ref="default-json" />
+        <appender-ref ref="team-logs" />
     </root>
+
+    <logger name="team-logs-logger" level="INFO" additivity="false">
+        <appender-ref ref="team-logs" />
+    </logger>
 </included>
