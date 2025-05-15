@@ -3,6 +3,19 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { krrAttributt } from '@/components/fagsystem/krrstub/form/KrrForm'
 
+export const krrInitialValues = {
+	epost: '',
+	gyldigFra: null,
+	landkode: null,
+	mobil: null,
+	sdpAdresse: '',
+	sdpLeverandoer: '',
+	spraak: '',
+	registrert: null,
+	reservert: null,
+	land: null,
+}
+
 export const KontaktReservasjonsPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(KontaktReservasjonsPanel.initialValues)
 
@@ -34,18 +47,7 @@ KontaktReservasjonsPanel.initialValues = ({ set, del, has }) => ({
 		label: 'Tilpass standard kontakt- og reservasjonsopplysninger',
 		checked: has('krrstub'),
 		add() {
-			set('krrstub', {
-				epost: '',
-				gyldigFra: null,
-				landkode: null,
-				mobil: null,
-				sdpAdresse: '',
-				sdpLeverandoer: '',
-				spraak: '',
-				registrert: null,
-				reservert: null,
-				land: null,
-			})
+			set('krrstub', krrInitialValues)
 		},
 		remove() {
 			del('krrstub')
