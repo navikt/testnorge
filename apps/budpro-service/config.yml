@@ -39,7 +39,7 @@ spec:
       runtime: java
     logging:
       destinations:
-        - id: elastic
+        - id: team_logs
   readiness:
     initialDelay: 45
     path: /internal/health/readiness
