@@ -21,6 +21,7 @@ import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/s
 import { ArbeidssoekerPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidssoeker'
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
+import { EtterlatteYtelserPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/EtterlatteYtelser'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -47,6 +48,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		BrregPanel,
 		IdentifikasjonPanel,
 		KontaktDoedsboPanel,
+		EtterlatteYtelserPanel,
 		InstitusjonsoppholdPanel,
 		KontaktReservasjonsPanel,
 		ArenaPanel,
@@ -76,6 +78,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 					<KontaktDoedsboPanel stateModifier={stateModifier} formValues={formValues} />
 				</>
 			)}
+			<EtterlatteYtelserPanel stateModifier={stateModifier} formValues={formValues} />
 			<ArbeidInntektPanel stateModifier={stateModifier} formValues={formValues} />
 			<ArbeidssoekerPanel stateModifier={stateModifier} formValues={formValues} />
 			<PensjonPanel stateModifier={stateModifier} formValues={formValues} />

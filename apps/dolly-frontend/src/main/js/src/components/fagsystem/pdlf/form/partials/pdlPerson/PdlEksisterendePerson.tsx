@@ -118,9 +118,6 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const filterOptions = (person: Option) => {
-		if (person.doedsfall) {
-			return false
-		}
 		if (label === 'PERSON RELATERT TIL') {
 			// Sivilstand gift/samboer osv
 			return person.alder > 17 && gyldigeSivilstanderForPartner.includes(person?.sivilstand)

@@ -858,6 +858,12 @@ const selectOptions = {
 		{ value: 'AVSLAG', label: 'Avslag' },
 	],
 
+	// Gjenny:
+	etterlatteYtelser: [
+		{ value: 'BARNEPENSJON', label: 'Barnepensjon' },
+		{ value: 'OMSTILLINGSSTOENAD', label: 'Omstillingsstønad' },
+	],
+
 	miljoer: [
 		{ value: 'q1', label: 'Q1' },
 		{ value: 'q2', label: 'Q2' },
