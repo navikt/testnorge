@@ -17,7 +17,7 @@ spec:
       rules:
         - application: generer-navn-service
         - application: dolly-texas-proxy
-        - application: team-logs
+        - application: logging
           namespace: nais-system
   azure:
     application:
