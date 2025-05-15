@@ -18,6 +18,8 @@ spec:
     outbound:
       rules:
         - application: testnav-levende-arbeidsforhold-ansettelse
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true
@@ -31,7 +33,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

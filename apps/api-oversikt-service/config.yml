@@ -24,7 +24,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java
@@ -52,3 +52,7 @@ spec:
         - application: dolly-idporten
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system

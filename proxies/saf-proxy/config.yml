@@ -48,6 +48,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-gcp
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
@@ -56,7 +58,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

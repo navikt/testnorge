@@ -28,7 +28,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java
@@ -68,6 +68,8 @@ spec:
     outbound:
       rules:
         - application: testnav-sykemelding-proxy
+        - application: logging
+          namespace: nais-system
       external:
         - host: mqls04.preprod.local
           ports:

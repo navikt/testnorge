@@ -27,6 +27,10 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   tokenx:
     enabled: true
   azure:
@@ -42,7 +46,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

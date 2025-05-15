@@ -23,6 +23,10 @@ spec:
       rules:
         - application: team-dolly-lokal-app
         - application: testnav-budpro-service
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   envFrom:
     - secret: dolly-texas-proxy-shared-secret
   liveness:

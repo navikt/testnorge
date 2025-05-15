@@ -17,6 +17,8 @@ spec:
       rules:
         - application: generer-navn-service
         - application: dolly-texas-proxy
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true
@@ -34,7 +36,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

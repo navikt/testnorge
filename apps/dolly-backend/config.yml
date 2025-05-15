@@ -47,6 +47,8 @@ spec:
         - application: testnorge-profil-api
         - application: etterlatte-testdata
           namespace: etterlatte
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
@@ -97,7 +99,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

@@ -65,6 +65,8 @@ spec:
         - application: testnav-altinn3-tilgang-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-api-oversikt-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
@@ -88,7 +90,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

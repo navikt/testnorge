@@ -22,7 +22,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java
@@ -75,3 +75,5 @@ spec:
           cluster: dev-gcp
         - application: testnav-aareg-proxy
           cluster: dev-fss
+        - application: logging
+          namespace: nais-system

@@ -15,7 +15,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java
@@ -43,5 +43,9 @@ spec:
         - application: flex-brreg-proxy
           cluster: dev-gcp
           namespace: flex
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   ingresses:
     - "https://brreg-stub.intern.dev.nav.no" # dev-fss

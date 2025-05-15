@@ -30,6 +30,9 @@ spec:
     outbound:
       external:
         - host: testnav-altinn3-tilgang-service.nav.no
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
@@ -38,7 +41,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

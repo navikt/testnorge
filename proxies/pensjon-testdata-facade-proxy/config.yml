@@ -62,6 +62,8 @@ spec:
         - application: pensjon-afp-offentlig-mock-q2
           namespace: pensjon-saksbehandling
           cluster: dev-gcp
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
@@ -70,7 +72,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

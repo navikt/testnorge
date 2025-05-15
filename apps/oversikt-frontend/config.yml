@@ -30,6 +30,8 @@ spec:
         - application: testnav-app-tilgang-analyse-service
         - application: testnorge-profil-api-dev
         - application: testnav-altinn3-tilgang-service
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
@@ -38,7 +40,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java

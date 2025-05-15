@@ -21,7 +21,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java
@@ -52,6 +52,8 @@ spec:
         - application: synthdata-arena-vedtakshistorikk
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-dolly-search-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io

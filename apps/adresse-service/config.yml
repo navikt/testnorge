@@ -24,7 +24,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java
@@ -63,3 +63,6 @@ spec:
     outbound:
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: logging
+          namespace: nais-system

@@ -20,6 +20,9 @@ spec:
     outbound:
       external:
         - host: testnav-saf-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: logging
+          namespace: nais-system
   tokenx:
     enabled: true
   azure:
@@ -35,7 +38,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: loki
+        - id: team-logs
     autoInstrumentation:
       enabled: true
       runtime: java
