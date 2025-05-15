@@ -16,6 +16,7 @@ import { useFormContext } from 'react-hook-form'
 import { KrrValidation } from '@/components/fagsystem/krrstub/form/KrrValidation'
 import { useBoolean } from 'react-use'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { krrInitialValues } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/KontaktReservasjon'
 
 type Change = {
 	value: boolean
@@ -54,15 +55,10 @@ export const KrrstubForm = () => {
 			})
 		} else {
 			formMethods.setValue('krrstub', {
-				epost: '',
-				gyldigFra: null,
+				...krrInitialValues,
+				gyldigFra: new Date(),
 				landkode: '+47',
-				mobil: null,
-				sdpAdresse: '',
-				sdpLeverandoer: '',
-				spraak: '',
 				registrert: newRegistrert.value,
-				reservert: null,
 				land: 'NO',
 			})
 			setLand('NO')
