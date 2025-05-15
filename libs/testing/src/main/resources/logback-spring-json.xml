@@ -2,7 +2,7 @@
 <included>
     <appender name="team-logs" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>team-logs.nais-system:80</destination>
-        <encoder class="net.logstash.logback.encoder.DollyLogstashEncoder">
+        <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
             <customFields>{"google_cloud_project":"${GOOGLE_CLOUD_PROJECT}","nais_namespace_name":"${NAIS_NAMESPACE}","nais_pod_name":"${HOSTNAME}","nais_container_name":"${NAIS_APP_NAME}"}</customFields>
             <includeContext>false</includeContext>
         </encoder>

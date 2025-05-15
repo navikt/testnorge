@@ -37,6 +37,9 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
+    logging:
+      destinations:
+        - id: team-logs
   readiness:
     initialDelay: 45
     path: /internal/health/readiness
