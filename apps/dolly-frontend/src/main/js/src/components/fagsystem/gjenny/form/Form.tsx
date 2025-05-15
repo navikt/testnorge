@@ -33,15 +33,15 @@ export const EtterlatteYtelserForm = () => {
 	]
 
 	const doedsfall =
-		formMethods.watch('pdldata.person.doedsfall') ||
-		opts?.personFoerLeggTil?.pdlforvalter?.person?.doedsfall ||
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.doedsfall ||
+		formMethods.watch('pdldata.person.doedsfall') ??
+		opts?.personFoerLeggTil?.pdlforvalter?.person?.doedsfall ??
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.doedsfall ??
 		opts?.importPersoner?.flatMap((person) => person.data?.hentPerson?.doedsfall)
 
 	const sivilstand =
-		formMethods.watch('pdldata.person.sivilstand') ||
-		opts?.personFoerLeggTil?.pdlforvalter?.person?.sivilstand ||
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.sivilstand ||
+		formMethods.watch('pdldata.person.sivilstand') ??
+		opts?.personFoerLeggTil?.pdlforvalter?.person?.sivilstand ??
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.sivilstand ??
 		opts?.importPersoner?.flatMap((person) => person.data?.hentPerson?.sivilstand)
 
 	const partner = sivilstand?.find((sivilstand) => gyldigeSivilstander.includes(sivilstand.type))
@@ -61,14 +61,14 @@ export const EtterlatteYtelserForm = () => {
 	const barn =
 		formMethods
 			.watch('pdldata.person.forelderBarnRelasjon')
-			?.filter((item) => item.relatertPersonsRolle === 'BARN') ||
+			?.filter((item) => item.relatertPersonsRolle === 'BARN') ??
 		opts?.personFoerLeggTil?.pdlforvalter?.relasjoner?.filter(
 			(item) => item.relasjonType === 'FAMILIERELASJON_BARN',
-		) ||
-		pdlBarn ||
+		) ??
+		pdlBarn ??
 		tenorBarn
 
-	const barnMedIdent = pdlBarn || tenorBarn
+	const barnMedIdent = pdlBarn ?? tenorBarn
 
 	const barnGruppe = barnMedIdent?.map((b) => ({
 		ident: b.relatertPersonsIdent,
