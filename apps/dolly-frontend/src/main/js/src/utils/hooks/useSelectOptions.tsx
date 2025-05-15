@@ -63,17 +63,18 @@ export const usePdlOptions = (gruppe, master = 'PDLF', visDetaljertLabel = false
 		const alder = getAlder(
 			id.person?.foedselsdato?.[0]?.foedselsdato || id.person?.foedsel?.[0]?.foedselsdato,
 		)
+		const doedsfall = id?.person?.doedsfall?.length > 0
 		const kjoenn = id?.person?.kjoenn?.[0].kjoenn?.toLowerCase()
 		const label = `${ident} - ${fornavn} ${mellomnavn} ${etternavn}`
 		personData.push({
 			value: ident,
-			label: visDetaljertLabel ? `${label} (${kjoenn} ${alder})` : label,
+			label: visDetaljertLabel ? `${label} (${kjoenn} ${alder}${doedsfall ? ', død' : ''})` : label,
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 			alder: alder,
 			kjoenn: kjoenn,
 			sivilstand: id.person?.sivilstand?.[0]?.type,
 			vergemaal: id.person?.vergemaal?.length > 0,
-			doedsfall: id.person?.doedsfall?.length > 0,
+			doedsfall: doedsfall,
 			foreldre: foreldre,
 			foreldreansvar: foreldreansvar,
 		})

@@ -26,6 +26,7 @@ import { ifPresent } from '@/utils/YupValidations'
 import SykdomForm from '@/components/fagsystem/sykdom/form/Form'
 import PdlfForm from '@/components/fagsystem/pdlf/form/Form'
 import { SigrunstubSummertSkattegrunnlagForm } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
+import { EtterlatteYtelserForm } from '@/components/fagsystem/gjenny/form/Form'
 
 export const DollyIdentValidation = Yup.object({
 	antall: ifPresent(
@@ -38,6 +39,7 @@ export const DollyIdentValidation = Yup.object({
 			.required('Oppgi antall personer'),
 	),
 	...PdlfForm.validation,
+	...EtterlatteYtelserForm.validation,
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,
 	...ArbeidssoekerregisteretForm.validation,
