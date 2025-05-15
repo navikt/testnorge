@@ -53,6 +53,7 @@ public class DollyLogstashEncoder extends LogstashEncoder {
 
         var o = new ByteArrayOutputStream();
         try (var g = new JsonFactory().createGenerator(o)) {
+            g.setCodec(objectMapper);
             g.writeStartObject();
 
             // Custom fields for logging to Team Logs.
