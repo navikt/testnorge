@@ -13,6 +13,7 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { usePdlMiljoeinfo } from '@/utils/hooks/usePdlPerson'
+import { usePdlOptions } from '@/utils/hooks/useSelectOptions'
 
 export const initialEtterlatteYtelser = {
 	ytelse: null,
@@ -49,22 +50,31 @@ export const EtterlatteYtelserForm = () => {
 
 	const partnerDoedsfall = partnerInfo?.hentPerson?.doedsfall
 
+	const pdlBarn = opts?.personFoerLeggTil?.pdl?.hentPerson?.forelderBarnRelasjon?.filter(
+		(item) => item.relatertPersonsRolle === 'BARN',
+	)
+	const tenorBarn = opts?.importPersoner?.flatMap((person) =>
+		person.data?.hentPerson?.forelderBarnRelasjon?.filter(
+			(item) => item.relatertPersonsRolle === 'BARN',
+		),
+	)
 	const barn =
 		formMethods
 			.watch('pdldata.person.forelderBarnRelasjon')
 			?.filter((item) => item.relatertPersonsRolle === 'BARN') ||
-		opts?.personFoerLeggTil?.pdlforvalter?.person?.relasjoner?.filter(
+		opts?.personFoerLeggTil?.pdlforvalter?.relasjoner?.filter(
 			(item) => item.relasjonType === 'FAMILIERELASJON_BARN',
 		) ||
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.forelderBarnRelasjon?.filter(
-			(item) => item.relatertPersonsRolle === 'BARN',
-		) ||
-		opts?.importPersoner?.flatMap((person) =>
-			person.data?.hentPerson?.forelderBarnRelasjon?.filter(
-				(item) => item.relatertPersonsRolle === 'BARN',
-			),
-		)
-	// console.log('barn: ', barn) //TODO - SLETT MEG
+		pdlBarn ||
+		tenorBarn
+
+	const barnMedIdent = pdlBarn || tenorBarn
+
+	const barnGruppe = barnMedIdent?.map((b) => ({
+		ident: b.relatertPersonsIdent,
+		master: b.metadata?.master,
+	}))
+	const { data: barnOptions, loading: barnLoading } = usePdlOptions(barnGruppe, 'PDL', true)
 
 	const getInfotekst = (ytelse) => {
 		if (ytelse === 'OMSTILLINGSSTOENAD') {
@@ -123,13 +133,13 @@ export const EtterlatteYtelserForm = () => {
 										size="large"
 										isClearable={false}
 									/>
-									{/*//TODO: Ident for barn hvis flere barn. Kanskje bare vises ved legg til/endre og import?*/}
 									<FormSelect
 										name={`${path}.soeker`}
 										label="Søker"
-										options={null}
+										options={barnOptions}
+										isLoading={barnLoading}
 										size="xxlarge"
-										isDisabled={true}
+										isDisabled={!barnOptions || barnOptions?.length < 2}
 									/>
 								</>
 							)

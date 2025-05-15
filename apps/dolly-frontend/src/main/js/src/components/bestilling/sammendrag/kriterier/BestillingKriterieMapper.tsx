@@ -1057,6 +1057,7 @@ const mapEtterlatteYtelser = (bestillingsData, data) => {
 				return [
 					{ numberHeader: `Etterlatteytelse ${idx + 1}` },
 					obj('Ytelse', showLabel('etterlatteYtelser', item.ytelse)),
+					obj('Søker', item.soeker),
 				]
 			}),
 		}
