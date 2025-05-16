@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import * as _ from 'lodash-es'
-import { getMonth, getYear, isWithinInterval } from 'date-fns'
+import { getMonth, getYear, isAfter, isEqual, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
@@ -35,9 +35,13 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 			const ansattFom = _.get(fullForm, `${gjeldendeArbeidsforholdPath}.ansettelsesPeriode.fom`)
 			const ansattTom = _.get(fullForm, `${gjeldendeArbeidsforholdPath}.ansettelsesPeriode.tom`)
 
+			if (_.isNil(ansattTom)) {
+				return isEqual(dateValue, new Date(ansattFom)) || isAfter(dateValue, new Date(ansattFom))
+			}
+
 			return isWithinInterval(dateValue, {
 				start: new Date(ansattFom),
-				end: _.isNil(ansattTom) ? new Date() : new Date(ansattTom),
+				end: new Date(ansattTom),
 			})
 		},
 	)

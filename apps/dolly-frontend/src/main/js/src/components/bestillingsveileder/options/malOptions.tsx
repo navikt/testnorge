@@ -264,9 +264,10 @@ const getUpdatedPdldata = (pdldata: any) => {
 	const nyPerson = newPdldata?.opprettNyPerson
 	if (nyPerson) {
 		newPdldata.opprettNyPerson.syntetisk = true
+		newPdldata.opprettNyPerson.identtype = nyPerson.identtype ?? 'FNR'
 		if (nyPerson.alder === null && nyPerson.foedtFoer === null && nyPerson.foedtEtter === null) {
 			newPdldata.opprettNyPerson = {
-				identtype: nyPerson.identtype,
+				identtype: nyPerson.identtype ?? 'FNR',
 				syntetisk: true,
 			}
 		}

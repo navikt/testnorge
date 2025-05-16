@@ -574,6 +574,7 @@ export default ({
 					loading={loadingArenaData}
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					harArenaBestilling={harArenaBestilling(bestillingerFagsystemer)}
 				/>
 				<SykemeldingVisning
 					data={sykemeldingData}
