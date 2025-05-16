@@ -129,6 +129,11 @@ public class Texas {
                 .uri(URI.create(exchangeUrl))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(JSON_EXCHANGE_REQUEST.formatted(audience, token))
+                .headers(headers -> {
+                    if (localSecret != null) {
+                        headers.add(HttpHeaders.AUTHORIZATION, "Dolly " + localSecret);
+                    }
+                })
                 .retrieve()
                 .bodyToMono(TexasToken.class)
                 .retryWhen(WebClientError.is5xxException())
@@ -158,6 +163,11 @@ public class Texas {
                 .uri(introspectUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(JSON_INTROSPECTION_REQUEST.formatted(token))
+                .headers(headers -> {
+                    if (localSecret != null) {
+                        headers.add(HttpHeaders.AUTHORIZATION, "Dolly " + localSecret);
+                    }
+                })
                 .retrieve()
                 .bodyToMono(String.class)
                 .retryWhen(WebClientError.is5xxException())

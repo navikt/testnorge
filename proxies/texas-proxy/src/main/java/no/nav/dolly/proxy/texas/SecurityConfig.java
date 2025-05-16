@@ -13,15 +13,24 @@ class SecurityConfig {
     @Value("${dolly.texas.shared.secret}")
     private String sharedSecret;
 
+    private static final String[] WHITELIST = {
+            "/internal/**",
+            "/swagger",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/webjars/swagger-ui/**"
+    };
+
     @Bean
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
-        var filter = new DollyAuthorizationHeaderFilter(sharedSecret);
+        var filter = new DollyAuthorizationHeaderFilter(sharedSecret, WHITELIST);
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .addFilterAt(filter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/internal/**").permitAll()
+                        .pathMatchers(WHITELIST).permitAll()
                         .anyExchange().permitAll())
                 .build();
 
