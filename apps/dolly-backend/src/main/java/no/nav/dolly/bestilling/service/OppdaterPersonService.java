@@ -20,14 +20,11 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
-
-import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
@@ -69,7 +66,6 @@ public class OppdaterPersonService extends DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
-        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         request.setId(bestilling.getId());
 
         var testident = identService.getTestIdent(bestilling.getIdent());

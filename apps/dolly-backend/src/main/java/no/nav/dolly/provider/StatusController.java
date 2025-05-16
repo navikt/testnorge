@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +61,7 @@ public class StatusController {
                 .parallelStream()
                 .filter(StatusController::isNotExcluded)
                 .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
-                .collect(Collectors.toMap(key -> key.get(0), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
+                .collect(Collectors.toMap(key -> key.getFirst(), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
     }
 
     @GetMapping("/oppsummert")
@@ -71,7 +71,7 @@ public class StatusController {
                 .parallelStream()
                 .filter(StatusController::isNotExcluded)
                 .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
-                .collect(Collectors.toMap(key -> (String) key.get(0), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
+                .collect(Collectors.toMap(key -> (String) key.getFirst(), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
 
         return NavStatus.builder()
                 .status(status.values().stream()

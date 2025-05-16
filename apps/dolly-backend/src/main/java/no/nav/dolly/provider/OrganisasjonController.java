@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Set;
 
-import static no.nav.dolly.provider.api.OrganisasjonBestillingController.getStatus;
+import static no.nav.dolly.provider.OrganisasjonBestillingController.getStatus;
 
 @RestController
 @RequiredArgsConstructor
