@@ -7,7 +7,7 @@ import {
 	UkjentBosted,
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import {
 	initialMatrikkeladresse,
@@ -15,10 +15,13 @@ import {
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 interface DeltBostedValues {
 	formMethods: UseFormReturn
 	path: string
+	relasjoner?: any[]
+	personValues?: any
 }
 
 type Target = {
@@ -71,6 +74,10 @@ export const DeltBostedForm = ({
 
 	const [adressetype, setAdressetype] = useState(getAdressetype())
 
+	const harPartner = formMethods.watch('pdldata.person.sivilstand')?.length > 0
+	const harForelderBarnRelasjon =
+		formMethods.watch('pdldata.person.forelderBarnRelasjon')?.length > 0
+
 	useEffect(() => {
 		if (!formMethods.watch(`${path}.adressetype`)) {
 			formMethods.setValue(`${path}.adressetype`, getAdressetype())
@@ -80,49 +87,60 @@ export const DeltBostedForm = ({
 	const handleChangeAdressetype = (target: Target, adressePath: string) => {
 		const adresse = formMethods.watch(adressePath)
 		const adresseClone = _.cloneDeep(adresse)
+		const targetValue = target?.value
 
-		if (!target || target?.value === 'PARTNER_ADRESSE') {
-			_.set(adresseClone, 'vegadresse', null)
-			_.set(adresseClone, 'matrikkeladresse', null)
-			_.set(adresseClone, 'ukjentBosted', null)
-		} else if (target?.value === 'VEGADRESSE') {
-			_.set(adresseClone, 'vegadresse', initialVegadresse)
-			_.set(adresseClone, 'matrikkeladresse', null)
-			_.set(adresseClone, 'ukjentBosted', null)
-		} else if (target?.value === 'MATRIKKELADRESSE') {
-			_.set(adresseClone, 'vegadresse', null)
-			_.set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
-			_.set(adresseClone, 'ukjentBosted', null)
-		} else if (target?.value === 'UKJENT_BOSTED') {
-			_.set(adresseClone, 'vegadresse', null)
-			_.set(adresseClone, 'matrikkeladresse', null)
-			_.set(adresseClone, 'ukjentBosted', initialUkjentBosted)
-		} else if (target?.value && relasjoner?.length > 0) {
-			const foreldersAdresse = relasjoner.find(
-				(forelder) => forelder?.relatertPerson?.ident == target?.value,
-			)?.relatertPerson?.bostedsadresse?.[0]
+		const updateAddressFields = (addressType: string | null, value: any = null) => {
+			_.set(adresseClone, 'vegadresse', addressType === 'vegadresse' ? value : null)
+			_.set(adresseClone, 'matrikkeladresse', addressType === 'matrikkeladresse' ? value : null)
+			_.set(adresseClone, 'ukjentBosted', addressType === 'ukjentBosted' ? value : null)
+		}
+
+		if (!target || targetValue === 'PARTNER_ADRESSE') {
+			updateAddressFields(null)
+		} else if (targetValue === 'VEGADRESSE') {
+			updateAddressFields('vegadresse', initialVegadresse)
+		} else if (targetValue === 'MATRIKKELADRESSE') {
+			updateAddressFields('matrikkeladresse', initialMatrikkeladresse)
+		} else if (targetValue === 'UKJENT_BOSTED') {
+			updateAddressFields('ukjentBosted', initialUkjentBosted)
+		} else if (targetValue && relasjoner && relasjoner.length > 0) {
+			const forelder = relasjoner.find((rel) => rel?.relatertPerson?.ident === targetValue)
+			const foreldersAdresse = forelder?.relatertPerson?.bostedsadresse?.[0]
+
 			if (foreldersAdresse?.vegadresse) {
-				_.set(adresseClone, 'vegadresse', foreldersAdresse?.vegadresse)
-				_.set(adresseClone, 'matrikkeladresse', null)
-				_.set(adresseClone, 'ukjentBosted', null)
+				updateAddressFields('vegadresse', foreldersAdresse.vegadresse)
 			} else if (foreldersAdresse?.matrikkeladresse) {
-				_.set(adresseClone, 'vegadresse', null)
-				_.set(adresseClone, 'matrikkeladresse', foreldersAdresse?.matrikkeladresse)
-				_.set(adresseClone, 'ukjentBosted', null)
+				updateAddressFields('matrikkeladresse', foreldersAdresse.matrikkeladresse)
 			} else if (foreldersAdresse?.ukjentBosted) {
-				_.set(adresseClone, 'vegadresse', null)
-				_.set(adresseClone, 'matrikkeladresse', null)
-				_.set(adresseClone, 'ukjentBosted', foreldersAdresse?.ukjentBosted)
+				updateAddressFields('ukjentBosted', foreldersAdresse.ukjentBosted)
 			}
 		}
 
-		setAdressetype(target?.value)
-		_.set(adresseClone, 'adressetype', target?.value || null)
+		setAdressetype(targetValue)
+		_.set(adresseClone, 'adressetype', targetValue || null)
 		formMethods.setValue(path, adresseClone)
 	}
 
 	return (
 		<>
+			{!harPartner && (
+				<StyledAlert variant={'warning'}>
+					{
+						//TODO: Skrive bedre tilbakemelding
+					}
+					For at delt bosted skal fungere, må identen ha en gjeldende sivilstand med en annen
+					adresse enn hovedperson, dette kan velges i Steg 2 under familierelasjoner panel
+				</StyledAlert>
+			)}
+			{!harForelderBarnRelasjon && (
+				<StyledAlert variant={'warning'}>
+					{
+						//TODO: Skrive bedre tilbakemelding
+					}
+					For at delt bosted skal fungere, må identen ha en relasjon til et barn, dette kan velges i
+					Steg 2 under familierelasjoner panel
+				</StyledAlert>
+			)}
 			<FormSelect
 				name={`${path}.adressetype`}
 				value={adressetype}
@@ -145,8 +163,8 @@ export const DeltBostedForm = ({
 			)}
 			{adressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
-				<FormDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
-				<FormDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
+				<DollyDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
+				<DollyDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
 			</div>
 		</>
 	)

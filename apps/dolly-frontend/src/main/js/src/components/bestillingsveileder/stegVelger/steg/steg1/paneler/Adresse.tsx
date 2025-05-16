@@ -8,6 +8,7 @@ import {
 	getInitialBostedsadresse,
 	getInitialKontaktadresse,
 	getInitialOppholdsadresse,
+	initialDeltBosted,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { adresseAttributter } from '@/components/fagsystem/pdlf/form/partials/adresser/Adresser'
@@ -28,6 +29,16 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 				<Attributt attr={sm.attrs.bostedsadresse} />
 				<Attributt attr={sm.attrs.oppholdsadresse} />
 				<Attributt attr={sm.attrs.kontaktadresse} />
+			</AttributtKategori>
+
+			<AttributtKategori title="Delt bosted" attr={sm.attrs}>
+				<Attributt
+					attr={sm.attrs.deltBosted}
+					infoTekst={
+						'Opplysningstypen “Delt bosted” legges til på barnet(barna), men kan bestilles på hovedperson/partner/barn. ' +
+						'Vilkåret er at barn(a) har to foreldre med forskjellig norsk bostedsadresse.  Master=FREG kun.'
+					}
+				/>
 			</AttributtKategori>
 
 			<AttributtKategori title="Adressebeskyttelse" attr={sm.attrs}>
@@ -51,6 +62,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 		oppholdsadresse: 'pdldata.person.oppholdsadresse',
 		kontaktadresse: 'pdldata.person.kontaktadresse',
 		adressebeskyttelse: 'pdldata.person.adressebeskyttelse',
+		deltBosted: 'pdldata.person.deltBosted',
 	}
 
 	return {
@@ -92,6 +104,16 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			},
 			remove() {
 				del(paths.adressebeskyttelse)
+			},
+		},
+		deltBosted: {
+			label: 'Delt bosted (for barn)',
+			checked: has(paths.deltBosted),
+			add() {
+				set(paths.deltBosted, [initialDeltBosted])
+			},
+			remove() {
+				del(paths.deltBosted)
 			},
 		},
 	}
