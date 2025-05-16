@@ -7,6 +7,8 @@ plugins {
     id "org.springframework.boot" // See ../../../build.gradle for version.
 }
 
+group = "no.nav.testnav.apps"
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor

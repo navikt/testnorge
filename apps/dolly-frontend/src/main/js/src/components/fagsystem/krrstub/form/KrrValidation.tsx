@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
+import { ifPresent, requiredBoolean, requiredDate, requiredString } from '@/utils/YupValidations'
 import * as _ from 'lodash-es'
 
 const testMobil = (val) => {
@@ -29,7 +29,7 @@ export const KrrValidation = {
 		'$krrstub',
 		Yup.object({
 			epost: Yup.string(),
-			gyldigFra: Yup.date().nullable(),
+			gyldigFra: requiredDate,
 			landkode: Yup.mixed().when(['registrert', 'mobil'], {
 				is: (registrert, mobil) => registrert && mobil,
 				then: () => requiredString,

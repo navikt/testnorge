@@ -4,29 +4,10 @@ REDIS_HOST: localhost
 server:
   port: 8020
 
-azure.app:
-  client:
-    id: dummy-client-id
-    secret: dummy-client-secret
-  well-known-url: https://login.microsoftonline.com/{tenant-id}/v2.0/.well-known/openid-configuration
-
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://login.microsoftonline.com/{tenant-id}/v2.0
-          jwk-set-uri: https://login.microsoftonline.com/{tenant-id}/discovery/v2.0/keys
-      client:
-        registration:
-          azure-ad:
-            client-id: ${azure.app.client.id}
-            client-secret: ${azure.app.client.secret}
-            authorization-grant-type: client_credentials
-            scope: https://graph.microsoft.com/.default
-        provider:
-          azure-ad:
-            token-uri: https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/token
+  config:
+    import: "sm://"
+
 consumers:
   tps-messaging-service:
     url: https://testnav-tps-messaging-service.intern.dev.nav.no
