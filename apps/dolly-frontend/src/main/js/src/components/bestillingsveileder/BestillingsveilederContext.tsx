@@ -1,6 +1,4 @@
-import React from 'react'
-
-export const BestillingsveilederContext = React.createContext(undefined)
+import React, { Context } from 'react'
 
 export interface BestillingsveilederContextType {
 	gruppeId?: string
@@ -24,3 +22,10 @@ export interface BestillingsveilederContextType {
 		importTestnorge?: boolean
 	}
 }
+
+const defaultContextValue: BestillingsveilederContextType = {
+	initialValues: {},
+}
+
+export const BestillingsveilederContext: Context<BestillingsveilederContextType> =
+	React.createContext(defaultContextValue)

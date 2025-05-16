@@ -11,13 +11,17 @@ export const Hjelpetekst = ({
 	children,
 	placement = bottom,
 	requestFeedback = true,
+	style,
+	...props
 }: HjelpetekstProps) => {
 	return (
 		<HelpText
+			style={style}
 			placement={placement}
 			onClick={(event) => {
 				event.stopPropagation()
 			}}
+			{...props}
 		>
 			{children}
 			{requestFeedback && (

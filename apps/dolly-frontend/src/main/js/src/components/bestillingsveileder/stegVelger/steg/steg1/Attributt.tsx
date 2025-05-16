@@ -1,5 +1,6 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { CheckboxGroup } from '@navikt/ds-react'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 export const Attributt = ({
 	attr,
@@ -7,14 +8,16 @@ export const Attributt = ({
 	disabled = false,
 	title = null,
 	id = null,
+	infoTekst = '',
 	...props
 }) => {
 	if (!vis) {
 		return null
 	}
 	return (
-		<div title={title}>
+		<div title={title} style={{ display: 'flex' }}>
 			<DollyCheckbox
+				wrapperSize={null}
 				label={attr?.label}
 				attributtCheckbox={true}
 				size={'small'}
@@ -24,6 +27,9 @@ export const Attributt = ({
 				id={id}
 				{...props}
 			/>
+			{infoTekst && (
+				<Hjelpetekst style={{ marginLeft: '-25px', marginTop: '3px' }}>{infoTekst}</Hjelpetekst>
+			)}
 		</div>
 	)
 }
