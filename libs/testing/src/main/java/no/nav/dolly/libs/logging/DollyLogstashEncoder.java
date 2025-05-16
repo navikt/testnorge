@@ -3,6 +3,8 @@ package no.nav.dolly.libs.logging;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.LogstashEncoder;
@@ -13,6 +15,7 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -41,12 +44,30 @@ public class DollyLogstashEncoder extends LogstashEncoder {
     private String stackTraceIncludePrefix = "no.nav";
     private boolean addSuppressed = true;
 
+    private String customFields;
+    private boolean includeContext = true;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public byte[] encode(ILoggingEvent event) {
 
         var o = new ByteArrayOutputStream();
         try (var g = new JsonFactory().createGenerator(o)) {
+            g.setCodec(objectMapper);
             g.writeStartObject();
+
+            // Custom fields for logging to Team Logs.
+            if (StringUtils.hasText(customFields)) {
+                var fields = objectMapper.readValue(customFields, new TypeReference<Map<String, Object>>() {
+                });
+                for (var entry : fields.entrySet()) {
+                    g.writeObjectField(entry.getKey(), entry.getValue());
+                }
+            }
+            if (includeContext && Optional.ofNullable(event.getMDCPropertyMap()).isPresent()) {
+                g.writeObjectField("context", event.getMDCPropertyMap());
+            }
+
             g.writeStringField("@timestamp", timestamp.format(new Date(event.getTimeStamp())));
             g.writeStringField("message", maskMessage(event.getFormattedMessage()));
             g.writeStringField("logger_name", event.getLoggerName());

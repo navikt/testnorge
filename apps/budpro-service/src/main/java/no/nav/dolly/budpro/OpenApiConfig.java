@@ -6,13 +6,15 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
+import java.net.URI;
 import java.util.Arrays;
 
 @Configuration
-class OpenApiConfig implements WebMvcConfigurer {
+class OpenApiConfig {
 
     @Bean
     OpenAPI openAPI() {
@@ -32,9 +34,12 @@ class OpenApiConfig implements WebMvcConfigurer {
                                                 .bearerFormat("JWT")));
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
+    @Bean
+    RouterFunction<ServerResponse> swaggerRedirect() {
+        return RouterFunctions
+                .route()
+                .GET("/swagger", request -> ServerResponse.temporaryRedirect(URI.create("/swagger-ui.html")).build())
+                .build();
     }
 
 }

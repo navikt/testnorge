@@ -1,10 +1,14 @@
 package no.nav.dolly.libs.texas;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
@@ -33,6 +37,20 @@ public class TexasAutoConfiguration {
                 preload,
                 texasConsumers
         );
+    }
+
+//    @Bean
+//    @ConditionalOnMissingBean
+//    @Profile("!test")
+//    ReactiveJwtDecoder texasJwtDecoder(Texas texas, ObjectMapper objectMapper) {
+//        return new TexasJwtDecoder(texas, objectMapper);
+//    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @Profile("test")
+    ReactiveJwtDecoder noOpJwtDecoder() {
+        return new NoopJwtDecoder();
     }
 
     private static String resolve(String url, String fallback, String message)

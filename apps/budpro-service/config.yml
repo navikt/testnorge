@@ -17,6 +17,8 @@ spec:
       rules:
         - application: generer-navn-service
         - application: dolly-texas-proxy
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true
@@ -32,9 +34,6 @@ spec:
     enabled: true
     path: /internal/prometheus
   observability:
-    logging:
-      destinations:
-        - id: elastic
     autoInstrumentation:
       enabled: true
       runtime: java

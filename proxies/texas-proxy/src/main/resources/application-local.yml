@@ -1,9 +1,4 @@
 dolly:
-  consumers:
-    - name: generer-navn-service
-      audience: api://dev-gcp.dolly.generer-navn-service/.default
-    - name: some-other-service
-      audience: api://dev-gcp.dolly.some-other-service/.default
   texas:
     url:
       token: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token
