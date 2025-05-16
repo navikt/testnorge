@@ -136,7 +136,7 @@ export const SykemeldingVisning = ({
 					bestilteMiljoer={bestilteMiljoer}
 					errorMiljoer={errorMiljoer}
 					forsteMiljo={forsteMiljo}
-					data={filteredData ? filteredData : mergetData}
+					data={filteredData ?? mergetData}
 				>
 					<Visning />
 				</MiljoTabs>
