@@ -29,25 +29,25 @@ public class Texas {
     private static final String EXCHANGE_FAILED = "Failed to exchange token using audience '%s'";
     private static final String INTROSPECT_FAILED = "Failed to introspect token";
 
-    private static final String JSON_TOKEN_REQUEST = StringUtils.trimAllWhitespace("""
+    private static final String JSON_TOKEN_REQUEST = """
             {
                 "identity_provider": "azuread",
                 "target": "%s"
             }
-            """);
-    private static final String JSON_EXCHANGE_REQUEST = StringUtils.trimAllWhitespace("""
+            """;
+    private static final String JSON_EXCHANGE_REQUEST = """
             {
                 "identity_provider": "azuread",
                 "target": "%s",
                 "user_token": "%s"
             }
-            """);
-    private static final String JSON_INTROSPECTION_REQUEST = StringUtils.trimAllWhitespace("""
+            """;
+    private static final String JSON_INTROSPECTION_REQUEST = """
             {
                 "identity_provider": "azuread",
                 "token": "%s"
             }
-            """);
+            """;
 
     private final WebClient webClient;
     private final String localSecret;

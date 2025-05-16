@@ -1,10 +1,9 @@
 package no.nav.dolly.budpro.test;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import no.nav.dolly.libs.texas.Texas;
+import no.nav.dolly.libs.texas.TexasToken;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -15,6 +14,7 @@ class EmulatedFailureController {
 
     private final WebClient webClient;
     private final EmulatedFailureService service;
+    private final Texas texas;
 
     @GetMapping("/get")
     Mono<DummyDTO> generateRequestedFailure(
@@ -26,6 +26,16 @@ class EmulatedFailureController {
     @GetMapping("/selfcheck")
     Mono<DummyDTO> selfCheck() {
         return new SelfCheckCommand(webClient).call();
+    }
+
+    @GetMapping("/token/get")
+    Mono<TexasToken> getToken(String audience) {
+        return texas.get(audience);
+    }
+
+    @PostMapping("/token/introspect")
+    Mono<String> introspectToken(@RequestBody String token) {
+        return texas.introspect(token);
     }
 
 }
