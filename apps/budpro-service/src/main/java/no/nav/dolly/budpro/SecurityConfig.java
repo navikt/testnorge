@@ -1,5 +1,6 @@
 package no.nav.dolly.budpro;
 
+import no.nav.dolly.libs.security.config.DollyHttpSecurity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,42 +12,27 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.HashSet;
+
 @Configuration
 @EnableWebSecurity
 @Profile("!test")
-public class SecurityConfig {
+class SecurityConfig {
 
     @Value("${app.security.allow-api:false}")
     private boolean allowApi;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        var additionalOpenEndpoints = HashSet.<String>newHashSet(2);
+        additionalOpenEndpoints.add("/failure/**");
+        if (allowApi) {
+            additionalOpenEndpoints.add("/api/**");
+        }
         return http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> {
-                            authorize
-                                    .requestMatchers(
-                                            "/error",
-                                            "/internal/**",
-                                            "/swagger",
-                                            "/swagger-resources/**",
-                                            "/swagger-ui.html",
-                                            "/swagger-ui/**",
-                                            "/v3/api-docs/**",
-                                            "/webjars/**")
-                                    .permitAll();
-                            if (allowApi) {
-                                authorize
-                                        .requestMatchers("/api/**")
-                                        .permitAll();
-                            } else {
-                                authorize
-                                        .requestMatchers("/api/**")
-                                        .fullyAuthenticated();
-                            }
-                        }
-                )
+                .authorizeHttpRequests(DollyHttpSecurity.withDefaultHttpRequests(additionalOpenEndpoints.toArray(new String[]{})))
                 .oauth2ResourceServer(server -> server.jwt(Customizer.withDefaults()))
                 .build();
     }
