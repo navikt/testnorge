@@ -19,7 +19,7 @@ class GeneratedNameController {
             @RequestParam(required = false) Long seed,
             @RequestParam(required = false, defaultValue = "10") int number
     ) {
-        return Flux.fromArray(service.getNames(seed, number));
+        return service.getNames(seed, number);
     }
 
 }

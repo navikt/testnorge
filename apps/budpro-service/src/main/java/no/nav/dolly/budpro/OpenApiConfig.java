@@ -6,7 +6,11 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
+import java.net.URI;
 import java.util.Arrays;
 
 @Configuration
@@ -28,6 +32,14 @@ class OpenApiConfig {
                                                 .type(SecurityScheme.Type.HTTP)
                                                 .scheme("bearer")
                                                 .bearerFormat("JWT")));
+    }
+
+    @Bean
+    RouterFunction<ServerResponse> swaggerRedirect() {
+        return RouterFunctions
+                .route()
+                .GET("/swagger", request -> ServerResponse.temporaryRedirect(URI.create("/swagger-ui.html")).build())
+                .build();
     }
 
 }
