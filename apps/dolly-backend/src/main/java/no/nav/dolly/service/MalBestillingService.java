@@ -312,6 +312,10 @@ public class MalBestillingService {
             return Mono.just(RsMalBestillingSimple.builder()
                     .brukereMedMaler(Stream.of(List.of(
                                             MalBruker.builder()
+                                                    .brukernavn(ALLE)
+                                                    .brukerId(ALLE)
+                                                    .build(),
+                                            MalBruker.builder()
                                                     .brukernavn(ANONYM)
                                                     .brukerId(ANONYM)
                                                     .build()),
@@ -345,9 +349,11 @@ public class MalBestillingService {
 
     public List<RsMalBestilling> getMalBestillingerBrukerId(String brukerId) {
 
-        var malBestillinger = ANONYM.equals(brukerId) ?
-                bestillingMalRepository.findAllByBrukerIsNull() :
-                bestillingMalRepository.findAllByBrukerId(brukerId);
+        var malBestillinger =  switch (brukerId) {
+            case ANONYM -> bestillingMalRepository.findAllByBrukerIsNull();
+            case ALLE -> bestillingMalRepository.findAllByBrukerAzure();
+            default -> bestillingMalRepository.findAllByBrukerId(brukerId);
+        };
 
         return mapperFacade.mapAsList(malBestillinger, RsMalBestilling.class);
     }

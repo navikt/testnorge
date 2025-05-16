@@ -62,7 +62,7 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
                     private ZonedDateTime getDato(RsDigitalKontaktdata digitalKontaktdata) {
                         return nonNull(digitalKontaktdata.getGyldigFra()) ?
-                                ZonedDateTime.of(digitalKontaktdata.getGyldigFra(), ZoneId.systemDefault()) :
+                                digitalKontaktdata.getGyldigFra().atStartOfDay(ZoneId.of("UTC")) :
                                 ZonedDateTime.now();
                     }
                 })
