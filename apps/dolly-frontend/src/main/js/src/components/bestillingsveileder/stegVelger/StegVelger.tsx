@@ -31,6 +31,7 @@ import Steg1 from './steg/steg1/Steg1'
 import Steg2 from './steg/steg2/Steg2'
 import Steg3 from './steg/steg3/Steg3'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
+import * as _ from 'lodash-es'
 
 Steg0.label = 'Velg gruppe/mal'
 Steg1.label = 'Velg egenskaper'
@@ -81,18 +82,18 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const validateForm = () => {
 		formMethods.trigger(validationPaths).then(() => {
-			const errorFelter = Object.keys(formMethods.formState.errors)
+			const errors = formMethods.formState.errors
+			const errorFelter = Object.keys(errors)
 			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
-			const gruppeIdError = errorFelter.filter((fieldName) => fieldName === 'gruppeId')?.[0]
-			if (gruppeIdError) {
+			const hasSteg0Error =
+				_.has(errors, 'gruppeId') ||
+				_.has(errors, 'antall') ||
+				_.has(errors, 'pdldata.opprettNyPerson.identtype')
+			if (hasSteg0Error) {
 				errorContext?.setShowError(true)
 				return
 			}
-			if (
-				errorFelter.length > 0 &&
-				(STEPS[step] === Steg2 || STEPS[step] === Steg0) &&
-				!kunEnvironmentError
-			) {
+			if (errorFelter.length > 0 && STEPS[step] === Steg2 && !kunEnvironmentError) {
 				console.warn('Feil i form, stopper navigering videre')
 				console.error(formMethods.formState.errors)
 				errorContext?.setShowError(true)
