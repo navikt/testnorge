@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
