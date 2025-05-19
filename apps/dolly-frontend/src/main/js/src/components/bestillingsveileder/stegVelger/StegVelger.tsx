@@ -88,7 +88,11 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 				errorContext?.setShowError(true)
 				return
 			}
-			if (errorFelter.length > 0 && STEPS[step] === Steg2 && !kunEnvironmentError) {
+			if (
+				errorFelter.length > 0 &&
+				(STEPS[step] === Steg2 || STEPS[step] === Steg0) &&
+				!kunEnvironmentError
+			) {
 				console.warn('Feil i form, stopper navigering videre')
 				console.error(formMethods.formState.errors)
 				errorContext?.setShowError(true)
@@ -99,7 +103,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	}
 
 	const handleNext = () => {
-		if (STEPS[step] === Steg2 && formMutate) {
+		if ((STEPS[step] === Steg2 || STEPS[step] === Steg0) && formMutate) {
 			formMethods.clearErrors(manualMutateFields)
 			errorContext?.setShowError(true)
 			setMutateLoading(true)

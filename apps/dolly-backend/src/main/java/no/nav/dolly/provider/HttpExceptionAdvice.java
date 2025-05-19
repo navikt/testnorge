@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api.advice;
+package no.nav.dolly.provider;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

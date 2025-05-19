@@ -1,4 +1,4 @@
-import { Alert } from '@navikt/ds-react'
+import { Alert, AlertProps } from '@navikt/ds-react'
 import styled from 'styled-components'
 
 const StyledAlert = styled(Alert)`
@@ -10,4 +10,4 @@ const StyledAlert = styled(Alert)`
 	}
 `
 
-export default (props: any) => <StyledAlert {...props} />
+export default (props: AlertProps) => <StyledAlert {...props} />
