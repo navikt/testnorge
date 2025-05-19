@@ -36,7 +36,7 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 					attr={sm.attrs.deltBosted}
 					infoTekst={
 						'Opplysningstypen “Delt bosted” legges til på barnet(barna), men kan bestilles på hovedperson/partner/barn. ' +
-						'Vilkåret er at barn(a) har to foreldre med forskjellig norsk bostedsadresse.  Master=FREG kun.'
+						'Vilkåret er at barn(a) har to foreldre med forskjellig norsk bostedsadresse.  Gjelder kun for master FREG.'
 					}
 				/>
 			</AttributtKategori>
