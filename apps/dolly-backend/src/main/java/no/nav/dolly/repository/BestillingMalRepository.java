@@ -26,6 +26,16 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
                                bm.sist_oppdatert sistOppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
+            and b.brukertype = 'AZURE'
+            order by bm.mal_navn;
+            """, nativeQuery = true)
+    List<MalBestilling> findAllByBrukerAzure();
+
+    @Query(value = """
+            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+                               bm.sist_oppdatert sistOppdatert
+                        from bestilling_mal bm
+            join bruker b on bm.bruker_id = b.id
             where b.bruker_id = :brukerId
             order by bm.mal_navn;
             """, nativeQuery = true)

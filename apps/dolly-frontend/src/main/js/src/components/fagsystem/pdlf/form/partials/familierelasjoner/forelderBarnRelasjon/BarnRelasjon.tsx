@@ -4,10 +4,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollyCheckbox, FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
-import {
-	BestillingsveilederContext,
-	BestillingsveilederContextType,
-} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface BarnRelasjonValues {
@@ -16,10 +13,13 @@ interface BarnRelasjonValues {
 }
 
 export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useContext(BestillingsveilederContext)
 	const erRedigering = !path?.includes('pdldata')
 
 	const [deltBosted, setDeltBosted] = useState(formMethods.watch(`${path}.deltBosted`) !== null)
+
+	const hideDeltBostedCheckbox =
+		(formMethods.getValues('pdldata.person.deltBosted')?.length > 0 && !deltBosted) || erRedigering
 
 	useEffect(() => {
 		const currentValues = formMethods.watch(`${path}.deltBosted`)
@@ -48,7 +48,7 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 					vis={!testnorgePerson}
 					checkboxMargin
 				/>
-				{!erRedigering && (
+				{!hideDeltBostedCheckbox && (
 					<DollyCheckbox
 						label="Har delt bosted"
 						id={`${path}.deltBosted`}
