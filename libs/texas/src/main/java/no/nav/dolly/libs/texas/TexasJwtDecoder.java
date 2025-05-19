@@ -6,6 +6,7 @@ import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.signedness.qual.Signed;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
@@ -29,7 +30,7 @@ class TexasJwtDecoder implements ReactiveJwtDecoder {
                 .introspect(token)
                 .flatMap(introspection -> {
                     try {
-                        log.debug("Token introspection result: {}", introspection);
+                        log.info("Token introspection result: {}", introspection);
 
                         var isActive = objectMapper
                                 .readTree(introspection)
@@ -48,16 +49,10 @@ class TexasJwtDecoder implements ReactiveJwtDecoder {
                         var claims = claimsSet.getClaims();
 
                         var headers = new HashMap<String, Object>();
-                        if (parsedJwt instanceof SignedJWT signedJwt) {
-                            if (signedJwt.getHeader() != null) {
-                                headers.putAll(signedJwt.getHeader().toJSONObject());
-                            }
-                        } else if (parsedJwt instanceof PlainJWT plainJwt) {
-                            if (plainJwt.getHeader() != null) {
-                                headers.putAll(plainJwt.getHeader().toJSONObject());
-                            }
-                        } else {
-                            log.warn("JWT is not an instance of SignedJWT or PlainJWT; headers might be incomplete: {}", parsedJwt.getClass().getName());
+                        switch (parsedJwt) {
+                            case SignedJWT signedJWT when signedJWT.getHeader() != null -> headers.putAll(signedJWT.getHeader().toJSONObject());
+                            case PlainJWT plainJWT when plainJWT.getHeader() != null -> headers.putAll(plainJWT.getHeader().toJSONObject());
+                            default -> log.warn("JWT is not an instance of SignedJWT or PlainJWT; headers might be incomplete: {}", parsedJwt.getClass().getName());
                         }
 
                         var issuedAt = claimsSet.getIssueTime() != null ? claimsSet.getIssueTime().toInstant() : null;
