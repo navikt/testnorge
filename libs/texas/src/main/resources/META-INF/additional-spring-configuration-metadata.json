@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "dolly.texas.preload",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "If true, will attempt to preload (and cache) tokens for all configured consumers on startup."
+    },
+    {
+      "name": "dolly.texas.url.token",
+      "type": "java.net.URL",
+      "defaultValue": "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token",
+      "description": "Override the default token URL (NAIS_TOKEN_ENDPOINT) for Texas. Useful when testing locally to point to the Texas proxy."
+    },
+    {
+      "name": "dolly.texas.url.exchange",
+      "type": "java.net.URL",
+      "defaultValue": "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token/exchange",
+      "description": "Override the default exchange URL (NAIS_TOKEN_EXCHANGE_ENDPOINT) for Texas. Useful when testing locally to point to the Texas proxy."
+    },
+    {
+      "name": "dolly.texas.url.introspect",
+      "type": "java.net.URL",
+      "defaultValue": "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect",
+      "description": "Override the default token introspection URL (NAIS_TOKEN_INTROSPECTION_ENDPOINT) for Texas. Useful when testing locally to point to the Texas proxy."
+    },
+    {
+      "name": "dolly.texas.local.secret",
+      "type": "java.lang.String",
+      "description": "A common secret shared with texas-proxy, for running applications locally. As a backup, the environment variable DOLLY_TEXAS_PROXY_SHARED_SECRET will be used instead, before defaulting to null (as when running in a pod)."
+    }
+  ]
+}

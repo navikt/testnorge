@@ -126,7 +126,7 @@ class NaisRuntimeEnvironmentConnector {
     private List<String> execute(String command)
             throws NaisEnvironmentException {
 
-        var processBuilder = new ProcessBuilder(command);
+        var processBuilder = new ProcessBuilder(command.split("\\s+"));
         try {
             var process = processBuilder.start();
             var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));

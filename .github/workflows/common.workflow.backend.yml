@@ -44,8 +44,6 @@ on:
         required: false
         default: true
     secrets:
-      NAIS_WORKLOAD_IDENTITY_PROVIDER:
-        required: true
       NAV_TOKEN:
         required: true
       SONAR_TOKEN:

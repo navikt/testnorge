@@ -841,8 +841,10 @@ const selectOptions = {
 	// Yrkesskader:
 	klassifisering: [
 		{ value: 'BAGATELLMESSIGE_SKADER', label: 'Bagatellmessige skader' },
-		{ value: 'MANUELL', label: 'Manuell' },
 		{ value: 'IMPORT', label: 'Import' },
+		{ value: 'MANUELL', label: 'Manuell' },
+		{ value: 'MELLOMSKADER', label: 'Mellomskader' },
+		{ value: 'MULIG_NULLSKADE', label: 'Mulig nullskade' },
 	],
 
 	tidstype: [

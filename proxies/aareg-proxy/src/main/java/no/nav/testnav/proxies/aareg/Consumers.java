@@ -8,23 +8,39 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import static lombok.AccessLevel.PACKAGE;
+import static lombok.AccessLevel.PRIVATE;
 
-/**
- * Samler alle placeholders for ulike {@code consumers.*}-konfigurasjon her, dvs. subklasser av {@code ServerProperties}.
- * <br/><br/>
- * Husk at Spring Boot bruker <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding">relaxed binding</a>
- * mellom configuration properties og field names.
- *
- * @see ServerProperties
- */
 @Configuration
 @ConfigurationProperties(prefix = "consumers")
 @NoArgsConstructor(access = PACKAGE)
-@Getter
 @Setter(PACKAGE)
+@Getter(PRIVATE)
 public class Consumers {
 
-    ServerProperties aaregServices;
-    ServerProperties aaregVedlikehold;
+    private static final String ENV = "-{env}";
+    private static final String DASH = "-%s";
 
+    private ServerProperties aaregServices;
+    private ServerProperties aaregVedlikehold;
+
+    public ServerProperties getAaregServices(String env) {
+
+        var environment = "q2".equals(env) ?  "" : DASH.formatted(env);
+        return ServerProperties.of(
+                getAaregServices().getCluster(),
+                getAaregServices().getNamespace(),
+                getAaregServices().getName().replace(ENV, environment),
+                getAaregServices().getUrl().replace(ENV, DASH.formatted(env))
+        );
+    }
+
+    public ServerProperties getAaregVedlikehold(String env) {
+
+        return ServerProperties.of(
+                getAaregVedlikehold().getCluster(),
+                getAaregVedlikehold().getNamespace(),
+                getAaregVedlikehold().getName().replace(ENV, DASH.formatted(env)),
+                getAaregVedlikehold().getUrl().replace(ENV, DASH.formatted(env))
+        );
+    }
 }

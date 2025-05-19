@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -303,13 +304,17 @@ public class MalBestillingService {
                 Collections.emptySet();
     }
 
-    public RsMalBestillingSimple getMalBestillingOversikt() {
+    public Mono<RsMalBestillingSimple> getMalBestillingOversikt() {
 
         var brukeren = brukerService.fetchOrCreateBruker();
         if (brukeren.getBrukertype() == AZURE) {
 
-            return RsMalBestillingSimple.builder()
+            return Mono.just(RsMalBestillingSimple.builder()
                     .brukereMedMaler(Stream.of(List.of(
+                                            MalBruker.builder()
+                                                    .brukernavn(ALLE)
+                                                    .brukerId(ALLE)
+                                                    .build(),
                                             MalBruker.builder()
                                                     .brukernavn(ANONYM)
                                                     .brukerId(ANONYM)
@@ -317,16 +322,15 @@ public class MalBestillingService {
                                     mapFragment(bestillingMalRepository.findAllByBrukertypeAzure()))
                             .flatMap(List::stream)
                             .toList())
-                    .build();
+                    .build());
 
         } else {
-            var brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .block();
 
-            return RsMalBestillingSimple.builder()
-                    .brukereMedMaler(mapFragment(bestillingMalRepository.findAllByBrukerIdIn(brukere)))
-                    .build();
+            return brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .map(bestillingMalRepository::findAllByBrukerIdIn)
+                    .map(MalBestillingService::mapFragment)
+                    .map(RsMalBestillingSimple::new);
         }
     }
 
@@ -345,9 +349,11 @@ public class MalBestillingService {
 
     public List<RsMalBestilling> getMalBestillingerBrukerId(String brukerId) {
 
-        var malBestillinger =  ANONYM.equals(brukerId) ?
-                    bestillingMalRepository.findAllByBrukerIsNull() :
-                    bestillingMalRepository.findAllByBrukerId(brukerId);
+        var malBestillinger =  switch (brukerId) {
+            case ANONYM -> bestillingMalRepository.findAllByBrukerIsNull();
+            case ALLE -> bestillingMalRepository.findAllByBrukerAzure();
+            default -> bestillingMalRepository.findAllByBrukerId(brukerId);
+        };
 
         return mapperFacade.mapAsList(malBestillinger, RsMalBestilling.class);
     }

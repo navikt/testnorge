@@ -11,6 +11,7 @@ import org.opensearch.action.search.SearchResponse;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.unit.TimeValue;
+import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static no.nav.testnav.dollysearchservice.config.CachingConfig.CACHE_REGISTRE;
+import static no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils.addIdentQuery;
 
 @Slf4j
 @Service
@@ -45,8 +47,22 @@ public class BestillingQueryService {
     private final ObjectMapper objectMapper;
 
     @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer}")
-    public Set<String> execRegisterQuery(SearchRequest request) {
+    public Set<String> execRegisterCacheQuery(SearchRequest request) {
 
+        var queryBuilder = getFagsystemAndMiljoerQuery(request);
+
+        return  execQuery(queryBuilder);
+    }
+
+    public Set<String> execRegisterNoCacheQuery(SearchRequest request) {
+
+        var queryBuilder = getFagsystemAndMiljoerQuery(request);
+        addIdentQuery(queryBuilder, request.getPersonRequest());
+
+        return execQuery(queryBuilder);
+    }
+
+    private static BoolQueryBuilder getFagsystemAndMiljoerQuery(SearchRequest request) {
 
         var queryBuilder = QueryBuilders.boolQuery();
 
@@ -55,8 +71,7 @@ public class BestillingQueryService {
                 .forEach(queryBuilder::must);
 
         FagsystemQueryUtils.addMiljoerQuery(queryBuilder, request.getMiljoer());
-
-        return execQuery(queryBuilder);
+        return queryBuilder;
     }
 
     public Set<String> execTestnorgeIdenterQuery() {

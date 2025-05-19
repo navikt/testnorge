@@ -2,6 +2,8 @@ import * as _ from 'lodash-es'
 import { runningE2ETest } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
+import { sigrunstubPensjonsgivendeAttributt } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
+import { sigrunstubSummertSkattegrunnlagAttributt } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
 
 export const panelError = (attributtPath) => {
 	const {
@@ -47,6 +49,7 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.foedested',
 		'pdldata.person.foedselsdato',
 		'pdldata.person.doedsfall',
+		'pdldata.person.deltBosted',
 		'pdldata.person.statsborgerskap',
 		'pdldata.person.innflytting',
 		'pdldata.person.utflytting',
@@ -57,14 +60,6 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.fullmakt',
 		'pdldata.person.sikkerhetstiltak',
 		'pdldata.person.tilrettelagtKommunikasjon',
-		'tpsMessaging.egenAnsattDatoFom',
-		'tpsMessaging.egenAnsattDatoTom',
-		'skjerming.egenAnsattDatoFom',
-		'skjerming.egenAnsattDatoTom',
-		'tpsMessaging.utenlandskBankkonto',
-		'tpsMessaging.norskBankkonto',
-		'bankkonto.utenlandskBankkonto',
-		'bankkonto.norskBankkonto',
 		'pdldata.person.bostedsadresse',
 		'pdldata.person.oppholdsadresse',
 		'pdldata.person.kontaktadresse',
@@ -77,10 +72,18 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.utenlandskIdentifikasjonsnummer',
 		'pdldata.person.nyident',
 		'pdldata.person.kontaktinformasjonForDoedsbo',
+		'tpsMessaging.egenAnsattDatoFom',
+		'tpsMessaging.egenAnsattDatoTom',
+		'skjerming.egenAnsattDatoFom',
+		'skjerming.egenAnsattDatoTom',
+		'tpsMessaging.utenlandskBankkonto',
+		'tpsMessaging.norskBankkonto',
+		'bankkonto.utenlandskBankkonto',
+		'bankkonto.norskBankkonto',
 		'aareg',
 		'fullmakt',
-		'sigrunstub',
-		'sigrunstubPensjonsgivende',
+		sigrunstubPensjonsgivendeAttributt,
+		sigrunstubSummertSkattegrunnlagAttributt,
 		'inntektstub',
 		'inntektsmelding',
 		'skattekort',
