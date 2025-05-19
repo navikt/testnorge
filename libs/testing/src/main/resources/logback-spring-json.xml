@@ -9,11 +9,8 @@
     </appender>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <charset>UTF-8</charset>
-            <pattern>
-                %d{HH:mm:ss.SSS} %highlight(%p) | %yellow(%logger{0}): %m%n
-            </pattern>
+        <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
+            <maxStackTraceLength>-1</maxStackTraceLength>
         </encoder>
     </appender>
 
