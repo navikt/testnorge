@@ -49,31 +49,32 @@ export const usePdlOptions = (gruppe, master = 'PDLF', visDetaljertLabel = false
 		const ident = id?.person?.ident || id?.ident
 		const foreldre =
 			master === 'PDLF'
-				? id.relasjoner
+				? id?.relasjoner
 						?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
 						?.map((relasjon) => relasjon.relatertPerson?.ident)
-				: id.person?.forelderBarnRelasjon
+				: id?.person?.forelderBarnRelasjon
 						?.filter((relasjon) => relasjon.minRolleForPerson === 'BARN')
 						?.map((relasjon) => relasjon.relatertPersonsIdent)
 		const foreldreansvar = (master = 'PDLF'
-			? id.relasjoner
+			? id?.relasjoner
 					?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
 					?.map((relasjon) => relasjon.relatertPerson?.ident)
 			: null)
 		const alder = getAlder(
-			id.person?.foedselsdato?.[0]?.foedselsdato || id.person?.foedsel?.[0]?.foedselsdato,
+			id?.person?.foedselsdato?.[0]?.foedselsdato || id?.person?.foedsel?.[0]?.foedselsdato,
 		)
+		const doedsfall = id?.person?.doedsfall?.length > 0
 		const kjoenn = id?.person?.kjoenn?.[0].kjoenn?.toLowerCase()
 		const label = `${ident} - ${fornavn} ${mellomnavn} ${etternavn}`
 		personData.push({
 			value: ident,
-			label: visDetaljertLabel ? `${label} (${kjoenn} ${alder})` : label,
+			label: visDetaljertLabel ? `${label} (${kjoenn} ${alder}${doedsfall ? ', død' : ''})` : label,
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 			alder: alder,
 			kjoenn: kjoenn,
-			sivilstand: id.person?.sivilstand?.[0]?.type,
-			vergemaal: id.person?.vergemaal?.length > 0,
-			doedsfall: id.person?.doedsfall?.length > 0,
+			sivilstand: id?.person?.sivilstand?.[0]?.type,
+			vergemaal: id?.person?.vergemaal?.length > 0,
+			doedsfall: doedsfall,
 			foreldre: foreldre,
 			foreldreansvar: foreldreansvar,
 		})

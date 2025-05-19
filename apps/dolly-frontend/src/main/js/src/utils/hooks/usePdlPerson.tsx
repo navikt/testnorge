@@ -13,7 +13,7 @@ const getPersonoppslagBolkUrl = (identer: Array<string>) =>
 
 export const usePdlMiljoeinfo = (ident: string, hentQ1 = false) => {
 	const { data, error, isLoading } = useSWR<PdlDataWrapper, Error>(
-		getPersonoppslagUrl(ident, hentQ1 ? 'Q1' : null),
+		ident ? getPersonoppslagUrl(ident, hentQ1 ? 'Q1' : null) : null,
 		fetcher,
 	)
 
