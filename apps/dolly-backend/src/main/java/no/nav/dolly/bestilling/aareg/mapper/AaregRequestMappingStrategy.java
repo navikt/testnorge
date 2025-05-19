@@ -97,6 +97,8 @@ public class AaregRequestMappingStrategy implements MappingStrategy {
 
                         arbeidsforhold.setNavArbeidsforholdPeriode(rsArbeidsforhold.getNavArbeidsforholdPeriode());
                         arbeidsforhold.setIsOppdatering(rsArbeidsforhold.getIsOppdatering());
+
+                        arbeidsforhold.setInnrapportertEtterAOrdningen(true);
                     }
 
                     private Ansettelsesperiode getAnsettelsesperiode(RsAnsettelsesPeriode ansettelsesperiode) {
