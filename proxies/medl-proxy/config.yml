@@ -60,7 +60,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: team-logs
+        - id: elastic
     autoInstrumentation:
       enabled: true
       runtime: java

@@ -38,6 +38,9 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
+    logging:
+      destinations:
+        - id: elastic
   readiness:
     initialDelay: 45
     path: /internal/health/readiness

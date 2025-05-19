@@ -17,7 +17,6 @@ spec:
   accessPolicy:
     inbound:
       rules:
-
         - application: dolly-frontend
         - application: dolly-idporten
         - application: etterlatte-testdata
@@ -99,7 +98,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: team-logs
+        - id: elastic
     autoInstrumentation:
       enabled: true
       runtime: java

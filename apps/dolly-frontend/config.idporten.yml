@@ -73,7 +73,6 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: idporten.no
-
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
@@ -82,7 +81,7 @@ spec:
   observability:
     logging:
       destinations:
-        - id: team-logs
+        - id: elastic
     autoInstrumentation:
       enabled: true
       runtime: java
