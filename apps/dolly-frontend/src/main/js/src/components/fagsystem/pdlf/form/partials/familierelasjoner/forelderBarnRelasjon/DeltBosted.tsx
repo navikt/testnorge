@@ -30,6 +30,7 @@ export const DeltBostedForm = ({ formMethods, path }: DeltBostedValues) => {
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const { harEksisterendeEktefellePartner, harEksisterendeFamilierelasjonBarn } =
 		sjekkGyldigEksisterende(opts.personFoerLeggTil?.pdlforvalter)
+
 	const harPartner =
 		formMethods.watch('pdldata.person.sivilstand')?.length > 0 || harEksisterendeEktefellePartner
 	const harForelderBarnRelasjon =
