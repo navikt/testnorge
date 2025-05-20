@@ -1,7 +1,7 @@
 plugins {
     id "dolly-apps"
 
-    id "uk.co.boothen.gradle.wsimport" version "0.21"
+    id "uk.co.boothen.gradle.wsimport" version "0.22"
 }
 
 sonarqube {
@@ -19,9 +19,9 @@ wsimport {
 
 dependencies {
 
-    runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect:2.1.10'
+    runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect:2.1.21'
 
-    implementation("io.dropwizard:dropwizard-jackson:4.0.12") {
+    implementation("io.dropwizard:dropwizard-jackson:4.0.13") {
         exclude group: "com.google.code.findbugs"
     }
 
