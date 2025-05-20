@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProfile name="prod,local">
-        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder">
-                <maxStackTraceLength>-1</maxStackTraceLength>
-                <addCauses>true</addCauses>
-            </encoder>
-        </appender>
-        <root level="INFO">
-            <appender-ref ref="stdout_json"/>
-        </root>
+    <springProfile name="prod">
+        <include resource="logback-spring-json.xml"/>
+    </springProfile>
+
+    <springProfile name="local">
+        <include resource="logback-spring-console.xml"/>
     </springProfile>
 </configuration>

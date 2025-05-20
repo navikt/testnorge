@@ -23,6 +23,9 @@ spec:
     outbound:
       external:
         - host: api.github.com
+      rules:
+        - application: logging
+          namespace: nais-system
   gcp:
     sqlInstances:
       - type: POSTGRES_15

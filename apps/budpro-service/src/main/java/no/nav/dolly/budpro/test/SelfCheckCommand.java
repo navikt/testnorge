@@ -1,8 +1,6 @@
 package no.nav.dolly.budpro.test;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -30,11 +28,10 @@ class SelfCheckCommand implements Callable<Mono<DummyDTO>> {
                         .path("/failure/get")
                         .queryParam("httpStatus", "402")
                         .build())
-                //.headers(WebClientHeader.bearer(token))
+                //.headers(WebClientHeaders.bearer(token))
                 .retrieve()
                 .bodyToMono(DummyDTO.class)
-                .retryWhen(WebClientError.is(HttpClientErrorException.class::isInstance))
-                .doOnError(WebClientError.logTo(log));
+                .doOnError(e -> log.error("Failed to call self", e));
     }
 
 }

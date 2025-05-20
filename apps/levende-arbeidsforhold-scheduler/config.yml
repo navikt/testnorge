@@ -18,6 +18,8 @@ spec:
     outbound:
       rules:
         - application: testnav-levende-arbeidsforhold-ansettelse
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true

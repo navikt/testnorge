@@ -2,7 +2,7 @@ system:
   - register: aareg
     namespace: arbeidsforhold
     read:
-      kubernets-name: aareg-services-nais-{env}
+      kubernetes-name: aareg-services-nais-{env}
       url:
         - https://aareg-services-q1.dev.intern.nav.no/swagger-ui/index.html
         - https://aareg-services-q2.dev.intern.nav.no/swagger-ui/index.html

@@ -1,0 +1,20 @@
+dolly:
+  texas:
+    shared:
+      secret: ${DOLLY_TEXAS_PROXY_SHARED_SECRET}
+
+spring:
+  application:
+    name: dolly-texas-proxy
+  config:
+    import: "dolly-application.yml"
+  cloud:
+    gateway:
+      httpclient:
+        response-timeout: 600s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,gateway,prometheus

@@ -50,6 +50,8 @@ spec:
       rules:
         - application: opphold-testdata
           namespace: team-rocket
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="prod">
+        <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="no.nav.dolly.libs.logging.DollyLogstashEncoder" />
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="JSON"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="local">
+        <include resource="logback-spring-local.xml"/>
+    </springProfile>
+
+    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
+</configuration>

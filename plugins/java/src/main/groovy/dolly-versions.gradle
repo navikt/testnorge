@@ -16,6 +16,7 @@ class DollyVersionCatalog {
     String assertj = "3.27.2"
     String avroSerializer = "7.8.0"
     String bouncyCastle = "1.79"
+    String expressly = "5.0.0"
     String guava = "33.4.0-jre"
     String grpc = "1.69.0"
     String jackson = "2.18.2"

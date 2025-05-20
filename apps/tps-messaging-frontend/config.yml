@@ -49,6 +49,8 @@ spec:
       rules:
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api
+        - application: logging
+          namespace: nais-system
   resources:
     requests:
       cpu: 50m

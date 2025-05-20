@@ -3,7 +3,7 @@ spring:
     name: tps-messaging-frontend
     description: App for å sende meldinger generelt til tps
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   security:
     oauth2:
       resourceserver:

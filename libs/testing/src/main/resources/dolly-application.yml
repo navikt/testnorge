@@ -3,7 +3,7 @@
 #
 # spring:
 #   config:
-#     import: "classpath:dolly-application.yml"
+#     import: "dolly-application.yml"
 #
 
 management:
@@ -31,7 +31,20 @@ server:
   error:
     include-message: always
 
+spring:
+  main:
+    banner-mode: off
+
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
     url: /v3/api-docs
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+  main:
+    banner-mode: console

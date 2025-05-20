@@ -48,6 +48,8 @@ spec:
         - application: testnorge-profil-api-dev
         - application: etterlatte-testdata
           namespace: etterlatte
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
