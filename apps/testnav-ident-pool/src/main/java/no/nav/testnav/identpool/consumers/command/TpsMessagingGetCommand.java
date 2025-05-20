@@ -34,6 +34,7 @@ public class TpsMessagingGetCommand implements Callable<Flux<TpsIdentStatusDTO>>
 
     @Override
     public Flux<TpsIdentStatusDTO> call() {
+
         return webClient
                 .get()
                 .uri(builder -> builder.path(TPS_MESSAGING_URL)
@@ -50,5 +51,4 @@ public class TpsMessagingGetCommand implements Callable<Flux<TpsIdentStatusDTO>>
                         Flux.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                                 error.getMessage(), error.getCause())));
     }
-
 }

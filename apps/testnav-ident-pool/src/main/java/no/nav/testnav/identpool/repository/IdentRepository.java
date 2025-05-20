@@ -6,44 +6,46 @@ import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-public interface IdentRepository extends JpaRepository<Ident, Long> {
+public interface IdentRepository extends R2dbcRepository<Ident, Long> {
 
-    boolean existsByPersonidentifikator(String identifikator);
+    Mono<Boolean> existsByPersonidentifikator(String identifikator);
 
-    long countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
+    Mono<Long> countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
                                                                                  LocalDate to,
                                                                                  Identtype type,
                                                                                  Rekvireringsstatus rekvireringsstatus,
                                                                                  Boolean syntetisk);
 
-    Ident findByPersonidentifikator(String personidentifkator);
+    Mono<Ident> findByPersonidentifikator(String personidentifkator);
 
-    List<Ident> findByPersonidentifikatorIn(List<String> personidentifikator);
+    Flux<Ident> findByPersonidentifikatorIn(List<String> personidentifikator);
 
-    Set<Ident> findByPersonidentifikatorIn(Set<String> idents);
+    Flux<Ident> findByPersonidentifikatorIn(Set<String> idents);
 
     @Modifying
-    Ident save(Ident ident);
+    Mono<Ident> save(Ident ident);
 
-    List<Ident> findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
+    Flux<Ident> findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
                                                                                        LocalDate to,
                                                                                        Identtype type,
                                                                                        Rekvireringsstatus rekvireringsstatus,
                                                                                        Boolean syntetisk);
 
-    long countByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype);
+    Mono<Long> countByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype);
 
     @Query(value = "from Ident i where i.rekvireringsstatus = :rekvireringsstatus and i.foedselsdato > :foedtEtter")
-    Page<Ident> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
+    Mono<Page<Ident>> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
                         @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
 
     @Query(value = "from Ident i where i.rekvireringsstatus = :rekvireringsstatus and "
@@ -51,21 +53,19 @@ public interface IdentRepository extends JpaRepository<Ident, Long> {
             + "(:identtype is null or (:identtype is not null and i.identtype = :identtype)) and "
             + "i.foedselsdato between :foedtEtter and :foedtFoer and "
             + "i.syntetisk = :syntetisk")
-    Page<Ident> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
+    Mono<Page<Ident>> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
                         @Param("identtype") Identtype identtype, @Param("kjoenn") Kjoenn kjoenn,
                         @Param("foedtFoer") LocalDate foedtFoer, @Param("foedtEtter") LocalDate foedtEtter,
                         @Param("syntetisk") boolean syntetisk, Pageable pageable);
 
-    @Query
-    int countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+    Mono<Integer> countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,
             Boolean syntetisk,
             LocalDate foedtEtter,
             LocalDate foedtFoer);
 
-    @Query
-    int countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+    Mono<Integer> countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,
             Boolean syntetisk,
@@ -73,8 +73,8 @@ public interface IdentRepository extends JpaRepository<Ident, Long> {
             LocalDate foedtEtter,
             LocalDate foedtFoer);
 
-    @Query
-    Page<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+
+    Mono<Page<Ident>> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,
             Boolean syntetisk,
@@ -82,8 +82,7 @@ public interface IdentRepository extends JpaRepository<Ident, Long> {
             LocalDate foedtFoer,
             Pageable pageable);
 
-    @Query
-    Page<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+    Mono<Page<Ident>> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,
             Boolean syntetisk,

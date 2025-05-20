@@ -9,12 +9,13 @@ import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -28,27 +29,16 @@ public class DatabaseService {
     private final IdentRepository identRepository;
     private final MapperFacade mapperFacade;
 
-    public Set<Ident> hentLedigeIdenterFraDatabase(HentIdenterRequest request) {
+    public Mono<List<Ident>> hentLedigeIdenterFraDatabase(HentIdenterRequest request) {
 
         var availableIdentsRequest = mapperFacade.map(request, HentIdenterRequest.class);
 
-        var antall = getAntall(availableIdentsRequest);
-
-        if (antall == 0) {
-            return new HashSet<>();
-        }
-
-        if (antall > request.getAntall()) {
-            var resultat = getPage(request, PageRequest.of(RANDOM.nextInt(antall/request.getAntall()), request.getAntall()));
-            return new HashSet<>(resultat.getContent());
-        }
-
-        return new HashSet<>(
-                getPage(request, PageRequest.of(0, request.getAntall()))
-                .getContent());
+        return getAntall(availableIdentsRequest)
+                .flatMap(antall -> getPage(request, PageRequest.of(RANDOM.nextInt(antall/request.getAntall()), request.getAntall())))
+                .map(Slice::getContent);
     }
 
-    private int getAntall(HentIdenterRequest request) {
+    private Mono<Integer> getAntall(HentIdenterRequest request) {
 
         return nonNull(request.getKjoenn()) ?
 
@@ -63,7 +53,7 @@ public class DatabaseService {
                                 request.getFoedtEtter(), request.getFoedtFoer());
     }
 
-    private Page<Ident> getPage(HentIdenterRequest request, Pageable page) {
+    private Mono<Page<Ident>> getPage(HentIdenterRequest request, Pageable page) {
 
         return nonNull(request.getKjoenn()) ?
 

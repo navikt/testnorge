@@ -3,14 +3,16 @@ package no.nav.testnav.identpool.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
+import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -25,39 +27,33 @@ public class IdenterAvailService {
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final MapperFacade mapperFacade;
 
-    public Set<TpsStatusDTO> generateAndCheckIdenter(HentIdenterRequest request, int antall) {
+    public Flux<TpsStatusDTO> generateAndCheckIdenter(HentIdenterRequest request, int antall) {
 
-        HentIdenterRequest oppdatertRequest = mapperFacade.map(request, HentIdenterRequest.class);
+        var oppdatertRequest = mapperFacade.map(request, HentIdenterRequest.class);
         oppdatertRequest.setAntall(antall);
-        Set<TpsStatusDTO> tpsStatuserDTO = new HashSet<>();
-        int i = 0;
 
-        while (i < MAX_TPS_CALL_ATTEMPTS &&
-                tpsStatuserDTO.stream().filter(status -> !status.isInUse()).count() < request.getAntall()) {
-
-            var genererteIdenter = genererIdenter(oppdatertRequest);
-            var identerFinnesIdb = identRepository.findByPersonidentifikatorIn(genererteIdenter);
-
-            var identerAaSjekke = genererteIdenter.stream()
-                    .filter(ident -> identerFinnesIdb.stream()
-                            .noneMatch(dbIdent -> dbIdent.getPersonidentifikator().equals(ident)))
-                    .collect(Collectors.toSet());
-
-            if (!identerAaSjekke.isEmpty()) {
-                tpsStatuserDTO.addAll(isTrue(request.getSyntetisk()) ?
-                        identerAaSjekke.stream()
-                                .map(ident -> TpsStatusDTO.builder()
-                                        .ident(ident)
-                                        .inUse(false)
-                                        .build())
-                                .collect(Collectors.toSet())
-                        :
-                        tpsMessagingConsumer.getIdenterStatuser(identerAaSjekke));
-            }
-            i++;
-        }
-
-        return tpsStatuserDTO;
+        return Flux.range(0, MAX_TPS_CALL_ATTEMPTS)
+                .flatMap(i -> Mono.just(genererIdenter(oppdatertRequest))
+                        .flatMapMany(genererteIdenter -> identRepository.findByPersonidentifikatorIn(genererteIdenter)
+                                .collectList()
+                                .filter(identerFinnesIdb -> genererteIdenter.stream()
+                                        .noneMatch(generertIdent -> identerFinnesIdb.stream()
+                                                .anyMatch(dbIdent -> dbIdent.getPersonidentifikator().equals(generertIdent))))
+                                .flatMapMany(Flux::fromIterable)
+                                .map(Ident::getPersonidentifikator)
+                                .collectList()
+                                .map(identerAaSjekke -> {
+                                    if (isTrue(request.getSyntetisk())) {
+                                        return Flux.fromIterable(identerAaSjekke)
+                                                .map(ident -> TpsStatusDTO.builder()
+                                                        .ident(ident)
+                                                        .inUse(false)
+                                                        .build());
+                                    } else {
+                                        return tpsMessagingConsumer.getIdenterStatuser(new HashSet<>(identerAaSjekke));
+                                    }
+                                })))
+                .flatMap(Flux::from);
     }
 
     private Set<String> genererIdenter(HentIdenterRequest request) {

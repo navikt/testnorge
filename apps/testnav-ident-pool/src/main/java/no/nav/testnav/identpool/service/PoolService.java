@@ -9,8 +9,11 @@ import no.nav.testnav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ISO_DATE;
@@ -37,7 +40,8 @@ public class PoolService {
         return inUse ? I_BRUK : LEDIG;
     }
 
-    private static void throwException(HentIdenterRequest request) {
+    private static Throwable throwException(HentIdenterRequest request) {
+
         throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
                         "identType %s, kjønn %s, fødtEtter %s, fødtFør %s, syntetisk %b -- "
                         + "forsøk å bestille med andre kriterier.",
@@ -49,6 +53,7 @@ public class PoolService {
     }
 
     private static void logRequest(HentIdenterRequest request) {
+
         log.info("Leverte identer: antall {}, rekvirertAv {}, identType {}, kjønn {}, fødtEtter {}, fødtFør {}, syntetisk {}",
                 request.getAntall(), request.getRekvirertAv(),
                 nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
@@ -58,9 +63,45 @@ public class PoolService {
                 isTrue(request.getSyntetisk()));
     }
 
-    public synchronized List<String> allocateIdenter(HentIdenterRequest request) {
+    public synchronized Mono<List<String>> allocateIdenter(HentIdenterRequest request) {
 
-        var identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
+        var counter = new AtomicInteger(request.getAntall());
+
+        var identEntities = databaseService.hentLedigeIdenterFraDatabase(request)
+                .flatMap(ledigeIdenter -> {
+                    if (ledigeIdenter.size() < request.getAntall()) {
+                       return  identerAvailService.generateAndCheckIdenter(request,
+                                isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN)
+                                .map(this::buildIdent)
+                                .collectList()
+                                .flatMapMany(identRepository::saveAll)
+                                .filter(ident -> ident.getRekvireringsstatus() == LEDIG)
+                                .takeWhile(ident -> counter.getAndDecrement() > 0)
+                                .collectList()
+                                .flatMap(ledige -> {
+                                    if (ledige.size() < request.getAntall()) {
+//                                       return Mono.just(throwException(request));
+                                    } else {
+                                        return identRepository.saveAll(ledige.stream()
+                                                .map(ident -> {
+                                                    ident.setRekvireringsstatus(I_BRUK);
+                                                    ident.setRekvirertAv(request.getRekvirertAv());
+                                                    return ident;
+                                                })
+                                                .toList());
+                                    }
+                                });
+                    } else {
+                        return Flux.fromIterable(ledigeIdenter)
+                                .map(ident -> {
+                                    ident.setRekvireringsstatus(I_BRUK);
+                                    ident.setRekvirertAv(request.getRekvirertAv());
+                                    return ident;
+                                })
+                                .collectList()
+                                .map(identRepository::saveAll);
+                    }
+                })
         int missingIdentCount = request.getAntall() - identEntities.size();
 
         if (missingIdentCount > 0) {
@@ -101,6 +142,49 @@ public class PoolService {
                 .toList());
 
         return identEntities.stream().map(Ident::getPersonidentifikator).toList();
+
+
+//        var identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
+//        int missingIdentCount = request.getAntall() - identEntities.size();
+//
+//        if (missingIdentCount > 0) {
+//
+//            var statusDTOS = identerAvailService.generateAndCheckIdenter(request,
+//                    isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN);
+//
+//            log.info("Generert {} identer ved mining", statusDTOS.size());
+//
+//            var identerFraMining = statusDTOS.stream()
+//                    .map(this::buildIdent)
+//                    .toList();
+//            identRepository.saveAll(identerFraMining);
+//
+//            var ledigeIdents = identerFraMining.stream()
+//                    .filter(Ident::isLedig)
+//                    .toList().iterator();
+//
+//            int i = 0;
+//            while (i < missingIdentCount && ledigeIdents.hasNext()) {
+//                identEntities.add(ledigeIdents.next());
+//                i++;
+//            }
+//
+//            logRequest(request);
+//
+//            if (identEntities.size() < request.getAntall()) {
+//                throwException(request);
+//            }
+//        }
+//
+//        identRepository.saveAll(identEntities.stream()
+//                .map(ident -> {
+//                    ident.setRekvireringsstatus(I_BRUK);
+//                    ident.setRekvirertAv(request.getRekvirertAv());
+//                    return ident;
+//                })
+//                .toList());
+//
+//        return identEntities.stream().map(Ident::getPersonidentifikator).toList();
     }
 
     private Ident buildIdent(TpsStatusDTO tpsStatusDTO) {

@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import java.util.Objects;
+
 @Configuration
 @EnableAspectJAutoProxy
 public class MetricsConfiguration {
@@ -28,6 +30,7 @@ public class MetricsConfiguration {
 
     @Bean
     public Long totaltLedigeGauge(MeterRegistry registry, IdentRepository repository) {
-        return registry.gauge("identer.antall.ledige", repository.countByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.FNR));
+        return registry.gauge("identer.antall.ledige", Objects.requireNonNull(repository.countByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.FNR)
+                .block()));
     }
 }
