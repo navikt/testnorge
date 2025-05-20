@@ -6,7 +6,7 @@ plugins {
     id "java"
     id "org.springframework.boot" // See ../../../build.gradle for version.
 
-    id "no.nav.budpro.dolly-checker"
+    id "no.nav.dolly.plugins.validation"
 }
 
 group = "no.nav.testnav.apps"
