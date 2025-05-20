@@ -27,6 +27,8 @@ spec:
         - application: testnav-person-service
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30

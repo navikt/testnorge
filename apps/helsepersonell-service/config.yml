@@ -26,6 +26,10 @@ spec:
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
         - application: testnav-synt-sykemelding-api
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

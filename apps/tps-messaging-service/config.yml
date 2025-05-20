@@ -73,6 +73,8 @@ spec:
       rules:
         - application: testnav-miljoer-service
           cluster: dev-gcp
+        - application: logging
+          namespace: nais-system
       external:
         - host: b27apvl221.preprod.local
           ports:

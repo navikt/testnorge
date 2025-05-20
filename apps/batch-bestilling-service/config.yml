@@ -20,6 +20,8 @@ spec:
       rules:
         - application: dolly-backend
         - application: dolly-backend-dev
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true
