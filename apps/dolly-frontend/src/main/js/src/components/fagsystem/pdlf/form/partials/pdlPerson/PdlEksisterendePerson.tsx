@@ -31,6 +31,7 @@ export const PdlEksisterendePerson = ({
 	disabled = false,
 	eksisterendeNyPerson = null as unknown as Option,
 	fullmektigsNavnPath = null as unknown as string,
+	path = null as unknown as string,
 	ident,
 }: PdlEksisterendePersonValues) => {
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
@@ -41,8 +42,12 @@ export const PdlEksisterendePerson = ({
 		formGruppeId || opts?.gruppeId || opts?.gruppe?.id || window.location.pathname.split('/')?.[2]
 
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	// console.log('identer: ', identer) //TODO - SLETT MEG
 	const identNy = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0].ident || ident
 	const identMaster = opts?.identMaster || 'PDLF'
+
+	const attributtMaster = formMethods.watch(`${path}.master`)
+	// console.log('attributtMaster: ', attributtMaster) //TODO - SLETT MEG
 
 	identer?.push({ ident: identNy, master: identMaster })
 
@@ -117,17 +122,29 @@ export const PdlEksisterendePerson = ({
 		alder: parseInt(formMethods.getValues()?.pdldata?.opprettNyPerson?.alder),
 	}
 
+	console.log('opts: ', opts) //TODO - SLETT MEG
+	//TODO: Finn eksisterende relasjoner, for aa finne ut hvilke personer som kan relateres paa nytt med annen master
+
 	const filterOptions = (person: Option) => {
+		console.log('person: ', person) //TODO - SLETT MEG
+		// console.log('person?.sivilstand?.master: ', person?.sivilstand?.master) //TODO - SLETT MEG
+		console.log('attributtMaster: ', attributtMaster) //TODO - SLETT MEG
 		if (person.doedsfall) {
 			return false
 		}
 		if (label === 'PERSON RELATERT TIL') {
 			// Sivilstand gift/samboer osv
-			return person.alder > 17 && gyldigeSivilstanderForPartner.includes(person?.sivilstand)
+			//TODO: Maa sjekke alle gyldige sivilstander.
+			return (
+				person.alder > 17 &&
+				(gyldigeSivilstanderForPartner.includes(person?.sivilstand?.type) ||
+					attributtMaster !== person?.sivilstand?.master)
+			)
 		} else if (label === 'FULLMEKTIG' || label === 'Kontaktperson') {
 			return person.alder > 17
 		} else if (label === 'VERGE') {
-			return !person.vergemaal && person.alder > 17
+			return person.alder > 17 && !person.vergemaal
+			// return person.alder > 17 && (!person.vergemaal || person.vergemaal === 'VERGE') //TODO: Maa skrives riktig
 		} else if (label === 'BARN') {
 			// eksisterende person er forelder
 			return eksisterendePerson?.alder - person.alder > 17 && getAntallForeldre(person.foreldre) < 3

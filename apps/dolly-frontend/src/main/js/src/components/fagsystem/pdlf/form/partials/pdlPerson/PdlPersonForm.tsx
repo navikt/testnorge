@@ -171,6 +171,7 @@ export const PdlPersonForm = ({
 								eksisterendeNyPerson={eksisterendeNyPerson}
 								fullmektigsNavnPath={fullmektigsNavnPath}
 								disabled={opts?.antall > 1}
+								path={path}
 								key={'eksisterendePerson-' + path}
 							/>
 						)}

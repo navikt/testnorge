@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { fetcher, multiFetcherAll } from '@/api'
 import { getAlder } from '@/ducks/fagsystem'
+import { sivilstand } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 
 const sliceGruppe = (gruppe, maxAntall, url) => {
 	let urlListe = []
@@ -25,6 +26,7 @@ const multiplePdlPersonUrl = (gruppe) => {
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 
+//TODO: Sjekk alle steder denne brukes sas formatet fortsatt stemmer
 export const usePdlOptions = (gruppe, master = 'PDLF', visDetaljertLabel = false) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		master === 'PDLF' ? multiplePdlforvalterUrl(gruppe) : multiplePdlPersonUrl(gruppe),
@@ -42,6 +44,7 @@ export const usePdlOptions = (gruppe, master = 'PDLF', visDetaljertLabel = false
 
 	const personData = []
 	payload?.flat().forEach((id) => {
+		console.log('id: ', id) //TODO - SLETT MEG
 		const navn = id?.person?.navn?.[0]
 		const fornavn = navn?.fornavn || ''
 		const mellomnavn = navn?.mellomnavn ? `${navn?.mellomnavn?.charAt(0)}.` : ''
@@ -71,7 +74,19 @@ export const usePdlOptions = (gruppe, master = 'PDLF', visDetaljertLabel = false
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 			alder: alder,
 			kjoenn: kjoenn,
-			sivilstand: id.person?.sivilstand?.[0]?.type,
+			// sivilstand: {
+			// 	type: id.person?.sivilstand?.[0]?.type,
+			// 	master: id.person?.sivilstand?.[0]?.master,
+			// },
+			//TODO: Maa sjekke alle gyldige sivilstander.
+			sivilstand: id.person?.sivilstand
+				?.filter((sivilstand) => !sivilstand?.folkeregistermetadata?.opphoerstidspunkt)
+				?.map((sivilstand) => ({
+					type: sivilstand.type,
+					master: sivilstand.master,
+				})),
+			// type: id.person?.sivilstand?.[0]?.type,
+			// master: id.person?.sivilstand?.[0]?.master,
 			vergemaal: id.person?.vergemaal?.length > 0,
 			doedsfall: id.person?.doedsfall?.length > 0,
 			foreldre: foreldre,
