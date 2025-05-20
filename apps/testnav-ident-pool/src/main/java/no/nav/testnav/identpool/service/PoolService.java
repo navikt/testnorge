@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -70,8 +71,8 @@ public class PoolService {
         var identEntities = databaseService.hentLedigeIdenterFraDatabase(request)
                 .flatMap(ledigeIdenter -> {
                     if (ledigeIdenter.size() < request.getAntall()) {
-                       return  identerAvailService.generateAndCheckIdenter(request,
-                                isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN)
+                        return identerAvailService.generateAndCheckIdenter(request,
+                                        isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN)
                                 .map(this::buildIdent)
                                 .collectList()
                                 .flatMapMany(identRepository::saveAll)
@@ -80,15 +81,16 @@ public class PoolService {
                                 .collectList()
                                 .flatMap(ledige -> {
                                     if (ledige.size() < request.getAntall()) {
-//                                       return Mono.just(throwException(request));
+                                        return Mono.error(throwException(request));
                                     } else {
-                                        return identRepository.saveAll(ledige.stream()
+                                        return Flux.fromIterable(ledige)
                                                 .map(ident -> {
                                                     ident.setRekvireringsstatus(I_BRUK);
                                                     ident.setRekvirertAv(request.getRekvirertAv());
                                                     return ident;
                                                 })
-                                                .toList());
+                                                .collectList()
+                                                .map(identRepository::saveAll);
                                     }
                                 });
                     } else {
@@ -102,6 +104,7 @@ public class PoolService {
                                 .map(identRepository::saveAll);
                     }
                 })
+
         int missingIdentCount = request.getAntall() - identEntities.size();
 
         if (missingIdentCount > 0) {
