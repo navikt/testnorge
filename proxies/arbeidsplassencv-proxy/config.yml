@@ -31,6 +31,8 @@ spec:
       rules:
         - application: pam-cv-api-gcp
           namespace: teampam
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

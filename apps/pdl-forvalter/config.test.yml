@@ -70,6 +70,8 @@ spec:
         - application: testnav-organisasjon-forvalter
         - application: testnav-person-service
         - application: testnav-tps-messaging-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   gcp:

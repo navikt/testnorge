@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api/navn")
@@ -14,7 +15,7 @@ class GeneratedNameController {
     private final GeneratedNameService service;
 
     @GetMapping
-    String[] get(
+    Flux<String> get(
             @RequestParam(required = false) Long seed,
             @RequestParam(required = false, defaultValue = "10") int number
     ) {
