@@ -15,4 +15,5 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine"
     implementation "org.springframework.boot:spring-boot-starter-test"
     implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.security:spring-security-oauth2-jose"
 }

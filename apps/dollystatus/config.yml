@@ -14,6 +14,8 @@ spec:
         - application: dolly-backend
         - application: dolly-backend-dev
         - application: testnav-budpro-service
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

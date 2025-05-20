@@ -21,6 +21,8 @@ spec:
     outbound:
       rules:
         - application: organisasjon-bestilling-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
   tokenx:

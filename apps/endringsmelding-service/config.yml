@@ -31,6 +31,8 @@ spec:
         - application: testnav-ident-pool
         - application: generer-navn-service
         - application: testnav-adresse-service
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

@@ -33,6 +33,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-organisasjon-service
           cluster: dev-gcp
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

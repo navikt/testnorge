@@ -62,6 +62,8 @@ spec:
         - application: pensjon-afp-offentlig-mock-q2
           namespace: pensjon-saksbehandling
           cluster: dev-gcp
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
