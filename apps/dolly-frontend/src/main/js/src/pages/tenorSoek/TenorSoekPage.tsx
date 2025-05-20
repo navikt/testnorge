@@ -126,6 +126,7 @@ export default () => {
 					GÅ TIL TREFF
 				</NavigateButton>
 				<SoekForm
+					request={formRequest}
 					setRequest={setRequest}
 					setMarkertePersoner={setMarkertePersoner}
 					mutate={mutate}

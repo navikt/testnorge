@@ -34,10 +34,10 @@ const Soekefelt = styled.div`
 	padding: 20px 15px;
 `
 
-export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
+export const SoekForm = ({ request, setRequest, setMarkertePersoner, mutate }: any) => {
 	const formMethods = useForm({
 		mode: 'onChange',
-		defaultValues: {},
+		defaultValues: request || {},
 	})
 
 	const { getValues, control, setValue, watch }: any = formMethods
