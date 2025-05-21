@@ -90,7 +90,7 @@ public class DollyBuildValidationTask extends DefaultTask {
 
         } catch (IOException e) {
             log.error("Error reading settings.gradle", e);
-            return false;
+            return true;
         }
 
         return errors;
