@@ -21,4 +21,8 @@ public class TilbakemeldingDTO {
     Boolean isAnonym;
     @JsonProperty
     String brukerType;
+    @JsonProperty
+    String brukernavn;
+    @JsonProperty
+    String tilknyttetOrganisasjon;
 }

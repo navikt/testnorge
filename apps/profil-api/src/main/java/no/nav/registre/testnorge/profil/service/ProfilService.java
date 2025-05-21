@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.profil.service;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.AzureAdProfileConsumer;
@@ -30,7 +29,6 @@ public class ProfilService {
     public Mono<Profil> getProfile() {
 
         if (isTokenX()) {
-            log.info("TokenX bruker: {}", Json.pretty(getUserInfo.call()));
             return getUserInfo.call()
                     .map(userInfo -> organisasjonTilgangConsumer
                             .getOrganisasjon(getIdent(), userInfo.organisasjonsnummer())
