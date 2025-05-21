@@ -13,10 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -38,7 +35,7 @@ public class DollyBuildValidationTask extends DefaultTask {
         var errorsFromGitHubWorkflow = validateGitHubWorkflowTriggers(log, project, librariesInBuildGradle);
 
         if (errorsFromSettingsGradle || errorsFromGitHubWorkflow) {
-            throw new GradleException("Dolly checks failed. See logs for details.");
+            throw new GradleException("Dolly build validation failed. See logs for details.");
         }
 
     }
@@ -101,47 +98,37 @@ public class DollyBuildValidationTask extends DefaultTask {
 
     private static boolean validateGitHubWorkflowTriggers(Logger log, Project project, Set<String> libraryNames) {
 
-        boolean errors = false;
         var workflowFile = findGitHubActionsWorkflowFile(project);
         if (workflowFile == null) {
-            log.error("No app.{}.yml or proxy.{}.yml workflow found in /../../.github/workflows", project.getName(), project.getName());
+            log.error("No app.{}.yml or proxy.{}.yml workflow found in ../../.github/workflows", project.getName(), project.getName());
             return true;
         }
 
         try {
             var workflow = getGitHubActionsWorkflowFileContents(workflowFile);
             if (workflow == null) {
-                log.warn("Workflow /../../.github/workflows/{} is empty", workflowFile.getName());
+                log.warn("Workflow ../../.github/workflows/{} is empty", workflowFile.getName());
                 return true;
             }
             if (!workflow.containsKey("on")) {
-                log.warn("Workflow /../../.github/workflows/{} does not have any 'on:' trigger configuration", workflowFile.getName());
+                log.warn("Workflow ../../.github/workflows/{} does not have any 'on:' trigger configuration", workflowFile.getName());
                 return true;
             }
 
             var triggerPaths = resolveGitHubActionsWorkflowTriggerPaths(workflow);
             if (triggerPaths.isEmpty()) {
-                log.warn("Workflow /../../.github/workflows/{} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
+                log.warn("Workflow ../../.github/workflows/{} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
                 return true;
             }
-            for (var library : libraryNames) {
-                var expected = "libs/" + library + "/**"; // e.g., libs/some-library/**
-                var foundTrigger = triggerPaths
-                        .stream()
-                        .anyMatch(path -> path.equals(expected));
-                if (!foundTrigger) {
-                    log.warn("Workflow /../../.github/workflows/{} is missing trigger on '{}'", workflowFile.getName(), expected);
-                    errors = true;
-                }
-            }
+            return verifyTriggers(log, project.getName(), workflowFile.getName(), libraryNames, triggerPaths);
 
         } catch (IOException e) {
-            log.error("Error reading workflow file /../../.github/workflows/{}", workflowFile.getName(), e);
+            log.error("Error reading workflow file ../../.github/workflows/{}", workflowFile.getName(), e);
+            return true;
         } catch (ClassCastException e) {
-            log.error("Error parsing workflow file /../../.github/workflows/{}", workflowFile.getName(), e);
+            log.error("Error parsing workflow file ../../.github/workflows/{}", workflowFile.getName(), e);
+            return true;
         }
-
-        return errors;
 
     }
 
@@ -184,6 +171,65 @@ public class DollyBuildValidationTask extends DefaultTask {
             }
         }
         return paths;
+    }
+
+    private static boolean verifyTriggers(Logger log, String projectName, String workflowFilename, Collection<String> libraryNames, Collection<String> triggerPaths) {
+
+        var errors = false;
+
+        // Check for missing triggers.
+        for (var library : libraryNames) {
+            var expected = "libs/" + library + "/**";
+            var foundTrigger = triggerPaths
+                    .stream()
+                    .anyMatch(path -> path.equals(expected));
+            if (!foundTrigger) {
+                log.warn("Workflow ../../.github/workflows/{} is missing trigger on '{}'", workflowFilename, expected);
+                errors = true;
+            }
+        }
+
+        // Check for unnecessary triggers.
+        var expectedTriggers = libraryNames
+                .stream()
+                .map(library -> "libs/" + library + "/**")
+                .collect(Collectors.toSet());
+        for (var path : triggerPaths) {
+            if (path.startsWith("libs/") && !expectedTriggers.contains(path)) {
+                log.warn("Workflow ../../.github/workflows/{} has unnecessary trigger on '{}'", workflowFilename, path);
+                errors = true;
+            }
+        }
+
+        // Check for trigger on the project itself.
+        var foundTriggerOnProject = triggerPaths
+                .stream()
+                .anyMatch(path -> path.equals("apps/" + projectName + "/**") || path.equals("proxies/" + projectName + "/**"));
+        if (!foundTriggerOnProject) {
+            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either 'apps/{}/**' or 'proxies/{}/**'", workflowFilename, projectName, projectName);
+            errors = true;
+        }
+
+        // Check for trigger on plugins.
+        var foundTriggerOnPlugins = triggerPaths
+                .stream()
+                .anyMatch(path -> path.equals("plugins/**"));
+        if (!foundTriggerOnPlugins) {
+            log.warn("Workflow ../../.github/workflows/{} is missing trigger on 'plugins/**'", workflowFilename);
+            errors = true;
+        }
+
+        // Check for trigger on workflow file.
+        var foundTriggerOnWorkflow = triggerPaths
+                .stream()
+                .anyMatch(path -> path.equals(".github/workflows/app." + projectName + ".yml") || path.equals(".github/workflows/proxy." + projectName + ".yml"));
+        if (!foundTriggerOnWorkflow) {
+            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either '.github/workflows/app.{}.yml' or '.github/workflow/proxy.{}.yml'", projectName, projectName, projectName);
+            errors = true;
+        }
+
+        return errors;
+
     }
 
 }
