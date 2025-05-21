@@ -224,7 +224,7 @@ public class DollyBuildValidationTask extends DefaultTask {
                 .stream()
                 .anyMatch(path -> path.equals(".github/workflows/app." + projectName + ".yml") || path.equals(".github/workflows/proxy." + projectName + ".yml"));
         if (!foundTriggerOnWorkflow) {
-            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either '.github/workflows/app.{}.yml' or '.github/workflow/proxy.{}.yml'", projectName, projectName, projectName);
+            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either '.github/workflows/app.{}.yml' or '.github/workflows/proxy.{}.yml'", projectName, projectName, projectName);
             errors = true;
         }
 
