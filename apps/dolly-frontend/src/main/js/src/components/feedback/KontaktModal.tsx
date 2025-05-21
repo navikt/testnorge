@@ -29,8 +29,8 @@ export const KontaktModal = ({ closeModal }) => {
 			uuid: uuid,
 			isAnonym: isAnonym,
 			brukerType: currentBruker.brukertype,
-			brukernavn: !isAnonym || brukerProfil?.visningsNavn,
-			tilknyttetOrganisasjon: !isAnonym || brukerProfil?.organisasjon,
+			brukernavn: isAnonym ? null : brukerProfil?.visningsNavn,
+			tilknyttetOrganisasjon: isAnonym ? null : brukerProfil?.organisasjon,
 		})
 		closeModal()
 	}

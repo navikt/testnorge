@@ -60,6 +60,7 @@ export const ThumbsRating = ({ label, ratingFor, onClick, uuid, children }: Thum
 		Logger.log({
 			event: `Vurdering av: ${ratingFor}`,
 			rating: rating,
+			message: `Vurdering av: ${ratingFor}`,
 			uuid: uuid,
 			brukerType: brukerProfil?.type,
 			brukernavn: brukerProfil?.visningsNavn,
