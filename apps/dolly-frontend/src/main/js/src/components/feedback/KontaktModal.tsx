@@ -16,7 +16,7 @@ export const KontaktModal = ({ closeModal }) => {
 	const { brukerBilde } = useBrukerProfilBilde()
 	const { brukerProfil } = useBrukerProfil()
 	const { currentBruker } = useCurrentBruker()
-	 
+
 	const MAX_LENGTH = 2000
 	const [uuid] = useState(_uuid())
 	const [melding, setMelding] = useState('')
