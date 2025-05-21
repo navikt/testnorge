@@ -5,8 +5,8 @@ plugins {
 
 gradlePlugin {
     plugins {
-        dollyCheckerConfig { // This name is arbitrary for the block
-            id = 'no.nav.dolly.plugins.validation' // This ID must match
+        dollyCheckerConfig {
+            id = 'no.nav.dolly.plugins.buildValidation'
             implementationClass = 'no.nav.dolly.plugins.DollyBuildValidationPlugin'
         }
     }

@@ -3,6 +3,7 @@ package no.nav.dolly.plugins;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
+@SuppressWarnings("unused")
 public class DollyBuildValidationPlugin implements Plugin<Project> {
 
     @Override
