@@ -12,6 +12,8 @@ import no.nav.testnav.libs.slack.dto.TextAttachment;
 
 import java.util.ArrayList;
 
+import static java.util.Objects.nonNull;
+
 @Value
 public class Tilbakemelding {
     String title;
@@ -35,13 +37,14 @@ public class Tilbakemelding {
 
     public Message toSlackMessage(String channel, String visningsNavn) {
         var ratingIcon = (rating != null ? " " + getIcon(rating) : "");
+        var brukerTypeString = (nonNull(brukerType) && brukerType.toUpperCase().contains("AZURE") ? " (" + brukerType + ")" : "");
 
         var headerBlock = Section.from(
                 "*" + title + "*" + ratingIcon
         );
 
         var senderBlock = Section.from(
-                "Avsender: " + visningsNavn + (null != brukerType ? " (" + brukerType + ") " : "")
+                "Avsender: " + visningsNavn + brukerTypeString
         );
 
         var blocks = new ArrayList<Block>();

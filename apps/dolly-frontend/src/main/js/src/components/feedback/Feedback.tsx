@@ -21,11 +21,12 @@ enum Rating {
 interface FeedbackProps {
 	label: string
 	feedbackFor: string
+	etterBestilling?: boolean
 }
 
 const MAX_LENGTH = 2000
 
-export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
+export const Feedback = ({ label, feedbackFor, etterBestilling = false }: FeedbackProps) => {
 	const { brukerBilde } = useBrukerProfilBilde()
 	const { brukerProfil } = useBrukerProfil()
 	const { currentBruker } = useCurrentBruker()
@@ -38,6 +39,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 
 	return (
 		<ThumbsRating
+			etterBestilling={etterBestilling}
 			label={label}
 			ratingFor={feedbackFor}
 			onClick={(rating) => setRating(rating)}
