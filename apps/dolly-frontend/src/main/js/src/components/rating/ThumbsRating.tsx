@@ -6,6 +6,7 @@ import NavButton from '../ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import './ThumbsRating.less'
 import { Logger } from '@/logger/Logger'
+import { useBrukerProfil } from '@/utils/hooks/useBruker'
 
 enum Rating {
 	Positive = 'POSITIVE',
@@ -49,13 +50,21 @@ const ThumpsDown = ({ className }: IconButton) => (
 )
 
 export const ThumbsRating = ({ label, ratingFor, onClick, uuid, children }: ThumbsRatingProps) => {
+	const { brukerProfil } = useBrukerProfil()
 	const [rated, setRated] = useState(false)
 
 	const _onClick = (rating: Rating) => {
 		if (onClick) {
 			onClick(rating)
 		}
-		Logger.log({ event: `Vurdering av: ${ratingFor}`, rating: rating, uuid: uuid })
+		Logger.log({
+			event: `Vurdering av: ${ratingFor}`,
+			rating: rating,
+			uuid: uuid,
+			brukerType: brukerProfil?.type,
+			brukernavn: brukerProfil?.visningsNavn,
+			tilknyttetOrganisasjon: brukerProfil?.organisasjon,
+		})
 		setRated(true)
 	}
 

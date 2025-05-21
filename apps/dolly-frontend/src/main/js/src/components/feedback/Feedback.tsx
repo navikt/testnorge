@@ -9,7 +9,7 @@ import dolly from '@/favicon.ico'
 import Icon from '@/components/ui/icon/Icon'
 
 import './Feedback.less'
-import { useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { Button, Checkbox, Textarea } from '@navikt/ds-react'
 import { Logger } from '@/logger/Logger'
 
@@ -27,6 +27,7 @@ const MAX_LENGTH = 2000
 
 export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 	const { brukerBilde } = useBrukerProfilBilde()
+	const { brukerProfil } = useBrukerProfil()
 	const { currentBruker } = useCurrentBruker()
 
 	const [rating, setRating] = useState<Rating>()
@@ -78,6 +79,8 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 									uuid: uuid,
 									isAnonym: isAnonym,
 									brukerType: currentBruker.brukertype,
+									brukernavn: !isAnonym || brukerProfil?.visningsNavn,
+									tilknyttetOrganisasjon: !isAnonym || brukerProfil?.organisasjon,
 								})
 								setSubmit(true)
 							}}
