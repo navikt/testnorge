@@ -99,65 +99,46 @@ public class DollyBuildValidationTask extends DefaultTask {
         return errors;
     }
 
-    @SuppressWarnings("unchecked")
     private static boolean validateGitHubWorkflowTriggers(Logger log, Project project, Set<String> libraryNames) {
 
         boolean errors = false;
         var workflowFile = findGitHubActionsWorkflowFile(project);
         if (workflowFile == null) {
-            log.error("No app or proxy workflow found in {}/../../.github/workflows", project.getProjectDir());
+            log.error("No app.{}.yml or proxy.{}.yml workflow found in /../../.github/workflows", project.getName(), project.getName());
             return true;
         }
 
         try {
             var workflow = getGitHubActionsWorkflowFileContents(workflowFile);
-            log.warn("Content: {}", workflow);
-            if (workflow == null || !workflow.containsKey("on")) {
-                log.warn("Workflow {} does not have an 'on:' trigger configuration.", workflowFile.getName());
-                return false;
+            if (workflow == null) {
+                log.warn("Workflow /../../.github/workflows/{} is empty", workflowFile.getName());
+                return true;
+            }
+            if (!workflow.containsKey("on")) {
+                log.warn("Workflow /../../.github/workflows/{} does not have any 'on:' trigger configuration", workflowFile.getName());
+                return true;
             }
 
-            var onConfig = workflow.get("on");
-            var triggerPaths = new ArrayList<String>();
-
-            if (onConfig instanceof Map) {
-                var onMap = (Map<String, Object>) onConfig;
-                if (onMap.containsKey("push")) {
-                    var pushConfig = onMap.get("push");
-                    if (pushConfig instanceof Map && ((Map<String, Object>) pushConfig).containsKey("paths")) {
-                        triggerPaths.addAll((List<String>) ((Map<String, Object>) pushConfig).get("paths"));
-                    }
-                }
-                // You can add checks for other triggers like 'workflow_run', 'pull_request.paths', etc.
-                // e.g., if (onMap.containsKey("workflow_run")) { ... }
-            }
-            log.warn("Trigger paths: {}", triggerPaths);
-
-
+            var triggerPaths = resolveGitHubActionsWorkflowTriggerPaths(workflow);
             if (triggerPaths.isEmpty()) {
-                log.warn("Workflow {} has 'on:' trigger, but no specific 'push.paths'", workflowFile.getName());
+                log.warn("Workflow /../../.github/workflows/{} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
+                return true;
             }
-
-            for (String libName : libraryNames) {
-                // Assumption: Library 'libName' is in a directory 'libName/**' or 'libs/libName/**' relative to repo root.
-                // This path convention is critical and must match your project structure.
-                String expectedPath1 = libName + "/**";         // e.g., some-library/**
-                String expectedPath2 = "libs/" + libName + "/**"; // e.g., libs/some-library/**
-
-                boolean foundTrigger = triggerPaths.stream().anyMatch(p -> p.equals(expectedPath1) || p.equals(expectedPath2));
-
+            for (var library : libraryNames) {
+                var expected = "libs/" + library + "/**"; // e.g., libs/some-library/**
+                var foundTrigger = triggerPaths
+                        .stream()
+                        .anyMatch(path -> path.equals(expected));
                 if (!foundTrigger) {
-                    log.warn("Workflow {} does not seem to have a push trigger for changes in library '{}' (expected path like '{}' or '{}').",
-                            workflowFile.getName(), libName, expectedPath1, expectedPath2);
-                } else {
-                    log.info("Workflow {} has a trigger for library '{}'.", workflowFile.getName(), libName);
+                    log.warn("Workflow /../../.github/workflows/{} is missing trigger on '{}'", workflowFile.getName(), expected);
+                    errors = true;
                 }
             }
 
         } catch (IOException e) {
-            log.error("Error reading or parsing workflow file {}: {}", workflowFile.getName(), e.getMessage());
+            log.error("Error reading workflow file /../../.github/workflows/{}", workflowFile.getName(), e);
         } catch (ClassCastException e) {
-            log.error("Error parsing workflow file {}: structure not as expected. {}", workflowFile.getName(), e.getMessage());
+            log.error("Error parsing workflow file /../../.github/workflows/{}", workflowFile.getName(), e);
         }
 
         return errors;
@@ -187,6 +168,22 @@ public class DollyBuildValidationTask extends DefaultTask {
             var yaml = new Yaml(new GitHubActionsWorkflowConstructor());
             return yaml.load(inputStream);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<String> resolveGitHubActionsWorkflowTriggerPaths(Map<String, Object> workflow) {
+        var paths = new ArrayList<String>();
+        var on = workflow.get("on");
+        if (on instanceof Map) {
+            var onMap = (Map<String, Object>) on;
+            if (onMap.containsKey("push")) {
+                var push = onMap.get("push");
+                if (push instanceof Map && ((Map<String, Object>) push).containsKey("paths")) {
+                    paths.addAll((List<String>) ((Map<String, Object>) push).get("paths"));
+                }
+            }
+        }
+        return paths;
     }
 
 }
