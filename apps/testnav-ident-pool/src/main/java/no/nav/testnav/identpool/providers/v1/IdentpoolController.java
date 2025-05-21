@@ -47,7 +47,7 @@ public class IdentpoolController {
 
     @PostMapping
     @Operation(description = "rekvirer nye test-identer")
-    public List<String> rekvirer(
+    public Mono<List<String>> rekvirer(
             @RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato,
             @RequestBody @Valid HentIdenterRequest hentIdenterRequest) {
 
@@ -60,11 +60,10 @@ public class IdentpoolController {
         if (isNull(hentIdenterRequest.getFoedtEtter())) {
             hentIdenterRequest.setFoedtEtter(LocalDate.of(1900, 1, 1));
         }
-        var response = poolService.allocateIdenter(hentIdenterRequest);
-        log.info("rekvirer: {} medgått tid: {} ms", hentIdenterRequest.toString(),
-                System.currentTimeMillis() - startTime);
-
-        return response;
+        return poolService.allocateIdenter(hentIdenterRequest)
+                .doOnNext(identer ->
+                        log.info("rekvirer: {} medgått tid: {} ms", hentIdenterRequest,
+                                System.currentTimeMillis() - startTime));
     }
 
     @GetMapping("/ledig")

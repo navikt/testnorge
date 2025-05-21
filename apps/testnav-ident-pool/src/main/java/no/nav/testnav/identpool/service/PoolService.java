@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -68,7 +67,7 @@ public class PoolService {
 
         var counter = new AtomicInteger(request.getAntall());
 
-        var identEntities = databaseService.hentLedigeIdenterFraDatabase(request)
+        return databaseService.hentLedigeIdenterFraDatabase(request)
                 .flatMap(ledigeIdenter -> {
                     if (ledigeIdenter.size() < request.getAntall()) {
                         return identerAvailService.generateAndCheckIdenter(request,
@@ -83,111 +82,28 @@ public class PoolService {
                                     if (ledige.size() < request.getAntall()) {
                                         return Mono.error(throwException(request));
                                     } else {
-                                        return Flux.fromIterable(ledige)
-                                                .map(ident -> {
-                                                    ident.setRekvireringsstatus(I_BRUK);
-                                                    ident.setRekvirertAv(request.getRekvirertAv());
-                                                    return ident;
-                                                })
-                                                .collectList()
-                                                .map(identRepository::saveAll);
+                                        logRequest(request);
+                                        return getListMono(request, ledige);
                                     }
                                 });
                     } else {
-                        return Flux.fromIterable(ledigeIdenter)
-                                .map(ident -> {
-                                    ident.setRekvireringsstatus(I_BRUK);
-                                    ident.setRekvirertAv(request.getRekvirertAv());
-                                    return ident;
-                                })
-                                .collectList()
-                                .map(identRepository::saveAll);
+                        return getListMono(request, ledigeIdenter);
                     }
-                })
+                });
+    }
 
-        int missingIdentCount = request.getAntall() - identEntities.size();
+    private Mono<List<String>> getListMono(HentIdenterRequest request, List<Ident> ledige) {
 
-        if (missingIdentCount > 0) {
-
-            var statusDTOS = identerAvailService.generateAndCheckIdenter(request,
-                    isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN);
-
-            log.info("Generert {} identer ved mining", statusDTOS.size());
-
-            var identerFraMining = statusDTOS.stream()
-                    .map(this::buildIdent)
-                    .toList();
-            identRepository.saveAll(identerFraMining);
-
-            var ledigeIdents = identerFraMining.stream()
-                    .filter(Ident::isLedig)
-                    .toList().iterator();
-
-            int i = 0;
-            while (i < missingIdentCount && ledigeIdents.hasNext()) {
-                identEntities.add(ledigeIdents.next());
-                i++;
-            }
-
-            logRequest(request);
-
-            if (identEntities.size() < request.getAntall()) {
-                throwException(request);
-            }
-        }
-
-        identRepository.saveAll(identEntities.stream()
+        return Flux.fromIterable(ledige)
                 .map(ident -> {
                     ident.setRekvireringsstatus(I_BRUK);
                     ident.setRekvirertAv(request.getRekvirertAv());
                     return ident;
                 })
-                .toList());
-
-        return identEntities.stream().map(Ident::getPersonidentifikator).toList();
-
-
-//        var identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
-//        int missingIdentCount = request.getAntall() - identEntities.size();
-//
-//        if (missingIdentCount > 0) {
-//
-//            var statusDTOS = identerAvailService.generateAndCheckIdenter(request,
-//                    isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN);
-//
-//            log.info("Generert {} identer ved mining", statusDTOS.size());
-//
-//            var identerFraMining = statusDTOS.stream()
-//                    .map(this::buildIdent)
-//                    .toList();
-//            identRepository.saveAll(identerFraMining);
-//
-//            var ledigeIdents = identerFraMining.stream()
-//                    .filter(Ident::isLedig)
-//                    .toList().iterator();
-//
-//            int i = 0;
-//            while (i < missingIdentCount && ledigeIdents.hasNext()) {
-//                identEntities.add(ledigeIdents.next());
-//                i++;
-//            }
-//
-//            logRequest(request);
-//
-//            if (identEntities.size() < request.getAntall()) {
-//                throwException(request);
-//            }
-//        }
-//
-//        identRepository.saveAll(identEntities.stream()
-//                .map(ident -> {
-//                    ident.setRekvireringsstatus(I_BRUK);
-//                    ident.setRekvirertAv(request.getRekvirertAv());
-//                    return ident;
-//                })
-//                .toList());
-//
-//        return identEntities.stream().map(Ident::getPersonidentifikator).toList();
+                .collectList()
+                .flatMapMany(identRepository::saveAll)
+                .map(Ident::getPersonidentifikator)
+                .collectList();
     }
 
     private Ident buildIdent(TpsStatusDTO tpsStatusDTO) {
