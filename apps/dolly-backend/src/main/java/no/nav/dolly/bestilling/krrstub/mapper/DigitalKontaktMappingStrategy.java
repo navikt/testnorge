@@ -44,6 +44,11 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
                         kontaktdataRequest.setEpost(isBlank(digitalKontaktdata.getEpost()) ? null : digitalKontaktdata.getEpost());
                         kontaktdataRequest.setSpraak(isBlank(digitalKontaktdata.getSpraak()) ? null : digitalKontaktdata.getSpraak());
+
+                        kontaktdataRequest.setReservertOppdatert(ZonedDateTime.now());
+                        kontaktdataRequest.setEpostOppdatert(ZonedDateTime.now());
+                        kontaktdataRequest.setMobilOppdatert(ZonedDateTime.now());
+                        kontaktdataRequest.setSpraakOppdatert(ZonedDateTime.now());
                     }
 
                     private String digdirFormatertTlfNummer(String mobil, String landkode) {
