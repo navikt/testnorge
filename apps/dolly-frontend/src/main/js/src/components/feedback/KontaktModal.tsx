@@ -7,13 +7,14 @@ import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
 import dolly from '@/favicon.ico'
 import Icon from '@/components/ui/icon/Icon'
-import { useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { Textarea } from '@navikt/ds-react'
 import { Logger } from '@/logger/Logger'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const KontaktModal = ({ closeModal }) => {
 	const { brukerBilde } = useBrukerProfilBilde()
+	const { brukerProfil } = useBrukerProfil()
 	const { currentBruker } = useCurrentBruker()
 
 	const MAX_LENGTH = 2000
@@ -28,6 +29,8 @@ export const KontaktModal = ({ closeModal }) => {
 			uuid: uuid,
 			isAnonym: isAnonym,
 			brukerType: currentBruker.brukertype,
+			brukernavn: isAnonym ? null : brukerProfil?.visningsNavn,
+			tilknyttetOrganisasjon: isAnonym ? null : brukerProfil?.organisasjon,
 		})
 		closeModal()
 	}

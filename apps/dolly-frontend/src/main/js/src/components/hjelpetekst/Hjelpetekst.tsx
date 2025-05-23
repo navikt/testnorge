@@ -25,7 +25,11 @@ export const Hjelpetekst = ({
 		>
 			{children}
 			{requestFeedback && (
-				<ThumbsRating ratingFor={`Hjelpetekst`} label="Svarte teksten på spørsmålet ditt?" />
+				<ThumbsRating
+					ratingFor={`Hjelpetekst`}
+					infoText={children}
+					label="Svarte teksten på spørsmålet ditt?"
+				/>
 			)}
 		</HelpText>
 	)

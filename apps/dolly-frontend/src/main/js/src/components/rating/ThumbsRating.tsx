@@ -6,6 +6,7 @@ import NavButton from '../ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import './ThumbsRating.less'
 import { Logger } from '@/logger/Logger'
+import { useBrukerProfil } from '@/utils/hooks/useBruker'
 
 enum Rating {
 	Positive = 'POSITIVE',
@@ -15,9 +16,11 @@ enum Rating {
 interface ThumbsRatingProps {
 	label: string
 	ratingFor: string
+	infoText?: string
 	uuid?: string
 	onClick?: (rating: Rating) => void
 	children?: React.ReactNode
+	etterBestilling?: boolean
 }
 
 const ThumbsButton = styled(NavButton)`
@@ -48,14 +51,33 @@ const ThumpsDown = ({ className }: IconButton) => (
 	<Icon className={className} kind="thumbs-down" title="tommel ned" fontSize={'1.6rem'} />
 )
 
-export const ThumbsRating = ({ label, ratingFor, onClick, uuid, children }: ThumbsRatingProps) => {
+export const ThumbsRating = ({
+	label,
+	ratingFor,
+	infoText,
+	onClick,
+	uuid,
+	children,
+	etterBestilling,
+}: ThumbsRatingProps) => {
+	const { brukerProfil } = useBrukerProfil()
 	const [rated, setRated] = useState(false)
 
 	const _onClick = (rating: Rating) => {
 		if (onClick) {
 			onClick(rating)
 		}
-		Logger.log({ event: `Vurdering av: ${ratingFor}`, rating: rating, uuid: uuid })
+		if (!etterBestilling) {
+			Logger.log({
+				event: `Vurdering av: ${ratingFor}`,
+				rating: rating,
+				message: `${infoText ? `Infotekst som fikk vurderingen: ${infoText}` : `Vurdering av ${ratingFor}`}`,
+				uuid: uuid,
+				brukerType: brukerProfil?.type,
+				brukernavn: brukerProfil?.visningsNavn,
+				tilknyttetOrganisasjon: brukerProfil?.organisasjon,
+			})
+		}
 		setRated(true)
 	}
 
