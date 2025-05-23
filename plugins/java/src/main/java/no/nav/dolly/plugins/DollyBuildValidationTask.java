@@ -118,7 +118,7 @@ public class DollyBuildValidationTask extends DefaultTask {
             var triggerPaths = resolveGitHubActionsWorkflowTriggerPaths(workflow);
             if (triggerPaths.isEmpty()) {
                 log.warn("Workflow ../../.github/workflows/{} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
-                return true;
+                return false; // Log a warning, but don't fail the build. It might be intentionally set to only build manually.
             }
             return verifyTriggers(log, project.getName(), workflowFile.getName(), libraryNames, triggerPaths);
 
