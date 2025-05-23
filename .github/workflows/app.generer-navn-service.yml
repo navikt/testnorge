@@ -3,16 +3,16 @@ name: generer-navn-service
 on:
   push:
     paths:
-      - ".github/workflows/app.generer-navn-service.yml"
-      - "apps/generer-navn-service/**"
-      - "libs/commands/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "libs/testing/**"
-      - "plugins/**"
+      - .github/workflows/app.generer-navn-service.yml
+      - apps/generer-navn-service/**
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

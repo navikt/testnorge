@@ -3,14 +3,14 @@ name: udi-stub
 on:
   push:
     paths:
-      - ".github/workflows/app.udi-stub.yml"
-      - "apps/udi-stub/**"
-      - "libs/reactive-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "libs/testing/**"
-      - "libs/vault/**"
-      - "plugins/**"
+      - .github/workflows/app.udi-stub.yml
+      - apps/udi-stub/**
+      - libs/reactive-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - libs/vault/**
+      - plugins/**
 
 jobs:
   workflow:

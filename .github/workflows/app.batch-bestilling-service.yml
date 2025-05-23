@@ -3,17 +3,17 @@ name: batch-bestilling-service
 on:
   push:
     paths:
-      - ".github/workflows/app.batch-bestilling-service.yml"
-      - "apps/batch-bestilling-service/**"
-      - "libs/commands/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-insecure-security/**"
-      - "libs/servlet-security/**"
-      - "libs/testing/**"
-      - "plugins/**"
+      - .github/workflows/app.batch-bestilling-service.yml
+      - apps/batch-bestilling-service/**
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

@@ -2,10 +2,10 @@ name: Integration Tests
 on:
   push:
     paths:
-      - "apps/altinn3-tilgang-service/**"
-      - "apps/bruker-service/**"
-      - "mocks/maskinporten-mock/**"
-      - "mocks/tokendings-mock/**"
+      - apps/altinn3-tilgang-service/**
+      - apps/bruker-service/**
+      - mocks/maskinporten-mock/**
+      - mocks/tokendings-mock/**
   workflow_dispatch:
 
 jobs:

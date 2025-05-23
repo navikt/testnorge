@@ -3,14 +3,14 @@ name: skattekort-service
 on:
   push:
     paths:
-      - ".github/workflows/app.skattekort-service.yml"
-      - "apps/skattekort-service/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-security/**"
-      - "libs/security-core/**"
-      - "libs/testing/**"
-      - "plugins/**"
+      - .github/workflows/app.skattekort-service.yml
+      - apps/skattekort-service/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

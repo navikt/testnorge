@@ -3,14 +3,14 @@ name: faste-data-frontend
 on:
   push:
     paths:
-      - ".github/workflows/app.faste-data-frontend.yml"
-      - "apps/faste-data-frontend/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-frontend/**"
-      - "libs/reactive-session-security/**"
-      - "libs/security-core/**"
-      - "libs/testing/**"
-      - "plugins/**"
+      - .github/workflows/app.faste-data-frontend.yml
+      - apps/faste-data-frontend/**
+      - libs/reactive-core/**
+      - libs/reactive-frontend/**
+      - libs/reactive-session-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

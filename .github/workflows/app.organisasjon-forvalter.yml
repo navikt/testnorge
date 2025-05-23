@@ -3,18 +3,18 @@ name: organisasjon-forvalter
 on:
   push:
     paths:
-      - ".github/workflows/app.organisasjon-forvalter.yml"
-      - "apps/organisasjon-forvalter/**"
-      - "libs/avro-schema/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/kafka-config/**"
-      - "libs/kafka-producers/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "libs/testing/**"
-      - "plugins/**"
+      - .github/workflows/app.organisasjon-forvalter.yml
+      - apps/organisasjon-forvalter/**
+      - libs/avro-schema/**
+      - libs/data-transfer-objects/**
+      - libs/kafka-config/**
+      - libs/kafka-producers/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

@@ -3,14 +3,14 @@ name: joark-dokument-service
 on:
   push:
     paths:
-      - ".github/workflows/app.joark-dokument-service.yml"
-      - "apps/joark-dokument-service/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "libs/testing/**"
-      - "plugins/**"
+      - .github/workflows/app.joark-dokument-service.yml
+      - apps/joark-dokument-service/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:
