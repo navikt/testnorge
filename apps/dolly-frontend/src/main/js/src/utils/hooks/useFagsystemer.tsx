@@ -35,11 +35,8 @@ const tpForholdUrl = (ident, miljoer) =>
 		miljo: miljo,
 	}))
 
-const tpYtelseUrl = (miljoer, ordningNr) =>
-	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/ytelse?ordning=${ordningNr}&miljo=${miljo}`,
-		miljo: miljo,
-	}))
+const tpYtelseUrl = (miljo, ordningNr) =>
+	`/testnav-pensjon-testdata-facade-proxy/api/v1/tp/ytelse?ordning=${ordningNr}&miljo=${miljo}`
 
 const instUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
@@ -145,19 +142,17 @@ export const useTpDataForhold = (ident, harTpBestilling) => {
 	}
 }
 
-export const useTpDataYtelse = (ident, ordningNr) => {
-	const { pensjonEnvironments } = usePensjonEnvironments()
-
+export const useTpDataYtelse = (ident, ordningNr, miljo) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		[
-			ordningNr ? tpYtelseUrl(pensjonEnvironments, ordningNr) : null,
+			ordningNr ? tpYtelseUrl(miljo, ordningNr) : null,
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly', fnr: ident },
 		],
-		([url, headers]) => multiFetcherPensjon(url, headers),
+		([url, headers]) => fetcher(url, headers),
 	)
 
 	return {
-		tpDataYtelse: data?.sort?.((a, b) => a.miljo.localeCompare(b.miljo)),
+		tpDataYtelse: data,
 		loading: isLoading,
 		error: error,
 	}
