@@ -29,7 +29,7 @@ const allRoutes = [
 		handle: {
 			crumb: () => 'Hjem',
 		},
-		element: () => <Navigate to="/gruppe" replace />,
+		element: () => <Navigate to="/gruppe" />,
 	},
 	{
 		path: '/gruppe',
@@ -90,7 +90,7 @@ const allRoutes = [
 	{
 		path: '/tenor',
 		handle: { crumb: () => 'Tenor' },
-		element: () => <Navigate to="/tenor/personer" replace />,
+		element: () => <Navigate to="/tenor/personer" />,
 	},
 	{
 		path: '/tenor/personer',

@@ -9,7 +9,6 @@ import { getAlder } from '@/ducks/fagsystem'
 import { formatAlder } from '@/utils/DataFormatter'
 import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import { PersonVisning } from '@/pages/dollySoek/PersonVisning'
-import * as _ from 'lodash-es'
 import ItemCountSelect from '@/components/ui/dollyTable/pagination/ItemCountSelect/ItemCountSelect'
 
 export const ResultatVisning = ({
