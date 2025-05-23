@@ -3,13 +3,14 @@ name: arbeidssoekerregisteret-proxy
 on:
   push:
     paths:
-      - "plugins/**"
+      - ".github/workflows/proxy.arbeidssoekerregisteret-proxy.yml"
       - "libs/reactive-core/**"
       - "libs/reactive-proxy/**"
       - "libs/reactive-security/**"
       - "libs/security-core/**"
+      - "libs/testing/**"
+      - "plugins/**"
       - "proxies/arbeidssoekerregisteret-proxy/**"
-      - ".github/workflows/proxy.arbeidssoekerregisteret-proxy.yml"
 
 jobs:
   workflow:

@@ -3,13 +3,14 @@ name: fullmakt-proxy
 on:
   push:
     paths:
-      - "plugins/**"
+      - ".github/workflows/proxy.fullmakt-proxy.yml"
       - "libs/reactive-core/**"
       - "libs/reactive-proxy/**"
       - "libs/reactive-security/**"
       - "libs/security-core/**"
+      - "libs/testing/**"
+      - "plugins/**"
       - "proxies/fullmakt-proxy/**"
-      - ".github/workflows/proxy.fullmakt-proxy.yml"
 
 jobs:
   workflow:

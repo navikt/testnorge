@@ -3,11 +3,12 @@ name: batch-adeo-proxy
 on:
   push:
     paths:
-      - "plugins/**"
+      - ".github/workflows/proxy.batch-adeo-proxy.yml"
       - "libs/reactive-core/**"
       - "libs/reactive-proxy/**"
+      - "libs/testing/**"
+      - "plugins/**"
       - "proxies/batch-adeo-proxy/**"
-      - ".github/workflows/proxy.batch-adeo-proxy.yml"
 
 jobs:
   workflow:

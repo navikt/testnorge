@@ -3,7 +3,8 @@ name: organisasjon-mottak-service
 on:
   push:
     paths:
-      - "plugins/**"
+      - ".github/workflows/app.organisasjon-mottak-service.yml"
+      - "apps/organisasjon-mottak-service/**"
       - "libs/avro-schema/**"
       - "libs/commands/**"
       - "libs/data-transfer-objects/**"
@@ -13,8 +14,8 @@ on:
       - "libs/security-core/**"
       - "libs/servlet-core/**"
       - "libs/servlet-insecure-security/**"
-      - "apps/organisasjon-mottak-service/**"
-      - ".github/workflows/app.organisasjon-mottak-service.yml"
+      - "libs/testing/**"
+      - "plugins/**"
 
 jobs:
   workflow:

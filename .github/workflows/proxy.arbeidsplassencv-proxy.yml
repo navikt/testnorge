@@ -3,13 +3,14 @@ name: arbeidsplassencv-proxy
 on:
   push:
     paths:
-      - "plugins/**"
+      - ".github/workflows/proxy.arbeidsplassencv-proxy.yml"
       - "libs/reactive-core/**"
       - "libs/reactive-proxy/**"
       - "libs/reactive-security/**"
       - "libs/security-core/**"
+      - "libs/testing/**"
+      - "plugins/**"
       - "proxies/arbeidsplassencv-proxy/**"
-      - ".github/workflows/proxy.arbeidsplassencv-proxy.yml"
 
 jobs:
   workflow:

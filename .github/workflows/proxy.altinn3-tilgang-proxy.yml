@@ -3,13 +3,14 @@ name: altinn3-tilgang-proxy
 on:
   push:
     paths:
-      - "plugins/**"
+      - ".github/workflows/proxy.altinn3-tilgang-proxy.yml"
       - "libs/reactive-core/**"
       - "libs/reactive-proxy/**"
       - "libs/security-core/**"
       - "libs/servlet-insecure-security/**"
+      - "libs/testing/**"
+      - "plugins/**"
       - "proxies/altinn3-tilgang-proxy/**"
-      - ".github/workflows/proxy.altinn3-tilgang-proxy.yml"
 
 jobs:
   workflow:

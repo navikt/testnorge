@@ -3,7 +3,10 @@ name: dolly-frontend
 on:
   push:
     paths:
-      - "plugins/**"
+      - ".github/workflows/app.dolly-frontend.yml"
+      - ".github/workflows/common.playwright.yml"
+      - ".github/workflows/common.vitest.yml"
+      - "apps/dolly-frontend/**"
       - "libs/data-transfer-objects/**"
       - "libs/reactive-core/**"
       - "libs/reactive-frontend/**"
@@ -12,10 +15,8 @@ on:
       - "libs/reactive-session-security/**"
       - "libs/security-core/**"
       - "libs/security-core/**"
-      - "apps/dolly-frontend/**"
-      - ".github/workflows/app.dolly-frontend.yml"
-      - ".github/workflows/common.playwright.yml"
-      - ".github/workflows/common.vitest.yml"
+      - "libs/testing/**"
+      - "plugins/**"
 
 jobs:
   playwright:
