@@ -87,6 +87,7 @@ export default function BestillingResultat({
 				<Feedback
 					label="Hvordan var din opplevelse med bruk av Dolly?"
 					feedbackFor="Bruk av Dolly etter bestilling"
+					etterBestilling={true}
 				/>
 				{showConfetti && (
 					<div data-testid="confetti" style={{ display: 'flex', flexDirection: 'column' }}>

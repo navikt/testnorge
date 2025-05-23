@@ -1,5 +1,15 @@
 plugins {
+    id "java-gradle-plugin"
     id "groovy-gradle-plugin"
+}
+
+gradlePlugin {
+    plugins {
+        dollyCheckerConfig {
+            id = 'no.nav.dolly.plugins.buildValidation'
+            implementationClass = 'no.nav.dolly.plugins.DollyBuildValidationPlugin'
+        }
+    }
 }
 
 repositories {
@@ -10,4 +20,5 @@ dependencies {
     implementation "io.spring.gradle:dependency-management-plugin:1.1.7"
     implementation "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.0.0.5145"
     implementation "org.springframework.boot:spring-boot-gradle-plugin:3.4.1"
+    implementation "org.yaml:snakeyaml:2.2"
 }

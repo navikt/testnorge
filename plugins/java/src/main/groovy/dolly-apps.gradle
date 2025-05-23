@@ -1,10 +1,11 @@
 plugins {
     id "dolly-sonar"
     id "dolly-versions"
+    id "no.nav.dolly.plugins.buildValidation"
 
-    id "io.spring.dependency-management" // See ../../../build.gradle for version.
+    id "io.spring.dependency-management"
     id "java"
-    id "org.springframework.boot" // See ../../../build.gradle for version.
+    id "org.springframework.boot"
 }
 
 group = "no.nav.testnav.apps"

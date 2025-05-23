@@ -18,6 +18,8 @@ const logger = (
 	rating?: undefined,
 	isAnonym?: undefined,
 	brukerType?: undefined,
+	brukernavn?: string,
+	tilknyttetOrganisasjon?: string,
 ) => {
 	log({
 		event: event,
@@ -27,14 +29,35 @@ const logger = (
 		rating: rating,
 		isAnonym: isAnonym,
 		brukerType: brukerType,
+		brukernavn: brukernavn,
+		tilknyttetOrganisasjon: tilknyttetOrganisasjon,
 	})
 }
 
 export const Logger = {
 	trace: ({ event, message, uuid }) =>
 		logger('TRACE', event, message, uuid, undefined, undefined, undefined),
-	log: ({ event, message, uuid, rating, isAnonym, brukerType }) =>
-		logger('INFO', event, message, uuid, rating, isAnonym, brukerType),
+	log: ({
+		event,
+		message,
+		uuid,
+		rating,
+		isAnonym,
+		brukerType,
+		brukernavn,
+		tilknyttetOrganisasjon,
+	}: any) =>
+		logger(
+			'INFO',
+			event,
+			message,
+			uuid,
+			rating,
+			isAnonym,
+			brukerType,
+			brukernavn,
+			tilknyttetOrganisasjon,
+		),
 	warn: ({ event, message, uuid, rating }) =>
 		logger('WARNING', event, message, uuid, rating, undefined, undefined),
 	error: ({ event, message, uuid, rating = undefined }) =>

@@ -35,7 +35,6 @@ import {
 	usePensjonsavtaleData,
 	usePoppData,
 	useTpDataForhold,
-	useTpDataYtelse,
 	useTransaksjonIdData,
 } from '@/utils/hooks/useFagsystemer'
 import {
@@ -65,7 +64,6 @@ import {
 	harUdistubBestilling,
 	harUforetrygdBestilling,
 	harYrkesskaderBestilling,
-	hentTpYtelseOrdning,
 } from '@/utils/SjekkBestillingFagsystem'
 import {
 	AlderspensjonVisning,
@@ -113,7 +111,6 @@ import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
 import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
-import { TpYtelse } from '@/components/fagsystem/tjenestepensjon/visning/TpYtelse'
 import { usePensjonsgivendeInntekt, useSummertSkattegrunnlag } from '@/utils/hooks/useSigrunstub'
 import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/visning/Visning'
 
@@ -202,11 +199,6 @@ export default ({
 	const { loading: loadingTpDataForhold, tpDataForhold } = useTpDataForhold(
 		ident.ident,
 		harTpBestilling(bestillingerFagsystemer),
-	)
-
-	const { loading: loadingTpDataYtelse, tpDataYtelse } = useTpDataYtelse(
-		ident.ident,
-		hentTpYtelseOrdning(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingPensjonsavtaleData, pensjonsavtaleData } = usePensjonsavtaleData(
@@ -543,12 +535,7 @@ export default ({
 					loading={loadingTpDataForhold}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
-				/>
-				<TpYtelse
-					data={tpDataYtelse}
-					loading={loadingTpDataYtelse}
-					bestillingIdListe={bestillingIdListe}
-					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					ident={ident.ident}
 				/>
 				<AlderspensjonVisning
 					data={apData}
