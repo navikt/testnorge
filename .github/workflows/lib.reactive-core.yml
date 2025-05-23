@@ -3,9 +3,9 @@ name: reactive-core
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - ".github/workflows/lib.reactive-core.yml"
+      - plugins/**
+      - libs/reactive-core/**
+      - .github/workflows/lib.reactive-core.yml
 
 jobs:
   workflow:

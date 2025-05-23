@@ -3,14 +3,15 @@ name: varslinger-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/database/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "apps/varslinger-service/**"
-      - ".github/workflows/app.varslinger-service.yml"
+      - .github/workflows/app.varslinger-service.yml
+      - apps/varslinger-service/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

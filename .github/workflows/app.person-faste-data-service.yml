@@ -3,12 +3,13 @@ name: person-faste-data-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-security/**"
-      - "apps/person-faste-data-service/**"
-      - ".github/workflows/app.person-faste-data-service.yml"
+      - .github/workflows/app.person-faste-data-service.yml
+      - apps/person-faste-data-service/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

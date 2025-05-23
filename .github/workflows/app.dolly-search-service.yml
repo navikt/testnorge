@@ -3,15 +3,14 @@ name: dolly-search-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-search-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "libs/testing/**"
-      - "apps/dolly-search-service/**"
-      - ".github/workflows/app.dolly-search-service.yml"
+      - .github/workflows/app.dolly-search-service.yml
+      - apps/dolly-search-service/**
+      - libs/data-transfer-search-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

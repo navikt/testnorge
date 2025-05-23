@@ -3,14 +3,15 @@ name: tps-messaging-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/data-transfer-search-objects/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "apps/tps-messaging-service/**"
-      - ".github/workflows/app.tps-messaging-service.yml"
+      - .github/workflows/app.tps-messaging-service.yml
+      - apps/tps-messaging-service/**
+      - libs/data-transfer-search-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

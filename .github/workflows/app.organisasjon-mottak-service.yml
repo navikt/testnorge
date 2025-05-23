@@ -3,18 +3,19 @@ name: organisasjon-mottak-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/avro-schema/**"
-      - "libs/commands/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/kafka-config/**"
-      - "libs/kafka-producers/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-insecure-security/**"
-      - "apps/organisasjon-mottak-service/**"
-      - ".github/workflows/app.organisasjon-mottak-service.yml"
+      - .github/workflows/app.organisasjon-mottak-service.yml
+      - apps/organisasjon-mottak-service/**
+      - libs/avro-schema/**
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/kafka-config/**
+      - libs/kafka-producers/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

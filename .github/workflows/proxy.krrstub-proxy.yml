@@ -3,13 +3,14 @@ name: krrstub-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "libs/reactive-security/**"
-      - "libs/security-core/**"
-      - "proxies/krrstub-proxy/**"
-      - ".github/workflows/proxy.krrstub-proxy.yml"
+      - .github/workflows/proxy.krrstub-proxy.yml
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/krrstub-proxy/**
 
 jobs:
   workflow:

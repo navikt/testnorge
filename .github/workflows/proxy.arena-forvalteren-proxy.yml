@@ -3,11 +3,14 @@ name: arena-forvalteren-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "proxies/arena-forvalteren-proxy/**"
-      - ".github/workflows/proxy.arena-forvalteren-proxy.yml"
+      - .github/workflows/proxy.arena-forvalteren-proxy.yml
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/arena-forvalteren-proxy/**
 
 jobs:
   workflow:

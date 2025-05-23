@@ -3,9 +3,9 @@ name: data-transfer-objects
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - ".github/workflows/lib.data-transfer-objects.yml"
+      - plugins/**
+      - libs/data-transfer-objects/**
+      - .github/workflows/lib.data-transfer-objects.yml
 
 jobs:
   workflow:

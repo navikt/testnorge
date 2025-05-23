@@ -5,7 +5,6 @@ on:
     paths:
       - .github/workflows/app.levende-arbeidsforhold-ansettelse.yml
       - apps/levende-arbeidsforhold-ansettelse/**
-      - libs/commands/**
       - libs/data-transfer-objects/**
       - libs/data-transfer-search-objects/**
       - libs/reactive-core/**
@@ -13,6 +12,7 @@ on:
       - libs/security-core/**
       - libs/servlet-insecure-security/**
       - libs/testing/**
+      - plugins/**
 
 
 jobs:

@@ -3,12 +3,12 @@ name: budpro-service
 on:
   push:
     paths:
-      - ".github/workflows/app.budpro-service.yml"
-      - "apps/budpro-service/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/testing/**"
-      - "libs/texas/**"
-      - "plugins/**"
+      - .github/workflows/app.budpro-service.yml
+      - apps/budpro-service/**
+      - libs/data-transfer-objects/**
+      - libs/testing/**
+      - libs/texas/**
+      - plugins/**
 
 jobs:
   workflow:

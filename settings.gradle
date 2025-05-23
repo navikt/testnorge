@@ -3,7 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         maven {
-            url "https://repository-cdn.liferay.com/nexus/content/groups/public"
+            url = "https://repository-cdn.liferay.com/nexus/content/groups/public"
         }
     }
 }
