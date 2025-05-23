@@ -2,10 +2,12 @@ package no.nav.dolly.plugins;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
-import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.provider.Property;
+import org.gradle.api.provider.SetProperty;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.yaml.snakeyaml.Yaml;
 
@@ -19,20 +21,51 @@ import java.util.stream.Collectors;
 
 public class DollyBuildValidationTask extends DefaultTask {
 
-    private static final String TARGET_GROUP_ID = "no.nav.testnav.libs";
+    static final String TARGET_GROUP_ID = "no.nav.testnav.libs";
+
+    private final Property<String> projectName;
+    private final DirectoryProperty projectDir;
+    private final DirectoryProperty rootDir;
+    private final SetProperty<String> ourLibraryNames;
+
+    public DollyBuildValidationTask() {
+        this.projectName = getProject().getObjects().property(String.class);
+        this.projectDir = getProject().getObjects().directoryProperty();
+        this.rootDir = getProject().getObjects().directoryProperty();
+        this.ourLibraryNames = getProject().getObjects().setProperty(String.class);
+    }
+
+    @Input
+    public Property<String> getProjectName() {
+        return projectName;
+    }
+
+    @InputDirectory
+    public DirectoryProperty getProjectDirectory() {
+        return projectDir;
+    }
+
+    @InputDirectory
+    public DirectoryProperty getRootDirectory() {
+        return rootDir;
+    }
+
+    @Input
+    public SetProperty<String> getOurLibraryNames() {
+        return ourLibraryNames;
+    }
 
     @TaskAction
     public void performChecks() {
 
         var log = getLogger();
-        var project = getProject();
 
         // Check settings.gradle against build.gradle.
-        var librariesInBuildGradle = getOurLibrariesFromBuildGradle(project);
-        var errorsFromSettingsGradle = validateSettingsGradle(log, project, librariesInBuildGradle);
+        var librariesInBuildGradle = getOurLibraryNames().get();
+        var errorsFromSettingsGradle = validateSettingsGradle(log, librariesInBuildGradle);
 
         // Check GitHub Workflow triggers against build.gradle.
-        var errorsFromGitHubWorkflow = validateGitHubWorkflowTriggers(log, project, librariesInBuildGradle);
+        var errorsFromGitHubWorkflow = validateGitHubWorkflowTriggers(log, librariesInBuildGradle);
 
         if (errorsFromSettingsGradle || errorsFromGitHubWorkflow) {
             throw new GradleException("Dolly build validation failed. See logs for details.");
@@ -40,27 +73,18 @@ public class DollyBuildValidationTask extends DefaultTask {
 
     }
 
-    private static Set<String> getOurLibrariesFromBuildGradle(Project project) {
-        return project
-                .getConfigurations()
-                .stream()
-                .filter(Configuration::isCanBeResolved)
-                .flatMap(c -> c.getAllDependencies().stream())
-                .filter(d -> TARGET_GROUP_ID.equals(d.getGroup()))
-                .map(Dependency::getName)
-                .collect(Collectors.toSet());
-    }
-
-    private static boolean validateSettingsGradle(Logger log, Project project, Set<String> librariesInBuildGradle) {
+    private boolean validateSettingsGradle(Logger log, Set<String> librariesInBuildGradle) {
 
         boolean errors = false;
-        var settingsGradleFile = project
-                .getRootDir()
+        var rootDirAsFile = getRootDirectory()
+                .get()
+                .getAsFile();
+        var settingsGradleFile = rootDirAsFile
                 .toPath()
                 .resolve("settings.gradle")
                 .toFile();
         if (!settingsGradleFile.exists()) {
-            log.warn("Missing settings.gradle at {}", project.getRootDir());
+            log.warn("Missing settings.gradle at {}", rootDirAsFile.getAbsolutePath());
             return true;
         }
 
@@ -96,11 +120,16 @@ public class DollyBuildValidationTask extends DefaultTask {
         return errors;
     }
 
-    private static boolean validateGitHubWorkflowTriggers(Logger log, Project project, Set<String> libraryNames) {
+    private boolean validateGitHubWorkflowTriggers(Logger log, Set<String> libraryNames) {
 
-        var workflowFile = findGitHubActionsWorkflowFile(project);
+        var workflowFile = findGitHubActionsWorkflowFile();
         if (workflowFile == null) {
-            log.error("No app.{}.yml or proxy.{}.yml workflow found in ../../.github/workflows", project.getName(), project.getName());
+            var expected = getProjectDirectory()
+                    .get()
+                    .dir("../../.github/workflows")
+                    .getAsFile()
+                    .getAbsolutePath();
+            log.error("No app.{}.yml or proxy.{}.yml workflow found in {}}", getProjectName().get(), getProjectName().get(), expected);
             return true;
         }
 
@@ -120,7 +149,7 @@ public class DollyBuildValidationTask extends DefaultTask {
                 log.warn("Workflow ../../.github/workflows/{} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
                 return false; // Log a warning, but don't fail the build. It might be intentionally set to only build manually.
             }
-            return verifyTriggers(log, project.getName(), workflowFile.getName(), libraryNames, triggerPaths);
+            return verifyTriggers(log, getProjectName().get(), workflowFile.getName(), libraryNames, triggerPaths);
 
         } catch (IOException e) {
             log.error("Error reading workflow file ../../.github/workflows/{}", workflowFile.getName(), e);
@@ -132,21 +161,29 @@ public class DollyBuildValidationTask extends DefaultTask {
 
     }
 
-    private static File findGitHubActionsWorkflowFile(Project project) {
-        var workflowPath = project
-                .getProjectDir()
-                .toPath()
-                .resolve("../../.github/workflows/app." + project.getName() + ".yml"); // Look for an app workflow.
-        if (!workflowPath.toFile().exists()) {
-            workflowPath = project
-                    .getProjectDir()
-                    .toPath()
-                    .resolve("../../.github/workflows/proxy." + project.getName() + ".yml"); // Look for a proxy workflow.
+    private File findGitHubActionsWorkflowFile() {
+
+        var workflowDir = getProjectDirectory()
+                .get()
+                .dir("../../.github/workflows")
+                .getAsFile()
+                .toPath();
+        var currentProjectName = getProjectName().get();
+        var appWorkflowFile = workflowDir
+                .resolve("app." + currentProjectName + ".yml")
+                .toFile();
+        if (appWorkflowFile.exists()) {
+            return appWorkflowFile;
         }
-        if (!workflowPath.toFile().exists()) {
-            return null;
+        var proxyWorkflowFile = workflowDir
+                .resolve("proxy." + currentProjectName + ".yml")
+                .toFile();
+        if (proxyWorkflowFile.exists()) {
+            return proxyWorkflowFile;
+
         }
-        return workflowPath.toFile();
+        return null;
+
     }
 
     private static Map<String, Object> getGitHubActionsWorkflowFileContents(File workflowFile)
@@ -173,7 +210,7 @@ public class DollyBuildValidationTask extends DefaultTask {
         return paths;
     }
 
-    private static boolean verifyTriggers(Logger log, String projectName, String workflowFilename, Collection<String> libraryNames, Collection<String> triggerPaths) {
+    private boolean verifyTriggers(Logger log, String currentProjectName, String workflowFilename, Collection<String> libraryNames, Collection<String> triggerPaths) {
 
         var errors = false;
 
@@ -204,9 +241,9 @@ public class DollyBuildValidationTask extends DefaultTask {
         // Check for trigger on the project itself.
         var foundTriggerOnProject = triggerPaths
                 .stream()
-                .anyMatch(path -> path.equals("apps/" + projectName + "/**") || path.equals("proxies/" + projectName + "/**"));
+                .anyMatch(path -> path.equals("apps/" + currentProjectName + "/**") || path.equals("proxies/" + currentProjectName + "/**"));
         if (!foundTriggerOnProject) {
-            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either 'apps/{}/**' or 'proxies/{}/**'", workflowFilename, projectName, projectName);
+            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either 'apps/{}/**' or 'proxies/{}/**'", workflowFilename, currentProjectName, currentProjectName);
             errors = true;
         }
 
@@ -222,9 +259,9 @@ public class DollyBuildValidationTask extends DefaultTask {
         // Check for trigger on workflow file.
         var foundTriggerOnWorkflow = triggerPaths
                 .stream()
-                .anyMatch(path -> path.equals(".github/workflows/app." + projectName + ".yml") || path.equals(".github/workflows/proxy." + projectName + ".yml"));
+                .anyMatch(path -> path.equals(".github/workflows/app." + currentProjectName + ".yml") || path.equals(".github/workflows/proxy." + currentProjectName + ".yml"));
         if (!foundTriggerOnWorkflow) {
-            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either '.github/workflows/app.{}.yml' or '.github/workflows/proxy.{}.yml'", projectName, projectName, projectName);
+            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either '.github/workflows/app.{}.yml' or '.github/workflows/proxy.{}.yml'", currentProjectName, currentProjectName, currentProjectName);
             errors = true;
         }
 
