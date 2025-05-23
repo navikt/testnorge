@@ -42,11 +42,11 @@ export const SoekForm = () => {
 	const [visAntall, setVisAntall] = useState(10)
 
 	const setRequest = (request: any) => {
-		 		localStorage.setItem(dollySoekLocalStorageKey, JSON.stringify(request))
+		localStorage.setItem(dollySoekLocalStorageKey, JSON.stringify(request))
 		setFormRequest(request)
 	}
 
-	 	const { typer, loading: loadingTyper } = usePersonerTyper()
+	const { typer, loading: loadingTyper } = usePersonerTyper()
 
 	const personPath = 'personRequest'
 	const adressePath = 'personRequest.adresse'
