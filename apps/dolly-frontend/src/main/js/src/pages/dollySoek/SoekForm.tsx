@@ -42,11 +42,11 @@ export const SoekForm = () => {
 	const [visAntall, setVisAntall] = useState(10)
 
 	const setRequest = (request: any) => {
+		 		localStorage.setItem(dollySoekLocalStorageKey, JSON.stringify(request))
 		setFormRequest(request)
-		localStorage.setItem(dollySoekLocalStorageKey, JSON.stringify(request))
 	}
 
-	const { typer, loading: loadingTyper } = usePersonerTyper()
+	 	const { typer, loading: loadingTyper } = usePersonerTyper()
 
 	const personPath = 'personRequest'
 	const adressePath = 'personRequest.adresse'
@@ -116,7 +116,7 @@ export const SoekForm = () => {
 	const emptyCategory = (paths: string[]) => {
 		const requestClone = { ...values }
 		paths.forEach((path) => {
-			_.set(requestClone, path, _.get(initialValues, path))
+			_.set(requestClone, path, _.get(dollySoekInitialValues, path))
 			if (path === 'personRequest.harSkjerming') {
 				_.set(
 					requestClone,
@@ -132,8 +132,8 @@ export const SoekForm = () => {
 
 	const emptySearch = () => {
 		setVisAntall(10)
-		reset(initialValues)
-		setRequest(initialValues)
+		reset(dollySoekInitialValues)
+		setRequest(dollySoekInitialValues)
 	}
 
 	const getNewResult = () => {

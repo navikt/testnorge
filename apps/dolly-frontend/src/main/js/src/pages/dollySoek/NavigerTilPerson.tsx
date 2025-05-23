@@ -33,7 +33,8 @@ export const NavigerTilPerson = ({ ident, linkTekst = null }) => {
 		}
 	}, [result])
 
-	const handleClick = () => {
+	const handleClick = (event: any) => {
+		event.stopPropagation()
 		setValgtIdent(ident)
 	}
 

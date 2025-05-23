@@ -15,7 +15,7 @@ export const FinnPersonDropdown = () => {
 		setIsActive(
 			location?.pathname === '/dollysoek' ||
 				location?.pathname === '/nyansettelser' ||
-				location?.pathname === '/tenor/personer/',
+				location?.pathname === '/tenor/personer',
 		)
 	}, [location])
 
@@ -46,7 +46,7 @@ export const FinnPersonDropdown = () => {
 				<Icon kind="search" fontSize="1.5rem" />
 				<DropdownStyledLink
 					onClick={() => localStorage.removeItem(tenorSoekLocalStorageKey)}
-					href="/tenor/personer/"
+					href="/tenor/personer"
 				>
 					Søk i Tenor (Test-Norge)
 				</DropdownStyledLink>
