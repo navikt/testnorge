@@ -1,4 +1,8 @@
 dolly:
+  nais:
+    name: dolly-texas-proxy
+    variables:
+      - DOLLY_TEXAS_PROXY_SHARED_SECRET
   texas:
     url:
       token: https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token
@@ -9,3 +13,7 @@ dolly:
 
 server:
   port: 8081
+
+spring:
+  config:
+    import: "sm://"
