@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.time.LocalDateTime;
@@ -31,13 +33,13 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
     private static final String GATEWAY_ORIGINAL_REQUEST_URL = "org.springframework.web.reactive.HandlerMapping.pathWithinHandlerMapping";
 
     public HttpExceptionAdvice(ErrorAttributes errorAttributes,
-                WebProperties webProperties,
-                ErrorProperties errorProperties,
-                ApplicationContext applicationContext,
-                ServerCodecConfigurer configurer) {
-            super(errorAttributes, webProperties.getResources(), errorProperties, applicationContext);
-            this.setMessageWriters(configurer.getWriters());
-        }
+                               WebProperties webProperties,
+                               ErrorProperties errorProperties,
+                               ApplicationContext applicationContext,
+                               ServerCodecConfigurer configurer) {
+        super(errorAttributes, webProperties.getResources(), errorProperties, applicationContext);
+        this.setMessageWriters(configurer.getWriters());
+    }
 
     private ExceptionInformation informationForException(RuntimeException exception, ServerWebExchange serverWebExchange, HttpStatus status) {
 
@@ -53,17 +55,23 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler({ IdentAlleredeIBrukException.class })
+    @ExceptionHandler({IdentAlleredeIBrukException.class})
     @ResponseStatus(value = HttpStatus.CONFLICT)
     ExceptionInformation internalServerError(ServerWebExchange serverWebExchange, RuntimeException exception) {
         return informationForException(exception, serverWebExchange, HttpStatus.CONFLICT);
     }
 
     @ResponseBody
-    @ExceptionHandler({ UgyldigDatoException.class, UgyldigPersonidentifikatorException.class, ForFaaLedigeIdenterException.class})
+    @ExceptionHandler({UgyldigDatoException.class, UgyldigPersonidentifikatorException.class, ForFaaLedigeIdenterException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     ExceptionInformation badRequest(ServerWebExchange serverWebExchange, RuntimeException exception) {
         return informationForException(exception, serverWebExchange, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseBody
+    @ExceptionHandler({RuntimeException.class})
+    ExceptionInformation general(ServerWebExchange serverWebExchange, RuntimeException exception) {
+        return informationForException(exception, serverWebExchange, resolveStatusCode(exception));
     }
 
     @Data
@@ -77,5 +85,16 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
         private String path;
         private Integer status;
         private LocalDateTime timestamp;
+    }
+
+    private HttpStatus resolveStatusCode(RuntimeException exception) {
+
+        return switch (exception) {
+            case WebClientResponseException webClientResponseException ->
+                    HttpStatus.valueOf(webClientResponseException.getStatusCode().value());
+            case ResponseStatusException responseStatusException ->
+                    HttpStatus.valueOf(responseStatusException.getStatusCode().value());
+            case null, default -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
     }
 }

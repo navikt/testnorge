@@ -8,9 +8,8 @@ includeBuild "../../plugins/java"
 
 includeBuild "../../libs/reactive-core"
 includeBuild "../../libs/security-core"
-includeBuild "../../libs/servlet-core"
 includeBuild "../../libs/servlet-insecure-security"
-includeBuild "../../libs/servlet-security"
+includeBuild "../../libs/reactive-security"
 includeBuild "../../libs/testing"
 
 develocity {

@@ -65,19 +65,19 @@ public class PoolService {
 
     public synchronized Mono<List<String>> allocateIdenter(HentIdenterRequest request) {
 
-        var counter = new AtomicInteger(request.getAntall());
+        var counter = new AtomicInteger(request.getAntall() * 2);
 
         return databaseService.hentLedigeIdenterFraDatabase(request)
+                .collectList()
                 .flatMap(ledigeIdenter -> {
                     if (ledigeIdenter.size() < request.getAntall()) {
                         return identerAvailService.generateAndCheckIdenter(request,
                                         isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN)
                                 .map(this::buildIdent)
-                                .collectList()
-                                .flatMapMany(identRepository::saveAll)
-                                .filter(ident -> ident.getRekvireringsstatus() == LEDIG)
+                                .flatMap(identRepository::save)
                                 .takeWhile(ident -> counter.getAndDecrement() > 0)
                                 .collectList()
+                                .doOnNext(ident -> log.info("Antall identer allokert: {}", ident.size()))
                                 .flatMap(ledige -> {
                                     if (ledige.size() < request.getAntall()) {
                                         return Mono.error(throwException(request));
@@ -94,14 +94,16 @@ public class PoolService {
 
     private Mono<List<String>> getListMono(HentIdenterRequest request, List<Ident> ledige) {
 
+        var counter = new AtomicInteger(request.getAntall());
+
         return Flux.fromIterable(ledige)
                 .map(ident -> {
                     ident.setRekvireringsstatus(I_BRUK);
                     ident.setRekvirertAv(request.getRekvirertAv());
                     return ident;
                 })
-                .collectList()
-                .flatMapMany(identRepository::saveAll)
+                .flatMap(identRepository::save)
+                .takeWhile(ident -> counter.getAndDecrement() > 0)
                 .map(Ident::getPersonidentifikator)
                 .collectList();
     }
@@ -113,7 +115,6 @@ public class PoolService {
     private Ident buildIdent(String ident, String rekvirertAv, Rekvireringsstatus rekvireringsstatus) {
         return Ident.builder()
                 .personidentifikator(ident)
-                .finnesHosSkatt(false)
                 .foedselsdato(datoFraIdentService.getFoedselsdato(ident))
                 .kjoenn(kjoennFraIdentService.getKjoenn(ident))
                 .identtype(identtypeFraIdentService.getIdenttype(ident))

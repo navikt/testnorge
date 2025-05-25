@@ -16,6 +16,8 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -87,13 +89,14 @@ class IdenterAvailServiceTest {
         when(identGeneratorService.genererIdenter(eq(request), any(Set.class)))
                 .thenReturn(Set.of(IDENT_1, IDENT_2));
         when(identRepository.findByPersonidentifikatorIn(anySet()))
-                .thenReturn(Set.of(getIdent(IDENT_2)));
+                .thenReturn(Flux.just(getIdent(IDENT_2)));
         when(tpsMessagingConsumer.getIdenterStatuser(argumentCaptor.capture()))
-                .thenReturn(Set.of(getTpsStatus(IDENT_1, false)));
+                .thenReturn(Flux.just(getTpsStatus(IDENT_1, false)));
 
-        Set<TpsStatusDTO> target = identerAvailService.generateAndCheckIdenter(request, 10);
-        assertThat(target, containsInAnyOrder(
-                getTpsStatus(IDENT_1, false)));
+        StepVerifier.create(identerAvailService.generateAndCheckIdenter(request, 10))
+                .expectNextCount(1)
+                .assertNext(result -> assertThat(result, is(getTpsStatus(IDENT_1, false))))
+                .verifyComplete();
 
         assertThat(argumentCaptor.getAllValues().size(), is(equalTo(1)));
         assertThat(argumentCaptor.getAllValues(),

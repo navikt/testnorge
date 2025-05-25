@@ -4,7 +4,7 @@ import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
-import org.springframework.data.domain.Page;
+import no.nav.testnav.identpool.dto.ExistsDato;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -21,11 +21,20 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
 
     Mono<Boolean> existsByPersonidentifikator(String identifikator);
 
-    Mono<Long> countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
-                                                                                 LocalDate to,
-                                                                                 Identtype type,
-                                                                                 Rekvireringsstatus rekvireringsstatus,
-                                                                                 Boolean syntetisk);
+    @Query(value = """
+            select count(i), i.foedslsdato from Ident i
+            where i.foedselsdato between :from and :to
+            and i.identtype = :identtype
+            and i.rekvireringsstatus = :rekvireringsstatus
+            and i.syntetisk = :syntetisk
+            group by i.foedslsdato
+            order by i.foedslsdato
+            """)
+    Flux<ExistsDato> countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
+                                                                                             LocalDate to,
+                                                                                             Identtype type,
+                                                                                             Rekvireringsstatus rekvireringsstatus,
+                                                                                             Boolean syntetisk);
 
     Mono<Ident> findByPersonidentifikator(String personidentifkator);
 
@@ -44,19 +53,23 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
 
     Mono<Long> countByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype);
 
-    @Query(value = "from Ident i where i.rekvireringsstatus = :rekvireringsstatus and i.foedselsdato > :foedtEtter")
-    Mono<Page<Ident>> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
-                        @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
+    @Query(value = """
+            from Ident i
+                        where i.rekvireringsstatus = :rekvireringsstatus
+                        and i.foedselsdato > :foedtEtter
+                        and i.syntetisk = false
+            """)
+    Flux<Ident> findAllIkkeSyntetisk(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
+                                     @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
 
-    @Query(value = "from Ident i where i.rekvireringsstatus = :rekvireringsstatus and "
-            + "(:kjoenn is null or (:kjoenn is not null and i.kjoenn = :kjoenn)) and "
-            + "(:identtype is null or (:identtype is not null and i.identtype = :identtype)) and "
-            + "i.foedselsdato between :foedtEtter and :foedtFoer and "
-            + "i.syntetisk = :syntetisk")
-    Mono<Page<Ident>> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
-                        @Param("identtype") Identtype identtype, @Param("kjoenn") Kjoenn kjoenn,
-                        @Param("foedtFoer") LocalDate foedtFoer, @Param("foedtEtter") LocalDate foedtEtter,
-                        @Param("syntetisk") boolean syntetisk, Pageable pageable);
+    @Query(value = """
+            select count(i) from Ident i
+                        where i.rekvireringsstatus = :rekvireringsstatus
+                        and i.foedselsdato > :foedtEtter
+                        and i.syntetisk = false
+            """)
+    Mono<Integer> countAllIkkeSyntetisk(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
+                                        @Param("foedtEtter") LocalDate foedtEtter);
 
     Mono<Integer> countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,
@@ -74,7 +87,7 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
             LocalDate foedtFoer);
 
 
-    Mono<Page<Ident>> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+    Flux<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,
             Boolean syntetisk,
@@ -82,7 +95,7 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
             LocalDate foedtFoer,
             Pageable pageable);
 
-    Mono<Page<Ident>> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+    Flux<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,
             Boolean syntetisk,

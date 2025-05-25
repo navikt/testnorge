@@ -66,15 +66,6 @@ public class IdentpoolController {
                                 System.currentTimeMillis() - startTime));
     }
 
-    @GetMapping("/ledig")
-    @Operation(description = "returnerer true eller false avhengig av om ident er ledig. OBS miljøer benyttes ikke mer, " +
-            "og alle miljøer sjekkes, inkludert prod.")
-    public Mono<Boolean> erLedig(@RequestHeader String personidentifikator, @RequestParam(required = false) List<String> miljoer) {
-
-        validate(personidentifikator);
-        return identpoolService.erLedig(personidentifikator);
-    }
-
     @GetMapping("/prodSjekk")
     @Operation(description = "returnerer om en liste av identer finnes i prod.")
     public Flux<TpsStatusDTO> erIProd(@RequestParam Set<String> identer) {
@@ -84,14 +75,16 @@ public class IdentpoolController {
 
     @GetMapping("/ledige")
     @Operation(description = "returnerer identer (FNR) som er ledige og født mellom to år inklusive start og slutt år")
-    public Mono<List<String>> erLedige(@RequestParam int fromYear, @RequestParam int toYear) {
+    public Mono<List<String>> erLedige(@RequestParam int fromYear, @RequestParam int toYear,
+                                       @RequestParam(required = false, defaultValue = "true") Boolean syntetisk) {
 
-        return identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(fromYear, 1, 1), LocalDate.of(toYear, 1, 1));
+        return identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(fromYear, 1, 1),
+                LocalDate.of(toYear, 1, 1), syntetisk);
     }
 
     @PostMapping("/frigjoer")
     @Operation(description = "Frigjør rekvirerte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
-    public Flux<String> frigjoerIdenter(@RequestParam(required = false) String rekvirertAv, @RequestBody List<String> identer) {
+    public Mono<List<String>> frigjoerIdenter(@RequestParam(required = false) String rekvirertAv, @RequestBody List<String> identer) {
 
         return identpoolService.frigjoerIdenter(identer);
     }

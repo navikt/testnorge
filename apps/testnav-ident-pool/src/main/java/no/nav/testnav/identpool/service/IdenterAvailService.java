@@ -12,7 +12,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -36,12 +38,7 @@ public class IdenterAvailService {
                 .flatMap(i -> Mono.just(genererIdenter(oppdatertRequest))
                         .flatMapMany(genererteIdenter -> identRepository.findByPersonidentifikatorIn(genererteIdenter)
                                 .collectList()
-                                .filter(identerFinnesIdb -> genererteIdenter.stream()
-                                        .noneMatch(generertIdent -> identerFinnesIdb.stream()
-                                                .anyMatch(dbIdent -> dbIdent.getPersonidentifikator().equals(generertIdent))))
-                                .flatMapMany(Flux::fromIterable)
-                                .map(Ident::getPersonidentifikator)
-                                .collectList()
+                                .map(databaseIdenter -> filtrerIdenter(genererteIdenter, databaseIdenter))
                                 .map(identerAaSjekke -> {
                                     if (isTrue(request.getSyntetisk())) {
                                         return Flux.fromIterable(identerAaSjekke)
@@ -59,5 +56,14 @@ public class IdenterAvailService {
     private Set<String> genererIdenter(HentIdenterRequest request) {
 
         return identGeneratorService.genererIdenter(request, new HashSet<>());
+    }
+
+    private static Set<String> filtrerIdenter(Set<String> opprettedeIdenter, List<Ident> databaseIdenter) {
+
+        return opprettedeIdenter.stream()
+                .filter(ident -> databaseIdenter.stream()
+                        .map(Ident::getPersonidentifikator)
+                        .noneMatch(ident::equals))
+                .collect(Collectors.toSet());
     }
 }
