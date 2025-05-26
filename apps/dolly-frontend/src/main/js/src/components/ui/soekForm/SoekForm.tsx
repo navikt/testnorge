@@ -24,13 +24,14 @@ export const SoekefeltWrapper = styled.div`
 `
 
 export const Soekefelt = styled.div`
-	padding: 20px 15px 5px 15px;
+	padding: 15px 15px 5px 15px;
 `
 
 export const SoekKategori = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	font-size: medium;
+	margin-bottom: 10px;
 
 	h4 {
 		display: flex;
@@ -43,6 +44,9 @@ export const SoekKategori = styled.div`
 		.dolly-form-input {
 			min-width: 0;
 			flex-grow: 0;
+			.navds-checkbox {
+				padding: var(--a-spacing-1-alt) 0;
+			}
 		}
 	}
 `
@@ -59,6 +63,7 @@ export const Buttons = styled.div`
 
 const KategoriHeader = styled.div`
 	display: flex;
+	justify-content: space-between;
 	align-items: center;
 `
 
@@ -82,35 +87,30 @@ const KategoriCircle = styled.div`
 	}
 `
 
-const KategoriEmptyButtonWrapper = styled.div`
-	position: absolute;
-	right: 10px;
-`
-
 export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy }: HeaderProps) => {
 	const antallValgt = typeof antall === 'number' ? antall : getAntallRequest(paths, getValues)
 	return (
 		<KategoriHeader data-testid={dataCy}>
-			<span>{title}</span>
-			{antallValgt > 0 && (
-				<KategoriCircle data-testid={TestComponentSelectors.TITLE_TENOR_HEADER_COUNTER}>
-					<p>{antallValgt}</p>
-				</KategoriCircle>
-			)}
+			<div className="flexbox--flex-wrap">
+				<span>{title}</span>
+				{antallValgt > 0 && (
+					<KategoriCircle data-testid={TestComponentSelectors.TITLE_TENOR_HEADER_COUNTER}>
+						<p>{antallValgt}</p>
+					</KategoriCircle>
+				)}
+			</div>
 			{paths && (
-				<KategoriEmptyButtonWrapper>
-					<Button
-						onClick={(e) => {
-							e.stopPropagation()
-							emptyCategory?.(paths)
-						}}
-						data-testid={TestComponentSelectors.BUTTON_TENOR_CLEAR_HEADER}
-						variant={'tertiary'}
-						icon={<TrashIcon />}
-						size={'small'}
-						title="Tøm kategori"
-					/>
-				</KategoriEmptyButtonWrapper>
+				<Button
+					onClick={(e) => {
+						e.stopPropagation()
+						emptyCategory?.(paths)
+					}}
+					data-testid={TestComponentSelectors.BUTTON_TENOR_CLEAR_HEADER}
+					variant={'tertiary'}
+					icon={<TrashIcon />}
+					size={'small'}
+					title="Tøm kategori"
+				/>
 			)}
 		</KategoriHeader>
 	)

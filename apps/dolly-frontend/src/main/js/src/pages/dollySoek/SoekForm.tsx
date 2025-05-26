@@ -1,6 +1,6 @@
 import '@/styles/variables.less'
 import React, { useEffect, useState } from 'react'
-import { Accordion, Button } from '@navikt/ds-react'
+import { Button, Table } from '@navikt/ds-react'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import * as _ from 'lodash-es'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -155,23 +155,25 @@ export const SoekForm = () => {
 					<FormProvider {...formMethods}>
 						<Form control={control}>
 							<>
-								<div className="flexbox--flex-wrap">
-									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
-										<Accordion.Item defaultOpen={true}>
-											<Accordion.Header>
+								<Table size="small">
+									<Table.Body>
+										<Table.ExpandableRow
+											content={<Fagsystemer handleChangeList={handleChangeList} />}
+											defaultOpen={true}
+										>
+											<Table.HeaderCell>
 												<Header
 													title="Fagsystemer"
 													antall={antallFagsystemer}
 													paths={['registreRequest', 'miljoer']}
 													emptyCategory={emptyCategory}
 												/>
-											</Accordion.Header>
-											<Accordion.Content>
-												<Fagsystemer handleChangeList={handleChangeList} />
-											</Accordion.Content>
-										</Accordion.Item>
-										<Accordion.Item>
-											<Accordion.Header
+											</Table.HeaderCell>
+										</Table.ExpandableRow>
+										<Table.ExpandableRow
+											content={<Personinformasjon handleChange={handleChange} />}
+										>
+											<Table.HeaderCell
 												data-testid={TestComponentSelectors.EXPANDABLE_PERSONINFORMASJON}
 											>
 												<Header
@@ -181,13 +183,12 @@ export const SoekForm = () => {
 													getValues={getValues}
 													emptyCategory={emptyCategory}
 												/>
-											</Accordion.Header>
-											<Accordion.Content>
-												<Personinformasjon handleChange={handleChange} />
-											</Accordion.Content>
-										</Accordion.Item>
-										<Accordion.Item>
-											<Accordion.Header>
+											</Table.HeaderCell>
+										</Table.ExpandableRow>
+										<Table.ExpandableRow
+											content={<Adresser handleChangeAdresse={handleChangeAdresse} />}
+										>
+											<Table.HeaderCell>
 												<Header
 													title="Adresser"
 													antall={getAntallRequest(AdresserPaths)}
@@ -195,13 +196,17 @@ export const SoekForm = () => {
 													getValues={getValues}
 													emptyCategory={emptyCategory}
 												/>
-											</Accordion.Header>
-											<Accordion.Content>
-												<Adresser handleChangeAdresse={handleChangeAdresse} />
-											</Accordion.Content>
-										</Accordion.Item>
-										<Accordion.Item>
-											<Accordion.Header>
+											</Table.HeaderCell>
+										</Table.ExpandableRow>
+										<Table.ExpandableRow
+											content={
+												<Familierelasjoner
+													handleChange={handleChange}
+													handleChangeAdresse={handleChangeAdresse}
+												/>
+											}
+										>
+											<Table.HeaderCell>
 												<Header
 													title="Familierelasjoner"
 													antall={getAntallRequest(FamilierelasjonerPaths)}
@@ -209,16 +214,10 @@ export const SoekForm = () => {
 													getValues={getValues}
 													emptyCategory={emptyCategory}
 												/>
-											</Accordion.Header>
-											<Accordion.Content>
-												<Familierelasjoner
-													handleChange={handleChange}
-													handleChangeAdresse={handleChangeAdresse}
-												/>
-											</Accordion.Content>
-										</Accordion.Item>
-										<Accordion.Item>
-											<Accordion.Header>
+											</Table.HeaderCell>
+										</Table.ExpandableRow>
+										<Table.ExpandableRow content={<Identifikasjon handleChange={handleChange} />}>
+											<Table.HeaderCell>
 												<Header
 													title="Identifikasjon"
 													antall={getAntallRequest(IdentifikasjonPaths)}
@@ -226,13 +225,10 @@ export const SoekForm = () => {
 													getValues={getValues}
 													emptyCategory={emptyCategory}
 												/>
-											</Accordion.Header>
-											<Accordion.Content>
-												<Identifikasjon handleChange={handleChange} />
-											</Accordion.Content>
-										</Accordion.Item>
-										<Accordion.Item>
-											<Accordion.Header>
+											</Table.HeaderCell>
+										</Table.ExpandableRow>
+										<Table.ExpandableRow content={<Annet handleChange={handleChange} />}>
+											<Table.HeaderCell>
 												<Header
 													title="Annet"
 													antall={getAntallRequest(AnnetPaths)}
@@ -240,13 +236,10 @@ export const SoekForm = () => {
 													getValues={getValues}
 													emptyCategory={emptyCategory}
 												/>
-											</Accordion.Header>
-											<Accordion.Content>
-												<Annet handleChange={handleChange} />
-											</Accordion.Content>
-										</Accordion.Item>
-									</Accordion>
-								</div>
+											</Table.HeaderCell>
+										</Table.ExpandableRow>
+									</Table.Body>
+								</Table>
 								<Buttons className="flexbox--flex-wrap">
 									<Button
 										onClick={getNewResult}

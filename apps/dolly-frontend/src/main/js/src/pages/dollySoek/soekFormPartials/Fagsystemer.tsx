@@ -2,13 +2,14 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { SyntheticEvent } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { usePersonerTyper } from '@/utils/hooks/useDollySearch'
+import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 
 export const Fagsystemer = ({ handleChangeList }: any) => {
 	const { typer, loading: loadingTyper } = usePersonerTyper()
 
 	return (
-		<>
-			<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
+		<SoekKategori>
+			<div className="flexbox--full-width">
 				<FormSelect
 					name="registreRequest"
 					placeholder={loadingTyper ? 'Laster fagsystemer ...' : 'Velg fagsystemer ...'}
@@ -21,7 +22,7 @@ export const Fagsystemer = ({ handleChangeList }: any) => {
 					}}
 				/>
 			</div>
-			<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
+			<div className="flexbox--full-width">
 				<FormSelect
 					name="miljoer"
 					placeholder="Velg miljøer ..."
@@ -34,6 +35,6 @@ export const Fagsystemer = ({ handleChangeList }: any) => {
 					}}
 				/>
 			</div>
-		</>
+		</SoekKategori>
 	)
 }
