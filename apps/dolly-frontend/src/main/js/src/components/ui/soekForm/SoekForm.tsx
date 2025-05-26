@@ -44,6 +44,10 @@ export const SoekKategori = styled.div`
 		.dolly-form-input {
 			min-width: 0;
 			flex-grow: 0;
+
+			&.small {
+				width: 186px;
+			}
 			.navds-checkbox {
 				padding: var(--a-spacing-1-alt) 0;
 			}
@@ -114,27 +118,6 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy 
 			)}
 		</KategoriHeader>
 	)
-}
-
-export const requestIsEmpty = (updatedRequest: any) => {
-	let isEmpty = true
-	const flatten = (obj: any) => {
-		for (const i in obj) {
-			if (typeof obj[i] === 'object' && !Array.isArray(obj[i])) {
-				flatten(obj[i])
-			} else {
-				if (Array.isArray(obj[i])) {
-					if (obj[i].length > 0) {
-						isEmpty = false
-					}
-				} else if (obj[i] !== null && obj[i] !== false && obj[i] !== '') {
-					isEmpty = false
-				}
-			}
-		}
-	}
-	flatten(updatedRequest)
-	return isEmpty
 }
 
 const getAntallRequest = (liste: string[], getValues: UseFormGetValues<any>) => {
