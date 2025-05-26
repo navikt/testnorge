@@ -3,13 +3,15 @@ name: dokarkiv-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "libs/reactive-security/**"
-      - "libs/security-core/**"
-      - "proxies/dokarkiv-proxy/**"
-      - ".github/workflows/proxy.dokarkiv-proxy.yml"
+      - .github/workflows/proxy.dokarkiv-proxy.yml
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/dokarkiv-proxy/**
 
 jobs:
   workflow:

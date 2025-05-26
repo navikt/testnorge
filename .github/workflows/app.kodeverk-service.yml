@@ -3,13 +3,15 @@ name: kodeverk-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/security-core/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-security/**"
-      - "libs/data-transfer-objects/**"
-      - "apps/kodeverk-service/**"
-      - ".github/workflows/app.kodeverk-service.yml"
+      - .github/workflows/app.kodeverk-service.yml
+      - apps/kodeverk-service/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

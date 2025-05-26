@@ -3,14 +3,15 @@ name: bruker-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/integration-test/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-security/**"
-      - "libs/security-core/**"
-      - "apps/bruker-service/**"
-      - ".github/workflows/app.bruker-service.yml"
+      - .github/workflows/app.bruker-service.yml
+      - apps/bruker-service/**
+      - libs/data-transfer-objects/**
+      - libs/integration-test/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

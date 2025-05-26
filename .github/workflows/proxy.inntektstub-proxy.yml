@@ -3,11 +3,13 @@ name: inntektstub-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "proxies/inntektstub-proxy/**"
-      - ".github/workflows/proxy.inntektstub-proxy.yml"
+      - .github/workflows/proxy.inntektstub-proxy.yml
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/inntektstub-proxy/**
 
 jobs:
   workflow:
