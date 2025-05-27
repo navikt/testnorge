@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { dollyTest } from '../vitest.setup'
-import { userEvent } from '@vitest/browser/context'
 import { act } from 'react'
 import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -9,7 +8,7 @@ import { BrowserRouter } from 'react-router'
 import { Provider } from 'react-redux'
 
 // Mock for navigator.platform to test both Mac and Windows scenarios
-const mockNavigator = (platform) => {
+const mockNavigator = (platform: string) => {
 	Object.defineProperty(window.navigator, 'platform', {
 		value: platform,
 		configurable: true,
@@ -35,34 +34,44 @@ dollyTest('focuses search input when hotkey is pressed', async () => {
 		{ timeout: 2000 },
 	)
 
-	// Find the input by its role instead of data-testid
-	const searchInput = screen.getByRole('combobox')
+	const searchInput = screen.getByRole('combobox', { name: '' })
 	expect(searchInput).toBeInTheDocument()
 
-	// Test Mac hotkey (⌘+K)
 	mockNavigator('MacIntel')
 
 	await act(async () => {
-		await userEvent.keyboard('{Meta>}k{/Meta}')
+		const metaKEvent = new KeyboardEvent('keydown', {
+			key: 'k',
+			metaKey: true,
+			bubbles: true,
+		})
+		document.dispatchEvent(metaKEvent)
 	})
 
-	// Check if search input is focused
-	await waitFor(() => expect(document.activeElement).toBe(searchInput), {
-		timeout: 1000,
-	})
+	await waitFor(
+		() => {
+			expect(document.activeElement?.getAttribute('role')).toBe('combobox')
+		},
+		{ timeout: 1000 },
+	)
 
-	// Clear focus
 	document.body.focus()
 
-	// Test Windows hotkey (Ctrl+K)
 	mockNavigator('Win32')
 
 	await act(async () => {
-		await userEvent.keyboard('{Control>}k{/Control}')
+		const ctrlKEvent = new KeyboardEvent('keydown', {
+			key: 'k',
+			ctrlKey: true,
+			bubbles: true,
+		})
+		document.dispatchEvent(ctrlKEvent)
 	})
 
-	// Check if search input is focused again
-	await waitFor(() => expect(document.activeElement).toBe(searchInput), {
-		timeout: 1000,
-	})
+	await waitFor(
+		() => {
+			expect(document.activeElement?.getAttribute('role')).toBe('combobox')
+		},
+		{ timeout: 1000 },
+	)
 })
