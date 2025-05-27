@@ -23,10 +23,6 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - https://dolly-frontend-dev-unstable.intern.dev.nav.no/login/oauth2/code/aad
-        - http://localhost:8020/login/oauth2/code/aad
-        - http://localhost:3000/login/oauth2/code/aad
   accessPolicy:
     outbound:
       rules:
