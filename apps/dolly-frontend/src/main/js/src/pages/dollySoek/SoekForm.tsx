@@ -21,6 +21,7 @@ import { Adresser } from '@/pages/dollySoek/soekFormPartials/Adresser'
 import { Familierelasjoner } from '@/pages/dollySoek/soekFormPartials/Familierelasjoner'
 import { Identifikasjon } from '@/pages/dollySoek/soekFormPartials/Identifikasjon'
 import { Annet } from '@/pages/dollySoek/soekFormPartials/Annet'
+import { runningE2ETest } from '@/service/services/Request'
 
 export const dollySoekLocalStorageKey = 'dollySoek'
 export const personPath = 'personRequest'
@@ -172,10 +173,10 @@ export const SoekForm = () => {
 										</Table.ExpandableRow>
 										<Table.ExpandableRow
 											content={<Personinformasjon handleChange={handleChange} />}
+											data-testid={TestComponentSelectors.EXPANDABLE_PERSONINFORMASJON}
+											expandOnRowClick={runningE2ETest()}
 										>
-											<Table.HeaderCell
-												data-testid={TestComponentSelectors.EXPANDABLE_PERSONINFORMASJON}
-											>
+											<Table.HeaderCell>
 												<Header
 													title="Personinformasjon"
 													antall={getAntallRequest(PersoniformasjonPaths)}
