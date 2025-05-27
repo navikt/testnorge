@@ -10,10 +10,13 @@ import { MalPanel } from '@/pages/minSide/maler/MalPanel'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Buildings3Icon, PersonGroupIcon } from '@navikt/aksel-icons'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
 
 export default ({ brukerId }: { brukerId: string }) => {
 	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
+	const searchInputRef = React.useRef(null)
+	const shortcutKey = useSearchHotkey(searchInputRef)
 
 	const { maler: egneMaler, loading, mutate } = useMalbestillingBruker(brukerId)
 	const {
@@ -35,8 +38,11 @@ export default ({ brukerId }: { brukerId: string }) => {
 			<div className="flexbox--space">
 				<h2>Mine maler</h2>
 				<SearchField
+					ref={searchInputRef}
 					data-testid={TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL}
-					placeholder={'Søk etter mal'}
+					placeholder={`Søk etter mal`}
+					shortcutKey={shortcutKey}
+					style={{ width: '300px', marginRight: '-79px' }}
 					setText={setSearchText}
 				/>
 			</div>
