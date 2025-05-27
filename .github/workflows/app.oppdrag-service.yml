@@ -1,0 +1,23 @@
+name: oppdrag-service
+
+on:
+  push:
+    paths:
+      - "plugins/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/oppdrag-service/**"
+      - ".github/workflows/app.oppdrag-service.yml"
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      cluster: "dev-fss"
+      working-directory: "apps/oppdrag-service"
+      deploy-tag: "#deploy-oppdrag-service"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
