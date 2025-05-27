@@ -288,7 +288,7 @@ const FinnPersonBestilling = () => {
 					}}
 				>
 					<Icon fontSize={'1.5rem'} kind={'search'} />
-					<p style={{ marginLeft: '5px' }}>({shortcutKey})</p>
+					<p style={{ marginLeft: '5px' }}>{shortcutKey}</p>
 				</div>
 			</components.DropdownIndicator>
 		)

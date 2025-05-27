@@ -42,7 +42,7 @@ export const SearchField = ({
 					variant={'secondary'}
 					{...rest}
 				>
-					<Search.Button onClick={focusSearchInput}>({shortcutKey})</Search.Button>
+					<Search.Button onClick={focusSearchInput}>{shortcutKey}</Search.Button>
 				</Search>
 			</FormProvider>
 		</div>
