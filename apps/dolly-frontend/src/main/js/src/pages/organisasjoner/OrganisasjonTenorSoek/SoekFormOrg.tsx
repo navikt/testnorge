@@ -19,7 +19,7 @@ const SoekefeltWrapper = styled.div`
 	flex-direction: column;
 	margin-bottom: 20px;
 	background-color: white;
-	border: 1px solid #ccc;
+	border: 1px solid @color-bg-grey-border;
 	border-radius: 4px;
 	margin-top: -70px;
 	width: 100%;
