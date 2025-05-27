@@ -84,6 +84,10 @@ public class Bruker implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
     private Set<Testgruppe> favoritter = new HashSet<>();
 
+
+    @OneToMany(mappedBy = "bruker")
+    private Set<TeamBruker> teamMedlemskap = new HashSet<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

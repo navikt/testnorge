@@ -100,6 +100,11 @@ public class Testgruppe implements Serializable {
     @Column(name = "TAGS")
     private String tags;
 
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
+
+
     public List<Tags> getTags() {
 
         return isBlank(tags) ?
