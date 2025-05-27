@@ -13,6 +13,6 @@ import java.time.LocalDate;
 @AllArgsConstructor(staticName = "of")
 public class ExistsDatoDTO {
 
-    private Long antall;
     private LocalDate foedselsdato;
+    private Long antall;
 }

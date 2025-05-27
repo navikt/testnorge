@@ -7,6 +7,7 @@ import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
+import no.nav.testnav.identpool.util.IdentGeneratorUtility;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,7 +26,6 @@ public class IdenterAvailService {
     private static final int MAX_TPS_CALL_ATTEMPTS = 1;
 
     private final IdentRepository identRepository;
-    private final IdentGeneratorService identGeneratorService;
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final MapperFacade mapperFacade;
 
@@ -35,7 +35,7 @@ public class IdenterAvailService {
         oppdatertRequest.setAntall(antall);
 
         return Flux.range(0, MAX_TPS_CALL_ATTEMPTS)
-                .flatMap(i -> Mono.just(genererIdenter(oppdatertRequest))
+                .flatMap(i -> Mono.just(IdentGeneratorUtility.genererIdenter(request, new HashSet<>()))
                         .flatMapMany(genererteIdenter -> identRepository.findByPersonidentifikatorIn(genererteIdenter)
                                 .collectList()
                                 .map(databaseIdenter -> filtrerIdenter(genererteIdenter, databaseIdenter))
@@ -51,11 +51,6 @@ public class IdenterAvailService {
                                     }
                                 })))
                 .flatMap(Flux::from);
-    }
-
-    private Set<String> genererIdenter(HentIdenterRequest request) {
-
-        return identGeneratorService.genererIdenter(request, new HashSet<>());
     }
 
     private static Set<String> filtrerIdenter(Set<String> opprettedeIdenter, List<Ident> databaseIdenter) {

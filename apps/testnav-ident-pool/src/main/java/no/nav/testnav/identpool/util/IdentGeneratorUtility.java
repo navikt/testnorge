@@ -1,9 +1,8 @@
-package no.nav.testnav.identpool.service;
+package no.nav.testnav.identpool.util;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
-import no.nav.testnav.identpool.util.IdentGeneratorUtil;
-import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.security.SecureRandom;
@@ -28,8 +27,8 @@ import static no.nav.testnav.identpool.util.IdentGeneratorUtil.numberFormatter;
 import static no.nav.testnav.identpool.util.PersonidentUtil.generateFnr;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
-@Service
-public class IdentGeneratorService {
+@UtilityClass
+public class IdentGeneratorUtility {
 
     private static final int SYNTETISK = 4;
     private static final Random random = new SecureRandom();
@@ -38,12 +37,12 @@ public class IdentGeneratorService {
         return String.format("%s%1d%s", format.substring(0, 2), Integer.parseInt(format.substring(2, 3)) + SYNTETISK, format.substring(3));
     }
 
-    public Map<LocalDate, List<String>> genererIdenterMap(
+    public static Map<LocalDate, List<String>> genererIdenterMap(
             LocalDate foedtEtter,
             LocalDate foedtFoer,
             Identtype type,
-            boolean syntetiskIdent
-    ) {
+            boolean syntetiskIdent) {
+
         validateDates(foedtEtter, foedtFoer);
         int days = toIntExact(ChronoUnit.DAYS.between(foedtEtter, foedtFoer));
         BiFunction<LocalDate, Boolean, List<String>> numberGenerator = generatorMap.get(type);
@@ -59,7 +58,7 @@ public class IdentGeneratorService {
                 ));
     }
 
-    public Set<String> genererIdenter(HentIdenterRequest request, Set<String> identerIIdentPool) {
+    public static Set<String> genererIdenter(HentIdenterRequest request, Set<String> identerIIdentPool) {
 
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 
@@ -111,7 +110,7 @@ public class IdentGeneratorService {
         return identerIIdentPool;
     }
 
-    private void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
+    private static void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
 
         if (foedtEtter.isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Til dato (%s) kan ikke være etter før dato (%s)", foedtEtter, foedtFoer));

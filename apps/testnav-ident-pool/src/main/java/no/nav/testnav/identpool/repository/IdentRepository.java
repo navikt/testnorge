@@ -21,21 +21,6 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
 
     Mono<Boolean> existsByPersonidentifikator(String identifikator);
 
-    @Query(value = """
-            select count(i), i.foedslsdato from Ident i
-            where i.foedselsdato between :from and :to
-            and i.identtype = :identtype
-            and i.rekvireringsstatus = :rekvireringsstatus
-            and i.syntetisk = :syntetisk
-            group by i.foedslsdato
-            order by i.foedslsdato
-            """)
-    Flux<ExistsDato> countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
-                                                                                             LocalDate to,
-                                                                                             Identtype type,
-                                                                                             Rekvireringsstatus rekvireringsstatus,
-                                                                                             Boolean syntetisk);
-
     Mono<Ident> findByPersonidentifikator(String personidentifkator);
 
     Flux<Ident> findByPersonidentifikatorIn(List<String> personidentifikator);
@@ -47,7 +32,7 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
 
     Flux<Ident> findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
                                                                                        LocalDate to,
-                                                                                       Identtype type,
+                                                                                       Identtype identtype,
                                                                                        Rekvireringsstatus rekvireringsstatus,
                                                                                        Boolean syntetisk);
 
@@ -63,7 +48,7 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
                                      @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
 
     @Query(value = """
-            select count(i) from Ident i
+            select count(*) from Personidentifikator i
                         where i.rekvireringsstatus = :rekvireringsstatus
                         and i.foedselsdato > :foedtEtter
                         and i.syntetisk = false

@@ -9,8 +9,6 @@ import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.ExistsDatoDTO;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import no.nav.testnav.identpool.service.IdentGeneratorService;
-import no.nav.testnav.identpool.service.IdenterAvailService;
 import no.nav.testnav.identpool.util.IdentGeneratorUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,10 +23,13 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static no.nav.testnav.identpool.util.IdentGeneratorUtility.genererIdenterMap;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -45,86 +46,104 @@ public class AjourholdService {
     private static final int MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR = 10;
 
     private final IdentRepository identRepository;
-    private final IdentGeneratorService identGeneratorService;
     private final TpsMessagingConsumer tpsMessagingConsumer;
 
     public Flux<String> checkCriticalAndGenerate() {
 
-        int minYearMinus = 5;
+        int minYearMinus = 0;
 
         return Flux.range(LocalDate.now().minusYears(minYearMinus).getYear(), minYearMinus + 1)
                 .flatMap(year -> Flux.concat(
 //                        checkAndGenerateForDate(year, Identtype.FNR, false),
-                        checkAndGenerateForDate(year, Identtype.FNR, true),
+                        checkAndGenerateForDate(year, Identtype.FNR, true)));
 //                        checkAndGenerateForDate(year, Identtype.DNR, false),
-                        checkAndGenerateForDate(year, Identtype.DNR, true),
+//                        checkAndGenerateForDate(year, Identtype.DNR, true),
 //                        checkAndGenerateForDate(year, Identtype.BOST, false),
-                        checkAndGenerateForDate(year, Identtype.BOST, true)));
+//                        checkAndGenerateForDate(year, Identtype.BOST, true)));
     }
 
+    /**
+     * Sjekker om det finnes identer som mangler i ident-pool for et gitt år og type.
+     *
+     * @param year
+     * @param type
+     * @param syntetiskIdent
+     * @return
+     */
     protected Mono<String> checkAndGenerateForDate(
             int year,
             Identtype type,
             boolean syntetiskIdent) {
 
-        return countNumberOfMissingIdents(year, type, syntetiskIdent)
-                .collectList()
-                .filter(list -> list.stream().anyMatch(entry -> entry.getAntall() > 0))
-                .flatMap(numberOfMissingIdents -> {
-                    if (numberOfMissingIdents > 0) {
-                        return generateForYear(year, type, numberOfMissingIdents, syntetiskIdent)
-                                .flatMapMany(Flux::fromIterable)
-                                .map(ident -> IdentGeneratorUtil.createIdent(ident, LEDIG, null))
-                                .flatMap(identRepository::save)
-                                .count()
-                                .map(Integer.class::cast);
-                    } else {
-                        return Mono.just(numberOfMissingIdents);
-                    }
-                })
-                .doOnNext(antall -> log.info("Ajourhold: år {} {} {} identer har fått allokert antall nye: {}",
-                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall))
-                .map(antall -> "Ajourhold: år %d %s %s identer har fått allokert antall nye: %d%n".formatted(
-                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall));
-    }
-
-    private Flux<ExistsDatoDTO> countNumberOfMissingIdents(
-            int year,
-            Identtype type,
-            Boolean syntetiskIdent) {
-
         var antallPerDag = adjustForYear(year, IdentDistribusjonUtil.antallPersonerPerDagPerAar(year));
 
-        return identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
+        return countNumberOfMissingIdents(year, type, antallPerDag, syntetiskIdent)
+                .filter(list -> list.values().stream().anyMatch(antall -> antall > 0))
+                .flatMap(missingIdents ->
+                        Mono.just(genererIdenterMap(LocalDate.of(year, 1, 1),
+                                        LocalDate.of(year + 1, 1, 1), type, syntetiskIdent))
+                                .flatMap(generated -> filterIdents(generated, missingIdents))
+//                                .flatMapMany(Flux::fromIterable)
+//                                .map(ident -> IdentGeneratorUtil.createIdent(ident, LEDIG, null))
+//                                .flatMap(identRepository::save)
+//                                .count()
+//                                .map(Integer.class::cast))
+//                .doOnNext(antall -> log.info("Ajourhold: år {} {} {} identer har fått allokert antall nye: {}",
+//                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall))
+                .map(antall -> "Ajourhold: år %d %s %s identer har fått allokert antall nye: %d%n".formatted(
+                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall.size())));
+    }
+
+    private Mono<Map<LocalDate, Long>> countNumberOfMissingIdents(
+            int year,
+            Identtype type,
+            int antallPerDag,
+            Boolean syntetiskIdent) {
+
+        log.info("Request for å hente antall identer i ident-pool for {} {} {}",
+                year, type, isTrue(syntetiskIdent) ? NAV_SYNTETISKE : VANLIGE);
+
+        return identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
                         LocalDate.of(year, 1, 1),
-                        LocalDate.of(year + 1, 1, 1),
+                        LocalDate.of(year, 12, 31),
                         type,
                         LEDIG,
                         syntetiskIdent)
-                .map(exists -> ExistsDatoDTO.of(Math.max(antallPerDag - exists.getAntall(), 0), exists.getFoedselsdato()));
+                .collect(Collectors.groupingBy(Ident::getFoedselsdato, Collectors.counting()))
+                .flatMap(avail -> generateDatesForYear(year)
+                        .map(date -> Map.entry(date, adjustTotal(avail.get(date), antallPerDag)))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+                .doOnNext(missing -> log.info("Antall identer som mangler i ident-pool for {} {}: {}",
+                        year, type, missing.values().stream().mapToLong(Long::longValue).sum()));
     }
 
-    protected Mono<List<String>> generateForYear(
-            int year,
-            Identtype type,
-            int numberOfIdents,
-            boolean syntetiskIdent) {
+    private long adjustTotal(Long total, int antallPerDag) {
 
-        int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year + 1) * 2;
-        antallPerDag = adjustForYear(year, antallPerDag);
-
-        var firstDate = LocalDate.of(year, 1, 1);
-        var lastDate = LocalDate.of(year + 1, 1, 1);
-        if (lastDate.isAfter(LocalDate.now())) {
-            lastDate = LocalDate.of(year, LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth());
+        if (isNull(total)) {
+            return antallPerDag;
+        } else if (total < antallPerDag) {
+            return antallPerDag - total;
+        } else {
+            return 0;
         }
-        if (lastDate.isEqual(firstDate)) {
-            lastDate = lastDate.plusDays(1);
-        }
+    }
 
-        var pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type, syntetiskIdent);
+    private static Flux<LocalDate> generateDatesForYear(int year) {
 
-        return filterIdents(antallPerDag, pinMap, numberOfIdents, syntetiskIdent);
+        var startDate = LocalDate.of(year, 1, 1);
+        var endDate = LocalDate.of(year, 12, 31);
+
+        return Flux.generate(
+                () -> startDate,
+                (date, sink) -> {
+                    sink.next(date);
+                    var nextDate = date.plusDays(1);
+                    if (nextDate.isAfter(endDate)) {
+                        sink.complete();
+                    }
+                    return nextDate;
+                }
+        );
     }
 
     private int adjustForYear(int year, int antallPerDag) {
@@ -143,50 +162,19 @@ public class AjourholdService {
         return antallPerDag;
     }
 
-    private Mono<List<String>> filterIdents(int identsPerDay, Map<LocalDate, List<String>> pinMap, int numberOfIdents, boolean syntetiskIdent) {
+    private Mono<List<String>> filterIdents(Map<LocalDate, List<String>> genererteIdenter,
+                                            Map<LocalDate, Long> missingIdents) {
 
-        return filterAgainstDatabase(identsPerDay, pinMap)
+        return Flux.fromIterable(genererteIdenter.entrySet())
+                .flatMap(entry -> Flux.range(0, missingIdents.getOrDefault(entry.getKey(), 10L).intValue())
+                        .map(i -> entry.getValue().get(i))
+                        .flatMap(ident -> identRepository.findByPersonidentifikator(ident)
+                                .doOnNext(exists -> log.debug("Sjekker om ident {} finnes i ident-pool: {}", ident, exists))
+                                .map(Ident::getPersonidentifikator)))
+                .doOnNext(t -> log.info("Ident {} er allokert for dato", t))
                 .collectList()
-                .flatMap(identsNotInDatabase -> {
-                    if (isTrue(syntetiskIdent)) {
-                        return Mono.just(identsNotInDatabase);
-                    } else {
-                        return tpsMessagingConsumer.getIdenterStatuser(new HashSet<>(identsNotInDatabase))
-                                .flatMap(tpsStatus -> {
-                                    if (tpsStatus.isInUse()) {
-                                        return identRepository.save(IdentGeneratorUtil.createIdent(tpsStatus.getIdent(), Rekvireringsstatus.I_BRUK, "TPS"))
-                                                .flatMap(ident -> Mono.empty());
-                                    } else {
-                                        return Mono.just(tpsStatus.getIdent());
-                                    }
-                                })
-                                .collectList();
-                    }
-                })
-                .flatMapMany(Flux::fromIterable)
-                .sort(new RandomComparator<>())
-                .collectList()
-                .doOnNext(antall -> log.info("Antall identer som er tilgjengelig for allokering: {}", antall.size()))
-                .flatMap(ledigeIdenter -> {
-                    if (ledigeIdenter.size() > numberOfIdents) {
-                        return Mono.just(ledigeIdenter.subList(0, numberOfIdents));
-                    } else {
-                        return Mono.just(ledigeIdenter);
-                    }
-                });
-//                .flatMapMany(Flux::fromIterable)
-//                .map(ident -> IdentGeneratorUtil.createIdent(ident, LEDIG, null))
-//                .flatMap(identRepository::save)
-//                .collectList()
-//                .map(List::size);
-    }
-
-    private Flux<String> filterAgainstDatabase(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
-
-        return Flux.fromIterable(pinMap.entrySet())
-                .flatMap(entry -> Flux.range(0, Math.min(antallPerDag, entry.getValue().size()))
-                        .flatMap(i -> identRepository.existsByPersonidentifikator(entry.getValue().get(i))
-                                .flatMap(exists -> isTrue(exists) ? Mono.empty() : Mono.just(entry.getValue().get(i)))));
+                .doOnNext(antall -> log.info("Antall identer allokert: {} for år {}", antall.size(),
+                        genererteIdenter.keySet().stream().map(LocalDate::getYear).findFirst().orElse(null)));
     }
 
     /**
