@@ -3,9 +3,9 @@ name: team-dolly-lokal-app
 on:
   push:
     paths:
-      - "plugins/**"
-      - ".nais/team-dolly-lokal-app.yml"
-      - ".github/workflows/app.team-dolly-lokal-app.yml"
+      - plugins/**
+      - .nais/team-dolly-lokal-app.yml
+      - .github/workflows/app.team-dolly-lokal-app.yml
 
 jobs:
   deploy:

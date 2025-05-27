@@ -3,19 +3,19 @@ name: organisasjon-faste-data-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/avro-schema/**"
-      - "libs/commands/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/database/**"
-      - "libs/kafka-config/**"
-      - "libs/kafka-producers/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "apps/organisasjon-faste-data-service/**"
-      - ".github/workflows/app.organisasjon-faste-data-service.yml"
+      - .github/workflows/app.organisasjon-faste-data-service.yml
+      - apps/organisasjon-faste-data-service/**
+      - libs/avro-schema/**
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/kafka-config/**
+      - libs/kafka-producers/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:
