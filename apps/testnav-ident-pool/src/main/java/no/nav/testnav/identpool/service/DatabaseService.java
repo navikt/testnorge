@@ -34,10 +34,11 @@ public class DatabaseService {
         var availableIdentsRequest = mapperFacade.map(request, HentIdenterRequest.class);
 
         return getAntall(availableIdentsRequest)
+                .doOnNext(availableIdents -> log.info("Antall ledige identer: {}", availableIdents))
                 .flatMapMany(antall -> {
                     if (antall > 0) {
                         return getPage(request,
-                                PageRequest.of(RANDOM.nextInt(antall / request.getAntall()), request.getAntall()));
+                                PageRequest.of(RANDOM.nextInt((antall > request.getAntall() ? antall : request.getAntall()) / request.getAntall()), request.getAntall()));
                     } else {
                         return Flux.empty();
                     }

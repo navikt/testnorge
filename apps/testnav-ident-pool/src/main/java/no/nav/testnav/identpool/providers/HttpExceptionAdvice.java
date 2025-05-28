@@ -50,7 +50,15 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
                 .path(serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL))
                 .timestamp(LocalDateTime.now())
                 .build();
-        log.warn("HttpException: {}", exceptionInfo);
+
+        if (exceptionInfo.getStatus() >= 500) {
+            log.error("Internal Server Error: {}", exceptionInfo, exception);
+        } else if (exceptionInfo.getStatus() >= 400) {
+            log.warn("Client Error: {}", exceptionInfo);
+        } else {
+            log.info("Handled Exception: {}", exceptionInfo);
+        }
+
         return exceptionInfo;
     }
 
