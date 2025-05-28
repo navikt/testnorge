@@ -71,7 +71,6 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
             LocalDate foedtEtter,
             LocalDate foedtFoer);
 
-
     Flux<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,

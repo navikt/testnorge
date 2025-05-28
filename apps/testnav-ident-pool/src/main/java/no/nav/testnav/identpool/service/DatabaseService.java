@@ -1,6 +1,7 @@
 package no.nav.testnav.identpool.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
@@ -18,6 +19,7 @@ import java.util.Random;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DatabaseService {
@@ -35,7 +37,7 @@ public class DatabaseService {
                 .flatMapMany(antall -> {
                     if (antall > 0) {
                         return getPage(request,
-                                PageRequest.of(RANDOM.nextInt(antall/request.getAntall()), request.getAntall()));
+                                PageRequest.of(RANDOM.nextInt(antall / request.getAntall()), request.getAntall()));
                     } else {
                         return Flux.empty();
                     }
@@ -47,14 +49,18 @@ public class DatabaseService {
         return nonNull(request.getKjoenn()) ?
 
                 identRepository.countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
-                        Rekvireringsstatus.LEDIG, request.getIdenttype(),
-                        isTrue(request.getSyntetisk()), request.getKjoenn(),
-                        request.getFoedtEtter(), request.getFoedtFoer()) :
+                                Rekvireringsstatus.LEDIG, request.getIdenttype(),
+                                isTrue(request.getSyntetisk()), request.getKjoenn(),
+                                request.getFoedtEtter(), request.getFoedtFoer())
+                        .doOnNext(antall -> log.info("Funnet antall ledige inkl kjoenn: {}", antall))
+
+                :
 
                 identRepository.countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
-                        Rekvireringsstatus.LEDIG, request.getIdenttype(),
-                        isTrue(request.getSyntetisk()),
-                                request.getFoedtEtter(), request.getFoedtFoer());
+                                Rekvireringsstatus.LEDIG, request.getIdenttype(),
+                                isTrue(request.getSyntetisk()),
+                                request.getFoedtEtter(), request.getFoedtFoer())
+                        .doOnNext(antall -> log.info("Funnet antall ledige uten spesifisert kjoenn: {}", antall));
     }
 
     private Flux<Ident> getPage(HentIdenterRequest request, Pageable page) {
@@ -64,13 +70,13 @@ public class DatabaseService {
                 identRepository.findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
                         Rekvireringsstatus.LEDIG, request.getIdenttype(),
                         isTrue(request.getSyntetisk()), request.getKjoenn(),
-                        request.getFoedtEtter(), request.getFoedtFoer(), page
-                ) :
+                        request.getFoedtEtter(), request.getFoedtFoer(), page)
+
+                :
 
                 identRepository.findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
                         Rekvireringsstatus.LEDIG, request.getIdenttype(),
                         isTrue(request.getSyntetisk()),
-                        request.getFoedtEtter(), request.getFoedtFoer(), page
-                );
+                        request.getFoedtEtter(), request.getFoedtFoer(), page);
     }
 }

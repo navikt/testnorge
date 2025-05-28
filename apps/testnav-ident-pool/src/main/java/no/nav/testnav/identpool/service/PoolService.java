@@ -71,28 +71,34 @@ public class PoolService {
                 .collectList()
                 .flatMap(ledigeIdenter -> {
                     if (ledigeIdenter.size() < request.getAntall()) {
-                        return identerAvailService.generateAndCheckIdenter(request,
-                                        isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN)
-                                .map(this::buildIdent)
-                                .flatMap(identRepository::save)
-                                .takeWhile(ident -> counter.getAndDecrement() > 0)
-                                .collectList()
-                                .doOnNext(ident -> log.info("Antall identer allokert: {}", ident.size()))
-                                .flatMap(ledige -> {
-                                    if (ledige.size() < request.getAntall()) {
-                                        return Mono.error(throwException(request));
-                                    } else {
-                                        logRequest(request);
-                                        return getListMono(request, ledige);
-                                    }
-                                });
+                        return generateIdenter(request, counter);
                     } else {
-                        return getListMono(request, ledigeIdenter);
+                        return oppdaterIBruk(request, ledigeIdenter);
+                    }
+                })
+                .switchIfEmpty(generateIdenter(request, counter));
+    }
+
+    private Mono<List<String>> generateIdenter(HentIdenterRequest request, AtomicInteger counter) {
+
+        return identerAvailService.generateAndCheckIdenter(request,
+                        isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN)
+                .map(this::buildIdent)
+                .flatMap(identRepository::save)
+                .takeWhile(ident -> counter.getAndDecrement() > 0)
+                .collectList()
+                .doOnNext(ident -> log.info("Antall identer allokert: {}", ident.size()))
+                .flatMap(ledige -> {
+                    if (ledige.size() < request.getAntall()) {
+                        return Mono.error(throwException(request));
+                    } else {
+                        logRequest(request);
+                        return oppdaterIBruk(request, ledige);
                     }
                 });
     }
 
-    private Mono<List<String>> getListMono(HentIdenterRequest request, List<Ident> ledige) {
+    private Mono<List<String>> oppdaterIBruk(HentIdenterRequest request, List<Ident> ledige) {
 
         var counter = new AtomicInteger(request.getAntall());
 

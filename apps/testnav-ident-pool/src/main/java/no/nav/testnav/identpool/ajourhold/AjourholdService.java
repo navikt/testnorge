@@ -6,7 +6,6 @@ import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
-import no.nav.testnav.identpool.dto.ExistsDatoDTO;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.util.IdentGeneratorUtil;
@@ -15,16 +14,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -37,7 +31,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class AjourholdService {
 
-    private static final LocalDate FOEDT_ETTER = LocalDate.of(1870, 1, 1);
+    private static final LocalDate FOEDT_ETTER = LocalDate.of(2023, 1, 1);
     private static final String NAV_SYNTETISKE = "NAV-syntetiske";
     private static final String VANLIGE = "vanlige";
 
@@ -50,16 +44,16 @@ public class AjourholdService {
 
     public Flux<String> checkCriticalAndGenerate() {
 
-        int minYearMinus = 0;
+        var yearsToGenerate = ChronoUnit.YEARS.between(FOEDT_ETTER, LocalDate.now());
 
-        return Flux.range(LocalDate.now().minusYears(minYearMinus).getYear(), minYearMinus + 1)
+        return Flux.range(LocalDate.now().minusYears(yearsToGenerate).getYear(), (int) yearsToGenerate + 1)
                 .flatMap(year -> Flux.concat(
-//                        checkAndGenerateForDate(year, Identtype.FNR, false),
-                        checkAndGenerateForDate(year, Identtype.FNR, true)));
-//                        checkAndGenerateForDate(year, Identtype.DNR, false),
-//                        checkAndGenerateForDate(year, Identtype.DNR, true),
-//                        checkAndGenerateForDate(year, Identtype.BOST, false),
-//                        checkAndGenerateForDate(year, Identtype.BOST, true)));
+                        checkAndGenerateForDate(year, Identtype.FNR, false),
+                        checkAndGenerateForDate(year, Identtype.FNR, true),
+                        checkAndGenerateForDate(year, Identtype.DNR, false),
+                        checkAndGenerateForDate(year, Identtype.DNR, true),
+                        checkAndGenerateForDate(year, Identtype.BOST, false),
+                        checkAndGenerateForDate(year, Identtype.BOST, true)));
     }
 
     /**
@@ -78,20 +72,18 @@ public class AjourholdService {
         var antallPerDag = adjustForYear(year, IdentDistribusjonUtil.antallPersonerPerDagPerAar(year));
 
         return countNumberOfMissingIdents(year, type, antallPerDag, syntetiskIdent)
-                .filter(list -> list.values().stream().anyMatch(antall -> antall > 0))
                 .flatMap(missingIdents ->
                         Mono.just(genererIdenterMap(LocalDate.of(year, 1, 1),
                                         LocalDate.of(year + 1, 1, 1), type, syntetiskIdent))
                                 .flatMap(generated -> filterIdents(generated, missingIdents))
-//                                .flatMapMany(Flux::fromIterable)
-//                                .map(ident -> IdentGeneratorUtil.createIdent(ident, LEDIG, null))
-//                                .flatMap(identRepository::save)
-//                                .count()
-//                                .map(Integer.class::cast))
-//                .doOnNext(antall -> log.info("Ajourhold: år {} {} {} identer har fått allokert antall nye: {}",
-//                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall))
-                .map(antall -> "Ajourhold: år %d %s %s identer har fått allokert antall nye: %d%n".formatted(
-                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall.size())));
+                                .flatMapMany(Flux::fromIterable)
+                                .map(ident -> IdentGeneratorUtil.createIdent(ident, LEDIG, null))
+                                .flatMap(identRepository::save)
+                                .count()
+                                .doOnNext(antall -> log.info("Ajourhold: år {} {} {} identer har fått allokert antall nye: {}",
+                                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall))
+                                .map(antall -> "Ajourhold: år %d %s %s identer har fått allokert antall nye: %d%n".formatted(
+                                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall)));
     }
 
     private Mono<Map<LocalDate, Long>> countNumberOfMissingIdents(
@@ -113,8 +105,8 @@ public class AjourholdService {
                 .flatMap(avail -> generateDatesForYear(year)
                         .map(date -> Map.entry(date, adjustTotal(avail.get(date), antallPerDag)))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-                .doOnNext(missing -> log.info("Antall identer som mangler i ident-pool for {} {}: {}",
-                        year, type, missing.values().stream().mapToLong(Long::longValue).sum()));
+                .doOnNext(missing -> log.info("Antall identer som mangler i ident-pool for {} {} {}: {}",
+                        year, type, isTrue(syntetiskIdent) ? NAV_SYNTETISKE : VANLIGE, missing.values().stream().mapToLong(Long::longValue).sum()));
     }
 
     private long adjustTotal(Long total, int antallPerDag) {
@@ -166,12 +158,10 @@ public class AjourholdService {
                                             Map<LocalDate, Long> missingIdents) {
 
         return Flux.fromIterable(genererteIdenter.entrySet())
-                .flatMap(entry -> Flux.range(0, missingIdents.getOrDefault(entry.getKey(), 10L).intValue())
-                        .map(i -> entry.getValue().get(i))
-                        .flatMap(ident -> identRepository.findByPersonidentifikator(ident)
-                                .doOnNext(exists -> log.debug("Sjekker om ident {} finnes i ident-pool: {}", ident, exists))
-                                .map(Ident::getPersonidentifikator)))
-                .doOnNext(t -> log.info("Ident {} er allokert for dato", t))
+                .flatMap(entry -> Flux.fromIterable(entry.getValue())
+                        .concatMap(ident -> identRepository.existsByPersonidentifikator(ident)
+                                .flatMap(exist -> isTrue(exist) ? Mono.empty() : Mono.just(ident)))
+                        .take(missingIdents.get(entry.getKey())))
                 .collectList()
                 .doOnNext(antall -> log.info("Antall identer allokert: {} for år {}", antall.size(),
                         genererteIdenter.keySet().stream().map(LocalDate::getYear).findFirst().orElse(null)));
@@ -205,30 +195,5 @@ public class AjourholdService {
                         .collectList()
                         .doOnNext(usedIdents -> log.info("Fjernet {} identer som er i bruk i prod, " +
                                 "men som var markert som LEDIG i ident-pool.", usedIdents.size())));
-    }
-
-    private static class RandomComparator<T> implements Comparator<T> {
-
-        private final Map<T, Integer> map = new IdentityHashMap<>();
-        private final Random random;
-
-        public RandomComparator() {
-            this(new SecureRandom());
-        }
-
-        public RandomComparator(Random random) {
-            this.random = random;
-        }
-
-        @Override
-        public int compare(T t1, T t2) {
-            return Integer.compare(valueFor(t1), valueFor(t2));
-        }
-
-        private int valueFor(T t) {
-            synchronized (map) {
-                return map.computeIfAbsent(t, ignore -> random.nextInt());
-            }
-        }
     }
 }
