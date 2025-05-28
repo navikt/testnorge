@@ -29,8 +29,8 @@ import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 @DollySpringBootTest(classes = {ComponentTestConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class ComponentTestbase {
+
     protected static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
-    protected static final String FINNESHOSSKATT_V1_BASEURL = "/api/v1/finneshosskatt";
 
     @Autowired
     protected IdentRepository identRepository;
@@ -59,7 +59,6 @@ public abstract class ComponentTestbase {
                 .identtype(identtype)
                 .personidentifikator(ident)
                 .rekvireringsstatus(rekvireringsstatus)
-                .finnesHosSkatt(false)
                 .kjoenn(Kjoenn.MANN)
                 .foedselsdato(LocalDate.of(1980, 10, day))
                 .syntetisk(isSyntetisk(ident))

@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,19 +39,19 @@ public class TpsMessagingConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Set<TpsStatusDTO> getIdenterStatuser(Set<String> identer) {
-        return new HashSet<>(getIdenterStatus(new ArrayList<>(identer), Set.of("zz"), status -> !status.getMiljoer().isEmpty()));
+    public Flux<TpsStatusDTO> getIdenterStatuser(Set<String> identer) {
+        return getIdenterStatus(new ArrayList<>(identer), Set.of("zz"), status -> !status.getMiljoer().isEmpty());
     }
 
-    public List<TpsStatusDTO> getIdenterProdStatus(Set<String> identer) {
+    public Flux<TpsStatusDTO> getIdenterProdStatus(Set<String> identer) {
         return getIdenterStatus(new ArrayList<>(identer), Set.of(NO_ENV), status -> status.getMiljoer().contains("p"));
     }
 
-    private List<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, TpsValidation validation) {
+    private Flux<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, TpsValidation validation) {
 
-        var startTid = System.currentTimeMillis();
+//        var startTid = System.currentTimeMillis();
 
-        var response = tokenExchange.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / PAGESIZE + 1)
                         .flatMap(page -> new TpsMessagingGetCommand(webClient, token.getTokenValue(),
                                 identer.subList(page * PAGESIZE, Math.min(identer.size(), (page + 1) * PAGESIZE)),
@@ -60,12 +59,10 @@ public class TpsMessagingConsumer {
                                 .map(status -> TpsStatusDTO.builder()
                                         .ident(status.getIdent())
                                         .inUse(validation.apply(status))
-                                        .build())))
-                .collectList()
-                .block();
+                                        .build())));
 
-        log.info("Kall til TPS med {} identer tok {} ms", identer.size(), System.currentTimeMillis() - startTid);
+//        log.info("Kall til TPS med {} identer tok {} ms", identer.size(), System.currentTimeMillis() - startTid);
 
-        return response;
+//        return response;
     }
 }

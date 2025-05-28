@@ -3,7 +3,10 @@ package no.nav.testnav.identpool.config;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
-import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -11,7 +14,8 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
-@Import({ApplicationCoreConfig.class})
+@Import({CoreConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class})
 @EnableRetry
 @EnableScheduling
 public class ApplicationConfig {
@@ -24,5 +28,11 @@ public class ApplicationConfig {
     @Bean
     public MapperFacade mapperFacade() {
         return mapperFactory().getMapperFacade();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(value = ErrorProperties.class)
+    public ErrorProperties errorProperties() {
+        return new ErrorProperties();
     }
 }
