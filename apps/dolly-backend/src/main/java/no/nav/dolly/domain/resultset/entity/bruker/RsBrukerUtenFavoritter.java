@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
+import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 
 @Setter
 @Getter
@@ -20,4 +21,5 @@ public class RsBrukerUtenFavoritter {
     private String brukernavn;
     private Brukertype brukertype;
     private String epost;
+    private RsTeam gjeldendeTeam;
 }
