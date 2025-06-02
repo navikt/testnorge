@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO;
 import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -17,21 +16,19 @@ import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.VERGEMAA
 @UtilityClass
 public class VergemaalFylkesembeterUtility {
 
-    private static final List<Map<String, String>> fylkesembeter = new ArrayList<>();
+    private static final List<Map<String, String>> fylkesembeter = List.of(
 
-    static {
-        fylkesembeter.add(Map.of("FMAV", "Statsforvalter i Agder"));
-        fylkesembeter.add(Map.of("FMIN", "Statsforvalter i Innlandet"));
-        fylkesembeter.add(Map.of("FMMR", "Statsforvalter i Møre og Romsdal"));
-        fylkesembeter.add(Map.of("FMNO", "Statsforvalter i Nordland"));
-        fylkesembeter.add(Map.of("FMOV", "Statsforvalter i Østfold, Buskerud, Oslo og Akershus"));
-        fylkesembeter.add(Map.of("FMRO", "Statsforvalter i Rogaland"));
-        fylkesembeter.add(Map.of("FMTF", "Statsforvalter i Troms og Finnmark"));
-        fylkesembeter.add(Map.of("FMTL", "Statsforvalter i Trøndelag"));
-        fylkesembeter.add(Map.of("FMVL", "Statsforvaltar i Vestland"));
-        fylkesembeter.add(Map.of("FMVT", "Statsforvalter i Vestfold og Telemark"));
-
-    }
+            Map.of("FMAV", "Statsforvalter i Agder"),
+            Map.of("FMIN", "Statsforvalter i Innlandet"),
+            Map.of("FMMR", "Statsforvalter i Møre og Romsdal"),
+            Map.of("FMNO", "Statsforvalter i Nordland"),
+            Map.of("FMOV", "Statsforvalter i Østfold, Buskerud, Oslo og Akershus"),
+            Map.of("FMRO", "Statsforvalter i Rogaland"),
+            Map.of("FMTF", "Statsforvalter i Troms og Finnmark"),
+            Map.of("FMTL", "Statsforvalter i Trøndelag"),
+            Map.of("FMVL", "Statsforvaltar i Vestland"),
+            Map.of("FMVT", "Statsforvalter i Vestfold og Telemark")
+    );
 
     public static KodeverkDTO getKodeverk() {
 
