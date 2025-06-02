@@ -8,9 +8,6 @@ on:
         description: "Directory to scan, e.g. apps/dolly-backend. Defaults to whole repo."
         default: "."
         required: true
-    secrets:
-      SLACK_DEAD_URLS_WEBHOOK_URL:
-        required: true
 
 jobs:
   markdown:
