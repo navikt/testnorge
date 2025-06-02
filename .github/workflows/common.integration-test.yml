@@ -26,7 +26,7 @@ jobs:
           java-version: 21
           distribution: 'temurin'
       - name: "Gradle"
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
       - name: "Build"
@@ -44,7 +44,7 @@ jobs:
           echo Wait on service...
           bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' ${{ inputs.healthcheck }})" != "200" ]]; do echo ...; sleep 5; done; echo Service is up;'
       - name: "Run integration tests"
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
       - name: "Build"
