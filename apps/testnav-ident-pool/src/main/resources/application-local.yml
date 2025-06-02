@@ -14,7 +14,5 @@ spring:
     password: ${sm\://testnav-identpool-local}
 
 consumers:
-  tps:
-    messaging:
-      service:
-        url: https://testnav-tps-messaging-service.intern.dev.nav.no
+  tps-messaging-service:
+    url: https://testnav-tps-messaging-service.intern.dev.nav.no

@@ -173,6 +173,7 @@ public class AjourholdService {
     public Mono<List<Ident>> getIdentsAndCheckProd() {
 
         return identRepository.countAllIkkeSyntetisk(LEDIG, FOEDT_ETTER)
+                .doOnNext(count -> log.info("Antall identer som er LEDIG i ident-pool: {}", count))
                 .filter(count -> count > 0)
                 .flatMap(count -> Flux.range(0, (count / MAX_SIZE_TPS_QUEUE) + 1)
                         .flatMap(i -> identRepository.findAllIkkeSyntetisk(LEDIG, FOEDT_ETTER, PageRequest.of(i, MAX_SIZE_TPS_QUEUE)))

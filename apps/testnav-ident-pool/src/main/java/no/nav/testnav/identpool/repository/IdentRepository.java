@@ -39,7 +39,7 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
     Mono<Long> countByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype);
 
     @Query(value = """
-            from Ident i
+            select * from Personidentifikator i
                         where i.rekvireringsstatus = :rekvireringsstatus
                         and i.foedselsdato > :foedtEtter
                         and i.syntetisk = false
