@@ -85,8 +85,15 @@ public class Bruker implements Serializable {
     private Set<Testgruppe> favoritter = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "bruker")
-    private Set<TeamBruker> teamMedlemskap = new HashSet<>();
+    @ManyToMany
+    @Builder.Default
+    @JoinTable(name = "TEAM_BRUKER",
+            joinColumns = @JoinColumn(name = "bruker_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id"))
+    private Set<Team> teamMedlemskap = new HashSet<>();
+
+    @JoinColumn(name = "GJELDENDE_TEAM_ID")
+    private Team gjeldendeTeam;
 
     @Override
     public boolean equals(Object o) {
@@ -118,5 +125,5 @@ public class Bruker implements Serializable {
                 .toHashCode();
     }
 
-    public enum Brukertype {AZURE, BANKID}
+    public enum Brukertype {AZURE, BANKID, TEAM}
 }

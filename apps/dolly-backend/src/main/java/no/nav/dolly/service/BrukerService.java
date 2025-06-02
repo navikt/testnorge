@@ -1,15 +1,18 @@
 package no.nav.dolly.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
@@ -17,6 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
@@ -32,6 +36,7 @@ public class BrukerService {
 
     private final BrukerRepository brukerRepository;
     private final TestgruppeRepository testgruppeRepository;
+    private final TeamRepository teamRepository;
     private final GetUserInfo getUserInfo;
     private final BrukerServiceConsumer brukerServiceConsumer;
 
@@ -59,7 +64,7 @@ public class BrukerService {
         return fetchOrCreateBruker(null);
     }
 
-    @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     public Bruker createBruker() {
         return brukerRepository.save(getAuthUser(getUserInfo));
     }
@@ -87,6 +92,29 @@ public class BrukerService {
         return bruker;
     }
 
+    @Transactional
+    public Bruker setGjeldendeTeam(Long teamId) {
+        Bruker bruker = fetchOrCreateBruker();
+
+        if (teamId == null) {
+            bruker.setGjeldendeTeam(null);
+            return brukerRepository.save(bruker);
+        }
+
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new NotFoundException("Fant ikke team med ID: " + teamId));
+
+        boolean isTeamMember = bruker.getTeamMedlemskap() != null &&
+                bruker.getTeamMedlemskap().stream().anyMatch(t -> t.getId().equals(teamId));
+
+        if (!isTeamMember) {
+            throw new IllegalArgumentException("Kan ikke sette aktivt team for bruker som ikke er medlem av teamet");
+        }
+
+        bruker.setGjeldendeTeam(team);
+        return brukerRepository.save(bruker);
+    }
+
     public List<Bruker> fetchBrukere() {
 
         var brukeren = fetchOrCreateBruker();
@@ -104,6 +132,13 @@ public class BrukerService {
 
     public void sletteBrukerFavoritterByGroupId(Long groupId) {
         brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
+    }
+
+    public List<Team> fetchTeamsForCurrentBruker() {
+        Bruker bruker = fetchOrCreateBruker();
+        return bruker.getTeamMedlemskap() != null ?
+                new ArrayList<>(bruker.getTeamMedlemskap()) :
+                new ArrayList<>();
     }
 
     private Testgruppe fetchTestgruppe(Long gruppeId) {

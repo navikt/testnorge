@@ -8,11 +8,13 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 import no.nav.dolly.service.BrukerService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -74,4 +76,26 @@ public class BrukerController {
         return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
+    @Transactional(readOnly = true)
+    @GetMapping("/teams")
+    @Operation(description = "Hent alle team gjeldende bruker er medlem av")
+    public List<RsTeam> getUserTeams() {
+        return mapperFacade.mapAsList(brukerService.fetchTeamsForCurrentBruker(), RsTeam.class);
+    }
+
+    @Transactional
+    @PutMapping("/gjeldendeTeam/{teamId}")
+    @Operation(description = "Sett aktivt team for innlogget bruker")
+    public RsBruker setGjeldendeTeam(@PathVariable("teamId") Long teamId) {
+        Bruker bruker = brukerService.setGjeldendeTeam(teamId);
+        return mapperFacade.map(bruker, RsBruker.class);
+    }
+
+    @Transactional
+    @DeleteMapping("/gjeldendeTeam")
+    @Operation(description = "Fjern aktivt team for innlogget bruker")
+    public RsBruker clearGjeldendeTeam() {
+        Bruker bruker = brukerService.setGjeldendeTeam(null);
+        return mapperFacade.map(bruker, RsBruker.class);
+    }
 }
