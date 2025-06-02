@@ -64,5 +64,6 @@ public class TeamBruker {
 
         @Column(name = "BRUKER_ID")
         private Long brukerId;
+
     }
 }

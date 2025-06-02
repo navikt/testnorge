@@ -64,6 +64,16 @@ public class BrukerService {
         return fetchOrCreateBruker(null);
     }
 
+    public Long getEffectiveIdForCurrentUser() {
+        Bruker bruker = fetchOrCreateBruker();
+
+        if (bruker.getGjeldendeTeam() != null) {
+            return bruker.getGjeldendeTeam().getId();
+        }
+
+        return bruker.getId();
+    }
+
     @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     public Bruker createBruker() {
         return brukerRepository.save(getAuthUser(getUserInfo));
