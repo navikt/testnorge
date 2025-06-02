@@ -2,6 +2,7 @@ package no.nav.testnav.identpool.providers.v1;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.identpool.ComponentTestbase;
+import no.nav.testnav.identpool.IdentPoolApplicationStarter;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
@@ -28,7 +29,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
-@DataR2dbcTest
+@DataR2dbcTest(properties = {"webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT",
+        "classes=IdentPoolApplicationStarter.class"})
 @Testcontainers
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
@@ -59,8 +61,8 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @AfterEach
     void clearDatabase() {
-        identRepository.deleteAll()
-                .block();
+//        identRepository.deleteAll()
+//                .block();
     }
 
     @Test
