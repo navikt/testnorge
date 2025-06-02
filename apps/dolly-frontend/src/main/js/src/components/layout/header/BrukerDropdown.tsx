@@ -92,10 +92,10 @@ export const BrukerDropdown = () => {
 						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
 						<DropdownStyledLink href="/minside">Min side</DropdownStyledLink>
 					</PreloadableActionMenuItem>
-					<ActionMenu.Item onClick={() => {}} style={{ color: '#212529' }}>
+					<PreloadableActionMenuItem route="/team" style={{ color: '#212529' }}>
 						<DropdownStyledIcon kind="group" fontSize="1.5rem" />
-						<DropdownStyledLink href="/team">Mine team</DropdownStyledLink>
-					</ActionMenu.Item>
+						<DropdownStyledLink href="/team">Team-oversikt</DropdownStyledLink>
+					</PreloadableActionMenuItem>
 				</ActionMenu.Group>
 				<ActionMenu.Divider />
 				<ActionMenu.Item onClick={() => logoutBruker()} style={{ color: '#212529' }}>
