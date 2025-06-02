@@ -7,6 +7,7 @@ import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -29,17 +30,31 @@ class LesInnholdComponentTest extends ComponentTestbase {
     void populerDatabaseMedTestidenter() {
         Ident ident = createIdentEntity(Identtype.FNR, PERSONIDENTIFIKATOR, REKVIRERINGSSTATUS, 10);
         ident.setRekvirertAv(REKVIRERT_AV);
-        identRepository.save(ident);
+        identRepository.save(ident)
+                .block();
     }
 
     @Test
     void skalLeseInnholdIDatabase() throws Exception {
 
-        var resultat = mockMvc.perform(MockMvcRequestBuilders.get(IDENT_V1_BASEURL)
-                        .header("personidentifikator", PERSONIDENTIFIKATOR))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
+        var webClient = WebTestClient.bindToServer()
+                .baseUrl("http://localhost:8080")
+                .build();
 
+        webClient.get()
+                .uri(IDENT_V1_BASEURL)
+                .header("personidentifikator", PERSONIDENTIFIKATOR)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Ident.class)
+                .isEqualTo(createIdentEntity(Identtype.FNR, PERSONIDENTIFIKATOR, Rekvireringsstatus.LEDIG, 10));
+
+//        var resultat = mockMvc.perform(MockMvcRequestBuilders.get(IDENT_V1_BASEURL)
+//                        .header("personidentifikator", PERSONIDENTIFIKATOR))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andReturn();
+//
 //        Ident ident = objectMapper.readValue(resultat.getResponse().getContentAsString(), Ident.class);
 
 //        assertThat(ident, is(notNullValue()));

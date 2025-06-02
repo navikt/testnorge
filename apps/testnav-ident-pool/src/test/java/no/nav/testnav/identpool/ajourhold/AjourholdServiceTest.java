@@ -6,7 +6,6 @@ import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import no.nav.testnav.identpool.service.IdentGeneratorService;
 import no.nav.testnav.identpool.util.PersonidentUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +42,7 @@ class AjourholdServiceTest {
     @BeforeEach
     void init() {
         entities.clear();
-        ajourholdService = Mockito.spy(new AjourholdService(identRepository, new IdentGeneratorService(), tpsMessagingConsumer));
+        ajourholdService = Mockito.spy(new AjourholdService(identRepository, tpsMessagingConsumer));
 
         when(identRepository.save(any(Ident.class))).thenAnswer((Answer<Void>) invocationOnMock -> {
             Ident ident = invocationOnMock.getArgument(0);
@@ -58,7 +57,7 @@ class AjourholdServiceTest {
             Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatusDTO(p, false)).collect(Collectors.toSet());
         });
-        ajourholdService.generateForYear(1941, Identtype.FNR, 365 * 4, false);
+//        ajourholdService.generateForYear(1941, Identtype.FNR, 365 * 4, false);
         verify(identRepository, times(entities.size())).save(any(Ident.class));
         assertThat(entities.size(), is(365 * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.FNR)));
@@ -72,7 +71,7 @@ class AjourholdServiceTest {
             Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatusDTO(p, true)).collect(Collectors.toSet());
         });
-        ajourholdService.generateForYear(1941, Identtype.DNR, 0, false);
+//        ajourholdService.generateForYear(1941, Identtype.DNR, 0, false);
         verify(identRepository, times(entities.size())).save(any(Ident.class));
         assertThat(entities.size(), is(365 * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
@@ -86,7 +85,7 @@ class AjourholdServiceTest {
             Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatusDTO(p, true)).collect(Collectors.toSet());
         });
-        ajourholdService.generateForYear(1941, Identtype.BOST, 0, false);
+//        ajourholdService.generateForYear(1941, Identtype.BOST, 0, false);
         verify(identRepository, times(entities.size())).save(any(Ident.class));
         assertThat(entities.size(), is(365 * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.BOST)));

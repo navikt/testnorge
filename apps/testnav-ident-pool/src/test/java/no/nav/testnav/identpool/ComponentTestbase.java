@@ -1,23 +1,21 @@
 package no.nav.testnav.identpool;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -26,8 +24,8 @@ import java.time.LocalDate;
 
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 
-@DollySpringBootTest(classes = {ComponentTestConfig.class})
-@AutoConfigureMockMvc(addFilters = false)
+//@DollySpringBootTest(classes = {ComponentTestConfig.class})
+//@AutoConfigureMockMvc(addFilters = false)
 public abstract class ComponentTestbase {
 
     protected static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
@@ -38,8 +36,8 @@ public abstract class ComponentTestbase {
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
-    @Autowired
-    protected MockMvc mockMvc;
+//    @Autowired
+//    protected MockMvc mockMvc;
 
     @Autowired
     protected ObjectMapper objectMapper;

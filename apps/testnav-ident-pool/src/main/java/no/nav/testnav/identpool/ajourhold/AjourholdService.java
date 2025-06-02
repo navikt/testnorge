@@ -31,7 +31,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class AjourholdService {
 
-    private static final LocalDate FOEDT_ETTER = LocalDate.of(2023, 1, 1);
+    private static final LocalDate FOEDT_ETTER = LocalDate.of(1900, 1, 1);
     private static final String NAV_SYNTETISKE = "NAV-syntetiske";
     private static final String VANLIGE = "vanlige";
 

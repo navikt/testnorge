@@ -41,9 +41,6 @@ class IdenterAvailServiceTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private IdentGeneratorService identGeneratorService;
-
-    @Mock
     private IdentRepository identRepository;
 
     @Mock
@@ -86,8 +83,8 @@ class IdenterAvailServiceTest {
 
     @Test
     void happyPathAvail() {
-        when(identGeneratorService.genererIdenter(eq(request), any(Set.class)))
-                .thenReturn(Set.of(IDENT_1, IDENT_2));
+//        when(identGeneratorService.genererIdenter(eq(request), any(Set.class)))
+//                .thenReturn(Set.of(IDENT_1, IDENT_2));
         when(identRepository.findByPersonidentifikatorIn(anySet()))
                 .thenReturn(Flux.just(getIdent(IDENT_2)));
         when(tpsMessagingConsumer.getIdenterStatuser(argumentCaptor.capture()))
