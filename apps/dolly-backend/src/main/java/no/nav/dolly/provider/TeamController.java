@@ -34,7 +34,7 @@ public class TeamController {
     @GetMapping
     @Operation(description = "Hent alle team")
     public ResponseEntity<List<RsTeam>> getAllTeams() {
-        List<Team> teams = teamService.fetchAllTeam();
+        var teams = teamService.fetchAllTeam();
         return ResponseEntity.ok(teams.stream()
                 .map(team -> mapperFacade.map(team, RsTeam.class))
                 .collect(Collectors.toList()));
@@ -43,7 +43,7 @@ public class TeamController {
     @GetMapping("/{id}")
     @Operation(description = "Hent team med angitt ID")
     public ResponseEntity<RsTeam> getTeamById(@PathVariable("id") Long id) {
-        Team team = teamService.fetchTeamById(id);
+        var team = teamService.fetchTeamById(id);
         return ResponseEntity.ok(mapperFacade.map(team, RsTeam.class));
     }
 
@@ -51,8 +51,8 @@ public class TeamController {
     @Operation(description = "Opprett nytt team")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<RsTeam> createTeam(@RequestBody RsTeam rsTeam) {
-        Team team = mapperFacade.map(rsTeam, Team.class);
-        Team savedTeam = teamService.opprettTeam(team);
+        var team = mapperFacade.map(rsTeam, Team.class);
+        var savedTeam = teamService.opprettTeam(team);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(mapperFacade.map(savedTeam, RsTeam.class));
     }
@@ -61,8 +61,8 @@ public class TeamController {
     @Operation(description = "Oppdater eksisterende team")
     public ResponseEntity<RsTeam> updateTeam(@PathVariable("id") Long id,
                                              @RequestBody RsTeam rsTeam) {
-        Team team = mapperFacade.map(rsTeam, Team.class);
-        Team updatedTeam = teamService.updateTeam(id, team);
+        var team = mapperFacade.map(rsTeam, Team.class);
+        var updatedTeam = teamService.updateTeam(id, team);
         return ResponseEntity.ok(mapperFacade.map(updatedTeam, RsTeam.class));
     }
 

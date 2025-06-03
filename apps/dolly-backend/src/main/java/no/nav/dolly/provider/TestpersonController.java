@@ -139,7 +139,7 @@ public class TestpersonController {
     @GetMapping("/naviger/{ident}")
     public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 
-        Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        Bruker bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
         return navigasjonService.navigerTilIdent(ident, bruker);
     }
 

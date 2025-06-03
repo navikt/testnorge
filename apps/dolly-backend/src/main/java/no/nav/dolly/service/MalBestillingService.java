@@ -110,7 +110,7 @@ public class MalBestillingService {
     @Transactional(readOnly = true)
     public RsMalBestillingWrapper getMalbestillingByUser(String brukerId) {
 
-        var bruker = brukerService.fetchBruker(brukerId);
+        var bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
 
         var malBestillinger = bestillingMalRepository.findByBruker(bruker)
                 .stream()
@@ -172,7 +172,7 @@ public class MalBestillingService {
     @Transactional
     public RsMalBestillingUtenFavoritter saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
-        var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
 
         var bestilling = bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
@@ -222,7 +222,7 @@ public class MalBestillingService {
     @Transactional
     public RsMalBestillingUtenFavoritter createFromIdent(String ident, String name) {
 
-        var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
 
         var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
         if (bestillinger.isEmpty()) {

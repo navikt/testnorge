@@ -36,6 +36,9 @@ public class Team implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "BRUKER_ID")
+    private Long brukerId;
+
     @Column(nullable = false, unique = true)
     private String navn;
 

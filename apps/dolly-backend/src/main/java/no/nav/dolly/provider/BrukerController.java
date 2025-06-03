@@ -41,7 +41,7 @@ public class BrukerController {
     @Transactional(readOnly = true)
     @Operation(description = "Hent Bruker med brukerId")
     public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
-        Bruker bruker = brukerService.fetchBruker(brukerId);
+        Bruker bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 

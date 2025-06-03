@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
@@ -40,8 +42,17 @@ public class BrukerService {
     private final GetUserInfo getUserInfo;
     private final BrukerServiceConsumer brukerServiceConsumer;
 
-    public Bruker fetchBruker(String brukerId) {
+    public Bruker fetchBrukerOrTeamBruker(String brukerId) {
 
+        var gjeldendeBrukerId = getEffectiveIdForUser(brukerId);
+        return brukerRepository.findBrukerById(gjeldendeBrukerId)
+                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
+    }
+
+
+    public Bruker fetchCurrentBrukerWithoutTeam() {
+
+        var brukerId = getUserId(getUserInfo);
         return brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
     }
@@ -52,10 +63,10 @@ public class BrukerService {
             brukerId = getUserId(getUserInfo);
         }
         try {
-            return fetchBruker(brukerId);
+            return fetchBrukerOrTeamBruker(brukerId);
 
         } catch (NotFoundException e) {
-            return createBruker();
+            return createBruker(null);
         }
     }
 
@@ -64,24 +75,17 @@ public class BrukerService {
         return fetchOrCreateBruker(null);
     }
 
-    public Long getEffectiveIdForCurrentUser() {
-        Bruker bruker = fetchOrCreateBruker();
-
-        if (bruker.getGjeldendeTeam() != null) {
-            return bruker.getGjeldendeTeam().getId();
-        }
-
-        return bruker.getId();
-    }
-
     @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
-    public Bruker createBruker() {
+    public Bruker createBruker(Bruker bruker) {
+        if (nonNull(bruker)) {
+            return brukerRepository.save(bruker);
+        }
         return brukerRepository.save(getAuthUser(getUserInfo));
     }
 
     public Bruker leggTilFavoritt(Long gruppeId) {
 
-        var bruker = fetchBruker(getUserId(getUserInfo));
+        var bruker = fetchBrukerOrTeamBruker(getUserId(getUserInfo));
 
         var gruppe = fetchTestgruppe(gruppeId);
         gruppe.getFavorisertAv().add(bruker);
@@ -92,7 +96,7 @@ public class BrukerService {
 
     public Bruker fjernFavoritt(Long gruppeId) {
 
-        var bruker = fetchBruker(getUserId(getUserInfo));
+        var bruker = fetchBrukerOrTeamBruker(getUserId(getUserInfo));
         var gruppe = fetchTestgruppe(gruppeId);
 
         bruker.getFavoritter().remove(gruppe);
@@ -104,17 +108,17 @@ public class BrukerService {
 
     @Transactional
     public Bruker setGjeldendeTeam(Long teamId) {
-        Bruker bruker = fetchOrCreateBruker();
+        var bruker = fetchOrCreateBruker();
 
-        if (teamId == null) {
+        if (isNull(teamId)) {
             bruker.setGjeldendeTeam(null);
             return brukerRepository.save(bruker);
         }
 
-        Team team = teamRepository.findById(teamId)
+        var team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new NotFoundException("Fant ikke team med ID: " + teamId));
 
-        boolean isTeamMember = bruker.getTeamMedlemskap() != null &&
+        var isTeamMember = bruker.getTeamMedlemskap() != null &&
                 bruker.getTeamMedlemskap().stream().anyMatch(t -> t.getId().equals(teamId));
 
         if (!isTeamMember) {
@@ -145,10 +149,31 @@ public class BrukerService {
     }
 
     public List<Team> fetchTeamsForCurrentBruker() {
-        Bruker bruker = fetchOrCreateBruker();
+        var bruker = fetchOrCreateBruker();
         return bruker.getTeamMedlemskap() != null ?
                 new ArrayList<>(bruker.getTeamMedlemskap()) :
                 new ArrayList<>();
+    }
+
+    public void slettTeamBruker(Long teamId) {
+        var team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new NotFoundException("Fant ikke team med ID: " + teamId));
+
+        brukerRepository.deleteBrukerTeamById(team.getBrukerId());
+    }
+
+    private Long getEffectiveIdForUser(String brukerId) {
+
+        var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Fant ikke bruker med brukerID: " + brukerId));
+        if (nonNull(bruker.getGjeldendeTeam())) {
+            var brukerTeam = brukerRepository.findTeamBrukerByGjeldendeTeam(bruker.getGjeldendeTeam().getId())
+                    .orElseThrow(() -> new NotFoundException("Fant ikke bruker for team med ID: " + bruker.getGjeldendeTeam().getId()));
+
+            return brukerTeam.getId();
+        }
+
+        return bruker.getId();
     }
 
     private Testgruppe fetchTestgruppe(Long gruppeId) {

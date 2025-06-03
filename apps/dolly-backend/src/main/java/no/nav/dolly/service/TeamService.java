@@ -31,12 +31,20 @@ public class TeamService {
                 .orElseThrow(() -> new NotFoundException("Fant ikke team med id=" + id));
     }
 
-    @Transactional
+    @Transactional(timeout = 10)
     public Team opprettTeam(Team team) {
-        Bruker bruker = brukerService.fetchOrCreateBruker();
+        var bruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
         team.setOpprettetAv(bruker);
-        Team savedTeam = teamRepository.save(team);
+
+        var brukerTeam = brukerService.createBruker(Bruker.builder()
+                .brukernavn(team.getNavn())
+                .brukertype(Bruker.Brukertype.TEAM)
+                .build());
+
+        team.setBrukerId(brukerTeam.getId());
+
+        var savedTeam = teamRepository.save(team);
 
         addBrukerToTeam(savedTeam.getId(), bruker.getId());
 
@@ -45,11 +53,11 @@ public class TeamService {
 
     @Transactional
     public Team updateTeam(Long teamId, Team teamUpdates) {
-        Team team = fetchTeamById(teamId);
+        var team = fetchTeamById(teamId);
 
-        Bruker currentBruker = brukerService.fetchOrCreateBruker();
+        var currentBruker = brukerService.fetchOrCreateBruker();
 
-        boolean isCurrentUserTeamMember = team.getBrukere() != null &&
+        boolean isCurrentUserTeamMember = !team.getBrukere().isEmpty() &&
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
 
         if (!isCurrentUserTeamMember) {
@@ -65,32 +73,33 @@ public class TeamService {
     @Transactional
     public void deleteTeamById(Long teamId) {
         teamRepository.deleteById(teamId);
+        brukerService.slettTeamBruker(teamId);
     }
 
     @Transactional
     public void addBrukerToTeam(Long teamId, Long brukerId) {
-        Team team = fetchTeamById(teamId);
+        var team = fetchTeamById(teamId);
 
-        Bruker currentBruker = brukerService.fetchOrCreateBruker();
+        var currentBruker = brukerService.fetchOrCreateBruker();
 
-        boolean isCurrentUserTeamMember = team.getBrukere() != null &&
+        var isCurrentUserTeamMember = !team.getBrukere().isEmpty() &&
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
 
         if (!isCurrentUserTeamMember) {
             throw new IllegalArgumentException("Kan ikke legge til nytt gruppemedlem i en gruppe man ikke selv er medlem i");
         }
 
-        TeamBruker.TeamBrukerId id = TeamBruker.TeamBrukerId.builder()
+        var teamBrukerId = TeamBruker.TeamBrukerId.builder()
                 .teamId(teamId)
                 .brukerId(brukerId)
                 .build();
 
-        if (!teamBrukerRepository.existsById(id)) {
-            TeamBruker teamBruker = TeamBruker.builder()
-                    .id(id)
-                    .build();
-            teamBrukerRepository.save(teamBruker);
+        if (teamBrukerRepository.existsById(teamBrukerId)) {
+            throw new IllegalArgumentException("Bruker er allerede medlem av dette teamet");
         }
+        teamBrukerRepository.save(TeamBruker.builder()
+                .id(teamBrukerId)
+                .build());
     }
 
     @Transactional

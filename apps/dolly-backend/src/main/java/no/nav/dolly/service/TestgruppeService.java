@@ -57,7 +57,7 @@ public class TestgruppeService {
     private final BrukerServiceConsumer brukerServiceConsumer;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
-        Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        Bruker bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
 
         return saveGruppeTilDB(Testgruppe.builder()
                 .navn(rsTestgruppe.getNavn())
@@ -135,7 +135,7 @@ public class TestgruppeService {
 
     public Page<Testgruppe> fetchTestgrupperByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        var bruker = brukerService.fetchBruker(brukerId);
+        var bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
 
         return testgruppeRepository.findAllByOpprettetAv(bruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
@@ -184,7 +184,7 @@ public class TestgruppeService {
 
         testgruppe.setHensikt(endreGruppe.getHensikt());
         testgruppe.setNavn(endreGruppe.getNavn());
-        testgruppe.setSistEndretAv(brukerService.fetchBruker(getUserId(getUserInfo)));
+        testgruppe.setSistEndretAv(brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo)));
         testgruppe.setDatoEndret(LocalDate.now());
 
         return saveGruppeTilDB(testgruppe);
