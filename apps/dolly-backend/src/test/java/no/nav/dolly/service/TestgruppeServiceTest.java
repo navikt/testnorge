@@ -102,7 +102,7 @@ class TestgruppeServiceTest {
         RsOpprettEndreTestgruppe rsTestgruppe = mock(RsOpprettEndreTestgruppe.class);
         Bruker bruker = mock(Bruker.class);
 
-        when(brukerService.fetchBruker(BRUKERID)).thenReturn(bruker);
+        when(brukerService.fetchBrukerOrTeamBruker(BRUKERID)).thenReturn(bruker);
 
         testgruppeService.opprettTestgruppe(rsTestgruppe);
 
