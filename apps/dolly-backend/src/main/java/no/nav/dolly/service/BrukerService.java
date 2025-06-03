@@ -45,6 +45,10 @@ public class BrukerService {
     public Bruker fetchBrukerOrTeamBruker(String brukerId) {
 
         var gjeldendeBrukerId = getEffectiveIdForUser(brukerId);
+        if (isNull(gjeldendeBrukerId)) {
+            return brukerRepository.findBrukerByBrukerId(brukerId).
+                    orElseThrow(() -> new NotFoundException("Bruker ikke funnet med brukerId: " + brukerId));
+        }
         return brukerRepository.findBrukerById(gjeldendeBrukerId)
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
     }
