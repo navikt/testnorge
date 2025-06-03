@@ -4,6 +4,9 @@ import { LeaveIcon, PencilWritingIcon } from '@navikt/aksel-icons'
 import { useBrukerProfil } from '@/utils/hooks/useBruker'
 import { TeamVisning } from '@/pages/teamOversikt/TeamVisning'
 import styled from 'styled-components'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { DollyModal } from '@/components/ui/modal/DollyModal'
+import { OpprettRedigerTeam } from '@/pages/teamOversikt/OpprettRedigerTeam'
 
 const teamMock = [
 	{
@@ -38,6 +41,9 @@ const Knappegruppe = styled.div`
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
 	console.log('brukerProfil: ', brukerProfil) //TODO - SLETT MEG
+
+	const [opprettRedigerTeamModalIsOpen, openOpprettRedigerTeamModal, closeOpprettRedigerTeamModal] =
+		useBoolean(false)
 
 	return (
 		<>
@@ -89,13 +95,20 @@ export default () => {
 					</Table>
 				</ErrorBoundary>
 				<Knappegruppe>
-					<Button variant={'primary'} onClick={() => alert('Opprett team')}>
+					<Button variant={'primary'} onClick={openOpprettRedigerTeamModal}>
 						Opprett team
 					</Button>
 					<Button variant={'primary'} onClick={() => alert('Bli med i team')}>
 						Bli med i team
 					</Button>
 				</Knappegruppe>
+				<DollyModal
+					isOpen={opprettRedigerTeamModalIsOpen}
+					closeModal={closeOpprettRedigerTeamModal}
+					width="60%"
+				>
+					<OpprettRedigerTeam closeModal={closeOpprettRedigerTeamModal} />
+				</DollyModal>
 			</Box>
 		</>
 	)
