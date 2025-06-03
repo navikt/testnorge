@@ -61,6 +61,12 @@ public class BrukerService {
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
     }
 
+    public Bruker fetchBrukerWithoutTeam(String brukerId) {
+
+        return brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
+    }
+
     public Bruker fetchOrCreateBruker(String brukerId) {
 
         if (isBlank(brukerId)) {

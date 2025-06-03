@@ -28,5 +28,5 @@ public class RsTeam {
     private RsBruker opprettetAv;
 
     @Builder.Default
-    private Set<RsBruker> brukere = new HashSet<>();
+    private Set<String> brukere = new HashSet<>();
 }
