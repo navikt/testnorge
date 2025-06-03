@@ -7,16 +7,18 @@ import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import org.junit.jupiter.api.Disabled;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -24,20 +26,25 @@ import java.util.Set;
 
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled
+//@Disabled
 @ExtendWith(MockitoExtension.class)
 class IdentpoolServiceTest {
 
+    private static final String fnr1 = "01010101010";
+    private static final String fnr2 = "02020202020";
+
     @Mock
-    private IdentRepository repository;
+    private IdentRepository identRepository;
 
     @Mock
     private TpsMessagingConsumer tpsMessagingConsumer;
@@ -67,38 +74,62 @@ class IdentpoolServiceTest {
 
 //        List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
 
-        verify(repository).findByPersonidentifikator(fnr1);
+        verify(identRepository).findByPersonidentifikator(fnr1);
         verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
-        verify(repository).save(ident);
+        verify(identRepository).save(ident);
 
 //        assertEquals(fnr1, frigjorteIdenter.get(0));
     }
 
     @Test
-    void markerBruktFlereTest() {
-        String rekvirertAv = "test";
-        String fnr1 = "01010101010";
-        String fnr2 = "02020202020";
-        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-        Ident ident1 = Ident.builder()
+    void finnesIProd_happyTest() {
+
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
+                .thenReturn(Flux.just(TpsStatusDTO.builder()
+                        .ident(fnr2)
+                        .inUse(false)
+                        .build(), TpsStatusDTO.builder()
+                        .ident(fnr2)
+                        .inUse(true)
+                        .build()));
+
+        identpoolService.finnesIProd(Set.of(fnr1,fnr2))
+                .as(StepVerifier::create)
+                .assertNext(tpsStatusDTO -> {
+                    assertEquals(fnr2, tpsStatusDTO.getIdent());
+                    assertTrue(tpsStatusDTO.isInUse());
+                })
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void lseInnhold_happyTest() {
+
+        Ident ident = Ident.builder()
                 .personidentifikator(fnr1)
-                .rekvireringsstatus(LEDIG)
+                .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                 .syntetisk(isSyntetisk(fnr1))
                 .build();
-        TpsStatusDTO tpsStatusDTO = new TpsStatusDTO();
-        tpsStatusDTO.setIdent(fnr2);
-        tpsStatusDTO.setInUse(false);
 
-//        when(repository.findByPersonidentifikator(fnr1)).thenReturn(ident1);
-//        when(repository.findByPersonidentifikator(fnr2)).thenReturn(null);
-//        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatusDTO)));
-//
-//        List<String> identerMarkertSomIBruk = identpoolService.markerBruktFlere(rekvirertAv, identer);
+        when(identRepository.findByPersonidentifikator(fnr1)).thenReturn(Mono.just(ident));
 
-//        assertThat(identerMarkertSomIBruk, containsInAnyOrder(fnr1, fnr2));
+        identpoolService.lesInnhold(fnr1)
+                .as(StepVerifier::create)
+                .expectNext(ident)
+                .verifyComplete();
+    }
 
-        verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
+    @Test
+    void leseInnhold_ikkeFunnet() {
 
+        when(identRepository.findByPersonidentifikator(fnr1)).thenReturn(Mono.empty());
+
+        assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> StepVerifier.create(
+                identpoolService.lesInnhold(fnr1))
+                .expectComplete()
+                .verify())
+                .withMessage( "expectation \"expectComplete\" failed (expected: onComplete(); actual: onError(org.springframework.web.server.ResponseStatusException: 404 NOT_FOUND \"Fant ikke ident 01010101010\"))");
     }
 
     @Test

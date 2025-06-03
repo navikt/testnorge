@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.bind.annotation.ControllerAdvice;

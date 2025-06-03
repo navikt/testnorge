@@ -17,6 +17,9 @@ import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static no.nav.testnav.identpool.util.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.testnav.identpool.util.DatoFraIdentUtility.getFoedselsdato;
+import static no.nav.testnav.identpool.util.KjoennFraIdentUtility.getKjoenn;
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -29,9 +32,6 @@ public class PoolService {
     private final IdenterAvailService identerAvailService;
     private final DatabaseService databaseService;
     private final IdentRepository identRepository;
-    private final DatoFraIdentService datoFraIdentService;
-    private final KjoennFraIdentService kjoennFraIdentService;
-    private final IdenttypeFraIdentService identtypeFraIdentService;
 
     private static Throwable throwException(HentIdenterRequest request) {
 
@@ -108,9 +108,9 @@ public class PoolService {
 
         return Ident.builder()
                 .personidentifikator(ident)
-                .foedselsdato(datoFraIdentService.getFoedselsdato(ident))
-                .kjoenn(kjoennFraIdentService.getKjoenn(ident))
-                .identtype(identtypeFraIdentService.getIdenttype(ident))
+                .foedselsdato(getFoedselsdato(ident))
+                .kjoenn(getKjoenn(ident))
+                .identtype(getIdenttype(ident))
                 .rekvireringsstatus(LEDIG)
                 .syntetisk(isSyntetisk(ident))
                 .build();

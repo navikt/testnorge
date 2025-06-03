@@ -32,7 +32,8 @@ public class MetricsConfiguration {
     @Bean
     public Mono<Long> totaltLedigeGauge(MeterRegistry registry, IdentRepository repository) {
 
-        return repository.countByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.FNR)
-                .mapNotNull(antall -> registry.gauge("identer.antall.ledige", antall));
+        return Mono.just(0L);
+//        return repository.countByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.FNR)
+//                .mapNotNull(antall -> registry.gauge("identer.antall.ledige", antall));
     }
 }

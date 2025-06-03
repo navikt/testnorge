@@ -1,44 +1,77 @@
 package no.nav.testnav.identpool.providers.v1;
 
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.testnav.identpool.ComponentTestbase;
-import no.nav.testnav.identpool.IdentPoolApplicationStarter;
+import no.nav.testnav.identpool.ajourhold.AjourholdService;
+import no.nav.testnav.identpool.ajourhold.BatchService;
+import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
+import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
+import no.nav.testnav.identpool.repository.AjourholdRepository;
+import no.nav.testnav.identpool.repository.IdentRepository;
+import no.nav.testnav.identpool.service.DatabaseService;
+import no.nav.testnav.identpool.service.IdenterAvailService;
+import no.nav.testnav.identpool.service.IdentpoolService;
+import no.nav.testnav.identpool.service.PoolService;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
+import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@DataR2dbcTest(properties = {"webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT",
-        "classes=IdentPoolApplicationStarter.class"})
+//@WebFluxTest(excludeAutoConfiguration =  {ReactiveSecurityAutoConfiguration.class,
+//        SecurityAutoConfiguration.class})
+//@Import({
+//        BatchService.class, AjourholdService.class, IdentpoolService.class, PoolService.class,
+//        IdenterAvailService.class, DatabaseService.class
+//})
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@DataR2dbcTest
+//@RunWith(SpringRunner.class)
+//@DataR2dbcTest(properties = {"webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT",
+//        "classes=IdentPoolApplicationStarter.class"})
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Testcontainers
 @ActiveProfiles("test")
+//@WithMockUser
 @ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
-class IdentpoolControllerComponentTest extends ComponentTestbase {
+class IdentpoolControllerComponentTest  {
 
+    private static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
     private static final String API_V1_IDENT_IBRUK = IDENT_V1_BASEURL + "/bruk";
     private static final String API_V1_IDENT_LEDIG = IDENT_V1_BASEURL + "/ledig";
 
@@ -47,19 +80,43 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     private static final String FNR_IBRUK = "11108000327";
     private static final String NYTT_FNR_LEDIG = "20018049946";
 
+    @Autowired
+    private DatabaseClient databaseClient;
+
+    @Autowired
+    private IdentRepository identRepository;
+
+    @Autowired
+    private AjourholdRepository ajourholdRepository;
+//
+//    @MockitoBean
+//    private MapperFacade mapperFacade;
+//
+//    @MockitoBean
+//    private ApplicationProperties applicationProperties;
+//
+//    @MockitoBean
+//    private ErrorProperties errorProperties;
+
+    @MockitoBean
+    private TpsMessagingConsumer tpsMessagingConsumer;
+
     @BeforeEach
     void populerDatabaseMedTestidenter() {
 
         // Clear the repository before populating it with test data
 //        identRepository.deleteAll()
-//                .block();
+//                .as(StepVerifier::create)
+//                .verifyComplete();
+//
 //        identRepository.saveAll(Arrays.asList(
 //                        createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10),
 //                        createIdentEntity(Identtype.DNR, DNR_LEDIG, Rekvireringsstatus.LEDIG, 20),
 //                        createIdentEntity(Identtype.FNR, FNR_IBRUK, Rekvireringsstatus.I_BRUK, 11),
 //                        createIdentEntity(Identtype.DNR, "12108000366", Rekvireringsstatus.I_BRUK, 12)))
 //                .collectList()
-//                .block();
+//                .as(StepVerifier::create)
+//                .verifyComplete();
     }
 
     @AfterEach
@@ -224,7 +281,10 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     @Test
     void markerNyLedigIdentIBruk() throws Exception {
 
-        assertThat(identRepository.findByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
+        identRepository.findByPersonidentifikator(NYTT_FNR_LEDIG)
+                .as(StepVerifier::create)
+                .assertNext(ident -> assertThat(ident.getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG)))
+                .verifyComplete();
 
         String request = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
 
@@ -286,5 +346,16 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
 
         Ident expected = createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10);
 //        assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), Ident.class), is(expected));
+    }
+
+    private static Ident createIdentEntity(Identtype identtype, String ident, Rekvireringsstatus rekvireringsstatus, int day) {
+        return Ident.builder()
+                .identtype(identtype)
+                .personidentifikator(ident)
+                .rekvireringsstatus(rekvireringsstatus)
+                .kjoenn(Kjoenn.MANN)
+                .foedselsdato(LocalDate.of(1980, 10, day))
+                .syntetisk(isSyntetisk(ident))
+                .build();
     }
 }

@@ -1,15 +1,16 @@
 package no.nav.testnav.identpool;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
+import no.nav.testnav.identpool.repository.AjourholdRepository;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 
-//@DollySpringBootTest(classes = {ComponentTestConfig.class})
+@DollySpringBootTest(classes = {ComponentTestConfig.class})
 //@AutoConfigureMockMvc(addFilters = false)
 public abstract class ComponentTestbase {
 
@@ -28,6 +29,9 @@ public abstract class ComponentTestbase {
 
     @Autowired
     protected IdentRepository identRepository;
+
+    @Autowired
+    private AjourholdRepository ajourholdRepository;
 
 //    @Autowired
 //    protected TestRestTemplate testRestTemplate;
