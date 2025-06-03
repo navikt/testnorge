@@ -1,3 +1,28 @@
+-- Check if constraint exists before dropping
+DO
+$$
+    BEGIN
+        IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_bruker_gjeldende_team') THEN
+            ALTER TABLE BRUKER
+                DROP CONSTRAINT FK_BRUKER_GJELDENDE_TEAM;
+        END IF;
+    END
+$$;
+
+-- Check if column exists before dropping
+DO
+$$
+    BEGIN
+        IF EXISTS (SELECT 1
+                   FROM information_schema.columns
+                   WHERE table_name = 'bruker'
+                     AND column_name = 'gjeldende_team_id') THEN
+            ALTER TABLE BRUKER
+                DROP COLUMN GJELDENDE_TEAM_ID;
+        END IF;
+    END
+$$;
+
 -- Use IF EXISTS for dropping tables
 DROP TABLE IF EXISTS TEAM_BRUKER cascade;
 DROP TABLE IF EXISTS TEAM cascade;
