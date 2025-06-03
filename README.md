@@ -9,7 +9,7 @@ Info/lenker til Team Dollys interne verktøy finnes [her](https://navikt.github.
 ## Bygging/Kjøring
 > **Mac:**
 > 
-> For å kjøre tester som bruker Testcontainers eller kjøre en applikasjon lokalt som krever en tjeneste kjørende i Docker så må disse miljøvariablene settes:
+> For å kjøre tester som bruker Testcontainers eller kjøre en applikasjon lokalt som krever en tjeneste kjørende i Docker, så må disse miljøvariablene settes:
 >
 > `DOCKER_HOST=unix://${HOME}/.colima/default/docker.sock`\
 > `TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock`\

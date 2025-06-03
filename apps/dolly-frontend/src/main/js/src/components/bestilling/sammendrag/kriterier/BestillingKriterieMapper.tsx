@@ -316,7 +316,7 @@ const mapVergemaal = (vergemaal, data) => {
 			itemRows: vergemaal.map((item, idx) => {
 				return [
 					{ numberHeader: `Vergemål ${idx + 1}` },
-					obj('Fylkesmannsembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
+					obj('Fylkesembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
 					obj('Sakstype', item.sakType, VergemaalKodeverk.Sakstype),
 					obj('Mandattype', item.mandatType, VergemaalKodeverk.Mandattype),
 					obj('Gyldig f.o.m.', formatDate(item.gyldigFraOgMed)),
