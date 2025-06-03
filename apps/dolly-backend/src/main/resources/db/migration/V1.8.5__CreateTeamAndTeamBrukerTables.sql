@@ -5,10 +5,10 @@ ALTER TABLE BRUKER
     DROP COLUMN GJELDENDE_TEAM_ID;
 
 -- Next, drop the TEAM_BRUKER table that has foreign keys to both BRUKER and TEAM
-DROP TABLE TEAM_BRUKER;
+DROP TABLE TEAM_BRUKER cascade;
 
 -- Finally, drop the TEAM table
-DROP TABLE TEAM;
+DROP TABLE TEAM cascade;
 
 -- CREATE TABLE TEAM
 -- (
