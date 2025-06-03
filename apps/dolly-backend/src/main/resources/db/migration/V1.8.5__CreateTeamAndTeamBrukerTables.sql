@@ -1,15 +1,8 @@
--- First, remove the foreign key constraint and column added to BRUKER table
-ALTER TABLE BRUKER
-    DROP CONSTRAINT FK_BRUKER_GJELDENDE_TEAM;
-ALTER TABLE BRUKER
-    DROP COLUMN GJELDENDE_TEAM_ID;
+-- Use IF EXISTS for dropping tables
+DROP TABLE IF EXISTS TEAM_BRUKER cascade;
+DROP TABLE IF EXISTS TEAM cascade;
 
--- Next, drop the TEAM_BRUKER table that has foreign keys to both BRUKER and TEAM
-DROP TABLE TEAM_BRUKER cascade;
-
--- Finally, drop the TEAM table
-DROP TABLE TEAM cascade;
-
+-- Rest of your script remains unchanged
 CREATE TABLE TEAM
 (
     ID           SERIAL PRIMARY KEY,
