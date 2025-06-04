@@ -128,7 +128,7 @@ public class BrukerService {
         var team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new NotFoundException("Fant ikke team med ID: " + teamId));
 
-        var isTeamMember = bruker.getTeamMedlemskap() != null &&
+        var isTeamMember = nonNull(bruker.getTeamMedlemskap()) &&
                 bruker.getTeamMedlemskap().stream().anyMatch(t -> t.getId().equals(teamId));
 
         if (!isTeamMember) {
@@ -160,16 +160,9 @@ public class BrukerService {
 
     public List<Team> fetchTeamsForCurrentBruker() {
         var bruker = fetchOrCreateBruker();
-        return bruker.getTeamMedlemskap() != null ?
+        return nonNull(bruker.getTeamMedlemskap()) ?
                 new ArrayList<>(bruker.getTeamMedlemskap()) :
                 new ArrayList<>();
-    }
-
-    public void slettTeamBruker(Long teamId) {
-        var team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new NotFoundException("Fant ikke team med ID: " + teamId));
-
-        brukerRepository.deleteBrukerTeamById(team.getBrukerId());
     }
 
     private Long getEffectiveIdForUser(String brukerId) {

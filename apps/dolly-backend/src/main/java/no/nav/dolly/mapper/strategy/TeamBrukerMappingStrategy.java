@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.service.BrukerService;
@@ -25,18 +25,12 @@ public class TeamBrukerMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Team team, RsTeam rsTeam, MappingContext context) {
-                        if (team.getOpprettetAv() != null) {
-                            rsTeam.setOpprettetAv(factory.getMapperFacade().map(team.getOpprettetAv(), RsBruker.class));
-                        }
-
-                        if (!team.getBrukere().isEmpty()) {
-                            rsTeam.setBrukere(team.getBrukere().stream()
-                                    .map(bruker -> factory.getMapperFacade().map(bruker, RsBruker.class))
-                                    .map(RsBruker::getBrukerId)
-                                    .collect(Collectors.toSet()));
-                        }
+                        rsTeam.setBrukere(team.getBrukere().stream()
+                                .map(Bruker::getBrukerId)
+                                .collect(Collectors.toSet()));
                     }
                 })
+                .exclude("brukere")
                 .byDefault()
                 .register();
 
@@ -54,6 +48,7 @@ public class TeamBrukerMappingStrategy implements MappingStrategy {
                         }
                     }
                 })
+                .exclude("brukere")
                 .byDefault()
                 .register();
     }

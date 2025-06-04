@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamBrukerRepository extends JpaRepository<TeamBruker, TeamBruker.TeamBrukerId> {
+    void deleteAllById_TeamId(Long idTeamId);
 }

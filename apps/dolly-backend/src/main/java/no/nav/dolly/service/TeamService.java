@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,33 +33,28 @@ public class TeamService {
                 .orElseThrow(() -> new NotFoundException("Fant ikke team med id=" + id));
     }
 
-    @Transactional(timeout = 10)
+    @Transactional
     public Team opprettTeam(Team team) {
         var bruker = brukerService.fetchCurrentBrukerWithoutTeam();
-
-        team.setOpprettetAv(bruker);
 
         var brukerTeam = brukerService.createBruker(Bruker.builder()
                 .brukernavn(team.getNavn())
                 .brukertype(Bruker.Brukertype.TEAM)
                 .build());
 
+        team.getBrukere().add(bruker);
         team.setBrukerId(brukerTeam.getId());
 
-        var savedTeam = teamRepository.save(team);
-
-        addBrukerToTeam(savedTeam.getId(), bruker.getId());
-
-        return savedTeam;
+        return teamRepository.save(team);
     }
 
     @Transactional
     public Team updateTeam(Long teamId, Team teamUpdates) {
         var team = fetchTeamById(teamId);
 
-        var currentBruker = brukerService.fetchOrCreateBruker();
+        var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
-        boolean isCurrentUserTeamMember = !team.getBrukere().isEmpty() &&
+        var isCurrentUserTeamMember = !team.getBrukere().isEmpty() &&
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
 
         if (!isCurrentUserTeamMember) {
@@ -73,14 +70,14 @@ public class TeamService {
     @Transactional
     public void deleteTeamById(Long teamId) {
         teamRepository.deleteById(teamId);
-        brukerService.slettTeamBruker(teamId);
+        teamBrukerRepository.deleteAllById_TeamId(teamId);
     }
 
     @Transactional
     public void addBrukerToTeam(Long teamId, Long brukerId) {
         var team = fetchTeamById(teamId);
 
-        var currentBruker = brukerService.fetchOrCreateBruker();
+        var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
         var isCurrentUserTeamMember = !team.getBrukere().isEmpty() &&
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
@@ -104,11 +101,11 @@ public class TeamService {
 
     @Transactional
     public void removeBrukerFromTeam(Long teamId, Long brukerId) {
-        Team team = fetchTeamById(teamId);
+        var team = fetchTeamById(teamId);
 
-        Bruker currentBruker = brukerService.fetchOrCreateBruker();
+        var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
-        boolean isCurrentUserTeamMember = team.getBrukere() != null &&
+        var isCurrentUserTeamMember = nonNull(team.getBrukere()) &&
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
 
         if (!isCurrentUserTeamMember) {
@@ -119,7 +116,7 @@ public class TeamService {
             throw new IllegalArgumentException("Siste bruker i et team kan ikke fjerne seg selv, forsøk heller å slette teamet");
         }
 
-        TeamBruker.TeamBrukerId id = TeamBruker.TeamBrukerId.builder()
+        var id = TeamBruker.TeamBrukerId.builder()
                 .teamId(teamId)
                 .brukerId(brukerId)
                 .build();
