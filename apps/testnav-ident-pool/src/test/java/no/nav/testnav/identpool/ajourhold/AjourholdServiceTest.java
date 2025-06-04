@@ -6,6 +6,7 @@ import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
+import no.nav.testnav.identpool.service.IdentGeneratorService;
 import no.nav.testnav.identpool.util.PersonidentUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
 class AjourholdServiceTest {
 
     private final List<Ident> entities = new ArrayList<>();
+
     @Mock
     private TpsMessagingConsumer tpsMessagingConsumer;
     @Mock
@@ -42,7 +44,7 @@ class AjourholdServiceTest {
     @BeforeEach
     void init() {
         entities.clear();
-        ajourholdService = Mockito.spy(new AjourholdService(identRepository, tpsMessagingConsumer));
+        ajourholdService = Mockito.spy(new AjourholdService(new IdentGeneratorService(), identRepository, tpsMessagingConsumer));
 
         when(identRepository.save(any(Ident.class))).thenAnswer((Answer<Void>) invocationOnMock -> {
             Ident ident = invocationOnMock.getArgument(0);

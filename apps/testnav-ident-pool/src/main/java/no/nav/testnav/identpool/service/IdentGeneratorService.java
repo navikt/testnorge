@@ -1,8 +1,9 @@
-package no.nav.testnav.identpool.util;
+package no.nav.testnav.identpool.service;
 
-import lombok.experimental.UtilityClass;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
+import no.nav.testnav.identpool.util.IdentGeneratorUtil;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.security.SecureRandom;
@@ -27,8 +28,8 @@ import static no.nav.testnav.identpool.util.IdentGeneratorUtil.numberFormatter;
 import static no.nav.testnav.identpool.util.PersonidentUtil.generateFnr;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
-@UtilityClass
-public class IdentGeneratorUtility {
+@Service
+public class IdentGeneratorService {
 
     private static final int SYNTETISK = 4;
     private static final Random random = new SecureRandom();
@@ -37,7 +38,7 @@ public class IdentGeneratorUtility {
         return String.format("%s%1d%s", format.substring(0, 2), Integer.parseInt(format.substring(2, 3)) + SYNTETISK, format.substring(3));
     }
 
-    public static Map<LocalDate, List<String>> genererIdenterMap(
+    public Map<LocalDate, List<String>> genererIdenterMap(
             LocalDate foedtEtter,
             LocalDate foedtFoer,
             Identtype type,
@@ -58,7 +59,7 @@ public class IdentGeneratorUtility {
                 ));
     }
 
-    public static Set<String> genererIdenter(HentIdenterRequest request, Set<String> identerIIdentPool) {
+    public Set<String> genererIdenter(HentIdenterRequest request, Set<String> identerIIdentPool) {
 
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 

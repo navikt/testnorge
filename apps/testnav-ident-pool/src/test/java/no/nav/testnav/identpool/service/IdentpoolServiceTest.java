@@ -7,7 +7,6 @@ import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,9 +17,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,13 +26,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-//@Disabled
 @ExtendWith(MockitoExtension.class)
 class IdentpoolServiceTest {
 
@@ -54,31 +48,26 @@ class IdentpoolServiceTest {
 
     @Test
     void frigjoerRekvirertMenLedigIdentTest() {
-        String fnr1 = "01010101010";
-        List<String> identer = new ArrayList<>(Collections.singletonList(fnr1));
-        Ident ident = Ident.builder()
+
+        var ident1 = Ident.builder()
                 .personidentifikator(fnr1)
                 .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
                 .syntetisk(isSyntetisk(fnr1))
                 .build();
 
-        TpsStatusDTO tpsStatusDTO = new TpsStatusDTO();
-        tpsStatusDTO.setIdent(fnr1);
-        tpsStatusDTO.setInUse(false);
+        var ident2 = Ident.builder()
+                .personidentifikator(fnr1)
+                .rekvireringsstatus(LEDIG)
+                .syntetisk(isSyntetisk(fnr1))
+                .build();
 
-        Set<TpsStatusDTO> statusSet = new HashSet<>();
-        statusSet.add(tpsStatusDTO);
+        when(identRepository.findByPersonidentifikatorIn(anyList())).thenReturn(Flux.just(ident1));
+        when(identRepository.save(ident2)).thenReturn(Mono.just(ident2));
 
-//        when(repository.findByPersonidentifikator(fnr1)).thenReturn(ident);
-//        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(statusSet);
-
-//        List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
-
-        verify(identRepository).findByPersonidentifikator(fnr1);
-        verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
-        verify(identRepository).save(ident);
-
-//        assertEquals(fnr1, frigjorteIdenter.get(0));
+        identpoolService.frigjoerIdenter(List.of(fnr1))
+                .as(StepVerifier::create)
+                .expectNext(List.of(fnr1))
+                .verifyComplete();
     }
 
     @Test
@@ -93,7 +82,7 @@ class IdentpoolServiceTest {
                         .inUse(true)
                         .build()));
 
-        identpoolService.finnesIProd(Set.of(fnr1,fnr2))
+        identpoolService.finnesIProd(Set.of(fnr1, fnr2))
                 .as(StepVerifier::create)
                 .assertNext(tpsStatusDTO -> {
                     assertEquals(fnr2, tpsStatusDTO.getIdent());
@@ -126,29 +115,35 @@ class IdentpoolServiceTest {
         when(identRepository.findByPersonidentifikator(fnr1)).thenReturn(Mono.empty());
 
         assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> StepVerifier.create(
-                identpoolService.lesInnhold(fnr1))
-                .expectComplete()
-                .verify())
-                .withMessage( "expectation \"expectComplete\" failed (expected: onComplete(); actual: onError(org.springframework.web.server.ResponseStatusException: 404 NOT_FOUND \"Fant ikke ident 01010101010\"))");
+                                identpoolService.lesInnhold(fnr1))
+                        .expectComplete()
+                        .verify())
+                .withMessage("expectation \"expectComplete\" failed (expected: onComplete(); actual: onError(org.springframework.web.server.ResponseStatusException: 404 NOT_FOUND \"Fant ikke ident 01010101010\"))");
     }
 
     @Test
-    void hentLedigeFNRFoedtMellomTest() {
-        List<Ident> identer = new ArrayList<>();
-        Ident id = new Ident();
-        id.setRekvireringsstatus(LEDIG);
-        id.setFoedselsdato(LocalDate.of(1992, 3, 1));
-        id.setIdenttype(Identtype.FNR);
-        id.setKjoenn(Kjoenn.MANN);
-        id.setPersonidentifikator("123");
-        identer.add(id);
-//        when(repository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate.of(1991, 1, 1),
-//                LocalDate.of(2000, 1, 1),
-//                Identtype.FNR, LEDIG,
-//                false)).
-//                thenReturn(identer);
-//        List<String> ids = identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(1991, 1, 1), LocalDate.of(2000, 1, 1));
-//        assertFalse(ids.isEmpty());
-//        assertEquals("123", ids.get(0));
+    void hentLedigeFNRFoedtMellomSyntetiskTest() {
+
+        var ident = Ident.builder()
+                .rekvireringsstatus(LEDIG)
+                .foedselsdato(LocalDate.of(1992, 3, 1))
+                .identtype(Identtype.FNR)
+                .kjoenn(Kjoenn.MANN)
+                .personidentifikator("123")
+                .build();
+
+        when(identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate.of(1991, 1, 1),
+                LocalDate.of(2000, 1, 1),
+                Identtype.FNR, LEDIG,
+                true)).
+                thenReturn(Flux.just(ident));
+
+        identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(1991, 1, 1),
+                        LocalDate.of(2000, 1, 1), true)
+                .as(StepVerifier::create)
+                .assertNext(tpsStatusDTO -> {
+                    assertThat(tpsStatusDTO, containsInAnyOrder("123"));
+                })
+                .verifyComplete();
     }
 }

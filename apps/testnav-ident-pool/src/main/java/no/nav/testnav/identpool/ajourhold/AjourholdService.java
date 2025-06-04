@@ -8,6 +8,7 @@ import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
+import no.nav.testnav.identpool.service.IdentGeneratorService;
 import no.nav.testnav.identpool.util.IdentGeneratorUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
-import static no.nav.testnav.identpool.util.IdentGeneratorUtility.genererIdenterMap;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -39,6 +39,7 @@ public class AjourholdService {
     private static final int MIN_ANTALL_IDENTER_PER_DAG = 2;
     private static final int MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR = 10;
 
+    private final IdentGeneratorService identGeneratorService;
     private final IdentRepository identRepository;
     private final TpsMessagingConsumer tpsMessagingConsumer;
 
@@ -73,7 +74,7 @@ public class AjourholdService {
 
         return countNumberOfMissingIdents(year, type, antallPerDag, syntetiskIdent)
                 .flatMap(missingIdents ->
-                        Mono.just(genererIdenterMap(LocalDate.of(year, 1, 1),
+                        Mono.just(identGeneratorService.genererIdenterMap(LocalDate.of(year, 1, 1),
                                         LocalDate.of(year + 1, 1, 1), type, syntetiskIdent))
                                 .flatMap(generated -> filterIdents(generated, missingIdents))
                                 .flatMapMany(Flux::fromIterable)

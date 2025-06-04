@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import no.nav.testnav.identpool.util.IdentGeneratorUtility;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IdenterAvailService {
 
+    private final IdentGeneratorService identGeneratorService;
     private final IdentRepository identRepository;
     private final MapperFacade mapperFacade;
 
@@ -27,7 +27,7 @@ public class IdenterAvailService {
         var oppdatertRequest = mapperFacade.map(request, HentIdenterRequest.class);
         oppdatertRequest.setAntall(antall);
 
-        return Mono.just(IdentGeneratorUtility.genererIdenter(oppdatertRequest, new HashSet<>()))
+        return Mono.just(identGeneratorService.genererIdenter(oppdatertRequest, new HashSet<>()))
                 .flatMapMany(genererteIdenter -> identRepository.findByPersonidentifikatorIn(genererteIdenter)
                         .collectList()
                         .flatMap(databaseIdenter -> Mono.just(filtrerIdenter(genererteIdenter, databaseIdenter)))
