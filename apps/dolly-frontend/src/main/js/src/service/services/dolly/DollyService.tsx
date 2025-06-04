@@ -132,6 +132,15 @@ export default {
 		return Request.get(Endpoints.personoppslagMange(identer))
 	},
 
+	//* Team
+	opprettTeam(data) {
+		return Request.post(Endpoints.opprettTeam(), data)
+	},
+
+	redigerTeam(teamId, data) {
+		return Request.put(Endpoints.redigerTeam(teamId), data)
+	},
+
 	//* Organisasjoner
 
 	createOrganisasjonBestilling(data) {

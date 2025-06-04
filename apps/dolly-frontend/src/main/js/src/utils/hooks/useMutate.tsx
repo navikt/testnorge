@@ -4,6 +4,7 @@ export const REGEX_BACKEND_GRUPPER = /^\/dolly-backend\/api\/v1\/gruppe/
 export const REGEX_BACKEND_BRUKER = /^\/dolly-backend\/api\/v1\/bruker/
 export const REGEX_BACKEND_BESTILLINGER = /^\/dolly-backend\/api\/v1\/bestilling/
 export const REGEX_BACKEND_ORGANISASJONER = /^\/dolly-backend\/api\/v1\/organisasjon/
+export const REGEX_BACKEND_TEAM = /^\/dolly-backend\/api\/v1\/team/
 
 export const useMatchMutate = () => {
 	const { cache, mutate } = useSWRConfig()
