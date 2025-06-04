@@ -49,12 +49,12 @@ public class AjourholdService {
 
         return Flux.range(LocalDate.now().minusYears(yearsToGenerate).getYear(), (int) yearsToGenerate + 1)
                 .flatMap(year -> Flux.concat(
-                        checkAndGenerateForDate(year, Identtype.FNR, false),
-                        checkAndGenerateForDate(year, Identtype.FNR, true),
-                        checkAndGenerateForDate(year, Identtype.DNR, false),
-                        checkAndGenerateForDate(year, Identtype.DNR, true),
-                        checkAndGenerateForDate(year, Identtype.BOST, false),
-                        checkAndGenerateForDate(year, Identtype.BOST, true)));
+                        checkAndGenerateForYear(year, Identtype.FNR, false),
+                        checkAndGenerateForYear(year, Identtype.FNR, true),
+                        checkAndGenerateForYear(year, Identtype.DNR, false),
+                        checkAndGenerateForYear(year, Identtype.DNR, true),
+                        checkAndGenerateForYear(year, Identtype.BOST, false),
+                        checkAndGenerateForYear(year, Identtype.BOST, true)));
     }
 
     /**
@@ -65,7 +65,7 @@ public class AjourholdService {
      * @param syntetiskIdent
      * @return
      */
-    protected Mono<String> checkAndGenerateForDate(
+    protected Mono<String> checkAndGenerateForYear(
             int year,
             Identtype type,
             boolean syntetiskIdent) {
@@ -161,7 +161,7 @@ public class AjourholdService {
         return Flux.fromIterable(genererteIdenter.entrySet())
                 .flatMap(entry -> Flux.fromIterable(entry.getValue())
                         .concatMap(ident -> identRepository.existsByPersonidentifikator(ident)
-                                .flatMap(exist -> isTrue(exist) ? Mono.empty() : Mono.just(ident)))
+                                .flatMap(exist -> isTrue(exist) ? Mono.empty() : reactor.core.publisher.Mono.just(ident)))
                         .take(missingIdents.get(entry.getKey())))
                 .collectList()
                 .doOnNext(antall -> log.info("Antall identer allokert: {} for år {}", antall.size(),

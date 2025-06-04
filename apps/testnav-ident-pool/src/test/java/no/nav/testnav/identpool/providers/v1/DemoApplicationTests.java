@@ -1,8 +1,10 @@
 package no.nav.testnav.identpool.providers.v1;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -13,6 +15,7 @@ import org.testcontainers.utility.DockerImageName;
 @SpringBootTest
 @Testcontainers
 @Profile("test")
+@ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
 class DemoApplicationTests {
 
     @Container
