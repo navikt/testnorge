@@ -77,7 +77,7 @@ public class TeamController {
     @Operation(description = "Legg til bruker i team")
     @ResponseStatus(HttpStatus.CREATED)
     public void addTeamMember(@PathVariable("teamId") Long teamId,
-                              @PathVariable("brukerId") Long brukerId) {
+                              @PathVariable("brukerId") String brukerId) {
         teamService.addBrukerToTeam(teamId, brukerId);
     }
 
@@ -85,7 +85,7 @@ public class TeamController {
     @Operation(description = "Fjern bruker fra team")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeTeamMember(@PathVariable("teamId") Long teamId,
-                                 @PathVariable("brukerId") Long brukerId) {
+                                 @PathVariable("brukerId") String brukerId) {
         teamService.removeBrukerFromTeam(teamId, brukerId);
     }
 }

@@ -6,6 +6,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final BrukerService brukerService;
     private final TeamBrukerRepository teamBrukerRepository;
+    private final BrukerRepository brukerRepository;
 
     public List<Team> fetchAllTeam() {
         return teamRepository.findAll();
@@ -74,10 +76,12 @@ public class TeamService {
     }
 
     @Transactional
-    public void addBrukerToTeam(Long teamId, Long brukerId) {
+    public void addBrukerToTeam(Long teamId, String brukerId) {
         var team = fetchTeamById(teamId);
 
         var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
+        var nyttMedlem = brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Fant ikke bruker med id=" + brukerId));
 
         var isCurrentUserTeamMember = !team.getBrukere().isEmpty() &&
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
@@ -88,7 +92,7 @@ public class TeamService {
 
         var teamBrukerId = TeamBruker.TeamBrukerId.builder()
                 .teamId(teamId)
-                .brukerId(brukerId)
+                .brukerId(nyttMedlem.getId())
                 .build();
 
         if (teamBrukerRepository.existsById(teamBrukerId)) {
@@ -100,10 +104,13 @@ public class TeamService {
     }
 
     @Transactional
-    public void removeBrukerFromTeam(Long teamId, Long brukerId) {
+    public void removeBrukerFromTeam(Long teamId, String brukerId) {
         var team = fetchTeamById(teamId);
 
         var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
+
+        var brukerToDelete = brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Fant ikke bruker med id=" + brukerId));
 
         var isCurrentUserTeamMember = nonNull(team.getBrukere()) &&
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
@@ -112,13 +119,14 @@ public class TeamService {
             throw new IllegalArgumentException("Kan ikke fjerne et gruppemedlem fra en gruppe man ikke selv er medlem i");
         }
 
-        if (team.getBrukere().size() == 1 && team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(brukerId))) {
+        if (team.getBrukere().size() == 1 &&
+                team.getBrukere().stream().anyMatch(bruker -> bruker.getBrukerId().equals(brukerId))) {
             throw new IllegalArgumentException("Siste bruker i et team kan ikke fjerne seg selv, forsøk heller å slette teamet");
         }
 
         var id = TeamBruker.TeamBrukerId.builder()
                 .teamId(teamId)
-                .brukerId(brukerId)
+                .brukerId(brukerToDelete.getId())
                 .build();
 
         teamBrukerRepository.deleteById(id);
