@@ -21,16 +21,15 @@ public class BatchService {
     private final AjourholdRepository ajourholdRepository;
     private final AjourholdService ajourholdService;
 
-    public void startGeneratingIdentsBatch() {
+    public Mono<Ajourhold> startGeneratingIdentsBatch() {
 
-        updateStatus(BatchStatus.MINING_STARTED)
+        return updateStatus(BatchStatus.MINING_STARTED)
                 .flatMapMany(ajourhold1 -> ajourholdService.checkCriticalAndGenerate())
                 .collectList()
-                .flatMap(list -> updateStatus(BatchStatus.MINING_COMPLETE))
+                .flatMap(list -> updateStatus(BatchStatus.MINING_COMPLETED))
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> updateStatus(BatchStatus.MINING_FAILED,
-                        ExceptionUtils.getStackTrace(error).substring(0, 1023)))
-                .subscribe();
+                        ExceptionUtils.getStackTrace(error).substring(0, 1023)));
     }
 
     public Flux<String> startGeneratingIdents() {
@@ -39,15 +38,14 @@ public class BatchService {
                 .onErrorResume(error -> Mono.just(error.getMessage() + ", " + error.getCause()));
     }
 
-    public void updateDatabaseWithProdStatus() {
+    public Mono<Ajourhold> updateDatabaseWithProdStatus() {
 
-        updateStatus(BatchStatus.CLEAN_STARTED)
+        return updateStatus(BatchStatus.CLEAN_STARTED)
                 .flatMap(ajourhold -> ajourholdService.getIdentsAndCheckProd())
                 .flatMap(identer -> updateStatus(BatchStatus.CLEAN_COMPLETED))
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> updateStatus(BatchStatus.CLEAN_FAILED,
-                        ExceptionUtils.getStackTrace(error).substring(0, 1023)))
-                .subscribe();
+                        ExceptionUtils.getStackTrace(error).substring(0, 1023)));
     }
 
     private Mono<Ajourhold> updateStatus(BatchStatus status) {

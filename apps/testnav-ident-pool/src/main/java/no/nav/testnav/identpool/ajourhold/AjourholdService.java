@@ -20,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -83,7 +84,7 @@ public class AjourholdService {
                                 .count()
                                 .doOnNext(antall -> log.info("Ajourhold: år {} {} {} identer har fått allokert antall nye: {}",
                                         year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall))
-                                .map(antall -> "Ajourhold: år %d %s %s identer har fått allokert antall nye: %d%n".formatted(
+                                .map(antall -> "Ajourhold: år %d %s %s identer har fått allokert antall nye: %d%n" .formatted(
                                         year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall)));
     }
 
@@ -171,31 +172,29 @@ public class AjourholdService {
     /**
      * Fjerner FNR/DNR/BNR fra ident-pool-databasen som finnes i prod
      */
-    public Mono<List<Ident>> getIdentsAndCheckProd() {
+    public Mono<Long> getIdentsAndCheckProd() {
 
         return identRepository.countAllIkkeSyntetisk(LEDIG, FOEDT_ETTER)
                 .doOnNext(count -> log.info("Antall identer som er LEDIG i ident-pool: {}", count))
                 .filter(count -> count > 0)
-                .flatMap(count -> Flux.range(0, (count / MAX_SIZE_TPS_QUEUE) + 1)
-                        .flatMap(i -> identRepository.findAllIkkeSyntetisk(LEDIG, FOEDT_ETTER, PageRequest.of(i, MAX_SIZE_TPS_QUEUE)))
+                .flatMap(count ->
+                        Flux.range(0, (count / MAX_SIZE_TPS_QUEUE) + 1)
+                        .flatMap(i ->
+                                identRepository.findAllIkkeSyntetisk(LEDIG, FOEDT_ETTER, PageRequest.of(i, MAX_SIZE_TPS_QUEUE)))
                         .map(Ident::getPersonidentifikator)
                         .collectList()
-                        .flatMapMany(idents -> tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents)))
+                        .flatMapMany(idents ->
+                                tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents)))
                         .filter(TpsStatusDTO::isInUse)
                         .map(TpsStatusDTO::getIdent)
-                        .reduce(new HashSet<String>(), (usedIdents, ident) -> {
-                            usedIdents.add(ident);
-                            return usedIdents;
-                        }))
-                .flatMap(identsInUse -> Flux.fromIterable(identsInUse)
                         .flatMap(usedIdent -> identRepository.findByPersonidentifikator(usedIdent)
-                                .doOnNext(ident -> {
+                                .flatMap(ident -> {
                                     ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
                                     ident.setRekvirertAv("TPS-PROD");
-                                })
-                                .flatMap(identRepository::save))
-                        .collectList()
+                                    return identRepository.save(ident);
+                                }))
+                        .count()
                         .doOnNext(usedIdents -> log.info("Fjernet {} identer som er i bruk i prod, " +
-                                "men som var markert som LEDIG i ident-pool.", usedIdents.size())));
+                                "men som var markert som LEDIG i ident-pool.", usedIdents)));
     }
 }

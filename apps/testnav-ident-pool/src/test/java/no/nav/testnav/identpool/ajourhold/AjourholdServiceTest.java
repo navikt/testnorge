@@ -7,41 +7,38 @@ import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.service.IdentGeneratorService;
-import no.nav.testnav.identpool.util.PersonidentUtil;
-import org.junit.Assert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
+import org.springframework.data.domain.PageRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.is;
+import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
+import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AjourholdServiceTest {
 
-    private final List<Ident> entities = new ArrayList<>();
+    private static final String FNR1 = "01010101010";
+    private static final String FNR2 = "02020202020";
 
     @Mock
     private TpsMessagingConsumer tpsMessagingConsumer;
+
     @Mock
     private IdentRepository identRepository;
 
@@ -49,14 +46,8 @@ class AjourholdServiceTest {
 
     @BeforeEach
     void init() {
-        entities.clear();
-        ajourholdService = Mockito.spy(new AjourholdService(new IdentGeneratorService(), identRepository, tpsMessagingConsumer));
 
-//        when(identRepository.save(any(Ident.class))).thenAnswer((Answer<Void>) invocationOnMock -> {
-//            Ident ident = invocationOnMock.getArgument(0);
-//            entities.add(ident);
-//            return null;
-//        });
+        ajourholdService = Mockito.spy(new AjourholdService(new IdentGeneratorService(), identRepository, tpsMessagingConsumer));
     }
 
     @Test
@@ -69,35 +60,64 @@ class AjourholdServiceTest {
         when(identRepository.existsByPersonidentifikator(anyString())).thenReturn(Mono.just(true));
         ajourholdService.checkAndGenerateForYear(year, Identtype.FNR, false)
                 .as(StepVerifier::create)
-                .assertNext(status -> status.equals("Ingen ledige identer for år: " + year + " og identtype: FNR"))
+                .expectNextMatches(result ->
+                        result.startsWith("Ajourhold: år " + year + " FNR vanlige identer har fått allokert antall nye: 0"))
                 .verifyComplete();
     }
 
     @Test
     void genererIdenterForAarHvorAlleErLedige() {
-        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenAnswer((Answer<Set<TpsStatusDTO>>) invocationOnMock -> {
-            Set<String> pins = invocationOnMock.getArgument(0);
-            return pins.stream().map(p -> new TpsStatusDTO(p, true)).collect(Collectors.toSet());
-        });
-        ajourholdService.checkAndGenerateForYear(1941, Identtype.DNR, false);
-        verify(identRepository, times(entities.size())).save(any(Ident.class));
-        assertThat(entities.size(), is(365 * 4));
-        entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
-        entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
-        entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
+
+        var year = LocalDate.now().getYear() - 30; // 30 years ago
+        when(identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
+                LocalDate.of(year, 1, 1), LocalDate.of(year, 12, 31),
+                Identtype.FNR, Rekvireringsstatus.LEDIG, true)).thenReturn(Flux.empty());
+        when(identRepository.existsByPersonidentifikator(anyString())).thenReturn(Mono.just(false));
+        when(identRepository.save(any(Ident.class))).thenReturn(Mono.just(new Ident()));
+
+        ajourholdService.checkAndGenerateForYear(year, Identtype.FNR, true)
+                .as(StepVerifier::create)
+                .expectNextMatches(result ->
+                        result.startsWith("Ajourhold: år " + year + " FNR NAV-syntetiske identer har fått allokert antall nye: 1460"))
+                .verifyComplete();
     }
 
     @Test
-    void genererIdenterForAarHvorAlleErLedigeBOST() {
-        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenAnswer((Answer<Set<TpsStatusDTO>>) invocationOnMock -> {
-            Set<String> pins = invocationOnMock.getArgument(0);
-            return pins.stream().map(p -> new TpsStatusDTO(p, true)).collect(Collectors.toSet());
-        });
-        ajourholdService.checkAndGenerateForYear(1941, Identtype.BOST, false);
-        verify(identRepository, times(entities.size())).save(any(Ident.class));
-        assertThat(entities.size(), is(365 * 4));
-        entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.BOST)));
-        entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.BOST)));
-        entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
+    void getIdentsAndCheckProd_happyTest() {
+
+        when(identRepository.countAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class)))
+                .thenReturn(Mono.just(100));
+        when(identRepository.findAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class), any(PageRequest.class)))
+                .thenReturn(Flux.just(prepIdent(FNR1, LEDIG, false)))
+                .thenReturn(Flux.just(prepIdent(FNR2, LEDIG, false)));
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
+                .thenReturn(Flux.just(TpsStatusDTO.builder()
+                                .ident(FNR1)
+                                .inUse(true)
+                        .build(),
+                        TpsStatusDTO.builder()
+                                .ident(FNR2)
+                                .inUse(true)
+                        .build()));
+        when(identRepository.findByPersonidentifikator(anyString()))
+                .thenReturn(Mono.just(prepIdent(FNR1, LEDIG, false)))
+                .thenReturn(Mono.just(prepIdent(FNR2, LEDIG, false)));
+        when(identRepository.save(any(Ident.class)))
+                .thenReturn(Mono.just(prepIdent(FNR1, I_BRUK, false)))
+                .thenReturn(Mono.just(prepIdent(FNR2, I_BRUK, false)));
+
+        ajourholdService.getIdentsAndCheckProd()
+                .as(StepVerifier::create)
+                .assertNext(count -> assertThat(count, Matchers.is(2L)))
+                .verifyComplete();
+    }
+
+    private static Ident prepIdent(String ident, Rekvireringsstatus status, boolean syntetisk) {
+
+        return Ident.builder()
+                .personidentifikator(ident)
+                .rekvireringsstatus(status)
+                .syntetisk(syntetisk)
+                .build();
     }
 }
