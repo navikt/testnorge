@@ -20,13 +20,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.TEAM;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -142,7 +144,7 @@ public class BrukerService {
     public List<Bruker> fetchBrukere() {
 
         var brukeren = fetchOrCreateBruker();
-        if (brukeren.getBrukertype() == AZURE) {
+        if (brukeren.getBrukertype() == AZURE || brukeren.getBrukertype() == TEAM) {
             return brukerRepository.findAllByOrderById();
 
         } else {
@@ -159,10 +161,12 @@ public class BrukerService {
     }
 
     public List<Team> fetchTeamsForCurrentBruker() {
-        var bruker = fetchOrCreateBruker();
+        var bruker = fetchCurrentBrukerWithoutTeam();
         return nonNull(bruker.getTeamMedlemskap()) ?
-                new ArrayList<>(bruker.getTeamMedlemskap()) :
-                new ArrayList<>();
+                bruker.getTeamMedlemskap().stream()
+                        .sorted(Comparator.comparing(Team::getId))
+                        .toList() :
+                emptyList();
     }
 
     private Long getEffectiveIdForUser(String brukerId) {
@@ -170,8 +174,8 @@ public class BrukerService {
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Fant ikke bruker med brukerID: " + brukerId));
         if (nonNull(bruker.getGjeldendeTeam())) {
-            var brukerTeam = brukerRepository.findTeamBrukerByGjeldendeTeam(bruker.getGjeldendeTeam().getId())
-                    .orElseThrow(() -> new NotFoundException("Fant ikke bruker for team med ID: " + bruker.getGjeldendeTeam().getId()));
+            var brukerTeam = brukerRepository.findBrukerById(bruker.getGjeldendeTeam().getBrukerId())
+                    .orElseThrow(() -> new NotFoundException("Fant ikke bruker for team med brukerID: " + bruker.getGjeldendeTeam().getBrukerId()));
 
             return brukerTeam.getId();
         }

@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
@@ -41,7 +40,7 @@ public class BrukerController {
     @Transactional(readOnly = true)
     @Operation(description = "Hent Bruker med brukerId")
     public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
-        Bruker bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
+        var bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
@@ -49,7 +48,7 @@ public class BrukerController {
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
-        Bruker bruker = brukerService.fetchOrCreateBruker();
+        var bruker = brukerService.fetchCurrentBrukerWithoutTeam();
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
@@ -57,7 +56,8 @@ public class BrukerController {
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
     public List<RsBrukerAndGruppeId> getAllBrukere() {
-        return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
+        var brukere = brukerService.fetchBrukere();
+        return mapperFacade.mapAsList(brukere, RsBrukerAndGruppeId.class);
     }
 
     @Transactional
@@ -87,7 +87,7 @@ public class BrukerController {
     @PutMapping("/gjeldendeTeam/{teamId}")
     @Operation(description = "Sett aktivt team for innlogget bruker")
     public RsBruker setGjeldendeTeam(@PathVariable("teamId") Long teamId) {
-        Bruker bruker = brukerService.setGjeldendeTeam(teamId);
+        var bruker = brukerService.setGjeldendeTeam(teamId);
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
@@ -95,7 +95,7 @@ public class BrukerController {
     @DeleteMapping("/gjeldendeTeam")
     @Operation(description = "Fjern aktivt team for innlogget bruker")
     public RsBruker clearGjeldendeTeam() {
-        Bruker bruker = brukerService.setGjeldendeTeam(null);
+        var bruker = brukerService.setGjeldendeTeam(null);
         return mapperFacade.map(bruker, RsBruker.class);
     }
 }

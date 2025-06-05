@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.service.BrukerService;
 import org.springframework.stereotype.Component;
@@ -21,18 +22,6 @@ public class TeamBrukerMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(Team.class, RsTeam.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(Team team, RsTeam rsTeam, MappingContext context) {
-                        rsTeam.setBrukere(team.getBrukere().stream()
-                                .map(Bruker::getBrukerId)
-                                .collect(Collectors.toSet()));
-                    }
-                })
-                .exclude("brukere")
-                .byDefault()
-                .register();
 
         factory.classMap(RsTeam.class, Team.class)
                 .customize(new CustomMapper<>() {
@@ -48,7 +37,18 @@ public class TeamBrukerMappingStrategy implements MappingStrategy {
                         }
                     }
                 })
-                .exclude("brukere")
+                .byDefault()
+                .register();
+
+        factory.classMap(Team.class, RsTeamWithBrukere.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(Team team, RsTeamWithBrukere rsTeamWithBrukere, MappingContext context) {
+                        rsTeamWithBrukere.setBrukere(team.getBrukere().stream()
+                                .map(bruker -> mapperFacade.map(bruker, RsBrukerUtenFavoritter.class))
+                                .collect(Collectors.toSet()));
+                    }
+                })
                 .byDefault()
                 .register();
     }

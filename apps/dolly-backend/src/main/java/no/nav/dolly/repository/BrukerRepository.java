@@ -16,9 +16,6 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
     @Query(value = "from Bruker b where b.brukertype='AZURE' order by b.brukernavn")
     List<Bruker> findAllByOrderById();
 
-    @Query(value = "from Bruker b where b.brukertype='TEAM' and b.gjeldendeTeam.id = :teamId")
-    Optional<Bruker> findTeamBrukerByGjeldendeTeam(Long teamId);
-
     List<Bruker> findAllByBrukerIdInOrderByBrukernavn(List<String> brukerId);
 
     Optional<Bruker> findBrukerByBrukerId(String brukerId);

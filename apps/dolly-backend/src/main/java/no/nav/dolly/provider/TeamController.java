@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -33,37 +33,35 @@ public class TeamController {
 
     @GetMapping
     @Operation(description = "Hent alle team")
-    public ResponseEntity<List<RsTeam>> getAllTeams() {
+    public ResponseEntity<List<RsTeamWithBrukere>> getAllTeams() {
         var teams = teamService.fetchAllTeam();
-        return ResponseEntity.ok(teams.stream()
-                .map(team -> mapperFacade.map(team, RsTeam.class))
-                .collect(Collectors.toList()));
+        return ResponseEntity.ok(mapperFacade.mapAsList(teams, RsTeamWithBrukere.class));
     }
 
     @GetMapping("/{id}")
     @Operation(description = "Hent team med angitt ID")
-    public ResponseEntity<RsTeam> getTeamById(@PathVariable("id") Long id) {
+    public ResponseEntity<RsTeamWithBrukere> getTeamById(@PathVariable("id") Long id) {
         var team = teamService.fetchTeamById(id);
-        return ResponseEntity.ok(mapperFacade.map(team, RsTeam.class));
+        return ResponseEntity.ok(mapperFacade.map(team, RsTeamWithBrukere.class));
     }
 
     @PostMapping
     @Operation(description = "Opprett nytt team")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<RsTeam> createTeam(@RequestBody RsTeam rsTeam) {
+    public ResponseEntity<RsTeamWithBrukere> createTeam(@RequestBody RsTeam rsTeam) {
         var team = mapperFacade.map(rsTeam, Team.class);
         var savedTeam = teamService.opprettTeam(team);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapperFacade.map(savedTeam, RsTeam.class));
+                .body(mapperFacade.map(savedTeam, RsTeamWithBrukere.class));
     }
 
     @PutMapping("/{id}")
     @Operation(description = "Oppdater eksisterende team")
-    public ResponseEntity<RsTeam> updateTeam(@PathVariable("id") Long id,
-                                             @RequestBody RsTeam rsTeam) {
+    public ResponseEntity<RsTeamWithBrukere> updateTeam(@PathVariable("id") Long id,
+                                                        @RequestBody RsTeam rsTeam) {
         var team = mapperFacade.map(rsTeam, Team.class);
         var updatedTeam = teamService.updateTeam(id, team);
-        return ResponseEntity.ok(mapperFacade.map(updatedTeam, RsTeam.class));
+        return ResponseEntity.ok(mapperFacade.map(updatedTeam, RsTeamWithBrukere.class));
     }
 
     @DeleteMapping("/{id}")

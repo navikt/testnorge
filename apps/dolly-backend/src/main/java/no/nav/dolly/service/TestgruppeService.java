@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
@@ -57,7 +56,7 @@ public class TestgruppeService {
     private final BrukerServiceConsumer brukerServiceConsumer;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
-        Bruker bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
 
         return saveGruppeTilDB(Testgruppe.builder()
                 .navn(rsTestgruppe.getNavn())
@@ -164,7 +163,7 @@ public class TestgruppeService {
 
     @Transactional
     public Long deleteGruppeById(Long gruppeId) {
-        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+        var testgruppe = fetchTestgruppeById(gruppeId);
         var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
 
         transaksjonMappingRepository.deleteByGruppeId(gruppeId);
@@ -180,7 +179,7 @@ public class TestgruppeService {
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
-        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+        var testgruppe = fetchTestgruppeById(gruppeId);
 
         testgruppe.setHensikt(endreGruppe.getHensikt());
         testgruppe.setNavn(endreGruppe.getNavn());
@@ -222,7 +221,7 @@ public class TestgruppeService {
 
     public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, RsLockTestgruppe lockTestgruppe) {
 
-        Testgruppe testgruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke testgruppe med id = " + gruppeId));
+        var testgruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke testgruppe med id = " + gruppeId));
         if (isTrue(lockTestgruppe.getErLaast())) {
             testgruppe.setErLaast(true);
             testgruppe.setLaastBeskrivelse(lockTestgruppe.getLaastBeskrivelse());

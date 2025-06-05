@@ -18,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RsTeam {
+public class RsTeamWithBrukere {
 
 
     private Long id;
@@ -27,6 +27,5 @@ public class RsTeam {
     private LocalDateTime opprettet;
     private RsBrukerUtenFavoritter opprettetAv;
 
-    @Builder.Default
-    private Set<String> brukere = new HashSet<>();
+    private Set<RsBrukerUtenFavoritter> brukere = new HashSet<>();
 }

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
-import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class RsBrukerAndGruppeId {
     private Brukertype brukertype;
     private String epost;
     private String navIdent;
-    private RsTeam gjeldendeTeam;
+    private RsTeamWithBrukere gjeldendeTeam;
     private List<String> favoritter;
 
     public List<String> getFavoritter() {
