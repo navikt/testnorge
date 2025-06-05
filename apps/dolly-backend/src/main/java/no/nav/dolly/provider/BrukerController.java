@@ -7,7 +7,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.service.BrukerService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -79,8 +79,8 @@ public class BrukerController {
     @Transactional(readOnly = true)
     @GetMapping("/teams")
     @Operation(description = "Hent alle team gjeldende bruker er medlem av")
-    public List<RsTeam> getUserTeams() {
-        return mapperFacade.mapAsList(brukerService.fetchTeamsForCurrentBruker(), RsTeam.class);
+    public List<RsTeamWithBrukere> getUserTeams() {
+        return mapperFacade.mapAsList(brukerService.fetchTeamsForCurrentBruker(), RsTeamWithBrukere.class);
     }
 
     @Transactional
