@@ -33,8 +33,9 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER:#{null}}
+          accepted-audience: ${AZURE_APP_CLIENT_ID:#{null}}, api:// ${AZURE_APP_CLIENT_ID:#{null}}
+
 server:
   error:
     include-message: always

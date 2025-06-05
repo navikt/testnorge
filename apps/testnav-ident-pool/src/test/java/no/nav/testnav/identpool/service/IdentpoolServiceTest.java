@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class IdentpoolServiceTest {
 
-    private static final String fnr1 = "01010101010";
-    private static final String fnr2 = "02020202020";
+    private static final String FNR1 = "01010101010";
+    private static final String FNR2 = "02020202020";
 
     @Mock
     private IdentRepository identRepository;
@@ -50,23 +50,23 @@ class IdentpoolServiceTest {
     void frigjoerRekvirertMenLedigIdentTest() {
 
         var ident1 = Ident.builder()
-                .personidentifikator(fnr1)
+                .personidentifikator(FNR1)
                 .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
-                .syntetisk(isSyntetisk(fnr1))
+                .syntetisk(isSyntetisk(FNR1))
                 .build();
 
         var ident2 = Ident.builder()
-                .personidentifikator(fnr1)
+                .personidentifikator(FNR1)
                 .rekvireringsstatus(LEDIG)
-                .syntetisk(isSyntetisk(fnr1))
+                .syntetisk(isSyntetisk(FNR1))
                 .build();
 
         when(identRepository.findByPersonidentifikatorIn(anyList())).thenReturn(Flux.just(ident1));
         when(identRepository.save(ident2)).thenReturn(Mono.just(ident2));
 
-        identpoolService.frigjoerIdenter(List.of(fnr1))
+        identpoolService.frigjoerIdenter(List.of(FNR1))
                 .as(StepVerifier::create)
-                .expectNext(List.of(fnr1))
+                .expectNext(List.of(FNR1))
                 .verifyComplete();
     }
 
@@ -75,17 +75,17 @@ class IdentpoolServiceTest {
 
         when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
                 .thenReturn(Flux.just(TpsStatusDTO.builder()
-                        .ident(fnr2)
+                        .ident(FNR2)
                         .inUse(false)
                         .build(), TpsStatusDTO.builder()
-                        .ident(fnr2)
+                        .ident(FNR2)
                         .inUse(true)
                         .build()));
 
-        identpoolService.finnesIProd(Set.of(fnr1, fnr2))
+        identpoolService.finnesIProd(Set.of(FNR1, FNR2))
                 .as(StepVerifier::create)
                 .assertNext(tpsStatusDTO -> {
-                    assertEquals(fnr2, tpsStatusDTO.getIdent());
+                    assertEquals(FNR2, tpsStatusDTO.getIdent());
                     assertTrue(tpsStatusDTO.isInUse());
                 })
                 .expectComplete()
@@ -93,29 +93,29 @@ class IdentpoolServiceTest {
     }
 
     @Test
-    void lseInnhold_happyTest() {
+    void lesInnhold_happyTest() {
 
         Ident ident = Ident.builder()
-                .personidentifikator(fnr1)
+                .personidentifikator(FNR1)
                 .rekvireringsstatus(Rekvireringsstatus.LEDIG)
-                .syntetisk(isSyntetisk(fnr1))
+                .syntetisk(isSyntetisk(FNR1))
                 .build();
 
-        when(identRepository.findByPersonidentifikator(fnr1)).thenReturn(Mono.just(ident));
+        when(identRepository.findByPersonidentifikator(FNR1)).thenReturn(Mono.just(ident));
 
-        identpoolService.lesInnhold(fnr1)
+        identpoolService.lesInnhold(FNR1)
                 .as(StepVerifier::create)
                 .expectNext(ident)
                 .verifyComplete();
     }
 
     @Test
-    void leseInnhold_ikkeFunnet() {
+    void lesInnhold_ikkeFunnet() {
 
-        when(identRepository.findByPersonidentifikator(fnr1)).thenReturn(Mono.empty());
+        when(identRepository.findByPersonidentifikator(FNR1)).thenReturn(Mono.empty());
 
         assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> StepVerifier.create(
-                                identpoolService.lesInnhold(fnr1))
+                                identpoolService.lesInnhold(FNR1))
                         .expectComplete()
                         .verify())
                 .withMessage("expectation \"expectComplete\" failed (expected: onComplete(); actual: onError(org.springframework.web.server.ResponseStatusException: 404 NOT_FOUND \"Fant ikke ident 01010101010\"))");
@@ -141,9 +141,7 @@ class IdentpoolServiceTest {
         identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(1991, 1, 1),
                         LocalDate.of(2000, 1, 1), true)
                 .as(StepVerifier::create)
-                .assertNext(tpsStatusDTO -> {
-                    assertThat(tpsStatusDTO, containsInAnyOrder("123"));
-                })
+                .assertNext(tpsStatusDTO -> assertThat(tpsStatusDTO, containsInAnyOrder("123")))
                 .verifyComplete();
     }
 }

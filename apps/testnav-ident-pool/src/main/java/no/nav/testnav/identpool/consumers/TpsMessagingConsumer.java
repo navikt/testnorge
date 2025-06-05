@@ -20,7 +20,7 @@ import java.util.Set;
 public class TpsMessagingConsumer {
 
     private static final String NO_ENV = "pp";
-    private static final int PAGESIZE = 80;
+    public static final int PAGESIZE = 80;
 
     private final WebClient webClient;
     private final ServerProperties serverProperties;
@@ -49,8 +49,6 @@ public class TpsMessagingConsumer {
 
     private Flux<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, TpsValidation validation) {
 
-//        var startTid = System.currentTimeMillis();
-
         return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / PAGESIZE + 1)
                         .flatMap(page -> new TpsMessagingGetCommand(webClient, token.getTokenValue(),
@@ -60,9 +58,5 @@ public class TpsMessagingConsumer {
                                         .ident(status.getIdent())
                                         .inUse(validation.apply(status))
                                         .build())));
-
-//        log.info("Kall til TPS med {} identer tok {} ms", identer.size(), System.currentTimeMillis() - startTid);
-
-//        return response;
     }
 }
