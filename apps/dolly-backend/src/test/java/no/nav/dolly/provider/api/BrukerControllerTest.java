@@ -7,7 +7,7 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.provider.BrukerController;
 import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,10 +95,10 @@ class BrukerControllerTest {
     @Test
     void getUserTeams() {
         var team = Team.builder().id(1L).build();
-        var rsTeam = RsTeam.builder().id(1L).build();
+        var rsTeam = RsTeamWithBrukere.builder().id(1L).build();
 
         when(brukerService.fetchTeamsForCurrentBruker()).thenReturn(List.of(team));
-        when(mapperFacade.mapAsList(List.of(team), RsTeam.class)).thenReturn(List.of(rsTeam));
+        when(mapperFacade.mapAsList(List.of(team), RsTeamWithBrukere.class)).thenReturn(List.of(rsTeam));
 
         var result = controller.getUserTeams();
 
