@@ -57,10 +57,14 @@ public class BrukerService {
 
 
     public Bruker fetchCurrentBrukerWithoutTeam() {
-
         var brukerId = getUserId(getUserInfo);
+
         return brukerRepository.findBrukerByBrukerId(brukerId)
-                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
+                .orElseGet(() -> {
+                    var bruker = createBruker(null);
+
+                    return bruker;
+                });
     }
 
     public Bruker fetchBrukerWithoutTeam(String brukerId) {

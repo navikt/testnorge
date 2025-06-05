@@ -64,7 +64,7 @@ class BrukerControllerTest {
         var bruker = Bruker.builder().build();
         var rsBruker = new RsBruker();
 
-        when(brukerService.fetchOrCreateBruker()).thenReturn(bruker);
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(bruker);
         when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
 
         assertThat(controller.getCurrentBruker(), is(rsBruker));
