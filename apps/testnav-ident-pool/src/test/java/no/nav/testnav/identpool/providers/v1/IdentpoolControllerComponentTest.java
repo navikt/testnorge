@@ -1,10 +1,6 @@
 package no.nav.testnav.identpool.providers.v1;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import no.nav.testnav.identpool.ComponentTestbase;
-import no.nav.testnav.identpool.ajourhold.AjourholdService;
-import no.nav.testnav.identpool.ajourhold.BatchService;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
@@ -13,38 +9,29 @@ import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.AjourholdRepository;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import no.nav.testnav.identpool.service.DatabaseService;
-import no.nav.testnav.identpool.service.IdenterAvailService;
-import no.nav.testnav.identpool.service.IdentpoolService;
-import no.nav.testnav.identpool.service.PoolService;
-import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.AzureAdTokenService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.ErrorProperties;
-import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 import static org.hamcrest.CoreMatchers.is;
@@ -63,8 +50,9 @@ import static org.mockito.Mockito.when;
 //@RunWith(SpringRunner.class)
 //@DataR2dbcTest(properties = {"webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT",
 //        "classes=IdentPoolApplicationStarter.class"})
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+//@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient
 @Testcontainers
 @ActiveProfiles("test")
 //@WithMockUser
@@ -80,6 +68,15 @@ class IdentpoolControllerComponentTest  {
     private static final String FNR_IBRUK = "11108000327";
     private static final String NYTT_FNR_LEDIG = "20018049946";
 
+    @MockitoBean
+    private AzureAdTokenService azureAdTokenService;
+
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
+
+    @Autowired
+    private WebTestClient webTestClient;
+
     @Autowired
     private DatabaseClient databaseClient;
 
@@ -88,6 +85,20 @@ class IdentpoolControllerComponentTest  {
 
     @Autowired
     private AjourholdRepository ajourholdRepository;
+
+    @Container
+    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.9"));
+
+    @DynamicPropertySource
+    static void dynamicPropertyRegistry(DynamicPropertyRegistry registry) {
+        registry.add("spring.r2dbc.url", IdentpoolControllerComponentTest::getR2dbcUrl);
+        registry.add("spring.r2dbc.username", postgreSQLContainer::getUsername);
+        registry.add("spring.r2dbc.password", postgreSQLContainer::getPassword);
+    }
+
+    private static String getR2dbcUrl() {
+        return postgreSQLContainer.getJdbcUrl().replace("jdbc", "r2dbc");
+    }
 //
 //    @MockitoBean
 //    private MapperFacade mapperFacade;
@@ -104,6 +115,11 @@ class IdentpoolControllerComponentTest  {
     @BeforeEach
     void populerDatabaseMedTestidenter() {
 
+        databaseClient.sql("select * from information_schema.columns where table_name = 'personidentifikator'")
+                .fetch()
+                .all()
+                .doOnNext(System.out::println)
+                .blockLast();
         // Clear the repository before populating it with test data
 //        identRepository.deleteAll()
 //                .as(StepVerifier::create)
@@ -128,11 +144,7 @@ class IdentpoolControllerComponentTest  {
     @Test
     void lesInnhold() {
 
-        var webClient = WebTestClient.bindToServer()
-                .baseUrl("http://localhost:8080")
-                .build();
-
-        webClient.get()
+        webTestClient.get()
                 .uri(IDENT_V1_BASEURL)
                 .header("personidentifikator", FNR_LEDIG)
                 .exchange()
