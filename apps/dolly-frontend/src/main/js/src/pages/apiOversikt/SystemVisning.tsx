@@ -1,27 +1,7 @@
 import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { Box } from '@navikt/ds-react'
-
-const LabelValue = styled.div`
-	display: flex;
-	flex-wrap: nowrap;
-	margin-bottom: 0.8rem;
-
-	&& {
-		h4 {
-			margin: 0;
-			font-size: 0.9em;
-			transform: translateY(15%);
-			text-transform: uppercase;
-			color: #525962;
-			width: 160px;
-			align-self: baseline;
-		}
-		.verdi {
-			width: 80%;
-		}
-	}
-`
+import { LabelValueColumns } from '@/components/ui/labelValueColumns/LabelValueColumns'
 
 const ReadWriteDelete = styled.div`
 	margin-top: 1rem;
@@ -37,48 +17,16 @@ const ReadWriteDelete = styled.div`
 	}
 `
 
-const LabelValueVisning = ({ label, value }: { label: string; value: string }) => {
-	if (!value) {
-		return null
-	}
-
-	const formatValue = (value: string) => {
-		if (value.startsWith('http')) {
-			return (
-				<a href={value} target="_blank">
-					{value}
-				</a>
-			)
-		}
-		return value
-	}
-
-	return (
-		<LabelValue>
-			<h4>{label}</h4>
-			{Array.isArray(value) ? (
-				<div className="verdi">
-					{value.map((item, idx) => (
-						<div key={item + idx}>{formatValue(item)}</div>
-					))}
-				</div>
-			) : (
-				<div className="verdi">{formatValue(value)}</div>
-			)}
-		</LabelValue>
-	)
-}
-
 const DataVisning = ({ system }: { system: any }) => (
 	<>
-		<LabelValueVisning label="register" value={system.register} />
-		<LabelValueVisning label="namespace" value={system.namespace} />
-		<LabelValueVisning label="name" value={system.name} />
-		<LabelValueVisning label="cluster" value={system.cluster} />
-		<LabelValueVisning label="kubernetes-name" value={_.get(system, 'kubernetes-name')} />
-		<LabelValueVisning label="url" value={system.url} />
-		<LabelValueVisning label="documentation" value={system.documentation} />
-		<LabelValueVisning label="description" value={system.description} />
+		<LabelValueColumns label="register" value={system.register} />
+		<LabelValueColumns label="namespace" value={system.namespace} />
+		<LabelValueColumns label="name" value={system.name} />
+		<LabelValueColumns label="cluster" value={system.cluster} />
+		<LabelValueColumns label="kubernetes-name" value={_.get(system, 'kubernetes-name')} />
+		<LabelValueColumns label="url" value={system.url} />
+		<LabelValueColumns label="documentation" value={system.documentation} />
+		<LabelValueColumns label="description" value={system.description} />
 	</>
 )
 

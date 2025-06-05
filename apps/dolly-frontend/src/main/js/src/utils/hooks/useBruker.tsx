@@ -74,3 +74,14 @@ export const useBrukerProfilBilde = () => {
 		error: error,
 	}
 }
+
+export const useBrukerTeams = () => {
+	const { data, isLoading, error, mutate } = useSWR<any, Error>(`${getBrukereUrl}/teams`, fetcher)
+
+	return {
+		brukerTeams: data,
+		loading: isLoading,
+		error: error,
+		mutate: mutate,
+	}
+}

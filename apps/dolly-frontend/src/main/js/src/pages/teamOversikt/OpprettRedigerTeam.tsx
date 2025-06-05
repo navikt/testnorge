@@ -5,7 +5,6 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { DollyApi } from '@/service/Api'
 import { useAlleBrukere, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { REGEX_BACKEND_TEAM, useMatchMutate } from '@/utils/hooks/useMutate'
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -26,15 +25,11 @@ const validation = Yup.object().shape({
 	brukere: Yup.array(),
 })
 
-export const OpprettRedigerTeam = ({ team = null, closeModal }) => {
+export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 	const erOppretting = !team
 
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
-
-	// TODO: Trenger ikke opprettet av, utledes i BE
-	// const { currentBruker } = useCurrentBruker()
-	// console.log('currentBruker: ', currentBruker) //TODO - SLETT MEG
 
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
 	const brukerOptions = brukere?.map((bruker) => {
@@ -44,7 +39,6 @@ export const OpprettRedigerTeam = ({ team = null, closeModal }) => {
 		}
 	})
 
-	const mutate = useMatchMutate()
 	const formMethods = useForm({
 		mode: 'all',
 		defaultValues: team ?? initialValues,
@@ -64,7 +58,7 @@ export const OpprettRedigerTeam = ({ team = null, closeModal }) => {
 				} else {
 					closeModal()
 					setIsLoading(false)
-					return mutate(REGEX_BACKEND_TEAM)
+					return mutate()
 				}
 			})
 			.catch((error) => {
@@ -84,7 +78,7 @@ export const OpprettRedigerTeam = ({ team = null, closeModal }) => {
 				} else {
 					closeModal()
 					setIsLoading(false)
-					return mutate(REGEX_BACKEND_TEAM)
+					return mutate()
 				}
 			})
 			.catch((error) => {

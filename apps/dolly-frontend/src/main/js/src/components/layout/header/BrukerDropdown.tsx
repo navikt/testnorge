@@ -1,6 +1,11 @@
 import React from 'react'
 import './Header.less'
-import { useBrukerProfil, useBrukerProfilBilde } from '@/utils/hooks/useBruker'
+import {
+	useBrukerProfil,
+	useBrukerProfilBilde,
+	useBrukerTeams,
+	useCurrentBruker,
+} from '@/utils/hooks/useBruker'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 import { getDefaultImage } from '@/pages/minSide/Profil'
 import { ActionMenu } from '@navikt/ds-react'
@@ -8,30 +13,14 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import { ActionMenuWrapper, DropdownStyledIcon, DropdownStyledLink } from './ActionMenuWrapper'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 
-const myTeamsMock = [
-	{
-		name: 'Team Dolly',
-		id: 'team-dolly',
-	},
-	{
-		name: 'Team Black Sheep',
-		id: 'team-black-sheep',
-	},
-]
-
-const currentMock = {
-	brukerId: '952ab92e-926f-4ac4-93d7-f2d552025caf',
-	brukernavn: 'Traran, Betsy Carina',
-	brukertype: 'AZURE',
-	epost: 'Betsy.Carina.Traran@nav.no',
-	grupper: ['2d7f1c0d-5784-4f81-8bb2-8f3a79f8f949', '9c7efec1-1599-4216-a67e-6fd53a6a951c'],
-	representerer: null,
-	// representerer: 'team-dolly',
-}
-
 export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
+
+	const { currentBruker } = useCurrentBruker()
+	const { brukerTeams, loading, error, mutate } = useBrukerTeams()
+	console.log('currentBruker: ', currentBruker) //TODO - SLETT MEG
+	console.log('brukerTeams: ', brukerTeams) //TODO - SLETT MEG
 
 	return (
 		<span className={'dropdown-toggle'}>
@@ -58,26 +47,26 @@ export const BrukerDropdown = () => {
 						onClick={() => {}}
 						style={{
 							color: '#212529',
-							backgroundColor: !currentMock?.representerer ? '#99C3FF' : null,
+							backgroundColor: !currentBruker?.gjeldendeTeam ? '#99C3FF' : null,
 						}}
 					>
 						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
 						<DropdownStyledLink href="">
-							{brukerProfil?.visningsNavn + (!currentMock?.representerer ? ' (valgt)' : '')}
+							{brukerProfil?.visningsNavn + (!currentBruker?.gjeldendeTeam ? ' (valgt)' : '')}
 						</DropdownStyledLink>
 					</ActionMenu.Item>
-					{myTeamsMock?.map((team) => (
+					{brukerTeams?.map((team) => (
 						<ActionMenu.Item
 							onClick={() => {}}
 							key={team.id}
 							style={{
 								color: '#212529',
-								backgroundColor: currentMock?.representerer === team.id ? '#99C3FF' : null,
+								backgroundColor: currentBruker?.gjeldendeTeam === team.id ? '#99C3FF' : null,
 							}}
 						>
 							<DropdownStyledIcon kind="group" fontSize="1.5rem" />
 							<DropdownStyledLink href="">
-								{team.name + (currentMock?.representerer === team.id ? ' (valgt)' : '')}
+								{team.navn + (currentBruker?.gjeldendeTeam === team.id ? ' (valgt)' : '')}
 							</DropdownStyledLink>
 						</ActionMenu.Item>
 					))}

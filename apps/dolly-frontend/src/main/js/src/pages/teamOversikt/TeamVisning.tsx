@@ -1,21 +1,13 @@
-import { HStack, VStack } from '@navikt/ds-react'
-
-const LabelValue = ({ label, value }) => {
-	return (
-		<HStack gap="10" justify="start">
-			<h4>{label}</h4>
-			<p>{value}</p>
-		</HStack>
-	)
-}
+import { formatDateTime } from '@/utils/DataFormatter'
+import { LabelValueColumns } from '@/components/ui/labelValueColumns/LabelValueColumns'
 
 export const TeamVisning = ({ team }) => {
-	// console.log('team: ', team) //TODO - SLETT MEG
 	return (
-		<VStack gap="4" align="baseline">
-			<LabelValue label="Beskrivelse" value={team.beskrivelse} />
-			<LabelValue label="Admin" value={team.opprettetAv} />
-			<LabelValue label="Medlemmer" value={team.brukere?.join(', ')} />
-		</VStack>
+		<>
+			<LabelValueColumns label="Beskrivelse" value={team.beskrivelse} />
+			<LabelValueColumns label="Opprettet" value={formatDateTime(team.opprettet)} />
+			<LabelValueColumns label="Admin" value={team.opprettetAv?.brukernavn} />
+			<LabelValueColumns label="Medlemmer" value={team.brukere} />
+		</>
 	)
 }
