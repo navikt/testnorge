@@ -1,25 +1,18 @@
 package no.nav.testnav.identpool.providers.v1;
 
-import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
-import no.nav.testnav.identpool.repository.AjourholdRepository;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.AzureAdTokenService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -32,6 +25,7 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 import static org.hamcrest.CoreMatchers.is;
@@ -39,25 +33,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
-//@WebFluxTest(excludeAutoConfiguration =  {ReactiveSecurityAutoConfiguration.class,
-//        SecurityAutoConfiguration.class})
-//@Import({
-//        BatchService.class, AjourholdService.class, IdentpoolService.class, PoolService.class,
-//        IdenterAvailService.class, DatabaseService.class
-//})
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@DataR2dbcTest
-//@RunWith(SpringRunner.class)
-//@DataR2dbcTest(properties = {"webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT",
-//        "classes=IdentPoolApplicationStarter.class"})
-//@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient
 @Testcontainers
-@ActiveProfiles("test")
-//@WithMockUser
-@ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
-class IdentpoolControllerComponentTest  {
+@DollySpringBootTest
+class IdentpoolControllerComponentTest {
 
     private static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
     private static final String API_V1_IDENT_IBRUK = IDENT_V1_BASEURL + "/bruk";
@@ -68,23 +46,11 @@ class IdentpoolControllerComponentTest  {
     private static final String FNR_IBRUK = "11108000327";
     private static final String NYTT_FNR_LEDIG = "20018049946";
 
-    @MockitoBean
-    private AzureAdTokenService azureAdTokenService;
-
-    @MockitoBean
-    private JwtDecoder jwtDecoder;
-
     @Autowired
     private WebTestClient webTestClient;
 
     @Autowired
-    private DatabaseClient databaseClient;
-
-    @Autowired
     private IdentRepository identRepository;
-
-    @Autowired
-    private AjourholdRepository ajourholdRepository;
 
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.9"));
@@ -99,15 +65,6 @@ class IdentpoolControllerComponentTest  {
     private static String getR2dbcUrl() {
         return postgreSQLContainer.getJdbcUrl().replace("jdbc", "r2dbc");
     }
-//
-//    @MockitoBean
-//    private MapperFacade mapperFacade;
-//
-//    @MockitoBean
-//    private ApplicationProperties applicationProperties;
-//
-//    @MockitoBean
-//    private ErrorProperties errorProperties;
 
     @MockitoBean
     private TpsMessagingConsumer tpsMessagingConsumer;
@@ -115,30 +72,22 @@ class IdentpoolControllerComponentTest  {
     @BeforeEach
     void populerDatabaseMedTestidenter() {
 
-        databaseClient.sql("select * from information_schema.columns where table_name = 'personidentifikator'")
-                .fetch()
-                .all()
-                .doOnNext(System.out::println)
-                .blockLast();
-        // Clear the repository before populating it with test data
-//        identRepository.deleteAll()
-//                .as(StepVerifier::create)
-//                .verifyComplete();
-//
-//        identRepository.saveAll(Arrays.asList(
-//                        createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10),
-//                        createIdentEntity(Identtype.DNR, DNR_LEDIG, Rekvireringsstatus.LEDIG, 20),
-//                        createIdentEntity(Identtype.FNR, FNR_IBRUK, Rekvireringsstatus.I_BRUK, 11),
-//                        createIdentEntity(Identtype.DNR, "12108000366", Rekvireringsstatus.I_BRUK, 12)))
-//                .collectList()
-//                .as(StepVerifier::create)
-//                .verifyComplete();
+        identRepository.deleteAll()
+                .block();
+
+        identRepository.saveAll(Arrays.asList(
+                        createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10),
+                        createIdentEntity(Identtype.DNR, DNR_LEDIG, Rekvireringsstatus.LEDIG, 20),
+                        createIdentEntity(Identtype.FNR, FNR_IBRUK, Rekvireringsstatus.I_BRUK, 11),
+                        createIdentEntity(Identtype.DNR, "12108000366", Rekvireringsstatus.I_BRUK, 12)))
+                .collectList()
+                .block();
     }
 
     @AfterEach
     void clearDatabase() {
-//        identRepository.deleteAll()
-//                .block();
+        identRepository.deleteAll()
+                .block();
     }
 
     @Test
@@ -154,108 +103,134 @@ class IdentpoolControllerComponentTest  {
                 .isEqualTo(createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10));
     }
 
-
     @Test
-    void hentLedigFnr() throws Exception {
+    void hentLedigFnr() {
 
-//        String request = "{\"antall\":\"1\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\" }";
-//
-//        var webClient = WebTestClient.bindToServer()
-//                .baseUrl("http://localhost:8080")
-//                .build();
-//
-//        var result = webClient.get()
-//                .uri(API_V1_IDENT_LEDIG)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .bodyValue(request)
-//                .exchange()
-//                .expectStatus()
-//                .isOk()
-//                .expectBody()
-//
-//        var identer = (List<String>) objectMapper.readValue(result.getResponse().getContentAsString(), List.class);
-//
-//        assertThat(PersonidentUtil.getIdentType(identer.get(0)), is(Identtype.FNR));
-//        assertThat(identer, hasSize(1));
+        var request = "{\"antall\":\"1\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\" }";
+
+        webTestClient.post()
+                .uri(IDENT_V1_BASEURL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .json("['" + FNR_LEDIG + "']");
     }
 
     @Test
-    void hentLedigDnr() throws Exception {
+    void hentLedigDnr() {
 
-        String request = "{\"antall\":\"2\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
+        var request = "{\"antall\":\"1\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
 
-        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(Flux.just(
-                TpsStatusDTO.builder().ident("64038000169").build(),
-                TpsStatusDTO.builder().ident("53061600147").build()));
-
-//        var result = mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(request))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-
-//        var identer = (List<String>) objectMapper.readValue(result.getResponse().getContentAsString(), List.class);
-
-//        assertThat(PersonidentUtil.getIdentType(identer.get(0)), is(Identtype.DNR));
-//        assertThat(PersonidentUtil.getIdentType(identer.get(1)), is(Identtype.DNR));
-//        assertThat(identer, hasSize(2));
+        webTestClient.post()
+                .uri(IDENT_V1_BASEURL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .json("['" + DNR_LEDIG + "']");
     }
 
     @Test
-    void hentLedigIdent() throws Exception {
+    void hentFnrSomIkkeErIDatabase() {
+
+        var fnr1 = "64038000169";
+        var fnr2 = "53061600147";
+
+        String request = "{\"antall\":\"2\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\" }";
+
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(
+                TpsStatusDTO.builder().ident(fnr1).build(),
+                TpsStatusDTO.builder().ident(fnr2).build()));
+
+        webTestClient.post()
+                .uri(IDENT_V1_BASEURL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .json("[\"" + fnr1 + "\",\"" + fnr2 + "\"]");
+    }
+
+    @Test
+    void opprettNyeIdenterSjekkSluttstatus() {
+
+        var fnr1 = "15103300123";
+        var fnr2 = "16022400197";
+        var fnr3 = "09021000121";
 
         String request = "{\"antall\":\"3\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\",\"foedtFoer\":\"1950-01-01\"}";
 
-        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(Flux.just(
-                TpsStatusDTO.builder().ident("15103300123").build(),
-                TpsStatusDTO.builder().ident("16022400197").build(),
-                TpsStatusDTO.builder().ident("09021000121").build()));
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(
+                TpsStatusDTO.builder().ident(fnr1).build(),
+                TpsStatusDTO.builder().ident(fnr2).build(),
+                TpsStatusDTO.builder().ident(fnr3).build()));
 
-//        var result = mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(request))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
+        webTestClient.post()
+                .uri(IDENT_V1_BASEURL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .json("[\"" + fnr1 + "\",\"" + fnr2 + "\",\"" + fnr3 + "\"]");
 
-//        var identer = (List<String>) objectMapper.readValue(result.getResponse().getContentAsString(), List.class);
-
-//        assertThat(identer, hasSize(3));
-
-//        StepVerifier.create(identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
-//                        LocalDate.of(1900, 1, 1),
-//                        LocalDate.of(1950, 1, 1),
-//                        Identtype.FNR,
-//                        Rekvireringsstatus.I_BRUK,
-//                        false))
-//                .expectNextCount(3)
-//                .verifyComplete();
+        identRepository.countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+                        Rekvireringsstatus.I_BRUK,
+                        Identtype.FNR,
+                        false,
+                        LocalDate.of(1900, 1, 1),
+                        LocalDate.of(1950, 1, 1))
+                .as(StepVerifier::create)
+                .expectNext(3)
+                .verifyComplete();
     }
 
     @Test
-    void hentForMangeIdenterSomIkkeFinnesIDatabasen() throws Exception {
+    void hentFlereIdenterEnnDetErMuligAaLevere() throws Exception {
 
-        String request = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\",\"identtype\":\"FNR\"}";
+        var fnr1 = "15103300123";
 
-        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(Flux.just(
-                TpsStatusDTO.builder().ident("15103300123").build()));
+        var request = "{\"antall\":\"200\",\"foedtFoer\":\"1900-01-01\",\"foedtEtter\":\"1900-01-01\",\"identtype\":\"FNR\"}";
 
-//        mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(request))
-//                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-//                .andReturn();
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(
+                TpsStatusDTO.builder().ident(fnr1).build()));
+
+        webTestClient.post()
+                .uri(IDENT_V1_BASEURL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody()
+                .jsonPath("$.message")
+                .isEqualTo("Identpool finner ikke ledige identer i hht forespørsel: identType FNR, kjønn null, " +
+                        "fødtEtter 1900-01-01, fødtFør 1900-01-01, syntetisk false -- forsøk å bestille med andre kriterier.");
     }
 
     @Test
-    void skalFeileNaarUgyldigIdenttypeBrukes() throws Exception {
+    void skalFeileNaarUgyldigIdenttypeBrukes() {
 
-        String request = "{\"antall\":\"1\", \"identtype\":\"buksestoerrelse\" }";
+        var request = "{\"antall\":\"1\", \"identtype\":\"buksestoerrelse\" }";
 
-//        mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(request))
-//                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-//                .andReturn();
+        webTestClient.post()
+                .uri(IDENT_V1_BASEURL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody()
+                .jsonPath("$.message")
+                .isEqualTo("400 BAD_REQUEST \"Failed to read HTTP message\"");
     }
 
     @Test

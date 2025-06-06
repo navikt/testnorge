@@ -1,34 +1,17 @@
 package no.nav.testnav.identpool.providers.v1;
 
-import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.AzureAdTokenService;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest
 @Testcontainers
-@Import(TokenExchange.class)
-@Profile("test")
-@ContextConfiguration(initializers = NaisEnvironmentApplicationContextInitializer.class)
+@DollySpringBootTest
 class DemoApplicationTests {
-
-    @MockitoBean
-    private AzureAdTokenService azureAdTokenService;
-
-    @MockitoBean
-    private JwtDecoder jwtDecoder;
 
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));

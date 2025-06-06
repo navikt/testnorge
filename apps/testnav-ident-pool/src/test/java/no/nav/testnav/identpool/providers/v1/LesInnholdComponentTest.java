@@ -1,9 +1,12 @@
 package no.nav.testnav.identpool.providers.v1;
 
+import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
+import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.AzureAdTokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -26,11 +31,9 @@ import java.time.LocalDate;
 
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Testcontainers
 @AutoConfigureWebTestClient
-//@Import(SecurityTestConfig.class)
-@Profile("test")
+@Testcontainers
+@DollySpringBootTest
 class LesInnholdComponentTest {
 
     private static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
@@ -42,20 +45,17 @@ class LesInnholdComponentTest {
     private static final LocalDate FOEDSELSDATO = LocalDate.of(1980, 10, 10);
     private static final String REKVIRERT_AV = "RekvirererMcRekvirererface";
 
-    @MockitoBean
-    private AzureAdTokenService azureAdTokenService;
-
-    @MockitoBean
-    private JwtDecoder jwtDecoder;
-
     @Autowired
-    private DatabaseClient databaseClient;
+    private IdentRepository identRepository;
 
     @Autowired
     private WebTestClient webTestClient;
 
+    @Autowired
+    private DatabaseClient databaseClient;
+
     @Container
-    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16"));
+    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
 
     @DynamicPropertySource
     static void dynamicPropertyRegistry(DynamicPropertyRegistry registry) {
@@ -70,15 +70,11 @@ class LesInnholdComponentTest {
 
     @BeforeEach
     void populerDatabaseMedTestidenter() {
-        databaseClient.sql("select * from information_schema.columns where table_name = 'personidentifikator'")
-                .fetch()
-                .all()
-                .doOnNext(System.out::println)
-                .blockLast();
-//        Ident ident = createIdentEntity(Identtype.FNR, PERSONIDENTIFIKATOR, REKVIRERINGSSTATUS, 10);
-//        ident.setRekvirertAv(REKVIRERT_AV);
-//        identRepository.save(ident)
-//                .block();
+
+        Ident ident = createIdentEntity(Identtype.FNR, PERSONIDENTIFIKATOR, REKVIRERINGSSTATUS, 10);
+        ident.setRekvirertAv(REKVIRERT_AV);
+        identRepository.save(ident)
+                .block();
     }
 
     @Test
