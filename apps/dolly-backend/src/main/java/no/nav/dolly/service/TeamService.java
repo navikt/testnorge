@@ -52,21 +52,27 @@ public class TeamService {
 
     @Transactional
     public Team updateTeam(Long teamId, Team teamUpdates) {
-        var team = fetchTeamById(teamId);
+        var existingTeam = fetchTeamById(teamId);
 
         var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
-        var isCurrentUserTeamMember = !team.getBrukere().isEmpty() &&
-                team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
+        var isCurrentUserTeamMember = !existingTeam.getBrukere().isEmpty() &&
+                existingTeam.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
 
         if (!isCurrentUserTeamMember) {
             throw new IllegalArgumentException("Kan ikke endre en gruppe man ikke selv er medlem i");
         }
 
-        team.setNavn(teamUpdates.getNavn());
-        team.setBeskrivelse(teamUpdates.getBeskrivelse());
+        existingTeam.setNavn(teamUpdates.getNavn());
+        existingTeam.setBeskrivelse(teamUpdates.getBeskrivelse());
 
-        return teamRepository.save(team);
+        if (nonNull(teamUpdates.getBrukere()) && !teamUpdates.getBrukere().isEmpty()) {
+            var nyeBrukere = existingTeam.getBrukere().stream().filter(bruker -> currentBruker.getId().equals(bruker.getId())).toList();
+            existingTeam.getBrukere().clear();
+            existingTeam.getBrukere().addAll(nyeBrukere);
+        }
+
+        return teamRepository.save(existingTeam);
     }
 
     @Transactional

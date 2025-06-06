@@ -31,9 +31,14 @@ public class TeamBrukerMappingStrategy implements MappingStrategy {
                         team.setOpprettetAv(bruker);
 
                         if (!rsTeam.getBrukere().isEmpty()) {
-                            team.setBrukere(rsTeam.getBrukere().stream()
-                                    .map(brukerService::fetchBrukerWithoutTeam)
-                                    .collect(Collectors.toSet()));
+                            try {
+
+                                team.setBrukere(rsTeam.getBrukere().stream()
+                                        .map(brukerService::fetchBrukerWithoutTeam)
+                                        .collect(Collectors.toSet()));
+                            } catch (Exception e) {
+                                throw new IllegalArgumentException("Klarte ikke å utlede en eller flere bruker(e) fra brukerId: " + rsTeam.getBrukere(), e);
+                            }
                         }
                     }
                 })
