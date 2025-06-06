@@ -170,8 +170,8 @@ jobs:
   deploy-test:
     needs: [ start, build, build-no-tests ]
     if: |
-      needs.start.outputs.do-deploy-test == 'true' && 
-      (needs.build.outputs.image != '' || needs.build-no-tests.outputs.image != '')
+      needs.start.outputs.do-deploy-test == 'true' &&
+      (needs.build.result == 'success' || needs.build-no-tests.result == 'success')
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
     steps:
