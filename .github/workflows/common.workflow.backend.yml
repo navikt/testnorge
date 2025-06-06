@@ -49,6 +49,10 @@ on:
       SONAR_TOKEN:
         required: true
 
+env:
+  GRADLE_BUILD_ACTION_CACHE_KEY_PREFIX: "gradle-build-${{ github.workflow }}"
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs='-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError'"
+
 jobs:
   start:
     if: github.event.pull_request.draft == false
@@ -83,10 +87,13 @@ jobs:
         id: gradle
         uses: gradle/actions/setup-gradle@v3
         with:
+          gradle-home-cache-cleanup: true
+          gradle-version: wrapper
           cache-read-only: false
+          generate-job-summary: false
       - name: "Build with tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
+        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --parallel --no-daemon
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -124,10 +131,13 @@ jobs:
       - name: "Setup Gradle"
         uses: gradle/actions/setup-gradle@v3
         with:
+          gradle-home-cache-cleanup: true
+          gradle-version: wrapper
           cache-read-only: false
+          generate-job-summary: false
       - name: "Build without tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build -x test --scan
+        run: ./gradlew build -x test --parallel --no-daemon
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       - name: "Build and push Docker image"
@@ -184,9 +194,14 @@ jobs:
           java-version: 21
       - name: "Setup Gradle"
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-home-cache-cleanup: true
+          gradle-version: wrapper
+          cache-read-only: false
+          generate-job-summary: false
       - name: "Run Tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
+        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --parallel --no-daemon
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
