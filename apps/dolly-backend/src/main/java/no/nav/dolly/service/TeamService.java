@@ -67,14 +67,15 @@ public class TeamService {
         existingTeam.setBeskrivelse(teamUpdates.getBeskrivelse());
 
         if (nonNull(teamUpdates.getBrukere())) {
-            var nyeBrukere = teamUpdates.getBrukere()
-                    .stream()
-                    .filter(bruker -> currentBruker.getId().equals(bruker.getId()))
-                    .toList();
-
             existingTeam.getBrukere().clear();
-            existingTeam.getBrukere().add(currentBruker);
-            existingTeam.getBrukere().addAll(nyeBrukere);
+
+            existingTeam.getBrukere().addAll(teamUpdates.getBrukere());
+
+            if (existingTeam.getBrukere().stream()
+                    .noneMatch(bruker -> bruker.getId()
+                            .equals(currentBruker.getId()))) {
+                existingTeam.getBrukere().add(currentBruker);
+            }
         }
 
         return teamRepository.save(existingTeam);
