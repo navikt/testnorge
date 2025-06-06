@@ -80,6 +80,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+          cache: "gradle"
       - name: "Gradle"
         id: gradle
         uses: gradle/actions/setup-gradle@v3
