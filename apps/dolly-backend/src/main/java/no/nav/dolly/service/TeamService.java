@@ -89,18 +89,9 @@ public class TeamService {
 
     @Transactional
     public void addBrukerToTeam(Long teamId, String brukerId) {
-        var team = fetchTeamById(teamId);
 
-        var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
         var nyttMedlem = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Fant ikke bruker med id=" + brukerId));
-
-        var isCurrentUserTeamMember = !team.getBrukere().isEmpty() &&
-                team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
-
-        if (!isCurrentUserTeamMember) {
-            throw new IllegalArgumentException("Kan ikke legge til nytt gruppemedlem i en gruppe man ikke selv er medlem i");
-        }
 
         var teamBrukerId = TeamBruker.TeamBrukerId.builder()
                 .teamId(teamId)
