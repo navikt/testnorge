@@ -50,7 +50,6 @@ on:
         required: true
 
 jobs:
-
   start:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
@@ -68,41 +67,71 @@ jobs:
 
   build:
     needs: start
-    if: github.actor != 'dependabot[bot]'
+    if: needs.start.outputs.do-deploy == 'true' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: "Setup"
+      - name: "Setup Java"
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-      - name: "Gradle"
+      - name: "Setup Gradle"
         id: gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
-      - name: "Build"
+      - name: "Build with tests"
         working-directory: ${{ inputs.working-directory }}
         run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: "Reporting"
+      - name: "Upload test reports"
         if: failure() && steps.gradle.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.start.outputs.artifact}}
           path: ${{ inputs.working-directory }}/build/reports
           retention-days: 7
-      - name: "Docker"
+      - name: "Build and push Docker image"
         id: docker-build-push
-        if: |
-          needs.start.outputs.do-deploy == 'true' ||
-          needs.start.outputs.do-deploy-test == 'true'
+        uses: nais/docker-build-push@v0
+        with:
+          team: dolly
+          docker_context: ${{ inputs.working-directory }}
+          image_suffix: ${{ inputs.image-suffix }}
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+
+  build-no-tests:
+    needs: start
+    if: needs.start.outputs.do-deploy-test == 'true' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Setup Java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: "Setup Gradle"
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+      - name: "Build without tests"
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew build -x test --scan
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      - name: "Build and push Docker image"
+        id: docker-build-push
         uses: nais/docker-build-push@v0
         with:
           team: dolly
@@ -127,7 +156,7 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: [ start, build ]
+    needs: [ start, build-no-tests ]
     if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
@@ -139,4 +168,25 @@ jobs:
         env:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: "${{ inputs.working-directory }}/config.test.yml"
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.build-no-tests.outputs.image }}
+
+  run-tests:
+    needs: [ start, build-no-tests ]
+    if: needs.start.outputs.do-deploy-test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+      - name: "Setup Java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: "Setup Gradle"
+        uses: gradle/actions/setup-gradle@v3
+      - name: "Run Tests"
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
