@@ -71,7 +71,7 @@ jobs:
 
   build:
     needs: start
-    if: needs.start.outputs.do-deploy == 'true' && github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]' && (needs.start.outputs.do-deploy == 'true' || needs.start.outputs.do-deploy-test != 'true')
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
