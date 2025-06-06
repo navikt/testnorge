@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.*;
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.GYLDIG_FRA;
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.GYLDIG_TIL;
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.TEMAHISTARK;
 
 @UtilityClass
 public class TemaHistarkUtility {
