@@ -94,7 +94,7 @@ jobs:
           cache-read-only: false
       - name: "Build with tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --parallel --scan
+        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -139,7 +139,7 @@ jobs:
           cache-read-only: false
       - name: "Build without tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build -x test --parallel --no-daemon
+        run: ./gradlew build -x test
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       - name: "Build and push Docker image"
@@ -168,8 +168,11 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: [ start, build-no-tests ]
-    if: needs.start.outputs.do-deploy-test == 'true'
+    needs: [ start, build, build-no-tests ]
+    if: |
+      always() && 
+      needs.start.outputs.do-deploy-test == 'true' &&
+      (needs.build.result == 'success' || needs.build-no-tests.result == 'success')
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
     steps:
@@ -180,7 +183,7 @@ jobs:
         env:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: "${{ inputs.working-directory }}/config.test.yml"
-          VAR: image=${{ needs.build-no-tests.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image != '' && needs.build.outputs.image || needs.build-no-tests.outputs.image }}
 
   run-tests:
     needs: [ start, build-no-tests ]
@@ -201,7 +204,7 @@ jobs:
           cache-read-only: false
       - name: "Run Tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --parallel --no-daemon --scan
+        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

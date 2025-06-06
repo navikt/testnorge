@@ -22,5 +22,7 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
 
     @Modifying
     @Query(value = "delete from BRUKER_FAVORITTER where gruppe_id = :groupId", nativeQuery = true)
-    int deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
+    void deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
+
+    Optional<Bruker> findBrukerById(Long brukerId);
 }
