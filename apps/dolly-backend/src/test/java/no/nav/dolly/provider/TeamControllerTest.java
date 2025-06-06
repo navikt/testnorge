@@ -3,6 +3,7 @@ package no.nav.dolly.provider;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,7 @@ class TeamControllerTest {
 
     private Team team;
     private RsTeam rsTeam;
+    private RsTeamWithBrukere rsTeamWithBrukere;
 
     @BeforeEach
     void setUp() {
@@ -54,30 +56,36 @@ class TeamControllerTest {
         rsTeam.setNavn("Test Team");
         rsTeam.setBeskrivelse("Test Description");
         rsTeam.setBrukere(Set.of("user1"));
+
+        rsTeamWithBrukere = new RsTeamWithBrukere();
+        rsTeamWithBrukere.setId(1L);
+        rsTeamWithBrukere.setNavn("Test Team");
+        rsTeamWithBrukere.setBeskrivelse("Test Description");
+        rsTeamWithBrukere.setBrukere(Set.of());
     }
 
     @Test
     void getAllTeams_shouldReturnTeamsList() {
         when(teamService.fetchAllTeam()).thenReturn(List.of(team));
-        when(mapperFacade.map(team, RsTeam.class)).thenReturn(rsTeam);
+        when(mapperFacade.mapAsList(List.of(team), RsTeamWithBrukere.class)).thenReturn(List.of(rsTeamWithBrukere));
 
         var response = teamController.getAllTeams();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(1);
-        assertThat(response.getBody().get(0)).isEqualTo(rsTeam);
+        assertThat(response.getBody().getFirst()).isEqualTo(rsTeamWithBrukere);
         verify(teamService).fetchAllTeam();
     }
 
     @Test
     void getTeamById_shouldReturnTeam() {
         when(teamService.fetchTeamById(1L)).thenReturn(team);
-        when(mapperFacade.map(team, RsTeam.class)).thenReturn(rsTeam);
+        when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
 
         var response = teamController.getTeamById(1L);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(rsTeam);
+        assertThat(response.getBody()).isEqualTo(rsTeamWithBrukere);
         verify(teamService).fetchTeamById(1L);
     }
 
@@ -85,12 +93,12 @@ class TeamControllerTest {
     void createTeam_shouldReturnCreatedTeam() {
         when(mapperFacade.map(rsTeam, Team.class)).thenReturn(team);
         when(teamService.opprettTeam(team)).thenReturn(team);
-        when(mapperFacade.map(team, RsTeam.class)).thenReturn(rsTeam);
+        when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
 
         var response = teamController.createTeam(rsTeam);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isEqualTo(rsTeam);
+        assertThat(response.getBody()).isEqualTo(rsTeamWithBrukere);
         verify(teamService).opprettTeam(team);
     }
 
@@ -98,12 +106,12 @@ class TeamControllerTest {
     void updateTeam_shouldReturnUpdatedTeam() {
         when(mapperFacade.map(rsTeam, Team.class)).thenReturn(team);
         when(teamService.updateTeam(eq(1L), any(Team.class))).thenReturn(team);
-        when(mapperFacade.map(team, RsTeam.class)).thenReturn(rsTeam);
+        when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
 
         var response = teamController.updateTeam(1L, rsTeam);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(rsTeam);
+        assertThat(response.getBody()).isEqualTo(rsTeamWithBrukere);
         verify(teamService).updateTeam(eq(1L), any(Team.class));
     }
 
