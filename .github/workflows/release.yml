@@ -33,7 +33,7 @@ jobs:
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
       - name: "Gradle"
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
       - name: "Create version"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
