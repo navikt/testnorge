@@ -9,6 +9,7 @@ import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import reactor.core.publisher.Mono;
 
 @Configuration
 @EnableAspectJAutoProxy
@@ -27,7 +28,9 @@ public class MetricsConfiguration {
     }
 
     @Bean
-    public Long totaltLedigeGauge(MeterRegistry registry, IdentRepository repository) {
-        return registry.gauge("identer.antall.ledige", repository.countByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.FNR));
+    public Mono<Long> totaltLedigeGauge(MeterRegistry registry, IdentRepository repository) {
+
+        return repository.countByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.FNR)
+                .mapNotNull(antall -> registry.gauge("identer.antall.ledige", antall));
     }
 }

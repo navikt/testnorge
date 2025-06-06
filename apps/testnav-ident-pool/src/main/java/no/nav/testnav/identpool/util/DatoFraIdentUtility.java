@@ -1,6 +1,6 @@
-package no.nav.testnav.identpool.service;
+package no.nav.testnav.identpool.util;
 
-import org.springframework.stereotype.Service;
+import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
 
@@ -12,10 +12,10 @@ import static java.lang.Integer.parseInt;
  * INDIVID(POS 7-9) 900-999 OG AAR > 39 => AARHUNDRE = 1900
  * INDIVID(POS 7-9) 500-999 OG AAR < 40 => AARHUNDRE = 2000
  */
-@Service
-public class DatoFraIdentService {
+@UtilityClass
+public class DatoFraIdentUtility {
 
-    public LocalDate getFoedselsdato(String ident) {
+    public static LocalDate getFoedselsdato(String ident) {
 
         int year = parseInt(ident.substring(4, 6));
         int individ = parseInt(ident.substring(6, 9));
@@ -37,13 +37,13 @@ public class DatoFraIdentService {
         return LocalDate.of(century + year, getMonth(ident), getDay(ident));
     }
 
-    private int getDay(String ident) {
+    private static int getDay(String ident) {
         // Fix D-number
         return ident.charAt(0) >= '4' ? parseInt(ident.substring(0, 2)) - 40 :
                 parseInt(ident.substring(0, 2));
     }
 
-    private int getMonth(String ident) {
+    private static int getMonth(String ident) {
         // Fix B-number and syntetisk
         if (ident.charAt(2) >= '6') {
             return parseInt(ident.substring(2, 4)) - 60;

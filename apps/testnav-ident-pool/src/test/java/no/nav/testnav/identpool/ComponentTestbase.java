@@ -1,48 +1,45 @@
 package no.nav.testnav.identpool;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
+import no.nav.testnav.identpool.repository.AjourholdRepository;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.net.URI;
 import java.time.LocalDate;
 
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 
 @DollySpringBootTest(classes = {ComponentTestConfig.class})
-@AutoConfigureMockMvc(addFilters = false)
+//@AutoConfigureMockMvc(addFilters = false)
 public abstract class ComponentTestbase {
+
     protected static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
-    protected static final String FINNESHOSSKATT_V1_BASEURL = "/api/v1/finneshosskatt";
 
     @Autowired
     protected IdentRepository identRepository;
 
     @Autowired
-    protected TestRestTemplate testRestTemplate;
+    private AjourholdRepository ajourholdRepository;
 
-    @Autowired
-    protected MockMvc mockMvc;
+//    @Autowired
+//    protected TestRestTemplate testRestTemplate;
 
-    @Autowired
-    protected ObjectMapper objectMapper;
+//    @Autowired
+//    protected MockMvc mockMvc;
+
+//    @Autowired
+//    protected ObjectMapper objectMapper;
 
     @MockitoBean
     protected TpsMessagingConsumer tpsMessagingConsumer;
@@ -59,24 +56,23 @@ public abstract class ComponentTestbase {
                 .identtype(identtype)
                 .personidentifikator(ident)
                 .rekvireringsstatus(rekvireringsstatus)
-                .finnesHosSkatt(false)
                 .kjoenn(Kjoenn.MANN)
                 .foedselsdato(LocalDate.of(1980, 10, day))
                 .syntetisk(isSyntetisk(ident))
                 .build();
     }
 
-    protected <T> ResponseEntity<T> doGetRequest(URI uri, HttpEntity<?> httpEntity, Class<T> responseEntity) {
-        return doRequest(uri, HttpMethod.GET, httpEntity, responseEntity);
-    }
+//    protected <T> ResponseEntity<T> doGetRequest(URI uri, HttpEntity<?> httpEntity, Class<T> responseEntity) {
+//        return doRequest(uri, HttpMethod.GET, httpEntity, responseEntity);
+//    }
 
     protected HttpEntity<?> createBodyEntity(String body) {
         return httpEntityBuilder.withBody(body).build();
     }
 
-    private <T> ResponseEntity<T> doRequest(URI uri, HttpMethod method, HttpEntity<?> httpEntity, Class<T> responseEntity) {
-        return testRestTemplate.exchange(uri, method, httpEntity, responseEntity);
-    }
+//    private <T> ResponseEntity<T> doRequest(URI uri, HttpMethod method, HttpEntity<?> httpEntity, Class<T> responseEntity) {
+//        return testRestTemplate.exchange(uri, method, httpEntity, responseEntity);
+//    }
 
     private static class HttpEntityBuilder {
         private Object body;

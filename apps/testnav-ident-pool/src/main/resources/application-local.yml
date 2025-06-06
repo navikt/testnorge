@@ -1,21 +1,18 @@
 spring:
   config:
     import: "sm://"
-  h2:
-    console:
-      enabled: true
-      path: /h2
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:/db/dev/h2-default-config.sql
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/testnav-identpool-local
+    user: testnav-identpool-local
+    password: ${sm\://testnav-identpool-local}
+  r2dbc:
+    url: r2dbc:postgres://localhost:5432/testnav-identpool-local
+    username: testnav-identpool-local
+    password: ${sm\://testnav-identpool-local}
 
 consumers:
-  tps:
-    messaging:
-      service:
-        url: https://testnav-tps-messaging-service.intern.dev.nav.no
+  tps-messaging-service:
+    url: https://testnav-tps-messaging-service.intern.dev.nav.no

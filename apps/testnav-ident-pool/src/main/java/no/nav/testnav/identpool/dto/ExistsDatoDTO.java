@@ -5,17 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class TpsStatusDTO {
+@AllArgsConstructor(staticName = "of")
+public class ExistsDatoDTO {
 
-    private String ident;
-    private boolean inUse;
-
-    public boolean isAvailable() {
-
-        return !inUse;
-    }
+    private LocalDate foedselsdato;
+    private Long antall;
 }

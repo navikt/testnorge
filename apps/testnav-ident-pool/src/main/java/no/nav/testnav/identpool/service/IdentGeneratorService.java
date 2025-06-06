@@ -42,8 +42,8 @@ public class IdentGeneratorService {
             LocalDate foedtEtter,
             LocalDate foedtFoer,
             Identtype type,
-            boolean syntetiskIdent
-    ) {
+            boolean syntetiskIdent) {
+
         validateDates(foedtEtter, foedtFoer);
         int days = toIntExact(ChronoUnit.DAYS.between(foedtEtter, foedtFoer));
         BiFunction<LocalDate, Boolean, List<String>> numberGenerator = generatorMap.get(type);
@@ -111,7 +111,7 @@ public class IdentGeneratorService {
         return identerIIdentPool;
     }
 
-    private void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
+    private static void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
 
         if (foedtEtter.isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Til dato (%s) kan ikke være etter før dato (%s)", foedtEtter, foedtFoer));
