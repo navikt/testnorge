@@ -141,8 +141,12 @@ export default {
 		return Request.put(Endpoints.redigerTeam(teamId), data)
 	},
 
+	leggTilBrukerITeam(teamId, brukerId) {
+		return Request.post(Endpoints.leggTilFjernBrukerFraTeam(teamId, brukerId))
+	},
+
 	fjernBrukerFraTeam(teamId, brukerId) {
-		return Request.delete(Endpoints.fjernBrukerFraTeam(teamId, brukerId))
+		return Request.delete(Endpoints.leggTilFjernBrukerFraTeam(teamId, brukerId))
 	},
 
 	slettTeam(teamId) {

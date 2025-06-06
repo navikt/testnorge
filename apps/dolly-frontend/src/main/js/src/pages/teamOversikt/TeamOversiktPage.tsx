@@ -11,6 +11,7 @@ import { useBrukerTeams, useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { ForlatTeam } from '@/pages/teamOversikt/ForlatTeam'
 import { SlettTeam } from '@/pages/teamOversikt/SlettTeam'
+import { BliMedITeam } from '@/pages/teamOversikt/BliMedITeam'
 
 const Knappegruppe = styled.div`
 	margin-top: 20px;
@@ -26,6 +27,7 @@ export default () => {
 
 	const [opprettRedigerTeamModalIsOpen, openOpprettRedigerTeamModal, closeOpprettRedigerTeamModal] =
 		useBoolean(false)
+	const [bliMedITeamModalIsOpen, openBliMedITeamModal, closeBliMedITeamModal] = useBoolean(false)
 	const [forlatTeamModalIsOpen, openForlatTeamModal, closeForlatTeamModal] = useBoolean(false)
 	const [slettTeamModalIsOpen, openSlettTeamModal, closeSlettTeamModal] = useBoolean(false)
 
@@ -119,10 +121,21 @@ export default () => {
 					>
 						Opprett team
 					</Button>
-					<Button variant={'primary'} onClick={() => alert('Bli med i team')}>
+					<Button variant={'primary'} onClick={openBliMedITeamModal}>
 						Bli med i team
 					</Button>
 				</Knappegruppe>
+				<DollyModal isOpen={bliMedITeamModalIsOpen} closeModal={closeBliMedITeamModal} width="60%">
+					<BliMedITeam
+						brukerId={currentBruker?.brukerId}
+						brukerTeams={brukerTeams}
+						closeModal={() => {
+							closeBliMedITeamModal()
+							return mutate()
+						}}
+						mutate={mutate}
+					/>
+				</DollyModal>
 				<DollyModal isOpen={forlatTeamModalIsOpen} closeModal={closeForlatTeamModal} width="40%">
 					<ForlatTeam
 						team={valgtTeam}

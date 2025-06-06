@@ -7,7 +7,7 @@ export const useHentAlleTeam = () => {
 	const { data, isLoading, error, mutate } = useSWR<any, Error>(teamUrl, fetcher)
 
 	return {
-		team: data,
+		alleTeam: data,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,
