@@ -66,14 +66,16 @@ public class TeamService {
         existingTeam.setNavn(teamUpdates.getNavn());
         existingTeam.setBeskrivelse(teamUpdates.getBeskrivelse());
 
-        var nyeBrukere = teamUpdates.getBrukere()
-                .stream()
-                .filter(bruker -> currentBruker.getId().equals(bruker.getId()))
-                .toList();
+        if (nonNull(teamUpdates.getBrukere())) {
+            var nyeBrukere = teamUpdates.getBrukere()
+                    .stream()
+                    .filter(bruker -> currentBruker.getId().equals(bruker.getId()))
+                    .toList();
 
-        existingTeam.getBrukere().clear();
-        existingTeam.getBrukere().add(currentBruker);
-        existingTeam.getBrukere().addAll(nyeBrukere);
+            existingTeam.getBrukere().clear();
+            existingTeam.getBrukere().add(currentBruker);
+            existingTeam.getBrukere().addAll(nyeBrukere);
+        }
 
         return teamRepository.save(existingTeam);
     }
