@@ -51,7 +51,6 @@ on:
 
 env:
   GRADLE_BUILD_ACTION_CACHE_KEY_PREFIX: "gradle-build-${{ github.workflow }}"
-  GRADLE_OPTS: "-Dorg.gradle.jvmargs='-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError'"
 
 jobs:
   start:
@@ -71,7 +70,11 @@ jobs:
 
   build:
     needs: start
-    if: github.actor != 'dependabot[bot]' && (needs.start.outputs.do-deploy == 'true' || needs.start.outputs.do-deploy-test != 'true')
+    if: >-
+      github.actor != 'dependabot[bot]' && (
+        needs.start.outputs.do-deploy == 'true' || 
+        needs.start.outputs.do-deploy-test == 'false'
+      )
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -114,7 +117,10 @@ jobs:
 
   build-no-tests:
     needs: start
-    if: needs.start.outputs.do-deploy-test == 'true' && github.actor != 'dependabot[bot]'
+    if: >-
+      github.actor != 'dependabot[bot]' && 
+      needs.start.outputs.do-deploy != 'true' && 
+      needs.start.outputs.do-deploy-test == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
