@@ -12,7 +12,6 @@ const initialValues = {
 	id: null,
 	navn: '',
 	beskrivelse: '',
-	// opprettetAv: {},
 	brukere: [],
 }
 
@@ -22,6 +21,7 @@ const validation = Yup.object().shape({
 		.trim()
 		.required('Feltet er påkrevd')
 		.max(200, 'Maksimalt 200 bokstaver'),
+	// TODO: Hvis rediger maa array vaere minst 1 lang
 	brukere: Yup.array(),
 })
 
@@ -39,9 +39,18 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 		}
 	})
 
+	const getDefaultValues = team
+		? {
+				id: team.id,
+				navn: team.navn,
+				beskrivelse: team.beskrivelse,
+				brukere: team.brukere?.map((bruker) => bruker.brukerId),
+			}
+		: initialValues
+
 	const formMethods = useForm({
 		mode: 'all',
-		defaultValues: team ?? initialValues,
+		defaultValues: getDefaultValues,
 		resolver: yupResolver(validation),
 	})
 

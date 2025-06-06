@@ -19,7 +19,7 @@ export const BrukerDropdown = () => {
 
 	const { currentBruker } = useCurrentBruker()
 	const { brukerTeams, loading, error, mutate } = useBrukerTeams()
-	console.log('currentBruker: ', currentBruker) //TODO - SLETT MEG
+
 	console.log('brukerTeams: ', brukerTeams) //TODO - SLETT MEG
 
 	return (

@@ -141,6 +141,10 @@ export default {
 		return Request.put(Endpoints.redigerTeam(teamId), data)
 	},
 
+	fjernBrukerFraTeam(teamId, brukerId) {
+		return Request.delete(Endpoints.fjernBrukerFraTeam(teamId, brukerId))
+	},
+
 	//* Organisasjoner
 
 	createOrganisasjonBestilling(data) {
