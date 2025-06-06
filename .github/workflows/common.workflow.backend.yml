@@ -139,7 +139,7 @@ jobs:
           cache-read-only: false
       - name: "Build without tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build -x test --parallel --no-daemon
+        run: ./gradlew build -x test
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       - name: "Build and push Docker image"
@@ -203,7 +203,7 @@ jobs:
           cache-read-only: false
       - name: "Run Tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --parallel --no-daemon --scan
+        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --parallel --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
