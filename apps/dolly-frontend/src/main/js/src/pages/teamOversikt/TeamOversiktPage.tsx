@@ -10,6 +10,7 @@ import React, { useState } from 'react'
 import { useBrukerTeams, useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { ForlatTeam } from '@/pages/teamOversikt/ForlatTeam'
+import { SlettTeam } from '@/pages/teamOversikt/SlettTeam'
 
 const Knappegruppe = styled.div`
 	margin-top: 20px;
@@ -26,6 +27,7 @@ export default () => {
 	const [opprettRedigerTeamModalIsOpen, openOpprettRedigerTeamModal, closeOpprettRedigerTeamModal] =
 		useBoolean(false)
 	const [forlatTeamModalIsOpen, openForlatTeamModal, closeForlatTeamModal] = useBoolean(false)
+	const [slettTeamModalIsOpen, openSlettTeamModal, closeSlettTeamModal] = useBoolean(false)
 
 	return (
 		<>
@@ -91,7 +93,10 @@ export default () => {
 											</Table.DataCell>
 											<Table.DataCell width="10%" align="center">
 												<Button
-													onClick={() => alert(`Slett ${team.navn}`)}
+													onClick={() => {
+														setValgtTeam(team)
+														openSlettTeamModal()
+													}}
 													variant="tertiary"
 													icon={<TrashIcon fontSize="1.5rem" />}
 													size="small"
@@ -138,6 +143,16 @@ export default () => {
 						team={valgtTeam}
 						closeModal={() => {
 							closeOpprettRedigerTeamModal()
+							return mutate()
+						}}
+						mutate={mutate}
+					/>
+				</DollyModal>
+				<DollyModal isOpen={slettTeamModalIsOpen} closeModal={closeSlettTeamModal} width="40%">
+					<SlettTeam
+						team={valgtTeam}
+						closeModal={() => {
+							closeSlettTeamModal()
 							return mutate()
 						}}
 						mutate={mutate}

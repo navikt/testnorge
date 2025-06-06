@@ -206,4 +206,8 @@ export default class DollyEndpoints {
 	static fjernBrukerFraTeam(teamId, brukerId) {
 		return `${teamBase}/${teamId}/medlem/${brukerId}`
 	}
+
+	static slettTeam(teamId) {
+		return `${teamBase}/${teamId}`
+	}
 }
