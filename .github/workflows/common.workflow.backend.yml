@@ -85,12 +85,10 @@ jobs:
           java-version: 21
       - name: "Setup Gradle"
         id: gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-home-cache-cleanup: true
           gradle-version: wrapper
           cache-read-only: false
-          generate-job-summary: false
       - name: "Build with tests"
         working-directory: ${{ inputs.working-directory }}
         run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --parallel --no-daemon
@@ -129,12 +127,10 @@ jobs:
           distribution: temurin
           java-version: 21
       - name: "Setup Gradle"
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-home-cache-cleanup: true
           gradle-version: wrapper
           cache-read-only: false
-          generate-job-summary: false
       - name: "Build without tests"
         working-directory: ${{ inputs.working-directory }}
         run: ./gradlew build -x test --parallel --no-daemon
@@ -193,12 +189,10 @@ jobs:
           distribution: temurin
           java-version: 21
       - name: "Setup Gradle"
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-home-cache-cleanup: true
           gradle-version: wrapper
           cache-read-only: false
-          generate-job-summary: false
       - name: "Run Tests"
         working-directory: ${{ inputs.working-directory }}
         run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --parallel --no-daemon
