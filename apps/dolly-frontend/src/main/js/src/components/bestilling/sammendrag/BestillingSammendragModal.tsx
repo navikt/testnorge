@@ -23,7 +23,6 @@ export const BestillingSammendragModal = ({ bestillinger: usorterteBestillinger 
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [aktivBestilling, setAktivBestilling] = useState(bestillingerSortert[0])
 	const [aktivIndex, setAktivIndex] = useState(0)
-	console.log('bestillinger: ', bestillingerSortert) //TODO - SLETT MEG
 
 	useEffect(() => {
 		setAktivBestilling(bestillingerSortert[aktivIndex])
