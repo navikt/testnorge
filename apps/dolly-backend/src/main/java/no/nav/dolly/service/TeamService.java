@@ -56,12 +56,7 @@ public class TeamService {
 
         var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
-        var isCurrentUserTeamMember = !existingTeam.getBrukere().isEmpty() &&
-                existingTeam.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
-
-        if (!isCurrentUserTeamMember) {
-            throw new IllegalArgumentException("Kan ikke endre en gruppe man ikke selv er medlem i");
-        }
+        assertCurrentBrukerIsTeamMember(existingTeam);
 
         existingTeam.setNavn(teamUpdates.getNavn());
         existingTeam.setBeskrivelse(teamUpdates.getBeskrivelse());
@@ -83,6 +78,11 @@ public class TeamService {
 
     @Transactional
     public void deleteTeamById(Long teamId) {
+
+        var team = fetchTeamById(teamId);
+
+        assertCurrentBrukerIsTeamMember(team);
+
         teamRepository.deleteById(teamId);
         teamBrukerRepository.deleteAllById_TeamId(teamId);
     }
@@ -110,17 +110,10 @@ public class TeamService {
     public void removeBrukerFromTeam(Long teamId, String brukerId) {
         var team = fetchTeamById(teamId);
 
-        var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
-
         var brukerToDelete = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Fant ikke bruker med id=" + brukerId));
 
-        var isCurrentUserTeamMember = nonNull(team.getBrukere()) &&
-                team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
-
-        if (!isCurrentUserTeamMember) {
-            throw new IllegalArgumentException("Kan ikke fjerne et gruppemedlem fra en gruppe man ikke selv er medlem i");
-        }
+        assertCurrentBrukerIsTeamMember(team);
 
         if (team.getBrukere().size() == 1 &&
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getBrukerId().equals(brukerId))) {
@@ -133,5 +126,16 @@ public class TeamService {
                 .build();
 
         teamBrukerRepository.deleteById(id);
+    }
+
+    private void assertCurrentBrukerIsTeamMember(Team team) {
+        var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
+
+        var isCurrentUserTeamMember = nonNull(team.getBrukere()) &&
+                team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
+
+        if (!isCurrentUserTeamMember) {
+            throw new IllegalArgumentException("Kan ikke utføre operasjon på et team som brukeren ikke er medlem av");
+        }
     }
 }
