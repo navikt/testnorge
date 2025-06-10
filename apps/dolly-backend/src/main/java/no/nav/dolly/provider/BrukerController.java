@@ -84,6 +84,7 @@ public class BrukerController {
     }
 
     @Transactional
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/gjeldendeTeam/{teamId}")
     @Operation(description = "Sett aktivt team for innlogget bruker")
     public RsBruker setGjeldendeTeam(@PathVariable("teamId") Long teamId) {
@@ -92,6 +93,7 @@ public class BrukerController {
     }
 
     @Transactional
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/gjeldendeTeam")
     @Operation(description = "Fjern aktivt team for innlogget bruker")
     public RsBruker clearGjeldendeTeam() {
