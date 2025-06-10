@@ -135,7 +135,7 @@ public class TeamService {
                 team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
 
         if (!isCurrentUserTeamMember) {
-            throw new IllegalArgumentException("Kan ikke utføre operasjon på et team som brukeren ikke er medlem av");
+            throw new IllegalArgumentException("Kan ikke utføre denne operasjonen på et team som brukeren ikke er medlem av");
         }
     }
 }
