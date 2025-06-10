@@ -22,6 +22,7 @@ export const BestillingSammendragModal = ({ bestillinger }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [aktivBestilling, setAktivBestilling] = useState(bestillinger[0])
 	const [aktivIndex, setAktivIndex] = useState(0)
+	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
 
 	useEffect(() => {
 		setAktivBestilling(bestillinger[aktivIndex])
