@@ -124,7 +124,7 @@ public class BrukerService {
 
     @Transactional
     public Bruker setGjeldendeTeam(Long teamId) {
-        var bruker = fetchOrCreateBruker();
+        var bruker = fetchCurrentBrukerWithoutTeam();
 
         if (isNull(teamId)) {
             bruker.setGjeldendeTeam(null);
