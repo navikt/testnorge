@@ -92,14 +92,6 @@ export const TextInput = ({
 	const input = props.input || props.value
 	const [fieldValue, setFieldValue] = useState(props.input || watch(name) || '')
 
-	useEffect(() => {
-		if (name && (props.input !== undefined || props.defaultValue !== undefined)) {
-			const initialValue = props.input || props.defaultValue || ''
-			setValue(name, initialValue)
-			setFieldValue(initialValue)
-		}
-	}, [])
-
 	const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 	const feil =
 		getFieldState(`manual.${name}`)?.error ||
@@ -133,12 +125,6 @@ export const TextInput = ({
 					onBlur?.(e)
 					props.onBlur?.(e)
 					props.afterChange?.(e)
-
-					if (fieldValue && (!watch(name) || watch(name) === '')) {
-						setValue(name, fieldValue)
-					} else if (watch(name)) {
-						setFieldValue(watch(name))
-					}
 				}}
 				onChange={(e) => {
 					setValue(name, e.target.value)
