@@ -210,4 +210,12 @@ export default class DollyEndpoints {
 	static slettTeam(teamId) {
 		return `${teamBase}/${teamId}`
 	}
+
+	static setGjeldendeTeam(teamId) {
+		return `${brukerBase}/gjeldendeTeam/${teamId}`
+	}
+
+	static fjernGjeldendeTeam() {
+		return `${brukerBase}/gjeldendeTeam`
+	}
 }

@@ -26,6 +26,11 @@ type BrukerType = {
 	epost: string
 	favoritter: []
 	grupper: []
+	gjeldendeTeam?: {
+		id: string
+		navn: string
+		beskrivelse: string
+	}
 }
 
 export const useAlleBrukere = () => {

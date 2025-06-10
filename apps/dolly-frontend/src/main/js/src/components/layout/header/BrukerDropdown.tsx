@@ -12,15 +12,39 @@ import { ActionMenu } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { ActionMenuWrapper, DropdownStyledIcon, DropdownStyledLink } from './ActionMenuWrapper'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
+import { DollyApi } from '@/service/Api'
+import dollyTeam from '@/assets/img/dollyTeam.png'
 
 export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
 
 	const { currentBruker } = useCurrentBruker()
-	const { brukerTeams, loading, error, mutate } = useBrukerTeams()
+	const { brukerTeams, mutate } = useBrukerTeams()
+	const gjeldendeTeam = currentBruker?.gjeldendeTeam
 
 	console.log('brukerTeams: ', brukerTeams) //TODO - SLETT MEG
+	console.log('currentBruker: ', currentBruker) //TODO - SLETT MEG
+
+	const handleTeamChange = (teamId: string) => {
+		DollyApi.setGjeldendeTeam(teamId)
+			.then(() => {
+				mutate()
+			})
+			.catch((error) => {
+				console.error('Feil ved valg av gjeldende team: ', error)
+			})
+	}
+
+	const handleFjernGjeldendeTeam = () => {
+		DollyApi.fjernGjeldendeTeam()
+			.then(() => {
+				mutate()
+			})
+			.catch((error) => {
+				console.error('Feil ved valg av gjeldende bruker: ', error)
+			})
+	}
 
 	return (
 		<span className={'dropdown-toggle'}>
@@ -33,10 +57,10 @@ export const BrukerDropdown = () => {
 								<img
 									data-testid={TestComponentSelectors.BUTTON_PROFIL}
 									alt="Profilbilde"
-									src={brukerBilde || getDefaultImage()}
+									src={gjeldendeTeam ? dollyTeam : brukerBilde || getDefaultImage()}
 								/>
 							</div>
-							<p>{brukerProfil?.visningsNavn}</p>
+							<p>{gjeldendeTeam ? gjeldendeTeam.navn : brukerProfil?.visningsNavn}</p>
 						</div>
 					</ActionMenu.Trigger>
 				}
@@ -44,29 +68,29 @@ export const BrukerDropdown = () => {
 				{/*TODO: Blir det dobbelt opp med group naar ActionMenuWrapper wrapper alt i en group?*/}
 				<ActionMenu.Group label="Representasjon">
 					<ActionMenu.Item
-						onClick={() => {}}
+						onClick={handleFjernGjeldendeTeam}
 						style={{
 							color: '#212529',
-							backgroundColor: !currentBruker?.gjeldendeTeam ? '#99C3FF' : null,
+							backgroundColor: !gjeldendeTeam ? '#99C3FF' : null,
 						}}
 					>
 						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
 						<DropdownStyledLink href="">
-							{brukerProfil?.visningsNavn + (!currentBruker?.gjeldendeTeam ? ' (valgt)' : '')}
+							{brukerProfil?.visningsNavn + (!gjeldendeTeam ? ' (valgt)' : '')}
 						</DropdownStyledLink>
 					</ActionMenu.Item>
 					{brukerTeams?.map((team) => (
 						<ActionMenu.Item
-							onClick={() => {}}
+							onClick={() => handleTeamChange(team.id)}
 							key={team.id}
 							style={{
 								color: '#212529',
-								backgroundColor: currentBruker?.gjeldendeTeam === team.id ? '#99C3FF' : null,
+								backgroundColor: gjeldendeTeam?.id === team.id ? '#99C3FF' : null,
 							}}
 						>
 							<DropdownStyledIcon kind="group" fontSize="1.5rem" />
 							<DropdownStyledLink href="">
-								{team.navn + (currentBruker?.gjeldendeTeam === team.id ? ' (valgt)' : '')}
+								{team.navn + (gjeldendeTeam?.id === team.id ? ' (valgt)' : '')}
 							</DropdownStyledLink>
 						</ActionMenu.Item>
 					))}
