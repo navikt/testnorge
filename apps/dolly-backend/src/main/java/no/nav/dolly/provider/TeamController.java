@@ -8,6 +8,7 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.service.TeamService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 
 @Slf4j
 @RestController
@@ -47,6 +50,7 @@ public class TeamController {
 
     @PostMapping
     @Operation(description = "Opprett nytt team")
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<RsTeamWithBrukere> createTeam(@RequestBody RsTeam rsTeam) {
         var team = mapperFacade.map(rsTeam, Team.class);
@@ -56,6 +60,7 @@ public class TeamController {
     }
 
     @PutMapping("/{id}")
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Oppdater eksisterende team")
     public ResponseEntity<RsTeamWithBrukere> updateTeam(@PathVariable("id") Long id,
                                                         @RequestBody RsTeam rsTeam) {

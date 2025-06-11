@@ -24,6 +24,7 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
 class TestgruppeMappingStrategyTest {
@@ -41,6 +42,9 @@ class TestgruppeMappingStrategyTest {
     public void setUpHappyPath() {
         mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(new GetUserInfo("dummy"), brukerService));
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+
+        when(brukerService.fetchOrCreateBruker()).thenReturn(new Bruker());
+        when(brukerService.fetchBrukerOrTeamBruker(BRUKERID)).thenReturn(new Bruker());
     }
 
     @Test
