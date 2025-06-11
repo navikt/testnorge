@@ -298,7 +298,7 @@ public class MalBestillingService {
 
         var malBestillinger = switch (brukerId) {
             case ANONYM -> bestillingMalRepository.findAllByBrukerIsNull();
-            case ALLE -> bestillingMalRepository.findAllByBrukerAzure();
+            case ALLE -> bestillingMalRepository.findAllByBrukerAzureOrTeam();
             default -> bestillingMalRepository.findAllByBrukerId(brukerId);
         };
 
