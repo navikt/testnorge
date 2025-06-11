@@ -19,7 +19,7 @@ const StyledButton = styled(dsButton)`
 `
 
 export const BestillingSammendragModal = ({ bestillinger: usorterteBestillinger }) => {
-	const bestillingerSortert = usorterteBestillinger.sort((a, b) => b.id - a.id)
+	const bestillingerSortert = usorterteBestillinger?.sort?.((a, b) => a?.id - b?.id)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [aktivBestilling, setAktivBestilling] = useState(bestillingerSortert[0])
 	const [aktivIndex, setAktivIndex] = useState(0)
