@@ -53,11 +53,11 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
     @Query(value = """
             select (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
-                and b.brukertype = 'AZURE'
+                and b.brukertype = 'AZURE' or b.brukertype = 'TEAM'
                 group by malBruker
                 order by malBruker
             """, nativeQuery = true)
-    List<MalBestillingFragment> findAllByBrukertypeAzure();
+    List<MalBestillingFragment> findAllByBrukertypeAzureOrTeam();
 
     @Query(value = """
             select (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b

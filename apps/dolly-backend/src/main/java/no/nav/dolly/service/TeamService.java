@@ -44,6 +44,8 @@ public class TeamService {
                 .brukertype(Bruker.Brukertype.TEAM)
                 .build());
 
+        brukerTeam.setBrukerId("Team #" + brukerTeam.getId());
+
         team.getBrukere().add(bruker);
         team.setBrukerId(brukerTeam.getId());
 
@@ -54,11 +56,17 @@ public class TeamService {
     public Team updateTeam(Long teamId, Team teamUpdates) {
         var existingTeam = fetchTeamById(teamId);
 
+        var teamBruker = brukerRepository.findBrukerById(existingTeam.getBrukerId());
+
         var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
         assertCurrentBrukerIsTeamMember(existingTeam);
 
         existingTeam.setNavn(teamUpdates.getNavn());
+        teamBruker.ifPresent(bruker -> {
+            bruker.setBrukernavn(teamUpdates.getNavn());
+        });
+
         existingTeam.setBeskrivelse(teamUpdates.getBeskrivelse());
 
         if (nonNull(teamUpdates.getBrukere())) {

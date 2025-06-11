@@ -60,11 +60,7 @@ public class BrukerService {
         var brukerId = getUserId(getUserInfo);
 
         return brukerRepository.findBrukerByBrukerId(brukerId)
-                .orElseGet(() -> {
-                    var bruker = createBruker(null);
-
-                    return bruker;
-                });
+                .orElseGet(() -> createBruker(null));
     }
 
     public Bruker fetchBrukerWithoutTeam(String brukerId) {
