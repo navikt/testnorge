@@ -1,7 +1,7 @@
 import { useSWRConfig } from 'swr'
 
 export const REGEX_BACKEND_GRUPPER = /^\/dolly-backend\/api\/v1\/gruppe/
-export const REGEX_BACKEND_BRUKER = /^\/dolly-backend\/api\/v1\/bruker/
+export const REGEX_BACKEND_BRUKER = /^\/dolly-backend\/api\/v1\/bruker\/current/
 export const REGEX_BACKEND_BESTILLINGER = /^\/dolly-backend\/api\/v1\/bestilling/
 export const REGEX_BACKEND_ORGANISASJONER = /^\/dolly-backend\/api\/v1\/organisasjon/
 
