@@ -36,8 +36,7 @@ export const sjekkManglerAfpOffentligData = (afpOffentligData: Array<MiljoDataTy
 	)
 }
 
-export const showTpNavn = (tpId: string) => {
-	const { tpOrdningData } = useTpOrdningKodeverk()
+export const showTpNavn = (tpId: string, tpOrdningData: any[] | undefined) => {
 	const tpOrdning = tpOrdningData?.find((tpOrdning: any) => tpOrdning.value === tpId)
 	if (tpOrdning) {
 		return tpOrdning.label
@@ -46,17 +45,19 @@ export const showTpNavn = (tpId: string) => {
 }
 
 const DataVisning = ({ data }: { data: AfpOffentligTypes }) => {
+	const { tpOrdningData } = useTpOrdningKodeverk()
+
 	return (
 		<div className="person-visning_content">
 			<TitleValue
 				title="Direktekall"
-				value={data?.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')}
+				value={data?.direktekall?.map((tpId) => showTpNavn(tpId, tpOrdningData))?.join(', ')}
 				size="full-width"
 			/>
 			<DollyFieldArray data={data?.mocksvar} header="AFP offentlig">
 				{(mocksvar: MocksvarTypes, idx: number) => (
 					<React.Fragment key={idx}>
-						<TitleValue title="TP-ordning" value={showTpNavn(mocksvar?.tpId)} />
+						<TitleValue title="TP-ordning" value={showTpNavn(mocksvar?.tpId, tpOrdningData)} />
 						<TitleValue title="Status AFP" value={showLabel('statusAfp', mocksvar?.statusAfp)} />
 						<TitleValue title="Virkningsdato" value={formatDate(mocksvar?.virkningsDato)} />
 						<TitleValue title="Sist benyttet G" value={mocksvar?.sistBenyttetG} />
