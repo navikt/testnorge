@@ -44,7 +44,7 @@ public class TeamService {
                 .brukertype(Bruker.Brukertype.TEAM)
                 .build());
 
-        brukerTeam.setBrukerId("Team #" + brukerTeam.getId());
+        brukerTeam.setBrukerId("team-bruker-id-" + brukerTeam.getId());
 
         team.getBrukere().add(bruker);
         team.setBrukerId(brukerTeam.getId());
