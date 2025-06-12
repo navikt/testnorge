@@ -3,11 +3,13 @@ name: brregstub-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "proxies/brregstub-proxy/**"
-      - ".github/workflows/proxy.brregstub-proxy.yml"
+      - .github/workflows/proxy.brregstub-proxy.yml
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/brregstub-proxy/**
 
 jobs:
   workflow:

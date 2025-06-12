@@ -15,7 +15,3 @@ dolly:
         url: http://generer-navn-service
         audience: api://dev-gcp.dolly.generer-navn-service/.default
     preload: true
-
-app:
-  security:
-    allow-api: true

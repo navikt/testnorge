@@ -3,16 +3,12 @@ name: budpro-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/commands/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-insecure-security/**"
-      - "libs/servlet-security/**"
-      - "apps/budpro-service/**"
-      - ".github/workflows/app.budpro-service.yml"
+      - .github/workflows/app.budpro-service.yml
+      - apps/budpro-service/**
+      - libs/data-transfer-objects/**
+      - libs/testing/**
+      - libs/texas/**
+      - plugins/**
 
 jobs:
   workflow:

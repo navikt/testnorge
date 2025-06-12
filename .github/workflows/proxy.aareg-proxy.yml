@@ -3,13 +3,14 @@ name: aareg-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "libs/reactive-security/**"
-      - "libs/security-core/**"
-      - "proxies/aareg-proxy/**"
-      - ".github/workflows/proxy.aareg-proxy.yml"
+      - .github/workflows/proxy.aareg-proxy.yml
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/aareg-proxy/**
 
 jobs:
   workflow:

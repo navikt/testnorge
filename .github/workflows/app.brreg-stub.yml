@@ -3,11 +3,12 @@ name: brreg-stub
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/database/**"
-      - "libs/servlet-core/**"
-      - "apps/brreg-stub/**"
-      - ".github/workflows/app.brreg-stub.yml"
+      - .github/workflows/app.brreg-stub.yml
+      - apps/brreg-stub/**
+      - libs/servlet-core/**
+      - libs/testing/**
+      - libs/vault/**
+      - plugins/**
 
 jobs:
   workflow:

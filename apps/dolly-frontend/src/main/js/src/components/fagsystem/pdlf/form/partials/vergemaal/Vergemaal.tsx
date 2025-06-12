@@ -24,9 +24,9 @@ export const VergemaalForm = ({
 		<>
 			<FormSelect
 				name={`${path}.vergemaalEmbete`}
-				label="Fylkesmannsembete"
+				label="Fylkesembete"
 				kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
-				size="large"
+				size="xlarge"
 			/>
 			<FormSelect
 				name={`${path}.sakType`}

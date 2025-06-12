@@ -91,6 +91,7 @@ export const TextInput = ({
 	const { onChange, onBlur } = name ? register(name) : {}
 	const input = props.input || props.value
 	const [fieldValue, setFieldValue] = useState(props.input || watch(name) || '')
+
 	const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 	const feil =
 		getFieldState(`manual.${name}`)?.error ||

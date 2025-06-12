@@ -1,46 +1,32 @@
 import * as Yup from 'yup'
 import * as _ from 'lodash-es'
-import { getMonth, getYear, isWithinInterval } from 'date-fns'
+import { isAfter, isEqual, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
-const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => {
+const innenforAnsettelsesforholdTest = (periodeValidation) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
-	const errorMsgMonth =
-		'Dato må være innenfor ansettelsesforhold, og i samme kalendermåned og år som fra-dato'
-	return periodeValidation.test(
-		'range',
-		validateFomMonth ? errorMsgMonth : errorMsg,
-		(val, testContext) => {
-			if (!val) return true
-			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-			// Husk at dato som kommer fra en Mal kan være av typen String
-			const dateValue = new Date(val)
-			const gjeldendeArbeidsforholdPath = testContext.path.substring(
-				0,
-				testContext.path.indexOf('.'),
-			)
+	return periodeValidation.test('range', errorMsg, (val, testContext) => {
+		if (!val) return true
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-			if (validateFomMonth) {
-				const fomPath = testContext.path.replace('.tom', '.fom')
-				const fomMonth = _.get(fullForm, fomPath)
-				if (
-					getMonth(dateValue) !== getMonth(new Date(fomMonth)) ||
-					getYear(dateValue) !== getYear(new Date(fomMonth))
-				)
-					return false
-			}
+		// Husk at dato som kommer fra en Mal kan være av typen String
+		const dateValue = new Date(val)
+		const gjeldendeArbeidsforholdPath = testContext.path.substring(0, testContext.path.indexOf('.'))
 
-			const ansattFom = _.get(fullForm, `${gjeldendeArbeidsforholdPath}.ansettelsesPeriode.fom`)
-			const ansattTom = _.get(fullForm, `${gjeldendeArbeidsforholdPath}.ansettelsesPeriode.tom`)
+		const ansattFom = _.get(fullForm, `${gjeldendeArbeidsforholdPath}.ansettelsesPeriode.fom`)
+		const ansattTom = _.get(fullForm, `${gjeldendeArbeidsforholdPath}.ansettelsesPeriode.tom`)
 
-			return isWithinInterval(dateValue, {
-				start: new Date(ansattFom),
-				end: _.isNil(ansattTom) ? new Date() : new Date(ansattTom),
-			})
-		},
-	)
+		if (_.isNil(ansattTom)) {
+			return isEqual(dateValue, new Date(ansattFom)) || isAfter(dateValue, new Date(ansattFom))
+		}
+
+		return isWithinInterval(dateValue, {
+			start: new Date(ansattFom),
+			end: new Date(ansattTom),
+		})
+	})
 }
 
 const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
@@ -127,7 +113,7 @@ export const validation = {
 					Yup.object({
 						periode: Yup.object({
 							fom: innenforAnsettelsesforholdTest(requiredDate),
-							tom: innenforAnsettelsesforholdTest(requiredDate, true),
+							tom: innenforAnsettelsesforholdTest(requiredDate),
 						}),
 						antallTimer: Yup.number()
 							.min(1, 'Kan ikke være mindre enn ${min}')
@@ -138,7 +124,7 @@ export const validation = {
 					Yup.object({
 						periode: Yup.object({
 							fom: innenforAnsettelsesforholdTest(requiredDate),
-							tom: innenforAnsettelsesforholdTest(requiredDate, true),
+							tom: innenforAnsettelsesforholdTest(requiredDate),
 						}),
 						land: requiredString,
 					}),

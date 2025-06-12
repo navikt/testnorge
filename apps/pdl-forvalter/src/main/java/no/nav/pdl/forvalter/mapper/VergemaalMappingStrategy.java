@@ -10,6 +10,7 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalMandattype;
@@ -69,11 +70,10 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                         destinasjon.setEmbete(kodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()));
                         destinasjon.setType(getSakstype(kilde.getSakType()));
 
-                        var person = personRepository.findByIdent(kilde.getVergeIdent());
-                        NavnDTO personnavn = new NavnDTO();
-                        if (person.isPresent()) {
-                            personnavn = person.get().getPerson().getNavn().stream().findFirst().orElse(new NavnDTO());
-                        }
+                        var personnavn = personRepository.findByIdent(kilde.getVergeIdent())
+                                .flatMap(person ->
+                                        person.getPerson().getNavn().stream().findFirst())
+                                .orElse(new NavnDTO());
 
                         destinasjon.setVergeEllerFullmektig(PdlVergemaal.VergeEllerFullmektig.builder()
                                 .motpartsPersonident(kilde.getVergeIdent())
@@ -81,6 +81,12 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                                 .omfang(getOmfang(kilde.getMandatType()))
                                 .omfangetErInnenPersonligOmraade(VergemaalMandattype.FIN != kilde.getMandatType())
                                 .build());
+
+                        if (isNull(destinasjon.getFolkeregistermetadata())) {
+                            destinasjon.setFolkeregistermetadata(new FolkeregistermetadataDTO());
+                        }
+                        destinasjon.getFolkeregistermetadata().setGyldighetstidspunkt(kilde.getGyldigFraOgMed());
+                        destinasjon.getFolkeregistermetadata().setOpphoerstidspunkt(kilde.getGyldigTilOgMed());
                     }
                 })
                 .byDefault()

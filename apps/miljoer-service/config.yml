@@ -24,6 +24,10 @@ spec:
         - application: testnav-orgnummer-service
         - application: testnav-oversikt-frontend
         - application: testnav-tps-messaging-service
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   tokenx:
     enabled: true
   azure:

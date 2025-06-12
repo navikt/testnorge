@@ -17,9 +17,6 @@ spec:
     application:
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - "https://testnav-oversikt.intern.dev.nav.no/login/oauth2/code/aad"
-        - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
@@ -30,6 +27,8 @@ spec:
         - application: testnav-app-tilgang-analyse-service
         - application: testnorge-profil-api-dev
         - application: testnav-altinn3-tilgang-service
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

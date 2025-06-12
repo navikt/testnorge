@@ -27,6 +27,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-levende-arbeidsforhold-ansettelse
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

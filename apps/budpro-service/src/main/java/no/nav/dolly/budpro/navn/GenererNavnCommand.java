@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.libs.texas.Texas;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import reactor.core.publisher.Flux;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -16,14 +18,14 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class GenererNavnCommand implements Callable<NavnDTO[]> {
+public class GenererNavnCommand implements Callable<Flux<NavnDTO>> {
 
     private final Texas texas;
     private Long seed;
     private final Integer antall;
 
     @Override
-    public NavnDTO[] call() {
+    public Flux<NavnDTO> call() {
         return texas
                 .webClient("generer-navn-service")
                 .get()
@@ -34,10 +36,9 @@ public class GenererNavnCommand implements Callable<NavnDTO[]> {
                         .build())
                 .headers(texas.bearer("generer-navn-service"))
                 .retrieve()
-                .bodyToMono(NavnDTO[].class)
-                .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientError.logTo(log))
-                .block();
+                .bodyToFlux(NavnDTO.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)))
+                .doOnError(e -> log.error("Failed to get names from generer-navn-service", e));
     }
 
 }

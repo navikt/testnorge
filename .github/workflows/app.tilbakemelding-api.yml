@@ -3,15 +3,16 @@ name: tilbakemelding-api
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "libs/slack/**"
-      - "apps/tilbakemelding-api/**"
-      - ".github/workflows/app.tilbakemelding-api.yml"
+      - .github/workflows/app.tilbakemelding-api.yml
+      - apps/tilbakemelding-api/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/slack/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

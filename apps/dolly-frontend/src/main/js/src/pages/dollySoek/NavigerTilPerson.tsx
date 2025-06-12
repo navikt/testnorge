@@ -24,7 +24,6 @@ export const NavigerTilPerson = ({ ident, linkTekst = null }) => {
 	useEffect(() => {
 		if (result?.gruppe?.id && !window.location.pathname.includes(`/${result?.gruppe?.id}`)) {
 			navigate(`/gruppe/${result?.gruppe?.id}`, {
-				replace: true,
 				state: {
 					hovedperson: result.identHovedperson,
 					visPerson: result.identNavigerTil,
@@ -34,7 +33,7 @@ export const NavigerTilPerson = ({ ident, linkTekst = null }) => {
 		}
 	}, [result])
 
-	const handleClick = (event) => {
+	const handleClick = (event: any) => {
 		event.stopPropagation()
 		setValgtIdent(ident)
 	}

@@ -3,15 +3,16 @@ name: organisasjon-bestilling-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/commands/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/reactive-core/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "apps/organisasjon-bestilling-service/**"
-      - ".github/workflows/app.organisasjon-bestilling-service.yml"
+      - .github/workflows/app.organisasjon-bestilling-service.yml
+      - apps/organisasjon-bestilling-service/**
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

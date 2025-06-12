@@ -3,14 +3,16 @@ name: levende-arbeidsforhold-scheduler
 on:
   push:
     paths:
-      - libs/commands/**
+      - .github/workflows/app.levende-arbeidsforhold-scheduler.yml
+      - apps/levende-arbeidsforhold-scheduler/**
       - libs/data-transfer-objects/**
+      - libs/reactive-core/**
       - libs/security-core/**
       - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
       - libs/servlet-security/**
-      - apps/levende-arbeidsforhold-scheduler/**
-      - .github/workflows/app.levende-arbeidsforhold-scheduler.yml
-
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:
