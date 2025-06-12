@@ -5,10 +5,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import java.util.Optional;
 
-public interface BestillingKontrollRepository extends CrudRepository<BestillingKontroll, Long> {
+public interface BestillingKontrollRepository extends ReactiveCrudRepository<BestillingKontroll, Long> {
 
     Optional<BestillingKontroll> findByBestillingId(Long bestillingId);
 

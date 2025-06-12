@@ -5,24 +5,23 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Bruker.Brukertype;
+import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
+import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
-import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -30,10 +29,12 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequiredArgsConstructor
 public class BrukerService {
 
+    private final BrukerFavoritterRepository brukerFavoritterRepository;
     private final BrukerRepository brukerRepository;
-    private final TestgruppeRepository testgruppeRepository;
-    private final GetUserInfo getUserInfo;
     private final BrukerServiceConsumer brukerServiceConsumer;
+    private final GetAuthenticatedUserId getAuthenticatedUserId;
+    private final GetUserInfo getUserInfo;
+    private final TestgruppeRepository testgruppeRepository;
 
     public Bruker fetchBruker(String brukerId) {
 
@@ -41,65 +42,74 @@ public class BrukerService {
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
     }
 
-    public Bruker fetchOrCreateBruker(String brukerId) {
+    public Mono<Bruker> fetchOrCreateBruker(String brukerId) {
 
         if (isBlank(brukerId)) {
-            brukerId = getUserId(getUserInfo);
+            return getAuthenticatedUserId.call()
+                    .map(this::fetchBruker)
+                    .onErrorResume(NotFoundException.class, e -> createBruker());
         }
         try {
-            return fetchBruker(brukerId);
+            return Mono.just(fetchBruker(brukerId));
 
         } catch (NotFoundException e) {
             return createBruker();
         }
     }
 
-    public Bruker fetchOrCreateBruker() {
+    public Mono<Bruker> fetchOrCreateBruker() {
 
         return fetchOrCreateBruker(null);
     }
 
     @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
-    public Bruker createBruker() {
-        return brukerRepository.save(getAuthUser(getUserInfo));
+    public Mono<Bruker> createBruker() {
+
+        return getAuthUser(getUserInfo)
+                .flatMap(brukerRepository::save);
     }
 
-    public Bruker leggTilFavoritt(Long gruppeId) {
+    public Mono<Bruker> leggTilFavoritt(Long gruppeId) {
 
-        var bruker = fetchBruker(getUserId(getUserInfo));
-
-        var gruppe = fetchTestgruppe(gruppeId);
-        gruppe.getFavorisertAv().add(bruker);
-        bruker.getFavoritter().add(gruppe);
-
-        return bruker;
+        return Mono.just(fetchTestgruppe(gruppeId))
+                .map(gruppe -> getAuthenticatedUserId.call()
+                        .map(this::fetchBruker)
+                        .doOnNext(bruker -> gruppe.getFavorisertAv().add(bruker))
+                        .doOnNext(bruker -> bruker.getFavoritter().add(gruppe))
+                        .doOnNext(bruker -> brukerFavoritterRepository.save(BrukerFavoritter.builder()
+                                .id(BrukerFavoritter.BrukerFavoritterId.builder()
+                                        .brukerId(bruker.getId())
+                                        .gruppeId(gruppe.getId())
+                                        .build())
+                                .build())))
+                .flatMap(Mono::from);
     }
 
-    public Bruker fjernFavoritt(Long gruppeId) {
+    public Mono<Bruker> fjernFavoritt(Long gruppeId) {
 
-        var bruker = fetchBruker(getUserId(getUserInfo));
-        var gruppe = fetchTestgruppe(gruppeId);
-
-        bruker.getFavoritter().remove(gruppe);
-        saveGruppe(gruppe);
-        gruppe.getFavorisertAv().remove(bruker);
-
-        return bruker;
+        return Mono.just(fetchTestgruppe(gruppeId))
+                .map(gruppe -> getAuthenticatedUserId.call()
+                        .map(this::fetchBruker)
+                        .doOnNext(bruker -> bruker.getFavoritter().remove(gruppe))
+                        .doOnNext(bruker -> brukerFavoritterRepository.delete(
+                                BrukerFavoritter.builder()
+                                        .id(BrukerFavoritter.BrukerFavoritterId.builder()
+                                                .brukerId(bruker.getId())
+                                                .gruppeId(gruppe.getId())
+                                                .build())
+                                        .build())))
+                .flatMap(Mono::from);
     }
 
-    public List<Bruker> fetchBrukere() {
+    public Mono<List<Bruker>> fetchBrukere() {
 
-        var brukeren = fetchOrCreateBruker();
-        if (brukeren.getBrukertype() == AZURE) {
-            return brukerRepository.findAllByOrderById();
-
-        } else {
-            var brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
+        return fetchOrCreateBruker()
+                .map(bruker -> Brukertype.AZURE == bruker.getBrukertype() ?
+                    Mono.just(brukerRepository.findAllByOrderById()) :
+                        brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                     .map(TilgangDTO::getBrukere)
-                    .block();
-
-            return brukerRepository.findAllByBrukerIdInOrderByBrukernavn(brukere);
-        }
+                    .map(brukerRepository::findAllByBrukerIdInOrderByBrukernavn))
+                .flatMap(Mono::from);
     }
 
     public void sletteBrukerFavoritterByGroupId(Long groupId) {
@@ -108,16 +118,5 @@ public class BrukerService {
 
     private Testgruppe fetchTestgruppe(Long gruppeId) {
         return testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
-    }
-
-    private void saveGruppe(Testgruppe testgruppe) {
-
-        try {
-            testgruppeRepository.save(testgruppe);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
-        } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getMessage(), e);
-        }
     }
 }

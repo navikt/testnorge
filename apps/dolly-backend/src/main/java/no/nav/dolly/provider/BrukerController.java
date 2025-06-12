@@ -12,6 +12,12 @@ import no.nav.dolly.service.BrukerService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
+import org.springframework.retry.annotation.RetryConfiguration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +25,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -43,35 +51,41 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
-    public RsBruker getCurrentBruker() {
-        Bruker bruker = brukerService.fetchOrCreateBruker();
-        return mapperFacade.map(bruker, RsBruker.class);
+    public Mono<RsBruker> getCurrentBruker() {
+
+        return brukerService.fetchOrCreateBruker()
+                .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
     }
 
     @Transactional(readOnly = true)
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
-    public List<RsBrukerAndGruppeId> getAllBrukere() {
-        return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
+    public Mono<List<RsBrukerAndGruppeId>> getAllBrukere() {
+
+        return brukerService.fetchBrukere()
+                .map(brukere -> mapperFacade.mapAsList(brukere, RsBrukerAndGruppeId.class));
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
-    public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
-        return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
+    public Mono<RsBruker> leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
+
+        return brukerService.leggTilFavoritt(request.getGruppeId())
+                .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/fjernFavoritt")
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
-    public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
-        return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
-    }
+    public Mono<RsBruker> fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
 
+        return brukerService.fjernFavoritt(request.getGruppeId())
+                .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
+    }
 }

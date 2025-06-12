@@ -7,13 +7,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-public interface BestillingRepository extends JpaRepository<Bestilling, Long> {
+public interface BestillingRepository extends ReactiveCrudRepository<Bestilling, Long> {
 
     @Query(value = "select b.id, g.navn " +
             "from Bestilling b " +
@@ -44,7 +48,7 @@ public interface BestillingRepository extends JpaRepository<Bestilling, Long> {
             @Param("gruppenavn") String gruppenavn
     );
 
-    Bestilling save(Bestilling bestilling);
+    Mono<Bestilling> save(Bestilling bestilling);
 
     @Query(value = "select position-1 " +
             "from ( " +
@@ -68,6 +72,8 @@ public interface BestillingRepository extends JpaRepository<Bestilling, Long> {
             "where b.gruppe.id = :gruppeId " +
             "order by b.id desc")
     Page<Bestilling> getBestillingerFromGruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
+
+    Set<Bestilling> getBestillingByGruppe_Id(Long gruppeId);
 
     @Modifying
     @Query(value = "delete from Bestilling b where b.gruppe.id = :gruppeId")

@@ -35,9 +35,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -59,6 +62,7 @@ import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @Service
@@ -107,12 +111,9 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestillingToDB(Bestilling bestilling) {
-        try {
+    public Mono<Bestilling> saveBestillingToDB(Bestilling bestilling) {
+
             return bestillingRepository.save(bestilling);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("Kunne ikke lagre bestilling: " + e.getMessage(), e);
-        }
     }
 
     public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
@@ -506,7 +507,8 @@ public class BestillingService {
     }
 
     private Bruker fetchOrCreateBruker() {
-        return brukerService.fetchOrCreateBruker();
+//        return brukerService.fetchOrCreateBruker();
+        return null; // TBD
     }
 
     private String toJson(Object object) {

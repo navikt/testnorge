@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import java.util.List;
 
-public interface OrganisasjonBestillingRepository extends CrudRepository<OrganisasjonBestilling, Long> {
+public interface OrganisasjonBestillingRepository extends ReactiveCrudRepository<OrganisasjonBestilling, Long> {
 
     @Modifying
     @Query(value = "delete from OrganisasjonBestilling b where b = :bestilling and not exists (select bp from OrganisasjonBestillingProgress bp where bp.bestilling = :bestilling)")

@@ -150,18 +150,18 @@ public class OrganisasjonBestillingService {
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestilling request) {
 
-        Bruker bruker = brukerService.fetchOrCreateBruker();
+//        Bruker bruker = brukerService.fetchOrCreateBruker();
         OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
                 .antall(1)
                 .ferdig(false)
                 .sistOppdatert(now())
                 .miljoer(join(",", request.getEnvironments()))
                 .bestKriterier(toJson(request.getOrganisasjon()))
-                .bruker(bruker)
+//                .bruker(bruker)
                 .build();
 
         if (isNotBlank(request.getMalBestillingNavn())) {
-            organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+//            organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
 
         return saveBestillingToDB(bestilling);
@@ -170,14 +170,14 @@ public class OrganisasjonBestillingService {
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestillingStatus status) {
 
-        Bruker bruker = brukerService.fetchOrCreateBruker();
+//        Bruker bruker = brukerService.fetchOrCreateBruker();
         OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
                 .antall(1)
                 .sistOppdatert(now())
                 .ferdig(isTrue(status.getFerdig()))
                 .miljoer(join(",", status.getEnvironments()))
                 .bestKriterier(toJson(status.getBestilling()))
-                .bruker(bruker)
+//                .bruker(bruker)
                 .build();
 
         return saveBestillingToDB(bestilling);
@@ -216,7 +216,8 @@ public class OrganisasjonBestillingService {
                 brukerRepository.findBrukerByBrukerId(brukerId)
                         .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 
-        return organisasjonBestillingRepository.findByBruker(bruker);
+//        return organisasjonBestillingRepository.findByBruker(bruker);
+        return emptyList(); // TBD
     }
 
     public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {

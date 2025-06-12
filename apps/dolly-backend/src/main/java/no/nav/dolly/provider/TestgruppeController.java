@@ -27,6 +27,7 @@ import no.nav.dolly.service.SplittGruppeService;
 import no.nav.dolly.service.TestgruppeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -97,15 +98,16 @@ public class TestgruppeController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(description = "Opprett testgruppe")
-    public RsTestgruppeMedBestillingId opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
-        Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
-        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeMedBestillingId.class);
+    public Mono<RsTestgruppeMedBestillingId> opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
+
+        return testgruppeService.opprettTestgruppe(createTestgruppeRequest)
+                .map(gruppe -> mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class));
     }
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/page/{pageNo}")
     @Operation(description = "Hent paginert testgruppe")
-    public RsTestgruppeMedBestillingId getPaginertTestgruppe(@PathVariable("gruppeId") Long gruppeId,
+    public Mono<RsTestgruppeMedBestillingId> getPaginertTestgruppe(@PathVariable("gruppeId") Long gruppeId,
                                                              @PathVariable("pageNo") Integer pageNo,
                                                              @RequestParam Integer pageSize,
                                                              @RequestParam(required = false) String sortKolonne,
@@ -115,9 +117,21 @@ public class TestgruppeController {
     }
 
     @Cacheable(CACHE_GRUPPE)
+    @GetMapping("/test/{gruppeId}/page/{pageNo}")
+    @Operation(description = "Hent paginert testgruppe")
+    public Page<Testident> getPaginertTestgruppe1(@PathVariable("gruppeId") Long gruppeId,
+                                                 @PathVariable("pageNo") Integer pageNo,
+                                                 @RequestParam Integer pageSize,
+                                                 @RequestParam(required = false) String sortKolonne,
+                                                 @RequestParam(required = false) String sortRetning) {
+
+        return testgruppeService.getIdenter(gruppeId, pageNo, pageSize, sortKolonne, sortRetning);
+    }
+
+    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
     @Operation(description = "Hent testgruppe")
-    public RsTestgruppeMedBestillingId getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
+    public Mono<RsTestgruppeMedBestillingId> getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
 
         return testgruppeService.fetchPaginertTestgruppeById(gruppeId, 0, 2000, null, null);
     }

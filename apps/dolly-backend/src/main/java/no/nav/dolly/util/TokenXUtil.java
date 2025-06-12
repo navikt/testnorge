@@ -2,15 +2,16 @@ package no.nav.dolly.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
+import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import no.nav.testnav.libs.securitycore.domain.UserInfo;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.properties.TokenXResourceServerProperties;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -22,11 +23,12 @@ public final class TokenXUtil {
 
     public static String getUserJwt() {
 
-        var requestAttributes = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
+        var requestAttributes = ((ServerHttpRequest) RequestContextHolder.getRequestAttributes());
         if (isNull(requestAttributes)) {
             return null;
         }
-        return requestAttributes.getRequest().getHeader(UserConstant.USER_HEADER_JWT);
+        return null;
+//        return requestAttributes.getHeaders().get(UserConstant.USER_HEADER_JWT);
     }
 
     public static boolean isTokenX(TokenXResourceServerProperties serverProperties) {
@@ -39,13 +41,14 @@ public final class TokenXUtil {
 
     public static UserInfo getBankidUser(GetUserInfo getUserInfo) {
 
-        try {
-            return getUserInfo.call()
-                    .orElse(null);
-        } catch (NullPointerException e) {
-            log.info("Fant ikke BankID brukerinfo");
-            return null;
-        }
+//        try {
+//            return getUserInfo.call()
+//                    .orElse(null);
+//        } catch (NullPointerException e) {
+//            log.info("Fant ikke BankID brukerinfo");
+//            return null;
+//        }
+        return null; // TBD
     }
 
     private static JwtAuthenticationToken getJwtAuthenticationToken() {

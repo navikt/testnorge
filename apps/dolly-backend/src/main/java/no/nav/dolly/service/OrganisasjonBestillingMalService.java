@@ -49,15 +49,15 @@ public class OrganisasjonBestillingMalService {
 
     public void saveOrganisasjonBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
-        Bruker bruker = brukerService.fetchOrCreateBruker();
+//        Bruker bruker = brukerService.fetchOrCreateBruker();
 
         var organisasjonBestilling = organisasjonBestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
 
-        overskrivDuplikateMalbestillinger(malNavn, bruker);
+//        overskrivDuplikateMalbestillinger(malNavn, bruker);
         organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
                 .bestKriterier(organisasjonBestilling.getBestKriterier())
-                .bruker(bruker)
+//                .bruker(bruker)
                 .malNavn(malNavn)
                 .miljoer(organisasjonBestilling.getMiljoer())
                 .build());
@@ -97,24 +97,25 @@ public class OrganisasjonBestillingMalService {
 
         var bruker = brukerService.fetchOrCreateBruker(brukerId);
 
-        var malBestillinger = organisasjonBestillingMalRepository.findByBruker(bruker).parallelStream()
-                .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
-                .entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-                        .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
-                                .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
-                                .malNavn(bestilling1.getMalNavn())
-                                .id(bestilling1.getId())
-                                .bruker(mapperFacade.map(nonNull(bestilling1.getBruker()) ?
-                                        bestilling1.getBruker() :
-                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
-                                .build())
-                        .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
-                        .toList()));
-
-        return RsOrganisasjonMalBestillingWrapper.builder()
-                .malbestillinger(malBestillinger)
-                .build();
+//        var malBestillinger = organisasjonBestillingMalRepository.findByBruker(bruker).parallelStream()
+//                .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
+//                .entrySet().stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+//                        .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
+//                                .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
+//                                .malNavn(bestilling1.getMalNavn())
+//                                .id(bestilling1.getId())
+//                                .bruker(mapperFacade.map(nonNull(bestilling1.getBruker()) ?
+//                                        bestilling1.getBruker() :
+//                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
+//                                .build())
+//                        .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
+//                        .toList()));
+//
+//        return RsOrganisasjonMalBestillingWrapper.builder()
+//                .malbestillinger(malBestillinger)
+//                .build();
+        return null; // TBD
     }
 
     public int updateOrganisasjonMalNavnById(Long id, String nyttMalNavn) {

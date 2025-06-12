@@ -21,7 +21,7 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
@@ -49,7 +49,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
 import static no.nav.dolly.config.CachingConfig.CACHE_LEGACY_BESTILLING_MAL;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
 @Slf4j
@@ -65,7 +64,7 @@ public class MalBestillingService {
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
-    private final GetUserInfo getUserInfo;
+    private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final ObjectMapper objectMapper;
     private final CacheManager cacheManager;
 
@@ -170,28 +169,43 @@ public class MalBestillingService {
     }
 
     @Transactional
-    public RsMalBestillingUtenFavoritter saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
-
-        var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+    public Mono<RsMalBestillingUtenFavoritter> saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
         var bestilling = bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
 
-        BestillingMal malbestilling;
-        var maler = bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
-        if (maler.isEmpty()) {
-            malbestilling = bestillingMalRepository.save(BestillingMal.builder()
-                    .bestKriterier(formatBestillingKriterier(bestilling.getBestKriterier()))
-                    .bruker(bruker)
-                    .malNavn(malNavn)
-                    .miljoer(bestilling.getMiljoer())
-                    .sistOppdatert(LocalDateTime.now())
-                    .build());
-        } else {
-            malbestilling = maler.getFirst();
-        }
-
-        return mapperFacade.map(malbestilling, RsMalBestillingUtenFavoritter.class);
+        return getAuthenticatedUserId.call()
+                .map(brukerService::fetchBruker)
+                .map(bruker -> Mono.just(bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn))
+                        .map(maler -> maler.isEmpty() ?
+                                bestillingMalRepository.save(BestillingMal.builder()
+                                        .bestKriterier(formatBestillingKriterier(bestilling.getBestKriterier()))
+                                        .bruker(bruker)
+                                        .malNavn(malNavn)
+                                        .miljoer(bestilling.getMiljoer())
+                                        .sistOppdatert(LocalDateTime.now())
+                                        .build()) :
+                                maler.getFirst()))
+                .flatMap(Mono::from)
+                .map(malbestilling -> mapperFacade.map(malbestilling, RsMalBestillingUtenFavoritter.class));
+//
+//
+//
+//        BestillingMal malbestilling;
+//        var maler = bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
+//        if (maler.isEmpty()) {
+//            malbestilling = bestillingMalRepository.save(BestillingMal.builder()
+//                    .bestKriterier(formatBestillingKriterier(bestilling.getBestKriterier()))
+//                    .bruker(bruker)
+//                    .malNavn(malNavn)
+//                    .miljoer(bestilling.getMiljoer())
+//                    .sistOppdatert(LocalDateTime.now())
+//                    .build());
+//        } else {
+//            malbestilling = maler.getFirst();
+//        }
+//
+//        return mapperFacade.map(malbestilling, RsMalBestillingUtenFavoritter.class);
     }
 
     @Transactional
@@ -220,13 +234,11 @@ public class MalBestillingService {
     }
 
     @Transactional
-    public RsMalBestillingUtenFavoritter createFromIdent(String ident, String name) {
-
-        var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+    public Mono<RsMalBestillingUtenFavoritter> createFromIdent(String ident, String name) {
 
         var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
         if (bestillinger.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingen bestillinger funnet på ident %s".formatted(ident));
+            throw new NotFoundException("Ingen bestillinger funnet på ident %s".formatted(ident));
         }
 
         var aggregertRequest = new RsDollyUtvidetBestilling();
@@ -244,24 +256,25 @@ public class MalBestillingService {
                     mapperFacade.map(dollyBestilling, aggregertRequest);
                 });
 
-        BestillingMal akkumulertMal;
-        var maler = bestillingMalRepository.findByBrukerAndMalNavn(bruker, name);
-        if (maler.isEmpty()) {
-
-            akkumulertMal = bestillingMalRepository.save(BestillingMal.builder()
-                    .bruker(bruker)
-                    .malNavn(name)
-                    .miljoer(String.join(",", aggregertRequest.getEnvironments()))
-                    .bestKriterier(toJson(aggregertRequest))
-                    .build());
-        } else {
-
-            akkumulertMal = maler.getFirst();
-            akkumulertMal.setMiljoer(String.join(",", aggregertRequest.getEnvironments()));
-            akkumulertMal.setBestKriterier(toJson(aggregertRequest));
-        }
-
-        return mapperFacade.map(akkumulertMal, RsMalBestillingUtenFavoritter.class);
+        return getAuthenticatedUserId.call()
+                .map(brukerService::fetchBruker)
+                .map(bruker -> Mono.just(bestillingMalRepository.findByBrukerAndMalNavn(bruker, name))
+                        .map(maler -> maler.isEmpty() ?
+                                bestillingMalRepository.save(BestillingMal.builder()
+                                        .bruker(bruker)
+                                        .malNavn(name)
+                                        .miljoer(String.join(",", aggregertRequest.getEnvironments()))
+                                        .bestKriterier(toJson(aggregertRequest))
+                                        .build()) :
+                                Mono.just(maler.getFirst())
+                                        .map(mal -> BestillingMal.builder()
+                                                .bruker(mal.getBruker())
+                                                .malNavn(mal.getMalNavn())
+                                                .miljoer(String.join(",", aggregertRequest.getEnvironments()))
+                                                .bestKriterier(toJson(aggregertRequest))
+                                                .build())))
+                .flatMap(Mono::from)
+                .map(mal -> mapperFacade.map(mal, RsMalBestillingUtenFavoritter.class));
     }
 
     public static String getBruker(Bruker bruker) {
@@ -307,31 +320,32 @@ public class MalBestillingService {
     public Mono<RsMalBestillingSimple> getMalBestillingOversikt() {
 
         var brukeren = brukerService.fetchOrCreateBruker();
-        if (brukeren.getBrukertype() == AZURE) {
-
-            return Mono.just(RsMalBestillingSimple.builder()
-                    .brukereMedMaler(Stream.of(List.of(
-                                            MalBruker.builder()
-                                                    .brukernavn(ALLE)
+//        if (brukeren.getBrukertype() == AZURE) {
+//
+//            return Mono.just(RsMalBestillingSimple.builder()
+//                    .brukereMedMaler(Stream.of(List.of(
+//                                            MalBruker.builder()
+//                                                    .brukernavn(ALLE)
                                                     .brukerId(ALLE)
                                                     .build(),
                                             MalBruker.builder()
                                                     .brukernavn(ANONYM)
-                                                    .brukerId(ANONYM)
-                                                    .build()),
-                                    mapFragment(bestillingMalRepository.findAllByBrukertypeAzure()))
-                            .flatMap(List::stream)
-                            .toList())
-                    .build());
-
-        } else {
-
-            return brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .map(bestillingMalRepository::findAllByBrukerIdIn)
-                    .map(MalBestillingService::mapFragment)
-                    .map(RsMalBestillingSimple::new);
-        }
+//                                                    .brukerId(ANONYM)
+//                                                    .build()),
+//                                    mapFragment(bestillingMalRepository.findAllByBrukertypeAzure()))
+//                            .flatMap(List::stream)
+//                            .toList())
+//                    .build());
+//
+//        } else {
+//
+//            return brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
+//                    .map(TilgangDTO::getBrukere)
+//                    .map(bestillingMalRepository::findAllByBrukerIdIn)
+//                    .map(MalBestillingService::mapFragment)
+//                    .map(RsMalBestillingSimple::new);
+//        }
+        return Mono.empty(); // TBD
     }
 
     private static List<MalBruker> mapFragment(List<MalBestillingFragment> malBestillingFragment) {

@@ -5,10 +5,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import java.util.List;
 
-public interface TransaksjonMappingRepository extends CrudRepository<TransaksjonMapping, Long> {
+public interface TransaksjonMappingRepository extends ReactiveCrudRepository<TransaksjonMapping, Long> {
 
     List<TransaksjonMapping> findAllBySystemAndIdent(String system, String ident);
 

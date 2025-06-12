@@ -5,13 +5,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BrukerRepository extends Repository<Bruker, Long> {
+public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
 
-    Bruker save(Bruker bruker);
+    Mono<Bruker> save(Bruker bruker);
 
     @Query(value = "from Bruker b where b.brukertype='AZURE' order by b.brukernavn")
     List<Bruker> findAllByOrderById();

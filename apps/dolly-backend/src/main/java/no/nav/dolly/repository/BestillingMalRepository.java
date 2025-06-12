@@ -8,10 +8,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import java.util.List;
 
-public interface BestillingMalRepository extends CrudRepository<BestillingMal, Long> {
+public interface BestillingMalRepository extends ReactiveCrudRepository<BestillingMal, Long> {
 
     @Modifying
     @Query("update BestillingMal b set b.malNavn = :malNavn where b.id = :id")

@@ -36,7 +36,7 @@ public class MalBestillingController {
     @CacheEvict(value = {CACHE_BESTILLING_MAL, CACHE_LEGACY_BESTILLING_MAL}, allEntries = true)
     @PostMapping(value = "/ident/{ident}")
     @Operation(description = "Opprett ny mal-bestilling fra ident")
-    public RsMalBestillingUtenFavoritter createTemplateFromIdent(@PathVariable String ident,
+    public Mono<RsMalBestillingUtenFavoritter> createTemplateFromIdent(@PathVariable String ident,
                                                                  @RequestParam String malNavn) {
 
         return malBestillingService.createFromIdent(ident, malNavn);
@@ -73,7 +73,7 @@ public class MalBestillingController {
     @PostMapping
     @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
     @Transactional
-    public RsMalBestillingUtenFavoritter opprettMalbestilling(@RequestParam Long bestillingId, @RequestParam String malNavn) {
+    public Mono<RsMalBestillingUtenFavoritter> opprettMalbestilling(@RequestParam Long bestillingId, @RequestParam String malNavn) {
 
         return malBestillingService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
     }

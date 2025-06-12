@@ -5,11 +5,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BestillingProgressRepository extends CrudRepository<BestillingProgress, Long> {
+public interface BestillingProgressRepository extends ReactiveCrudRepository<BestillingProgress, Long> {
 
     Optional<List<BestillingProgress>> findByBestillingId(Long bestillingId);
 
