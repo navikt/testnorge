@@ -3,7 +3,6 @@ package no.nav.testnav.libs.reactivesecurity.config;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerType;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
@@ -28,7 +27,6 @@ import java.util.List;
         AzureAdResourceServerProperties.class,
         TrygdeetatenAzureAdResourceServerProperties.class,
         TokenExchange.class,
-        GetUserInfo.class,
         GetAuthenticatedUserId.class,
         GetAuthenticatedResourceServerType.class,
         GetAuthenticatedToken.class,

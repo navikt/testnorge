@@ -85,9 +85,9 @@ public class BestillingService {
     private final MiljoerConsumer miljoerConsumer;
     private final DokumentRepository dokumentRepository;
 
-    public Bestilling fetchBestillingById(Long bestillingId) {
+    public Mono<Bestilling> fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
-                .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
+                .switchIfEmpty(Mono.error(new NotFoundException(format("Fant ikke bestillingId %d", bestillingId))));
     }
 
     public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
@@ -148,7 +148,7 @@ public class BestillingService {
 
     @Transactional
     @Retryable
-    public Bestilling cancelBestilling(Long bestillingId) {
+    public Mono<Bestilling> cancelBestilling(Long bestillingId) {
 
         var bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
         if (bestillingKontroll.isEmpty()) {
@@ -158,13 +158,15 @@ public class BestillingService {
                     .build());
         }
 
-        var bestilling = fetchBestillingById(bestillingId);
-        bestilling.setStoppet(true);
-        bestilling.setFerdig(true);
-        bestilling.setSistOppdatert(now());
-        bestilling.setBruker(fetchOrCreateBruker());
-
-        return bestilling;
+        return fetchBestillingById(bestillingId)
+                .map(bestilling -> {
+                    bestilling.setStoppet(true);
+                    bestilling.setFerdig(true);;
+                    bestilling.setSistOppdatert(now());
+                    bestilling.setBruker(fetchOrCreateBruker());
+                    return bestilling;
+                })
+                .flatMap(bestillingRepository::save);
     }
 
     public boolean isStoppet(Long bestillingId) {

@@ -4,10 +4,8 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
@@ -25,8 +23,7 @@ public interface BestillingRepository extends ReactiveCrudRepository<Bestilling,
             "on b.gruppe_id = g.id " +
             "where length(:id) > 0 " +
             "and cast(b.id as VARCHAR) " +
-            "ilike :id fetch first 10 rows only",
-            nativeQuery = true)
+            "ilike :id fetch first 10 rows only")
     List<RsBestillingFragment> findByIdContaining(String id);
 
     @Query(value = "select b.id, g.navn " +
@@ -35,12 +32,11 @@ public interface BestillingRepository extends ReactiveCrudRepository<Bestilling,
             "on b.gruppe_id = g.id " +
             "where length(:gruppenavn) > 0 " +
             "and g.navn " +
-            "ilike :gruppenavn fetch first 10 rows only",
-            nativeQuery = true)
+            "ilike :gruppenavn fetch first 10 rows only")
     List<RsBestillingFragment> findByGruppenavnContaining(String gruppenavn);
 
     @Query("select b.id as id, g.navn as navn from Bestilling b " +
-            "join b.gruppe g " +
+            "join Testgruppe g on b.gruppe g " +
             "where cast(b.id as string) like %:id% " +
             "and g.navn like %:gruppenavn%")
     List<RsBestillingFragment> findByIdContainingAndGruppeNavnContaining(
@@ -56,8 +52,7 @@ public interface BestillingRepository extends ReactiveCrudRepository<Bestilling,
             "from bestilling b " +
             "where b.gruppe_id = :gruppeId" +
             ") result " +
-            "where id = :bestillingId",
-            nativeQuery = true)
+            "where id = :bestillingId")
     Optional<Integer> getPaginertBestillingIndex(@Param("bestillingId") Long bestillingId, @Param("gruppeId") Long gruppe);
 
     @Query(value = "from Bestilling b join BestillingProgress bp on b.id = bp.bestilling.id where bp.ident = :ident order by b.id asc")

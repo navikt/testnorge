@@ -1,21 +1,18 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingKontroll;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 public interface BestillingKontrollRepository extends ReactiveCrudRepository<BestillingKontroll, Long> {
 
-    Optional<BestillingKontroll> findByBestillingId(Long bestillingId);
+    Mono<BestillingKontroll> findByBestillingId(Long bestillingId);
 
     @Modifying
-    @Query("delete from BestillingKontroll bk where bk.bestillingId in (select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
-    int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+    Mono<Integer> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
     @Modifying
     @Query("delete from BestillingKontroll bk where bk.bestillingId = :bestillingId and bk.bestillingId "

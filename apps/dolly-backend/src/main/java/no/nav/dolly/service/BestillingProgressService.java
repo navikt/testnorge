@@ -6,6 +6,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class BestillingProgressService {
 
     private final BestillingProgressRepository bestillingProgressRepository;
 
-    public BestillingProgress save(BestillingProgress progress) {
+    public Mono<BestillingProgress> save(BestillingProgress progress) {
 
         return bestillingProgressRepository.save(progress);
     }

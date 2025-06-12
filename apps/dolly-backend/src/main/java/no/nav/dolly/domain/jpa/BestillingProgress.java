@@ -1,18 +1,6 @@
 package no.nav.dolly.domain.jpa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,122 +10,124 @@ import no.nav.dolly.domain.jpa.Testident.Master;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BESTILLING_PROGRESS")
+@Table("BESTILLING_PROGRESS")
 @Builder
 public class BestillingProgress implements Serializable {
 
     private static final int MAX_DOKARKIV_STATUS_LENGTH = 2000;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Version
-    @Column(name = "VERSJON")
+    @Column("VERSJON")
     private Long versjon;
 
-    @ManyToOne
-    @JoinColumn(name = "BESTILLING_ID", nullable = false)
+//    @ManyToOne
+//    @JoinColumn("BESTILLING_ID", nullable = false)
     private Bestilling bestilling;
 
     private String ident;
 
-    @Column(name = "SIGRUNSTUB_STATUS")
+    @Column("SIGRUNSTUB_STATUS")
     private String sigrunstubStatus;
 
-    @Column(name = "KRRSTUB_STATUS")
+    @Column("KRRSTUB_STATUS")
     private String krrstubStatus;
 
-    @Column(name = "FULLMAKT_STATUS")
+    @Column("FULLMAKT_STATUS")
     private String fullmaktStatus;
 
-    @Column(name = "MEDL_STATUS")
+    @Column("MEDL_STATUS")
     private String medlStatus;
 
-    @Column(name = "UDISTUB_STATUS")
+    @Column("UDISTUB_STATUS")
     private String udistubStatus;
 
-    @Column(name = "AAREG_STATUS")
+    @Column("AAREG_STATUS")
     private String aaregStatus;
 
-    @Column(name = "ARENAFORVALTER_STATUS")
+    @Column("ARENAFORVALTER_STATUS")
     private String arenaforvalterStatus;
 
-    @Column(name = "INSTDATA_STATUS")
+    @Column("INSTDATA_STATUS")
     private String instdataStatus;
 
-    @Column(name = "INNTEKTSSTUB_STATUS")
+    @Column("INNTEKTSSTUB_STATUS")
     private String inntektstubStatus;
 
-    @Column(name = "PENSJONFORVALTER_STATUS")
+    @Column("PENSJONFORVALTER_STATUS")
     private String pensjonforvalterStatus;
 
-    @Column(name = "INNTEKTSMELDING_STATUS")
+    @Column("INNTEKTSMELDING_STATUS")
     private String inntektsmeldingStatus;
 
-    @Column(name = "BREGSTUB_STATUS")
+    @Column("BREGSTUB_STATUS")
     private String brregstubStatus;
 
-    @Column(name = "DOKARKIV_STATUS")
+    @Column("DOKARKIV_STATUS")
     private String dokarkivStatus;
 
-    @Column(name = "HISTARK_STATUS")
+    @Column("HISTARK_STATUS")
     private String histarkStatus;
 
-    @Column(name = "SYKEMELDING_STATUS")
+    @Column("SYKEMELDING_STATUS")
     private String sykemeldingStatus;
 
-    @Column(name = "SKJERMINGSREGISTER_STATUS")
+    @Column("SKJERMINGSREGISTER_STATUS")
     private String skjermingsregisterStatus;
 
-    @Column(name = "TPS_MESSAGING_STATUS")
+    @Column("TPS_MESSAGING_STATUS")
     private String tpsMessagingStatus;
 
-    @Column(name = "PDL_IMPORT_STATUS")
+    @Column("PDL_IMPORT_STATUS")
     private String pdlImportStatus;
 
-    @Column(name = "PDL_FORVALTER_STATUS")
+    @Column("PDL_FORVALTER_STATUS")
     private String pdlForvalterStatus;
 
-    @Column(name = "PDL_ORDRE_STATUS")
+    @Column("PDL_ORDRE_STATUS")
     private String pdlOrdreStatus;
 
-    @Column(name = "KONTOREGISTER_STATUS")
+    @Column("KONTOREGISTER_STATUS")
     private String kontoregisterStatus;
 
-    @Column(name = "PDL_PERSON_STATUS")
+    @Column("PDL_PERSON_STATUS")
     private String pdlPersonStatus;
 
-    @Column(name = "ARBEIDSPLASSENCV_STATUS")
+    @Column("ARBEIDSPLASSENCV_STATUS")
     private String arbeidsplassenCVStatus;
 
-    @Column(name = "SKATTEKORT_STATUS")
+    @Column("SKATTEKORT_STATUS")
     private String skattekortStatus;
 
-    @Column(name = "YRKESSKADE_STATUS")
+    @Column("YRKESSKADE_STATUS")
     private String yrkesskadeStatus;
 
-    @Column(name = "ARBEIDSSOEKERREGISTERET_STATUS")
+    @Column("ARBEIDSSOEKERREGISTERET_STATUS")
     private String arbeidssoekerregisteretStatus;
 
-    @Column(name = "ETTERLATTE_STATUS")
+    @Column("ETTERLATTE_STATUS")
     private  String etterlatteStatus;
 
-    @Column(name = "master")
-    @Enumerated(EnumType.STRING)
+    @Column("master")
+//    @Enumerated(EnumType.STRING)
     private Master master;
 
-    @Transient
+//    @Transient
     private boolean isPdlSync;
 
     private String feil;

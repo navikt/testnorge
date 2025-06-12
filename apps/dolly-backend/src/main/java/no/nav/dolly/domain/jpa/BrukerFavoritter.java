@@ -1,10 +1,5 @@
 package no.nav.dolly.domain.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,32 +8,33 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 
-@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BRUKER_FAVORITTER")
+@Table("BRUKER_FAVORITTER")
 public class BrukerFavoritter {
 
-    @EmbeddedId
+    @Id
     BrukerFavoritterId id;
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Embeddable
     public static class BrukerFavoritterId implements Serializable {
 
-        @Column(name = "BRUKER_ID")
+        @Column("BRUKER_ID")
         private Long brukerId;
 
-        @Column(name= "GRUPPE_ID")
+        @Column("GRUPPE_ID")
         private Long gruppeId;
     }
 

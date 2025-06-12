@@ -84,9 +84,8 @@ class BestillingServiceTest {
     @Test
     void fetchBestillingByIdKasterReturnererBestillingHvisBestillingErFunnet() {
         Bestilling mock = mock(Bestilling.class);
-        Optional<Bestilling> bes = Optional.of(mock);
 
-        when(bestillingRepository.findById(any())).thenReturn(bes);
+        when(bestillingRepository.findById(any())).thenReturn(Mono.just(mock));
 
         Bestilling bestilling = bestillingService.fetchBestillingById(1L);
 

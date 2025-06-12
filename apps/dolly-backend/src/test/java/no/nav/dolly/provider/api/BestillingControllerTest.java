@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -40,7 +41,7 @@ class BestillingControllerTest {
     void getBestillingById_oppdatererMedPersonstatusOrReturnererBestilling() {
 
         RsBestillingStatus bestillingStatus = RsBestillingStatus.builder().build();
-        when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
+        when(bestillingService.fetchBestillingById(any())).thenReturn(Mono.just(new Bestilling()));
         when(mapperFacade.map(any(), any())).thenReturn(bestillingStatus);
 
         RsBestillingStatus res = bestillingController.getBestillingById(BESTILLING_ID);

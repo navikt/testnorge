@@ -179,7 +179,7 @@ class NavigasjonServiceTest {
         Bestilling bestilling = new Bestilling();
         bestilling.setGruppe(testgruppe);
 
-        when(bestillingService.fetchBestillingById(any())).thenReturn(bestilling);
+        when(bestillingService.fetchBestillingById(any())).thenReturn(Mono.just(bestilling));
         when(bestillingService.getPaginertBestillingIndex(any(), any())).thenReturn(Optional.of(1));
         when(mapperFacade.map(any(Testgruppe.class), eq(RsTestgruppe.class))).thenReturn(new RsTestgruppe());
 

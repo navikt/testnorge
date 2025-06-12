@@ -1,10 +1,5 @@
 package no.nav.dolly.domain.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,48 +7,40 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
-
-@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "TRANSAKSJON_MAPPING")
+@Table("TRANSAKSJON_MAPPING")
 public class TransaksjonMapping implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "transaksjonMappingIdGenerator")
-    @GenericGenerator(name = "transaksjonMappingIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "TRANSAKSJON_MAPPING_SEQ"),
-            @Parameter(name = "initial_value", value = "1"),
-            @Parameter(name = "increment_size", value = "1")
-    })
     private Long id;
 
-    @Column(name = "BESTILLING_ID")
+    @Column("BESTILLING_ID")
     private Long bestillingId;
 
-    @Column(name = "IDENT")
+    @Column("IDENT")
     private String ident;
 
-    @Column(name = "SYSTEM")
+    @Column("SYSTEM")
     private String system;
 
-    @Column(name = "MILJOE")
+    @Column("MILJOE")
     private String miljoe;
 
-    @Column(name = "TRANSAKSJON_ID")
+    @Column("TRANSAKSJON_ID")
     private String transaksjonId;
 
-    @Column(name = "DATO_ENDRET")
+    @Column("DATO_ENDRET")
     private LocalDateTime datoEndret;
 
     @Override
