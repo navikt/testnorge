@@ -1,6 +1,5 @@
 package no.nav.testnav.identpool.providers;
 
-import io.swagger.v3.core.util.Json;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
@@ -27,16 +27,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class HttpExceptionAdvice {
 
-    private static final String GATEWAY_ORIGINAL_REQUEST_URL = "org.springframework.web.reactive.HandlerMapping.pathWithinHandlerMapping";
-
-    private ResponseEntity<ExceptionInformation> informationForException(RuntimeException exception, ServerWebExchange serverWebExchange, HttpStatus status) {
+      private ResponseEntity<ExceptionInformation> informationForException(RuntimeException exception, ServerWebExchange serverWebExchange, HttpStatus status) {
 
         var exceptionInfo = ResponseEntity.status(status)
                 .body(ExceptionInformation.builder()
                 .error(status.getReasonPhrase())
                 .status(status.value())
                 .message(exception.getMessage())
-                .path(serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL))
+                .path(serverWebExchange.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE))
                 .timestamp(LocalDateTime.now())
                 .build());
 
