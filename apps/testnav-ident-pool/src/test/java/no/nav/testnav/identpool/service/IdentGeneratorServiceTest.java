@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.testcontainers.shaded.com.google.common.collect.Ordering;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +44,7 @@ class IdentGeneratorServiceTest {
                 .build();
 
         assertThrows(IllegalArgumentException.class,
-                () -> identGeneratorService.genererIdenter(request, new HashSet<>()));
+                () -> identGeneratorService.genererIdenter(request));
     }
 
     @Test
@@ -57,7 +56,7 @@ class IdentGeneratorServiceTest {
                 .antall(requestedAmount)
                 .build();
 
-        var result = identGeneratorService.genererIdenter(request, new HashSet<>());
+        var result = identGeneratorService.genererIdenter(request);
 
         assertThat(result.size(), is(lessThan(requestedAmount)));
     }
@@ -116,7 +115,7 @@ class IdentGeneratorServiceTest {
     private Set<String> generateIdents(Identtype identtype, Kjoenn kjoenn) {
 
         return identGeneratorService.genererIdenter(
-                createRequest(identtype, kjoenn).build(), new HashSet<>());
+                createRequest(identtype, kjoenn).build());
     }
 
     private HentIdenterRequest.HentIdenterRequestBuilder createRequest(Identtype identtype, Kjoenn kjoenn) {

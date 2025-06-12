@@ -32,7 +32,7 @@ public class IdenterAvailService {
         var oppdatertRequest = mapperFacade.map(request, HentIdenterRequest.class);
         oppdatertRequest.setAntall(antall);
 
-        return Mono.just(identGeneratorService.genererIdenter(oppdatertRequest, new HashSet<>()))
+        return Mono.just(identGeneratorService.genererIdenter(oppdatertRequest))
                 .flatMapMany(genererteIdenter -> identRepository.findByPersonidentifikatorIn(genererteIdenter)
                         .collectList()
                         .flatMap(databaseIdenter -> Mono.just(filtrerIdenter(genererteIdenter, databaseIdenter)))

@@ -22,7 +22,6 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,7 +65,7 @@ class IdenterAvailServiceTest {
                 .build();
         when(mapperFacade.map(request, HentIdenterRequest.class)).thenReturn(request);
 
-        when(identGeneratorService.genererIdenter(eq(request), anySet()))
+        when(identGeneratorService.genererIdenter(request))
                 .thenReturn(Set.of(IDENT_1, IDENT_2));
         when(identRepository.findByPersonidentifikatorIn(anySet()))
                 .thenReturn(Flux.just(getIdent(IDENT_2)));
@@ -91,7 +90,7 @@ class IdenterAvailServiceTest {
                 .build();
         when(mapperFacade.map(request, HentIdenterRequest.class)).thenReturn(request);
 
-        when(identGeneratorService.genererIdenter(eq(request), anySet()))
+        when(identGeneratorService.genererIdenter(request))
                 .thenReturn(Set.of(IDENT_1, IDENT_2));
         when(identRepository.findByPersonidentifikatorIn(anySet()))
                 .thenReturn(Flux.just(getIdent(IDENT_2)));
