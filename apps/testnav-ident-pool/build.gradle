@@ -16,13 +16,10 @@ properties {
 dependencies {
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:security-core"
-//    implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
     implementation "no.nav.testnav.libs:reactive-security"
 
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
-//    implementation "org.hibernate.reactive:hibernate-reactive-core:2.4.2.Final"
-//    implementation 'io.vertx:vertx-pg-client:5.0.0'
 
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-validation"
@@ -42,12 +39,8 @@ dependencies {
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
-//    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
-//    testImplementation "org.springframework.security:spring-security-test"
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
-//    testImplementation "org.springframework.boot:spring-boot-test"
     testImplementation 'org.testcontainers:junit-jupiter'
-//    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:r2dbc'
 }

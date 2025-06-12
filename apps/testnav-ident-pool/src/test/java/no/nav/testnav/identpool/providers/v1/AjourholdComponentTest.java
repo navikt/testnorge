@@ -26,6 +26,7 @@ import reactor.test.StepVerifier;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -83,7 +84,7 @@ class AjourholdComponentTest {
         identRepository.deleteAll()
                 .block();
 
-        var dbFile = readSqlFile(DB_FILE);
+        var dbFile = readSqlFile();
 
         databaseClient.sql(dbFile)
                 .fetch()
@@ -130,7 +131,10 @@ class AjourholdComponentTest {
     @Test
     void startMining() {
 
-        webTestClient.post()
+        webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(300))
+                .build()
+                .post()
                 .uri(uriSpec -> uriSpec.path(BATCH_V1_BASEURL + START_MINING)
                         .queryParam("yearToGenerate", 1950)
                         .build())
@@ -157,9 +161,9 @@ class AjourholdComponentTest {
                 .verifyComplete();
     }
 
-    private String readSqlFile(String sqlFilePath) throws IOException {
+    private String readSqlFile() throws IOException {
 
-        var resource = new ClassPathResource(sqlFilePath);
+        var resource = new ClassPathResource(DB_FILE);
         var bytes = FileCopyUtils.copyToByteArray(resource.getInputStream());
         return new String(bytes, StandardCharsets.UTF_8);
     }
