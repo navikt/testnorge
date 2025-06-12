@@ -39,10 +39,6 @@ public class TpsMessagingConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Flux<TpsStatusDTO> getIdenterStatuser(Set<String> identer) {
-        return getIdenterStatus(new ArrayList<>(identer), Set.of("zz"), status -> !status.getMiljoer().isEmpty());
-    }
-
     public Flux<TpsStatusDTO> getIdenterProdStatus(Set<String> identer) {
         return getIdenterStatus(new ArrayList<>(identer), Set.of(NO_ENV), status -> status.getMiljoer().contains("p"));
     }
