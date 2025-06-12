@@ -60,6 +60,7 @@ public class IdentGeneratorService {
                 ));
     }
 
+    @SuppressWarnings("java:S3776")
     public Set<String> genererIdenter(HentIdenterRequest request) {
 
         var identerIIdentPool = new HashSet<String>();
