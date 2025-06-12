@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -22,10 +23,10 @@ import java.util.Set;
 
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -74,16 +75,22 @@ class IdentpoolServiceTest {
     void finnesIProd_happyTest() {
 
         when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
-                .thenReturn(Flux.just(TpsStatusDTO.builder()
-                        .ident(FNR2)
-                        .inUse(false)
-                        .build(), TpsStatusDTO.builder()
-                        .ident(FNR2)
-                        .inUse(true)
-                        .build()));
+                .thenReturn(Flux.just(
+                        TpsStatusDTO.builder()
+                                .ident(FNR1)
+                                .inUse(false)
+                                .build(),
+                        TpsStatusDTO.builder()
+                                .ident(FNR2)
+                                .inUse(true)
+                                .build()));
 
         identpoolService.finnesIProd(Set.of(FNR1, FNR2))
                 .as(StepVerifier::create)
+                .assertNext(tpsStatusDTO -> {
+                    assertEquals(FNR1, tpsStatusDTO.getIdent());
+                    assertFalse(tpsStatusDTO.isInUse());
+                })
                 .assertNext(tpsStatusDTO -> {
                     assertEquals(FNR2, tpsStatusDTO.getIdent());
                     assertTrue(tpsStatusDTO.isInUse());
@@ -114,11 +121,11 @@ class IdentpoolServiceTest {
 
         when(identRepository.findByPersonidentifikator(FNR1)).thenReturn(Mono.empty());
 
-        assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> StepVerifier.create(
-                                identpoolService.lesInnhold(FNR1))
-                        .expectComplete()
-                        .verify())
-                .withMessage("expectation \"expectComplete\" failed (expected: onComplete(); actual: onError(org.springframework.web.server.ResponseStatusException: 404 NOT_FOUND \"Fant ikke ident 01010101010\"))");
+        identpoolService.lesInnhold(FNR1)
+                .as(StepVerifier::create)
+                .expectErrorMatches(throwable -> throwable instanceof ResponseStatusException &&
+                        throwable.getMessage().contains("Fant ikke ident 01010101010"))
+                .verify();
     }
 
     @Test

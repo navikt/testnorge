@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -53,10 +52,10 @@ class BatchServiceTest {
         when(ajourholdRepository.save(any(Ajourhold.class)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.MINING_STARTED)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.MINING_COMPLETED)));
-        when(ajourholdService.checkCriticalAndGenerate())
-                .thenReturn(Flux.just("Identer opprettet"));
+        when(ajourholdService.checkCriticalAndGenerate(null))
+                .thenReturn(Mono.just("Identer opprettet"));
 
-        batchService.startGeneratingIdentsBatch()
+        batchService.startGeneratingIdents(null)
                 .as(StepVerifier::create)
                 .assertNext(ajourhold -> assertThat(ajourhold.getStatus(), Matchers.is(BatchStatus.MINING_COMPLETED)))
                 .verifyComplete();
@@ -72,13 +71,13 @@ class BatchServiceTest {
         when(ajourholdRepository.save(any(Ajourhold.class)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.MINING_STARTED)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.MINING_FAILED)));
-        when(ajourholdService.checkCriticalAndGenerate())
+        when(ajourholdService.checkCriticalAndGenerate(null))
                 .thenThrow(new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR,
                         "Feil under generering av identer"
                 ));
 
-        batchService.startGeneratingIdentsBatch()
+        batchService.startGeneratingIdents(null)
                 .as(StepVerifier::create)
                 .assertNext(ajourhold -> assertThat(ajourhold.getStatus(), Matchers.is(BatchStatus.MINING_FAILED)))
                 .verifyComplete();
@@ -95,7 +94,7 @@ class BatchServiceTest {
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.CLEAN_STARTED)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.CLEAN_COMPLETED)));
         when(ajourholdService.getIdentsAndCheckProd())
-                .thenReturn(Mono.just(1L));
+                .thenReturn(Mono.just("Ryddet 1 ident i produksjon"));
 
         batchService.updateDatabaseWithProdStatus()
                 .as(StepVerifier::create)

@@ -5,14 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
-import no.nav.testnav.identpool.exception.UgyldigPersonidentifikatorException;
-import no.nav.testnav.identpool.providers.v1.support.MarkerBruktRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import no.nav.testnav.identpool.util.IdentGeneratorUtil;
-import no.nav.testnav.identpool.util.PersonidentUtil;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,20 +15,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
-import static no.nav.testnav.identpool.util.PersonidentUtil.getIdentType;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -47,8 +32,7 @@ public class IdentpoolService {
 
     public Flux<TpsStatusDTO> finnesIProd(Set<String> identer) {
 
-        return tpsMessagingConsumer.getIdenterProdStatus(identer)
-                .filter(TpsStatusDTO::isInUse);
+        return tpsMessagingConsumer.getIdenterProdStatus(identer);
     }
 
     @Transactional

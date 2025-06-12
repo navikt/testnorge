@@ -9,7 +9,6 @@ import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.service.IdentGeneratorService;
-import no.nav.testnav.identpool.util.IdentGeneratorUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -20,11 +19,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static no.nav.testnav.identpool.util.PersonidentUtil.prepIdent;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -44,29 +44,35 @@ public class AjourholdService {
     private final IdentRepository identRepository;
     private final TpsMessagingConsumer tpsMessagingConsumer;
 
-    public Flux<String> checkCriticalAndGenerate() {
+    public Mono<String> checkCriticalAndGenerate(Integer yearToGenerate) {
 
-        var yearsToGenerate = ChronoUnit.YEARS.between(FOEDT_ETTER, LocalDate.now());
+        Flux<Integer> yearsToGenerate;
+        if (nonNull(yearToGenerate)) {
+            yearsToGenerate = Flux.just(yearToGenerate);
+        } else {
+            var years = ChronoUnit.YEARS.between(FOEDT_ETTER, LocalDate.now());
+            yearsToGenerate = Flux.range(LocalDate.now().minusYears(years).getYear(), (int) years + 1);
+        }
 
-        return Flux.range(LocalDate.now().minusYears(yearsToGenerate).getYear(), (int) yearsToGenerate + 1)
-                .flatMap(year -> Flux.concat(
-                        checkAndGenerateForYear(year, Identtype.FNR, false),
-                        checkAndGenerateForYear(year, Identtype.FNR, true),
-                        checkAndGenerateForYear(year, Identtype.DNR, false),
-                        checkAndGenerateForYear(year, Identtype.DNR, true),
-                        checkAndGenerateForYear(year, Identtype.BOST, false),
-                        checkAndGenerateForYear(year, Identtype.BOST, true)));
+        return yearsToGenerate
+                .flatMap(year -> Flux.merge(
+                                checkAndGenerateForYear(year, Identtype.FNR, false),
+                                checkAndGenerateForYear(year, Identtype.FNR, true),
+                                checkAndGenerateForYear(year, Identtype.DNR, false),
+                                checkAndGenerateForYear(year, Identtype.DNR, true),
+                                checkAndGenerateForYear(year, Identtype.BOST, false),
+                                checkAndGenerateForYear(year, Identtype.BOST, true)
+                        )
+                        .reduce(0L, Long::sum)
+                        .map(antall -> "år %d antall %d".formatted(year, antall)))
+                .collect(Collectors.joining(", "))
+                .map("Allokert nye identer for: %s"::formatted);
     }
 
     /**
      * Sjekker om det finnes identer som mangler i ident-pool for et gitt år og type.
-     *
-     * @param year
-     * @param type
-     * @param syntetiskIdent
-     * @return
      */
-    protected Mono<String> checkAndGenerateForYear(
+    protected Mono<Long> checkAndGenerateForYear(
             int year,
             Identtype type,
             boolean syntetiskIdent) {
@@ -79,12 +85,10 @@ public class AjourholdService {
                                         LocalDate.of(year + 1, 1, 1), type, syntetiskIdent))
                                 .flatMap(generated -> filterIdents(generated, missingIdents))
                                 .flatMapMany(Flux::fromIterable)
-                                .map(ident -> IdentGeneratorUtil.createIdent(ident, LEDIG, null))
+                                .map(ident -> prepIdent(ident, LEDIG, null))
                                 .flatMap(identRepository::save)
                                 .count()
                                 .doOnNext(antall -> log.info("Ajourhold: år {} {} {} identer har fått allokert antall nye: {}",
-                                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall))
-                                .map(antall -> "Ajourhold: år %d %s %s identer har fått allokert antall nye: %d%n" .formatted(
                                         year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall)));
     }
 
@@ -162,7 +166,7 @@ public class AjourholdService {
         return Flux.fromIterable(genererteIdenter.entrySet())
                 .flatMap(entry -> Flux.fromIterable(entry.getValue())
                         .concatMap(ident -> identRepository.existsByPersonidentifikator(ident)
-                                .flatMap(exist -> isTrue(exist) ? Mono.empty() : reactor.core.publisher.Mono.just(ident)))
+                                .flatMap(exist -> isTrue(exist) ? Mono.empty() : Mono.just(ident)))
                         .take(missingIdents.get(entry.getKey())))
                 .collectList()
                 .doOnNext(antall -> log.info("Antall identer allokert: {} for år {}", antall.size(),
@@ -172,29 +176,31 @@ public class AjourholdService {
     /**
      * Fjerner FNR/DNR/BNR fra ident-pool-databasen som finnes i prod
      */
-    public Mono<Long> getIdentsAndCheckProd() {
+    public Mono<String> getIdentsAndCheckProd() {
 
         return identRepository.countAllIkkeSyntetisk(LEDIG, FOEDT_ETTER)
-                .doOnNext(count -> log.info("Antall identer som er LEDIG i ident-pool: {}", count))
+                .doOnNext(count ->
+                        log.info("Antall identer som er LEDIG i ident-pool: {}", count))
                 .filter(count -> count > 0)
                 .flatMap(count ->
                         Flux.range(0, (count / MAX_SIZE_TPS_QUEUE) + 1)
-                        .flatMap(i ->
-                                identRepository.findAllIkkeSyntetisk(LEDIG, FOEDT_ETTER, PageRequest.of(i, MAX_SIZE_TPS_QUEUE)))
-                        .map(Ident::getPersonidentifikator)
-                        .collectList()
-                        .flatMapMany(idents ->
-                                tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents)))
-                        .filter(TpsStatusDTO::isInUse)
-                        .map(TpsStatusDTO::getIdent)
-                        .flatMap(usedIdent -> identRepository.findByPersonidentifikator(usedIdent)
-                                .flatMap(ident -> {
-                                    ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
-                                    ident.setRekvirertAv("TPS-PROD");
-                                    return identRepository.save(ident);
-                                }))
-                        .count()
-                        .doOnNext(usedIdents -> log.info("Fjernet {} identer som er i bruk i prod, " +
-                                "men som var markert som LEDIG i ident-pool.", usedIdents)));
+                                .flatMap(i ->
+                                        identRepository.findAllIkkeSyntetisk(LEDIG, FOEDT_ETTER, PageRequest.of(i, MAX_SIZE_TPS_QUEUE)))
+                                .map(Ident::getPersonidentifikator)
+                                .collectList()
+                                .flatMapMany(idents ->
+                                        tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents)))
+                                .filter(TpsStatusDTO::isInUse)
+                                .map(TpsStatusDTO::getIdent)
+                                .flatMap(usedIdent -> identRepository.findByPersonidentifikator(usedIdent)
+                                        .flatMap(ident -> {
+                                            ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
+                                            ident.setRekvirertAv("TPS-PROD");
+                                            return identRepository.save(ident);
+                                        }))
+                                .count()
+                                .doOnNext(usedIdents -> log.info("Oppdatert {} identer som er i bruk i prod, " +
+                                        "men som var markert som LEDIG i ident-pool.", usedIdents)))
+                .map("Oppdatert %d identer som var allokert for prod."::formatted);
     }
 }

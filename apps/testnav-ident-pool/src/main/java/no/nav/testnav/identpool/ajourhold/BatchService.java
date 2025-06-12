@@ -8,7 +8,6 @@ import no.nav.testnav.identpool.repository.AjourholdRepository;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -21,43 +20,38 @@ public class BatchService {
     private final AjourholdRepository ajourholdRepository;
     private final AjourholdService ajourholdService;
 
-    public Mono<Ajourhold> startGeneratingIdentsBatch() {
+    public Mono<Ajourhold> startGeneratingIdents(Integer yearToGenerate) {
 
         return updateStatus(BatchStatus.MINING_STARTED)
-                .flatMapMany(ajourhold1 -> ajourholdService.checkCriticalAndGenerate())
-                .collectList()
-                .flatMap(list -> updateStatus(BatchStatus.MINING_COMPLETED))
+                .flatMap(ajourhold1 -> ajourholdService.checkCriticalAndGenerate(yearToGenerate))
+                .flatMap(melding ->
+                        updateStatus(BatchStatus.MINING_COMPLETED, melding, null))
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(error -> updateStatus(BatchStatus.MINING_FAILED,
+                .onErrorResume(error -> updateStatus(BatchStatus.MINING_FAILED, null,
                         ExceptionUtils.getStackTrace(error).substring(0, 1023)));
-    }
-
-    public Flux<String> startGeneratingIdents() {
-
-        return ajourholdService.checkCriticalAndGenerate()
-                .onErrorResume(error -> Mono.just(error.getMessage() + ", " + error.getCause()));
     }
 
     public Mono<Ajourhold> updateDatabaseWithProdStatus() {
 
         return updateStatus(BatchStatus.CLEAN_STARTED)
                 .flatMap(ajourhold -> ajourholdService.getIdentsAndCheckProd())
-                .flatMap(identer -> updateStatus(BatchStatus.CLEAN_COMPLETED))
+                .flatMap(melding -> updateStatus(BatchStatus.CLEAN_COMPLETED, melding, null))
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(error -> updateStatus(BatchStatus.CLEAN_FAILED,
+                .onErrorResume(error -> updateStatus(BatchStatus.CLEAN_FAILED, null,
                         ExceptionUtils.getStackTrace(error).substring(0, 1023)));
     }
 
     private Mono<Ajourhold> updateStatus(BatchStatus status) {
 
-        return updateStatus(status, null);
+        return updateStatus(status, null, null);
     }
 
-    private Mono<Ajourhold> updateStatus(BatchStatus status, String feilmelding) {
+    private Mono<Ajourhold> updateStatus(BatchStatus status, String melding, String feilmelding) {
 
         return ajourholdRepository.save(Ajourhold.builder()
                 .sistOppdatert(LocalDateTime.now())
                 .status(status)
+                .melding(melding)
                 .feilmelding(feilmelding)
                 .build());
     }

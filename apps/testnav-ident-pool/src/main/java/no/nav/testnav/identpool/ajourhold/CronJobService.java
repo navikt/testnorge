@@ -20,7 +20,7 @@ public class CronJobService {
     public void execute() {
 
         log.info("Starter data mining ...");
-        batchService.startGeneratingIdentsBatch()
+        batchService.startGeneratingIdents(null)
                         .subscribe(status -> log.info("Data mining avsluttet {}", status.getStatus()));
     }
 

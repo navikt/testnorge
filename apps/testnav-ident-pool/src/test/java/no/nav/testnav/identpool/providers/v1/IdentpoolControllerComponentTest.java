@@ -10,6 +10,7 @@ import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,6 +27,8 @@ import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 import static org.hamcrest.CoreMatchers.is;
@@ -38,19 +41,22 @@ import static org.mockito.Mockito.when;
 class IdentpoolControllerComponentTest {
 
     private static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
-    private static final String API_V1_IDENT_IBRUK = IDENT_V1_BASEURL + "/bruk";
-    private static final String API_V1_IDENT_LEDIG = IDENT_V1_BASEURL + "/ledig";
+    private static final String PROD_SJEKK = "/prodSjekk";
+    private static final String FRIGJOER = "/frigjoer";
+    private static final String LEDIGE = "/ledige";
 
     private static final String FNR_LEDIG = "10108000398";
     private static final String DNR_LEDIG = "50108000381";
     private static final String FNR_IBRUK = "11108000327";
-    private static final String NYTT_FNR_LEDIG = "20018049946";
 
     @Autowired
     private WebTestClient webTestClient;
 
     @Autowired
     private IdentRepository identRepository;
+
+    @MockitoBean
+    private TpsMessagingConsumer tpsMessagingConsumer;
 
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.9"));
@@ -66,14 +72,8 @@ class IdentpoolControllerComponentTest {
         return postgreSQLContainer.getJdbcUrl().replace("jdbc", "r2dbc");
     }
 
-    @MockitoBean
-    private TpsMessagingConsumer tpsMessagingConsumer;
-
     @BeforeEach
     void populerDatabaseMedTestidenter() {
-
-        identRepository.deleteAll()
-                .block();
 
         identRepository.saveAll(Arrays.asList(
                         createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10),
@@ -86,12 +86,14 @@ class IdentpoolControllerComponentTest {
 
     @AfterEach
     void clearDatabase() {
+
         identRepository.deleteAll()
                 .block();
     }
 
+    @Order(4)
     @Test
-    void lesInnhold() {
+    void lesFraDatabase_LEDIG() {
 
         webTestClient.get()
                 .uri(IDENT_V1_BASEURL)
@@ -103,6 +105,21 @@ class IdentpoolControllerComponentTest {
                 .isEqualTo(createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10));
     }
 
+    @Order(5)
+    @Test
+    void lesFraDatabase_IBRUK() {
+
+        webTestClient.get()
+                .uri(IDENT_V1_BASEURL)
+                .header("personidentifikator", FNR_IBRUK)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Ident.class)
+                .isEqualTo(createIdentEntity(Identtype.FNR, FNR_IBRUK, Rekvireringsstatus.I_BRUK, 11));
+    }
+
+    @Order(6)
     @Test
     void hentLedigFnr() {
 
@@ -119,6 +136,7 @@ class IdentpoolControllerComponentTest {
                 .json("['" + FNR_LEDIG + "']");
     }
 
+    @Order(7)
     @Test
     void hentLedigDnr() {
 
@@ -135,6 +153,7 @@ class IdentpoolControllerComponentTest {
                 .json("['" + DNR_LEDIG + "']");
     }
 
+    @Order(8)
     @Test
     void hentFnrSomIkkeErIDatabase() {
 
@@ -158,6 +177,7 @@ class IdentpoolControllerComponentTest {
                 .json("[\"" + fnr1 + "\",\"" + fnr2 + "\"]");
     }
 
+    @Order(9)
     @Test
     void opprettNyeIdenterSjekkSluttstatus() {
 
@@ -193,8 +213,9 @@ class IdentpoolControllerComponentTest {
                 .verifyComplete();
     }
 
+    @Order(10)
     @Test
-    void hentFlereIdenterEnnDetErMuligAaLevere() throws Exception {
+    void hentFlereIdenterEnnDetErMuligAaLevere() {
 
         var fnr1 = "15103300123";
 
@@ -216,6 +237,7 @@ class IdentpoolControllerComponentTest {
                         "fødtEtter 1900-01-01, fødtFør 1900-01-01, syntetisk false -- forsøk å bestille med andre kriterier.");
     }
 
+    @Order(11)
     @Test
     void skalFeileNaarUgyldigIdenttypeBrukes() {
 
@@ -233,106 +255,81 @@ class IdentpoolControllerComponentTest {
                 .isEqualTo("400 BAD_REQUEST \"Failed to read HTTP message\"");
     }
 
+    @Order(12)
     @Test
-    void markerIBrukPaaIdentAlleredeIBruk() throws Exception {
+    void prodsjekkIdent_IBRUK() {
 
-        String request = "{\"personidentifikator\":\"" + FNR_IBRUK + "\", \"bruker\":\"TesterMcTestFace\" }";
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(
+                TpsStatusDTO.builder().ident(FNR_IBRUK).inUse(true).build()));
 
-//        mockMvc.perform(MockMvcRequestBuilders.post(API_V1_IDENT_IBRUK)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(request))
-//                .andExpect(MockMvcResultMatchers.status().isConflict())
-//                .andReturn();
+        webTestClient.get()
+                .uri(uriSpec -> uriSpec.path(IDENT_V1_BASEURL + PROD_SJEKK)
+                        .queryParam("identer", Set.of(FNR_IBRUK))
+                        .build())
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .json("[{\"ident\":\"" + FNR_IBRUK + "\",\"inUse\":true,\"available\":false}]");
     }
 
+    @Order(13)
     @Test
-    void markerEksisterendeLedigIdentIBruk() throws Exception {
+    void prodsjekkIdent_LEDIG() {
 
-        StepVerifier.create(identRepository.findByPersonidentifikator(FNR_LEDIG))
-                .assertNext(ident -> assertThat(ident.getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG)))
-                .verifyComplete();
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(
+                TpsStatusDTO.builder().ident(FNR_LEDIG).inUse(false).build()));
 
-        String request = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
-
-//        mockMvc.perform(MockMvcRequestBuilders.post(API_V1_IDENT_IBRUK)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(request))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-
-        StepVerifier.create(identRepository.findByPersonidentifikator(FNR_LEDIG))
-                .assertNext(ident -> assertThat(ident.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)))
-                .verifyComplete();
+        webTestClient.get()
+                .uri(uriSpec -> uriSpec.path(IDENT_V1_BASEURL + PROD_SJEKK)
+                        .queryParam("identer", Set.of(FNR_LEDIG))
+                        .build())
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .json("[{\"ident\":\"" + FNR_LEDIG + "\",\"inUse\":false,\"available\":true}]");
     }
 
+    @Order(14)
     @Test
-    void markerNyLedigIdentIBruk() throws Exception {
+    void frigjoerIdent_OK() {
 
-        identRepository.findByPersonidentifikator(NYTT_FNR_LEDIG)
+        identRepository.findByPersonidentifikator(FNR_IBRUK)
                 .as(StepVerifier::create)
+                .assertNext(ident -> assertThat(ident.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)))
+                .verifyComplete();
+
+        webTestClient.post()
+                .uri(uriSpec -> uriSpec.path(IDENT_V1_BASEURL + FRIGJOER)
+                        .build())
+                .bodyValue(List.of(FNR_IBRUK))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .json("[\"" + FNR_IBRUK + "\"]");
+
+        StepVerifier.create(identRepository.findByPersonidentifikator(FNR_IBRUK))
                 .assertNext(ident -> assertThat(ident.getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG)))
                 .verifyComplete();
-
-        String request = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
-
-//        mockMvc.perform(MockMvcRequestBuilders.post(API_V1_IDENT_IBRUK)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(request))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-
-        StepVerifier.create(identRepository.findByPersonidentifikator(NYTT_FNR_LEDIG))
-                .assertNext(ident -> assertThat(ident.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)))
-                .assertNext(ident -> assertThat(ident.getIdenttype(), is(Identtype.FNR)))
-                .verifyComplete();
     }
 
+    @Order(15)
     @Test
-    void sjekkOmLedigIdentErLedig() throws Exception {
+    void sjekkLedigeMellomAar_OK() {
 
-//        var result = mockMvc.perform(MockMvcRequestBuilders.get(API_V1_IDENT_LEDIG)
-//                        .header("personidentifikator", FNR_LEDIG))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-
-//        assertThat(Boolean.parseBoolean(result.getResponse().getContentAsString()), is(true));
-    }
-
-    @Test
-    void sjekkOmUledigIdentErLedig() throws Exception {
-
-//        var result = mockMvc.perform(MockMvcRequestBuilders.get(API_V1_IDENT_LEDIG)
-//                        .header("personidentifikator", FNR_IBRUK))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-
-//        assertThat(Boolean.parseBoolean(result.getResponse().getContentAsString()), is(false));
-    }
-
-    @Test
-    void eksistererIkkeIDbOgLedigITps() throws Exception {
-
-        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(Flux.just(
-                TpsStatusDTO.builder().ident(NYTT_FNR_LEDIG).build()));
-
-//        var result = mockMvc.perform(MockMvcRequestBuilders.get(API_V1_IDENT_LEDIG)
-//                        .header("personidentifikator", NYTT_FNR_LEDIG))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-
-//        assertThat(Boolean.parseBoolean(result.getResponse().getContentAsString()), is(true));
-    }
-
-    @Test
-    void lesIdenterTest() throws Exception {
-
-//        var result = mockMvc.perform(MockMvcRequestBuilders.get(IDENT_V1_BASEURL)
-//                        .header("personidentifikator", FNR_LEDIG))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andReturn();
-
-        Ident expected = createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10);
-//        assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), Ident.class), is(expected));
+        webTestClient.get()
+                .uri(uriSpec -> uriSpec.path(IDENT_V1_BASEURL + LEDIGE)
+                        .queryParam("fromYear", "1980")
+                        .queryParam("toYear", "1981")
+                        .queryParam("syntetisk", "false")
+                        .build())
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .json("[\"" + FNR_LEDIG + "\"]");
     }
 
     private static Ident createIdentEntity(Identtype identtype, String ident, Rekvireringsstatus rekvireringsstatus, int day) {

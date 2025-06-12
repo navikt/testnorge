@@ -27,6 +27,9 @@ public class Ajourhold {
     @Column("STATUS")
     private BatchStatus status;
 
+    @Column("MELDING")
+    private String melding;
+
     @NotNull
     @Column("SISTOPPDATERT")
     private LocalDateTime sistOppdatert;

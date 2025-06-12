@@ -7,7 +7,6 @@ import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.service.IdentGeneratorService;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +23,7 @@ import java.time.LocalDate;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,8 +60,7 @@ class AjourholdServiceTest {
         when(identRepository.existsByPersonidentifikator(anyString())).thenReturn(Mono.just(true));
         ajourholdService.checkAndGenerateForYear(year, Identtype.FNR, false)
                 .as(StepVerifier::create)
-                .expectNextMatches(result ->
-                        result.startsWith("Ajourhold: år " + year + " FNR vanlige identer har fått allokert antall nye: 0"))
+                .expectNext(0L)
                 .verifyComplete();
     }
 
@@ -77,8 +76,7 @@ class AjourholdServiceTest {
 
         ajourholdService.checkAndGenerateForYear(year, Identtype.FNR, true)
                 .as(StepVerifier::create)
-                .expectNextMatches(result ->
-                        result.startsWith("Ajourhold: år " + year + " FNR NAV-syntetiske identer har fått allokert antall nye: 1460"))
+                .expectNext(1460L)
                 .verifyComplete();
     }
 
@@ -88,8 +86,8 @@ class AjourholdServiceTest {
         when(identRepository.countAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class)))
                 .thenReturn(Mono.just(100));
         when(identRepository.findAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class), any(PageRequest.class)))
-                .thenReturn(Flux.just(prepIdent(FNR1, LEDIG, false)))
-                .thenReturn(Flux.just(prepIdent(FNR2, LEDIG, false)));
+                .thenReturn(Flux.just(prepIdent(FNR1, LEDIG)))
+                .thenReturn(Flux.just(prepIdent(FNR2, LEDIG)));
         when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
                 .thenReturn(Flux.just(TpsStatusDTO.builder()
                                 .ident(FNR1)
@@ -100,24 +98,23 @@ class AjourholdServiceTest {
                                 .inUse(true)
                         .build()));
         when(identRepository.findByPersonidentifikator(anyString()))
-                .thenReturn(Mono.just(prepIdent(FNR1, LEDIG, false)))
-                .thenReturn(Mono.just(prepIdent(FNR2, LEDIG, false)));
+                .thenReturn(Mono.just(prepIdent(FNR1, LEDIG)))
+                .thenReturn(Mono.just(prepIdent(FNR2, LEDIG)));
         when(identRepository.save(any(Ident.class)))
-                .thenReturn(Mono.just(prepIdent(FNR1, I_BRUK, false)))
-                .thenReturn(Mono.just(prepIdent(FNR2, I_BRUK, false)));
+                .thenReturn(Mono.just(prepIdent(FNR1, I_BRUK)))
+                .thenReturn(Mono.just(prepIdent(FNR2, I_BRUK)));
 
         ajourholdService.getIdentsAndCheckProd()
                 .as(StepVerifier::create)
-                .assertNext(count -> assertThat(count, Matchers.is(2L)))
+                .assertNext(status -> assertThat(status, is("Oppdatert 2 identer som var allokert for prod.")))
                 .verifyComplete();
     }
 
-    private static Ident prepIdent(String ident, Rekvireringsstatus status, boolean syntetisk) {
+    private static Ident prepIdent(String ident, Rekvireringsstatus status) {
 
         return Ident.builder()
                 .personidentifikator(ident)
                 .rekvireringsstatus(status)
-                .syntetisk(syntetisk)
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.testnav.identpool;
+package no.nav.testnav.identpool.config;
 
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
