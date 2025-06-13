@@ -18,17 +18,22 @@ public class TestOpenSearchConfig extends AbstractOpenSearchConfiguration {
 
     private static final DockerImageName OPENSEARCH_IMAGE = DockerImageName.parse("opensearchproject/opensearch:2.0.0");
 
+    private static final OpensearchContainer OPENSEARCH_CONTAINER;
+
+    static {
+        OPENSEARCH_CONTAINER = new OpensearchContainer(OPENSEARCH_IMAGE);
+        OPENSEARCH_CONTAINER.withEnv("DISABLE_SECURITY_PLUGIN", "true");
+        OPENSEARCH_CONTAINER.withEnv("discovery.type", "single-node");
+        OPENSEARCH_CONTAINER.withEnv("OPENSEARCH_JAVA_OPTS", "-Xms512m -Xmx512m");
+
+        OPENSEARCH_CONTAINER.start();
+    }
+
     @Override
     @Bean
     public RestHighLevelClient opensearchClient() {
-
-        var container = new OpensearchContainer(OPENSEARCH_IMAGE);
-        // Start the container. This step might take some time...
-        container.start();
-        assert (container.isRunning());
-
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo(container.getHost() + ":" + container.getFirstMappedPort())
+                .connectedTo(OPENSEARCH_CONTAINER.getHost() + ":" + OPENSEARCH_CONTAINER.getFirstMappedPort())
                 .build();
 
         return RestClients.create(clientConfiguration).rest();

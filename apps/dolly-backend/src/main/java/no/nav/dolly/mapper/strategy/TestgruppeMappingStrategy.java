@@ -12,6 +12,8 @@ import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -39,9 +41,9 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                                 .count());
                         rsTestgruppe.setErEierAvGruppe(bruker.getBrukerId().equals(testgruppe.getOpprettetAv().getBrukerId()));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
-                        rsTestgruppe.setTags(testgruppe.getTags().stream()
+                        rsTestgruppe.setTags(nonNull(testgruppe.getTags()) ? testgruppe.getTags().stream()
                                 .filter(tag -> Tags.DOLLY != tag)
-                                .toList()
+                                .toList() : Collections.emptyList()
                         );
                     }
                 })

@@ -44,7 +44,7 @@ class TestgruppeMappingStrategyTest {
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
 
         when(brukerService.fetchOrCreateBruker()).thenReturn(new Bruker());
-        when(brukerService.fetchBrukerOrTeamBruker(BRUKERID)).thenReturn(new Bruker());
+        when(brukerService.fetchBrukerOrTeamBruker(BRUKERID)).thenReturn(Bruker.builder().brukerId(BRUKERID).build());
     }
 
     @Test
@@ -75,6 +75,6 @@ class TestgruppeMappingStrategyTest {
         assertThat(rs.getSistEndretAv().getBrukerId(), is(bruker.getBrukerId()));
 
         assertThat(rsIdenter.size(), is(1));
-        assertThat(rsIdenter.get(0).getIdent(), is("1"));
+        assertThat(rsIdenter.getFirst().getIdent(), is("1"));
     }
 }

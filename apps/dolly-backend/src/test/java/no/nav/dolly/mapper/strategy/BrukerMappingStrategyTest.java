@@ -47,9 +47,6 @@ class BrukerMappingStrategyTest {
         try (MockedStatic<CurrentAuthentication> mocked = Mockito.mockStatic(CurrentAuthentication.class)) {
             Bruker mockBruker = new Bruker();
 
-            mocked.when(() -> CurrentAuthentication.getAuthUser(any(GetUserInfo.class))).thenReturn(mockBruker);
-
-
             Bruker bruker = Bruker.builder().brukerId("ident")
                     .favoritter(new HashSet<>(singletonList(Testgruppe.builder()
                             .id(2L)
@@ -57,10 +54,13 @@ class BrukerMappingStrategyTest {
                             .build())))
                     .build();
 
+            mocked.when(() -> CurrentAuthentication.getAuthUser(any(GetUserInfo.class))).thenReturn(mockBruker);
+            mocked.when(() -> brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(bruker);
+
             RsBruker rsBruker = mapper.map(bruker, RsBruker.class);
 
             assertThat(rsBruker.getBrukerId(), is("ident"));
-            assertThat(rsBruker.getFavoritter().get(0).getId(), is(2L));
+            assertThat(rsBruker.getFavoritter().getFirst().getId(), is(2L));
         }
     }
 }
