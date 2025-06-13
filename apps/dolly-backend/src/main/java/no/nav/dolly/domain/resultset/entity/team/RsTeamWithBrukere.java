@@ -22,6 +22,7 @@ public class RsTeamWithBrukere {
 
 
     private Long id;
+    private String brukerId;
     private String navn;
     private String beskrivelse;
     private LocalDateTime opprettet;

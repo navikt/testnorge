@@ -63,6 +63,12 @@ public class BrukerService {
                 .orElseGet(() -> createBruker(null));
     }
 
+    public Bruker fetchBrukerById(Long id) {
+
+        return brukerRepository.findBrukerById(id)
+                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
+    }
+
     public Bruker fetchBrukerWithoutTeam(String brukerId) {
 
         return brukerRepository.findBrukerByBrukerId(brukerId)

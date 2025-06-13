@@ -10,7 +10,6 @@ import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.service.TeamService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,37 +35,35 @@ public class TeamController {
 
     @GetMapping
     @Operation(description = "Hent alle team")
-    public ResponseEntity<List<RsTeamWithBrukere>> getAllTeams() {
+    public List<RsTeamWithBrukere> getAllTeams() {
         var teams = teamService.fetchAllTeam();
-        return ResponseEntity.ok(mapperFacade.mapAsList(teams, RsTeamWithBrukere.class));
+        return mapperFacade.mapAsList(teams, RsTeamWithBrukere.class);
     }
 
     @GetMapping("/{id}")
     @Operation(description = "Hent team med angitt ID")
-    public ResponseEntity<RsTeamWithBrukere> getTeamById(@PathVariable("id") Long id) {
+    public RsTeamWithBrukere getTeamById(@PathVariable("id") Long id) {
         var team = teamService.fetchTeamById(id);
-        return ResponseEntity.ok(mapperFacade.map(team, RsTeamWithBrukere.class));
+        return mapperFacade.map(team, RsTeamWithBrukere.class);
     }
 
     @PostMapping
     @Operation(description = "Opprett nytt team")
     @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<RsTeamWithBrukere> createTeam(@RequestBody RsTeam rsTeam) {
+    public RsTeamWithBrukere createTeam(@RequestBody RsTeam rsTeam) {
         var team = mapperFacade.map(rsTeam, Team.class);
         var savedTeam = teamService.opprettTeam(team);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapperFacade.map(savedTeam, RsTeamWithBrukere.class));
+        return mapperFacade.map(savedTeam, RsTeamWithBrukere.class);
     }
 
     @PutMapping("/{id}")
     @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Oppdater eksisterende team")
-    public ResponseEntity<RsTeamWithBrukere> updateTeam(@PathVariable("id") Long id,
-                                                        @RequestBody RsTeam rsTeam) {
+    public RsTeamWithBrukere updateTeam(@PathVariable("id") Long id, @RequestBody RsTeam rsTeam) {
         var team = mapperFacade.map(rsTeam, Team.class);
         var updatedTeam = teamService.updateTeam(id, team);
-        return ResponseEntity.ok(mapperFacade.map(updatedTeam, RsTeamWithBrukere.class));
+        return mapperFacade.map(updatedTeam, RsTeamWithBrukere.class);
     }
 
     @DeleteMapping("/{id}")

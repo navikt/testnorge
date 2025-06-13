@@ -49,6 +49,9 @@ public class TeamBrukerMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Team team, RsTeamWithBrukere rsTeamWithBrukere, MappingContext context) {
+                        var teamBruker = brukerService.fetchBrukerById(team.getBrukerId());
+
+                        rsTeamWithBrukere.setBrukerId(teamBruker.getBrukerId());
                         rsTeamWithBrukere.setBrukere(team.getBrukere().stream()
                                 .map(bruker -> mapperFacade.map(bruker, RsBrukerUtenFavoritter.class))
                                 .collect(Collectors.toSet()));
