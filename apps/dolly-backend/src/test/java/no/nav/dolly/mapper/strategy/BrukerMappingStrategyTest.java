@@ -6,6 +6,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,9 +33,12 @@ class BrukerMappingStrategyTest {
     @Mock
     private GetUserInfo getUserInfo;
 
+    @Mock
+    private BrukerService brukerService;
+
     @BeforeEach
     public void setUpHappyPath() {
-        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new BrukerMappingStrategy(getUserInfo));
+        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new BrukerMappingStrategy(getUserInfo, brukerService));
     }
 
     @Test

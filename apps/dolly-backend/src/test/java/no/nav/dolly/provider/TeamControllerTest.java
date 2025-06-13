@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,11 +68,10 @@ class TeamControllerTest {
         when(teamService.fetchAllTeam()).thenReturn(List.of(team));
         when(mapperFacade.mapAsList(List.of(team), RsTeamWithBrukere.class)).thenReturn(List.of(rsTeamWithBrukere));
 
-        var response = teamController.getAllTeams();
+        List<RsTeamWithBrukere> response = teamController.getAllTeams();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).hasSize(1);
-        assertThat(response.getBody().getFirst()).isEqualTo(rsTeamWithBrukere);
+        assertThat(response).hasSize(1);
+        assertThat(response.getFirst()).isEqualTo(rsTeamWithBrukere);
         verify(teamService).fetchAllTeam();
     }
 
@@ -82,10 +80,9 @@ class TeamControllerTest {
         when(teamService.fetchTeamById(1L)).thenReturn(team);
         when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
 
-        var response = teamController.getTeamById(1L);
+        RsTeamWithBrukere response = teamController.getTeamById(1L);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(rsTeamWithBrukere);
+        assertThat(response).isEqualTo(rsTeamWithBrukere);
         verify(teamService).fetchTeamById(1L);
     }
 
@@ -95,10 +92,9 @@ class TeamControllerTest {
         when(teamService.opprettTeam(team)).thenReturn(team);
         when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
 
-        var response = teamController.createTeam(rsTeam);
+        RsTeamWithBrukere response = teamController.createTeam(rsTeam);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isEqualTo(rsTeamWithBrukere);
+        assertThat(response).isEqualTo(rsTeamWithBrukere);
         verify(teamService).opprettTeam(team);
     }
 
@@ -108,10 +104,9 @@ class TeamControllerTest {
         when(teamService.updateTeam(eq(1L), any(Team.class))).thenReturn(team);
         when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
 
-        var response = teamController.updateTeam(1L, rsTeam);
+        RsTeamWithBrukere response = teamController.updateTeam(1L, rsTeam);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(rsTeamWithBrukere);
+        assertThat(response).isEqualTo(rsTeamWithBrukere);
         verify(teamService).updateTeam(eq(1L), any(Team.class));
     }
 
