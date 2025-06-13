@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
@@ -57,7 +56,7 @@ public class TestgruppeService {
     private final BrukerServiceConsumer brukerServiceConsumer;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
-        Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
 
         return saveGruppeTilDB(Testgruppe.builder()
                 .navn(rsTestgruppe.getNavn())
@@ -135,7 +134,7 @@ public class TestgruppeService {
 
     public Page<Testgruppe> fetchTestgrupperByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        var bruker = brukerService.fetchBruker(brukerId);
+        var bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
 
         return testgruppeRepository.findAllByOpprettetAv(bruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
@@ -164,7 +163,7 @@ public class TestgruppeService {
 
     @Transactional
     public Long deleteGruppeById(Long gruppeId) {
-        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+        var testgruppe = fetchTestgruppeById(gruppeId);
         var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
 
         transaksjonMappingRepository.deleteByGruppeId(gruppeId);
@@ -180,11 +179,11 @@ public class TestgruppeService {
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
-        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+        var testgruppe = fetchTestgruppeById(gruppeId);
 
         testgruppe.setHensikt(endreGruppe.getHensikt());
         testgruppe.setNavn(endreGruppe.getNavn());
-        testgruppe.setSistEndretAv(brukerService.fetchBruker(getUserId(getUserInfo)));
+        testgruppe.setSistEndretAv(brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo)));
         testgruppe.setDatoEndret(LocalDate.now());
 
         return saveGruppeTilDB(testgruppe);
@@ -222,7 +221,7 @@ public class TestgruppeService {
 
     public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, RsLockTestgruppe lockTestgruppe) {
 
-        Testgruppe testgruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke testgruppe med id = " + gruppeId));
+        var testgruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke testgruppe med id = " + gruppeId));
         if (isTrue(lockTestgruppe.getErLaast())) {
             testgruppe.setErLaast(true);
             testgruppe.setLaastBeskrivelse(lockTestgruppe.getLaastBeskrivelse());

@@ -6,12 +6,12 @@ import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BrukerService;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +27,10 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -88,7 +91,7 @@ class MalBestillingControllerTest {
         saveDummyBruker(DUMMY_TO);
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
 
-        when(brukerService.fetchBruker(anyString())).thenReturn(DUMMY_EN);
+        when(brukerService.fetchBrukerOrTeamBruker(anyString())).thenReturn(DUMMY_EN);
     }
 
     @AfterEach
@@ -112,7 +115,7 @@ class MalBestillingControllerTest {
                         .queryParam("malNavn", MALNAVN_EN))
                 .andExpect(status().isOk());
 
-        when(brukerService.fetchBruker(anyString())).thenReturn(DUMMY_TO);
+        when(brukerService.fetchBrukerOrTeamBruker(anyString())).thenReturn(DUMMY_TO);
 
         mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", String.valueOf(bestillingTo.getId()))

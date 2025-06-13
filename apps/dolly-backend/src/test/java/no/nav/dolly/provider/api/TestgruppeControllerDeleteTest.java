@@ -4,12 +4,12 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,7 +29,10 @@ class TestgruppeControllerDeleteTest extends AbstractControllerTest {
     void deleteTestgruppe()
             throws Exception {
 
-        when(brukerService.fetchOrCreateBruker()).thenReturn(new Bruker());
+        var bruker = Bruker.builder().brukerId("test").build();
+
+        when(brukerService.fetchOrCreateBruker()).thenReturn(bruker);
+        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(bruker);
 
         var testgruppe = super.createTestgruppe("Testgruppe", super.createBruker());
         mockMvc

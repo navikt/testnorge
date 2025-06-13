@@ -21,18 +21,20 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
 
     List<BestillingMal> findByBruker(Bruker bruker);
 
+
     @Query(value = """
-            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+            select distinct bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
                                bm.sist_oppdatert sistOppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
-            and b.brukertype = 'AZURE'
+            where (b.brukertype = 'AZURE' or b.brukertype = 'TEAM')
             order by bm.mal_navn;
             """, nativeQuery = true)
-    List<MalBestilling> findAllByBrukerAzure();
+    List<MalBestilling> findAllByBrukerAzureOrTeam();
+
 
     @Query(value = """
-            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+            select distinct bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
                                bm.sist_oppdatert sistOppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
@@ -42,7 +44,7 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
     List<MalBestilling> findAllByBrukerId(@Param("brukerId") String brukerId);
 
     @Query(value = """
-            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+            select distinct bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
                                bm.sist_oppdatert sistOppdatert
                         from bestilling_mal bm
             where bm.bruker_id is null
@@ -51,18 +53,19 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
     List<MalBestilling> findAllByBrukerIsNull();
 
     @Query(value = """
-            select (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
+            select distinct (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
-                and b.brukertype = 'AZURE'
+                where (b.brukertype = 'AZURE' or b.brukertype = 'TEAM')
                 group by malBruker
                 order by malBruker
             """, nativeQuery = true)
-    List<MalBestillingFragment> findAllByBrukertypeAzure();
+    List<MalBestillingFragment> findAllByBrukertypeAzureOrTeam();
+
 
     @Query(value = """
-            select (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
+            select distinct (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
-                and b.bruker_id in :brukerIds
+                where b.bruker_id in :brukerIds
                 group by malBruker
                 order by malBruker
             """, nativeQuery = true)

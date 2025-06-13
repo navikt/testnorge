@@ -55,21 +55,21 @@ class BrukerServiceTest {
     }
 
     @Test
-    void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerErFunnet() {
+    void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerOrTeamBrukerErFunnet() {
         when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.of(Bruker.builder().build()));
-        Bruker b = brukerService.fetchBruker("test");
+        Bruker b = brukerService.fetchBrukerOrTeamBruker("test");
         assertThat(b, is(notNullValue()));
     }
 
     @Test
-    void fetchBruker_kasterExceptionHvisIngenBrukerFunnet() {
+    void fetchBruker_kasterExceptionHvisIngenBrukerOrTeamBrukerFunnet() {
         when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () ->
-                brukerService.fetchBruker(BRUKERID));
+                brukerService.fetchBrukerOrTeamBruker(BRUKERID));
     }
 
     @Test
-    void fetchBrukere() {
+    void fetchBrukerOrTeamBrukere() {
         when(brukerRepository.save(any())).thenReturn(Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
         brukerService.fetchBrukere();
         verify(brukerRepository).findAllByOrderById();

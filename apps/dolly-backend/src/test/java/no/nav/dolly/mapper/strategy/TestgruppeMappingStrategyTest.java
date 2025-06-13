@@ -9,8 +9,9 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
 class TestgruppeMappingStrategyTest {
@@ -31,13 +33,18 @@ class TestgruppeMappingStrategyTest {
     @MockitoBean
     private BestillingElasticRepository bestillingElasticRepository;
     @MockitoBean
+    private BrukerService brukerService;
+    @MockitoBean
     private ElasticsearchOperations elasticsearchOperations;
     private MapperFacade mapper;
 
     @BeforeEach
     public void setUpHappyPath() {
-        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(new GetUserInfo("dummy")));
+        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(new GetUserInfo("dummy"), brukerService));
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+
+        when(brukerService.fetchOrCreateBruker()).thenReturn(new Bruker());
+        when(brukerService.fetchBrukerOrTeamBruker(BRUKERID)).thenReturn(Bruker.builder().brukerId(BRUKERID).build());
     }
 
     @Test
@@ -68,6 +75,6 @@ class TestgruppeMappingStrategyTest {
         assertThat(rs.getSistEndretAv().getBrukerId(), is(bruker.getBrukerId()));
 
         assertThat(rsIdenter.size(), is(1));
-        assertThat(rsIdenter.get(0).getIdent(), is("1"));
+        assertThat(rsIdenter.getFirst().getIdent(), is("1"));
     }
 }
