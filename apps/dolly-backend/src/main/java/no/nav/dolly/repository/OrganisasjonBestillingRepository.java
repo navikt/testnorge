@@ -2,29 +2,30 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface OrganisasjonBestillingRepository extends ReactiveCrudRepository<OrganisasjonBestilling, Long> {
 
     @Modifying
-    @Query(value = "delete from OrganisasjonBestilling b where b = :bestilling and not exists (select bp from OrganisasjonBestillingProgress bp where bp.bestilling = :bestilling)")
-    int deleteBestillingWithNoChildren(@Param("bestilling") OrganisasjonBestilling bestilling);
+    @Query("""
+            delete from organisasjon_bestilling b
+            where b = :bestilling and not exists
+            (select bp from organisasjon_bestilling_progress bp where bp.bestilling_id = :bestillingId)
+            """)
+    Mono<Integer> deleteBestillingWithNoChildren(@Param("bestillingId") OrganisasjonBestilling bestillingId);
 
-    List<OrganisasjonBestilling> findByBruker(Bruker bruker);
+    Flux<OrganisasjonBestilling> findByBruker(Bruker bruker);
 
     @Modifying
     @Query("""
-        update OrganisasjonBestilling ob
-        set ob.ferdig = true
-        where ob.ferdig = false
-""")
-
-    int stopAllUnfinished();
-
+                    update organisasjon_bestilling ob
+                    set ferdig = true
+                    where ob.ferdig = false
+            """)
+    Mono<Integer> stopAllUnfinished();
 }

@@ -128,7 +128,7 @@ public class TestgruppeService {
 
     public Optional<Testgruppe> fetchTestgruppeById(long gruppeId) {
 
-        return testgruppeRepository.findByIdOrderById(gruppeId)
+        return testgruppeRepository.findById(gruppeId)
                 .map(gruppe -> {
                     gruppe.setBestillinger(bestillingRepository.getBestillingByGruppe_Id(gruppeId));
 //                    gruppe.setFavorisertAv(brukerFavoritterRepository.getAllByGruppeId(gruppeId));

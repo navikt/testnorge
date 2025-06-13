@@ -2,22 +2,24 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingMal;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface OrganisasjonBestillingMalRepository extends ReactiveCrudRepository<OrganisasjonBestillingMal, Long> {
 
-    List<OrganisasjonBestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
+    Flux<OrganisasjonBestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
 
-    List<OrganisasjonBestillingMal> findByBruker(Bruker bruker);
+    Flux<OrganisasjonBestillingMal> findByBruker(Bruker bruker);
 
     @Modifying
-    @Query("update OrganisasjonBestillingMal b set b.malNavn = :malNavn where b.id = :id")
-    int updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
+    @Query("""
+            update organisasjon_bestilling_mal b
+            set mal_navn = :malNavn where b.id = :id
+            """)
+    Mono<OrganisasjonBestillingMal> updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
 }

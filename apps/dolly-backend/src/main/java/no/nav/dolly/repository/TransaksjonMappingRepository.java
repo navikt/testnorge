@@ -1,50 +1,54 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface TransaksjonMappingRepository extends ReactiveCrudRepository<TransaksjonMapping, Long> {
 
-    List<TransaksjonMapping> findAllBySystemAndIdent(String system, String ident);
+    Flux<TransaksjonMapping> findAllBySystemAndIdent(String system, String ident);
 
-    @Query(value = "from TransaksjonMapping t " +
-            " where t.ident=:ident" +
-            " and (:bestillingId is null " +
-            " or (t.bestillingId is not null and t.bestillingId=:bestillingId))")
-    List<TransaksjonMapping> findAllByBestillingIdAndIdent(@Param("bestillingId") Long bestillingId, @Param("ident") String ident);
-
-    @Modifying
-    int deleteAllByIdent(String ident);
-
-    @Modifying
-    int deleteByIdentAndMiljoeAndSystem(String ident, String miljoe, String system);
-
-    int deleteByIdentAndMiljoeAndSystemAndBestillingId(String ident, String miljoe, String system, Long bestillingId);
+    @Query("""
+            select t from transaksjon_mapping t
+            where t.ident=:ident
+            and (:bestillingId is null
+            or (t.bestilling_id is not null and t.bestilling_id=:bestillingId))
+            """)
+    Flux<TransaksjonMapping> findAllByBestillingIdAndIdent(@Param("bestillingId") Long bestillingId, @Param("ident") String ident);
 
     @Modifying
-    @Query(value = "delete from TransaksjonMapping tm where tm.bestillingId in " +
-            "(select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
-    int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+    Mono<Integer> deleteAllByIdent(String ident);
+
+    @Modifying
+    Mono<Integer> deleteByIdentAndMiljoeAndSystem(String ident, String miljoe, String system);
+
+    Mono<Integer> deleteByIdentAndMiljoeAndSystemAndBestillingId(String ident, String miljoe, String system, Long bestillingId);
+
+    @Modifying
+    @Query("""
+            delete from Transaksjon_Mapping tm
+            where tm.bestilling_id in
+            (select b.id from Bestilling b where b.gruppe_id = :gruppeId)
+            """)
+    Mono<Integer> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
     @Query(value = """
-            from TransaksjonMapping tm
+            select tm from transaksjon_mapping tm
             where tm.system = 'DOKARKIV'
-            AND tm.transaksjonId like '{%'
+            AND tm.transaksjon_Id like '{%'
             order by tm.id
             """)
-    Iterable<TransaksjonMapping> findAllByDokarkiv();
+    Flux<TransaksjonMapping> findAllByDokarkiv();
 
     @Query(value = """
-            from TransaksjonMapping tm
+            select tm from transaksjon_mapping tm
             where tm.system = 'HISTARK'
-            AND tm.transaksjonId like '{%'
+            AND tm.transaksjon_id like '{%'
             order by tm.id
             """)
-    Iterable<TransaksjonMapping> findAllByHistark();
+    Flux<TransaksjonMapping> findAllByHistark();
 }
