@@ -28,7 +28,7 @@ public class CronJobService {
     public void checkProdStatus() {
 
         log.info("Starter vasking av identer mot prod");
-        batchService.updateDatabaseWithProdStatus()
+        batchService.updateDatabaseWithProdStatus(null)
                         .subscribe(status -> log.info("Vasking av proddata avsluttet: {}", status.getStatus()));
     }
 }

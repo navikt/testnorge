@@ -27,10 +27,10 @@ public class BatchController {
                         ajourhold.getMelding() : ajourhold.getFeilmelding());
     }
 
-    @PostMapping("/startprodclean")
-    public Mono<String> startProdCleanBatch() {
+    @PostMapping(value = "/startprodclean")
+    public Mono<String> startProdCleanBatch(@RequestParam(required = false) Integer yearToClean) {
 
-        return batchService.updateDatabaseWithProdStatus()
+        return batchService.updateDatabaseWithProdStatus(yearToClean)
                 .map(ajourhold -> isNotBlank(ajourhold.getMelding()) ?
                         ajourhold.getMelding() : ajourhold.getFeilmelding());
     }

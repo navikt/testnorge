@@ -40,20 +40,23 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
     @Query(value = """
             select * from Personidentifikator i
                         where i.rekvireringsstatus = :rekvireringsstatus
-                        and i.foedselsdato > :foedtEtter
+                        and i.foedselsdato between :foedtEtter and :foedtFoer
                         and i.syntetisk = false
             """)
     Flux<Ident> findAllIkkeSyntetisk(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
-                                     @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
+                                     @Param("foedtEtter") LocalDate foedtEtter,
+                                     @Param("foedtFoer") LocalDate foedtFoer,
+                                     Pageable pageable);
 
     @Query(value = """
             select count(*) from Personidentifikator i
                         where i.rekvireringsstatus = :rekvireringsstatus
-                        and i.foedselsdato > :foedtEtter
+                        and i.foedselsdato between :foedtEtter and :foedtFoer
                         and i.syntetisk = false
             """)
     Mono<Integer> countAllIkkeSyntetisk(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
-                                        @Param("foedtEtter") LocalDate foedtEtter);
+                                        @Param("foedtEtter") LocalDate foedtEtter,
+                                        @Param("foedtFoer") LocalDate foedtFoer);
 
     Mono<Integer> countAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
             Rekvireringsstatus rekvireringsstatus,

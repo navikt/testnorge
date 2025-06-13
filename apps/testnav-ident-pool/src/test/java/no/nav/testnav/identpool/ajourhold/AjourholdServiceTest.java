@@ -83,9 +83,10 @@ class AjourholdServiceTest {
     @Test
     void getIdentsAndCheckProd_happyTest() {
 
-        when(identRepository.countAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class)))
+        when(identRepository.countAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class), any(LocalDate.class)))
                 .thenReturn(Mono.just(100));
-        when(identRepository.findAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class), any(PageRequest.class)))
+        when(identRepository.findAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class),
+                any(LocalDate.class), any(PageRequest.class)))
                 .thenReturn(Flux.just(prepIdent(FNR1, LEDIG)))
                 .thenReturn(Flux.just(prepIdent(FNR2, LEDIG)));
         when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
@@ -104,7 +105,7 @@ class AjourholdServiceTest {
                 .thenReturn(Mono.just(prepIdent(FNR1, I_BRUK)))
                 .thenReturn(Mono.just(prepIdent(FNR2, I_BRUK)));
 
-        ajourholdService.getIdentsAndCheckProd()
+        ajourholdService.getIdentsAndCheckProd(any(Integer.class))
                 .as(StepVerifier::create)
                 .assertNext(status -> assertThat(status, is("Oppdatert 2 identer som var allokert for prod.")))
                 .verifyComplete();

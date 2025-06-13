@@ -176,16 +176,17 @@ public class AjourholdService {
     /**
      * Fjerner FNR/DNR/BNR fra ident-pool-databasen som finnes i prod
      */
-    public Mono<String> getIdentsAndCheckProd() {
+    public Mono<String> getIdentsAndCheckProd(Integer yearToClean) {
 
-        return identRepository.countAllIkkeSyntetisk(LEDIG, FOEDT_ETTER)
+          return identRepository.countAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean), getFoedtFoer(yearToClean))
                 .doOnNext(count ->
                         log.info("Antall identer som er LEDIG i ident-pool: {}", count))
                 .filter(count -> count > 0)
                 .flatMap(count ->
                         Flux.range(0, (count / MAX_SIZE_TPS_QUEUE) + 1)
                                 .flatMap(i ->
-                                        identRepository.findAllIkkeSyntetisk(LEDIG, FOEDT_ETTER, PageRequest.of(i, MAX_SIZE_TPS_QUEUE)))
+                                        identRepository.findAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean),
+                                                getFoedtFoer(yearToClean), PageRequest.of(i, MAX_SIZE_TPS_QUEUE)))
                                 .map(Ident::getPersonidentifikator)
                                 .collectList()
                                 .flatMapMany(idents ->
@@ -202,5 +203,16 @@ public class AjourholdService {
                                 .doOnNext(usedIdents -> log.info("Oppdatert {} identer som er i bruk i prod, " +
                                         "men som var markert som LEDIG i ident-pool.", usedIdents)))
                 .map("Oppdatert %d identer som var allokert for prod."::formatted);
+    }
+
+    private static LocalDate getFoedtEtter(Integer yearToClean) {
+
+        return isNull(yearToClean) ? FOEDT_ETTER : LocalDate.of(yearToClean, 1, 1);
+    }
+
+    private static LocalDate getFoedtFoer(Integer yearToClean) {
+
+        return isNull(yearToClean) ? LocalDate.of(LocalDate.now().getYear(), 12, 31) :
+                LocalDate.of(yearToClean, 12, 31);
     }
 }

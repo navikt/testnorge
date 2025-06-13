@@ -31,10 +31,10 @@ public class BatchService {
                         ExceptionUtils.getStackTrace(error).substring(0, 1023)));
     }
 
-    public Mono<Ajourhold> updateDatabaseWithProdStatus() {
+    public Mono<Ajourhold> updateDatabaseWithProdStatus(Integer yearToClean) {
 
         return updateStatus(BatchStatus.CLEAN_STARTED)
-                .flatMap(ajourhold -> ajourholdService.getIdentsAndCheckProd())
+                .flatMap(ajourhold -> ajourholdService.getIdentsAndCheckProd(yearToClean))
                 .flatMap(melding -> updateStatus(BatchStatus.CLEAN_COMPLETED, melding, null))
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> updateStatus(BatchStatus.CLEAN_FAILED, null,

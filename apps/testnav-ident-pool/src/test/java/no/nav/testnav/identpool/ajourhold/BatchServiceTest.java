@@ -93,10 +93,10 @@ class BatchServiceTest {
         when(ajourholdRepository.save(any(Ajourhold.class)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.CLEAN_STARTED)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.CLEAN_COMPLETED)));
-        when(ajourholdService.getIdentsAndCheckProd())
+        when(ajourholdService.getIdentsAndCheckProd(any()))
                 .thenReturn(Mono.just("Ryddet 1 ident i produksjon"));
 
-        batchService.updateDatabaseWithProdStatus()
+        batchService.updateDatabaseWithProdStatus(any())
                 .as(StepVerifier::create)
                 .assertNext(ajourhold -> assertThat(ajourhold.getStatus(), Matchers.is(BatchStatus.CLEAN_COMPLETED)))
                 .verifyComplete();
@@ -112,13 +112,13 @@ class BatchServiceTest {
         when(ajourholdRepository.save(any(Ajourhold.class)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.CLEAN_STARTED)))
                 .thenReturn(Mono.just(prepareAjourhold(BatchStatus.CLEAN_FAILED)));
-        when(ajourholdService.getIdentsAndCheckProd())
+        when(ajourholdService.getIdentsAndCheckProd(null))
                 .thenThrow(new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR,
                         "Feil under generering av identer"
                 ));
 
-        batchService.updateDatabaseWithProdStatus()
+        batchService.updateDatabaseWithProdStatus(null)
                 .as(StepVerifier::create)
                 .assertNext(ajourhold -> assertThat(ajourhold.getStatus(), Matchers.is(BatchStatus.CLEAN_FAILED)))
                 .verifyComplete();
