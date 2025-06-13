@@ -28,5 +28,6 @@ public class RsTeamWithBrukere {
     private LocalDateTime opprettet;
     private RsBrukerUtenFavoritter opprettetAv;
 
+    @Builder.Default
     private Set<RsBrukerUtenFavoritter> brukere = new HashSet<>();
 }
