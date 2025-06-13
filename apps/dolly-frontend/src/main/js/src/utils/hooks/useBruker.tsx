@@ -28,6 +28,7 @@ type BrukerType = {
 	grupper: []
 	gjeldendeTeam?: {
 		id: string
+		brukerId: string
 		navn: string
 		beskrivelse: string
 	}

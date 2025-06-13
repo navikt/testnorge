@@ -23,9 +23,6 @@ export const BrukerDropdown = () => {
 	const { brukerTeams, mutate } = useBrukerTeams()
 	const gjeldendeTeam = currentBruker?.gjeldendeTeam
 
-	console.log('brukerTeams: ', brukerTeams) //TODO - SLETT MEG
-	console.log('currentBruker: ', currentBruker) //TODO - SLETT MEG
-
 	const handleTeamChange = (teamId: string) => {
 		DollyApi.setGjeldendeTeam(teamId)
 			.then(() => {
@@ -66,7 +63,7 @@ export const BrukerDropdown = () => {
 				}
 			>
 				{/*TODO: Blir det dobbelt opp med group naar ActionMenuWrapper wrapper alt i en group?*/}
-				<ActionMenu.Group label="Representasjon">
+				<ActionMenu.Group label="Bruker-/team-valg">
 					<ActionMenu.Item
 						onClick={handleFjernGjeldendeTeam}
 						style={{

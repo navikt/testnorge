@@ -1,4 +1,4 @@
-import { Box, Button, Table, Tag } from '@navikt/ds-react'
+import { Box, Button, Table } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { LeaveIcon, PencilWritingIcon, TrashIcon } from '@navikt/aksel-icons'
 import { TeamVisning } from '@/pages/teamOversikt/TeamVisning'
@@ -35,8 +35,14 @@ export default () => {
 		<>
 			<h1>Team-oversikt</h1>
 			<p>
-				Her finner du en oversikt over alle teamene du er med i. Du kan også opprette nye team eller
-				velge eksisterende team du vil bli med i.
+				Her finner du en oversikt over alle teamene du er med i. Et team er en gruppe Dolly-brukere
+				som samarbeider om de samme dataene. Du kan også opprette nye team eller velge eksisterende
+				team du vil bli med i.
+			</p>
+			<p style={{ marginBottom: '20px' }}>
+				I brukermenyen øverst til høyre kan du når som helst velge hvilket team du ønsker å
+				representere. Dette vil si at når du har valgt et team der, vil alle grupper, personer,
+				maler, osv. du oppretter tilhøre valgt team, og ikke deg selv.
 			</p>
 			<Box background="surface-default" padding="4">
 				<ErrorBoundary>
