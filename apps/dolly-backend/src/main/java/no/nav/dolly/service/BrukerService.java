@@ -36,10 +36,10 @@ public class BrukerService {
     private final GetUserInfo getUserInfo;
     private final TestgruppeRepository testgruppeRepository;
 
-    public Bruker fetchBruker(String brukerId) {
+    public Mono<Bruker> fetchBruker(String brukerId) {
 
         return brukerRepository.findBrukerByBrukerId(brukerId)
-                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
+                .switchIfEmpty(Mono.error(new NotFoundException("Bruker id: %s ikke funnet".formatted(brukerId))));
     }
 
     public Mono<Bruker> fetchOrCreateBruker(String brukerId) {
@@ -50,7 +50,7 @@ public class BrukerService {
                     .onErrorResume(NotFoundException.class, e -> createBruker());
         }
         try {
-            return Mono.just(fetchBruker(brukerId));
+            return fetchBruker(brukerId);
 
         } catch (NotFoundException e) {
             return createBruker();

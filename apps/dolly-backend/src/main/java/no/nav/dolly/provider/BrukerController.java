@@ -40,7 +40,8 @@ public class BrukerController {
     @GetMapping("/{brukerId}")
     @Transactional(readOnly = true)
     @Operation(description = "Hent Bruker med brukerId")
-    public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
+    public Mono<RsBrukerAndGruppeId> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
+
         Bruker bruker = brukerService.fetchBruker(brukerId);
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
