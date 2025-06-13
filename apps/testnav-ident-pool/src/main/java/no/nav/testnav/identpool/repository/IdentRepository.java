@@ -5,7 +5,6 @@ import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
@@ -25,9 +24,6 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
     Flux<Ident> findByPersonidentifikatorIn(List<String> personidentifikator);
 
     Flux<Ident> findByPersonidentifikatorIn(Set<String> idents);
-
-    @Modifying
-    Mono<Ident> save(Ident ident);
 
     Flux<Ident> findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
                                                                                        LocalDate to,

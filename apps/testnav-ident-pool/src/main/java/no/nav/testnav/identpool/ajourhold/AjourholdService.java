@@ -55,7 +55,7 @@ public class AjourholdService {
         }
 
         return yearsToGenerate
-                .flatMap(year -> Flux.merge(
+                .flatMap(year -> Flux.concat(
                                 checkAndGenerateForYear(year, Identtype.FNR, false),
                                 checkAndGenerateForYear(year, Identtype.FNR, true),
                                 checkAndGenerateForYear(year, Identtype.DNR, false),
