@@ -19,7 +19,7 @@ public class BatchController {
 
     private final BatchService batchService;
 
-    @PostMapping(value = "/startmining")
+    @PostMapping(value = "/start-mining")
     public Mono<String> startMiningBatch(@RequestParam(required = false) Integer yearToGenerate) {
 
         return batchService.startGeneratingIdents(yearToGenerate)
@@ -27,7 +27,7 @@ public class BatchController {
                         ajourhold.getMelding() : ajourhold.getFeilmelding());
     }
 
-    @PostMapping(value = "/startprodclean")
+    @PostMapping(value = "/start-prod-clean")
     public Mono<String> startProdCleanBatch(@RequestParam(required = false) Integer yearToClean) {
 
         return batchService.updateDatabaseWithProdStatus(yearToClean)
