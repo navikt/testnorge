@@ -49,20 +49,20 @@ public class Bruker implements Serializable {
     private Brukertype brukertype;
 
 //    @Transient
-    @Builder.Default
-    private List<String> grupper = new ArrayList<>();
+//    @Builder.Default
+//    private List<String> grupper = new ArrayList<>();
 
 //    @OneToMany
 //    @JoinColumn("opprettet_av")
-    @Builder.Default
-    private Set<Testgruppe> testgrupper = new HashSet<>();
+//    @Builder.Default
+//    private Set<Testgruppe> testgrupper = new HashSet<>();
 
 //    @ManyToMany(fetch = FetchType.EAGER)
-    @Builder.Default
+//    @Builder.Default
 //    @JoinTable("BRUKER_FAVORITTER",
 //            joinColumns = @JoinColumn("bruker_id"),
 //            inverseJoinColumns = @JoinColumn("gruppe_id"))
-    private Set<Testgruppe> favoritter = new HashSet<>();
+//    private Set<Testgruppe> favoritter = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

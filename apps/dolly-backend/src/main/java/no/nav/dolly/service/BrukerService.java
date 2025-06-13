@@ -16,9 +16,8 @@ import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
@@ -33,8 +32,9 @@ public class BrukerService {
     private final BrukerRepository brukerRepository;
     private final BrukerServiceConsumer brukerServiceConsumer;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
-    private final GetUserInfo getUserInfo;
     private final TestgruppeRepository testgruppeRepository;
+    private final GetUserInfo getUserInfo;
+    private final BrukerFavoritterRepository favoritterRepository;
 
     public Mono<Bruker> fetchBruker(String brukerId) {
 
@@ -46,8 +46,8 @@ public class BrukerService {
 
         if (isBlank(brukerId)) {
             return getAuthenticatedUserId.call()
-                    .map(this::fetchBruker)
-                    .onErrorResume(NotFoundException.class, e -> createBruker());
+                    .flatMap(this::fetchBruker)
+                    .onErrorResume(NotFoundException.class, error -> createBruker());
         }
         try {
             return fetchBruker(brukerId);
@@ -71,52 +71,51 @@ public class BrukerService {
 
     public Mono<Bruker> leggTilFavoritt(Long gruppeId) {
 
-        return Mono.just(fetchTestgruppe(gruppeId))
-                .map(gruppe -> getAuthenticatedUserId.call()
-                        .map(this::fetchBruker)
-                        .doOnNext(bruker -> gruppe.getFavorisertAv().add(bruker))
-                        .doOnNext(bruker -> bruker.getFavoritter().add(gruppe))
-                        .doOnNext(bruker -> brukerFavoritterRepository.save(BrukerFavoritter.builder()
-                                .id(BrukerFavoritter.BrukerFavoritterId.builder()
-                                        .brukerId(bruker.getId())
-                                        .gruppeId(gruppe.getId())
-                                        .build())
-                                .build())))
-                .flatMap(Mono::from);
-    }
-
-    public Mono<Bruker> fjernFavoritt(Long gruppeId) {
-
-        return Mono.just(fetchTestgruppe(gruppeId))
-                .map(gruppe -> getAuthenticatedUserId.call()
-                        .map(this::fetchBruker)
-                        .doOnNext(bruker -> bruker.getFavoritter().remove(gruppe))
-                        .doOnNext(bruker -> brukerFavoritterRepository.delete(
-                                BrukerFavoritter.builder()
+        return fetchTestgruppe(gruppeId)
+                .flatMap(gruppe -> getAuthenticatedUserId.call()
+                        .flatMap(this::fetchBruker)
+                        .flatMap(bruker -> favoritterRepository.save(BrukerFavoritter.builder()
                                         .id(BrukerFavoritter.BrukerFavoritterId.builder()
                                                 .brukerId(bruker.getId())
                                                 .gruppeId(gruppe.getId())
                                                 .build())
-                                        .build())))
-                .flatMap(Mono::from);
+                                        .build())
+                                .thenReturn(bruker)));
     }
 
-    public Mono<List<Bruker>> fetchBrukere() {
+    public Mono<Bruker> fjernFavoritt(Long gruppeId) {
+
+        return fetchTestgruppe(gruppeId)
+                .flatMap(gruppe -> getAuthenticatedUserId.call()
+                        .flatMap(this::fetchBruker)
+                        .flatMap(bruker -> favoritterRepository.delete(BrukerFavoritter.builder()
+                                        .id(BrukerFavoritter.BrukerFavoritterId.builder()
+                                                .brukerId(bruker.getId())
+                                                .gruppeId(gruppe.getId())
+                                                .build())
+                                        .build())
+                                .thenReturn(bruker)));
+    }
+
+
+    public Flux<Bruker> fetchBrukere() {
 
         return fetchOrCreateBruker()
-                .map(bruker -> Brukertype.AZURE == bruker.getBrukertype() ?
-                    Mono.just(brukerRepository.findAllByOrderById()) :
+                .flatMapMany(bruker -> Brukertype.AZURE == bruker.getBrukertype() ?
+                        brukerRepository.findAllByOrderById() :
                         brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .map(brukerRepository::findAllByBrukerIdInOrderByBrukernavn))
-                .flatMap(Mono::from);
+                                .map(TilgangDTO::getBrukere)
+                                .flatMapMany(brukerRepository::findAllByBrukerIdInOrderByBrukernavn));
     }
 
-    public void sletteBrukerFavoritterByGroupId(Long groupId) {
-        brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
+    public Mono<Integer> sletteBrukerFavoritterByGroupId(Long groupId) {
+
+        return brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
     }
 
-    private Testgruppe fetchTestgruppe(Long gruppeId) {
-        return testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+    private Mono<Testgruppe> fetchTestgruppe(Long gruppeId) {
+
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId)));
     }
 }

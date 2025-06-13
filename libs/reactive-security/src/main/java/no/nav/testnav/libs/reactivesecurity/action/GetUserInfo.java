@@ -8,7 +8,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.concurrent.Callable;
+
+import static java.util.Collections.emptyList;
 
 @Slf4j
 @Component
@@ -29,7 +32,8 @@ public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoEx
                                 (String) attrib.get("iss"),
                                 (String) attrib.get("name"),
                                 (String) attrib.get("preferred_username"),
-                                false);
+                                false,
+                                (List<String>) attrib.get("groups"));
 
                     } else if (authentication instanceof OAuth2AuthenticationToken oauth2AuthenticationToken) {
 
@@ -40,10 +44,12 @@ public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoEx
                                 (String) attrib.get("issuer"),
                                 (String) attrib.get(UserConstant.USER_CLAIM_USERNAME),
                                 "",
-                                true);
+                                true,
+                                emptyList());
                     } else {
 
-                        return new UserInfoExtended(null, null, null, null, null, false);
+                        return new UserInfoExtended(null, null, null,
+                                null, null, false, emptyList());
                     }
                 });
     }

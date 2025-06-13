@@ -15,4 +15,10 @@ public interface BrukerFavoritterRepository extends ReactiveCrudRepository<Bruke
             and bf.gruppe_id = :gruppeId
             """)
     Flux<Bruker> getAllByGruppeId(@Param("gruppeId") Long gruppeId);
+
+    @Query(""" 
+            select bf from bruker_favoritter bf
+            where bf.bruker_id = :brukerId
+            """)
+    Flux<BrukerFavoritter> getAllByBrukerId(@Param("brukerId") Long brukerId);
 }

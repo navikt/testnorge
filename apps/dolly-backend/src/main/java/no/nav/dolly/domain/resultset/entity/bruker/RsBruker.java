@@ -28,12 +28,5 @@ public class RsBruker {
     private String epost;
     private String navIdent;
     private List<String> grupper;
-    private List<RsTestgruppe> favoritter;
-
-    public List<RsTestgruppe> getFavoritter() {
-        if (isNull(favoritter)) {
-            favoritter = new ArrayList<>();
-        }
-        return favoritter;
-    }
+    private List<String> favoritter;
 }

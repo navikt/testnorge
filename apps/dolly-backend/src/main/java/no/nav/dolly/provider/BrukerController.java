@@ -8,7 +8,10 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.service.BrukerService;
+import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -35,6 +38,8 @@ public class BrukerController {
 
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
+    private final GetUserInfo getUserInfo;
+    private final BrukerFavoritterRepository brukerFavoritterRepository;
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
@@ -42,17 +47,26 @@ public class BrukerController {
     @Operation(description = "Hent Bruker med brukerId")
     public Mono<RsBrukerAndGruppeId> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
-        Bruker bruker = brukerService.fetchBruker(brukerId);
-        return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
+        return brukerService.fetchBruker(brukerId)
+                .map(bruker -> mapperFacade.map(bruker, RsBrukerAndGruppeId.class));
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
-    public Mono<RsBruker> getCurrentBruker() {
+    public Mono<RsBrukerAndGruppeId> getCurrentBruker() {
 
         return brukerService.fetchOrCreateBruker()
-                .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
+                .flatMap(bruker -> Mono.zip(Mono.just(bruker),
+                        brukerFavoritterRepository.getAllByBrukerId(bruker.getId())
+                                .collectList(),
+                        getUserInfo.call()))
+                .map(tuple -> {
+                    var context = MappingContextUtils.getMappingContext();
+                    context.setProperty("favoritter", tuple.getT2());
+                    context.setProperty("brukerInfo", tuple.getT3());
+                    return mapperFacade.map(tuple.getT1(), RsBrukerAndGruppeId.class, context);
+                });
     }
 
     @Transactional(readOnly = true)

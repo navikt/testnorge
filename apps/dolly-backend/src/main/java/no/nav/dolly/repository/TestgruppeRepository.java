@@ -38,4 +38,6 @@ public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe,
             "and b.bruker_Id in  (:brukere)
             """)
     Flux<Long> findAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere);
+
+    
 }
