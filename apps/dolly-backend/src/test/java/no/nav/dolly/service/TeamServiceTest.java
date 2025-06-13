@@ -129,7 +129,13 @@ class TeamServiceTest {
                 .beskrivelse("Updated Description")
                 .build();
 
+        var teamBruker = Bruker.builder()
+                .id(2L)
+                .brukernavn("Test Team")
+                .build();
+
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
+        when(brukerRepository.findBrukerById(team.getBrukerId())).thenReturn(Optional.of(teamBruker));
         when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(currentBruker);
         when(teamRepository.save(any(Team.class))).thenReturn(team);
 
@@ -158,13 +164,15 @@ class TeamServiceTest {
 
         assertThatThrownBy(() -> teamService.updateTeam(10L, new Team()))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Kan ikke endre en gruppe man ikke selv er medlem i");
+                .hasMessageContaining("Kan ikke utføre denne operasjonen på et team som brukeren ikke er medlem av");
 
         verify(teamRepository, never()).save(any());
     }
 
     @Test
     void deleteTeamById_shouldDeleteTeamAndTeamMembers() {
+        when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(currentBruker);
         doNothing().when(teamRepository).deleteById(10L);
         doNothing().when(teamBrukerRepository).deleteAllById_TeamId(10L);
 
@@ -175,14 +183,12 @@ class TeamServiceTest {
     }
 
     @Test
-    void addBrukerToTeam_shouldAddUserToTeam_whenCurrentUserIsTeamMember() {
+    void addBrukerToTeam_shouldAddUserToTeam_whenUserNotAlreadyMember() {
         var newMember = Bruker.builder()
                 .id(4L)
                 .brukerId("new_member")
                 .build();
 
-        when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(currentBruker);
         when(brukerRepository.findBrukerByBrukerId("new_member")).thenReturn(Optional.of(newMember));
         when(teamBrukerRepository.existsById(any())).thenReturn(false);
         when(teamBrukerRepository.save(any())).thenReturn(new TeamBruker());
@@ -193,70 +199,12 @@ class TeamServiceTest {
     }
 
     @Test
-    void addBrukerToTeam_shouldThrowException_whenCurrentUserNotTeamMember() {
-        var nonMember = Bruker.builder()
-                .id(3L)
-                .brukerId("non_member")
-                .build();
-
-        var newUser = Bruker.builder()
-                .id(4L)
-                .brukerId("new_user")
-                .build();
-
-        var teamWithoutCurrentUser = Team.builder()
-                .id(10L)
-                .brukere(Collections.emptySet())
-                .build();
-
-        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamWithoutCurrentUser));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(nonMember);
-        when(brukerRepository.findBrukerByBrukerId("new_user")).thenReturn(Optional.of(newUser));
-
-        assertThatThrownBy(() -> teamService.addBrukerToTeam(10L, "new_user"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Kan ikke legge til nytt gruppemedlem i en gruppe man ikke selv er medlem i");
-
-        verify(teamBrukerRepository, never()).save(any());
-    }
-
-    @Test
-    void removeBrukerFromTeam_shouldThrowException_whenUserIsNotTeamMember() {
-        var nonMember = Bruker.builder()
-                .id(3L)
-                .brukerId("non_member")
-                .build();
-
-        var memberToRemove = Bruker.builder()
-                .id(5L)
-                .brukerId("member_to_remove")
-                .build();
-
-        var teamWithoutCurrentUser = Team.builder()
-                .id(10L)
-                .brukere(Collections.emptySet())
-                .build();
-
-        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamWithoutCurrentUser));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(nonMember);
-        when(brukerRepository.findBrukerByBrukerId("member_to_remove")).thenReturn(Optional.of(memberToRemove));
-
-        assertThatThrownBy(() -> teamService.removeBrukerFromTeam(10L, "member_to_remove"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Kan ikke fjerne et gruppemedlem fra en gruppe man ikke selv er medlem i");
-
-        verify(teamBrukerRepository, never()).deleteById(any());
-    }
-
-    @Test
     void addBrukerToTeam_shouldThrowException_whenUserAlreadyTeamMember() {
         var existingMember = Bruker.builder()
                 .id(5L)
                 .brukerId("existing_member")
                 .build();
 
-        when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(currentBruker);
         when(brukerRepository.findBrukerByBrukerId("existing_member")).thenReturn(Optional.of(existingMember));
         when(teamBrukerRepository.existsById(any())).thenReturn(true);
 
@@ -303,7 +251,35 @@ class TeamServiceTest {
 
         assertThatThrownBy(() -> teamService.removeBrukerFromTeam(10L, "current_user"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Siste bruker i et team kan ikke fjerne seg selv");
+                .hasMessageContaining("Siste bruker i et team kan ikke fjerne seg selv, forsøk heller å slette teamet");
+
+        verify(teamBrukerRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void removeBrukerFromTeam_shouldThrowException_whenUserIsNotTeamMember() {
+        var nonMember = Bruker.builder()
+                .id(3L)
+                .brukerId("non_member")
+                .build();
+
+        var memberToRemove = Bruker.builder()
+                .id(5L)
+                .brukerId("member_to_remove")
+                .build();
+
+        var teamWithoutCurrentUser = Team.builder()
+                .id(10L)
+                .brukere(Collections.emptySet())
+                .build();
+
+        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamWithoutCurrentUser));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(nonMember);
+        when(brukerRepository.findBrukerByBrukerId("member_to_remove")).thenReturn(Optional.of(memberToRemove));
+
+        assertThatThrownBy(() -> teamService.removeBrukerFromTeam(10L, "member_to_remove"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Kan ikke utføre denne operasjonen på et team som brukeren ikke er medlem av");
 
         verify(teamBrukerRepository, never()).deleteById(any());
     }
