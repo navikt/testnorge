@@ -8,6 +8,7 @@ import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
@@ -17,14 +18,16 @@ import java.util.Set;
 
 public interface BestillingRepository extends ReactiveCrudRepository<Bestilling, Long> {
 
-    @Query(value = "select b.id, g.navn " +
-            "from Bestilling b " +
-            "join Gruppe g " +
-            "on b.gruppe_id = g.id " +
-            "where length(:id) > 0 " +
-            "and cast(b.id as VARCHAR) " +
-            "ilike :id fetch first 10 rows only")
-    List<RsBestillingFragment> findByIdContaining(String id);
+    @Query("""
+            select b.id, g.navn
+                        from Bestilling b
+                        join Gruppe g
+                        on b.gruppe_id = g.id
+                        where length(:id) > 0
+                        and cast(b.id as VARCHAR)
+                        ilike :id fetch first 10 rows only
+            """)
+    Flux<RsBestillingFragment> findByIdContaining(String id);
 
     @Query(value = "select b.id, g.navn " +
             "from Bestilling b " +
