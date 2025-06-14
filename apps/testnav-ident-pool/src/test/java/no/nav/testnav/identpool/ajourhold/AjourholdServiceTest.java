@@ -89,14 +89,15 @@ class AjourholdServiceTest {
                 .thenReturn(Flux.just(prepIdent(FNR1, LEDIG)))
                 .thenReturn(Flux.just(prepIdent(FNR2, LEDIG)));
         when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
-                .thenReturn(Flux.just(TpsStatusDTO.builder()
+                .thenReturn(Flux.just(
+                        TpsStatusDTO.builder()
                                 .ident(FNR1)
                                 .inUse(true)
-                        .build()))
-                        .thenReturn(Flux.just(TpsStatusDTO.builder()
+                                .build(),
+                        TpsStatusDTO.builder()
                                 .ident(FNR2)
                                 .inUse(true)
-                        .build()));
+                                .build()));
         when(identRepository.findByPersonidentifikator(anyString()))
                 .thenReturn(Mono.just(prepIdent(FNR1, LEDIG)))
                 .thenReturn(Mono.just(prepIdent(FNR2, LEDIG)));
