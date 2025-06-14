@@ -39,8 +39,8 @@ import static org.mockito.Mockito.when;
 class AjourholdComponentTest {
 
     private static final String BATCH_V1_BASEURL = "/api/v1/batch";
-    private static final String START_PRODCLEAN = "/startprodclean";
-    private static final String START_MINING = "/startmining";
+    private static final String START_PRODCLEAN = "/start-prod-clean";
+    private static final String START_MINING = "/start-mining";
 
     private static final String DB_FILE = "db/db-default-config.sql";
     private static final String PROD_CLEAN_STATUS = "Oppdatert 12 identer som var allokert for prod.";
