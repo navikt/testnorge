@@ -13,4 +13,9 @@ public class TpsStatusDTO {
 
     private String ident;
     private boolean inUse;
+
+    public boolean isAvailable() {
+
+        return !inUse;
+    }
 }

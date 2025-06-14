@@ -1,10 +1,8 @@
 package no.nav.testnav.identpool.util;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
-import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -20,9 +18,6 @@ import java.util.stream.IntStream;
 
 import static java.lang.Character.getNumericValue;
 import static no.nav.testnav.identpool.util.PersonidentUtil.generateFnr;
-import static no.nav.testnav.identpool.util.PersonidentUtil.getKjonn;
-import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
-import static no.nav.testnav.identpool.util.PersonidentUtil.toBirthdate;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @UtilityClass
@@ -69,20 +64,6 @@ public final class IdentGeneratorUtil {
             return index + 1;
         }
         return index;
-    }
-
-    public static Ident createIdent(String fnr, Rekvireringsstatus status, String rekvirertAv) {
-        Identtype identtype = PersonidentUtil.getIdentType(fnr);
-        return Ident.builder()
-                .finnesHosSkatt(false)
-                .personidentifikator(fnr)
-                .foedselsdato(toBirthdate(fnr))
-                .kjoenn(getKjonn(fnr))
-                .rekvireringsstatus(status)
-                .rekvirertAv(rekvirertAv)
-                .identtype(identtype)
-                .syntetisk(isSyntetisk(fnr))
-                .build();
     }
 
     private static List<String> generateFNumbers(LocalDate birthdate, boolean syntetisk) {

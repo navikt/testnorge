@@ -8,25 +8,20 @@ import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,10 +34,10 @@ class IdenterAvailServiceTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private IdentGeneratorService identGeneratorService;
+    private IdentRepository identRepository;
 
     @Mock
-    private IdentRepository identRepository;
+    private IdentGeneratorService identGeneratorService;
 
     @Mock
     private TpsMessagingConsumer tpsMessagingConsumer;
@@ -50,53 +45,64 @@ class IdenterAvailServiceTest {
     @InjectMocks
     private IdenterAvailService identerAvailService;
 
-    @Captor
-    private ArgumentCaptor<Set> argumentCaptor;
-
-    private HentIdenterRequest request;
-
-    private static TpsStatusDTO getTpsStatus(String ident, boolean inUse) {
-        return TpsStatusDTO.builder()
-                .ident(ident)
-                .inUse(inUse)
-                .build();
-    }
-
     private static Ident getIdent(String ident) {
         return Ident.builder()
                 .personidentifikator(ident)
                 .build();
     }
 
-    @BeforeEach
-    public void setup() {
-        request = HentIdenterRequest.builder()
+    @Test
+    void happyPathAvailSyntetisk_OK() {
+
+        var request = HentIdenterRequest.builder()
                 .antall(1)
                 .foedtEtter(LocalDate.of(1960, 1, 1))
                 .foedtFoer(LocalDate.of(2000, 12, 31))
                 .identtype(Identtype.FNR)
                 .kjoenn(Kjoenn.MANN)
-                .rekvirertAv("TPSF")
-                .syntetisk(false)
+                .rekvirertAv("tester")
+                .syntetisk(true)
                 .build();
         when(mapperFacade.map(request, HentIdenterRequest.class)).thenReturn(request);
+
+        when(identGeneratorService.genererIdenter(request))
+                .thenReturn(Set.of(IDENT_1, IDENT_2));
+        when(identRepository.findByPersonidentifikatorIn(anySet()))
+                .thenReturn(Flux.just(getIdent(IDENT_2)));
+
+        identerAvailService.generateAndCheckIdenter(request, 10)
+                .as(StepVerifier::create)
+                .assertNext(ident -> assertThat(ident, is(IDENT_1)))
+                .verifyComplete();
     }
 
     @Test
-    void happyPathAvail() {
-        when(identGeneratorService.genererIdenter(eq(request), any(Set.class)))
+    void happyPathAvailIkkeSyntetisk_OK() {
+
+        var request = HentIdenterRequest.builder()
+                .antall(1)
+                .foedtEtter(LocalDate.of(1960, 1, 1))
+                .foedtFoer(LocalDate.of(2000, 12, 31))
+                .identtype(Identtype.FNR)
+                .kjoenn(Kjoenn.MANN)
+                .rekvirertAv("tester")
+                .syntetisk(false)
+                .build();
+        when(mapperFacade.map(request, HentIdenterRequest.class)).thenReturn(request);
+
+        when(identGeneratorService.genererIdenter(request))
                 .thenReturn(Set.of(IDENT_1, IDENT_2));
         when(identRepository.findByPersonidentifikatorIn(anySet()))
-                .thenReturn(Set.of(getIdent(IDENT_2)));
-        when(tpsMessagingConsumer.getIdenterStatuser(argumentCaptor.capture()))
-                .thenReturn(Set.of(getTpsStatus(IDENT_1, false)));
+                .thenReturn(Flux.just(getIdent(IDENT_2)));
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
+                .thenReturn(Flux.just(TpsStatusDTO.builder()
+                        .ident(IDENT_1)
+                        .inUse(false)
+                        .build()));
 
-        Set<TpsStatusDTO> target = identerAvailService.generateAndCheckIdenter(request, 10);
-        assertThat(target, containsInAnyOrder(
-                getTpsStatus(IDENT_1, false)));
-
-        assertThat(argumentCaptor.getAllValues().size(), is(equalTo(1)));
-        assertThat(argumentCaptor.getAllValues(),
-                containsInAnyOrder(Set.of(IDENT_1)));
+        identerAvailService.generateAndCheckIdenter(request, 10)
+                .as(StepVerifier::create)
+                .assertNext(ident -> assertThat(ident, is(IDENT_1)))
+                .verifyComplete();
     }
 }

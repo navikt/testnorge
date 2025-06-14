@@ -1,8 +1,10 @@
 package no.nav.testnav.identpool.util;
 
 import lombok.experimental.UtilityClass;
+import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
+import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.exception.UgyldigPersonidentifikatorException;
 
 import java.time.LocalDate;
@@ -142,5 +144,18 @@ public final class PersonidentUtil {
 
     public static boolean isSyntetisk(String ident) {
         return ident.charAt(2) > '3';
+    }
+
+    public static Ident prepIdent(String fnr, Rekvireringsstatus status, String rekvirertAv) {
+        Identtype identtype = PersonidentUtil.getIdentType(fnr);
+        return Ident.builder()
+                .personidentifikator(fnr)
+                .foedselsdato(toBirthdate(fnr))
+                .kjoenn(getKjonn(fnr))
+                .rekvireringsstatus(status)
+                .rekvirertAv(rekvirertAv)
+                .identtype(identtype)
+                .syntetisk(isSyntetisk(fnr))
+                .build();
     }
 }
