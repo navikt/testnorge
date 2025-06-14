@@ -56,7 +56,7 @@ public class AjourholdService {
         }
 
         return yearsToGenerate
-                .delayElements(Duration.ofMillis(10000))
+                .delayElements(Duration.ofMillis(5000))
                 .flatMap(year -> Flux.merge(
                                 checkAndGenerateForYear(year, Identtype.FNR, false),
                                 checkAndGenerateForYear(year, Identtype.FNR, true),
