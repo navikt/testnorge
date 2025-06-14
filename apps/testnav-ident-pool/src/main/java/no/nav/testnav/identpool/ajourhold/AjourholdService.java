@@ -9,7 +9,6 @@ import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.service.IdentGeneratorService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -180,31 +180,32 @@ public class AjourholdService {
      */
     public Mono<String> getIdentsAndCheckProd(Integer yearToClean) {
 
+        var counter = new AtomicInteger(0);
         return identRepository.countAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean), getFoedtFoer(yearToClean))
-                .doOnNext(count ->
-                        log.info("Antall identer som er LEDIG i ident-pool: {}", count))
+                .doOnNext(count -> log.info("Antall identer som er LEDIG i ident-pool: {}", count))
                 .filter(count -> count > 0)
-                .flatMap(count ->
-                        Flux.range(0, (count / MAX_SIZE_TPS_QUEUE) + 1)
-                                .delayElements(Duration.ofMillis(100))
-                                .flatMap(i ->
-                                        identRepository.findAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean),
-                                                        getFoedtFoer(yearToClean), PageRequest.of(i, MAX_SIZE_TPS_QUEUE))
-                                                .map(Ident::getPersonidentifikator)
-                                                .collectList()
-                                                .flatMapMany(idents ->
-                                                        tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents))))
-                                .filter(TpsStatusDTO::isInUse)
-                                .map(TpsStatusDTO::getIdent)
-                                .flatMap(usedIdent -> identRepository.findByPersonidentifikator(usedIdent)
-                                        .flatMap(ident -> {
-                                            ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
-                                            ident.setRekvirertAv("TPS-PROD");
-                                            return identRepository.save(ident);
-                                        }))
-                                .count()
-                                .doOnNext(usedIdents -> log.info("Oppdatert {} identer som er i bruk i prod, " +
-                                        "men som var markert som LEDIG i ident-pool.", usedIdents)))
+                .flatMapMany(count -> identRepository.findAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean),
+                        getFoedtFoer(yearToClean)))
+                .map(Ident::getPersonidentifikator)
+                .buffer(MAX_SIZE_TPS_QUEUE)
+                .delayElements(Duration.ofMillis(100))
+                .flatMap(idents -> tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents)))
+                .doOnNext(ident -> {
+                    if (counter.incrementAndGet() % 10000 == 0) {
+                        log.info("Hentet {} identer fra TPS for sjekk av prod-miljø.", counter.get());
+                    }
+                })
+                .filter(TpsStatusDTO::isInUse)
+                .map(TpsStatusDTO::getIdent)
+                .flatMap(usedIdent -> identRepository.findByPersonidentifikator(usedIdent)
+                        .flatMap(ident -> {
+                            ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
+                            ident.setRekvirertAv("TPS-PROD");
+                            return identRepository.save(ident);
+                        }))
+                .count()
+                .doOnNext(usedIdents -> log.info("Oppdatert {} identer som er i bruk i prod, " +
+                        "men som var markert som LEDIG i ident-pool.", usedIdents))
                 .map("Oppdatert %d identer som var allokert for prod."::formatted);
     }
 

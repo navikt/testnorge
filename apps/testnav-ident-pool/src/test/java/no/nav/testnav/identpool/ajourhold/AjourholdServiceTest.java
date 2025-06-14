@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -86,7 +85,7 @@ class AjourholdServiceTest {
         when(identRepository.countAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class), any(LocalDate.class)))
                 .thenReturn(Mono.just(100));
         when(identRepository.findAllIkkeSyntetisk(eq(LEDIG), any(LocalDate.class),
-                any(LocalDate.class), any(PageRequest.class)))
+                any(LocalDate.class)))
                 .thenReturn(Flux.just(prepIdent(FNR1, LEDIG)))
                 .thenReturn(Flux.just(prepIdent(FNR2, LEDIG)));
         when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))

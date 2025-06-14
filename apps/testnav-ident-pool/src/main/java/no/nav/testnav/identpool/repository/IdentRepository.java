@@ -41,8 +41,7 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
             """)
     Flux<Ident> findAllIkkeSyntetisk(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
                                      @Param("foedtEtter") LocalDate foedtEtter,
-                                     @Param("foedtFoer") LocalDate foedtFoer,
-                                     Pageable pageable);
+                                     @Param("foedtFoer") LocalDate foedtFoer);
 
     @Query(value = """
             select count(*) from Personidentifikator i
