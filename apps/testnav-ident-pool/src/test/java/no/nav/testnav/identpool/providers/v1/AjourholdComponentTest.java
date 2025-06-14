@@ -109,7 +109,6 @@ class AjourholdComponentTest {
                 .expectBody(String.class)
                 .isEqualTo(PROD_CLEAN_STATUS);
 
-
         ajourholdRepository.findAll()
                 .as(StepVerifier::create)
                 .assertNext(ajourhold -> assertThat(ajourhold.getStatus(), is(BatchStatus.CLEAN_STARTED)))

@@ -93,8 +93,8 @@ class AjourholdServiceTest {
                 .thenReturn(Flux.just(TpsStatusDTO.builder()
                                 .ident(FNR1)
                                 .inUse(true)
-                        .build(),
-                        TpsStatusDTO.builder()
+                        .build()))
+                        .thenReturn(Flux.just(TpsStatusDTO.builder()
                                 .ident(FNR2)
                                 .inUse(true)
                         .build()));

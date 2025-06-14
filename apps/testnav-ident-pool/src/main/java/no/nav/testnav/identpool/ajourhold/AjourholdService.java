@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -55,7 +56,8 @@ public class AjourholdService {
         }
 
         return yearsToGenerate
-                .flatMap(year -> Flux.concat(
+                .delayElements(Duration.ofMillis(10000))
+                .flatMap(year -> Flux.merge(
                                 checkAndGenerateForYear(year, Identtype.FNR, false),
                                 checkAndGenerateForYear(year, Identtype.FNR, true),
                                 checkAndGenerateForYear(year, Identtype.DNR, false),
@@ -178,19 +180,20 @@ public class AjourholdService {
      */
     public Mono<String> getIdentsAndCheckProd(Integer yearToClean) {
 
-          return identRepository.countAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean), getFoedtFoer(yearToClean))
+        return identRepository.countAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean), getFoedtFoer(yearToClean))
                 .doOnNext(count ->
                         log.info("Antall identer som er LEDIG i ident-pool: {}", count))
                 .filter(count -> count > 0)
                 .flatMap(count ->
                         Flux.range(0, (count / MAX_SIZE_TPS_QUEUE) + 1)
+                                .delayElements(Duration.ofMillis(100))
                                 .flatMap(i ->
                                         identRepository.findAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean),
-                                                getFoedtFoer(yearToClean), PageRequest.of(i, MAX_SIZE_TPS_QUEUE)))
-                                .map(Ident::getPersonidentifikator)
-                                .collectList()
-                                .flatMapMany(idents ->
-                                        tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents)))
+                                                        getFoedtFoer(yearToClean), PageRequest.of(i, MAX_SIZE_TPS_QUEUE))
+                                                .map(Ident::getPersonidentifikator)
+                                                .collectList()
+                                                .flatMapMany(idents ->
+                                                        tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents))))
                                 .filter(TpsStatusDTO::isInUse)
                                 .map(TpsStatusDTO::getIdent)
                                 .flatMap(usedIdent -> identRepository.findByPersonidentifikator(usedIdent)
