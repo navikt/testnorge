@@ -2,7 +2,6 @@ package no.nav.dolly.plugins;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
-import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.Property;
@@ -27,42 +26,10 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
 
     @InputDirectory
     @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract DirectoryProperty getProjectDirectory();
-
-    @InputDirectory
-    @PathSensitive(PathSensitivity.RELATIVE)
     public abstract DirectoryProperty getRootDirectory();
 
     @Input
     public abstract SetProperty<String> getOurLibraryNames();
-
-    @InputFiles
-    @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract ConfigurableFileCollection getConsumedMainResources();
-
-    @InputFiles
-    @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract ConfigurableFileCollection getConsumedTestResources();
-
-    @InputFiles
-    @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract ConfigurableFileCollection getCompiledJavaOutputs();
-
-    @InputFiles
-    @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract ConfigurableFileCollection getCompiledTestOutputs();
-
-    @InputFiles
-    @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract ConfigurableFileCollection getTestTaskOutputs();
-
-    @InputFile
-    @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract org.gradle.api.file.RegularFileProperty getBootJarFile();
-
-    @InputFile
-    @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract org.gradle.api.file.RegularFileProperty getJarFile();
 
     @TaskAction
     public void performChecks() {
@@ -133,9 +100,9 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
 
         var workflowFile = findGitHubActionsWorkflowFile();
         if (workflowFile == null) {
-            var expected = getProjectDirectory()
+            var expected = getRootDirectory()
                     .get()
-                    .dir("../../.github/workflows")
+                    .dir(".github/workflows")
                     .getAsFile()
                     .getAbsolutePath();
             log.error("No app.{}.yml or proxy.{}.yml workflow found in {}}", getProjectName().get(), getProjectName().get(), expected);
@@ -145,26 +112,26 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
         try {
             var workflow = getGitHubActionsWorkflowFileContents(workflowFile);
             if (workflow == null) {
-                log.warn("Workflow ../../.github/workflows/{} is empty", workflowFile.getName());
+                log.warn("Workflow {} is empty", workflowFile.getName());
                 return true;
             }
             if (!workflow.containsKey("on")) {
-                log.warn("Workflow ../../.github/workflows/{} does not have any 'on:' trigger configuration", workflowFile.getName());
+                log.warn("Workflow {} does not have any 'on:' trigger configuration", workflowFile.getName());
                 return true;
             }
 
             var triggerPaths = resolveGitHubActionsWorkflowTriggerPaths(workflow);
             if (triggerPaths.isEmpty()) {
-                log.warn("Workflow ../../.github/workflows/{} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
+                log.warn("Workflow {} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
                 return false; // Log a warning, but don't fail the build. It might be intentionally set to only build manually.
             }
             return verifyTriggers(log, getProjectName().get(), workflowFile.getName(), libraryNames, triggerPaths);
 
         } catch (IOException e) {
-            log.error("Error reading workflow file ../../.github/workflows/{}", workflowFile.getName(), e);
+            log.error("Error reading workflow file {}", workflowFile.getName(), e);
             return true;
         } catch (ClassCastException e) {
-            log.error("Error parsing workflow file ../../.github/workflows/{}", workflowFile.getName(), e);
+            log.error("Error parsing workflow file {}", workflowFile.getName(), e);
             return true;
         }
 
@@ -172,7 +139,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
 
     private File findGitHubActionsWorkflowFile() {
 
-        var workflowDir = getProjectDirectory()
+        var workflowDir = getRootDirectory()
                 .get()
                 .dir("../../.github/workflows")
                 .getAsFile()
