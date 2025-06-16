@@ -43,7 +43,8 @@ public class DollyBuildValidationPlugin implements Plugin<Project> {
                                 "processResources",
                                 "processTestResources",
                                 "wsImport1",
-                                "xjcGenerate"
+                                "xjcGenerate",
+                                "xjcGenerateTest"
                         )
                         .forEach(optionalTaskName -> project
                                 .getTasks()
