@@ -23,8 +23,6 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - "https://dolly.ekstern.dev.nav.no/login/oauth2/code/aad"
   replicas:
     min: 1
     max: 2

@@ -14,9 +14,6 @@ spec:
     application:
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - "https://testnav-tps-messaging.ekstern.dev.nav.no/login/oauth2/code/aad"
-        - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c # Dolly team

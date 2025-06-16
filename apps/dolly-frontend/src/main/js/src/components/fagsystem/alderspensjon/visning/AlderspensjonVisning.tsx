@@ -28,8 +28,8 @@ const DataVisning = ({ data, miljo }) => {
 		<>
 			{!vedtakAP && !loading && (
 				<StyledAlert variant={'warning'} size={'small'}>
-					Kunne ikke hente vedtaksstatus for person. Opprettelse av alderspensjon har sannsynligvis
-					feilet.
+					Kunne ikke hente vedtaksstatus for person. Dette skyldes enten at vedtaksstatus ikke er
+					klar ennå, eller at opprettelse av alderspensjon har feilet.
 				</StyledAlert>
 			)}
 			<div className="person-visning_content">

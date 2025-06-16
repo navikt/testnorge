@@ -128,7 +128,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 						>
 							GJENOPPRETT
 						</Button>
-						{!erLaast && (
+						{gruppe.erEierAvGruppe && !erLaast && (
 							<LaasButton gruppeId={gruppe.id} action={laasGruppe} loading={isLockingGruppe}>
 								Er du sikker på at du vil låse denne gruppen? <br />
 								En gruppe som er låst kan ikke endres, og blir heller ikke <br />
@@ -137,7 +137,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 								dersom du ønsker å låse den opp igjen.
 							</LaasButton>
 						)}
-						{!erLaast && (
+						{gruppe.erEierAvGruppe && !erLaast && (
 							<SlettButton
 								gruppeId={gruppe.id}
 								action={deleteGruppe}

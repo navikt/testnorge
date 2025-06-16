@@ -465,6 +465,7 @@ const selectOptions = {
 		{ value: 'AO11', label: 'Grisen (AO11)' },
 		{ value: 'HJELPEMIDLER', label: 'Hjelpemidler' },
 		{ value: 'IT01', label: 'Infotrygd (IT01)' },
+		{ value: 'KELVIN', label: 'Kelvin' },
 		{ value: 'KONT', label: 'Kontantstøtte (KONT)' },
 		{ value: 'FS38', label: 'Melosys (FS38)' },
 		{ value: 'OMSORGSPENGER', label: 'Omsorgspenger' },

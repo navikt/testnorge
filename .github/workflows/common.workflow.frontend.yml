@@ -114,7 +114,7 @@ jobs:
           java-version: 21
       - name: "Gradle"
         id: gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
         env:

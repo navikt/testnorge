@@ -22,6 +22,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useReduxSelector } from '@/utils/hooks/useRedux'
 import { useForm } from 'react-hook-form'
 import OrganisasjonHeader from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeader'
+import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
 
 enum BestillingType {
 	NY = 'NY',
@@ -39,6 +40,8 @@ export default () => {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const searchStr = useReduxSelector((state) => state.search)
 	const formMethods = useForm({ mode: 'onBlur' })
+	const searchInputRef = React.useRef(null)
+	const shortcutKey = useSearchHotkey(searchInputRef)
 
 	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
@@ -122,7 +125,13 @@ export default () => {
 						</ToggleGroup.Item>
 					</ToggleGroup>
 
-					<SearchField placeholder={searchfieldPlaceholderSelector()} setText={undefined} />
+					<SearchField
+						style={{ width: '280px', marginRight: '-79px' }}
+						shortcutKey={shortcutKey}
+						placeholder={searchfieldPlaceholderSelector()}
+						setText={undefined}
+						ref={searchInputRef}
+					/>
 				</div>
 
 				{visning === VISNING_ORGANISASJONER &&
