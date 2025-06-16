@@ -1,4 +1,4 @@
-import { Box, Button, Table } from '@navikt/ds-react'
+import { Alert, Box, Button, Table } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { LeaveIcon, PencilWritingIcon, TrashIcon } from '@navikt/aksel-icons'
 import { TeamVisning } from '@/pages/teamOversikt/TeamVisning'
@@ -48,6 +48,11 @@ export default () => {
 				<ErrorBoundary>
 					{loading ? (
 						<Loading label="Laster team ..." />
+					) : brukerTeams?.length < 1 ? (
+						<Alert variant="info" size="small">
+							Du er ikke medlem av noen team. Bli med i et eksisterende team eller opprett ditt
+							eget.
+						</Alert>
 					) : (
 						<Table>
 							<Table.Header>
