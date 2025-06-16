@@ -68,14 +68,14 @@ public class DatabaseService {
 
         return nonNull(request.getKjoenn()) ?
 
-                identRepository.findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+                identRepository.findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetweenOrderByFoedselsdato(
                         Rekvireringsstatus.LEDIG, request.getIdenttype(),
                         isTrue(request.getSyntetisk()), request.getKjoenn(),
                         request.getFoedtEtter(), request.getFoedtFoer(), page)
 
                 :
 
-                identRepository.findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+                identRepository.findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetweenOrderByFoedselsdato(
                         Rekvireringsstatus.LEDIG, request.getIdenttype(),
                         isTrue(request.getSyntetisk()),
                         request.getFoedtEtter(), request.getFoedtFoer(), page);

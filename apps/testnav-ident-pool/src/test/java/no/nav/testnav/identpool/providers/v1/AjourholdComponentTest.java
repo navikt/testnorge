@@ -82,6 +82,7 @@ class AjourholdComponentTest {
                 .block();
 
         identRepository.deleteAll()
+                .collectList()
                 .block();
 
         var dbFile = readSqlFile();

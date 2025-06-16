@@ -10,7 +10,6 @@ import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -88,10 +87,10 @@ class IdentpoolControllerComponentTest {
     void clearDatabase() {
 
         identRepository.deleteAll()
+                .collectList()
                 .block();
     }
 
-    @Order(4)
     @Test
     void lesFraDatabase_LEDIG() {
 
@@ -105,7 +104,6 @@ class IdentpoolControllerComponentTest {
                 .isEqualTo(createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10));
     }
 
-    @Order(5)
     @Test
     void lesFraDatabase_IBRUK() {
 
@@ -119,7 +117,6 @@ class IdentpoolControllerComponentTest {
                 .isEqualTo(createIdentEntity(Identtype.FNR, FNR_IBRUK, Rekvireringsstatus.I_BRUK, 11));
     }
 
-    @Order(6)
     @Test
     void hentLedigFnr() {
 
@@ -136,7 +133,6 @@ class IdentpoolControllerComponentTest {
                 .json("['" + FNR_LEDIG + "']");
     }
 
-    @Order(7)
     @Test
     void hentLedigDnr() {
 
@@ -153,7 +149,6 @@ class IdentpoolControllerComponentTest {
                 .json("['" + DNR_LEDIG + "']");
     }
 
-    @Order(8)
     @Test
     void hentFnrSomIkkeErIDatabase() {
 
@@ -177,7 +172,6 @@ class IdentpoolControllerComponentTest {
                 .json("[\"" + fnr1 + "\",\"" + fnr2 + "\"]");
     }
 
-    @Order(9)
     @Test
     void opprettNyeIdenterSjekkSluttstatus() {
 
@@ -213,7 +207,6 @@ class IdentpoolControllerComponentTest {
                 .verifyComplete();
     }
 
-    @Order(10)
     @Test
     void hentFlereIdenterEnnDetErMuligAaLevere() {
 
@@ -237,7 +230,6 @@ class IdentpoolControllerComponentTest {
                         "fødtEtter 1900-01-01, fødtFør 1900-01-01, syntetisk false -- forsøk å bestille med andre kriterier.");
     }
 
-    @Order(11)
     @Test
     void skalFeileNaarUgyldigIdenttypeBrukes() {
 
@@ -255,7 +247,6 @@ class IdentpoolControllerComponentTest {
                 .isEqualTo("400 BAD_REQUEST \"Failed to read HTTP message\"");
     }
 
-    @Order(12)
     @Test
     void prodsjekkIdent_IBRUK() {
 
@@ -273,7 +264,6 @@ class IdentpoolControllerComponentTest {
                 .json("[{\"ident\":\"" + FNR_IBRUK + "\",\"inUse\":true,\"available\":false}]");
     }
 
-    @Order(13)
     @Test
     void prodsjekkIdent_LEDIG() {
 
@@ -291,7 +281,6 @@ class IdentpoolControllerComponentTest {
                 .json("[{\"ident\":\"" + FNR_LEDIG + "\",\"inUse\":false,\"available\":true}]");
     }
 
-    @Order(14)
     @Test
     void frigjoerIdent_OK() {
 
@@ -315,7 +304,6 @@ class IdentpoolControllerComponentTest {
                 .verifyComplete();
     }
 
-    @Order(15)
     @Test
     void sjekkLedigeMellomAar_OK() {
 

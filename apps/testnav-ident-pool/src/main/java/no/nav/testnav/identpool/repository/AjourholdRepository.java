@@ -1,8 +1,8 @@
 package no.nav.testnav.identpool.repository;
 
 import no.nav.testnav.identpool.domain.Ajourhold;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
-public interface AjourholdRepository extends R2dbcRepository<Ajourhold, Long> {
+public interface AjourholdRepository extends ReactiveCrudRepository<Ajourhold, Long> {
 
 }

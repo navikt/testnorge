@@ -6,8 +6,8 @@ import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -15,7 +15,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-public interface IdentRepository extends R2dbcRepository<Ident, Long> {
+public interface IdentRepository extends ReactiveSortingRepository<Ident, Long> {
+
+    Mono<Ident> save(Ident ident);
+
+    Flux<Ident> saveAll(List<Ident> ident);
+
+    Flux<Ident> deleteAll();
+
+    Flux<Ident> findAll();
 
     Mono<Boolean> existsByPersonidentifikator(String identifikator);
 
@@ -68,7 +76,7 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
             LocalDate foedtEtter,
             LocalDate foedtFoer);
 
-    Flux<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetween(
+    Flux<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndFoedselsdatoBetweenOrderByFoedselsdato(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,
             Boolean syntetisk,
@@ -76,7 +84,7 @@ public interface IdentRepository extends R2dbcRepository<Ident, Long> {
             LocalDate foedtFoer,
             Pageable pageable);
 
-    Flux<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetween(
+    Flux<Ident> findAllByRekvireringsstatusAndIdenttypeAndSyntetiskAndKjoennAndFoedselsdatoBetweenOrderByFoedselsdato(
             Rekvireringsstatus rekvireringsstatus,
             Identtype identtype,
             Boolean syntetisk,
