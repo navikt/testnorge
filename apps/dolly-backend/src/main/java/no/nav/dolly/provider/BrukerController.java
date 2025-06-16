@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -45,37 +44,33 @@ public class BrukerController {
     @GetMapping("/{brukerId}")
     @Transactional(readOnly = true)
     @Operation(description = "Hent Bruker med brukerId")
-    public Mono<RsBrukerAndGruppeId> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
+    public Mono<RsBruker> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
         return brukerService.fetchBruker(brukerId)
-                .map(bruker -> mapperFacade.map(bruker, RsBrukerAndGruppeId.class));
+                .flatMap(bruker -> getFavoritter(bruker, RsBruker.class));
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
-    public Mono<RsBrukerAndGruppeId> getCurrentBruker() {
+    public Mono<RsBrukerAndClaims> getCurrentBruker() {
 
         return brukerService.fetchOrCreateBruker()
-                .flatMap(bruker -> Mono.zip(Mono.just(bruker),
-                        brukerFavoritterRepository.getAllByBrukerId(bruker.getId())
-                                .collectList(),
-                        getUserInfo.call()))
-                .map(tuple -> {
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty("favoritter", tuple.getT2());
-                    context.setProperty("brukerInfo", tuple.getT3());
-                    return mapperFacade.map(tuple.getT1(), RsBrukerAndGruppeId.class, context);
-                });
+                .flatMap(bruker -> getFavoritter(bruker, RsBrukerAndClaims.class));
     }
 
     @Transactional(readOnly = true)
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
-    public Mono<List<RsBrukerAndGruppeId>> getAllBrukere() {
+    public Flux<RsBruker> getAllBrukere() {
 
         return brukerService.fetchBrukere()
-                .map(brukere -> mapperFacade.mapAsList(brukere, RsBrukerAndGruppeId.class));
+                .flatMap(bruker -> brukerFavoritterRepository.getAllByBrukerId(bruker.getId())
+                        .map(favoritter -> {
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty("favoritter", favoritter);
+                            return mapperFacade.map(bruker, RsBruker.class, context);
+                        }));
     }
 
     @Transactional
@@ -96,5 +91,19 @@ public class BrukerController {
 
         return brukerService.fjernFavoritt(request.getGruppeId())
                 .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
+    }
+
+    private <T> Mono<T> getFavoritter(Bruker bruker, Class<T> clazz) {
+
+        return Mono.zip(reactor.core.publisher.Mono.just(bruker),
+                        brukerFavoritterRepository.getAllByBrukerId(bruker.getId())
+                                .collectList(),
+                        getUserInfo.call())
+                .map(tuple -> {
+                    var context = MappingContextUtils.getMappingContext();
+                    context.setProperty("favoritter", tuple.getT2());
+                    context.setProperty("brukerInfo", tuple.getT3());
+                    return mapperFacade.map(tuple.getT1(), clazz, context);
+                });
     }
 }

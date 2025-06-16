@@ -4,7 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.provider.BrukerController;
 import no.nav.dolly.service.BrukerService;
@@ -43,13 +43,13 @@ class BrukerControllerTest {
 
     @Test
     void getBrukerByBrukerId() {
-        RsBrukerAndGruppeId bruker = RsBrukerAndGruppeId.builder().brukerId("brukerId").build();
+        RsBrukerAndClaims bruker = RsBrukerAndClaims.builder().brukerId("brukerId").build();
         Bruker b = Bruker.builder().build();
 
         when(brukerService.fetchBruker("brukerId")).thenReturn(b);
-        when(mapperFacade.map(b, RsBrukerAndGruppeId.class)).thenReturn(bruker);
+        when(mapperFacade.map(b, RsBrukerAndClaims.class)).thenReturn(bruker);
 
-        RsBrukerAndGruppeId res = controller.getBrukerBybrukerId("brukerId");
+        RsBrukerAndClaims res = controller.getBrukerBybrukerId("brukerId");
 
         assertThat(res.getBrukerId(), is("brukerId"));
     }
