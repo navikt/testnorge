@@ -14,6 +14,11 @@ import { ActionMenuWrapper, DropdownStyledIcon, DropdownStyledLink } from './Act
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 import { DollyApi } from '@/service/Api'
 import dollyTeam from '@/assets/img/dollyTeam.png'
+import { teamVarslingLocalStorageKey } from '@/components/layout/header/TeamVarsel'
+
+//TODO: Fiks Playwright-tester som feiler
+
+//TODO: Test litt mer, rydd opp, push til dev
 
 export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
@@ -34,6 +39,7 @@ export const BrukerDropdown = () => {
 	}
 
 	const handleFjernGjeldendeTeam = () => {
+		localStorage.removeItem(teamVarslingLocalStorageKey)
 		DollyApi.fjernGjeldendeTeam()
 			.then(() => {
 				mutate()
