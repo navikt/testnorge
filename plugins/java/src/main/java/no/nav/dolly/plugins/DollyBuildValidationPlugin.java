@@ -37,15 +37,14 @@ public class DollyBuildValidationPlugin implements Plugin<Project> {
                     task.getOurLibraryNames().set(libraries);
                 });
 
-        // Set dependencies between build tasks and dollyValidation.
+        // Setting up tasks that depends on dollyValidation.
         project
                 .getPluginManager()
                 .withPlugin("java", javaPlugin -> {
                     var tasks = project.getTasks();
-                    tasks.named("build").configure(task -> task.dependsOn(dollyValidationTaskProvider));
+                    tasks.named("compileJava").configure(task -> task.dependsOn(dollyValidationTaskProvider));
                     tasks.named("processResources").configure(task -> task.dependsOn(dollyValidationTaskProvider));
                     tasks.named("processTestResources").configure(task -> task.dependsOn(dollyValidationTaskProvider));
-                    tasks.named("compileJava").configure(task -> task.dependsOn(dollyValidationTaskProvider));
                 });
 
     }
