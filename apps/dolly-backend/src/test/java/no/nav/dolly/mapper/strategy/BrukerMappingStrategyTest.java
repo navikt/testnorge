@@ -63,4 +63,41 @@ class BrukerMappingStrategyTest {
             assertThat(rsBruker.getFavoritter().getFirst().getId(), is(2L));
         }
     }
+
+    @Test
+    void mapBrukerWithAllFields() {
+        try (var mocked = Mockito.mockStatic(CurrentAuthentication.class)) {
+            var mockBruker = new Bruker();
+
+            var bruker = Bruker.builder()
+                    .brukerId("ident123")
+                    .epost("test@nav.no")
+                    .brukertype(Bruker.Brukertype.AZURE)
+                    .favoritter(new HashSet<>(singletonList(
+                            Testgruppe.builder()
+                                    .id(2L)
+                                    .navn("Test Gruppe")
+                                    .hensikt("Testing")
+                                    .testidenter(List.of(TestidentBuilder.builder()
+                                            .ident("1")
+                                            .build()
+                                            .convertToRealTestident()))
+                                    .build())))
+                    .build();
+
+            mocked.when(() -> CurrentAuthentication.getAuthUser(any(GetUserInfo.class))).thenReturn(mockBruker);
+            mocked.when(() -> brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(bruker);
+
+            var rsBruker = mapper.map(bruker, RsBruker.class);
+
+            assertThat(rsBruker.getBrukerId(), is("ident123"));
+            assertThat(rsBruker.getEpost(), is("test@nav.no"));
+            assertThat(rsBruker.getBrukertype(), is(Bruker.Brukertype.AZURE));
+
+            assertThat(rsBruker.getFavoritter().size(), is(1));
+            assertThat(rsBruker.getFavoritter().getFirst().getId(), is(2L));
+            assertThat(rsBruker.getFavoritter().getFirst().getNavn(), is("Test Gruppe"));
+            assertThat(rsBruker.getFavoritter().getFirst().getHensikt(), is("Testing"));
+        }
+    }
 }
