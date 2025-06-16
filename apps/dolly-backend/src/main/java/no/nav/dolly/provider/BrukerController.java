@@ -85,19 +85,19 @@ public class BrukerController {
 
     @Transactional
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
-    @PutMapping("/gjeldendeTeam/{teamId}")
+    @PutMapping("/representererTeam/{teamId}")
     @Operation(description = "Sett aktivt team for innlogget bruker")
-    public RsBruker setGjeldendeTeam(@PathVariable("teamId") Long teamId) {
-        var bruker = brukerService.setGjeldendeTeam(teamId);
+    public RsBruker setRepresentererTeam(@PathVariable("teamId") Long teamId) {
+        var bruker = brukerService.setRepresentererTeam(teamId);
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
     @Transactional
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
-    @DeleteMapping("/gjeldendeTeam")
+    @DeleteMapping("/representererTeam")
     @Operation(description = "Fjern aktivt team for innlogget bruker")
-    public RsBruker clearGjeldendeTeam() {
-        var bruker = brukerService.setGjeldendeTeam(null);
+    public RsBruker clearRepresentererTeam() {
+        var bruker = brukerService.setRepresentererTeam(null);
         return mapperFacade.map(bruker, RsBruker.class);
     }
 }

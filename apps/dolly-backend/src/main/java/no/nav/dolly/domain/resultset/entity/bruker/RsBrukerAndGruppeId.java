@@ -27,7 +27,7 @@ public class RsBrukerAndGruppeId {
     private Brukertype brukertype;
     private String epost;
     private String navIdent;
-    private RsTeamWithBrukere gjeldendeTeam;
+    private RsTeamWithBrukere representererTeam;
     private List<String> favoritter;
 
     public List<String> getFavoritter() {

@@ -95,8 +95,8 @@ public class Bruker implements Serializable {
     private Set<Team> teamMedlemskap = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "GJELDENDE_TEAM_ID")
-    private Team gjeldendeTeam;
+    @JoinColumn(name = "REPRESENTERER_TEAM")
+    private Team representererTeam;
 
     @Override
     public boolean equals(Object o) {

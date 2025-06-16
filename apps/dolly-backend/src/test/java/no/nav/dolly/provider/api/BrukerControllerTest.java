@@ -107,27 +107,27 @@ class BrukerControllerTest {
     }
 
     @Test
-    void setGjeldendeTeam() {
+    void setRepresentererTeam() {
         var bruker = Bruker.builder().id(1L).build();
         var rsBruker = new RsBruker();
 
-        when(brukerService.setGjeldendeTeam(1L)).thenReturn(bruker);
+        when(brukerService.setRepresentererTeam(1L)).thenReturn(bruker);
         when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
 
-        var result = controller.setGjeldendeTeam(1L);
+        var result = controller.setRepresentererTeam(1L);
 
         assertThat(result, is(rsBruker));
     }
 
     @Test
-    void clearGjeldendeTeam() {
+    void clearRepresenterendeTeam() {
         var bruker = Bruker.builder().id(1L).build();
         var rsBruker = new RsBruker();
 
-        when(brukerService.setGjeldendeTeam(null)).thenReturn(bruker);
+        when(brukerService.setRepresentererTeam(null)).thenReturn(bruker);
         when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
 
-        var result = controller.clearGjeldendeTeam();
+        var result = controller.clearRepresentererTeam();
 
         assertThat(result, is(rsBruker));
     }

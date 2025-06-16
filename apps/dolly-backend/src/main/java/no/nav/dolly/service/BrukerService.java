@@ -125,11 +125,11 @@ public class BrukerService {
     }
 
     @Transactional
-    public Bruker setGjeldendeTeam(Long teamId) {
+    public Bruker setRepresentererTeam(Long teamId) {
         var bruker = fetchCurrentBrukerWithoutTeam();
 
         if (isNull(teamId)) {
-            bruker.setGjeldendeTeam(null);
+            bruker.setRepresentererTeam(null);
             return brukerRepository.save(bruker);
         }
 
@@ -143,7 +143,7 @@ public class BrukerService {
             throw new IllegalArgumentException("Kan ikke sette aktivt team for bruker som ikke er medlem av teamet");
         }
 
-        bruker.setGjeldendeTeam(team);
+        bruker.setRepresentererTeam(team);
         return brukerRepository.save(bruker);
     }
 
@@ -179,9 +179,9 @@ public class BrukerService {
 
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Fant ikke bruker med brukerID: " + brukerId));
-        if (nonNull(bruker.getGjeldendeTeam())) {
-            var brukerTeam = brukerRepository.findBrukerById(bruker.getGjeldendeTeam().getBrukerId())
-                    .orElseThrow(() -> new NotFoundException("Fant ikke bruker for team med brukerID: " + bruker.getGjeldendeTeam().getBrukerId()));
+        if (nonNull(bruker.getRepresentererTeam())) {
+            var brukerTeam = brukerRepository.findBrukerById(bruker.getRepresentererTeam().getBrukerId())
+                    .orElseThrow(() -> new NotFoundException("Fant ikke bruker for team med brukerID: " + bruker.getRepresentererTeam().getBrukerId()));
 
             return brukerTeam.getId();
         }
