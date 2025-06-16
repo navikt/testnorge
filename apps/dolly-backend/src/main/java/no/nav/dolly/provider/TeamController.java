@@ -67,13 +67,15 @@ public class TeamController {
     }
 
     @DeleteMapping("/{id}")
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Slett team")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public void deleteTeam(@PathVariable("id") Long id) {
         teamService.deleteTeamById(id);
     }
 
     @PostMapping("/{teamId}/medlem/{brukerId}")
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Legg til bruker i team")
     @ResponseStatus(HttpStatus.CREATED)
     public void addTeamMember(@PathVariable("teamId") Long teamId,
@@ -82,6 +84,7 @@ public class TeamController {
     }
 
     @DeleteMapping("/{teamId}/medlem/{brukerId}")
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Fjern bruker fra team")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeTeamMember(@PathVariable("teamId") Long teamId,
