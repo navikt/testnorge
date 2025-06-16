@@ -2,13 +2,12 @@ package no.nav.dolly.plugins;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.*;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -19,41 +18,51 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class DollyBuildValidationTask extends DefaultTask {
+public abstract class DollyBuildValidationTask extends DefaultTask {
 
     static final String TARGET_GROUP_ID = "no.nav.testnav.libs";
 
-    private final Property<String> projectName;
-    private final DirectoryProperty projectDir;
-    private final DirectoryProperty rootDir;
-    private final SetProperty<String> ourLibraryNames;
-
-    public DollyBuildValidationTask() {
-        this.projectName = getProject().getObjects().property(String.class);
-        this.projectDir = getProject().getObjects().directoryProperty();
-        this.rootDir = getProject().getObjects().directoryProperty();
-        this.ourLibraryNames = getProject().getObjects().setProperty(String.class);
-    }
-
     @Input
-    public Property<String> getProjectName() {
-        return projectName;
-    }
+    public abstract Property<String> getProjectName();
 
     @InputDirectory
-    public DirectoryProperty getProjectDirectory() {
-        return projectDir;
-    }
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract DirectoryProperty getProjectDirectory();
 
     @InputDirectory
-    public DirectoryProperty getRootDirectory() {
-        return rootDir;
-    }
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract DirectoryProperty getRootDirectory();
 
     @Input
-    public SetProperty<String> getOurLibraryNames() {
-        return ourLibraryNames;
-    }
+    public abstract SetProperty<String> getOurLibraryNames();
+
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract ConfigurableFileCollection getConsumedMainResources();
+
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract ConfigurableFileCollection getConsumedTestResources();
+
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract ConfigurableFileCollection getCompiledJavaOutputs();
+
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract ConfigurableFileCollection getCompiledTestOutputs();
+
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract ConfigurableFileCollection getTestTaskOutputs();
+
+    @InputFile
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract org.gradle.api.file.RegularFileProperty getBootJarFile();
+
+    @InputFile
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public abstract org.gradle.api.file.RegularFileProperty getJarFile();
 
     @TaskAction
     public void performChecks() {
