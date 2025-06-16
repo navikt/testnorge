@@ -4,11 +4,9 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.plugins.JavaBasePlugin;
 
+import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.gradle.api.plugins.JavaBasePlugin.BUILD_TASK_NAME;
 
 @SuppressWarnings("unused")
 public class DollyBuildValidationPlugin implements Plugin<Project> {
@@ -40,12 +38,17 @@ public class DollyBuildValidationPlugin implements Plugin<Project> {
         // Setting up tasks that depends on dollyValidation.
         project
                 .getPluginManager()
-                .withPlugin("java", javaPlugin -> {
-                    var tasks = project.getTasks();
-                    tasks.named("compileJava").configure(task -> task.dependsOn(dollyValidationTaskProvider));
-                    tasks.named("processResources").configure(task -> task.dependsOn(dollyValidationTaskProvider));
-                    tasks.named("processTestResources").configure(task -> task.dependsOn(dollyValidationTaskProvider));
-                });
+                .withPlugin("java", javaPlugin -> List.of(
+                                "compileJava",
+                                "processResources",
+                                "processTestResources",
+                                "wsImport1",
+                                "xjcGenerate"
+                        )
+                        .forEach(optionalTaskName -> project
+                                .getTasks()
+                                .matching(task -> task.getName().equals(optionalTaskName))
+                                .configureEach(task -> task.dependsOn(dollyValidationTaskProvider))));
 
     }
 
