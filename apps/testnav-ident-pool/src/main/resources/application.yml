@@ -7,6 +7,11 @@ spring:
   application:
     name: testnav-ident-pool
     version: 1.0.0
+    description: >
+      Ident-pool har oversikt på syntetiske identer, og sjekker mot prod og testmiljøer for eksistens.<br>
+      Fra ident-pool kan det rekvireres identer basert på født-før og født-etter samt kjønn og type.<br>
+      Spesifikke identer kan også allokeres.<br>
+      Identer kan frigjøres og benyttes om igjen
   config:
     import: "classpath:dolly-application.yml"
   flyway:
@@ -30,6 +35,10 @@ spring:
         aad:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+
+server:
+  error:
+    include-message: always
 
 consumers:
   tps-messaging-service:
