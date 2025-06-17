@@ -1,14 +1,14 @@
-package no.nav.testnav.identpool.service;
+package no.nav.testnav.identpool.util;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.identpool.domain.Identtype;
-import org.springframework.stereotype.Component;
 
 import static java.lang.Integer.parseInt;
 
-@Component
-public class IdenttypeFraIdentService {
+@UtilityClass
+public class IdenttypeFraIdentUtility {
 
-    public Identtype getIdenttype(String ident) {
+    public static Identtype getIdenttype(String ident) {
 
         if ((parseInt(ident.substring(2, 4)) > 20 && parseInt(ident.substring(2, 4)) < 33) ||
                 (parseInt(ident.substring(2, 4)) > 60 && parseInt(ident.substring(2, 4)) < 73)) {

@@ -16,21 +16,19 @@ public class CronJobService {
     private final BatchService batchService;
 
     @Timed(value = "ident-pool.ajourhold", longTask = true)
-    @Scheduled(cron = "0 0 20 * * *")
+    @Scheduled(cron = "0 0 01 * * *")
     public void execute() {
 
         log.info("Starter data mining ...");
-        batchService.startGeneratingIdentsBatch();
-
-        log.info("Data mining avsluttet");
+        batchService.startGeneratingIdents(null)
+                        .subscribe(status -> log.info("Data mining avsluttet {}", status.getStatus()));
     }
 
-    @Scheduled(cron = "0 0 22 * * *")
+    @Scheduled(cron = "0 0 04 * * *")
     public void checkProdStatus() {
 
         log.info("Starter vasking av identer mot prod");
-        batchService.updateDatabaseWithProdStatus();
-
-        log.info("Vasking av proddata avsluttet");
+        batchService.updateDatabaseWithProdStatus(null)
+                        .subscribe(status -> log.info("Vasking av proddata avsluttet: {}", status.getStatus()));
     }
 }
