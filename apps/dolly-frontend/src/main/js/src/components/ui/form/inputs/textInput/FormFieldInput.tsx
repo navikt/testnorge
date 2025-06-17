@@ -1,20 +1,29 @@
-import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import React from 'react'
 import { useFormContext } from 'react-hook-form'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
-type Props = {
+type FormFieldInputProps = {
 	name: string
-	useOnChange?: boolean
 	useControlled?: boolean
-	onSubmit?: any
 	defaultValue?: any
+	[key: string]: any
 }
 
-export default ({ name, useOnChange = false, useControlled = false, ...props }: Props) => {
+const FormFieldInput = ({
+	name,
+	useControlled = false,
+	defaultValue,
+	...props
+}: FormFieldInputProps) => {
 	const { watch } = useFormContext()
-	const value = watch(name)
-	return useControlled ? (
-		<DollyTextInput name={name} value={value} {...props} />
-	) : (
-		<DollyTextInput defaultValue={props.defaultValue || value} name={name} {...props} />
-	)
+	const formValue = watch(name)
+
+	if (useControlled) {
+		return <DollyTextInput name={name} value={formValue} {...props} />
+	}
+
+	const initialValue = defaultValue !== undefined ? defaultValue : formValue
+	return <DollyTextInput name={name} defaultValue={initialValue} {...props} />
 }
+
+export default FormFieldInput
