@@ -44,16 +44,18 @@ public class Testident implements Serializable {
 
 //    @ManyToOne
 //    @JoinColumn("TILHOERER_GRUPPE", nullable = false)
-    private Testgruppe testgruppe;
+//    private Testgruppe testgruppe;
+    @Column("TILHOERER_GRUPPE")
+    private Long gruppeId;
 
     @Column("MASTER")
 //    @Enumerated(EnumType.STRING)
     private Master master;
 
 //    @OneToMany(fetch = FetchType.LAZY)
-    @Builder.Default
+//    @Builder.Default
 //    @JoinColumn("IDENT", referencedColumn"ident", insertable = false, updatable = false)
-    private List<BestillingProgress> bestillingProgress = new ArrayList<>();
+//    private List<BestillingProgress> bestillingProgress = new ArrayList<>();
 
     @JsonIgnore
     public boolean isPdl() {

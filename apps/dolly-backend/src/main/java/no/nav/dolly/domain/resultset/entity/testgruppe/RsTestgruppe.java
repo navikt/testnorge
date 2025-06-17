@@ -23,25 +23,16 @@ public class RsTestgruppe {
     private Long id;
     private String navn;
     private String hensikt;
-    private RsBrukerUtenFavoritter opprettetAv;
-    private RsBrukerUtenFavoritter sistEndretAv;
     private List<Tags> tags;
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate datoEndret;
 
     private Integer antallIdenter;
-    private Long antallBestillinger;
+    private Integer antallBestillinger;
     private Integer antallIBruk;
 
     private boolean erEierAvGruppe;
     private Boolean erLaast;
     private String laastBeskrivelse;
-
-    public List<Tags> getTags() {
-        if (isNull(tags)) {
-            tags = new ArrayList<>();
-        }
-        return tags;
-    }
 }

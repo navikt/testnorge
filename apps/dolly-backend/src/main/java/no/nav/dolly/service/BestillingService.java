@@ -35,11 +35,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
@@ -86,93 +88,107 @@ public class BestillingService {
     private final DokumentRepository dokumentRepository;
 
     public Mono<Bestilling> fetchBestillingById(Long bestillingId) {
+
         return bestillingRepository.findById(bestillingId)
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }))
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Fant ikke bestillingId %d", bestillingId))));
     }
 
-    public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
+    public Flux<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
+
         var searchQueries = bestillingFragment.split(" ");
-        String bestillingID = Arrays.stream(searchQueries)
+        var bestillingID = Arrays.stream(searchQueries)
                 .filter(word -> word.matches("\\d+"))
                 .findFirst()
                 .orElse("");
-        String gruppeNavn = Arrays.stream(searchQueries)
+        var gruppeNavn = Arrays.stream(searchQueries)
                 .filter(word -> !word.equals(bestillingID))
                 .collect(Collectors.joining(" "));
+
         if (isNoneBlank(gruppeNavn) && isNoneBlank(bestillingID)) {
             return bestillingRepository.findByIdContainingAndGruppeNavnContaining(bestillingID, gruppeNavn);
+
         } else {
-            return Stream.concat(
-                            bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)).stream(),
-                            bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn)).stream())
-                    .filter(distinctByKey(RsBestillingFragment::getid))
-                    .toList();
+            return Flux.merge(
+                            bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
+                            bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn)))
+                    .filter(distinctByKey(RsBestillingFragment::getid));
         }
     }
 
-    @Transactional
-    public Mono<Bestilling> saveBestillingToDB(Bestilling bestilling) {
+    public Flux<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
 
-            return bestillingRepository.save(bestilling);
+        return bestillingRepository.findBestillingByGruppeId(gruppeId)
+                .filter(bestilling -> !bestilling.isFerdig())
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
     }
 
-    public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
-        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        return testgruppe
-                .map(value -> value.getBestillinger().stream()
-                        .filter(b -> !b.isFerdig())
-                        .collect(toSet()))
-                .orElse(emptySet());
-    }
+    public Mono<Set<String>> fetchBestilteMiljoerByGruppeId(Long gruppeId) {
 
-    public Set<String> fetchBestilteMiljoerByGruppeId(Long gruppeId) {
-        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        return testgruppe.map(value -> value.getBestillinger().stream()
+        return bestillingRepository.findBestillingByGruppeId(gruppeId)
                 .map(Bestilling::getMiljoer)
                 .filter(StringUtils::isNotBlank)
-                .flatMap(miljoer -> Arrays.stream(miljoer.split(",")))
-                .filter(StringUtils::isNotBlank)
-                .collect(toSet())).orElse(emptySet());
+                .flatMap(miljoer -> Flux.just(miljoer.split(",")))
+                .collect(toSet());
     }
 
-    public Optional<Integer> getPaginertBestillingIndex(Long bestillingId, Long gruppeId) {
+    public Mono<Integer> getPaginertBestillingIndex(Long bestillingId, Long gruppeId) {
 
         return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId);
     }
 
-    public Page<Bestilling> getBestillingerFromGruppeIdPaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
+    public Flux<Bestilling> getBestillingerFromGruppeIdPaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
 
-        return bestillingRepository
-                .getBestillingerFromGruppeId(gruppeId, PageRequest.of(pageNo, pageSize));
+        return bestillingRepository.getBestillingerFromGruppeId(gruppeId, PageRequest.of(pageNo, pageSize))
+                .flatMap(bestilling -> Mono.zip(Mono.just(bestilling),
+                        testgruppeRepository.findById(bestilling.getGruppeId()),
+                        getBestillingProgresser(bestilling)))
+                .map(tuple -> {
+                    tuple.getT1().setGruppe(tuple.getT2());
+                    tuple.getT1().setProgresser(tuple.getT3());
+                    return tuple.getT1();
+                });
     }
 
     @Transactional
     @Retryable
     public Mono<Bestilling> cancelBestilling(Long bestillingId) {
 
-        var bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
-        if (bestillingKontroll.isEmpty()) {
-            bestillingKontrollRepository.save(BestillingKontroll.builder()
-                    .bestillingId(bestillingId)
-                    .stoppet(true)
-                    .build());
-        }
-
-        return fetchBestillingById(bestillingId)
-                .map(bestilling -> {
-                    bestilling.setStoppet(true);
-                    bestilling.setFerdig(true);;
-                    bestilling.setSistOppdatert(now());
-                    bestilling.setBruker(fetchOrCreateBruker());
-                    return bestilling;
+        return bestillingKontrollRepository.findByBestillingId(bestillingId)
+                .switchIfEmpty(bestillingKontrollRepository.save(BestillingKontroll.builder()
+                        .bestillingId(bestillingId)
+                        .stoppet(true)
+                        .build()))
+                .flatMap(bestKontroll -> fetchBestillingById(bestillingId))
+                .zipWith(fetchOrCreateBruker())
+                .map(tuple2 -> {
+                    tuple2.getT1().setStoppet(true);
+                    tuple2.getT1().setFerdig(true);
+                    tuple2.getT1().setSistOppdatert(now());
+                    tuple2.getT1().setBruker(tuple2.getT2());
+                    return tuple2.getT1();
                 })
-                .flatMap(bestillingRepository::save);
+                .flatMap(bestillingRepository::save)
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
     }
 
-    public boolean isStoppet(Long bestillingId) {
+    public Mono<Boolean> isStoppet(Long bestillingId) {
 
         return bestillingKontrollRepository.findByBestillingId(bestillingId)
-                .orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
+                .switchIfEmpty(Mono.just(BestillingKontroll.builder().stoppet(false).build()))
+                .map(BestillingKontroll::isStoppet);
     }
 
     public Consumer<Bestilling> cleanBestilling() {
@@ -200,170 +216,226 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(RsDollyUpdateRequest request, String ident) {
+    public Mono<Bestilling> saveBestilling(RsDollyUpdateRequest request, String ident) {
 
-        var testident = identRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
-        var bruker = fetchOrCreateBruker();
-
-        fixAaregAbstractClassProblem(request.getAareg());
-        var bestilling = saveBestillingToDB(Bestilling.builder()
-                .gruppe(testident.getTestgruppe())
-                .ident(ident)
-                .antallIdenter(1)
-                .navSyntetiskIdent(request.getNavSyntetiskIdent())
-                .sistOppdatert(now())
-                .miljoer(filterAvailable(request.getEnvironments()))
-                .bruker(bruker)
-                .build());
-
-        request.setId(bestilling.getId());
-        bestilling.setBestKriterier(getBestKriterier(request));
-
-        if (isNotBlank(request.getMalBestillingNavn())) {
-            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+        if (nonNull(request.getPdldata())) {
+            request.getPdldata().setOpprettNyPerson(null);
         }
-        return bestilling;
+
+        return identRepository.findByIdent(ident)
+                .switchIfEmpty(Mono.error(new NotFoundException(format("Testident %s ble ikke funnet", ident))))
+                .zipWith(fetchOrCreateBruker())
+                .doOnNext(tuple -> fixAaregAbstractClassProblem(request.getAareg()))
+                .flatMap(tuple -> Mono.zip(Mono.just(tuple),
+                        bestillingRepository.save(Bestilling.builder()
+                                .gruppeId(tuple.getT1().getGruppeId())
+                                .ident(ident)
+                                .antallIdenter(1)
+                                .navSyntetiskIdent(request.getNavSyntetiskIdent())
+                                .sistOppdatert(now())
+                                .miljoer(filterAvailable(request.getEnvironments()))
+                                .bruker(tuple.getT2())
+                                .bestKriterier(getBestKriterier(request))
+                                .build())))
+                .doOnNext(tuple -> request.setId(tuple.getT2().getId()))
+                .flatMap(tuple -> {
+                    if (isNotBlank(request.getMalBestillingNavn())) {
+                        return malBestillingService.saveBestillingMal(tuple.getT2(),
+                                        request.getMalBestillingNavn(), tuple.getT1().getT2())
+                                .thenReturn(tuple.getT2());
+                    } else {
+                        return Mono.just(tuple.getT2());
+                    }
+                })
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall,
-                                     List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
-        var gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
-        fixAaregAbstractClassProblem(request.getAareg());
+    public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall,
+                                           List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
 
-        var bruker = fetchOrCreateBruker();
-        var bestilling = saveBestillingToDB(Bestilling.builder()
-                .gruppe(gruppe)
-                .antallIdenter(antall)
-                .navSyntetiskIdent(navSyntetiskIdent)
-                .sistOppdatert(now())
-                .miljoer(filterAvailable(request.getEnvironments()))
-                .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
-                .bruker(bruker)
-                .beskrivelse(beskrivelse)
-                .build());
-
-        request.setId(bestilling.getId());
-        bestilling.setBestKriterier(getBestKriterier(request));
-
-        if (isNotBlank(request.getMalBestillingNavn())) {
-            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
-        }
-        return bestilling;
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
+                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
+                .zipWith(fetchOrCreateBruker())
+                .flatMap(tuple -> Mono.zip(Mono.just(tuple),
+                        bestillingRepository.save(Bestilling.builder()
+                                .gruppeId(tuple.getT1().getId())
+                                .antallIdenter(antall)
+                                .navSyntetiskIdent(navSyntetiskIdent)
+                                .sistOppdatert(now())
+                                .miljoer(filterAvailable(request.getEnvironments()))
+                                .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
+                                .bruker(tuple.getT2())
+                                .beskrivelse(beskrivelse)
+                                .bestKriterier(getBestKriterier(request))
+                                .build())))
+                .doOnNext(tuple -> request.setId(tuple.getT2().getId()))
+                .flatMap(tuple -> {
+                    if (isNotBlank(request.getMalBestillingNavn())) {
+                        return malBestillingService.saveBestillingMal(tuple.getT2(),
+                                        request.getMalBestillingNavn(), tuple.getT1().getT2())
+                                .thenReturn(tuple.getT2());
+                    } else {
+                        return Mono.just(tuple.getT2());
+                    }
+                })
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
     }
 
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
-    public Bestilling createBestillingForGjenopprettFraBestilling(Long bestillingId, String miljoer) {
-        Bestilling bestilling = fetchBestillingById(bestillingId);
-        if (!bestilling.isFerdig()) {
-            throw new DollyFunctionalException(format("Du kan ikke starte gjenopprett før bestilling %d er ferdigstilt.", bestillingId));
-        }
-        if (bestilling.getGruppe().getTestidenter().isEmpty()) {
-            throw new NotFoundException(format("Ingen testidenter funnet på bestilling: %d", bestillingId));
-        }
-        return saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(bestilling.getGruppe())
-                        .antallIdenter(bestilling.getAntallIdenter())
-                        .opprettFraIdenter(bestilling.getOpprettFraIdenter())
-                        .sistOppdatert(now())
-                        .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : bestilling.getMiljoer()))
-                        .opprettetFraId(bestillingId)
-                        .bestKriterier("{}")
-                        .bruker(fetchOrCreateBruker())
-                        .build());
+    public Mono<Bestilling> createBestillingForGjenopprettFraBestilling(Long bestillingId, String miljoer) {
+
+        return fetchBestillingById(bestillingId)
+                .zipWith(fetchOrCreateBruker())
+                .flatMap(tuple -> {
+                    if (!tuple.getT1().isFerdig()) {
+                        return Mono.error(new DollyFunctionalException(format("Du kan ikke starte gjenopprett før bestilling %d er ferdigstilt.", bestillingId)));
+                    }
+                    if (tuple.getT1().getProgresser().stream()
+                            .noneMatch(progress -> isNotBlank(progress.getIdent()))) {
+                        return Mono.error(new NotFoundException(format("Ingen testidenter funnet på bestilling: %d", bestillingId)));
+                    }
+                    return Mono.just(Bestilling.builder()
+                            .gruppeId(tuple.getT1().getGruppeId())
+                            .antallIdenter(tuple.getT1().getAntallIdenter())
+                            .opprettFraIdenter(tuple.getT1().getOpprettFraIdenter())
+                            .sistOppdatert(now())
+                            .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : tuple.getT1().getMiljoer()))
+                            .opprettetFraId(bestillingId)
+                            .bestKriterier("{}")
+                            .bruker(tuple.getT2())
+                            .build());
+                })
+                .flatMap(bestillingRepository::save)
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
     }
 
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
-    public Bestilling createBestillingForGjenopprettFraIdent(String ident, Testgruppe testgruppe, List<String> miljoer) {
+    public Mono<Bestilling> createBestillingForGjenopprettFraIdent(String ident, List<String> miljoer) {
 
-        return saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(testgruppe)
+        return identRepository.findByIdent(ident)
+                .switchIfEmpty(Mono.error(new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident))))
+                .zipWith(fetchOrCreateBruker())
+                .map(tuple -> Bestilling.builder()
+                        .gruppeId(tuple.getT1().getGruppeId())
                         .ident(ident)
                         .antallIdenter(1)
                         .bestKriterier("{}")
                         .sistOppdatert(now())
                         .miljoer(filterAvailable(miljoer))
                         .gjenopprettetFraIdent(ident)
-                        .bruker(fetchOrCreateBruker())
-                        .build());
+                        .bruker(tuple.getT2())
+                        .build())
+                .flatMap(bestillingRepository::save)
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
     }
 
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
-    public Bestilling createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {
+    public Mono<Bestilling> createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {
 
-        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-
-        if (testgruppe.isEmpty() || testgruppe.get().getTestidenter().isEmpty()) {
-            throw new NotFoundException(format("Ingen testpersoner funnet i gruppe: %d", gruppeId));
-        }
-
-        return saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(testgruppe.get())
-                        .antallIdenter(testgruppe.get().getTestidenter().size())
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
+                .flatMap(testgruppe -> Mono.zip(
+                        fetchOrCreateBruker(),
+                        identRepository.findAllByTestgruppeId(gruppeId, Pageable.unpaged())
+                                .collectList()))
+                .flatMap(tuple -> {
+                    if (tuple.getT2().isEmpty()) {
+                        return Mono.error(new NotFoundException(format("Ingen testpersoner funnet i gruppe: %d", gruppeId)));
+                    } else {
+                        return Mono.just(tuple);
+                    }
+                })
+                .map(tuple -> Bestilling.builder()
+                        .gruppeId(gruppeId)
+                        .antallIdenter(tuple.getT2().size())
                         .bestKriterier("{}")
                         .sistOppdatert(now())
                         .miljoer(filterAvailable(miljoer))
                         .opprettetFraGruppeId(gruppeId)
-                        .bruker(fetchOrCreateBruker())
-                        .build());
+                        .bruker(tuple.getT1())
+                        .build())
+                .flatMap(bestillingRepository::save)
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
+    public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
 
-        var gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
-        var bruker = fetchOrCreateBruker();
-        fixAaregAbstractClassProblem(request.getAareg());
-
-        var bestilling = saveBestillingToDB(Bestilling.builder()
-                .gruppe(gruppe)
-                .kildeMiljoe("PDL")
-                .miljoer(filterAvailable(request.getEnvironments()))
-                .sistOppdatert(now())
-                .bruker(bruker)
-                .antallIdenter(request.getIdenter().size())
-                .pdlImport(join(",", request.getIdenter()))
-                .beskrivelse(request.getBeskrivelse())
-                .build());
-
-        request.setId(bestilling.getId());
-        bestilling.setBestKriterier(getBestKriterier(request));
-
-        if (isNotBlank(request.getMalBestillingNavn())) {
-            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
-        }
-        return bestilling;
-    }
-
-    @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
-
-        var gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
-        var size = identRepository.countByTestgruppe(gruppeId);
-        log.info("Antall testidenter {} i gruppe {} ", size, gruppeId);
-        fixAaregAbstractClassProblem(request.getAareg());
-
-        var bestilling = saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(gruppe)
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
+                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
+                .flatMap(testgruppe -> fetchOrCreateBruker())
+                .map(bruker -> Bestilling.builder()
+                        .gruppeId(gruppeId)
+                        .kildeMiljoe("PDL")
                         .miljoer(filterAvailable(request.getEnvironments()))
                         .sistOppdatert(now())
-                        .bruker(fetchOrCreateBruker())
-                        .antallIdenter(size)
+                        .bruker(bruker)
+                        .antallIdenter(request.getIdenter().size())
+                        .pdlImport(join(",", request.getIdenter()))
+                        .beskrivelse(request.getBeskrivelse())
+                        .bestKriterier(getBestKriterier(request))
+                        .build())
+                .flatMap(bestillingRepository::save)
+                .doOnNext(bestilling -> request.setId(bestilling.getId()))
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
+    }
+
+    @Transactional
+    public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
+
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
+                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
+                .flatMap(testgruppe -> Mono.zip(
+                        fetchOrCreateBruker(),
+                        identRepository.countByTestgruppe(gruppeId)))
+                .doOnNext(tuple -> log.info("Antall testidenter {} i gruppe {} ", tuple.getT2(), gruppeId))
+                .map(tuple -> Bestilling.builder()
+                        .gruppeId(gruppeId)
+                        .miljoer(filterAvailable(request.getEnvironments()))
+                        .sistOppdatert(now())
+                        .bruker(tuple.getT1())
+                        .antallIdenter(tuple.getT2())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
-                        .build());
-
-        request.setId(bestilling.getId());
-        bestilling.setBestKriterier(getBestKriterier(request));
-
-        return bestilling;
+                        .bestKriterier(getBestKriterier(request))
+                        .build())
+                .flatMap(bestillingRepository::save)
+                .doOnNext(bestilling -> request.setId(bestilling.getId()))
+                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }));
     }
 
     public void slettBestillingerByGruppeId(Long gruppeId) {
@@ -380,12 +452,14 @@ public class BestillingService {
         bestillingRepository.updateBestillingNullifyGruppe(gruppeId);
     }
 
-    public void slettBestillingByBestillingId(Long bestillingId) {
+    public Mono<Void> slettBestillingByBestillingId(Long bestillingId) {
 
-        bestillingProgressRepository.deleteByBestilling_Id(bestillingId);
-        bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId);
-        bestillingRepository.deleteById(bestillingId);
-        elasticRepository.deleteById(bestillingId);
+        return Mono.zip(bestillingProgressRepository.deleteByBestilling_Id(bestillingId),
+                        bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId))
+                .flatMap(tuple -> {
+                    elasticRepository.deleteById(bestillingId);
+                    return bestillingRepository.deleteById(bestillingId);
+                });
     }
 
     public void slettBestillingByTestIdent(String ident) {
@@ -442,11 +516,6 @@ public class BestillingService {
                 .udistub(request.getUdistub())
                 .yrkesskader(request.getYrkesskader())
                 .build());
-    }
-
-    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId) {
-
-        return bestillingProgressRepository.findByBestilling_Id(bestillingId);
     }
 
     private void lagreDokumenter(RsDollyBestilling request) {
@@ -508,9 +577,9 @@ public class BestillingService {
         return isNotBlank(searchString) ? "%%%s%%".formatted(searchString) : "";
     }
 
-    private Bruker fetchOrCreateBruker() {
-//        return brukerService.fetchOrCreateBruker();
-        return null; // TBD
+    private Mono<Bruker> fetchOrCreateBruker() {
+
+        return brukerService.fetchOrCreateBruker();
     }
 
     private String toJson(Object object) {
@@ -532,5 +601,11 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
+    }
+
+    private Mono<List<BestillingProgress>> getBestillingProgresser(Bestilling bestilling) {
+
+        return bestillingProgressRepository.findByBestilling_Id(bestilling.getId())
+                .collectList();
     }
 }

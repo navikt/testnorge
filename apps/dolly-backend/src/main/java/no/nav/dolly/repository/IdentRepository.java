@@ -72,6 +72,9 @@ public interface IdentRepository extends ReactiveCrudRepository<Testident, Long>
             """)
     Mono<Integer> getPaginertTestidentIndex(@Param("ident") String ident, @Param("gruppeId") Long gruppe);
 
+    Mono<Long> countByGruppeId(Long id);
+    Mono<Long> countByGruppeIdAndIBruk(Long id, Boolean iBruk);
+
     interface GruppeBestillingIdent {
 
         String getIdent();

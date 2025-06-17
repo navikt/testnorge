@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
@@ -23,17 +24,20 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
 
-                        var brukerId = (String) context.getProperty("brukerId");
+                        var bruker = (Bruker) context.getProperty("bruker");
+                        var antallIdenter = (int) context.getProperty("antallIdenter");
+                        var antallBestillinger = (int) context.getProperty("antallBestillinger");
+                        var antallIBruk = (int) context.getProperty("antallIBruk");
 
-                        rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
-                        rsTestgruppe.setAntallIBruk((int) testgruppe.getTestidenter().stream()
-                                .filter(ident -> isTrue(ident.getIBruk()))
-                                .count());
-//                        rsTestgruppe.setErEierAvGruppe(brukerId.equals(testgruppe.getOpprettetAv().getBrukerId()));
+                        rsTestgruppe.setAntallIdenter(antallIdenter);
+                        rsTestgruppe.setAntallIBruk(antallIBruk);
+                        rsTestgruppe.setAntallIdenter(antallIdenter);
+                        rsTestgruppe.setAntallBestillinger(antallBestillinger);
+                        rsTestgruppe.setErEierAvGruppe(bruker.getBrukerId().equals(testgruppe.getBrukerId()));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
-                        rsTestgruppe.setTags(testgruppe.getTags().stream()
-                                .filter(tag -> Tags.DOLLY != tag)
-                                .toList()
+//                        rsTestgruppe.setTags(testgruppe.getTags().stream()
+//                                .filter(tag -> Tags.DOLLY != tag)
+//                                .toList()
                         );
                     }
                 })

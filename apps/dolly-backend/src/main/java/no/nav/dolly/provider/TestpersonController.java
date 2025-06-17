@@ -63,17 +63,15 @@ public class TestpersonController {
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
-    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
-    public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
+    public Mono<RsBestillingStatus> endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
 
-        if (nonNull(request.getPdldata())) {
-            request.getPdldata().setOpprettNyPerson(null);
-        }
-        Bestilling bestilling = bestillingService.saveBestilling(request, ident);
-
-        oppdaterPersonService.oppdaterPersonAsync(request, bestilling);
-        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+        return bestillingService.saveBestilling(request, ident)
+                .map(bestilling -> {
+                    oppdaterPersonService.oppdaterPersonAsync(request, bestilling);
+                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
+                });
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
@@ -95,25 +93,20 @@ public class TestpersonController {
     }
 
     @Operation(description = "Gjenopprett test ident")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @PostMapping("/gjenopprett/{ident}")
-    public RsBestillingStatus gjenopprettTestident(@PathVariable String ident, @RequestParam(required = false) List<String> miljoer) {
+    public Mono<RsBestillingStatus> gjenopprettTestident(@PathVariable String ident, @RequestParam(required = false) List<String> miljoer) {
 
-        if (!identService.exists(ident)) {
-            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
-        }
-
-        var gruppe = identService.getTestIdent(ident).getTestgruppe();
-
-        var bestilling = bestillingService.createBestillingForGjenopprettFraIdent(ident, gruppe, miljoer);
-        gjenopprettIdentService.executeAsync(bestilling);
-        return mapperFacade.map(bestilling, RsBestillingStatus.class);
-
+        return bestillingService.createBestillingForGjenopprettFraIdent(ident, miljoer)
+                .map(bestilling -> {
+                    gjenopprettIdentService.executeAsync(bestilling);
+                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
+                });
     }
 
     @Operation(description = "Slett test ident")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{ident}")
     public void deleteTestident(@PathVariable String ident) {

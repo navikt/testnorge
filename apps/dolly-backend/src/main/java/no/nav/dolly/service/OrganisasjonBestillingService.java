@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -125,16 +126,18 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    public OrganisasjonBestilling cancelBestilling(Long bestillingId) {
+    public Mono<OrganisasjonBestilling> cancelBestilling(Long bestillingId) {
 
-        Optional<OrganisasjonBestilling> bestillingById = organisasjonBestillingRepository.findById(bestillingId);
-        OrganisasjonBestilling organisasjonBestilling = bestillingById.orElseThrow(() -> new NotFoundException(format("Fant ikke organisasjon bestillingId %d", bestillingId)));
+        return organisasjonBestillingRepository.findById(bestillingId)
+                .switchIfEmpty(Mono.error( new NotFoundException(format("Fant ikke bestilling med id %d", bestillingId))))
+                        .map(orgBestilling -> {
 
-        organisasjonBestilling.setFeil("Bestilling stoppet");
-        organisasjonBestilling.setFerdig(true);
-        organisasjonBestilling.setSistOppdatert(now());
-        saveBestillingToDB(organisasjonBestilling);
-        return organisasjonBestilling;
+                                    orgBestilling.setFeil("Bestilling stoppet");
+                                    orgBestilling.setFerdig(true);
+                                    orgBestilling.setSistOppdatert(now());
+                                    return orgBestilling;
+                                })
+                                .flatMap(organisasjonBestillingRepository::save);
     }
 
     @Transactional

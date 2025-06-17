@@ -21,7 +21,7 @@ public class RsTestgruppePage {
     private Integer pageSize;
     private Long antallElementer;
     private List<RsTestgruppe> contents;
-    private List<RsTestgruppe> favoritter;
+    private List<String> favoritter;
 
     public List<RsTestgruppe> getContents() {
         if (isNull(contents)) {

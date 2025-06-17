@@ -6,13 +6,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 
-public interface BestillingRepository extends ReactiveCrudRepository<Bestilling, Long> {
+public interface BestillingRepository extends ReactiveSortingRepository<Bestilling, Long> {
+
+    Mono<Bestilling> findById(Long gruppeId);
+
+    Flux<Bestilling> findBestillingByGruppeId(Long gruppeId);
+    Mono<Long> countByGruppeId(Long gruppeId);
 
     @Query("""
             select b.id, g.navn

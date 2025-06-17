@@ -1,6 +1,5 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +14,10 @@ import java.util.List;
 
 public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe, Long> {
 
-    Flux<Testgruppe> findAllByOpprettetAv(Bruker brukere, Pageable pageable);
+    Flux<Testgruppe> findAllByOpprettetAvId(Long brukerId, Pageable pageable);
 
-    Flux<Testgruppe> findAllByOrderByIdDesc(Pageable pageable);
+    Flux<Testgruppe> findAllOrderByIdDesc(Pageable pageable);
+    Mono<Long> countAll();
 
     @Modifying
     @Query("""
@@ -30,14 +30,12 @@ public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe,
             join bruker b on tg.opprettet_av = b.id " +
             and b.bruker_Id in  (:brukere)
             """)
-    Flux<Testgruppe> findAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere, PageRequest id);
+    Flux<Testgruppe> findAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere, Pageable id);
 
     @Query("""
             select tg.id from gruppe tg
             "join bruker b on tg.opprettet_av = b.id
             "and b.bruker_Id in  (:brukere)
             """)
-    Flux<Long> findAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere);
-
-    
+    Flux<Long> findAllIdsByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere);
 }

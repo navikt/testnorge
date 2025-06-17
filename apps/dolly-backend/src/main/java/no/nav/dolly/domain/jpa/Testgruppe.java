@@ -9,6 +9,7 @@ import no.nav.dolly.domain.resultset.Tags;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -47,11 +48,17 @@ public class Testgruppe implements Serializable {
 //    @ManyToOne
 //    @JoinColumn("OPPRETTET_AV", nullable = false)
     @Column("OPPRETTET_AV")
+    private Long opprettetAvId;
+
+    @Transient
     private Bruker opprettetAv;
 
 //    @ManyToOne
 //    @JoinColumn("SIST_ENDRET_AV", nullable = false)
     @Column("SIST_ENDRET_AV")
+    private Long sistEndretAvId;
+
+    @Transient
     private Bruker sistEndretAv;
 
     @Column("DATO_ENDRET")

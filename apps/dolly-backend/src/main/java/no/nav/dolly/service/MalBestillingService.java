@@ -140,7 +140,7 @@ public class MalBestillingService {
                 .build();
     }
 
-    public void saveBestillingMal(Bestilling bestilling, String malNavn, Bruker bruker) {
+    public Mono<BestillingMal> saveBestillingMal(Bestilling bestilling, String malNavn, Bruker bruker) {
 
         var eksisterende = bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
 

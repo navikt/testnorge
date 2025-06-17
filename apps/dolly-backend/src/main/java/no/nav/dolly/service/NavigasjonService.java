@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.IdentRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
@@ -46,6 +47,7 @@ public class NavigasjonService {
     private final MapperFacade mapperFacade;
     private final PersonServiceConsumer personServiceConsumer;
     private final PdlDataConsumer pdlDataConsumer;
+    private final TestgruppeRepository testgruppeRepository;
 
     @Transactional(readOnly = true)
     public Mono<RsWhereAmI> navigerTilIdent(String ident, Bruker bruker) {
@@ -70,7 +72,12 @@ public class NavigasjonService {
 
     public Mono<RsWhereAmI> navigerTilBestilling(Long bestillingId) {
 
-        return Mono.justOrEmpty(bestillingService.fetchBestillingById(bestillingId))
+        return bestillingService.fetchBestillingById(bestillingId)
+                .flatMap(bestilling -> testgruppeRepository.findById(bestilling.getId())
+                        .map(testgruppe -> {
+                            bestilling.setGruppe(testgruppe);
+                            return bestilling;
+                        }))
                 .map(bestilling -> RsWhereAmI.builder()
                         .bestillingNavigerTil(bestillingId)
                         .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))

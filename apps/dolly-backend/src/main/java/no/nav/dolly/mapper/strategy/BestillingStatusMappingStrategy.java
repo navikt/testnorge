@@ -13,7 +13,6 @@ import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.dolly.repository.BestillingProgressRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,7 +56,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
     private static final String EMPTY_JSON = "{}";
     private final ObjectMapper objectMapper;
-    private final BestillingProgressRepository bestillingProgressRepository;
 
     @Override
     public void register(MapperFactory factory) {
@@ -78,7 +76,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
                         bestillingStatus.setBruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class));
 
-                        var progresser = bestillingProgressRepository.findByBestilling_Id(bestilling.getId()).stream()
+                        var progresser = bestilling.getProgresser().stream()
                                 .filter(progress -> isBlank(ident) || ident.equals(progress.getIdent()))
                                 .toList();
 

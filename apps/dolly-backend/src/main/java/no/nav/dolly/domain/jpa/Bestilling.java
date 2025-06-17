@@ -35,8 +35,11 @@ public class Bestilling implements Serializable {
 
 //    @ManyToOne
 //    @JoinColumn("GRUPPE_ID", nullable = false)
-    @Column("GRUPPE_ID")
+    @Transient
     private Testgruppe gruppe;
+
+    @Column("GRUPPE_ID")
+    private Long gruppeId;
 
     @Column("FERDIG")
     private boolean ferdig;
@@ -77,7 +80,11 @@ public class Bestilling implements Serializable {
 
 //    @ManyToOne
 //    @JoinColumn("BRUKER_ID")
+    @Transient
     private Bruker bruker;
+
+    @Column("BRUKER_ID")
+    private Long brukerId;
 
     @Column("PDL_IMPORT")
     private String pdlImport;
@@ -90,18 +97,18 @@ public class Bestilling implements Serializable {
 
 //    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JoinColumn("bestilling_id", updatable = false)
-    @Builder.Default
-    private List<BestillingProgress> progresser = new ArrayList<>();
+    @Transient
+    private List<BestillingProgress> progresser;
 
 //    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JoinColumn("bestilling_id", updatable = false)
-    @Builder.Default
-    private List<BestillingKontroll> kontroller = new ArrayList<>();
+//    @Builder.Default
+//    private List<BestillingKontroll> kontroller = new ArrayList<>();
 
 //    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JoinColumn("bestilling_id", updatable = false)
-    @Builder.Default
-    private List<TransaksjonMapping> transaksjonmapping = new ArrayList<>();
+//    @Builder.Default
+//    private List<TransaksjonMapping> transaksjonmapping = new ArrayList<>();
 
     @Transient
     private String beskrivelse;
