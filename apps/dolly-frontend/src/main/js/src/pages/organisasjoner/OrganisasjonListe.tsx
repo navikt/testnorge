@@ -116,7 +116,7 @@ export default function OrganisasjonListe({
 	}
 
 	const { organisasjoner, loading } = useDollyOrganisasjoner(
-		currentBruker?.gjeldendeTeam?.brukerId ?? currentBruker?.brukerId,
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
 	)
 
 	const [filtrertOrgListe, setfiltrertOrgListe] = useState([])

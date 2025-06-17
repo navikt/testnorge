@@ -211,11 +211,11 @@ export default class DollyEndpoints {
 		return `${teamBase}/${teamId}`
 	}
 
-	static setGjeldendeTeam(teamId) {
-		return `${brukerBase}/gjeldendeTeam/${teamId}`
+	static setRepresentererTeam(teamId) {
+		return `${brukerBase}/representererTeam/${teamId}`
 	}
 
-	static fjernGjeldendeTeam() {
-		return `${brukerBase}/gjeldendeTeam`
+	static fjernRepresentererTeam() {
+		return `${brukerBase}/representererTeam`
 	}
 }

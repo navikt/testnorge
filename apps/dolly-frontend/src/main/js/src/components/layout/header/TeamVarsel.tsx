@@ -44,7 +44,7 @@ export const TeamVarsel = () => {
 	const { isVisible, dismiss } = useDailyComponent(teamVarslingLocalStorageKey)
 	const { currentBruker } = useCurrentBruker()
 
-	if (!isVisible || !currentBruker?.gjeldendeTeam) {
+	if (!isVisible || !currentBruker?.representererTeam) {
 		return null
 	}
 
@@ -58,8 +58,8 @@ export const TeamVarsel = () => {
 			>
 				<InformationSquareIcon fontSize="2.5rem" style={{ justifySelf: 'center' }} />
 				<p>
-					Du representer nå teamet {currentBruker.gjeldendeTeam?.navn}, og alle data du oppretter
-					vil tilhøre dette teamet. Hvem du vil represente velges i menyen over.
+					Du representer nå teamet {currentBruker.representererTeam?.navn}, og alle data du
+					oppretter vil tilhøre dette teamet. Hvem du vil represente velges i menyen over.
 				</p>
 				<Button variant="secondary" onClick={dismiss}>
 					OK

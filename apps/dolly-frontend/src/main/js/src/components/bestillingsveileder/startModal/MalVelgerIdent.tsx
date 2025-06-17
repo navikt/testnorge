@@ -54,7 +54,7 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 
 	const { brukere, loading: loadingBrukere } = useMalbestillingOversikt()
 	const [bruker, setBruker] = useState(
-		currentBruker?.gjeldendeTeam?.brukerId ?? currentBruker?.brukerId,
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
 	)
 
 	const { maler, loading: loadingMaler } = useMalbestillingBruker(bruker)

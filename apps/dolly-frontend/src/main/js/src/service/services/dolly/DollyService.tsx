@@ -153,12 +153,12 @@ export default {
 		return Request.delete(Endpoints.slettTeam(teamId))
 	},
 
-	setGjeldendeTeam(teamId) {
-		return Request.put(Endpoints.setGjeldendeTeam(teamId))
+	setRepresentererTeam(teamId) {
+		return Request.put(Endpoints.setRepresentererTeam(teamId))
 	},
 
-	fjernGjeldendeTeam() {
-		return Request.delete(Endpoints.fjernGjeldendeTeam())
+	fjernRepresentererTeam() {
+		return Request.delete(Endpoints.fjernRepresentererTeam())
 	},
 
 	//* Organisasjoner

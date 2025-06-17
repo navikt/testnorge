@@ -46,7 +46,7 @@ export default () => {
 	const dispatch = useDispatch()
 
 	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(
-		currentBruker?.gjeldendeTeam?.brukerId ?? currentBruker?.brukerId,
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
 	)
 
 	const byttVisning = (value: string) => {
@@ -93,7 +93,7 @@ export default () => {
 				{bestillingerById && (
 					// @ts-ignore
 					<StatusListeConnector
-						brukerId={currentBruker?.gjeldendeTeam?.brukerId ?? currentBruker?.brukerId}
+						brukerId={currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId}
 						bestillingListe={bestillingerById}
 					/>
 				)}
@@ -153,7 +153,7 @@ export default () => {
 						<Loading label="Laster bestillinger" panel />
 					) : antallBest > 0 ? (
 						<OrganisasjonBestilling
-							brukerId={currentBruker?.gjeldendeTeam?.brukerId ?? currentBruker?.brukerId}
+							brukerId={currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId}
 							brukertype={currentBruker?.brukertype}
 							bestillinger={sokSelector(bestillingerById, searchStr)}
 						/>

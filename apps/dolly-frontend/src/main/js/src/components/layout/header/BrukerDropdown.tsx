@@ -26,10 +26,10 @@ export const BrukerDropdown = () => {
 
 	const { currentBruker } = useCurrentBruker()
 	const { brukerTeams, mutate } = useBrukerTeams()
-	const gjeldendeTeam = currentBruker?.gjeldendeTeam
+	const representererTeam = currentBruker?.representererTeam
 
 	const handleTeamChange = (teamId: string) => {
-		DollyApi.setGjeldendeTeam(teamId)
+		DollyApi.setRepresentererTeam(teamId)
 			.then(() => {
 				mutate()
 			})
@@ -38,9 +38,9 @@ export const BrukerDropdown = () => {
 			})
 	}
 
-	const handleFjernGjeldendeTeam = () => {
+	const handleFjernRepresentererTeam = () => {
 		localStorage.removeItem(teamVarslingLocalStorageKey)
-		DollyApi.fjernGjeldendeTeam()
+		DollyApi.fjernRepresentererTeam()
 			.then(() => {
 				mutate()
 			})
@@ -60,10 +60,10 @@ export const BrukerDropdown = () => {
 								<img
 									data-testid={TestComponentSelectors.BUTTON_PROFIL}
 									alt="Profilbilde"
-									src={gjeldendeTeam ? dollyTeam : brukerBilde || getDefaultImage()}
+									src={representererTeam ? dollyTeam : brukerBilde || getDefaultImage()}
 								/>
 							</div>
-							<p>{gjeldendeTeam ? gjeldendeTeam.navn : brukerProfil?.visningsNavn}</p>
+							<p>{representererTeam ? representererTeam.navn : brukerProfil?.visningsNavn}</p>
 						</div>
 					</ActionMenu.Trigger>
 				}
@@ -71,15 +71,15 @@ export const BrukerDropdown = () => {
 				{/*TODO: Blir det dobbelt opp med group naar ActionMenuWrapper wrapper alt i en group?*/}
 				<ActionMenu.Group label="Bruker-/team-valg">
 					<ActionMenu.Item
-						onClick={handleFjernGjeldendeTeam}
+						onClick={handleFjernRepresentererTeam}
 						style={{
 							color: '#212529',
-							backgroundColor: !gjeldendeTeam ? '#99C3FF' : null,
+							backgroundColor: !representererTeam ? '#99C3FF' : null,
 						}}
 					>
 						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
 						<DropdownStyledLink href="">
-							{brukerProfil?.visningsNavn + (!gjeldendeTeam ? ' (valgt)' : '')}
+							{brukerProfil?.visningsNavn + (!representererTeam ? ' (valgt)' : '')}
 						</DropdownStyledLink>
 					</ActionMenu.Item>
 					{brukerTeams?.map((team) => (
@@ -88,12 +88,12 @@ export const BrukerDropdown = () => {
 							key={team.id}
 							style={{
 								color: '#212529',
-								backgroundColor: gjeldendeTeam?.id === team.id ? '#99C3FF' : null,
+								backgroundColor: representererTeam?.id === team.id ? '#99C3FF' : null,
 							}}
 						>
 							<DropdownStyledIcon kind="group" fontSize="1.5rem" />
 							<DropdownStyledLink href="">
-								{team.navn + (gjeldendeTeam?.id === team.id ? ' (valgt)' : '')}
+								{team.navn + (representererTeam?.id === team.id ? ' (valgt)' : '')}
 							</DropdownStyledLink>
 						</ActionMenu.Item>
 					))}

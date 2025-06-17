@@ -26,7 +26,7 @@ type BrukerType = {
 	epost: string
 	favoritter: []
 	grupper: []
-	gjeldendeTeam?: {
+	representererTeam?: {
 		id: string
 		brukerId: string
 		navn: string
