@@ -2,11 +2,12 @@ package no.nav.dolly.plugins;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
-import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.Optional;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -22,11 +23,16 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
     static final String TARGET_GROUP_ID = "no.nav.testnav.libs";
 
     @Input
-    public abstract Property<String> getProjectName();
+    public abstract Property<String> getCurrentProjectName();
 
-    @InputDirectory
-    @PathSensitive(PathSensitivity.RELATIVE)
-    public abstract DirectoryProperty getRootDirectory();
+    @InputFile
+    @PathSensitive(PathSensitivity.NONE)
+    public abstract RegularFileProperty getSettingsGradleFile();
+
+    @InputFile
+    @Optional
+    @PathSensitive(PathSensitivity.NONE)
+    public abstract RegularFileProperty getWorkflowFile();
 
     @Input
     public abstract SetProperty<String> getOurLibraryNames();
@@ -52,15 +58,9 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
     private boolean validateSettingsGradle(Logger log, Set<String> librariesInBuildGradle) {
 
         boolean errors = false;
-        var rootDirAsFile = getRootDirectory()
-                .get()
-                .getAsFile();
-        var settingsGradleFile = rootDirAsFile
-                .toPath()
-                .resolve("settings.gradle")
-                .toFile();
+        var settingsGradleFile = getSettingsGradleFile().get().getAsFile();
         if (!settingsGradleFile.exists()) {
-            log.warn("Missing settings.gradle at {}", rootDirAsFile.getAbsolutePath());
+            log.warn("Missing settings.gradle at {}", settingsGradleFile.getAbsolutePath());
             return true;
         }
 
@@ -98,14 +98,9 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
 
     private boolean validateGitHubWorkflowTriggers(Logger log, Set<String> libraryNames) {
 
-        var workflowFile = findGitHubActionsWorkflowFile();
+        var workflowFile = getWorkflowFile().getAsFile().getOrNull();
         if (workflowFile == null) {
-            var expected = getRootDirectory()
-                    .get()
-                    .dir(".github/workflows")
-                    .getAsFile()
-                    .getAbsolutePath();
-            log.error("No app.{}.yml or proxy.{}.yml workflow found in {}}", getProjectName().get(), getProjectName().get(), expected);
+            log.error("Neither app.{}.yml nor proxy.{}.yml workflow found for project {} in /.github/workflows", getCurrentProjectName().get(), getCurrentProjectName().get(), getCurrentProjectName().get());
             return true;
         }
 
@@ -125,7 +120,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
                 log.warn("Workflow {} has 'on:' trigger, but no 'push.paths'", workflowFile.getName());
                 return false; // Log a warning, but don't fail the build. It might be intentionally set to only build manually.
             }
-            return verifyTriggers(log, getProjectName().get(), workflowFile.getName(), libraryNames, triggerPaths);
+            return verifyTriggers(log, getCurrentProjectName().get(), workflowFile.getName(), libraryNames, triggerPaths);
 
         } catch (IOException e) {
             log.error("Error reading workflow file {}", workflowFile.getName(), e);
@@ -134,31 +129,6 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
             log.error("Error parsing workflow file {}", workflowFile.getName(), e);
             return true;
         }
-
-    }
-
-    private File findGitHubActionsWorkflowFile() {
-
-        var workflowDir = getRootDirectory()
-                .get()
-                .dir("../../.github/workflows")
-                .getAsFile()
-                .toPath();
-        var currentProjectName = getProjectName().get();
-        var appWorkflowFile = workflowDir
-                .resolve("app." + currentProjectName + ".yml")
-                .toFile();
-        if (appWorkflowFile.exists()) {
-            return appWorkflowFile;
-        }
-        var proxyWorkflowFile = workflowDir
-                .resolve("proxy." + currentProjectName + ".yml")
-                .toFile();
-        if (proxyWorkflowFile.exists()) {
-            return proxyWorkflowFile;
-
-        }
-        return null;
 
     }
 
@@ -186,6 +156,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
         return paths;
     }
 
+    @SuppressWarnings("java:S1192") // Avoid complaints about "libs/" being repeated; more readable as is.
     private boolean verifyTriggers(Logger log, String currentProjectName, String workflowFilename, Collection<String> libraryNames, Collection<String> triggerPaths) {
 
         var errors = false;
@@ -197,7 +168,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
                     .stream()
                     .anyMatch(path -> path.equals(expected));
             if (!foundTrigger) {
-                log.warn("Workflow ../../.github/workflows/{} is missing trigger on '{}'", workflowFilename, expected);
+                log.warn("Workflow /.github/workflows/{} is missing trigger on '{}'", workflowFilename, expected);
                 errors = true;
             }
         }
@@ -209,7 +180,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
                 .collect(Collectors.toSet());
         for (var path : triggerPaths) {
             if (path.startsWith("libs/") && !expectedTriggers.contains(path)) {
-                log.warn("Workflow ../../.github/workflows/{} has unnecessary trigger on '{}'", workflowFilename, path);
+                log.warn("Workflow /.github/workflows/{} has unnecessary trigger on '{}'", workflowFilename, path);
                 errors = true;
             }
         }
@@ -219,7 +190,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
                 .stream()
                 .anyMatch(path -> path.equals("apps/" + currentProjectName + "/**") || path.equals("proxies/" + currentProjectName + "/**"));
         if (!foundTriggerOnProject) {
-            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either 'apps/{}/**' or 'proxies/{}/**'", workflowFilename, currentProjectName, currentProjectName);
+            log.warn("Workflow /.github/workflows/{} is missing trigger on its own codebase", workflowFilename);
             errors = true;
         }
 
@@ -228,7 +199,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
                 .stream()
                 .anyMatch(path -> path.equals("plugins/**"));
         if (!foundTriggerOnPlugins) {
-            log.warn("Workflow ../../.github/workflows/{} is missing trigger on 'plugins/**'", workflowFilename);
+            log.warn("Workflow /.github/workflows/{} is missing trigger on 'plugins/**'", workflowFilename);
             errors = true;
         }
 
@@ -237,7 +208,7 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
                 .stream()
                 .anyMatch(path -> path.equals(".github/workflows/app." + currentProjectName + ".yml") || path.equals(".github/workflows/proxy." + currentProjectName + ".yml"));
         if (!foundTriggerOnWorkflow) {
-            log.warn("Workflow ../../.github/workflows/{} is missing trigger on either '.github/workflows/app.{}.yml' or '.github/workflows/proxy.{}.yml'", currentProjectName, currentProjectName, currentProjectName);
+            log.warn("Workflow /.github/workflows/{} is missing trigger on itself", workflowFilename);
             errors = true;
         }
 

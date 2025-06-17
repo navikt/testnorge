@@ -4,8 +4,9 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.plugins.JavaBasePlugin;
 
-import java.util.List;
+import java.io.File;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -18,12 +19,30 @@ public class DollyBuildValidationPlugin implements Plugin<Project> {
         var dollyValidationTaskProvider = project
                 .getTasks()
                 .register("dollyValidation", DollyBuildValidationTask.class, task -> {
+
                     task.setGroup("verification");
                     task.setDescription("Analyzes dependencies and GitHub workflow triggers for " + project.getName());
 
-                    task.getProjectName().set(project.getName());
-                    task.getRootDirectory().set(project.getRootDir());
+                    var currentProjectName = project.getName();
+                    task.getCurrentProjectName().set(currentProjectName);
 
+                    // Set settings.gradle file (located at multi-project root)
+                    var rootDir = project.getRootDir();
+                    task.getSettingsGradleFile().set(new File(rootDir, "settings.gradle"));
+
+                    // Set workflow file to either an app workflow or a proxy workflow.
+                    var workflowsDir = new File(rootDir, "../../.github/workflows");
+                    var appWorkflowFile = new File(workflowsDir, "app." + currentProjectName + ".yml");
+                    if (appWorkflowFile.exists()) {
+                        task.getWorkflowFile().set(appWorkflowFile);
+                    } else {
+                        var proxyWorkflowFile = new File(workflowsDir, "proxy." + currentProjectName + ".yml");
+                        if (proxyWorkflowFile.exists()) {
+                            task.getWorkflowFile().set(proxyWorkflowFile);
+                        }
+                    }
+
+                    // Set our library names, based on project dependencies (e.g. build.gradle).
                     var libraries = project
                             .getConfigurations()
                             .stream()
@@ -35,21 +54,13 @@ public class DollyBuildValidationPlugin implements Plugin<Project> {
                     task.getOurLibraryNames().set(libraries);
                 });
 
-        // Setting up tasks that depends on dollyValidation.
+        // Make build task depend on dollyValidation task.
         project
                 .getPluginManager()
-                .withPlugin("java", javaPlugin -> List.of(
-                                "compileJava",
-                                "processResources",
-                                "processTestResources",
-                                "wsImport1",
-                                "xjcGenerate",
-                                "xjcGenerateTest"
-                        )
-                        .forEach(optionalTaskName -> project
-                                .getTasks()
-                                .matching(task -> task.getName().equals(optionalTaskName))
-                                .configureEach(task -> task.dependsOn(dollyValidationTaskProvider))));
+                .withPlugin("java-base", javaBasePluginApplied -> project
+                        .getTasks()
+                        .named(JavaBasePlugin.BUILD_TASK_NAME)
+                        .configure(task -> task.dependsOn(dollyValidationTaskProvider)));
 
     }
 
