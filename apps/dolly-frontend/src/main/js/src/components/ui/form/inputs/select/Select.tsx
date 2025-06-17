@@ -209,6 +209,7 @@ export const DollySelect = (props: SelectProps) => (
 			name={props.name}
 			label={props.label}
 			info={props.info}
+			manualError={props.feil}
 		>
 			{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
 		</Label>

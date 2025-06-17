@@ -57,8 +57,6 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 		resolver: yupResolver(validation),
 	})
 
-	console.log('formMethods.watch(): ', formMethods.watch()) //TODO - SLETT MEG
-
 	const handleOpprettTeam = () => {
 		setIsLoading(true)
 		setError('')

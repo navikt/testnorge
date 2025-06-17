@@ -11,7 +11,7 @@ export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }) => {
 	const [valgtTeam, setValgtTeam] = useState(null)
 	const [valgtTeamError, setValgtTeamError] = useState('')
 
-	const { alleTeam, loading: loadingTeams, error: errorTeams } = useHentAlleTeam()
+	const { alleTeam, loading: loadingTeams } = useHentAlleTeam()
 	const filtrerteTeam = alleTeam?.filter((team) => !brukerTeams?.some((t) => t.id === team.id))
 	const teamOptions = filtrerteTeam?.map((team) => {
 		return {
@@ -21,7 +21,6 @@ export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }) => {
 	})
 
 	const handleBliMedITeam = () => {
-		//TODO: Valider at team er valgt
 		if (!valgtTeam) {
 			setValgtTeamError('Du må velge et team å bli med i')
 			return

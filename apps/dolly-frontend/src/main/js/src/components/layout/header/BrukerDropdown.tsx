@@ -16,10 +16,6 @@ import { DollyApi } from '@/service/Api'
 import dollyTeam from '@/assets/img/dollyTeam.png'
 import { teamVarslingLocalStorageKey } from '@/components/layout/header/TeamVarsel'
 
-//TODO: Fiks Playwright-tester som feiler
-
-//TODO: Test litt mer, rydd opp, push til dev
-
 export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
@@ -68,7 +64,6 @@ export const BrukerDropdown = () => {
 					</ActionMenu.Trigger>
 				}
 			>
-				{/*TODO: Blir det dobbelt opp med group naar ActionMenuWrapper wrapper alt i en group?*/}
 				<ActionMenu.Group label="Bruker-/team-valg">
 					<ActionMenu.Item
 						onClick={handleFjernRepresentererTeam}

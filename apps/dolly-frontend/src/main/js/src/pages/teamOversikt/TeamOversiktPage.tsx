@@ -48,6 +48,10 @@ export default () => {
 				<ErrorBoundary>
 					{loading ? (
 						<Loading label="Laster team ..." />
+					) : error ? (
+						<Alert variant="error" size="small">
+							Feil ved henting av team: {error?.message}
+						</Alert>
 					) : brukerTeams?.length < 1 ? (
 						<Alert variant="info" size="small">
 							Du er ikke medlem av noen team. Bli med i et eksisterende team eller opprett ditt
