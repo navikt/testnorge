@@ -47,21 +47,29 @@ export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }) => {
 	return (
 		<>
 			<h1>Bli med i team</h1>
-			<div className="flexbox--full-width" style={{ marginTop: '15px' }}>
-				<DollySelect
-					name="team"
-					value={valgtTeam}
-					onChange={(e) => {
-						setValgtTeam(e?.value)
-						setValgtTeamError('')
-					}}
-					label="Velg et team å bli med i"
-					placeholder={loadingTeams ? 'Laster team ...' : 'Velg team ...'}
-					options={teamOptions}
-					size="grow"
-					isClearable={false}
-					feil={valgtTeamError || null}
-				/>
+			<div className={'skjemaelement dollyselect' + (valgtTeamError ? ' error' : '')}>
+				<div className="flexbox--full-width" style={{ marginTop: '15px' }}>
+					<DollySelect
+						name="team"
+						value={valgtTeam}
+						onChange={(e) => {
+							setValgtTeam(e?.value)
+							setValgtTeamError('')
+						}}
+						label="Velg et team å bli med i"
+						placeholder={loadingTeams ? 'Laster team ...' : 'Velg team ...'}
+						options={teamOptions}
+						size="grow"
+						isClearable={false}
+					/>
+					{valgtTeamError && (
+						<div role="alert" aria-live="assertive">
+							<div className="skjemaelement__feilmelding" style={{ marginTop: '-10px' }}>
+								{valgtTeamError}
+							</div>
+						</div>
+					)}
+				</div>
 			</div>
 			{error && <div className="skjemaelement__feilmelding">{error}</div>}
 			<div className="dollymodal_buttons">
