@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { DollyApi } from '@/service/Api'
-import { useAlleBrukere } from '@/utils/hooks/useBruker'
+import { useAlleBrukere, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -21,7 +21,6 @@ const validation = Yup.object().shape({
 		.trim()
 		.required('Feltet er påkrevd')
 		.max(200, 'Maksimalt 200 bokstaver'),
-	// TODO: Hvis rediger maa array vaere minst 1 lang
 	brukere: Yup.array(),
 })
 
@@ -31,8 +30,12 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
 
+	const { currentBruker } = useCurrentBruker()
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
-	const brukerOptions = brukere?.map((bruker) => {
+	const brukereFiltrert = brukere?.filter(
+		(bruker) => bruker?.brukertype !== 'TEAM' && bruker?.brukerId !== currentBruker?.brukerId,
+	)
+	const brukerOptions = brukereFiltrert?.map((bruker) => {
 		return {
 			value: bruker?.brukerId,
 			label: bruker?.brukernavn,
