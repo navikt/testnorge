@@ -17,7 +17,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Bestilling> findById(Long gruppeId);
 
     Flux<Bestilling> findBestillingByGruppeId(Long gruppeId);
-    Mono<Long> countByGruppeId(Long gruppeId);
+    Mono<Long> countAllByGruppeId(Long gruppeId);
 
     @Query("""
             select b.id, g.navn
@@ -87,10 +87,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Flux<Bestilling> getBestillingByGruppe_Id(Long gruppeId);
 
     @Modifying
-    @Query("""
-            delete from Bestilling b where b.gruppe_id = :gruppeId
-            """)
-    Mono<Integer> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+    Mono<Void> deleteByGruppeId(Long gruppeId);
 
     @Modifying
     @Query("""

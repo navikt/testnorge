@@ -79,6 +79,7 @@ public class Testgruppe implements Serializable {
 //    @OneToMany(fetch = FetchType.LAZY)
 //    @JoinColumn("gruppe_id")
     @Builder.Default
+    @Transient
     private Set<Bestilling> bestillinger = new HashSet<>();
 
     @Column("ER_LAAST")

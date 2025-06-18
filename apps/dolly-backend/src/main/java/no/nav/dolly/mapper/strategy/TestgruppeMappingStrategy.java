@@ -33,12 +33,10 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                         rsTestgruppe.setAntallIBruk(antallIBruk);
                         rsTestgruppe.setAntallIdenter(antallIdenter);
                         rsTestgruppe.setAntallBestillinger(antallBestillinger);
-                        rsTestgruppe.setErEierAvGruppe(bruker.getBrukerId().equals(testgruppe.getBrukerId()));
-                        rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
-//                        rsTestgruppe.setTags(testgruppe.getTags().stream()
-//                                .filter(tag -> Tags.DOLLY != tag)
-//                                .toList()
-                        );
+                        rsTestgruppe.setErEierAvGruppe(bruker.getId().equals(testgruppe.getOpprettetAvId()));
+                        rsTestgruppe.setTags(testgruppe.getTags().stream()
+                                .filter(tag -> Tags.DOLLY != tag)
+                                .toList());
                     }
                 })
                 .byDefault()

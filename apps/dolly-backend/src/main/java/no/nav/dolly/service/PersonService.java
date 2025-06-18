@@ -8,6 +8,7 @@ import no.nav.dolly.domain.dto.TestidentDTO;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -21,17 +22,16 @@ public class PersonService {
 
     @Async
     @Transactional
-    public void recyclePersoner(List<TestidentDTO> testidenter) {
+    public Mono<Void> recyclePersoner(List<TestidentDTO> testidenter) {
 
-        pdlDataConsumer.slettPdl(testidenter.stream()
+        return pdlDataConsumer.slettPdl(testidenter.stream()
                         .map(TestidentDTO::getIdent)
                         .toList())
-                .subscribe(response -> log.info("Slettet antall {} identer mot PDL-forvalter", testidenter.size()));
-
-        releaseArtifacts(testidenter);
+                .doOnSuccess(response -> log.info("Slettet {} identer mot PDL-forvalter", testidenter.size()))
+                .flatMap(status -> releaseArtifacts(testidenter));
     }
 
-    private void releaseArtifacts(List<TestidentDTO> identer) {
+    private Mono<Void> releaseArtifacts(List<TestidentDTO> identer) {
 
         clientRegister.forEach(register -> {
             try {

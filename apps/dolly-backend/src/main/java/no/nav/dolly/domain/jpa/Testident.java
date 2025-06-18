@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -53,9 +54,10 @@ public class Testident implements Serializable {
     private Master master;
 
 //    @OneToMany(fetch = FetchType.LAZY)
-//    @Builder.Default
+    @Builder.Default
 //    @JoinColumn("IDENT", referencedColumn"ident", insertable = false, updatable = false)
-//    private List<BestillingProgress> bestillingProgress = new ArrayList<>();
+    @Transient
+    private List<BestillingProgress> bestillingProgress = new ArrayList<>();
 
     @JsonIgnore
     public boolean isPdl() {
@@ -83,7 +85,7 @@ public class Testident implements Serializable {
                 .append(ident, testident.ident)
                 .append(iBruk, testident.iBruk)
                 .append(beskrivelse, testident.beskrivelse)
-                .append(testgruppe, testident.testgruppe)
+                .append(gruppeId, testident.gruppeId)
                 .append(master, testident.master)
                 .isEquals();
     }
@@ -96,7 +98,7 @@ public class Testident implements Serializable {
                 .append(ident)
                 .append(iBruk)
                 .append(beskrivelse)
-                .append(testgruppe)
+                .append(gruppeId)
                 .append(master)
                 .toHashCode();
     }
@@ -109,7 +111,7 @@ public class Testident implements Serializable {
                 ", ident='" + ident + '\'' +
                 ", iBruk=" + iBruk +
                 ", beskrivelse='" + beskrivelse + '\'' +
-                ", testgruppe=" + testgruppe.getId() +
+                ", testgruppe=" + gruppeId +
                 ", master=" + master +
                 '}';
     }

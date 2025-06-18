@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class IdentService {
     }
 
     @Transactional
-    public Testident saveIdentTilGruppe(String ident, Testgruppe testgruppe, Master master, String beskrivelse) {
+    public Mono<Testident> saveIdentTilGruppe(String ident, Long gruppeId, Master master, String beskrivelse) {
 
         Testident testident = identRepository.findByIdent(ident)
                 .orElse(new Testident());
@@ -107,7 +108,8 @@ public class IdentService {
         return identRepository.getBestillingerByIdent(ident);
     }
 
-    public Page<Testident> getTestidenterFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
+    public Mono<Page<Testident>> getTestidenterFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
+
         if (StringUtils.isBlank(sortColumn)) {
             sortColumn = "id";
         }
@@ -118,14 +120,17 @@ public class IdentService {
                         new Sort.Order(Sort.Direction.DESC, "id", Sort.NullHandling.NULLS_LAST)
                 )
         );
-        var identerPaged =  identRepository
-                .findAllByTestgruppeId(gruppeId, page);
 
-        ((PageImpl)identerPaged).getContent()
-                .forEach(testIdent ->
-                        ((Testident)testIdent).setBestillingProgress(bestillingProgressRepository.findByIdent(((Testident)testIdent).getIdent())));
-
-        return identerPaged;
+        return identRepository.findAllByTestgruppeId(gruppeId, page)
+                .flatMap(ident -> bestillingProgressRepository.findByIdent(ident.getIdent())
+                        .collectList()
+                        .map(bestillingProgress -> {
+                            ident.setBestillingProgress(bestillingProgress);
+                            return ident;
+                        }))
+                .collectList()
+                .zipWith(identRepository.countByTestgruppeId(gruppeId))
+                .map(tuple -> new PageImpl<>(tuple.getT1(), page, tuple.getT2()));
     }
 
     public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {
@@ -153,10 +158,10 @@ public class IdentService {
                 .build();
 
         identer.forEach(ident -> {
-                    if (!finnes.getIBruk().containsKey(ident)) {
-                        finnes.getIBruk().put(ident, false);
-                    }
-                });
+            if (!finnes.getIBruk().containsKey(ident)) {
+                finnes.getIBruk().put(ident, false);
+            }
+        });
 
         return finnes;
     }

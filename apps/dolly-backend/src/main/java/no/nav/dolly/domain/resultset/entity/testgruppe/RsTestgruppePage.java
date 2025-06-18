@@ -22,18 +22,4 @@ public class RsTestgruppePage {
     private Long antallElementer;
     private List<RsTestgruppe> contents;
     private List<String> favoritter;
-
-    public List<RsTestgruppe> getContents() {
-        if (isNull(contents)) {
-            contents = new ArrayList<>();
-        }
-        return contents;
-    }
-
-    public List<RsTestgruppe> getFavoritter() {
-        if (isNull(favoritter)) {
-            favoritter = new ArrayList<>();
-        }
-        return favoritter;
-    }
 }

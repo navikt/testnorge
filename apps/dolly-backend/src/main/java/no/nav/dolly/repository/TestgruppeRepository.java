@@ -15,15 +15,12 @@ import java.util.List;
 public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe, Long> {
 
     Flux<Testgruppe> findAllByOpprettetAvId(Long brukerId, Pageable pageable);
+    Mono<Long> countAllByOpprettetAvId(Long brukerId);
 
     Flux<Testgruppe> findAllOrderByIdDesc(Pageable pageable);
-    Mono<Long> countAll();
 
     @Modifying
-    @Query("""
-            delete from Testgruppe tg where tg.id = :testgruppeId
-            """)
-    Mono<Integer> deleteAllById(@Param("testgruppeId") Long id);
+    Mono<Void> deleteById(Long id);
 
     @Query("""
             select tg.* from gruppe tg " +
@@ -31,6 +28,7 @@ public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe,
             and b.bruker_Id in  (:brukere)
             """)
     Flux<Testgruppe> findAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere, Pageable id);
+    Mono<Long> countAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere);
 
     @Query("""
             select tg.id from gruppe tg
@@ -38,4 +36,6 @@ public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe,
             "and b.bruker_Id in  (:brukere)
             """)
     Flux<Long> findAllIdsByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere);
+
+    Mono<Long> countAll();
 }

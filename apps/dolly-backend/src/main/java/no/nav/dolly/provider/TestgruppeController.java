@@ -67,9 +67,9 @@ public class TestgruppeController {
     @Transactional
     @PutMapping(value = "/{gruppeId}")
     @Operation(description = "Oppdater testgruppe")
-    public RsTestgruppeMedBestillingId oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
-        Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
-        return mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class);
+    public Mono<Testgruppe> oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
+
+        return testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
@@ -87,10 +87,10 @@ public class TestgruppeController {
     @Transactional
     @PutMapping(value = "/{gruppeId}/laas")
     @Operation(description = "Oppdater testgruppe Laas")
-    public RsTestgruppe oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,
+    public Mono<Testgruppe> oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,
                                                @RequestBody RsLockTestgruppe lockTestgruppe) {
-        Testgruppe gruppe = testgruppeService.oppdaterTestgruppeMedLaas(gruppeId, lockTestgruppe);
-        return mapperFacade.map(gruppe, RsTestgruppe.class);
+
+        return testgruppeService.oppdaterTestgruppeMedLaas(gruppeId, lockTestgruppe);
     }
 
     @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
@@ -98,10 +98,9 @@ public class TestgruppeController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(description = "Opprett testgruppe")
-    public Mono<RsTestgruppeMedBestillingId> opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
+    public Mono<Testgruppe> opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
 
-        return testgruppeService.opprettTestgruppe(createTestgruppeRequest)
-                .map(gruppe -> mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class));
+        return testgruppeService.opprettTestgruppe(createTestgruppeRequest);
     }
 
     @Cacheable(CACHE_GRUPPE)
@@ -119,7 +118,7 @@ public class TestgruppeController {
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/test/{gruppeId}/page/{pageNo}")
     @Operation(description = "Hent paginert testgruppe")
-    public Page<Testident> getPaginertTestgruppe1(@PathVariable("gruppeId") Long gruppeId,
+    public Mono<Page<Testident>> getPaginertTestgruppe1(@PathVariable("gruppeId") Long gruppeId,
                                                   @PathVariable("pageNo") Integer pageNo,
                                                   @RequestParam Integer pageSize,
                                                   @RequestParam(required = false) String sortKolonne,
@@ -151,22 +150,16 @@ public class TestgruppeController {
     @Operation(description = "Hent paginerte testgrupper")
     public Mono<RsTestgruppePage> getTestgrupper(@PathVariable(value = "pageNo") Integer pageNo, @RequestParam(value = "pageSize") Integer pageSize) {
 
-        return testgruppeService.getAllTestgrupper(pageNo, pageSize)
-                .map(page -> RsTestgruppePage.builder()
-                        .pageNo(page.getNumber())
-                        .antallPages(page.getTotalPages())
-                        .pageSize(page.getPageable().getPageSize())
-                        .antallElementer(page.getTotalElements())
-                        .contents(mapperFacade.mapAsList(page.getContent(), RsTestgruppe.class))
-                        .build());
+        return testgruppeService.getAllTestgrupper(pageNo, pageSize);
+
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @DeleteMapping("/{gruppeId}")
     @Operation(description = "Slett gruppe")
-    public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
+    public Mono<Void> slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
 
-        testgruppeService.deleteGruppeById(gruppeId);
+        return testgruppeService.deleteGruppeById(gruppeId);
     }
 
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)

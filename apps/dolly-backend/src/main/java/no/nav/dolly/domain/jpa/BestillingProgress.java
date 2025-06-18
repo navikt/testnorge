@@ -38,7 +38,8 @@ public class BestillingProgress implements Serializable {
 
 //    @ManyToOne
 //    @JoinColumn("BESTILLING_ID", nullable = false)
-    private Bestilling bestilling;
+    @Column("BESTILLING_ID")
+    private Long bestillingId;
 
     private String ident;
 

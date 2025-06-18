@@ -23,13 +23,10 @@ public interface IdentRepository extends ReactiveCrudRepository<Testident, Long>
     @Query("""
             delete from test_ident ti where ti.ident = :testident
             """)
-    Mono<Integer> deleteTestidentByIdent(@Param("testident") String testident);
+    Mono<Void> deleteTestidentByIdent(@Param("testident") String testident);
 
     @Modifying
-    @Query("""
-            delete from test_ident ti where ti.tilhoerer_gruppe = :gruppeId
-            """)
-    Mono<Integer> deleteAllByTestgruppeId(@Param("gruppeId") Long gruppeId);
+    Mono<Void> deleteByGruppeId(Long gruppeId);
 
     @Modifying
     @Query(""" 
@@ -62,6 +59,8 @@ public interface IdentRepository extends ReactiveCrudRepository<Testident, Long>
             """)
     Flux<Testident> findAllByTestgruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
+    Mono<Long> countByTestgruppeId(Long id);
+
     @Query("""
             select position-1
             from (select ti.ident, row_number() over (order by ti.id desc) as position
@@ -72,7 +71,7 @@ public interface IdentRepository extends ReactiveCrudRepository<Testident, Long>
             """)
     Mono<Integer> getPaginertTestidentIndex(@Param("ident") String ident, @Param("gruppeId") Long gruppe);
 
-    Mono<Long> countByGruppeId(Long id);
+
     Mono<Long> countByGruppeIdAndIBruk(Long id, Boolean iBruk);
 
     interface GruppeBestillingIdent {

@@ -34,8 +34,10 @@ import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -156,6 +158,32 @@ public class BestillingService {
                     tuple.getT1().setProgresser(tuple.getT3());
                     return tuple.getT1();
                 });
+    }
+
+    public Mono<Page<Bestilling>> getBestillingerFromGruppeIdPaginert(Long gruppeId, Integer pageNo, Integer pageSize,
+                                                                String sortColumn, String sortRetning) {
+
+        if (StringUtils.isBlank(sortColumn)) {
+            sortColumn = "id";
+        }
+        var retning = "asc".equals(sortRetning) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        var page = PageRequest.of(pageNo, pageSize,
+                Sort.by(
+                        new Sort.Order(retning, sortColumn, Sort.NullHandling.NULLS_LAST),
+                        new Sort.Order(Sort.Direction.DESC, "id", Sort.NullHandling.NULLS_LAST)
+                )
+        );
+
+        return bestillingRepository.getBestillingerFromGruppeId(gruppeId, page)
+                .flatMap(bestilling -> bestillingProgressRepository.findByBestillingId(bestilling.getId())
+                        .collectList()
+                        .map(progresser -> {
+                            bestilling.setProgresser(progresser);
+                            return bestilling;
+                        }))
+                .collectList()
+                .zipWith(bestillingRepository.countAllByGruppeId(gruppeId))
+                .map(tuple -> new PageImpl<>(tuple.getT1(), page, tuple.getT2()));
     }
 
     @Transactional
