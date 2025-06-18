@@ -117,7 +117,7 @@ export const useGrupper = (pageNo, pageSize, brukerId?: string) => {
 	}
 }
 
-export const useEgneGrupper = (brukerId: string) => {
+export const useEgneGrupper = (brukerId?: string) => {
 	const { data, isLoading, error } = useSWR<PaginertGruppe, Error>(
 		brukerId ? getEgneGrupperUrl(brukerId) : null,
 		fetcher,
