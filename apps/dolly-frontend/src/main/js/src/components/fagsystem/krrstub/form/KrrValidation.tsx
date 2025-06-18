@@ -33,7 +33,7 @@ export const KrrValidation = {
 		'$krrstub',
 		Yup.object({
 			epost: Yup.string(),
-			gyldigFra: Yup.mixed().when('registrert', {
+			gyldigFra: Yup.date().when('registrert', {
 				is: true,
 				then: () => requiredDate.nullable(),
 				otherwise: () => Yup.date().nullable(),
