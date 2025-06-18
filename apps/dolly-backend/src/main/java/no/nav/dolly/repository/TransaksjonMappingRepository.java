@@ -20,13 +20,17 @@ public interface TransaksjonMappingRepository extends ReactiveCrudRepository<Tra
             """)
     Flux<TransaksjonMapping> findAllByBestillingIdAndIdent(@Param("bestillingId") Long bestillingId, @Param("ident") String ident);
 
-    @Modifying
-    Mono<Integer> deleteAllByIdent(String ident);
+    Flux<TransaksjonMapping> findAllByBestillingId(Long bestillingId);
 
     @Modifying
-    Mono<Integer> deleteByIdentAndMiljoeAndSystem(String ident, String miljoe, String system);
+    Mono<Void> deleteAllByIdent(String ident);
 
-    Mono<Integer> deleteByIdentAndMiljoeAndSystemAndBestillingId(String ident, String miljoe, String system, Long bestillingId);
+    Mono<Void> deleteByBestillingId(Long bestillingId);
+
+    @Modifying
+    Mono<Void> deleteByIdentAndMiljoeAndSystem(String ident, String miljoe, String system);
+
+    Mono<Void> deleteByIdentAndMiljoeAndSystemAndBestillingId(String ident, String miljoe, String system, Long bestillingId);
 
     @Modifying
     @Query("""

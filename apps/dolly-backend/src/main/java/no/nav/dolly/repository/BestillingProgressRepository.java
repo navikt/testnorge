@@ -30,8 +30,6 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
 
     Flux<BestillingProgress> findByIdent(String ident);
 
-    Flux<BestillingProgress> findByBestilling_Id(Long bestillingId);
-
     @Modifying
     @Query("""
             update bestilling_progress

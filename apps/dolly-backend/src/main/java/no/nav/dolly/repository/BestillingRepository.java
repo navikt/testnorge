@@ -16,6 +16,8 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
 
     Mono<Bestilling> findById(Long gruppeId);
 
+    Mono<Void> deleteById(Long id);
+
     Flux<Bestilling> findBestillingByGruppeId(Long gruppeId);
     Mono<Long> countAllByGruppeId(Long gruppeId);
 

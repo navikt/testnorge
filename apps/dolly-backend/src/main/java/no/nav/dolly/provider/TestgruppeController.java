@@ -9,7 +9,6 @@ import no.nav.dolly.bestilling.service.ImportAvPersonerFraPdlService;
 import no.nav.dolly.bestilling.service.LeggTilPaaGruppeService;
 import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
 import no.nav.dolly.bestilling.service.OpprettPersonerFraIdenterMedKriterierService;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
@@ -19,7 +18,6 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.service.BestillingService;
@@ -233,9 +231,9 @@ public class TestgruppeController {
     @Transactional
     @PutMapping(value = "/{gruppeId}/identer/{identer}")
     @Operation(description = "Flytt angitte identer til denne gruppe")
-    public void splittGruppe(@PathVariable("gruppeId") Long gruppeId,
+    public Mono<Void> splittGruppe(@PathVariable("gruppeId") Long gruppeId,
                              @PathVariable("identer") Set<String> identer) {
 
-        splittGruppeService.flyttIdenterTilDenneGruppe(gruppeId, identer);
+        return splittGruppeService.flyttIdenterTilDenneGruppe(gruppeId, identer);
     }
 }
