@@ -101,19 +101,6 @@ public class TestgruppeService {
         return rsTestgruppe;
     }
 
-    private void sjekkTilgang(Long gruppeId) {
-
-        var bruker = brukerService.fetchOrCreateBruker();
-        if (bruker.getBrukertype() == BANKID) {
-            brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
-                    .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
-                    .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
-                    .block();
-        }
-    }
-
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
         return testgruppeRepository.findById(gruppeId).orElseThrow(() ->
                 new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
@@ -134,7 +121,7 @@ public class TestgruppeService {
 
     public Page<Testgruppe> fetchTestgrupperByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        var bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
+        var bruker = brukerService.fetchBrukerWithoutTeam(brukerId);
 
         return testgruppeRepository.findAllByOpprettetAv(bruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
@@ -191,7 +178,7 @@ public class TestgruppeService {
 
     public RsTestgruppePage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        var bruker = brukerService.fetchOrCreateBruker(brukerId);
+        var bruker = brukerService.fetchBrukerWithoutTeam(brukerId);
 
         Page<Testgruppe> paginertGruppe;
 
@@ -239,5 +226,18 @@ public class TestgruppeService {
         var testgruppe = fetchTestgruppeById(gruppeId);
         identService.saveIdentTilGruppe(ident, testgruppe, master, null);
         return pdlDataConsumer.putStandalone(ident, true);
+    }
+
+    private void sjekkTilgang(Long gruppeId) {
+
+        var bruker = brukerService.fetchOrCreateBruker();
+        if (bruker.getBrukertype() == BANKID) {
+            brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
+                    .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
+                    .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
+                    .block();
+        }
     }
 }
