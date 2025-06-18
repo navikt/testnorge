@@ -103,7 +103,11 @@ export const BrukerDropdown = () => {
 						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
 						<DropdownStyledLink href="/minside">Min side</DropdownStyledLink>
 					</PreloadableActionMenuItem>
-					<PreloadableActionMenuItem route="/team" style={{ color: '#212529' }}>
+					<PreloadableActionMenuItem
+						route="/team"
+						style={{ color: '#212529' }}
+						dataTestId={TestComponentSelectors.BUTTON_PROFIL_TEAMOVERSIKT}
+					>
 						<DropdownStyledIcon kind="group" fontSize="1.5rem" />
 						<DropdownStyledLink href="/team">Team-oversikt</DropdownStyledLink>
 					</PreloadableActionMenuItem>

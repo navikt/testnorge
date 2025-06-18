@@ -12,6 +12,8 @@ import Loading from '@/components/ui/loading/Loading'
 import { ForlatTeam } from '@/pages/teamOversikt/ForlatTeam'
 import { SlettTeam } from '@/pages/teamOversikt/SlettTeam'
 import { BliMedITeam } from '@/pages/teamOversikt/BliMedITeam'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { runningE2ETest } from '@/service/services/Request'
 
 const Knappegruppe = styled.div`
 	margin-top: 20px;
@@ -78,7 +80,12 @@ export default () => {
 								{brukerTeams?.map((team) => {
 									const antallMedlemmer = team.brukere?.length || 0
 									return (
-										<Table.ExpandableRow key={team.id} content={<TeamVisning team={team} />}>
+										<Table.ExpandableRow
+											key={team.id}
+											content={<TeamVisning team={team} />}
+											data-testid={TestComponentSelectors.EXPANDABLE_TEAM}
+											expandOnRowClick={runningE2ETest()}
+										>
 											<Table.DataCell width="65%">{team.navn}</Table.DataCell>
 											<Table.DataCell width="10%" align="center">
 												<Button
@@ -133,6 +140,7 @@ export default () => {
 							setValgtTeam(null)
 							openOpprettRedigerTeamModal()
 						}}
+						data-testid={TestComponentSelectors.BUTTON_TEAM_OPPRETT}
 					>
 						Opprett team
 					</Button>

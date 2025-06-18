@@ -7,6 +7,7 @@ import { useAlleBrukere, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const initialValues = {
 	id: null,
@@ -104,8 +105,18 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 			>
 				<h1>{team ? `Rediger team ${team.navn}` : 'Opprett team'}</h1>
 				<div className="flexbox--flex-wrap" style={{ marginTop: '15px' }}>
-					<FormTextInput name="navn" label="Navn på teamet" size="large" />
-					<FormTextInput name="beskrivelse" label="Beskrivelse av teamet" size="xlarge" />
+					<FormTextInput
+						name="navn"
+						label="Navn på teamet"
+						size="large"
+						data-testid={TestComponentSelectors.INPUT_TEAM_NAVN}
+					/>
+					<FormTextInput
+						name="beskrivelse"
+						label="Beskrivelse av teamet"
+						size="xlarge"
+						data-testid={TestComponentSelectors.INPUT_TEAM_BESKRIVELSE}
+					/>
 				</div>
 				<div className="flexbox--full-width">
 					<FormSelect
@@ -136,6 +147,7 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 							})
 						}}
 						loading={isLoading}
+						data-testid={TestComponentSelectors.BUTTON_TEAM_SUBMIT}
 					>
 						{team ? 'Lagre endringer' : 'Opprett team'}
 					</NavButton>

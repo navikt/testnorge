@@ -23,7 +23,7 @@ export const brukerTeamsMock = [
 	{
 		beskrivelse: 'Testytest beskrivelse',
 		brukerId: 'team-bruker-id-90',
-		brukere: [{ gjeldendeAzureBrukerMock }],
+		brukere: [gjeldendeAzureBrukerMock],
 		id: 1,
 		navn: 'Testytest',
 		opprettet: '2022-09-06T10:24:03',
