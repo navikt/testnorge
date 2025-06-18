@@ -121,7 +121,7 @@ public class TestgruppeService {
 
     public Page<Testgruppe> fetchTestgrupperByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        var bruker = brukerService.fetchBrukerWithoutTeam(brukerId);
+        var bruker = isBlank(brukerId) ? brukerService.fetchOrCreateBruker() : brukerService.fetchBrukerWithoutTeam(brukerId);
 
         return testgruppeRepository.findAllByOpprettetAv(bruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
@@ -178,7 +178,7 @@ public class TestgruppeService {
 
     public RsTestgruppePage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        var bruker = brukerService.fetchBrukerWithoutTeam(brukerId);
+        var bruker = isBlank(brukerId) ? brukerService.fetchOrCreateBruker() : brukerService.fetchBrukerWithoutTeam(brukerId);
 
         Page<Testgruppe> paginertGruppe;
 
