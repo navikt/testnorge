@@ -7,10 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import wiremock.com.google.common.collect.Ordering;
+import org.testcontainers.shaded.com.google.common.collect.Ordering;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Generering av identer")
@@ -44,10 +43,8 @@ class IdentGeneratorServiceTest {
                 .foedtFoer(timeNow.minusDays(2))
                 .build();
 
-        Set<String> result = new HashSet<>();
-
         assertThrows(IllegalArgumentException.class,
-                () -> identGeneratorService.genererIdenter(request, result));
+                () -> identGeneratorService.genererIdenter(request));
     }
 
     @Test
@@ -59,7 +56,7 @@ class IdentGeneratorServiceTest {
                 .antall(requestedAmount)
                 .build();
 
-        var result = identGeneratorService.genererIdenter(request, new HashSet<>());
+        var result = identGeneratorService.genererIdenter(request);
 
         assertThat(result.size(), is(lessThan(requestedAmount)));
     }
@@ -67,6 +64,7 @@ class IdentGeneratorServiceTest {
     @Test
     @DisplayName("Skal ikke generere identer i sortert rekkefølge")
     void fnrGenererDescendingTest() {
+
         // This test will stop working 1. Jan 2040 :(
         var localDate = LocalDate.now();
         Map<LocalDate, List<String>> pinMap =
@@ -78,8 +76,9 @@ class IdentGeneratorServiceTest {
     @Test
     @DisplayName("Skal generere angitt antall identer med FNR")
     void fnrGenererKjonnKriterier() {
-        Set<String> menn = generateIdents(Identtype.FNR, Kjoenn.MANN);
-        Set<String> kvinner = generateIdents(Identtype.FNR, Kjoenn.KVINNE);
+
+        var menn = generateIdents(Identtype.FNR, Kjoenn.MANN);
+        var kvinner = generateIdents(Identtype.FNR, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(fnr -> assertFnrValues(fnr, Kjoenn.MANN, timeNow));
@@ -90,8 +89,9 @@ class IdentGeneratorServiceTest {
     @Test
     @DisplayName("Skal generere angitt antall identer med DNR")
     void dnrGenererKjonnKriterier() {
-        Set<String> menn = generateIdents(Identtype.DNR, Kjoenn.MANN);
-        Set<String> kvinner = generateIdents(Identtype.DNR, Kjoenn.KVINNE);
+
+        var menn = generateIdents(Identtype.DNR, Kjoenn.MANN);
+        var kvinner = generateIdents(Identtype.DNR, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(dnr -> assertDnrValues(dnr, Kjoenn.MANN, timeNow));
@@ -102,8 +102,9 @@ class IdentGeneratorServiceTest {
     @Test
     @DisplayName("Skal generere angitt antall identer med BOST")
     void bostGenererKjonnKriterier() {
-        Set<String> menn = generateIdents(Identtype.BOST, Kjoenn.MANN);
-        Set<String> kvinner = generateIdents(Identtype.BOST, Kjoenn.KVINNE);
+
+        var menn = generateIdents(Identtype.BOST, Kjoenn.MANN);
+        var kvinner = generateIdents(Identtype.BOST, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(bnr -> assertBnrValues(bnr, Kjoenn.MANN, timeNow));
@@ -112,11 +113,13 @@ class IdentGeneratorServiceTest {
     }
 
     private Set<String> generateIdents(Identtype identtype, Kjoenn kjoenn) {
+
         return identGeneratorService.genererIdenter(
-                createRequest(identtype, kjoenn).build(), new HashSet<>());
+                createRequest(identtype, kjoenn).build());
     }
 
     private HentIdenterRequest.HentIdenterRequestBuilder createRequest(Identtype identtype, Kjoenn kjoenn) {
+
         return HentIdenterRequest.builder()
                 .identtype(identtype)
                 .antall(GENERATE_SIZE)
@@ -126,6 +129,7 @@ class IdentGeneratorServiceTest {
     }
 
     private void assertFnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
+
         assertThat(fnr.matches("\\d{11}"), is(true));
         assertThat(getKjoenn(fnr), is(equalTo(expectedKjoenn)));
         assertThat(getBirthdate(fnr, false, false), is(equalTo(expectedDate)));
@@ -133,6 +137,7 @@ class IdentGeneratorServiceTest {
     }
 
     private void assertDnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
+
         assertThat(fnr.matches("\\d{11}"), is(true));
         assertThat(getKjoenn(fnr), is(equalTo(expectedKjoenn)));
         assertThat(getBirthdate(fnr, true, false), is(equalTo(expectedDate)));
@@ -140,6 +145,7 @@ class IdentGeneratorServiceTest {
     }
 
     private void assertBnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
+
         assertThat(fnr.matches("\\d{11}"), is(true));
         assertThat(getKjoenn(fnr), is(equalTo(expectedKjoenn)));
         assertThat(getBirthdate(fnr, false, true), is(equalTo(expectedDate)));
@@ -147,10 +153,12 @@ class IdentGeneratorServiceTest {
     }
 
     private Kjoenn getKjoenn(String fnr) {
+
         return getNumericValue(fnr.charAt(8)) % 2 == 0 ? Kjoenn.KVINNE : Kjoenn.MANN;
     }
 
     private LocalDate getBirthdate(String fnr, boolean dnr, boolean bnr) {
+
         int day = parseInt(fnr.substring(0, 2));
         int month = parseInt(fnr.substring(2, 4));
         String year = fnr.substring(4, 6);

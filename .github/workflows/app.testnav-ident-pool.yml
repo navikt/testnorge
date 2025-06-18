@@ -7,9 +7,8 @@ on:
       - apps/testnav-ident-pool/**
       - libs/reactive-core/**
       - libs/security-core/**
-      - libs/servlet-core/**
       - libs/servlet-insecure-security/**
-      - libs/servlet-security/**
+      - libs/reactive-security/**
       - libs/testing/**
       - plugins/**
 
