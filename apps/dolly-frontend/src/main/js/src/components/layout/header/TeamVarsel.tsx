@@ -15,6 +15,7 @@ const TeamVarselPanel = styled.div`
 	border-radius: 8px;
 	width: 300px;
 	box-shadow: var(--a-shadow-medium);
+	z-index: 8;
 
 	p {
 		margin-bottom: 20px;
