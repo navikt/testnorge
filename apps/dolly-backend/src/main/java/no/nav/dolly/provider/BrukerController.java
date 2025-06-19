@@ -4,15 +4,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.service.BrukerService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,7 +40,7 @@ public class BrukerController {
     @Transactional(readOnly = true)
     @Operation(description = "Hent Bruker med brukerId")
     public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
-        Bruker bruker = brukerService.fetchBruker(brukerId);
+        var bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
@@ -47,7 +48,7 @@ public class BrukerController {
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
-        Bruker bruker = brukerService.fetchOrCreateBruker();
+        var bruker = brukerService.fetchCurrentBrukerWithoutTeam();
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
@@ -55,7 +56,8 @@ public class BrukerController {
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
     public List<RsBrukerAndGruppeId> getAllBrukere() {
-        return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
+        var brukere = brukerService.fetchBrukere();
+        return mapperFacade.mapAsList(brukere, RsBrukerAndGruppeId.class);
     }
 
     @Transactional
@@ -74,4 +76,28 @@ public class BrukerController {
         return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
+    @Transactional(readOnly = true)
+    @GetMapping("/teams")
+    @Operation(description = "Hent alle team gjeldende bruker er medlem av")
+    public List<RsTeamWithBrukere> getUserTeams() {
+        return mapperFacade.mapAsList(brukerService.fetchTeamsForCurrentBruker(), RsTeamWithBrukere.class);
+    }
+
+    @Transactional
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @PutMapping("/representererTeam/{teamId}")
+    @Operation(description = "Sett aktivt team for innlogget bruker")
+    public RsBruker setRepresentererTeam(@PathVariable("teamId") Long teamId) {
+        var bruker = brukerService.setRepresentererTeam(teamId);
+        return mapperFacade.map(bruker, RsBruker.class);
+    }
+
+    @Transactional
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @DeleteMapping("/representererTeam")
+    @Operation(description = "Fjern aktivt team for innlogget bruker")
+    public RsBruker clearRepresentererTeam() {
+        var bruker = brukerService.setRepresentererTeam(null);
+        return mapperFacade.map(bruker, RsBruker.class);
+    }
 }

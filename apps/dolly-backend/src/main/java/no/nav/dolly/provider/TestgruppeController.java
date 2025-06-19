@@ -92,7 +92,7 @@ public class TestgruppeController {
         return mapperFacade.map(gruppe, RsTestgruppe.class);
     }
 
-    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
+    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
@@ -154,7 +154,7 @@ public class TestgruppeController {
         testgruppeService.deleteGruppeById(gruppeId);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     @Operation(description = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")
@@ -166,7 +166,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Opprett berikede testpersoner basert på eskisterende identer")
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestillingStatus opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
@@ -178,7 +178,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Importere testpersoner fra PDL og legg til berikning non-PDL artifacter")
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/importfrapdl")
     public RsBestillingStatus importAvIdenterFraPdlBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyImportFraPdlRequest request) {
@@ -190,7 +190,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Legg til berikning på alle i gruppe")
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{gruppeId}/leggtilpaagruppe")
     public RsBestillingStatus endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
@@ -200,7 +200,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/{gruppeId}/gjenopprett")
     @Operation(description = "Gjenopprett testidenter tilhørende en gruppe med liste for tilhørende miljoer")
     public RsBestillingStatus gjenopprettBestilling(@PathVariable("gruppeId") Long gruppeId,
@@ -211,7 +211,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
+    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}/identer/{identer}")
     @Operation(description = "Flytt angitte identer til denne gruppe")

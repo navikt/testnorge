@@ -6,8 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.bestilling.service.OppdaterPersonService;
 import no.nav.dolly.domain.dto.TestidentDTO;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -73,7 +71,7 @@ public class TestpersonController {
         if (nonNull(request.getPdldata())) {
             request.getPdldata().setOpprettNyPerson(null);
         }
-        Bestilling bestilling = bestillingService.saveBestilling(request, ident);
+        var bestilling = bestillingService.saveBestilling(request, ident);
 
         oppdaterPersonService.oppdaterPersonAsync(request, bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
@@ -139,7 +137,7 @@ public class TestpersonController {
     @GetMapping("/naviger/{ident}")
     public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 
-        Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
         return navigasjonService.navigerTilIdent(ident, bruker);
     }
 

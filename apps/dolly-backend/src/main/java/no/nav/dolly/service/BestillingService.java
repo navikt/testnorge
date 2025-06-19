@@ -253,7 +253,7 @@ public class BestillingService {
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Bestilling createBestillingForGjenopprettFraBestilling(Long bestillingId, String miljoer) {
-        Bestilling bestilling = fetchBestillingById(bestillingId);
+        var bestilling = fetchBestillingById(bestillingId);
         if (!bestilling.isFerdig()) {
             throw new DollyFunctionalException(format("Du kan ikke starte gjenopprett før bestilling %d er ferdigstilt.", bestillingId));
         }
