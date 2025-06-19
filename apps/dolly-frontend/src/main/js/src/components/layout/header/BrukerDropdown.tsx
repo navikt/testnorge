@@ -21,7 +21,7 @@ export const BrukerDropdown = () => {
 	const { brukerBilde } = useBrukerProfilBilde()
 
 	const { currentBruker, mutate: currentMutate } = useCurrentBruker()
-	const { brukerTeams, mutate } = useBrukerTeams()
+	const { brukerTeams } = useBrukerTeams()
 	const representererTeam = currentBruker?.representererTeam
 
 	const handleTeamChange = (teamId: string) => {
@@ -66,7 +66,10 @@ export const BrukerDropdown = () => {
 			>
 				<ActionMenu.Group label="Bruker-/team-valg">
 					<ActionMenu.Item
-						onClick={handleFjernRepresentererTeam}
+						onClick={(event) => {
+							event.preventDefault()
+							return handleFjernRepresentererTeam()
+						}}
 						style={{
 							color: '#212529',
 							backgroundColor: !representererTeam ? '#99C3FF' : null,
@@ -79,7 +82,10 @@ export const BrukerDropdown = () => {
 					</ActionMenu.Item>
 					{brukerTeams?.map((team) => (
 						<ActionMenu.Item
-							onClick={() => handleTeamChange(team.id)}
+							onClick={(event) => {
+								event.preventDefault()
+								handleTeamChange(team.id)
+							}}
 							key={team.id}
 							style={{
 								color: '#212529',

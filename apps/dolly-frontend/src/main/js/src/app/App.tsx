@@ -21,6 +21,7 @@ import { RouteChangeHandler } from '@/RootComponent'
 import { NavigationTitle } from '@/NavigationTitle'
 
 const logout = (feilmelding: string) => {
+	console.error('Kritisk feil i Dolly, logger ut: ', feilmelding)
 	if (!runningE2ETest()) {
 		navigateToLogin(feilmelding)
 	}
