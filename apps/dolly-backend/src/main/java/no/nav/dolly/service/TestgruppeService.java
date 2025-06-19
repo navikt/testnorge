@@ -230,7 +230,7 @@ public class TestgruppeService {
 
     public Testgruppe endreGruppeTilknytning(Long gruppeId, String brukerId) {
 
-        var gjeldendeBruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
+        var gjeldendeBruker = brukerService.fetchOrCreateBruker();
         var gruppe = fetchTestgruppeById(gruppeId);
         var nyEier = brukerService.fetchBrukerByBrukerId(brukerId);
 
