@@ -3,6 +3,7 @@ package no.nav.dolly.proxy.texas;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -23,6 +24,17 @@ class SecurityConfig {
     };
 
     @Bean
+    @Profile("local")
+    SecurityWebFilterChain securityWebFilterChainLocal(ServerHttpSecurity http) {
+        return http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(exchange -> exchange
+                        .anyExchange().permitAll())
+                .build();
+    }
+
+    @Bean
+    @Profile("!local")
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
         var filter = new DollyAuthorizationHeaderFilter(sharedSecret, WHITELIST);
@@ -31,7 +43,7 @@ class SecurityConfig {
                 .addFilterAt(filter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(WHITELIST).permitAll()
-                        .anyExchange().permitAll())
+                        .anyExchange().authenticated())
                 .build();
 
     }
