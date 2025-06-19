@@ -228,6 +228,26 @@ public class TestgruppeService {
         return pdlDataConsumer.putStandalone(ident, true);
     }
 
+    public Testgruppe endreGruppeTilknytning(Long gruppeId, String brukerId) {
+
+        var gjeldendeBruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
+        var gruppe = fetchTestgruppeById(gruppeId);
+        var nyEier = brukerService.fetchBrukerByBrukerId(brukerId);
+
+        if (gruppe.getOpprettetAv().equals(nyEier)) {
+            throw new DollyFunctionalException(format("Gruppe med id %s er allerede tilknyttet bruker %s.", gruppeId, nyEier.getBrukernavn()));
+        }
+
+        if (!gruppe.getOpprettetAv().equals(gjeldendeBruker)) {
+            throw new DollyFunctionalException(format("Gruppe med id %s er ikke tilknyttet din bruker.", gruppeId));
+        } else {
+
+            gruppe.setOpprettetAv(nyEier);
+            gruppe.setSistEndretAv(nyEier);
+            return testgruppeRepository.save(gruppe);
+        }
+    }
+
     private void sjekkTilgang(Long gruppeId) {
 
         var bruker = brukerService.fetchOrCreateBruker();
