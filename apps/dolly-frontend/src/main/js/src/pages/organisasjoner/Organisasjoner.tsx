@@ -33,9 +33,7 @@ const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
 export default () => {
-	const {
-		currentBruker: { brukerId, brukertype, brukernavn },
-	} = useCurrentBruker()
+	const { currentBruker } = useCurrentBruker()
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const searchStr = useReduxSelector((state) => state.search)
@@ -47,7 +45,9 @@ export default () => {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
-	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
+	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
+	)
 
 	const byttVisning = (value: string) => {
 		dispatch(resetPaginering())
@@ -92,7 +92,10 @@ export default () => {
 
 				{bestillingerById && (
 					// @ts-ignore
-					<StatusListeConnector brukerId={brukerId} bestillingListe={bestillingerById} />
+					<StatusListeConnector
+						brukerId={currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId}
+						bestillingListe={bestillingerById}
+					/>
 				)}
 
 				<OrganisasjonHeader antallOrganisasjoner={antallOrg} />
@@ -150,8 +153,8 @@ export default () => {
 						<Loading label="Laster bestillinger" panel />
 					) : antallBest > 0 ? (
 						<OrganisasjonBestilling
-							brukerId={brukerId}
-							brukertype={brukertype}
+							brukerId={currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId}
+							brukertype={currentBruker?.brukertype}
 							bestillinger={sokSelector(bestillingerById, searchStr)}
 						/>
 					) : (

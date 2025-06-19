@@ -26,6 +26,12 @@ type BrukerType = {
 	epost: string
 	favoritter: []
 	grupper: []
+	representererTeam?: {
+		id: string
+		brukerId: string
+		navn: string
+		beskrivelse: string
+	}
 }
 
 export const useAlleBrukere = () => {
@@ -72,5 +78,16 @@ export const useBrukerProfilBilde = () => {
 		brukerBilde: data,
 		loading: isLoading,
 		error: error,
+	}
+}
+
+export const useBrukerTeams = () => {
+	const { data, isLoading, error, mutate } = useSWR<any, Error>(`${getBrukereUrl}/teams`, fetcher)
+
+	return {
+		brukerTeams: data,
+		loading: isLoading,
+		error: error,
+		mutate: mutate,
 	}
 }

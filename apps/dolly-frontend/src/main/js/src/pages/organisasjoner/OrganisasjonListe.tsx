@@ -32,9 +32,7 @@ export default function OrganisasjonListe({
 	setAntallOrg,
 	sidetall,
 }: OrganisasjonListeProps) {
-	const {
-		currentBruker: { brukerId },
-	} = useCurrentBruker()
+	const { currentBruker } = useCurrentBruker()
 	const search = useReduxSelector((state) => state.search)
 
 	const sokSelectorOrg = (
@@ -117,7 +115,9 @@ export default function OrganisasjonListe({
 		})
 	}
 
-	const { organisasjoner, loading } = useDollyOrganisasjoner(brukerId)
+	const { organisasjoner, loading } = useDollyOrganisasjoner(
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
+	)
 
 	const [filtrertOrgListe, setfiltrertOrgListe] = useState([])
 

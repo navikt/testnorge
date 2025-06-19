@@ -16,6 +16,7 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 type MalVelgerProps = {
 	brukerId: string
@@ -28,10 +29,13 @@ type Brukere = {
 }
 
 export function getBrukerOptions(brukere: Brukere[] | undefined) {
-	return brukere?.map((bruker) => ({
-		value: bruker.brukerId,
-		label: bruker.brukernavn,
-	}))
+	return brukere?.map((bruker) => {
+		const erTeam = bruker.brukerId.includes('team')
+		return {
+			value: bruker.brukerId,
+			label: bruker.brukernavn + (erTeam ? ' (team)' : ''),
+		}
+	})
 }
 
 export function getMalOptions(malbestillinger: Mal[] | undefined) {
@@ -46,9 +50,12 @@ export function getMalOptions(malbestillinger: Mal[] | undefined) {
 export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const formMethods = useFormContext()
+	const { currentBruker } = useCurrentBruker()
 
 	const { brukere, loading: loadingBrukere } = useMalbestillingOversikt()
-	const [bruker, setBruker] = useState(brukerId)
+	const [bruker, setBruker] = useState(
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
+	)
 
 	const { maler, loading: loadingMaler } = useMalbestillingBruker(bruker)
 
@@ -124,10 +131,10 @@ export const MalVelgerIdent = ({ brukerId, gruppeId }: MalVelgerProps) => {
 			<div style={{ marginTop: '10px' }}>
 				<DollySelect
 					name="zIdent"
-					label="Bruker"
+					label="Bruker/team"
 					isLoading={loadingBrukere}
 					options={brukerOptions}
-					size="medium"
+					size="large"
 					onChange={handleBrukerChange}
 					value={bruker}
 					isClearable={false}

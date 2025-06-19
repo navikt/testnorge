@@ -13,6 +13,7 @@ const kodeverkBase = `${kodeverkUri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
 const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
+const teamBase = `${uri}/team`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -192,5 +193,29 @@ export default class DollyEndpoints {
 
 	static personerSearch(registre) {
 		return `${dollySearchUrl}/personer${registre ? registre : ''}`
+	}
+
+	static opprettTeam() {
+		return teamBase
+	}
+
+	static redigerTeam(teamId) {
+		return `${teamBase}/${teamId}`
+	}
+
+	static leggTilFjernBrukerFraTeam(teamId, brukerId) {
+		return `${teamBase}/${teamId}/medlem/${brukerId}`
+	}
+
+	static slettTeam(teamId) {
+		return `${teamBase}/${teamId}`
+	}
+
+	static setRepresentererTeam(teamId) {
+		return `${brukerBase}/representererTeam/${teamId}`
+	}
+
+	static fjernRepresentererTeam() {
+		return `${brukerBase}/representererTeam`
 	}
 }
