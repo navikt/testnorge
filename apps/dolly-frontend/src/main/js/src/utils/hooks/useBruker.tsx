@@ -45,9 +45,13 @@ export const useAlleBrukere = () => {
 }
 
 export const useCurrentBruker = () => {
-	const { data, isLoading, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher, {
-		revalidateOnFocus: true,
-	})
+	const { data, isLoading, error, mutate } = useSWR<BrukerType, Error>(
+		getCurrentBrukerUrl,
+		fetcher,
+		{
+			revalidateOnFocus: true,
+		},
+	)
 
 	if (error && !runningE2ETest()) {
 		console.error(ERROR_ACTIVE_USER)
@@ -58,6 +62,7 @@ export const useCurrentBruker = () => {
 		currentBruker: data,
 		loading: isLoading,
 		error: error,
+		mutate: mutate,
 	}
 }
 

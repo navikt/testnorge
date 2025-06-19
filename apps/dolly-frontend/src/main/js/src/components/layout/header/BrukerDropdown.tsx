@@ -20,7 +20,7 @@ export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
 
-	const { currentBruker } = useCurrentBruker()
+	const { currentBruker, mutate: currentMutate } = useCurrentBruker()
 	const { brukerTeams, mutate } = useBrukerTeams()
 	const representererTeam = currentBruker?.representererTeam
 
@@ -28,6 +28,7 @@ export const BrukerDropdown = () => {
 		DollyApi.setRepresentererTeam(teamId)
 			.then(() => {
 				mutate()
+				currentMutate()
 			})
 			.catch((error) => {
 				console.error('Feil ved valg av gjeldende team: ', error)
@@ -39,6 +40,7 @@ export const BrukerDropdown = () => {
 		DollyApi.fjernRepresentererTeam()
 			.then(() => {
 				mutate()
+				currentMutate()
 			})
 			.catch((error) => {
 				console.error('Feil ved valg av gjeldende bruker: ', error)
