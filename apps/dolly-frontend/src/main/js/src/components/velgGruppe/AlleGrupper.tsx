@@ -19,7 +19,7 @@ export default ({ fraGruppe = null }: AlleGrupper) => {
 	const [valgtBruker, setValgtBruker] = useState(formMethods?.watch('bruker') || '')
 
 	const brukerOptions = brukere?.map((bruker) => {
-		const erTeam = bruker.brukerId.includes('team')
+		const erTeam = bruker?.brukertype === 'TEAM'
 		return {
 			value: bruker?.brukerId,
 			label: bruker?.brukernavn + (erTeam ? ' (team)' : ''),
