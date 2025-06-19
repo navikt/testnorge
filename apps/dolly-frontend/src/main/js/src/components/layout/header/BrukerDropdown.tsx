@@ -66,7 +66,10 @@ export const BrukerDropdown = () => {
 			>
 				<ActionMenu.Group label="Bruker-/team-valg">
 					<ActionMenu.Item
-						onClick={handleFjernRepresentererTeam}
+						onClick={(event) => {
+							event.preventDefault()
+							return handleFjernRepresentererTeam()
+						}}
 						style={{
 							color: '#212529',
 							backgroundColor: !representererTeam ? '#99C3FF' : null,
