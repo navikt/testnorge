@@ -22,16 +22,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("GET /api/v1/gruppe")
 class TestgruppeControllerGetTest extends AbstractControllerTest {
 
+    private static final Bruker BRUKER = Bruker.builder()
+            .brukerId("test")
+            .build();
     @Autowired
     private MockMvc mockMvc;
-
     @MockitoBean
     private BrukerService brukerService;
 
     @BeforeEach
     void setup() {
-
-        when(brukerService.fetchOrCreateBruker()).thenReturn(new Bruker());
+        when(brukerService.fetchOrCreateBruker()).thenReturn(BRUKER);
+        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(BRUKER);
     }
 
     @Disabled
@@ -42,9 +44,8 @@ class TestgruppeControllerGetTest extends AbstractControllerTest {
 
         var bruker = super.createBruker();
         when(brukerService.fetchOrCreateBruker(any())).thenReturn(bruker);
-        when(brukerService.fetchBruker(any())).thenReturn(bruker);
+        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(bruker);
 
-        var testgruppe1 = super.createTestgruppe("Gruppen er ikke en favoritt", bruker);
         var testgruppe2 = super.createTestgruppe("Gruppen er en favoritt", bruker);
         bruker.setFavoritter(Set.of(testgruppe2));
         bruker = super.saveBruker(bruker);

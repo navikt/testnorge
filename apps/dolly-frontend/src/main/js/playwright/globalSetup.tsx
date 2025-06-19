@@ -10,6 +10,7 @@ import {
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
+	brukerTeamsMock,
 	eksisterendeGruppeMock,
 	gjeldendeAzureBrukerMock,
 	gjeldendeProfilMock,
@@ -52,6 +53,7 @@ const arenaMiljoer = new RegExp(/testnav-arena-forvalteren-proxy\/api\/v1\/miljo
 const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/\/profil\/bilde/)
+const brukerTeams = new RegExp(/api\/v1\/bruker\/teams/)
 const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
 const histark = new RegExp(/testnav-histark-proxy\/api\//)
 const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/identiteter\?fragment/)
@@ -107,6 +109,7 @@ const mockRoutes: RouteInfo[] = [
 	{ url: weatherApi, status: 404, response: {} },
 	{ url: current, response: gjeldendeAzureBrukerMock },
 	{ url: profil, response: gjeldendeProfilMock },
+	{ url: brukerTeams, response: brukerTeamsMock },
 	{ url: miljoer, response: miljoeMock },
 	{ url: pensjonMiljoer, response: miljoeMock },
 	{ url: personFragmentSearch, response: personFragmentSearchMock },
