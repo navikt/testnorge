@@ -27,7 +27,6 @@ export const BrukerDropdown = () => {
 	const handleTeamChange = (teamId: string) => {
 		DollyApi.setRepresentererTeam(teamId)
 			.then(() => {
-				mutate()
 				currentMutate()
 			})
 			.catch((error) => {
@@ -39,7 +38,6 @@ export const BrukerDropdown = () => {
 		localStorage.removeItem(teamVarslingLocalStorageKey)
 		DollyApi.fjernRepresentererTeam()
 			.then(() => {
-				mutate()
 				currentMutate()
 			})
 			.catch((error) => {
