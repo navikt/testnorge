@@ -133,9 +133,9 @@ public class BestillingProgress implements Serializable {
 
     private String feil;
 
-    public BestillingProgress(Bestilling bestilling, String ident, Master master) {
+    public BestillingProgress(Long bestillingId, String ident, Master master) {
         this.ident = ident;
-        this.bestilling = bestilling;
+        this.bestillingId = bestillingId;
         this.master = master;
     }
 
@@ -170,7 +170,7 @@ public class BestillingProgress implements Serializable {
         return new EqualsBuilder()
                 .append(getId(), that.getId())
                 .append(getVersjon(), that.getVersjon())
-                .append(getBestilling(), that.getBestilling())
+                .append(getBestillingId(), that.getBestillingId())
                 .append(getIdent(), that.getIdent())
                 .append(getSigrunstubStatus(), that.getSigrunstubStatus())
                 .append(getFullmaktStatus(), that.getFullmaktStatus())
@@ -209,7 +209,7 @@ public class BestillingProgress implements Serializable {
         return new HashCodeBuilder(17, 37)
                 .append(getId())
                 .append(getVersjon())
-                .append(getBestilling())
+                .append(getBestillingId())
                 .append(getIdent())
                 .append(getSigrunstubStatus())
                 .append(getKrrstubStatus())
@@ -248,7 +248,7 @@ public class BestillingProgress implements Serializable {
         return "BestillingProgress{" +
                 "id=" + id +
                 ", versjon=" + versjon +
-                ", bestilling=" + bestilling +
+                ", bestilling=" + bestillingId +
                 ", ident='" + ident + '\'' +
                 ", sigrunstubStatus='" + sigrunstubStatus + '\'' +
                 ", krrstubStatus='" + krrstubStatus + '\'' +

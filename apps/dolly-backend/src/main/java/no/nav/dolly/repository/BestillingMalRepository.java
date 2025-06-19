@@ -19,9 +19,9 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     @Query("update bestilling_mal b set mal_navn = :malNavn where b.id = :id")
     Mono<BestillingMal> updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
-    Flux<BestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
+    Flux<BestillingMal> findByBrukerIdAndMalNavn(String brukerId, String navn);
 
-    Flux<BestillingMal> findByBruker(Bruker bruker);
+    Flux<BestillingMal> findByBrukerId(Long brukerId);
 
     @Query(value = """
             select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,

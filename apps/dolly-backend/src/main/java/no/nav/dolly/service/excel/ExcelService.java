@@ -37,8 +37,7 @@ public class ExcelService {
         var sheet = workbook.getSheet(fane);
 
         var rowCount = new AtomicInteger(0);
-        rows.stream()
-                .forEach(rowValue -> {
+        rows.forEach(rowValue -> {
                     var row = sheet.createRow(rowCount.getAndIncrement());
                     var cellCount = new AtomicInteger(0);
                     Arrays.stream(rowValue)
@@ -59,16 +58,15 @@ public class ExcelService {
     public Mono<Resource> getExcelWorkbook(Long gruppeId) {
 
         long timestamp = System.currentTimeMillis();
-        var testgruppe = testgruppeRepository.findById(gruppeId)
-                .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId));
-
-        return Mono.just(new XSSFWorkbook())
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Testgruppe ikke funnet for id " + gruppeId)))
+                .flatMap(testgruppe -> Mono.just(new XSSFWorkbook())
                 .flatMap(workbook -> Flux.merge(
                                 personExcelService.preparePersonSheet(workbook, testgruppe),
                                 bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
                         .collectList()
                         .doOnNext(resultat -> BankkontoToPersonHelper.appendData(workbook))
-                        .then(Mono.fromCallable(() -> convertToResource(timestamp, workbook))));
+                        .then(Mono.fromCallable(() -> convertToResource(timestamp, workbook)))));
     }
 
     public Resource getExcelOrganisasjonerWorkbook(Bruker bruker) {

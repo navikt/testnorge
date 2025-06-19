@@ -40,9 +40,9 @@ public class ExcelController {
     public ResponseEntity<Resource> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId) {
 
         var bruker = brukerService.fetchOrCreateBruker(brukerId);
-//        var resource = excelService.getExcelOrganisasjonerWorkbook(bruker);
+        var resource = excelService.getExcelOrganisasjonerWorkbook(bruker);
 
-//        return wrapContents(resource);
+        return wrapContents(resource);
         return null; // TBD
     }
 
