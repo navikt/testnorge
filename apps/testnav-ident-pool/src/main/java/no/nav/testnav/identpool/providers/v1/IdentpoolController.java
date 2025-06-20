@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
+import no.nav.testnav.identpool.providers.v1.support.MarkerBruktRequest;
 import no.nav.testnav.identpool.service.IdentpoolService;
 import no.nav.testnav.identpool.service.PoolService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,11 +67,30 @@ public class IdentpoolController {
                                 System.currentTimeMillis() - startTime));
     }
 
+    @PostMapping("/bruk")
+    @Operation(description = "marker eksisterende og ledige identer som i bruk")
+    public Mono<Void> markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) {
+
+        validate(markerBruktRequest.getPersonidentifikator());
+        return identpoolService.markerBrukt(markerBruktRequest)
+                .then();
+    }
+
     @GetMapping("/prodSjekk")
     @Operation(description = "returnerer om en liste av identer finnes i prod.")
     public Flux<TpsStatusDTO> erIProd(@RequestParam Set<String> identer) {
 
         return identpoolService.finnesIProd(identer);
+    }
+
+    @GetMapping("/ledig")
+    @Operation(description = "returnerer true eller false avhengig av om ident er ledig. " +
+            "OBS kun TPS prod-miljø sjekkes for ikke-syntetisk")
+    public Mono<Boolean> erLedig(
+            @RequestHeader String personidentifikator) {
+
+        validate(personidentifikator);
+        return identpoolService.erLedig(personidentifikator);
     }
 
     @GetMapping("/ledige")
