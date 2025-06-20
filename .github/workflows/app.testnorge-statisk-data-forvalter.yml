@@ -2,6 +2,18 @@ name: testnorge-statisk-data-forvalter
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/app.testnorge-statisk-data-forvalter.yml
+      - apps/statisk-data-forvalter/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/slack/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:
