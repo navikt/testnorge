@@ -24,6 +24,7 @@ import { RedigerGruppe } from '@/components/redigerGruppe/RedigerGruppe'
 import { actions } from '@/ducks/gruppe'
 import { createLoadingSelector } from '@/ducks/loading'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { EndreTilknytning } from '@/pages/gruppe/EndreTilknytning/EndreTilknytning'
 
 const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
 const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
@@ -110,6 +111,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 					<div className="gruppe-header__actions">
 						{!erLaast && <LeggTilPaaGruppe antallPersoner={antallPersoner} gruppeId={gruppe.id} />}
 						{!erLaast && <FlyttPersonButton gruppeId={gruppe.id} disabled={antallPersoner < 1} />}
+						{!erLaast && <EndreTilknytning gruppe={gruppe} />}
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<Button
 								data-testid={TestComponentSelectors.BUTTON_REDIGER_GRUPPE}
