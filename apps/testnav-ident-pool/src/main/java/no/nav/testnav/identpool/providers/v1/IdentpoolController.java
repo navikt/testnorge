@@ -73,6 +73,16 @@ public class IdentpoolController {
         return identpoolService.finnesIProd(identer);
     }
 
+    @GetMapping("/ledig")
+    @Operation(description = "returnerer true eller false avhengig av om ident er ledig. " +
+            "OBS kun TPS prod-miljø sjekkes for ikke-syntetisk")
+    public Mono<Boolean> erLedig(
+            @RequestHeader String personidentifikator) {
+
+        validate(personidentifikator);
+        return identpoolService.erLedig(personidentifikator);
+    }
+
     @GetMapping("/ledige")
     @Operation(description = "returnerer identer (FNR) som er ledige og født mellom to år inklusive start og slutt år")
     public Mono<List<String>> erLedige(@RequestParam int fromYear, @RequestParam int toYear,
