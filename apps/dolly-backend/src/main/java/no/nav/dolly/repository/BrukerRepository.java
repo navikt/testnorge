@@ -13,8 +13,8 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
 
     Bruker save(Bruker bruker);
 
-    @Query(value = "from Bruker b where b.brukertype='AZURE' or b.brukertype='TEAM' order by b.brukernavn")
-    List<Bruker> findAllByOrderById();
+    @Query(value = "from Bruker b where (b.brukertype='AZURE' or b.brukertype='TEAM') and b.brukernavn not like 'Systembruker' order by b.brukernavn")
+    List<Bruker> findAllByOrderByBrukernavn();
 
     List<Bruker> findAllByBrukerIdInOrderByBrukernavn(List<String> brukerId);
 
