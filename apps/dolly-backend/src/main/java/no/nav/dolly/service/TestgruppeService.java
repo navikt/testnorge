@@ -230,16 +230,11 @@ public class TestgruppeService {
 
     public Testgruppe endreGruppeTilknytning(Long gruppeId, String brukerId) {
 
-        var gjeldendeBruker = brukerService.fetchOrCreateBruker();
         var gruppe = fetchTestgruppeById(gruppeId);
         var nyEier = brukerService.fetchBrukerByBrukerId(brukerId);
 
         if (gruppe.getOpprettetAv().equals(nyEier)) {
             throw new DollyFunctionalException(format("Gruppe med id %s er allerede tilknyttet bruker %s.", gruppeId, nyEier.getBrukernavn()));
-        }
-
-        if (!gruppe.getOpprettetAv().equals(gjeldendeBruker)) {
-            throw new DollyFunctionalException(format("Gruppe med id %s er ikke tilknyttet din bruker.", gruppeId));
         } else {
 
             gruppe.setOpprettetAv(nyEier);
