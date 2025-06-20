@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
+import no.nav.testnav.identpool.providers.v1.support.MarkerBruktRequest;
 import no.nav.testnav.identpool.service.IdentpoolService;
 import no.nav.testnav.identpool.service.PoolService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,6 +65,15 @@ public class IdentpoolController {
                 .doOnNext(identer ->
                         log.info("rekvirer: {} medgått tid: {} ms", hentIdenterRequest,
                                 System.currentTimeMillis() - startTime));
+    }
+
+    @PostMapping("/bruk")
+    @Operation(description = "marker eksisterende og ledige identer som i bruk")
+    public Mono<Void> markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) {
+
+        validate(markerBruktRequest.getPersonidentifikator());
+        return identpoolService.markerBrukt(markerBruktRequest)
+                .then();
     }
 
     @GetMapping("/prodSjekk")
