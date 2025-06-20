@@ -156,7 +156,7 @@ public class BrukerService {
 
         var brukeren = fetchOrCreateBruker();
         if (brukeren.getBrukertype() == AZURE || brukeren.getBrukertype() == TEAM) {
-            return brukerRepository.findAllByOrderById();
+            return brukerRepository.findAllByOrderByBrukernavn();
 
         } else {
             var brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())

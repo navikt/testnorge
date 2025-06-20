@@ -72,7 +72,7 @@ class BrukerServiceTest {
     void fetchBrukerOrTeamBrukere() {
         when(brukerRepository.save(any())).thenReturn(Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
         brukerService.fetchBrukere();
-        verify(brukerRepository).findAllByOrderById();
+        verify(brukerRepository).findAllByOrderByBrukernavn();
     }
 
     @Test
