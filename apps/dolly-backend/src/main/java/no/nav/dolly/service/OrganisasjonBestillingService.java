@@ -9,7 +9,6 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus.OrgStatus;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
@@ -69,10 +68,10 @@ public class OrganisasjonBestillingService {
     private final JsonBestillingMapper jsonBestillingMapper;
 
     @Transactional
-    public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
+    public Mono<RsOrganisasjonBestillingStatus> fetchBestillingStatusById(Long bestillingId) {
 
-        OrganisasjonBestilling bestilling = organisasjonBestillingRepository.findById(bestillingId)
-                .orElseThrow(() -> new NotFoundException("Fant ikke bestilling med id " + bestillingId));
+        var test = organisasjonBestillingRepository.findById(bestillingId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke bestilling med id " + bestillingId)))
 
         OrganisasjonBestillingProgress bestillingProgress;
         List<OrgStatus> orgStatusList = null;
@@ -153,18 +152,18 @@ public class OrganisasjonBestillingService {
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestilling request) {
 
-//        Bruker bruker = brukerService.fetchOrCreateBruker();
+        Bruker bruker = brukerService.fetchOrCreateBruker();
         OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
                 .antall(1)
                 .ferdig(false)
                 .sistOppdatert(now())
                 .miljoer(join(",", request.getEnvironments()))
                 .bestKriterier(toJson(request.getOrganisasjon()))
-//                .bruker(bruker)
+                .bruker(bruker)
                 .build();
 
         if (isNotBlank(request.getMalBestillingNavn())) {
-//            organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+            organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
 
         return saveBestillingToDB(bestilling);
@@ -216,7 +215,7 @@ public class OrganisasjonBestillingService {
     public List<OrganisasjonBestilling> fetchOrganisasjonBestillingByBrukerId(String brukerId) {
 
         var bruker = isNull(brukerId) ? brukerService.fetchOrCreateBruker() :
-                brukerRepository.findBrukerByBrukerId(brukerId)
+                brukerRepository.findByBrukerId(brukerId)
                         .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 
 //        return organisasjonBestillingRepository.findByBruker(bruker);

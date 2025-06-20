@@ -50,7 +50,8 @@ public class OrganisasjonBestilling {
 
 //    @ManyToOne
 //    @JoinColumn("bruker_id")
-    private Bruker bruker;
+    @Column("BRUKER_ID")
+    private String brukerId;
 
 //    @OneToMany(fetch = FetchType.LAZY)
 //    @JoinColumn("bestilling_id")
@@ -74,7 +75,7 @@ public class OrganisasjonBestilling {
                 .append(ferdig, that.ferdig)
                 .append(opprettetFraId, that.opprettetFraId)
                 .append(bestKriterier, that.bestKriterier)
-                .append(bruker, that.bruker)
+                .append(brukerId, that.brukerId)
                 .isEquals();
     }
 
@@ -89,7 +90,7 @@ public class OrganisasjonBestilling {
                 .append(ferdig)
                 .append(opprettetFraId)
                 .append(bestKriterier)
-                .append(bruker)
+                .append(brukerId)
                 .toHashCode();
     }
 
@@ -104,7 +105,7 @@ public class OrganisasjonBestilling {
                 ", ferdig=" + ferdig +
                 ", opprettetFraId=" + opprettetFraId +
                 ", bestKriterier='" + bestKriterier + '\'' +
-                ", bruker=" + bruker +
+                ", brukerId=" + brukerId +
                 '}';
     }
 }

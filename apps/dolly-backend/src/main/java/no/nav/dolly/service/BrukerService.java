@@ -38,7 +38,7 @@ public class BrukerService {
 
     public Mono<Bruker> fetchBruker(String brukerId) {
 
-        return brukerRepository.findBrukerByBrukerId(brukerId)
+        return brukerRepository.findByBrukerId(brukerId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Bruker id: %s ikke funnet".formatted(brukerId))));
     }
 

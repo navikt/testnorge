@@ -25,9 +25,9 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
 
                         var bruker = (Bruker) context.getProperty("bruker");
-                        var antallIdenter = (int) context.getProperty("antallIdenter");
-                        var antallBestillinger = (int) context.getProperty("antallBestillinger");
-                        var antallIBruk = (int) context.getProperty("antallIBruk");
+                        var antallIdenter = (Integer) context.getProperty("antallIdenter");
+                        var antallBestillinger = (Integer) context.getProperty("antallBestillinger");
+                        var antallIBruk = (Integer) context.getProperty("antallIBruk");
 
                         rsTestgruppe.setAntallIdenter(antallIdenter);
                         rsTestgruppe.setAntallIBruk(antallIBruk);

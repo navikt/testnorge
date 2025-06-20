@@ -169,13 +169,13 @@ public class TestgruppeService {
     public Mono<Void> deleteGruppeById(Long gruppeId) {
 
         return fetchTestgruppeById(gruppeId)
-                .flatMapMany(testgruppe -> identRepository.findAllByTestgruppeId(testgruppe.getId(), Pageable.unpaged()))
-                .collectList()
-                .map(testidenter -> mapperFacade.mapAsList(testidenter, TestidentDTO.class))
-                .flatMap(personService::recyclePersoner)
-                .then(identRepository.deleteByGruppeId(gruppeId))
-                .then(bestillingRepository.deleteByGruppeId(gruppeId))
                 .then(transaksjonMappingRepository.deleteByGruppeId(gruppeId))
+                .then(bestillingService.slettBestillingerByGruppeId(gruppeId))
+                .then(identRepository.findAllByTestgruppeId(gruppeId, Pageable.unpaged())
+                        .collectList()
+                        .map(testidenter -> mapperFacade.mapAsList(testidenter, TestidentDTO.class))
+                        .flatMap(personService::recyclePersoner))
+                .then(identRepository.deleteByGruppeId(gruppeId))
                 .then(brukerService.sletteBrukerFavoritterByGroupId(gruppeId))
                 .then(testgruppeRepository.deleteById(gruppeId));
     }

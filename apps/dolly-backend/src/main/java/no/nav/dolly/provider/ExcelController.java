@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.excel.ExcelService;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,6 @@ import java.io.IOException;
 public class ExcelController {
 
     private final ExcelService excelService;
-    private final BrukerService brukerService;
 
     @SneakyThrows
     @GetMapping(value = "/gruppe/{gruppeId}")
@@ -37,13 +37,10 @@ public class ExcelController {
     @SneakyThrows
     @GetMapping(value = "/organisasjoner")
     @Transactional(readOnly = true)
-    public ResponseEntity<Resource> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId) {
+    public Mono<ResponseEntity<Resource>> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId) {
 
-        var bruker = brukerService.fetchOrCreateBruker(brukerId);
-        var resource = excelService.getExcelOrganisasjonerWorkbook(bruker);
-
-        return wrapContents(resource);
-        return null; // TBD
+        return excelService.getExcelOrganisasjonerWorkbook(brukerId)
+                .map(this::wrapContents);
     }
 
     private ResponseEntity<Resource> wrapContents(Resource resource) throws IOException {

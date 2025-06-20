@@ -154,7 +154,7 @@ public class MalBestillingService {
     public Mono<BestillingMal> saveBestillingMal(Bestilling bestilling, String malNavn, String brukerId) {
 
         return bestillingMalRepository.findByBrukerIdAndMalNavn(brukerId, malNavn)
-                .switchIfEmpty(brukerRepository.findBrukerByBrukerId(brukerId)
+                .switchIfEmpty(brukerRepository.findByBrukerId(brukerId)
                         .map(bruker -> BestillingMal.builder()
                                 .brukerId(bruker.getId())
                                 .malNavn(malNavn)

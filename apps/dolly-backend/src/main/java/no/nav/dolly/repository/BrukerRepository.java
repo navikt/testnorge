@@ -21,7 +21,7 @@ public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
 
     Flux<Bruker> findAllByBrukerIdInOrderByBrukernavn(List<String> brukerId);
 
-    Mono<Bruker> findBrukerByBrukerId(String brukerId);
+    Mono<Bruker> findByBrukerId(String brukerId);
 
     @Modifying
     @Query("""

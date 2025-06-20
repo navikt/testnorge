@@ -38,7 +38,7 @@ public interface TransaksjonMappingRepository extends ReactiveCrudRepository<Tra
             where tm.bestilling_id in
             (select b.id from Bestilling b where b.gruppe_id = :gruppeId)
             """)
-    Mono<Integer> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+    Mono<Void> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
     @Query(value = """
             select tm from transaksjon_mapping tm

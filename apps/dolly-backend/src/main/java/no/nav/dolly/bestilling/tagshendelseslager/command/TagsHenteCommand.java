@@ -37,5 +37,4 @@ public class TagsHenteCommand implements Callable<Mono<JsonNode>> {
                 .bodyToMono(JsonNode.class)
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }

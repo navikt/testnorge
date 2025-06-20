@@ -54,18 +54,17 @@ public class TagController {
     @GetMapping()
     @Transactional
     @Operation(description = "Hent alle gyldige Tags")
-    public Set<TagBeskrivelse> hentAlleTags() {
+    public Flux<TagBeskrivelse> hentAlleTags() {
 
-        return Arrays.stream(Tags.values())
+        return Flux.fromArray(Tags.values())
                 .filter(tags -> !tags.name().equals(Tags.DOLLY.name()))
-                .map(tag -> TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build())
-                .collect(Collectors.toSet());
+                .map(tag -> TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build());
     }
 
     @GetMapping("/ident/{ident}")
     @Transactional
     @Operation(description = "Hent tags på ident")
-    public JsonNode hentTagsPaaIdent(@PathVariable("ident") String ident) {
+    public Mono<JsonNode> hentTagsPaaIdent(@PathVariable("ident") String ident) {
 
         return tagsHendelseslagerConsumer.getTag(ident);
     }
@@ -77,8 +76,8 @@ public class TagController {
     public Mono<TagsOpprettingResponse> sendTagsPaaGruppe(@RequestBody List<Tags> tags,
                                                           @PathVariable("gruppeId") Long gruppeId) {
 
-        return testgruppeRepository.findById(gruppeId)
-                .map(gruppe -> personServiceConsumer.getPdlPersoner(
+       return testgruppeRepository.findById(gruppeId)
+                .flatMap(gruppe -> personServiceConsumer.getPdlPersoner(
                                 gruppe.getTestidenter().stream()
                                         .map(Testident::getIdent)
                                         .toList())
@@ -114,6 +113,6 @@ public class TagController {
                         .flatMap(Flux::fromIterable)
                         .collectList()
                         .flatMap(personBolk -> tagsHendelseslagerConsumer.createTags(personBolk, tags)))
-                .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId))));
     }
 }

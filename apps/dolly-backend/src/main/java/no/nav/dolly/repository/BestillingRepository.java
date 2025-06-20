@@ -86,8 +86,6 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             """)
     Flux<Bestilling> getBestillingerFromGruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
-    Flux<Bestilling> getBestillingByGruppe_Id(Long gruppeId);
-
     @Modifying
     Mono<Void> deleteByGruppeId(Long gruppeId);
 
@@ -107,7 +105,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                             from Bestilling_Progress bp
                             where bp.bestilling_id = :bestillingId)
             """)
-    Mono<Integer> deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
+    Mono<Void> deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 
     @Modifying
     @Query("""

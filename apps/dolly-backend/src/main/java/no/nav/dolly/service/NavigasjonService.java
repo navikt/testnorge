@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
@@ -21,6 +22,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalDTO;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -48,26 +50,30 @@ public class NavigasjonService {
     private final PersonServiceConsumer personServiceConsumer;
     private final PdlDataConsumer pdlDataConsumer;
     private final TestgruppeRepository testgruppeRepository;
+    private final GetAuthenticatedUserId getAuthenticatedUserId;
+    private final BrukerRepository brukerRepository;
 
     @Transactional(readOnly = true)
-    public Mono<RsWhereAmI> navigerTilIdent(String ident, Bruker bruker) {
+    public Mono<RsWhereAmI> navigerTilIdent(String ident) {
 
-        return Flux.merge(getPdlForvalterIdenter(ident),
-                        getPdlPersonIdenter(ident))
-                .filter(Objects::nonNull)
-                .filter(ident1 -> filterOnBrukertype(ident, bruker.getBrukertype()))
-                .distinct()
-                .flatMap(ident1 -> Mono.justOrEmpty(identRepository.findByIdent(ident1))
-                        .map(testident -> RsWhereAmI.builder()
-                                .gruppe(mapGruppe(testident.getTestgruppe(), bruker.getBrukerId()))
-                                .identHovedperson(testident.getIdent())
-                                .identNavigerTil(ident)
-                                .sidetall(Math.floorDiv(
-                                        identService.getPaginertIdentIndex(testident.getIdent(), testident.getTestgruppe().getId())
-                                                .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, ident))), 10))
-                                .build()))
-                .switchIfEmpty(Flux.error(() -> new NotFoundException(String.format(IKKE_FUNNET, ident))))
-                .next();
+        return getAuthenticatedUserId.call()
+                .flatMap(brukerRepository::findByBrukerId)
+                .flatMapMany(bruker -> Flux.merge(getPdlForvalterIdenter(ident),
+                                getPdlPersonIdenter(ident))
+                        .filter(Objects::nonNull)
+                        .filter(ident1 -> filterOnBrukertype(ident, bruker.getBrukertype()))
+                        .distinct()
+                        .flatMap(ident1 -> identService.fetchTestident(ident1)
+                                .flatMap(testident -> Mono.zip(testgruppeRepository.findById(testident.getGruppeId()),
+                                                identService.getPaginertIdentIndex(ident, testident.getGruppeId()))
+                                        .map(tuple -> RsWhereAmI.builder()
+                                                .gruppe(mapGruppe(tuple.getT1(), bruker))
+                                                .identHovedperson(testident.getIdent())
+                                                .identNavigerTil(ident)
+                                                .sidetall(Math.floorDiv(tuple.getT2(), 10))
+                                                .build()))))
+                .next()
+                .switchIfEmpty(Mono.error(() -> new NotFoundException(String.format(IKKE_FUNNET, ident))));
     }
 
     public Mono<RsWhereAmI> navigerTilBestilling(Long bestillingId) {
@@ -77,29 +83,28 @@ public class NavigasjonService {
                         .map(testgruppe -> {
                             bestilling.setGruppe(testgruppe);
                             return bestilling;
-                        }))
-                .map(bestilling -> RsWhereAmI.builder()
-                        .bestillingNavigerTil(bestillingId)
-                        .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))
-                        .sidetall(Math.floorDiv(
-                                bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppe().getId())
-                                        .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, bestillingId))), 10))
-                        .build())
+                        })
+                        .flatMap(best -> bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppe().getId()))
+                        .map(indeks -> RsWhereAmI.builder()
+                                .bestillingNavigerTil(bestillingId)
+                                .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))
+                                .sidetall(Math.floorDiv(indeks, 10))
+                                .build()))
                 .switchIfEmpty(Mono.error(() -> new NotFoundException(String.format(IKKE_FUNNET, bestillingId))));
     }
 
     private boolean filterOnBrukertype(String ident, Bruker.Brukertype brukertype) {
+
         if (brukertype == Bruker.Brukertype.BANKID) {
             return isTenorIdent(ident);
         }
         return true;
     }
 
-    private RsTestgruppe mapGruppe(Testgruppe testgruppe, String brukerId) {
+    private RsTestgruppe mapGruppe(Testgruppe testgruppe, Bruker bruker) {
 
-        log.info("BrukerId: {}", brukerId);
         var context = MappingContextUtils.getMappingContext();
-        context.setProperty("brukerId", brukerId);
+        context.setProperty("bruker", bruker);
         return mapperFacade.map(testgruppe, RsTestgruppe.class, context);
     }
 

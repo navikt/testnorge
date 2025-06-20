@@ -20,13 +20,13 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
                    where bp.bestilling_id in (select b.id 
                                               from Bestilling b where b.gruppe_id = :gruppeId)
             """)
-    Mono<Integer> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+    Mono<Void> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
     @Modifying
-    Mono<Integer> deleteByIdent(String ident);
+    Mono<Void> deleteByIdent(String ident);
 
     @Modifying
-    Mono<Integer> deleteByBestilling_Id(Long bestillingId);
+    Mono<Mono> deleteByBestillingId(Long bestillingId);
 
     Flux<BestillingProgress> findByIdent(String ident);
 

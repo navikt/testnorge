@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +50,7 @@ public class OrganisasjonBestillingController {
     @PostMapping()
     @Operation(description = "Opprett organisasjon")
     @Transactional
-    public RsOrganisasjonBestillingStatus opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
+    public Mono<RsOrganisasjonBestillingStatus> opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
 
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
 

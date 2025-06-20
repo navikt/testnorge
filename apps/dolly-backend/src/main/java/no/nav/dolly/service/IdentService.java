@@ -1,12 +1,15 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
@@ -35,56 +38,73 @@ public class IdentService {
     private final IdentRepository identRepository;
     private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
+    private final MapperFacade mapperFacade;
+    private final PersonService personService;
+    private final BestillingService bestillingService;
+
+    public Mono<Testident> fetchTestident(String ident) {
+
+        return identRepository.findByIdent(ident)
+                .switchIfEmpty(Mono.error(new NotFoundException(format(IDENT_NOT_FOUND, ident))));
+    }
 
     @Transactional(readOnly = true)
-    public boolean exists(String ident) {
+    public Mono<Boolean> exists(String ident) {
+
         return identRepository.existsByIdent(ident);
     }
 
     @Transactional
     public Mono<Testident> saveIdentTilGruppe(String ident, Long gruppeId, Master master, String beskrivelse) {
 
-        Testident testident = identRepository.findByIdent(ident)
-                .orElse(new Testident());
-
-        testident.setIdent(ident);
-        testident.setTestgruppe(testgruppe);
-        testident.setMaster(master);
-        testident.setBeskrivelse(beskrivelse);
-        testident.setIBruk(false);
-
-        return identRepository.save(testident);
+        return identRepository.findByIdent(ident)
+                .switchIfEmpty(Mono.just(Testident.builder()
+                                .ident(ident)
+                                .gruppeId(gruppeId)
+                                .master(master)
+                                .beskrivelse(beskrivelse)
+                                .iBruk(false)
+                                .build())
+                        .flatMap(identRepository::save))
+                .map(testident -> {
+                    testident.setGruppeId(gruppeId);
+                    testident.setMaster(master);
+                    testident.setBeskrivelse(beskrivelse);
+                    return testident;
+                })
+                .flatMap(identRepository::save);
     }
 
-    public int slettTestident(String ident) {
+    public Mono<Void> slettTestident(String ident) {
 
-        transaksjonMappingRepository.deleteAllByIdent(ident);
-        return identRepository.deleteTestidentByIdent(ident);
-    }
-
-    public int slettTestidenterByGruppeId(Long gruppeId) {
-
-        return identRepository.deleteAllByTestgruppeId(gruppeId);
-    }
-
-    @Transactional
-    public Testident saveIdentIBruk(String ident, boolean iBruk) {
-
-        Testident testident = identRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(format(IDENT_NOT_FOUND, ident)));
-
-        testident.setIBruk(iBruk);
-        return identRepository.save(testident);
+        return fetchTestident(ident)
+                .map(testident -> mapperFacade.map(testident, TestidentDTO.class))
+                .flatMap(testident -> personService.recyclePersoner(List.of(testident)))
+                .then(transaksjonMappingRepository.deleteAllByIdent(ident))
+                .then(bestillingService.slettBestillingByTestIdent(ident))
+                .then(identRepository.deleteTestidentByIdent(ident));
     }
 
     @Transactional
-    public Testident saveIdentBeskrivelse(String ident, String beskrivelse) {
+    public Mono<Testident> saveIdentIBruk(String ident, boolean iBruk) {
 
-        Testident testident = identRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(format(IDENT_NOT_FOUND, ident)));
+        return fetchTestident(ident)
+                .map(testident -> {
+                    testident.setIBruk(iBruk);
+                    return testident;
+                })
+                .flatMap(identRepository::save);
+    }
 
-        testident.setBeskrivelse(beskrivelse);
-        return identRepository.save(testident);
+    @Transactional
+    public Mono<Testident> saveIdentBeskrivelse(String ident, String beskrivelse) {
+
+        return fetchTestident(ident)
+                .map(testident -> {
+                    testident.setBeskrivelse(beskrivelse);
+                    return testident;
+                })
+                .flatMap(identRepository::save);
     }
 
     @Transactional
@@ -133,21 +153,22 @@ public class IdentService {
                 .map(tuple -> new PageImpl<>(tuple.getT1(), page, tuple.getT2()));
     }
 
-    public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {
+    public Mono<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {
 
-        return identRepository.getPaginertTestidentIndex(ident, gruppeId);
+        return identRepository.getPaginertTestidentIndex(ident, gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException(format(IDENT_NOT_FOUND, ident))));
     }
 
-    public Testident getTestIdent(String ident) {
+    public Mono<Testident> getTestIdent(String ident) {
 
         return identRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(format(IDENT_NOT_FOUND, ident)));
+                .switchIfEmpty(Mono.error(new NotFoundException(format(IDENT_NOT_FOUND, ident))));
     }
 
-    public List<Testident> getTestidenterByGruppe(Long id) {
-
-        return identRepository.findByTestgruppe(id);
-    }
+//    public List<Testident> getTestidenterByGruppe(Long id) {
+//
+//        return identRepository.findByTestgruppe(id);
+//    }
 
     public FinnesDTO exists(List<String> identer) {
 

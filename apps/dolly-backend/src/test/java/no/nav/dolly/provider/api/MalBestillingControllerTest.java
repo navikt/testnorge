@@ -101,8 +101,8 @@ class MalBestillingControllerTest {
     @DisplayName("Oppretter og returnerer alle maler tilknyttet to forskjellige brukere")
     void shouldCreateAndGetMaler() throws Exception {
 
-        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-        var brukerTo = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
+        var brukerEn = brukerRepository.findByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var brukerTo = brukerRepository.findByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
 
         var bestilling = saveDummyBestilling(brukerEn, saveDummyGruppe());
         var bestillingTo = saveDummyBestilling(brukerTo, saveDummyGruppe());
@@ -131,7 +131,7 @@ class MalBestillingControllerTest {
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
-        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var brukerEn = brukerRepository.findByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bestilling = saveDummyBestilling(brukerEn, saveDummyGruppe());
 
         mockMvc.perform(post("/api/v1/malbestilling")
@@ -150,7 +150,7 @@ class MalBestillingControllerTest {
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
 
-        var brukerEn = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var brukerEn = brukerRepository.findByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bestillingMal = saveDummyBestillingMal(brukerEn);
 
         mockMvc.perform(put("/api/v1/malbestilling/id/{id}", bestillingMal.getId())

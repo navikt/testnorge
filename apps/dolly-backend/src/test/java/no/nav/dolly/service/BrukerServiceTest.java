@@ -56,14 +56,14 @@ class BrukerServiceTest {
 
     @Test
     void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerErFunnet() {
-        when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.of(Bruker.builder().build()));
+        when(brukerRepository.findByBrukerId(any())).thenReturn(Optional.of(Bruker.builder().build()));
         Bruker b = brukerService.fetchBruker("test");
         assertThat(b, is(notNullValue()));
     }
 
     @Test
     void fetchBruker_kasterExceptionHvisIngenBrukerFunnet() {
-        when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.empty());
+        when(brukerRepository.findByBrukerId(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () ->
                 brukerService.fetchBruker(BRUKERID));
     }
@@ -88,7 +88,7 @@ class BrukerServiceTest {
         Bruker bruker = Bruker.builder().brukerId(BRUKERID).favoritter(new HashSet<>()).build();
 
         when(testgruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
-        when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));
+        when(brukerRepository.findByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
         Bruker hentetBruker = brukerService.leggTilFavoritt(ID);
@@ -114,7 +114,7 @@ class BrukerServiceTest {
         testgruppe2.setFavorisertAv(new HashSet<>(singletonList(bruker)));
 
         when(testgruppeRepository.findById(ID)).thenReturn(Optional.of(testgruppe));
-        when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));
+        when(brukerRepository.findByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
         Bruker hentetBruker = brukerService.fjernFavoritt(ID);

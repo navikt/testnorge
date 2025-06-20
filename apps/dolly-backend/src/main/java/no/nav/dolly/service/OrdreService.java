@@ -21,6 +21,7 @@ import org.slf4j.event.Level;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -38,24 +39,21 @@ public class OrdreService {
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
-    public RsOrdreStatus sendOrdre(String ident) {
+    public Mono<RsOrdreStatus> sendOrdre(String ident) {
 
-        var testident = identRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, ident)));
-
-        return Flux.just(BestillingProgress.builder()
+        return identRepository.findByIdent(ident)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format(IKKE_FUNNET, ident))))
+                .map(testident -> BestillingProgress.builder()
                         .ident(ident)
                         .master(testident.getMaster())
-                        .bestilling(Bestilling.builder()
-                                .id(1L)
-                                .build())
+                        .bestillingId(1L)
                         .build())
-                .flatMap(progress -> Flux.just(DollyPerson.builder()
+                .flatMap(progress -> Mono.just(DollyPerson.builder()
                                 .ident(ident)
                                 .master(progress.getMaster())
                                 .isOrdre(true)
                                 .build())
-                        .flatMap(dollyperson -> sendOrdre(dollyperson, progress)
+                        .map(dollyperson -> sendOrdre(dollyperson, progress)
                                 .flatMap(pdlOrdreResponse ->
                                         personServiceClient.syncPerson(dollyperson, progress)
                                                 .map(ClientFuture::get)
@@ -68,8 +66,8 @@ public class OrdreService {
                                                 .collectList()
                                                 .map(status -> RsOrdreStatus.builder()
                                                         .status(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), objectMapper))
-                                                        .build()))))
-                .blockFirst();
+                                                        .build())))
+                        .flatMap(Mono::from));
     }
 
     private Flux<BestillingProgress> sendOrdre(DollyPerson dollyPerson, BestillingProgress progress) {

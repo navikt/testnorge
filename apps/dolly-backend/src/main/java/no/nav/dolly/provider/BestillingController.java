@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
@@ -25,11 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Set;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -40,11 +36,11 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequestMapping(value = "/api/v1/bestilling", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BestillingController {
 
-    private final MapperFacade mapperFacade;
     private final BestillingService bestillingService;
-    private final OrganisasjonBestillingService organisasjonBestillingService;
-    private final NavigasjonService navigasjonService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
+    private final MapperFacade mapperFacade;
+    private final NavigasjonService navigasjonService;
+    private final OrganisasjonBestillingService organisasjonBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")

@@ -17,9 +17,9 @@ public interface OrganisasjonBestillingRepository extends ReactiveCrudRepository
             where b = :bestilling and not exists
             (select bp from organisasjon_bestilling_progress bp where bp.bestilling_id = :bestillingId)
             """)
-    Mono<Integer> deleteBestillingWithNoChildren(@Param("bestillingId") OrganisasjonBestilling bestillingId);
+    Mono<Void> deleteBestillingWithNoChildren(@Param("bestillingId") OrganisasjonBestilling bestillingId);
 
-    Flux<OrganisasjonBestilling> findByBruker(Bruker bruker);
+    Flux<OrganisasjonBestilling> findByBrukerId(String brukerId);
 
     @Modifying
     @Query("""
@@ -27,5 +27,5 @@ public interface OrganisasjonBestillingRepository extends ReactiveCrudRepository
                     set ferdig = true
                     where ob.ferdig = false
             """)
-    Mono<Integer> stopAllUnfinished();
+    Mono<Void> stopAllUnfinished();
 }

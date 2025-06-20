@@ -68,14 +68,4 @@ class IdentServiceTest {
 
         verify(identRepository).deleteTestidentByIdent(ident);
     }
-
-    @Test
-    void slettTestidenterByGruppeId_ok() {
-
-        long gruppeId = 1L;
-
-        identService.slettTestidenterByGruppeId(gruppeId);
-
-        verify(identRepository).deleteAllByTestgruppeId(gruppeId);
-    }
 }

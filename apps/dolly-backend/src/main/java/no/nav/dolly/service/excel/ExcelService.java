@@ -69,15 +69,14 @@ public class ExcelService {
                         .then(Mono.fromCallable(() -> convertToResource(timestamp, workbook)))));
     }
 
-    public Resource getExcelOrganisasjonerWorkbook(Bruker bruker) {
+    public Mono<Resource> getExcelOrganisasjonerWorkbook(String brukerId) {
 
         long timestamp = System.currentTimeMillis();
 
         var workbook = new XSSFWorkbook();
 
-        organisasjonExcelService.prepareOrganisasjonSheet(workbook, bruker);
-
-        return convertToResource(timestamp, workbook);
+        return organisasjonExcelService.prepareOrganisasjonSheet(workbook, brukerId)
+                .then(Mono.just(convertToResource(timestamp, workbook)));
     }
 
     private Resource convertToResource(long timestamp, XSSFWorkbook workbook) {

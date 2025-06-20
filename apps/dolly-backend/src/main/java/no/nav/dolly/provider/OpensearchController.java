@@ -21,16 +21,16 @@ public class OpensearchController {
 
     @DeleteMapping("/bestilling/id/{id}")
     @Operation(description = "Sletter søkbar bestilling, basert på id")
-    public void deleteBestilling(@PathVariable long id) {
+    public Mono<Void> deleteBestilling(@PathVariable long id) {
 
-        bestillingElasticRepository.deleteById(id);
+        return bestillingElasticRepository.deleteById(id);
     }
 
     @DeleteMapping()
     @Operation(description = "Sletter all data inkludert indeks")
     public Mono<JsonNode> delete() {
 
-        bestillingElasticRepository.deleteAll();
-        return openSearchService.deleteIndex();
+        return bestillingElasticRepository.deleteAll()
+                .then(openSearchService.deleteIndex());
     }
 }

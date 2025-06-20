@@ -5,22 +5,16 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.bestilling.service.OppdaterPersonService;
-import no.nav.dolly.domain.dto.TestidentDTO;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrdreStatus;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.OrdreService;
-import no.nav.dolly.service.PersonService;
-import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
@@ -39,8 +33,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static java.lang.String.format;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
@@ -51,15 +43,11 @@ public class TestpersonController {
 
     private final BestillingService bestillingService;
     private final GjenopprettIdentService gjenopprettIdentService;
-    private final TransaksjonMappingService transaksjonMappingService;
     private final OppdaterPersonService oppdaterPersonService;
     private final MapperFacade mapperFacade;
     private final IdentService identService;
-    private final BrukerService brukerService;
-    private final PersonService personService;
     private final NavigasjonService navigasjonService;
     private final OrdreService ordreService;
-//    private final GetUserInfo getUserInfo;
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
@@ -109,19 +97,9 @@ public class TestpersonController {
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{ident}")
-    public void deleteTestident(@PathVariable String ident) {
+    public Mono<Void> deleteTestident(@PathVariable String ident) {
 
-        if (!identService.exists(ident)) {
-            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
-        }
-        var testIdenter = mapperFacade.mapAsList(
-                List.of(identService.getTestIdent(ident)), TestidentDTO.class);
-
-        transaksjonMappingService.slettTransaksjonMappingByTestident(ident);
-        bestillingService.slettBestillingByTestIdent(ident);
-        identService.slettTestident(ident);
-
-        personService.recyclePersoner(testIdenter);
+        return identService.slettTestident(ident);
     }
 
     @Operation(description = "Naviger til ønsket testperson")
@@ -129,14 +107,12 @@ public class TestpersonController {
     @GetMapping("/naviger/{ident}")
     public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 
-//        Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
-//        return navigasjonService.navigerTilIdent(ident, bruker);
-        return null; // TBD
+        return navigasjonService.navigerTilIdent(ident);
     }
 
     @Operation(description = "Sjekk om ønsket testperson finnes i Dolly")
     @GetMapping("/finnes/{ident}")
-    public Boolean finnesTestident(@PathVariable String ident) {
+    public Mono<Boolean> finnesTestident(@PathVariable String ident) {
 
         return identService.exists(ident);
     }
@@ -151,7 +127,7 @@ public class TestpersonController {
     @Operation(description = "Send ønsket testperson til miljø")
     @Transactional
     @PostMapping("/ident/{ident}/ordre")
-    public RsOrdreStatus sendOrdre(@PathVariable String ident) {
+    public Mono<RsOrdreStatus> sendOrdre(@PathVariable String ident) {
 
         return ordreService.sendOrdre(ident);
     }
