@@ -15,6 +15,7 @@ import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -36,12 +37,12 @@ public class OrganisasjonBestillingMalService {
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final MapperFacade mapperFacade;
 
-    public void saveOrganisasjonBestillingMal(OrganisasjonBestilling organisasjonBestilling, String malNavn, Bruker bruker) {
+    public Mono<OrganisasjonBestillingMal>  saveOrganisasjonBestillingMal(OrganisasjonBestilling organisasjonBestilling, String malNavn, Bruker bruker) {
 
         overskrivDuplikateMalbestillinger(malNavn, bruker);
         organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
                 .bestKriterier(organisasjonBestilling.getBestKriterier())
-                .bruker(bruker)
+                .bruker(organisasjonBestilling.getBruker())
                 .malNavn(malNavn)
                 .miljoer(organisasjonBestilling.getMiljoer())
                 .build());

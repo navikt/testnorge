@@ -19,6 +19,7 @@ import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,13 +60,14 @@ public class OrganisasjonBestillingService {
     private static final List<Status> DEPLOY_ENDED_STATUS_LIST = List.of(COMPLETED, ERROR, FAILED);
 
     private final BrukerRepository brukerRepository;
-    private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
-    private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
-    private final OrganisasjonProgressService progressService;
-    private final OrganisasjonConsumer organisasjonConsumer;
     private final BrukerService brukerService;
-    private final ObjectMapper objectMapper;
+    private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final JsonBestillingMapper jsonBestillingMapper;
+    private final ObjectMapper objectMapper;
+    private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
+    private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
+    private final OrganisasjonConsumer organisasjonConsumer;
+    private final OrganisasjonProgressService progressService;
 
     @Transactional
     public Mono<RsOrganisasjonBestillingStatus> fetchBestillingStatusById(Long bestillingId) {
@@ -150,23 +152,27 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestilling request) {
+    public Mono<OrganisasjonBestilling> saveBestilling(RsOrganisasjonBestilling request) {
 
-        Bruker bruker = brukerService.fetchOrCreateBruker();
-        OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
+        var test =  getAuthenticatedUserId.call()
+                .flatMap(brukerRepository::findByBrukerId)
+                .map(bruker -> OrganisasjonBestilling.builder()
                 .antall(1)
                 .ferdig(false)
                 .sistOppdatert(now())
                 .miljoer(join(",", request.getEnvironments()))
                 .bestKriterier(toJson(request.getOrganisasjon()))
                 .bruker(bruker)
-                .build();
-
-        if (isNotBlank(request.getMalBestillingNavn())) {
-            organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
-        }
-
-        return saveBestillingToDB(bestilling);
+                        .brukerId(bruker.getBrukerId())
+                .build())
+                .flatMap(organisasjonBestillingRepository::save)
+                .doOnNext(bestilling -> {
+                    if (isNotBlank(request.getMalBestillingNavn())) {
+                        return organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bestilling.getBruker())
+                                .thenReturn(Mono.just(bestilling));
+                    }
+                    return Mono.just(bestilling);
+                });
     }
 
     @Transactional

@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -52,6 +53,9 @@ public class OrganisasjonBestilling {
 //    @JoinColumn("bruker_id")
     @Column("BRUKER_ID")
     private String brukerId;
+
+    @Transient
+    private Bruker bruker;
 
 //    @OneToMany(fetch = FetchType.LAZY)
 //    @JoinColumn("bestilling_id")
