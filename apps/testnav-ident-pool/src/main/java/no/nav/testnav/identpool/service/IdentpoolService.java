@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
+import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,9 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,5 +69,27 @@ public class IdentpoolService {
                         Identtype.FNR, LEDIG, isTrue(syntetisk))
                 .map(Ident::getPersonidentifikator)
                 .collectList();
+    }
+
+    public Mono<Boolean> erLedig(String personidentifikator) {
+
+        return identRepository.findByPersonidentifikator(personidentifikator)
+                .flatMap(testident -> {
+                    if (testident.getRekvireringsstatus().equals(Rekvireringsstatus.I_BRUK)) {
+                        return Mono.just(false);
+                    } else if (testident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) &&
+                            personidentifikator.getBytes(StandardCharsets.UTF_8)[2] >= '4') {
+                        return Mono.just(true);
+                    } else {
+                        return tpsMessagingConsumer.getIdenterProdStatus(Collections.singleton(personidentifikator))
+                                .map(status -> !status.isInUse())
+                                .next();
+                    }
+                })
+                .switchIfEmpty(personidentifikator.getBytes(StandardCharsets.UTF_8)[2] >= '4'
+                        ? Mono.just(true)
+                        : tpsMessagingConsumer.getIdenterProdStatus(Collections.singleton(personidentifikator))
+                        .map(status -> !status.isInUse())
+                        .next());
     }
 }

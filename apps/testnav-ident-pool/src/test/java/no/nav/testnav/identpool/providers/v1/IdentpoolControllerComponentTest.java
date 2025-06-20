@@ -43,6 +43,7 @@ class IdentpoolControllerComponentTest {
     private static final String PROD_SJEKK = "/prodSjekk";
     private static final String FRIGJOER = "/frigjoer";
     private static final String LEDIGE = "/ledige";
+    private static final String LEDIG = "/ledig";
 
     private static final String FNR_LEDIG = "10108000398";
     private static final String DNR_LEDIG = "50108000381";
@@ -318,6 +319,40 @@ class IdentpoolControllerComponentTest {
                 .isOk()
                 .expectBody()
                 .json("[\"" + FNR_LEDIG + "\"]");
+    }
+
+    @Test
+    void sjekkLedigSyntetisk_FinnesIDatabaseOgIbruk() {
+
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(
+                TpsStatusDTO.builder().ident(FNR_IBRUK).inUse(true).build()));
+
+        webTestClient.get()
+                .uri(uriSpec -> uriSpec.path(IDENT_V1_BASEURL + LEDIG)
+                        .build())
+                .header("personidentifikator", FNR_IBRUK)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Boolean.class)
+                .isEqualTo(false);
+    }
+
+    @Test
+    void sjekkLedigSyntetisk_FinnesIDatabaseOgLedigMenIBrukIProd() {
+
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet())).thenReturn(Flux.just(
+                TpsStatusDTO.builder().ident(FNR_LEDIG).inUse(true).build()));
+
+        webTestClient.get()
+                .uri(uriSpec -> uriSpec.path(IDENT_V1_BASEURL + LEDIG)
+                        .build())
+                .header("personidentifikator", FNR_LEDIG)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Boolean.class)
+                .isEqualTo(false);
     }
 
     private static Ident createIdentEntity(Identtype identtype, String ident, Rekvireringsstatus rekvireringsstatus, int day) {
