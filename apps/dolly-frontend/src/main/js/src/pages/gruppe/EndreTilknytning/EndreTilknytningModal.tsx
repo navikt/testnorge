@@ -49,7 +49,7 @@ export const EndreTilknytningModal = ({ gruppe, modalIsOpen, closeModal }) => {
 					<DollySelect
 						name={'brukerId'}
 						label="Ny eier"
-						options={brukerOptions}
+						options={brukerOptions ?? []}
 						value={valgtBruker}
 						size="grow"
 						onChange={(value) => setValgtBruker(value?.value)}
