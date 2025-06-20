@@ -15,6 +15,8 @@ import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 import { DollyApi } from '@/service/Api'
 import dollyTeam from '@/assets/img/dollyTeam.png'
 import { teamVarslingLocalStorageKey } from '@/components/layout/header/TeamVarsel'
+import { useBoolean } from 'react-use'
+import Loading from '@/components/ui/loading/Loading'
 
 export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
@@ -24,24 +26,30 @@ export const BrukerDropdown = () => {
 	const { brukerTeams } = useBrukerTeams()
 	const representererTeam = currentBruker?.representererTeam
 
+	const [isLoading, setIsLoading] = useBoolean(false)
+
 	const handleTeamChange = (teamId: string) => {
+		setIsLoading(true)
 		DollyApi.setRepresentererTeam(teamId)
 			.then(() => {
-				currentMutate()
+				currentMutate().then(() => setIsLoading(false))
 			})
 			.catch((error) => {
 				console.error('Feil ved valg av gjeldende team: ', error)
+				setIsLoading(false)
 			})
 	}
 
 	const handleFjernRepresentererTeam = () => {
+		setIsLoading(true)
 		localStorage.removeItem(teamVarslingLocalStorageKey)
 		DollyApi.fjernRepresentererTeam()
 			.then(() => {
-				currentMutate()
+				currentMutate().then(() => setIsLoading(false))
 			})
 			.catch((error) => {
 				console.error('Feil ved valg av gjeldende bruker: ', error)
+				setIsLoading(false)
 			})
 	}
 
@@ -52,14 +60,20 @@ export const BrukerDropdown = () => {
 				trigger={
 					<ActionMenu.Trigger style={{ hover: 'blue' }}>
 						<div className="profil-area">
-							<div className="img-logo">
-								<img
-									data-testid={TestComponentSelectors.BUTTON_PROFIL}
-									alt="Profilbilde"
-									src={representererTeam ? dollyTeam : brukerBilde || getDefaultImage()}
-								/>
-							</div>
-							<p>{representererTeam ? representererTeam.navn : brukerProfil?.visningsNavn}</p>
+							{isLoading ? (
+								<Loading label="Laster ..." className="loading-component loading-white" />
+							) : (
+								<>
+									<div className="img-logo">
+										<img
+											data-testid={TestComponentSelectors.BUTTON_PROFIL}
+											alt="Profilbilde"
+											src={representererTeam ? dollyTeam : brukerBilde || getDefaultImage()}
+										/>
+									</div>
+									<p>{representererTeam ? representererTeam.navn : brukerProfil?.visningsNavn}</p>
+								</>
+							)}
 						</div>
 					</ActionMenu.Trigger>
 				}
