@@ -18,6 +18,9 @@ export const EndreTilknytningModal = ({ gruppe, modalIsOpen, closeModal }) => {
 	const [valgtBruker, setValgtBruker] = useState(gruppe.opprettetAv?.brukerId)
 	const [feilmelding, setFeilmelding] = useState('')
 
+	console.log('gruppe: ', gruppe) //TODO - SLETT MEG
+	console.log('valgtBruker: ', valgtBruker) //TODO - SLETT MEG
+
 	const brukerOptions = brukere?.map((bruker) => {
 		const erTeam = bruker?.brukertype === 'TEAM'
 		return {
