@@ -228,7 +228,7 @@ public class TestgruppeService {
         return pdlDataConsumer.putStandalone(ident, true);
     }
 
-    public Testgruppe endreGruppeTilknytning(Long gruppeId, String brukerId) {
+    public void endreGruppeTilknytning(Long gruppeId, String brukerId) {
 
         var gruppe = fetchTestgruppeById(gruppeId);
         var nyEier = brukerService.fetchBrukerByBrukerId(brukerId);
@@ -239,7 +239,7 @@ public class TestgruppeService {
 
             gruppe.setOpprettetAv(nyEier);
             gruppe.setSistEndretAv(nyEier);
-            return testgruppeRepository.save(gruppe);
+            testgruppeRepository.save(gruppe);
         }
     }
 

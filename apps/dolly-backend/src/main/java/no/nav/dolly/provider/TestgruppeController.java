@@ -86,10 +86,10 @@ public class TestgruppeController {
     @Transactional
     @PutMapping(value = "/{gruppeId}/tilknytning/{brukerId}")
     @Operation(description = "Endre tilknytning av gruppe")
-    public Testgruppe endreGruppeTilknytning(@PathVariable("gruppeId") Long gruppeId,
+    public void endreGruppeTilknytning(@PathVariable("gruppeId") Long gruppeId,
                                              @PathVariable("brukerId") String brukerId) {
 
-        return testgruppeService.endreGruppeTilknytning(gruppeId, brukerId);
+        testgruppeService.endreGruppeTilknytning(gruppeId, brukerId);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
