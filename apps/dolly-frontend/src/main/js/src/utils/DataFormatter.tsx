@@ -274,7 +274,7 @@ export const formatXml = (xml: string, tab = '\t') => {
 	return formatted.substring(1, formatted.length - 3)
 }
 
-export const formatBrukerNavn = (brukerNavn) => {
+export const formatBrukerNavn = (brukerNavn: string | undefined) => {
 	if (!brukerNavn) {
 		return ''
 	}
