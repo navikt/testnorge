@@ -29,6 +29,8 @@ export const BrukerDropdown = () => {
 
 	const brukerNavn = formatBrukerNavn(brukerProfil?.visningsNavn)
 
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
+
 	const [isLoading, setIsLoading] = useBoolean(false)
 
 	const handleTeamChange = (teamId: string) => {
@@ -94,27 +96,28 @@ export const BrukerDropdown = () => {
 					>
 						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
 						<DropdownStyledLink href="">
-							{brukerNavn + (!representererTeam ? ' (valgt)' : '')}
+							{brukerNavn + (!representererTeam && !bankIdBruker ? ' (valgt)' : '')}
 						</DropdownStyledLink>
 					</ActionMenu.Item>
-					{brukerTeams?.map((team) => (
-						<ActionMenu.Item
-							onClick={(event) => {
-								event.preventDefault()
-								handleTeamChange(team.id)
-							}}
-							key={team.id}
-							style={{
-								color: '#212529',
-								backgroundColor: representererTeam?.id === team.id ? '#99C3FF' : null,
-							}}
-						>
-							<DropdownStyledIcon kind="group" fontSize="1.5rem" />
-							<DropdownStyledLink href="">
-								{team.navn + (representererTeam?.id === team.id ? ' (valgt)' : '')}
-							</DropdownStyledLink>
-						</ActionMenu.Item>
-					))}
+					{!bankIdBruker &&
+						brukerTeams?.map((team) => (
+							<ActionMenu.Item
+								onClick={(event) => {
+									event.preventDefault()
+									handleTeamChange(team.id)
+								}}
+								key={team.id}
+								style={{
+									color: '#212529',
+									backgroundColor: representererTeam?.id === team.id ? '#99C3FF' : null,
+								}}
+							>
+								<DropdownStyledIcon kind="group" fontSize="1.5rem" />
+								<DropdownStyledLink href="">
+									{team.navn + (representererTeam?.id === team.id ? ' (valgt)' : '')}
+								</DropdownStyledLink>
+							</ActionMenu.Item>
+						))}
 				</ActionMenu.Group>
 				<ActionMenu.Divider />
 				<ActionMenu.Group label="Administrasjon">
@@ -126,14 +129,16 @@ export const BrukerDropdown = () => {
 						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
 						<DropdownStyledLink href="/minside">Min side</DropdownStyledLink>
 					</PreloadableActionMenuItem>
-					<PreloadableActionMenuItem
-						route="/team"
-						style={{ color: '#212529' }}
-						dataTestId={TestComponentSelectors.BUTTON_PROFIL_TEAMOVERSIKT}
-					>
-						<DropdownStyledIcon kind="group" fontSize="1.5rem" />
-						<DropdownStyledLink href="/team">Team-oversikt</DropdownStyledLink>
-					</PreloadableActionMenuItem>
+					{!bankIdBruker && (
+						<PreloadableActionMenuItem
+							route="/team"
+							style={{ color: '#212529' }}
+							dataTestId={TestComponentSelectors.BUTTON_PROFIL_TEAMOVERSIKT}
+						>
+							<DropdownStyledIcon kind="group" fontSize="1.5rem" />
+							<DropdownStyledLink href="/team">Team-oversikt</DropdownStyledLink>
+						</PreloadableActionMenuItem>
+					)}
 				</ActionMenu.Group>
 				<ActionMenu.Divider />
 				<ActionMenu.Item onClick={() => logoutBruker()} style={{ color: '#212529' }}>
