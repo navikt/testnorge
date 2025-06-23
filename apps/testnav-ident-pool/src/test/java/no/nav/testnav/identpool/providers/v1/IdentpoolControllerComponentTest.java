@@ -44,6 +44,7 @@ class IdentpoolControllerComponentTest {
     private static final String FRIGJOER = "/frigjoer";
     private static final String LEDIGE = "/ledige";
     private static final String LEDIG = "/ledig";
+    private static final String BRUK = "/bruk";
 
     private static final String FNR_LEDIG = "10108000398";
     private static final String DNR_LEDIG = "50108000381";
@@ -353,6 +354,33 @@ class IdentpoolControllerComponentTest {
                 .isOk()
                 .expectBody(Boolean.class)
                 .isEqualTo(false);
+    }
+
+    @Test
+    void bruk_FinnesIkkeIDatabaseErLedig() {
+
+        var IDENT = "22476902081";
+        identRepository.findByPersonidentifikator(IDENT)
+                .as(StepVerifier::create)
+                .expectNextCount(0)
+                .verifyComplete();
+
+        webTestClient.post()
+                .uri(IDENT_V1_BASEURL + BRUK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"personidentifikator\":\"" + IDENT + "\"," +
+                        "\"bruker\":\"test\"}")
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        identRepository.findByPersonidentifikator(IDENT)
+                .as(StepVerifier::create)
+                .assertNext(ident -> {
+                    assertThat(ident.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+                    assertThat(ident.getRekvirertAv(), is("test"));
+                })
+                .verifyComplete();
     }
 
     private static Ident createIdentEntity(Identtype identtype, String ident, Rekvireringsstatus rekvireringsstatus, int day) {
