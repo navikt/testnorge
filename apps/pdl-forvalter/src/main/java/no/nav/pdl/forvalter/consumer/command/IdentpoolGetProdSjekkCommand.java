@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
+import no.nav.pdl.forvalter.dto.ProdSjekkDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
@@ -11,40 +11,36 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Set;
 import java.util.concurrent.Callable;
 
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-
-@RequiredArgsConstructor
 @Slf4j
-public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO>> {
+@RequiredArgsConstructor
+public class IdentpoolGetProdSjekkCommand implements Callable<Flux<ProdSjekkDTO>> {
 
-    private static final String PERSONIDENTIFIKATOR = "personidentifikator";
-    private static final String IS_AVAIL_URL = "/api/v1/identifikator/ledig";
+    private static final String PROD_SJEKK_URL = "/api/v1/identifikator/prod-sjekk";
 
     private final WebClient webClient;
-    private final String ident;
+    private final Set<String> identer;
     private final String token;
 
     @Override
-    public Flux<IdentpoolLedigDTO> call() {
+    public Flux<ProdSjekkDTO> call() {
         return webClient
                 .get()
-                .uri(builder -> builder.path(IS_AVAIL_URL).build())
+                .uri(builder -> builder.path(PROD_SJEKK_URL)
+                        .queryParam("identer", identer)
+                        .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .headers(WebClientHeader.bearer(token))
-                .header(PERSONIDENTIFIKATOR, ident)
                 .retrieve()
-                .bodyToFlux(Boolean.class)
-                .map(result -> IdentpoolLedigDTO.builder()
-                        .ident(ident)
-                        .ledig(isTrue(result))
-                        .build())
+                .bodyToFlux(ProdSjekkDTO.class)
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> Mono.just(IdentpoolLedigDTO.builder()
-                        .ident(ident)
-                        .ledig(false)
+                .onErrorResume(error -> Mono.just(ProdSjekkDTO.builder()
+                        .ident(identer.stream().reduce("", (a, b) -> a + "," + b))
+                        .inUse(true)
+                        .available(false)
                         .build()));
     }
 }
