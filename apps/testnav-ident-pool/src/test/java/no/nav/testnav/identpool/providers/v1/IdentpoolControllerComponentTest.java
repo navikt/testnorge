@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 class IdentpoolControllerComponentTest {
 
     private static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
-    private static final String PROD_SJEKK = "/prodSjekk";
+    private static final String PROD_SJEKK = "/prod-sjekk";
     private static final String FRIGJOER = "/frigjoer";
     private static final String LEDIGE = "/ledige";
     private static final String LEDIG = "/ledig";
