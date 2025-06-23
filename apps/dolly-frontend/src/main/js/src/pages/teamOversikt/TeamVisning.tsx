@@ -1,4 +1,4 @@
-import { formatDateTime } from '@/utils/DataFormatter'
+import { formatBrukerNavn, formatDateTime } from '@/utils/DataFormatter'
 import { LabelValueColumns } from '@/components/ui/labelValueColumns/LabelValueColumns'
 
 export const TeamVisning = ({ team }) => {
@@ -6,10 +6,13 @@ export const TeamVisning = ({ team }) => {
 		<>
 			<LabelValueColumns label="Beskrivelse" value={team.beskrivelse} />
 			<LabelValueColumns label="Opprettet" value={formatDateTime(team.opprettet)} />
-			<LabelValueColumns label="Opprettet av" value={team.opprettetAv?.brukernavn} />
+			<LabelValueColumns
+				label="Opprettet av"
+				value={formatBrukerNavn(team.opprettetAv?.brukernavn)}
+			/>
 			<LabelValueColumns
 				label="Medlemmer"
-				value={team.brukere?.map((bruker) => bruker.brukernavn)}
+				value={team.brukere?.map((bruker) => formatBrukerNavn(bruker.brukernavn))}
 			/>
 		</>
 	)
