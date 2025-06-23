@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -37,10 +36,11 @@ public class IdentpoolGetProdSjekkCommand implements Callable<Flux<ProdSjekkDTO>
                 .bodyToFlux(ProdSjekkDTO.class)
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(error -> Mono.just(ProdSjekkDTO.builder()
-                        .ident(identer.stream().reduce("", (a, b) -> a + "," + b))
-                        .inUse(true)
-                        .available(false)
-                        .build()));
+                .onErrorResume(error -> Flux.fromIterable(identer)
+                        .map(ident -> ProdSjekkDTO.builder()
+                                .ident(ident)
+                                .inUse(true)
+                                .available(false)
+                                .build()));
     }
 }
