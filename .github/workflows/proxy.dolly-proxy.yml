@@ -1,0 +1,21 @@
+name: dolly-proxy
+
+on:
+  push:
+    paths:
+      - .github/workflows/proxy.dolly-proxy.yml
+      - libs/texas/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/dolly-proxy/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "proxies/dolly-proxy"
+      deploy-tag: "#deploy-dolly-proxy"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
