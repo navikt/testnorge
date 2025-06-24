@@ -8,3 +8,7 @@ dolly:
       - name: testnav-altinn3-tilgang-service
         url: https://testnav-altinn3-tilgang-service.nav.no
         audience: api://dev-gcp.dolly.testnav-altinn3-tilgang-service/.default
+  nais:
+    name: dolly-texas-proxy
+    variables:
+      - DOLLY_TEXAS_PROXY_SHARED_SECRET
