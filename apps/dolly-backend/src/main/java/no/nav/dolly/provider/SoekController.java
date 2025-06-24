@@ -27,15 +27,15 @@ public class SoekController {
 
     @GetMapping
     @Operation(description = "Hent lagrede søk for bruker")
-    public List<RsSoek> getSok(@RequestParam Soek.SoekType soekType) {
+    public List<RsSoek> getSoek(@RequestParam Soek.SoekType soekType) {
 
         var soek = soekService.getSoek(soekType);
         return mapperFacade.mapAsList(soek, RsSoek.class);
     }
 
     @PostMapping
-    @Operation(description = "Lagrede søk for bruker")
-    public RsSoek lagreSok(@RequestParam Soek.SoekType soekType,
+    @Operation(description = "Lagre søk for bruker")
+    public RsSoek lagreSoek(@RequestParam Soek.SoekType soekType,
                            @RequestBody String soekVerdi) {
 
         var soek = soekService.lagreSoek(soekType, soekVerdi);

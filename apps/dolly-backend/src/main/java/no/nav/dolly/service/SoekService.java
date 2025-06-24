@@ -5,7 +5,6 @@ import no.nav.dolly.domain.jpa.Soek;
 import no.nav.dolly.repository.SoekRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -18,20 +17,16 @@ public class SoekService {
     public List<Soek> getSoek(Soek.SoekType soekType) {
 
         var bruker = brukerService.fetchOrCreateBruker();
-        return soekRepository.findByBrukerAndSoekType(bruker, soekType).stream()
-                .sorted(Comparator.comparing(Soek::getOpprettet).reversed())
-                .toList();
+        return soekRepository.findByBrukerAndSoekTypeOrderByIdDesc(bruker, soekType);
     }
 
     public Soek lagreSoek(Soek.SoekType soekType, String soekVerdi) {
 
         var bruker = brukerService.fetchOrCreateBruker();
-        var eksisterendeSoek = soekRepository.findByBrukerAndSoekType(bruker, soekType).stream()
-                .sorted(Comparator.comparing(Soek::getOpprettet))
-                .toList();
+        var eksisterendeSoek = soekRepository.findByBrukerAndSoekTypeOrderByIdDesc(bruker, soekType);
 
         if (eksisterendeSoek.size() > 9) {
-            soekRepository.delete(eksisterendeSoek.getFirst());
+            soekRepository.delete(eksisterendeSoek.getLast());
         }
 
         var soek = Soek.builder()
