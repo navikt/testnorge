@@ -1,0 +1,10 @@
+spring:
+  config:
+    import: "sm://"
+
+dolly:
+  texas:
+    consumers:
+      - name: testnav-altinn3-tilgang-service
+        url: https://testnav-altinn3-tilgang-service.nav.no
+        audience: api://dev-gcp.dolly.testnav-altinn3-tilgang-service/.default

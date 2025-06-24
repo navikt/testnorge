@@ -1,0 +1,17 @@
+plugins {
+    id "dolly-proxies"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "dolly-proxy"
+        property "sonar.projectName", "dolly-proxy"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:texas"
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+}

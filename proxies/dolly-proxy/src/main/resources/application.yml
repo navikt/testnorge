@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: dolly-proxy
+  config:
+    import: "dolly-application.yml"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+  cloud:
+    gateway:
+      httpclient:
+        response-timeout: 1200s
+
+dolly:
+  texas:
+    consumers:
+      - name: testnav-altinn3-tilgang-service-prod
+        url: https://testnav-altinn3-tilgang-service.nav.no
+        audience: api://prod-gcp.dolly.testnav-altinn3-tilgang-service-prod/.default
+    preload: true
