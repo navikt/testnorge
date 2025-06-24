@@ -49,7 +49,6 @@ public class IdentpoolController {
     @PostMapping
     @Operation(description = "rekvirer nye test-identer")
     public Mono<List<String>> rekvirer(
-            @RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato,
             @RequestBody @Valid HentIdenterRequest hentIdenterRequest) {
 
         var startTime = System.currentTimeMillis();
@@ -76,7 +75,7 @@ public class IdentpoolController {
                 .then();
     }
 
-    @GetMapping("/prodSjekk")
+    @GetMapping("/prod-sjekk")
     @Operation(description = "returnerer om en liste av identer finnes i prod.")
     public Flux<TpsStatusDTO> erIProd(@RequestParam Set<String> identer) {
 
@@ -104,7 +103,7 @@ public class IdentpoolController {
 
     @PostMapping("/frigjoer")
     @Operation(description = "Frigjør rekvirerte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
-    public Mono<List<String>> frigjoerIdenter(@RequestParam(required = false) String rekvirertAv, @RequestBody List<String> identer) {
+    public Mono<List<String>> frigjoerIdenter(@RequestBody List<String> identer) {
 
         return identpoolService.frigjoerIdenter(identer);
     }
