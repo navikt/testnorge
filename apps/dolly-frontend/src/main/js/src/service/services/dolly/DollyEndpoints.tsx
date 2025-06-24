@@ -171,6 +171,10 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/identer/${arrayToString(identer).replaceAll(' ', '')}`
 	}
 
+	static endreTilknytningGruppe(gruppeId, brukerId) {
+		return `${groupBase}/${gruppeId}/tilknytning/${brukerId}`
+	}
+
 	static malBestillingMedId(malId, malNavn) {
 		return `${uri}/malbestilling/id/${malId}?malNavn=${malNavn}`
 	}

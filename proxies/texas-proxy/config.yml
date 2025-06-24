@@ -28,6 +28,7 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
+        - application: dolly-proxy
         - application: generer-navn-service
         - application: generer-navn-service
         - application: organisasjon-bestilling-service

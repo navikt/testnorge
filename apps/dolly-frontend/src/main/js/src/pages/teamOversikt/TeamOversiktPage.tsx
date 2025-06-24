@@ -14,6 +14,7 @@ import { SlettTeam } from '@/pages/teamOversikt/SlettTeam'
 import { BliMedITeam } from '@/pages/teamOversikt/BliMedITeam'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { runningE2ETest } from '@/service/services/Request'
+import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 
 const Knappegruppe = styled.div`
 	margin-top: 20px;
@@ -32,6 +33,12 @@ export default () => {
 	const [bliMedITeamModalIsOpen, openBliMedITeamModal, closeBliMedITeamModal] = useBoolean(false)
 	const [forlatTeamModalIsOpen, openForlatTeamModal, closeForlatTeamModal] = useBoolean(false)
 	const [slettTeamModalIsOpen, openSlettTeamModal, closeSlettTeamModal] = useBoolean(false)
+
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
+
+	if (bankIdBruker) {
+		return <AdminAccessDenied />
+	}
 
 	return (
 		<>
