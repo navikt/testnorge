@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -37,6 +38,10 @@ public class OrganisasjonBestillingMal implements Serializable {
 
 //    @ManyToOne
 //    @JoinColumn("BRUKER_ID")
+    @Column("BRUKER_ID")
+    private Long brukerId;
+
+    @Transient
     private Bruker bruker;
 
     @Column("SIST_OPPDATERT")
@@ -56,7 +61,7 @@ public class OrganisasjonBestillingMal implements Serializable {
                 .append(bestKriterier, that.bestKriterier)
                 .append(miljoer, that.miljoer)
                 .append(malNavn, that.malNavn)
-                .append(bruker, that.bruker)
+                .append(brukerId, that.brukerId)
                 .append(sistOppdatert, that.sistOppdatert)
                 .isEquals();
     }
@@ -68,7 +73,7 @@ public class OrganisasjonBestillingMal implements Serializable {
                 .append(bestKriterier)
                 .append(miljoer)
                 .append(malNavn)
-                .append(bruker)
+                .append(brukerId)
                 .append(sistOppdatert)
                 .toHashCode();
     }
@@ -80,7 +85,7 @@ public class OrganisasjonBestillingMal implements Serializable {
                 ", bestKriterier='" + bestKriterier + '\'' +
                 ", miljoer='" + miljoer + '\'' +
                 ", malNavn='" + malNavn + '\'' +
-                ", bruker=" + bruker +
+                ", brukerId=" + brukerId +
                 ", sistOppdatert=" + sistOppdatert +
                 '}';
     }

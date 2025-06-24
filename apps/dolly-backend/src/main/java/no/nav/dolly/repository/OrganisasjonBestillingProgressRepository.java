@@ -14,7 +14,7 @@ public interface OrganisasjonBestillingProgressRepository extends ReactiveCrudRe
     Mono<Void> deleteByBestillingId(Long bestillingId);
 
     @Modifying
-    Mono<Void> deleteByOrganisasjonsnummer(String orgnummer);
+    Flux<Void> deleteByOrganisasjonsnummer(String orgnummer);
 
     Flux<OrganisasjonBestillingProgress> findByOrganisasjonsnummer(String orgnummer);
 }

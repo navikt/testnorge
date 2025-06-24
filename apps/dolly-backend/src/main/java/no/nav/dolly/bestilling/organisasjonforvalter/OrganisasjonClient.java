@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +47,7 @@ public class OrganisasjonClient {
 
     @Async
     @Transactional
-    public void opprett(RsOrganisasjonBestilling request, OrganisasjonBestilling bestilling) {
+    public Mono<Void> opprett(RsOrganisasjonBestilling request, OrganisasjonBestilling bestilling) {
 
         BestillingRequest bestillingRequest = BestillingRequest.builder()
                 .organisasjoner(List.of(mapperFacade.map(request.getOrganisasjon(), BestillingRequest.SyntetiskOrganisasjon.class)))
@@ -84,7 +85,7 @@ public class OrganisasjonClient {
     }
 
     @Async
-    public void gjenopprett(DeployRequest request, OrganisasjonBestilling bestilling) {
+    public Mono<Void> gjenopprett(DeployRequest request, OrganisasjonBestilling bestilling) {
 
         var miljoer = request.getEnvironments();
         organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()

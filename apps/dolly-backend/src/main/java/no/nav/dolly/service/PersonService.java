@@ -8,6 +8,7 @@ import no.nav.dolly.domain.dto.TestidentDTO;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -22,26 +23,22 @@ public class PersonService {
 
     @Async
     @Transactional
-    public Mono<Void> recyclePersoner(List<TestidentDTO> testidenter) {
+    public void recyclePersoner(List<TestidentDTO> testidenter) {
 
-        return pdlDataConsumer.slettPdl(testidenter.stream()
+        pdlDataConsumer.slettPdl(testidenter.stream()
                         .map(TestidentDTO::getIdent)
                         .toList())
                 .doOnSuccess(response -> log.info("Slettet {} identer mot PDL-forvalter", testidenter.size()))
-                .flatMap(status -> releaseArtifacts(testidenter));
+                .then(releaseArtifacts(testidenter))
     }
 
-    private Mono<Void> releaseArtifacts(List<TestidentDTO> identer) {
+    private void releaseArtifacts(List<TestidentDTO> testidenter) {
 
-        clientRegister.forEach(register -> {
-            try {
-                register.release(identer.stream()
-                        .map(TestidentDTO::getIdent)
-                        .toList());
-
-            } catch (RuntimeException e) {
-                log.error("Feilet å slette fra register, {}", e.getMessage(), e);
-            }
-        });
+        return Flux.fromIterable(testidenter)
+                .map(TestidentDTO::getIdent)
+                .collectList()
+                .flatMap(identer -> Flux.fromIterable(clientRegister)
+                        .flatMap(client -> client.release(identer))
+                        .then());
     }
 }

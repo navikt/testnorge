@@ -11,9 +11,9 @@ import reactor.core.publisher.Mono;
 
 public interface OrganisasjonBestillingMalRepository extends ReactiveCrudRepository<OrganisasjonBestillingMal, Long> {
 
-    Flux<OrganisasjonBestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
+    Flux<OrganisasjonBestillingMal> findByBrukerIdAndMalNavn(Long brukerId, String navn);
 
-    Flux<OrganisasjonBestillingMal> findByBruker(Bruker bruker);
+    Flux<OrganisasjonBestillingMal> findByBrukerId(Long brukerId);
 
     @Modifying
     @Query("""

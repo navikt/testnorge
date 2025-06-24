@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -30,7 +31,11 @@ public class OrganisasjonBestillingProgress {
 
 //    @ManyToOne
 //    @JoinColumn("bestilling_id", nullable = false)
-    private OrganisasjonBestilling bestilling;
+    @Column("bestilling_id")
+    private Long bestillingId;
+
+//    @Transient
+//    private OrganisasjonBestilling bestilling;
 
     @Override
     public boolean equals(Object o) {
@@ -44,7 +49,7 @@ public class OrganisasjonBestillingProgress {
                 .append(id, that.id)
                 .append(organisasjonsnummer, that.organisasjonsnummer)
                 .append(organisasjonsforvalterStatus, that.organisasjonsforvalterStatus)
-                .append(bestilling, that.bestilling)
+                .append(bestillingId, that.bestillingId)
                 .isEquals();
     }
 
@@ -54,7 +59,7 @@ public class OrganisasjonBestillingProgress {
                 .append(id)
                 .append(organisasjonsnummer)
                 .append(organisasjonsforvalterStatus)
-                .append(bestilling)
+                .append(bestillingId)
                 .toHashCode();
     }
 
@@ -64,7 +69,7 @@ public class OrganisasjonBestillingProgress {
                 "id=" + id +
                 ", organisasjonsnummer='" + organisasjonsnummer + '\'' +
                 ", organisasjonsforvalterStatus='" + organisasjonsforvalterStatus + '\'' +
-                ", bestilling=" + bestilling +
+                ", bestillingId=" + bestillingId +
                 '}';
     }
 }

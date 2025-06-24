@@ -52,13 +52,14 @@ public class OrganisasjonBestilling {
 //    @ManyToOne
 //    @JoinColumn("bruker_id")
     @Column("BRUKER_ID")
-    private String brukerId;
+    private Long brukerId;
 
     @Transient
     private Bruker bruker;
 
 //    @OneToMany(fetch = FetchType.LAZY)
 //    @JoinColumn("bestilling_id")
+    @Transient
     @Builder.Default
     private List<OrganisasjonBestillingProgress> progresser = new ArrayList<>();
 

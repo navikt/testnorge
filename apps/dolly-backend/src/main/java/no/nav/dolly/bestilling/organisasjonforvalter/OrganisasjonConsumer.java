@@ -40,8 +40,8 @@ public class OrganisasjonConsumer {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavOrganisasjonForvalter();
         this.webClient = webClient
@@ -59,7 +59,7 @@ public class OrganisasjonConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "organisasjon-status-hent"})
-    public OrganisasjonDeployStatus hentOrganisasjonStatus(List<String> orgnumre) {
+    public Mono<OrganisasjonDeployStatus> hentOrganisasjonStatus(List<String> orgnumre) {
         var navCallId = getNavCallId();
         log.info("Organisasjon hent request sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
 
@@ -78,12 +78,11 @@ public class OrganisasjonConsumer {
                         .bodyToMono(OrganisasjonDeployStatus.class)
                         .doOnError(WebClientError.logTo(log))
                         .onErrorResume(throwable -> Mono.empty())
-                )
-                .block();
+                );
     }
 
     @Timed(name = "providers", tags = {"operation", "organisasjon-opprett"})
-    public ResponseEntity<BestillingResponse> postOrganisasjon(BestillingRequest bestillingRequest) {
+    public Mono<BestillingResponse> postOrganisasjon(BestillingRequest bestillingRequest) {
         var navCallId = getNavCallId();
         log.info("Organisasjon oppretting sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
         return tokenService
@@ -97,20 +96,21 @@ public class OrganisasjonConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .bodyValue(bestillingRequest)
                         .retrieve()
-                        .toEntity(BestillingResponse.class)
-                        .retryWhen(WebClientError.is5xxException()))
-                .block();
+                        .bodyToMono(BestillingResponse.class)
+                        .retryWhen(WebClientError.is5xxException()));
     }
 
     @Timed(name = "providers", tags = {"operation", "organisasjon-deploy"})
-    public ResponseEntity<DeployResponse> deployOrganisasjon(DeployRequest request) {
+    public Mono<DeployResponse> deployOrganisasjon(DeployRequest request) {
+
         var navCallId = getNavCallId();
         log.info("Organisasjon deploy sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
 
         return sendDeployOrganisasjonRequest(request, navCallId);
     }
 
-    private ResponseEntity<DeployResponse> sendDeployOrganisasjonRequest(DeployRequest deployRequest, String callId) {
+    private Mono<DeployResponse> sendDeployOrganisasjonRequest(DeployRequest deployRequest, String callId) {
+
         return tokenService
                 .exchange(serverProperties)
                 .flatMap(token -> webClient
@@ -122,9 +122,8 @@ public class OrganisasjonConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .bodyValue(deployRequest)
                         .retrieve()
-                        .toEntity(DeployResponse.class)
-                        .retryWhen(WebClientError.is5xxException()))
-                .block();
+                        .bodyToMono(DeployResponse.class)
+                        .retryWhen(WebClientError.is5xxException()));
     }
 
     private static String getNavCallId() {
