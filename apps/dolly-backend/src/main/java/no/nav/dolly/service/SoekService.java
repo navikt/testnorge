@@ -30,7 +30,7 @@ public class SoekService {
                 .sorted(Comparator.comparing(Soek::getOpprettet))
                 .toList();
 
-        if (eksisterendeSoek.size() > 10) {
+        if (eksisterendeSoek.size() > 9) {
             soekRepository.delete(eksisterendeSoek.getFirst());
         }
 
