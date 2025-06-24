@@ -1,12 +1,29 @@
 spring:
   config:
     import: "sm://"
+  main:
+    web-application-type: reactive
+  application:
+    name: dolly-proxy
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+springdoc:
+  swagger-ui:
+    urls-primary-name: Downstream Services
+    urls:
+      - name: altinn3-tilgang-service
+        url: /altinn3/v3/api-docs
 
 dolly:
   texas:
     consumers:
       - name: testnav-altinn3-tilgang-service
-        url: https://testnav-altinn3-tilgang-service.nav.no
+        url: https://testnav-altinn3-tilgang-service.intern.dev.nav.no
         audience: api://dev-gcp.dolly.testnav-altinn3-tilgang-service/.default
   nais:
     name: dolly-texas-proxy
