@@ -17,6 +17,7 @@ import dollyTeam from '@/assets/img/dollyTeam.png'
 import { teamVarslingLocalStorageKey } from '@/components/layout/header/TeamVarsel'
 import { useBoolean } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
+import { formatBrukerNavn } from '@/utils/DataFormatter'
 
 export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
@@ -25,6 +26,8 @@ export const BrukerDropdown = () => {
 	const { currentBruker, mutate: currentMutate } = useCurrentBruker()
 	const { brukerTeams } = useBrukerTeams()
 	const representererTeam = currentBruker?.representererTeam
+
+	const brukerNavn = formatBrukerNavn(brukerProfil?.visningsNavn)
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
@@ -73,7 +76,7 @@ export const BrukerDropdown = () => {
 											src={representererTeam ? dollyTeam : brukerBilde || getDefaultImage()}
 										/>
 									</div>
-									<p>{representererTeam ? representererTeam.navn : brukerProfil?.visningsNavn}</p>
+									<p>{representererTeam ? representererTeam.navn : brukerNavn}</p>
 								</>
 							)}
 						</div>
@@ -93,7 +96,7 @@ export const BrukerDropdown = () => {
 					>
 						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
 						<DropdownStyledLink href="">
-							{brukerProfil?.visningsNavn + (!representererTeam && !bankIdBruker ? ' (valgt)' : '')}
+							{brukerNavn + (!representererTeam && !bankIdBruker ? ' (valgt)' : '')}
 						</DropdownStyledLink>
 					</ActionMenu.Item>
 					{!bankIdBruker &&

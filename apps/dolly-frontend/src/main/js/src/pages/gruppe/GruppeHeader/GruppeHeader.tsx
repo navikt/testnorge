@@ -6,7 +6,7 @@ import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '@/components/ui/button/LaasButton/LaasButton'
 import { Header } from '@/components/ui/header/Header'
-import { arrayToString, formatStringDates } from '@/utils/DataFormatter'
+import { arrayToString, formatBrukerNavn, formatStringDates } from '@/utils/DataFormatter'
 import './GruppeHeader.less'
 import { TagsButton } from '@/components/ui/button/Tags/TagsButton'
 import { GjenopprettGruppe } from '@/components/bestilling/gjenopprett/GjenopprettGruppe'
@@ -70,6 +70,11 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 	const iconType = erLaast ? 'locked-group' : 'group'
 	const antallPersoner = gruppe.antallIdenter
 
+	const brukerNavn =
+		gruppe.opprettetAv?.brukertype === 'TEAM'
+			? gruppe.opprettetAv?.brukernavn + ' (team)'
+			: formatBrukerNavn(gruppe.opprettetAv?.brukernavn)
+
 	return (
 		<Fragment>
 			<div
@@ -91,10 +96,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 						<div className={`content-header_icon ${headerClass}`}>
 							<Icon kind={iconType} fontSize={'2.5rem'} />
 						</div>
-						<Header.TitleValue
-							title="Eier"
-							value={gruppe.opprettetAv?.brukernavn || gruppe.opprettetAv?.navIdent}
-						/>
+						<Header.TitleValue title="Eier" value={brukerNavn ?? gruppe.opprettetAv?.navIdent} />
 						<Header.TitleValue title="Antall personer" value={antallPersoner} />
 						<Header.TitleValue title="Sist endret" value={formatStringDates(gruppe.datoEndret)} />
 						<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
