@@ -6,6 +6,7 @@ metadata:
   labels:
     team: dolly
   annotations:
+    texas.nais.io/enabled: "true"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "2400"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "2400"
 spec:
