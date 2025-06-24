@@ -14,7 +14,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class Altinn3RouteBuilder {
 
-    private static final String ALTINN3_CONSUMER = "testnav-altinn3-tilgang-service";
+    public static final String ALTINN3_CONSUMER = "testnav-altinn3-tilgang-service";
 
     private final Texas texas;
 

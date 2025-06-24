@@ -20,4 +20,7 @@ dolly:
       - name: testnav-altinn3-tilgang-service-prod
         url: https://testnav-altinn3-tilgang-service.nav.no
         audience: api://prod-gcp.dolly.testnav-altinn3-tilgang-service-prod/.default
+      - name: brreg-stub
+        url: http://brreg-stub.dolly.svc.nais.local
+        audience: api://dev-fss.dolly.brreg-stub/.default
     preload: true
