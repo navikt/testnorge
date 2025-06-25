@@ -39,6 +39,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-texas-proxy
         - application: testnav-brregstub-proxy
         - application: flex-brreg-proxy
           cluster: dev-gcp
