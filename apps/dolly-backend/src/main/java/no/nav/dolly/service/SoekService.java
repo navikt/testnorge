@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
+
 @Service
 @RequiredArgsConstructor
 public class SoekService {
@@ -23,18 +25,22 @@ public class SoekService {
     public Soek lagreSoek(Soek.SoekType soekType, String soekVerdi) {
 
         var bruker = brukerService.fetchOrCreateBruker();
-        var eksisterendeSoek = soekRepository.findByBrukerAndSoekTypeOrderByIdDesc(bruker, soekType);
-
-        if (eksisterendeSoek.size() > 9) {
-            soekRepository.delete(eksisterendeSoek.getLast());
-        }
-
         var soek = Soek.builder()
                 .soekVerdi(soekVerdi)
                 .bruker(bruker)
                 .soekType(soekType)
                 .build();
 
-        return soekRepository.save(soek);
+        if (isFalse(soekRepository.existsByBrukerAndSoekTypeAndSoekVerdi(bruker, soekType, soekVerdi))) {
+            var eksisterendeSoek = soekRepository.findByBrukerAndSoekTypeOrderByIdDesc(bruker, soekType);
+
+            if (eksisterendeSoek.size() > 9) {
+                soekRepository.delete(eksisterendeSoek.getLast());
+            }
+            return soekRepository.save(soek);
+
+        } else {
+            return soek;
+        }
     }
 }
