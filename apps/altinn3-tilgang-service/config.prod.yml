@@ -37,6 +37,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-altinn3-tilgang-proxy
           cluster: dev-gcp
+        - application: dolly-proxy
+          cluster: dev-gcp
+        - application: dolly-texas-proxy
+          cluster: dev-gcp
     outbound:
       external:
         - host: platform.altinn.no
