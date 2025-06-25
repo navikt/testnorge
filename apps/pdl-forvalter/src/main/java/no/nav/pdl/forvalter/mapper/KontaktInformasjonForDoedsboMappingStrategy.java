@@ -96,8 +96,8 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                         var adresselinjer = (List<String>) kilde.get("adresselinjer");
                         destinasjon.setAdresselinje1(!adresselinjer.isEmpty() ? adresselinjer.getFirst() : "Ingen adresselinje funnet");
                         destinasjon.setAdresselinje2(adresselinjer.size() > 1 ? adresselinjer.get(1) : null);
-
                         destinasjon.setPostnummer((String) kilde.get("postnr"));
+
                         destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(destinasjon.getPostnummer()));
                         destinasjon.setLandkode(mapCountryCode((String) kilde.get("landkode")));
                     }
@@ -115,6 +115,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                                 blankCheck(kilde.getBySted(), ""),
                                 blankCheck(kilde.getRegionDistriktOmraade(), "")));
                         destinasjon.setPostnummer(kilde.getPostkode());
+                        destinasjon.setPoststedsnavn(kilde.getBySted());
                         destinasjon.setLandkode(kilde.getLandkode());
                     }
                 })
