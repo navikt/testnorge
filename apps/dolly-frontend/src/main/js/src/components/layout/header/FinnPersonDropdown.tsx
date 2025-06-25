@@ -5,7 +5,10 @@ import Icon from '@/components/ui/icon/Icon'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 import { dollySoekLocalStorageKey } from '@/pages/dollySoek/SoekForm'
-import { tenorSoekLocalStorageKey } from '@/pages/tenorSoek/TenorSoekPage'
+import {
+	tenorSoekLocalStorageKey,
+	tenorSoekStateLocalStorageKey,
+} from '@/pages/tenorSoek/TenorSoekPage'
 
 export const FinnPersonDropdown = () => {
 	const location = useLocation()
@@ -45,7 +48,10 @@ export const FinnPersonDropdown = () => {
 			>
 				<Icon kind="search" fontSize="1.5rem" />
 				<DropdownStyledLink
-					onClick={() => localStorage.removeItem(tenorSoekLocalStorageKey)}
+					onClick={() => {
+						localStorage.removeItem(tenorSoekLocalStorageKey)
+						localStorage.removeItem(tenorSoekStateLocalStorageKey)
+					}}
 					href="/tenor/personer"
 				>
 					Søk i Tenor (Test-Norge)
