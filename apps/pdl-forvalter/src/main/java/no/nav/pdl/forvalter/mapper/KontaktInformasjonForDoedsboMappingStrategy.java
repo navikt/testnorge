@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
@@ -99,6 +100,22 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                         destinasjon.setPostnummer((String) kilde.get("postnr"));
                         destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(destinasjon.getPostnummer()));
                         destinasjon.setLandkode(mapCountryCode((String) kilde.get("landkode")));
+                    }
+                })
+                .register();
+
+        factory.classMap(UtenlandskAdresseDTO.class, KontaktinformasjonForDoedsboAdresse.class)
+                .customize(new CustomMapper<>() {
+
+                    @Override
+                    public void mapAtoB(UtenlandskAdresseDTO kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
+
+                        destinasjon.setAdresselinje1(kilde.getAdressenavnNummer());
+                        destinasjon.setAdresselinje2(format("%s %s",
+                                blankCheck(kilde.getBySted(), ""),
+                                blankCheck(kilde.getRegionDistriktOmraade(), "")));
+                        destinasjon.setPostnummer(kilde.getPostkode());
+                        destinasjon.setLandkode(kilde.getLandkode());
                     }
                 })
                 .register();
