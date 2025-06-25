@@ -20,6 +20,7 @@ spec:
       replyURLs:
         - http://localhost:8081/swagger-ui/oauth2-redirect.html
         - https://dolly-texas-proxy.intern.dev.nav.no/swagger-ui/oauth2-redirect.html
+      singlePageApplication: true
       tenant: nav.no
   accessPolicy:
     inbound:
