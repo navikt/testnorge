@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.CountryCodeMapperUtility.mapCountryCode;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
@@ -97,7 +98,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
 
                         destinasjon.setPostnummer((String) kilde.get("postnr"));
                         destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(destinasjon.getPostnummer()));
-                        destinasjon.setLandkode((String) kilde.get("landkode"));
+                        destinasjon.setLandkode(mapCountryCode((String) kilde.get("landkode")));
                     }
                 })
                 .register();
