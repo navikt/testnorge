@@ -14,7 +14,7 @@ import java.util.Collection;
 
 public interface BestillingRepository extends ReactiveSortingRepository<Bestilling, Long> {
 
-    Mono<Bestilling> findById(Long gruppeId);
+    Mono<Bestilling> findById(Long id);
 
     Mono<Void> deleteById(Long id);
 

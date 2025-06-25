@@ -76,10 +76,7 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setArbeidsplassenCVStatus, status);
-            return progress;
-        };
+        return () -> transactionHelperService.persister(progress, BestillingProgress::setArbeidsplassenCVStatus, status);
     }
 
     @Override

@@ -159,32 +159,6 @@ public class BestillingService {
                 });
     }
 
-    public Mono<Page<Bestilling>> getBestillingerFromGruppeIdPaginert(Long gruppeId, Integer pageNo, Integer pageSize,
-                                                                      String sortColumn, String sortRetning) {
-
-        if (StringUtils.isBlank(sortColumn)) {
-            sortColumn = "id";
-        }
-        var retning = "asc".equals(sortRetning) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        var page = PageRequest.of(pageNo, pageSize,
-                Sort.by(
-                        new Sort.Order(retning, sortColumn, Sort.NullHandling.NULLS_LAST),
-                        new Sort.Order(Sort.Direction.DESC, "id", Sort.NullHandling.NULLS_LAST)
-                )
-        );
-
-        return bestillingRepository.getBestillingerFromGruppeId(gruppeId, page)
-                .flatMap(bestilling -> bestillingProgressRepository.findByBestillingId(bestilling.getId())
-                        .collectList()
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }))
-                .collectList()
-                .zipWith(bestillingRepository.countAllByGruppeId(gruppeId))
-                .map(tuple -> new PageImpl<>(tuple.getT1(), page, tuple.getT2()));
-    }
-
     @Transactional
     @Retryable
     public Mono<Bestilling> cancelBestilling(Long bestillingId) {

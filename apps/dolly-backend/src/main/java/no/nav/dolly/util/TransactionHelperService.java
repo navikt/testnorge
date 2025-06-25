@@ -12,10 +12,10 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -54,89 +54,53 @@ public class TransactionHelperService {
     }
 
     @Retryable
-    public BestillingProgress opprettProgress(BestillingProgress progress) {
+    public Mono<BestillingProgress> opprettProgress(BestillingProgress progress) {
 
-        return transactionTemplate.execute(status -> {
-            bestillingRepository.findByIdAndLock(progress.getBestilling().getId())
-                    .ifPresent(bestilling -> {
-                        bestilling.setSistOppdatert(now());
-                        bestillingRepository.save(bestilling);
-                        bestillingProgressRepository.save(progress);
-                    });
-            clearCache();
-            return progress;
-        });
+        return transactionTemplate.execute(status ->
+                bestillingRepository.findByIdAndLock(progress.getBestillingId())
+                        .doOnNext(bestilling -> bestilling.setSistOppdatert(now()))
+                        .flatMap(bestillingRepository::save)
+                        .flatMap(bestilling -> bestillingProgressRepository.save(progress))
+                        .doFinally(signal -> clearCache()));
     }
 
     @Retryable
-    public BestillingProgress persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
+    public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
 
-        return transactionTemplate.execute(status1 -> {
+        return transactionTemplate.execute(status1 ->
 
-            var akkumulert = new AtomicReference<>(bestillingProgress);
-
-            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
-                    .ifPresent(progress -> {
-                        setter.accept(progress, status);
-                        akkumulert.set(bestillingProgressRepository.save(progress));
-                        clearCache();
-                    });
-
-            return akkumulert.get();
-        });
+                bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                        .flatMap(progress -> {
+                            setter.accept(progress, status);
+                            return bestillingProgressRepository.save(progress);
+                        })
+                        .doFinally(signal -> clearCache()));
     }
 
-    public BestillingProgress persister(BestillingProgress bestillingProgress,
-                                        Function<BestillingProgress, String> getter,
-                                        BiConsumer<BestillingProgress, String> setter, String status) {
+    public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress,
+                                              Function<BestillingProgress, String> getter,
+                                              BiConsumer<BestillingProgress, String> setter, String status) {
 
         return persister(bestillingProgress, getter, setter, status, null);
     }
 
     @Retryable
-    public BestillingProgress persister(BestillingProgress bestillingProgress,
-                                        Function<BestillingProgress, String> getter,
-                                        BiConsumer<BestillingProgress, String> setter, String status,
-                                        String separator) {
+    public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress,
+                                              Function<BestillingProgress, String> getter,
+                                              BiConsumer<BestillingProgress, String> setter, String status,
+                                              String separator) {
 
-        return transactionTemplate.execute(status1 -> {
+        return transactionTemplate.execute(status1 ->
+                bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                        .doOnNext(progress -> {
+                            var value = getter.apply(progress);
+                            var result = applyChanges(value, status, separator);
+                            setter.accept(progress, result);
+                        })
+                        .flatMap(bestillingProgressRepository::save)
+                        .doFinally(signal -> clearCache())
 
-            var akkumulert = new AtomicReference<>(bestillingProgress);
-
-            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
-                    .ifPresent(progress -> {
-                        var value = getter.apply(progress);
-                        var result = applyChanges(value, status, separator);
-                        setter.accept(progress, result);
-                        akkumulert.set(bestillingProgressRepository.save(progress));
-                        clearCache();
-                    });
-
-            return akkumulert.get();
-        });
-    }
-
-    @Retryable
-    public BestillingProgress persisterDynamicProgress(BestillingProgress bestillingProgress,
-                                                       Function<BestillingProgress, String> getter,
-                                                       BiConsumer<BestillingProgress, String> setter,
-                                                       String status) {
-
-        return transactionTemplate.execute(status1 -> {
-
-            var akkumulert = new AtomicReference<>(bestillingProgress);
-
-            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
-                    .ifPresent(progress -> {
-                        var value = getter.apply(progress);
-                        var result = applyChanges(value, status);
-                        setter.accept(progress, result);
-                        akkumulert.set(bestillingProgressRepository.save(progress));
-                        clearCache();
-                    });
-
-            return akkumulert.get();
-        });
+        );
     }
 
     private String applyChanges(String value, String status, String separator) {
@@ -180,51 +144,40 @@ public class TransactionHelperService {
     }
 
     @Retryable
-    public String getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
+    public Mono<String> getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
 
-        var status = new AtomicReference<String>(null);
-        bestillingProgressRepository.findById(bestillingProgress.getId())
-                .ifPresent(progress ->
-                        status.set(getter.apply(progress)));
-
-        return status.get();
+        return bestillingProgressRepository.findById(bestillingProgress.getId())
+                .map(getter);
     }
 
     @Retryable
-    public Bestilling persister(Long bestillingId, RsDollyBestilling bestilling) {
+    public Mono<Bestilling> persister(Long bestillingId, RsDollyBestilling bestilling) {
 
-        return transactionTemplate.execute(status -> {
+        return transactionTemplate.execute(status ->
 
-            var akkumulert = new AtomicReference<Bestilling>(null);
-            bestillingRepository.findByIdAndLock(bestillingId)
-                    .ifPresent(best -> {
-                        bestilling.setId(bestillingId);
-                        best.setBestKriterier(bestillingService.getBestKriterier(bestilling));
-                        akkumulert.set(bestillingRepository.save(best));
-                    });
-
-            return akkumulert.get();
-        });
+                bestillingService.getBestKriterier(bestilling)
+                        .flatMap(kriterier ->
+                                bestillingRepository.findByIdAndLock(bestillingId)
+                                        .doOnNext(best -> {
+                                            bestilling.setId(bestillingId);
+                                            best.setBestKriterier(kriterier);
+                                        })
+                                        .flatMap(bestillingRepository::save)));
     }
 
     @Retryable
-    public Bestilling oppdaterBestillingFerdig(Long id, Consumer<Bestilling> bestillingFunksjon) {
+    public Mono<Bestilling> oppdaterBestillingFerdig(Long id, Consumer<Bestilling> bestillingFunksjon) {
 
-        return transactionTemplate.execute(status -> {
-
-            var akkumulert = new AtomicReference<Bestilling>(null);
+        return transactionTemplate.execute(status ->
 
             bestillingRepository.findByIdAndLock(id)
-                    .ifPresent(bestilling -> {
-                        bestilling.setSistOppdatert(now());
-                        bestilling.setFerdig(true);
-                        bestillingFunksjon.accept(bestilling);
-                        akkumulert.set(bestillingRepository.save(bestilling));
-                        clearCache();
-                    });
-
-            return akkumulert.get();
-        });
+                    .doOnNext(bestilling -> {
+                                bestilling.setSistOppdatert(now());
+                                bestilling.setFerdig(true);
+                                bestillingFunksjon.accept(bestilling);
+                            })
+                    .flatMap(bestillingRepository::save)
+                    .doFinally(signal -> clearCache()));
     }
 
     public void clearCache() {

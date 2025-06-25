@@ -8,7 +8,7 @@ import no.nav.dolly.domain.dto.TestidentDTO;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
+import org.springframework.web.reactive.result.method.annotation.ResponseBodyResultHandler;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -20,25 +20,26 @@ public class PersonService {
 
     private final List<ClientRegister> clientRegister;
     private final PdlDataConsumer pdlDataConsumer;
+    private final ResponseBodyResultHandler responseBodyResultHandler;
 
-    @Async
     @Transactional
-    public void recyclePersoner(List<TestidentDTO> testidenter) {
+    public Mono<Void> recyclePersoner(List<TestidentDTO> testidenter) {
 
-        pdlDataConsumer.slettPdl(testidenter.stream()
+        return pdlDataConsumer.slettPdl(testidenter.stream()
                         .map(TestidentDTO::getIdent)
                         .toList())
                 .doOnSuccess(response -> log.info("Slettet {} identer mot PDL-forvalter", testidenter.size()))
-                .then(releaseArtifacts(testidenter))
+                .doOnNext(response -> releaseArtifacts(testidenter))
+                .then();
     }
 
-    private void releaseArtifacts(List<TestidentDTO> testidenter) {
+    @Async
+    protected void releaseArtifacts(List<TestidentDTO> testidenter) {
 
-        return Flux.fromIterable(testidenter)
+        var identer=  testidenter.stream()
                 .map(TestidentDTO::getIdent)
-                .collectList()
-                .flatMap(identer -> Flux.fromIterable(clientRegister)
-                        .flatMap(client -> client.release(identer))
-                        .then());
+                .toList();
+
+        clientRegister.forEach(register -> register.release(identer));
     }
 }

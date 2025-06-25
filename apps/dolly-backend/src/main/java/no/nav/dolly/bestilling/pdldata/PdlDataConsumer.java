@@ -46,10 +46,10 @@ public class PdlDataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
-    public Flux<PdlResponse> sendOrdre(String ident, boolean ekskluderEksternePersoner) {
+    public Mono<PdlResponse> sendOrdre(String ident, boolean ekskluderEksternePersoner) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new PdlDataOrdreCommand(webClient, ident, ekskluderEksternePersoner,
+                .flatMap(token -> new PdlDataOrdreCommand(webClient, ident, ekskluderEksternePersoner,
                         token.getTokenValue()).call());
     }
 

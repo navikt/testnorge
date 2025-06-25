@@ -39,5 +39,5 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
     Mono<BestillingProgress> swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
 
     @Query(value = "select * from bestilling_progress where id = :id for update")
-    Optional<BestillingProgress> findByIdAndLock(@Param("id") Long id);
+    Mono<BestillingProgress> findByIdAndLock(@Param("id") Long id);
 }

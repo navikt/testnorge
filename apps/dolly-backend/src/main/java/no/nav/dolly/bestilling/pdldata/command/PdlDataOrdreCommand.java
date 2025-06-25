@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClientRequest;
 
 import java.net.http.HttpTimeoutException;
@@ -21,7 +22,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
+public class PdlDataOrdreCommand implements Callable<Mono<PdlResponse>> {
 
     private static final String PDL_FORVALTER_ORDRE_URL = "/api/v1/personer/{ident}/ordre";
     private static final String EXCLUDE_EKSTERNE_PERSONER = "ekskluderEksternePersoner";
@@ -31,7 +32,7 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
     private final boolean ekskluderEksternePersoner;
     private final String token;
 
-    public Flux<PdlResponse> call() {
+    public Mono<PdlResponse> call() {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
@@ -45,7 +46,7 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
                 .headers(WebClientHeader.jwt(getUserJwt()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToFlux(String.class)
+                .bodyToMono(String.class)
                 .map(reultat -> PdlResponse.builder()
                         .jsonNode(reultat)
                         .status(HttpStatus.OK)
