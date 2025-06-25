@@ -6,8 +6,12 @@ rootProject.name = "dolly-proxy"
 
 includeBuild "../../plugins/java"
 
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/reactive-proxy"
+includeBuild "../../libs/reactive-security"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/servlet-insecure-security"
 includeBuild "../../libs/testing"
-includeBuild "../../libs/texas"
 
 develocity {
     buildScan {

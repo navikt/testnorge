@@ -2,6 +2,7 @@ package no.nav.dolly.proxy;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -11,6 +12,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 public class LocalSecurityConfig {
 
+    @Primary
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
