@@ -193,7 +193,9 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
             return kontaktinfo.getAdresse();
 
         } else {
-            if (isNotBlank(kontaktinfo.getAdresse().getLandkode()) && !"NOR".equals(kontaktinfo.getAdresse().getLandkode())) {
+            if (nonNull(kontaktinfo.getAdresse()) &&
+                    isNotBlank(kontaktinfo.getAdresse().getLandkode()) &&
+                    !"NOR".equals(kontaktinfo.getAdresse().getLandkode())) {
                 return mapperFacade.map(enkelAdresseService.getUtenlandskAdresse(new UtenlandskAdresseDTO(),
                                 kontaktinfo.getAdresse().getLandkode(), kontaktinfo.getMaster()), KontaktinformasjonForDoedsboAdresse.class);
 
