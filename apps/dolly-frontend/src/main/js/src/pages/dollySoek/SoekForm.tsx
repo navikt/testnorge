@@ -53,6 +53,14 @@ export const SoekForm = () => {
 	const values = watch()
 
 	useEffect(() => {
+		const localStorageRequest = localStorageValue ? JSON.parse(localStorageValue) : null
+		_.set(localStorageRequest, 'seed', result?.seed ?? null)
+		if (localStorageRequest) {
+			localStorage.setItem(dollySoekLocalStorageKey, JSON.stringify(localStorageRequest))
+		}
+	}, [result])
+
+	useEffect(() => {
 		setSoekPaagaar(true)
 		setSoekError(null)
 		DollyApi.personerSearch(formRequest).then((response) => {

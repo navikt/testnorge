@@ -30,14 +30,19 @@ const NavigateButton = styled(Button)`
 `
 
 export const tenorSoekLocalStorageKey = 'tenorSoek'
+export const tenorSoekStateLocalStorageKey = 'tenorSoekState'
 
 export default () => {
 	const initialRequest = localStorage.getItem(tenorSoekLocalStorageKey)
 		? JSON.parse(localStorage.getItem(tenorSoekLocalStorageKey) as string)
 		: {}
 
+	const initialStateValues = localStorage.getItem(tenorSoekStateLocalStorageKey)
+		? JSON.parse(localStorage.getItem(tenorSoekStateLocalStorageKey) as string)
+		: initialState
+
 	const [formRequest, setFormRequest] = useState(initialRequest)
-	const [state, setState] = useState<any>(initialState)
+	const [state, setState] = useState<any>(initialStateValues)
 	const { response, loading, error, mutate } = useTenorOversikt(
 		formRequest,
 		10,
@@ -74,7 +79,15 @@ export default () => {
 			if (state.side > 0) {
 				setState({
 					...state,
-					personListe: [...state.personListe, ...response.data.data.personer],
+					personListe: [
+						...state.personListe,
+						...response.data.data.personer.filter(
+							(person) =>
+								!state.personListe.some(
+									(eksisterendePerson) => eksisterendePerson.id === person.id,
+								),
+						),
+					],
 					nesteSide: response?.data?.data?.nesteSide,
 				})
 			} else {
@@ -86,6 +99,10 @@ export default () => {
 			}
 		}
 	}, [response])
+
+	useEffect(() => {
+		localStorage.setItem(tenorSoekStateLocalStorageKey, JSON.stringify(state))
+	}, [state])
 
 	useEffect(() => {
 		window.addEventListener('scroll', handleScroll)
