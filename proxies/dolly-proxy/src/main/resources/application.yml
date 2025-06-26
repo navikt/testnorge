@@ -18,9 +18,10 @@ spring:
         response-timeout: 1200s
 
 consumers:
-  altinn3-tilgang-service:
-    cluster: prod-gcp
-    name: testnav-altinn3-tilgang-service-prod
+  inntektsstub:
+    cluster: dev-fss
+    name: testnav-inntektstub-proxy
     namespace: dolly
-    url: https://testnav-altinn3-tilgang-service.nav.no
+    #url: http://inntektstub.team-inntekt.svc.nais.local/
+    url: http://inntektstub.team-inntekt
 

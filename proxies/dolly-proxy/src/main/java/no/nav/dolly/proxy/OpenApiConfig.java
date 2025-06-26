@@ -11,7 +11,7 @@ import java.net.URI;
 
 @Configuration
 @Profile("local")
-public class OpenApiConfig {
+class OpenApiConfig {
 
     @Bean
     RouterFunction<ServerResponse> swaggerRedirect() {

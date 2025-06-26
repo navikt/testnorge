@@ -22,10 +22,8 @@ import static lombok.AccessLevel.PACKAGE;
 @NoArgsConstructor(access = PACKAGE)
 @Getter
 @Setter(PACKAGE)
-public class Consumers {
+class Consumers {
 
-    private ServerProperties altinn3TilgangService;
-    private ServerProperties brregStub;
-    private ServerProperties brregStubReverse;
+    ServerProperties inntektsstub;
 
 }
