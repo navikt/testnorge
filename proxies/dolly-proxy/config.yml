@@ -58,4 +58,4 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
-    - "https://dolly-proxy.intern.dev.nav.no"
+    - "https://dolly-proxy.dev-fss-pub.nais.io"

@@ -17,6 +17,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
+      cluster: "dev-fss"
       working-directory: "proxies/dolly-proxy"
       deploy-tag: "#deploy-dolly-proxy"
     permissions:
