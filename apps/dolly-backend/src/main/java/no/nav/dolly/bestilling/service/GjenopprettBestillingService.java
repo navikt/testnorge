@@ -13,6 +13,9 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
+import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -36,30 +39,36 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     private final PersonServiceClient personServiceClient;
 
     public GjenopprettBestillingService(
-            IdentService identService,
+            BestillingElasticRepository bestillingElasticRepository,
+            BestillingProgressRepository bestillingProgressRepository,
             BestillingProgressService bestillingProgressService,
+            BestillingRepository bestillingRepository,
             BestillingService bestillingService,
-            ObjectMapper objectMapper,
-            MapperFacade mapperFacade,
-            List<ClientRegister> clientRegisters,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
+            IdentService identService,
+            List<ClientRegister> clientRegisters,
+            MapperFacade mapperFacade,
+            ObjectMapper objectMapper,
             PdlDataConsumer pdlDataConsumer,
-            TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            BestillingElasticRepository bestillingElasticRepository
+            TestgruppeRepository testgruppeRepository,
+            TransactionHelperService transactionHelperService
     ) {
         super(
-                identService,
+                bestillingElasticRepository,
+                bestillingProgressRepository,
+                bestillingRepository,
                 bestillingService,
-                objectMapper,
-                mapperFacade,
-                clientRegisters,
                 counterCustomRegistry,
-                pdlDataConsumer,
                 errorStatusDecoder,
-                transactionHelperService,
-                bestillingElasticRepository
+                identService,
+                clientRegisters,
+                mapperFacade,
+                objectMapper,
+                pdlDataConsumer,
+                testgruppeRepository,
+                transactionHelperService
         );
         this.bestillingProgressService = bestillingProgressService;
         this.personServiceClient = personServiceClient;
@@ -76,7 +85,8 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
             var gamleProgresser = bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId());
 
-            Flux.fromIterable(gamleProgresser)
+          var test =   Flux.fromIterable(gamleProgresser)
+//                    .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(gmlProgress -> opprettProgress(bestilling, gmlProgress.getMaster(), gmlProgress.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
                                     .ident(gmlProgress.getIdent())
@@ -85,36 +95,34 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
-                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                            fase1Klienter(),
-                                                            progress, false),
-                                                    personServiceClient.syncPerson(dollyPerson, progress)
-                                                            .map(ClientFuture::get)
-                                                            .filter(BestillingProgress::isPdlSync)
-                                                            .flatMap(pdlSync -> createBestilling(bestilling, gmlProgress.getBestilling()))
-                                                            .flatMap(cobestilling -> Flux.concat(
-                                                                    gjenopprettKlienter(dollyPerson, cobestilling,
-                                                                            fase2Klienter(),
-                                                                            progress, false),
-                                                                    gjenopprettKlienter(dollyPerson, cobestilling,
-                                                                            fase3Klienter(),
-                                                                            progress, false)))))
-                                            .onErrorResume(throwable -> {
-                                                var description = WebClientError.describe(throwable);
-                                                var error = errorStatusDecoder.getErrorText(description.getStatus(), description.getMessage());
-                                                log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                                                        progress.getId(), error, throwable);
-                                                progress.setFeil(error);
-                                                saveFeil(progress, error);
-                                                return Flux.just(progress);
-                                            }))))
-                    .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
-                    .collectList()
-                    .doFinally(done -> {
-                        doFerdig(bestilling);
-                        clearCache();
-                    })
-                    .subscribe();
+                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                    fase1Klienter(),
+                                                                    progress, false),
+                                                                    Flux.from(personServiceClient.syncPerson(dollyPerson, progress))
+                                                                            .filter(BestillingProgress::isPdlSync)
+                                                                    .flatMap(pdlSync -> createBestilling(bestilling, gmlProgress.getBestillingId()))
+                                                                    .flatMap(cobestilling -> Flux.concat(
+                                                                            gjenopprettKlienter(dollyPerson, cobestilling,
+                                                                                    fase2Klienter(),
+                                                                                    progress, false),
+                                                                            gjenopprettKlienter(dollyPerson, cobestilling,
+                                                                                    fase3Klienter(),
+                                                                                    progress, false))))
+                                                                    .map(t -> )
+//                                                                    .onErrorResume(throwable -> {
+//                                                                        var description = WebClientError.describe(throwable);
+//                                                                        var error = errorStatusDecoder.getErrorText(description.getStatus(), description.getMessage());
+//                                                                        log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
+//                                                                                progress.getId(), error, throwable);
+//                                                                        progress.setFeil(error);
+//                                                                        return saveFeil(progress, error).flux();
+//                                                                    })
+
+
+//                    .next()
+//                    .flatMap(progresser -> doFerdig(bestilling))
+//                    .doFinally(signal -> clearCache())
+//                    .subscribe();
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");

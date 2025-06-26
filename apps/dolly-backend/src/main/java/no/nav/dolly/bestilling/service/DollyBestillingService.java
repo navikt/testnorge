@@ -58,21 +58,19 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @RequiredArgsConstructor
 public class DollyBestillingService {
 
-    protected final IdentService identService;
-    protected final BestillingService bestillingService;
-    protected final ObjectMapper objectMapper;
-    protected final MapperFacade mapperFacade;
-    protected final List<ClientRegister> clientRegisters;
-    protected final CounterCustomRegistry counterCustomRegistry;
-    protected final PdlDataConsumer pdlDataConsumer;
-    protected final ErrorStatusDecoder errorStatusDecoder;
-    protected final TransactionHelperService transactionHelperService;
     protected final BestillingElasticRepository bestillingElasticRepository;
     protected final BestillingProgressRepository bestillingProgressRepository;
     protected final BestillingRepository bestillingRepository;
-    private final TestgruppeRepository testgruppeRepository;
-
-    protected final
+    protected final BestillingService bestillingService;
+    protected final CounterCustomRegistry counterCustomRegistry;
+    protected final ErrorStatusDecoder errorStatusDecoder;
+    protected final IdentService identService;
+    protected final List<ClientRegister> clientRegisters;
+    protected final MapperFacade mapperFacade;
+    protected final ObjectMapper objectMapper;
+    protected final PdlDataConsumer pdlDataConsumer;
+    protected final TestgruppeRepository testgruppeRepository;
+    protected final TransactionHelperService transactionHelperService;
 
     public static Set<String> getEnvironments(String miljoer) {
         return isNotBlank(miljoer) ? Set.of(miljoer.split(",")) : emptySet();
@@ -157,15 +155,17 @@ public class DollyBestillingService {
                 .flatMap(ClientFuture::get);
     }
 
-    protected void leggIdentTilGruppe(BestillingProgress progress, String beskrivelse) {
+    protected Mono<Testident> leggIdentTilGruppe(BestillingProgress progress, String beskrivelse) {
 
-        leggIdentTilGruppe(null, progress, beskrivelse);
+        return leggIdentTilGruppe(null, progress, beskrivelse);
     }
 
     protected Mono<Testident> leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
 
-        identService.saveIdentTilGruppe(isNotBlank(ident) ? ident : progress.getIdent(), progress.getBestilling().getGruppe(), progress.getMaster(), beskrivelse);
-        log.info("Ident {} lagt til gruppe {}", isNotBlank(ident) ? ident : progress.getIdent(), progress.getBestilling().getGruppe().getId());
+        return bestillingRepository.findById(progress.getBestillingId())
+                .flatMap(bestilling -> identService.saveIdentTilGruppe(isNotBlank(ident) ? ident : progress.getIdent(),
+                                bestilling.getGruppeId(), progress.getMaster(), beskrivelse)
+                        .doOnNext(testident -> log.info("Ident {} lagt til gruppe {}", testident.getIdent(), bestilling.getGruppeId())));
     }
 
     protected Mono<DollyPerson> opprettDollyPerson(BestillingProgress progress, Bruker bruker) {
@@ -307,16 +307,17 @@ public class DollyBestillingService {
                         .build()));
     }
 
-    protected Flux<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, Bestilling coBestilling) {
+    protected Flux<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, Long coBestillingId) {
 
-        return Flux.just(getDollyBestillingRequest(
-                Bestilling.builder()
-                        .id(coBestilling.getId())
-                        .bestKriterier(coBestilling.getBestKriterier())
-                        .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
-                                bestilling.getMiljoer() :
-                                coBestilling.getMiljoer())
-                        .build()));
+        return bestillingRepository.findById(coBestillingId)
+                .map(coBestilling -> getDollyBestillingRequest(
+                        Bestilling.builder()
+                                .id(coBestilling.getId())
+                                .bestKriterier(coBestilling.getBestKriterier())
+                                .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
+                                        bestilling.getMiljoer() :
+                                        coBestilling.getMiljoer())
+                                .build())).flux()
     }
 
     protected Flux<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress

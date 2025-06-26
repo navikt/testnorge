@@ -13,6 +13,9 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
+import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
@@ -34,28 +37,35 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
     private final PersonServiceClient personServiceClient;
 
     public OpprettPersonerFraIdenterMedKriterierService(
-            IdentService identService,
+            BestillingElasticRepository bestillingElasticRepository,
+            BestillingProgressRepository bestillingProgressRepository,
+            BestillingRepository bestillingRepository,
             BestillingService bestillingService,
-            ObjectMapper objectMapper,
-            MapperFacade mapperFacade,
-            List<ClientRegister> clientRegisters,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
+            IdentService identService,
+            List<ClientRegister> clientRegisters,
+            MapperFacade mapperFacade,
+            ObjectMapper objectMapper,
             PdlDataConsumer pdlDataConsumer,
-            TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            BestillingElasticRepository bestillingElasticRepository) {
+            TestgruppeRepository testgruppeRepository,
+            TransactionHelperService transactionHelperService
+    ) {
         super(
-                identService,
+                bestillingElasticRepository,
+                bestillingProgressRepository,
+                bestillingRepository,
                 bestillingService,
-                objectMapper,
-                mapperFacade,
-                clientRegisters,
                 counterCustomRegistry,
-                pdlDataConsumer,
                 errorStatusDecoder,
-                transactionHelperService,
-                bestillingElasticRepository
+                identService,
+                clientRegisters,
+                mapperFacade,
+                objectMapper,
+                pdlDataConsumer,
+                testgruppeRepository,
+                transactionHelperService
         );
         this.personServiceClient = personServiceClient;
     }

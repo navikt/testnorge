@@ -67,20 +67,20 @@ public class Testgruppe implements Serializable {
 //    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn("tilhoerer_gruppe")
 //    @Column(unique = true)
-    @Builder.Default
+//    @Builder.Default
 //    @OrderBy("id DESC")
-    private List<Testident> testidenter = new ArrayList<>();
+//    private List<Testident> testidenter = new ArrayList<>();
 
 //    @ManyToMany(mappedBy = "favoritter", fetch = FetchType.EAGER)
-    @Builder.Default
-    private Set<Bruker> favorisertAv = new HashSet<>();
+//    @Builder.Default
+//    private Set<Bruker> favorisertAv = new HashSet<>();
 
 //    @OrderBy("id")
 //    @OneToMany(fetch = FetchType.LAZY)
 //    @JoinColumn("gruppe_id")
-    @Builder.Default
-    @Transient
-    private Set<Bestilling> bestillinger = new HashSet<>();
+//    @Builder.Default
+//    @Transient
+//    private Set<Bestilling> bestillinger = new HashSet<>();
 
     @Column("ER_LAAST")
     private Boolean erLaast;
