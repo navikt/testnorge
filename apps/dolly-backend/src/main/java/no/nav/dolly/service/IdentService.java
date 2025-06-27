@@ -1,15 +1,13 @@
 package no.nav.dolly.service;
 
+import com.google.common.util.concurrent.AtomicLongMap;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.dto.TestidentDTO;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
@@ -18,13 +16,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -108,24 +109,34 @@ public class IdentService {
     }
 
     @Transactional
-    public void swapIdent(String oldIdent, String newIdent) {
+    public Mono<Testident> swapIdent(String oldIdent, String newIdent) {
 
-        if (identRepository.findByIdent(newIdent).isPresent()) {
-            identRepository.deleteTestidentByIdent(oldIdent);
-
-        } else {
-            identRepository.swapIdent(oldIdent, newIdent);
-        }
+            return identRepository.swapIdent(oldIdent, newIdent);
     }
 
-    public List<GruppeBestillingIdent> getBestillingerFromGruppe(Testgruppe gruppe) {
+    public Flux<GruppeBestillingIdent> getBestillingerFromGruppe(Long gruppeId) {
 
-        return identRepository.getBestillingerFromGruppe(gruppe);
+        return identRepository.getBestillingerFromGruppe(gruppeId)
+                .filter(bestilling -> !"{}".equals(bestilling.getBestkriterier()))
+                .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                .switchIfEmpty(identRepository.getBestillingerFromGruppe(gruppeId)
+                        .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                        .next());
     }
 
-    public List<GruppeBestillingIdent> getBestillingerFromIdent(String ident) {
+    public Flux<GruppeBestillingIdent> getBestillingerFromIdent(String ident) {
 
-        return identRepository.getBestillingerByIdent(ident);
+        return identRepository.getBestillingerByIdent(ident)
+                .filter(bestilling -> !"{}".equals(bestilling.getBestkriterier()))
+                .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                .switchIfEmpty(identRepository.getBestillingerByIdent(ident)
+                        .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                        .next());
+    }
+
+    public Flux<Testident> getTestidenterByGruppeId(Long gruppeId) {
+
+        return identRepository.findAllByTestgruppeId(gruppeId, Pageable.unpaged());
     }
 
     public Mono<Page<Testident>> getTestidenterFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
@@ -165,25 +176,15 @@ public class IdentService {
                 .switchIfEmpty(Mono.error(new NotFoundException(format(IDENT_NOT_FOUND, ident))));
     }
 
-//    public List<Testident> getTestidenterByGruppe(Long id) {
-//
-//        return identRepository.findByTestgruppe(id);
-//    }
+    public Mono<FinnesDTO> exists(List<String> identer) {
 
-    public FinnesDTO exists(List<String> identer) {
-
-        var finnes = FinnesDTO.builder()
-                .iBruk(identRepository.findByIdentIn(identer).stream()
-                        .map(Testident::getIdent)
-                        .collect(Collectors.toMap(ident -> ident, ident -> true)))
-                .build();
-
-        identer.forEach(ident -> {
-            if (!finnes.getIBruk().containsKey(ident)) {
-                finnes.getIBruk().put(ident, false);
-            }
-        });
-
-        return finnes;
+        return identRepository.findByIdentIn(identer)
+                .map(Testident::getIdent)
+                .collectList()
+                .flatMap(finnes -> Flux.fromIterable(identer)
+                        .collect(Collectors.toMap(ident -> ident, finnes::contains)))
+                .map(finnesMap -> FinnesDTO.builder()
+                        .iBruk(finnesMap)
+                        .build());
     }
 }

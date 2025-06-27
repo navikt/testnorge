@@ -65,17 +65,17 @@ public class PdlDataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
-    public Flux<PdlResponse> opprettPdl(BestillingRequestDTO request) {
+    public Mono<PdlResponse> opprettPdl(BestillingRequestDTO request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
+                .flatMap(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
-    public Flux<PdlResponse> oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
+    public Mono<PdlResponse> oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new PdlDataOppdateringCommand(webClient, ident, request, token.getTokenValue()).call());
+                .flatMap(token -> new PdlDataOppdateringCommand(webClient, ident, request, token.getTokenValue()).call());
     }
 
     public Flux<FullPersonDTO> getPersoner(List<String> identer) {

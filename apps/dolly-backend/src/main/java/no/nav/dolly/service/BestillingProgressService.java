@@ -6,11 +6,8 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-
-import static java.util.Collections.emptyList;
 
 @Service
 @RequiredArgsConstructor
@@ -23,19 +20,21 @@ public class BestillingProgressService {
         return bestillingProgressRepository.save(progress);
     }
 
-    public List<BestillingProgress> fetchBestillingProgressByBestillingsIdFromDB(Long bestillingsId) {
-        return bestillingProgressRepository.findByBestillingId(bestillingsId).orElseThrow(
-                () -> new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingId=" + bestillingsId + ", i tabell T_BESTILLINGS_PROGRESS"));
+    public Flux<BestillingProgress> fetchBestillingProgressByBestillingsIdFromDB(Long bestillingsId) {
+
+        return bestillingProgressRepository.findByBestillingId(bestillingsId)
+                .switchIfEmpty(Mono.error(
+                        new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingId=" + bestillingsId)));
     }
 
-    public List<BestillingProgress> fetchBestillingProgressByBestillingId(Long bestillingsId) {
+    public Flux<BestillingProgress> fetchBestillingProgressByBestillingId(Long bestillingsId) {
 
-        return bestillingProgressRepository.findByBestillingId(bestillingsId).orElse(emptyList());
+        return bestillingProgressRepository.findByBestillingId(bestillingsId);
     }
 
     @Transactional
-    public void swapIdent(String oldIdent, String newIdent) {
+    public Mono<BestillingProgress> swapIdent(String oldIdent, String newIdent) {
 
-        bestillingProgressRepository.swapIdent(oldIdent, newIdent);
+        return bestillingProgressRepository.swapIdent(oldIdent, newIdent);
     }
 }

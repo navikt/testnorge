@@ -15,7 +15,6 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -35,8 +34,8 @@ public class Bestilling implements Serializable {
 
 //    @ManyToOne
 //    @JoinColumn("GRUPPE_ID", nullable = false)
-    @Transient
-    private Testgruppe gruppe;
+//    @Transient
+//    private Testgruppe gruppe;
 
     @Column("GRUPPE_ID")
     private Long gruppeId;
@@ -126,7 +125,7 @@ public class Bestilling implements Serializable {
                 .append(stoppet, that.stoppet)
                 .append(id, that.id)
                 .append(versjon, that.versjon)
-                .append(gruppe, that.gruppe)
+                .append(gruppeId, that.gruppeId)
                 .append(miljoer, that.miljoer)
                 .append(antallIdenter, that.antallIdenter)
                 .append(sistOppdatert, that.sistOppdatert)
@@ -150,7 +149,7 @@ public class Bestilling implements Serializable {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(versjon)
-                .append(gruppe)
+                .append(gruppeId)
                 .append(ferdig)
                 .append(miljoer)
                 .append(antallIdenter)
@@ -176,7 +175,7 @@ public class Bestilling implements Serializable {
         return "Bestilling{" +
                 "id=" + id +
                 ", versjon=" + versjon +
-                ", gruppe=" + gruppe +
+                ", gruppeId=" + gruppeId +
                 ", ferdig=" + ferdig +
                 ", miljoer='" + miljoer + '\'' +
                 ", antallIdenter=" + antallIdenter +

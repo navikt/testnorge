@@ -12,7 +12,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
-import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
@@ -34,11 +33,8 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -153,7 +149,7 @@ public class BestillingService {
                         testgruppeRepository.findById(bestilling.getGruppeId()),
                         getBestillingProgresser(bestilling)))
                 .map(tuple -> {
-                    tuple.getT1().setGruppe(tuple.getT2());
+                    tuple.getT1().setGruppeId(tuple.getT2().getId());
                     tuple.getT1().setProgresser(tuple.getT3());
                     return tuple.getT1();
                 });
@@ -489,10 +485,9 @@ public class BestillingService {
                 .then();
     }
 
-    @Transactional
-    public void swapIdent(String oldIdent, String newIdent) {
+    public Mono<Bestilling> swapIdent(String oldIdent, String newIdent) {
 
-        bestillingRepository.swapIdent(oldIdent, newIdent);
+        return bestillingRepository.swapIdent(oldIdent, newIdent);
     }
 
     public Mono<String> getBestKriterier(RsDollyBestilling request) {
