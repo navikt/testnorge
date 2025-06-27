@@ -4,7 +4,7 @@ import { Button, Table } from '@navikt/ds-react'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import * as _ from 'lodash-es'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Form, FormProvider, useForm } from 'react-hook-form'
+import { Form, FormProvider } from 'react-hook-form'
 import { Buttons, Header, Soekefelt, SoekefeltWrapper } from '@/components/ui/soekForm/SoekForm'
 import {
 	AdresserPaths,
@@ -28,10 +28,13 @@ export const dollySoekLocalStorageKey = 'dollySoek'
 export const personPath = 'personRequest'
 export const adressePath = 'personRequest.adresse'
 
-export const SoekForm = ({ lagreSoekRequest, setLagreSoekRequest }) => {
-	const localStorageValue = localStorage.getItem(dollySoekLocalStorageKey)
-	const initialValues = localStorageValue ? JSON.parse(localStorageValue) : dollySoekInitialValues
-
+export const SoekForm = ({
+	formMethods,
+	localStorageValue,
+	initialValues,
+	lagreSoekRequest,
+	setLagreSoekRequest,
+}) => {
 	const [formRequest, setFormRequest] = useState(initialValues)
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
@@ -45,11 +48,6 @@ export const SoekForm = ({ lagreSoekRequest, setLagreSoekRequest }) => {
 
 	const maxTotalHits = 10000
 
-	const initialValuesClone = _.cloneDeep(initialValues)
-	const formMethods = useForm({
-		mode: 'onChange',
-		defaultValues: initialValuesClone,
-	})
 	const { watch, reset, control, getValues } = formMethods
 	const values = watch()
 
@@ -81,6 +79,7 @@ export const SoekForm = ({ lagreSoekRequest, setLagreSoekRequest }) => {
 		const updatedRequest = { ...values, personRequest: updatedPersonRequest, side: 0, seed: null }
 		reset(updatedRequest)
 		setRequest(updatedRequest)
+		//TODO: Hvis null - fjern fra lagreSoekRequest
 		setLagreSoekRequest({
 			...lagreSoekRequest,
 			[path]: {
@@ -123,6 +122,7 @@ export const SoekForm = ({ lagreSoekRequest, setLagreSoekRequest }) => {
 	}
 
 	const emptyCategory = (paths: string[]) => {
+		//TODO: Toem lagresoek
 		const requestClone = { ...values }
 		paths.forEach((path) => {
 			_.set(requestClone, path, _.get(dollySoekInitialValues, path))
@@ -140,6 +140,7 @@ export const SoekForm = ({ lagreSoekRequest, setLagreSoekRequest }) => {
 	}
 
 	const emptySearch = () => {
+		//TODO: Toem lagresoek
 		setVisAntall(10)
 		reset(dollySoekInitialValues)
 		setRequest(dollySoekInitialValues)

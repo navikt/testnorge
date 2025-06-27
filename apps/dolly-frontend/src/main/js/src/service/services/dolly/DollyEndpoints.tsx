@@ -222,4 +222,8 @@ export default class DollyEndpoints {
 	static fjernRepresentererTeam() {
 		return `${brukerBase}/representererTeam`
 	}
+
+	static lagreSoek(soekType: string) {
+		return `${uri}/soek?soekType=${soekType}`
+	}
 }

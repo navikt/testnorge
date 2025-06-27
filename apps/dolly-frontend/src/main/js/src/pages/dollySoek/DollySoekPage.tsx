@@ -1,20 +1,42 @@
 import Title from '../../components/title'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
-import { SoekForm } from '@/pages/dollySoek/SoekForm'
+import { dollySoekLocalStorageKey, SoekForm } from '@/pages/dollySoek/SoekForm'
 import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as _ from 'lodash-es'
+import { dollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
+import { DollyApi } from '@/service/Api'
 
 export default () => {
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
+	const lagreSoekRequestRef = useRef(lagreSoekRequest)
 	console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
 
 	useEffect(() => {
+		lagreSoekRequestRef.current = lagreSoekRequest
+	}, [lagreSoekRequest])
+
+	useEffect(() => {
 		return () => {
-			//TODO: send lagreSoekRequest til backend for lagring
-			console.log('Kom deg vekk!') //TODO - SLETT MEG
+			if (Object.keys(lagreSoekRequestRef.current).length > 0) {
+				console.log('lagreSoekRequestRef.current: ', lagreSoekRequestRef.current) //TODO - SLETT MEG
+				DollyApi.lagreSoek(lagreSoekRequestRef.current, 'DOLLY')
+					.then((response) => console.log(response))
+					.catch((error) => console.error(error))
+			}
 		}
 	}, [])
+
+	const localStorageValue = localStorage.getItem(dollySoekLocalStorageKey)
+	const initialValues = localStorageValue ? JSON.parse(localStorageValue) : dollySoekInitialValues
+
+	const initialValuesClone = _.cloneDeep(initialValues)
+	const formMethods = useForm({
+		mode: 'onChange',
+		defaultValues: initialValuesClone,
+	})
 
 	return (
 		<div>
@@ -26,7 +48,13 @@ export default () => {
 				</Hjelpetekst>
 			</div>
 			<SisteSoek soekType={soekType.dolly} />
-			<SoekForm lagreSoekRequest={lagreSoekRequest} setLagreSoekRequest={setLagreSoekRequest} />
+			<SoekForm
+				formMethods={formMethods}
+				localStorageValue={localStorageValue}
+				initialValues={initialValues}
+				lagreSoekRequest={lagreSoekRequest}
+				setLagreSoekRequest={setLagreSoekRequest}
+			/>
 		</div>
 	)
 }
