@@ -22,12 +22,13 @@ import { Familierelasjoner } from '@/pages/dollySoek/soekFormPartials/Familierel
 import { Identifikasjon } from '@/pages/dollySoek/soekFormPartials/Identifikasjon'
 import { Annet } from '@/pages/dollySoek/soekFormPartials/Annet'
 import { runningE2ETest } from '@/service/services/Request'
+import { codeToNorskLabel } from '@/utils/DataFormatter'
 
 export const dollySoekLocalStorageKey = 'dollySoek'
 export const personPath = 'personRequest'
 export const adressePath = 'personRequest.adresse'
 
-export const SoekForm = () => {
+export const SoekForm = ({ lagreSoekRequest, setLagreSoekRequest }) => {
 	const localStorageValue = localStorage.getItem(dollySoekLocalStorageKey)
 	const initialValues = localStorageValue ? JSON.parse(localStorageValue) : dollySoekInitialValues
 
@@ -80,6 +81,14 @@ export const SoekForm = () => {
 		const updatedRequest = { ...values, personRequest: updatedPersonRequest, side: 0, seed: null }
 		reset(updatedRequest)
 		setRequest(updatedRequest)
+		setLagreSoekRequest({
+			...lagreSoekRequest,
+			[path]: {
+				path: `${personPath}.${path}`,
+				value: value,
+				label: `${codeToNorskLabel(path)}: ${value}`,
+			},
+		})
 	}
 
 	const handleChangeAdresse = (value: any, path: string) => {
