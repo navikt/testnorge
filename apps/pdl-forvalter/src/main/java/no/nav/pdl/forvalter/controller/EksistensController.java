@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class EksistensController {
     @ResponseBody
     @GetMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Sjekk om ident(er) er gyldig(e) og tilgjengelig(e) for oppretting av ny(e) person(er)")
-    public List<AvailibilityResponseDTO> getIdentAvailability(@Parameter(description = "Ident(er) som skal sjekkes")
+    public Flux<AvailibilityResponseDTO> getIdentAvailability(@Parameter(description = "Ident(er) som skal sjekkes")
                                                                @RequestParam List<String> identer) {
 
         return eksistensService.checkAvailibility(identer);

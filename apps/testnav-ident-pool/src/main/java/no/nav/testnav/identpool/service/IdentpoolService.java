@@ -18,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -84,7 +83,7 @@ public class IdentpoolService {
                     if (testident.getRekvireringsstatus().equals(Rekvireringsstatus.I_BRUK)) {
                         return Mono.just(false);
                     } else if (testident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) &&
-                            personidentifikator.getBytes(StandardCharsets.UTF_8)[2] >= '4') {
+                            isSyntetisk(personidentifikator)) {
                         return Mono.just(true);
                     } else {
                         return tpsMessagingConsumer.getIdenterProdStatus(Collections.singleton(personidentifikator))
@@ -92,7 +91,7 @@ public class IdentpoolService {
                                 .next();
                     }
                 })
-                .switchIfEmpty(personidentifikator.getBytes(StandardCharsets.UTF_8)[2] >= '4'
+                .switchIfEmpty(isSyntetisk(personidentifikator)
                         ? Mono.just(true)
                         : tpsMessagingConsumer.getIdenterProdStatus(Collections.singleton(personidentifikator))
                         .map(status -> !status.isInUse())
@@ -104,22 +103,22 @@ public class IdentpoolService {
         return identRepository.findByPersonidentifikator(request.getPersonidentifikator())
                 .flatMap(ident -> {
                     if (ident.getRekvireringsstatus() == LEDIG) {
-                            ident.setRekvireringsstatus(I_BRUK);
-                            ident.setRekvirertAv(request.getBruker());
-                            return identRepository.save(ident);
-                        } else {
-                            return(Mono.error(new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som i bruk.")));
-                        }
-                    })
+                        ident.setRekvireringsstatus(I_BRUK);
+                        ident.setRekvirertAv(request.getBruker());
+                        return identRepository.save(ident);
+                    } else {
+                        return (Mono.error(new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som i bruk.")));
+                    }
+                })
                 .switchIfEmpty(Mono.just(Ident.builder()
-                        .identtype(getIdentType(request.getPersonidentifikator()))
-                        .personidentifikator(request.getPersonidentifikator())
-                        .rekvireringsstatus(I_BRUK)
-                        .rekvirertAv(request.getBruker())
-                        .kjoenn(PersonidentUtil.getKjonn(request.getPersonidentifikator()))
-                        .foedselsdato(PersonidentUtil.toBirthdate(request.getPersonidentifikator()))
-                        .syntetisk(isSyntetisk(request.getPersonidentifikator()))
-                        .build())
+                                .identtype(getIdentType(request.getPersonidentifikator()))
+                                .personidentifikator(request.getPersonidentifikator())
+                                .rekvireringsstatus(I_BRUK)
+                                .rekvirertAv(request.getBruker())
+                                .kjoenn(PersonidentUtil.getKjonn(request.getPersonidentifikator()))
+                                .foedselsdato(PersonidentUtil.toBirthdate(request.getPersonidentifikator()))
+                                .syntetisk(isSyntetisk(request.getPersonidentifikator()))
+                                .build())
                         .flatMap(identRepository::save));
     }
 }
