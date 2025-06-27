@@ -51,20 +51,18 @@ public class FullmaktConsumer extends ConsumerStatus {
 
         log.info("Fullmakt opprett {}", fullmakter);
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
-                        Flux.range(0, fullmakter.size())
-                                .delayElements(Duration.ofMillis(100))
-                                .flatMap(idx -> new PostFullmaktDataCommand(webClient, token.getTokenValue(), ident, fullmakter.get(idx)).call()));
+                .flatMapMany(token -> Flux.fromIterable(fullmakter)
+                                .delayElements(Duration.ofMillis(50))
+                                .flatMap(fullmakt ->
+                                        new PostFullmaktDataCommand(webClient, token.getTokenValue(), ident, fullmakt).call()));
     }
 
     @Timed(name = "providers", tags = {"operation", "fullmakt_getData"})
-    public Flux<FullmaktResponse> getFullmaktData(List<String> identer) {
+    public Mono<FullmaktResponse> getFullmaktData(String ident) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size())
-                        .delayElements(Duration.ofMillis(50))
-                        .flatMap(idx -> new GetFullmaktDataCommand(webClient, identer.get(idx),
-                                token.getTokenValue()).call()));
+                .flatMap(token -> new GetFullmaktDataCommand(webClient, ident,
+                                token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "fullmakt_getData"})

@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.aareg;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;

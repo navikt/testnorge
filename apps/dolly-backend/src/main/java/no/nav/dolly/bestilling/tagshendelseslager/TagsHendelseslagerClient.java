@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.tagshendelseslager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;

@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.sigrunstub;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;

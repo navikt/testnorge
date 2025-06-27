@@ -119,7 +119,7 @@ public class TestpersonController {
 
     @Operation(description = "Sjekk om testpersoner finnes i Dolly")
     @GetMapping("/finnes")
-    public FinnesDTO finnesTestident(@RequestParam List<String> identer) {
+    public Mono<FinnesDTO> finnesTestident(@RequestParam List<String> identer) {
 
         return identService.exists(identer);
     }

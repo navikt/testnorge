@@ -9,6 +9,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
@@ -17,7 +18,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class GetFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> {
+public class GetFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> {
 
     private static final String HENT_FULLMAKT_URL = "/api/fullmektig";
 
@@ -25,7 +26,7 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> 
     private final String ident;
     private final String token;
 
-    public Flux<FullmaktResponse> call() {
+    public Mono<FullmaktResponse> call() {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -37,12 +38,11 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> 
                 .headers(WebClientHeader.bearer(token))
                 .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
-                .bodyToFlux(FullmaktResponse.class)
+                .bodyToMono(FullmaktResponse.class)
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Flux.empty());
+                .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Mono.empty());
     }
-
 }

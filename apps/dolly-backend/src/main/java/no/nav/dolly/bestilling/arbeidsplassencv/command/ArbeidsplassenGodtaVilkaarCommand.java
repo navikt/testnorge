@@ -28,12 +28,12 @@ public class ArbeidsplassenGodtaVilkaarCommand implements Callable<Mono<Arbeidsp
 
     @Override
     public Mono<ArbeidsplassenCVStatusDTO> call() {
+
         return webClient
                 .post()
-                .uri(
-                        uriBuilder -> uriBuilder
-                                .path(ARBEIDSPLASSEN_SAMTYKKE_URL)
-                                .build())
+                .uri(uriBuilder -> uriBuilder
+                        .path(ARBEIDSPLASSEN_SAMTYKKE_URL)
+                        .build())
                 .header(FNR, ident)
                 .header(ARBEIDSPLASSEN_CALL_ID, uuid)
                 .headers(WebClientHeader.bearer(token))
@@ -48,5 +48,4 @@ public class ArbeidsplassenGodtaVilkaarCommand implements Callable<Mono<Arbeidsp
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> ArbeidsplassenCVStatusDTO.of(WebClientError.describe(throwable), uuid));
     }
-
 }

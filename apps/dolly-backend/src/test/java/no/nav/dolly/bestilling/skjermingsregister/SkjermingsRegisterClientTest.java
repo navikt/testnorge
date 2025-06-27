@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.skjermingsregister;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;

@@ -9,6 +9,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
@@ -17,7 +18,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenCVStatusDTO>> {
+public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenCVStatusDTO>> {
 
     private static final String ARBEIDSPLASSEN_CV_URL = "/rest/v3/cv";
     private static final String FNR = "fnr";
@@ -29,7 +30,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenC
     private final String token;
 
     @Override
-    public Flux<ArbeidsplassenCVStatusDTO> call() {
+    public Mono<ArbeidsplassenCVStatusDTO> call() {
         return webClient
                 .put()
                 .uri(
@@ -42,7 +43,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenC
                 .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(arbeidsplassenCV)
                 .retrieve()
-                .bodyToFlux(PAMCVDTO.class)
+                .bodyToMono(PAMCVDTO.class)
                 .map(response -> ArbeidsplassenCVStatusDTO.builder()
                         .status(HttpStatus.OK)
                         .arbeidsplassenCV(response)

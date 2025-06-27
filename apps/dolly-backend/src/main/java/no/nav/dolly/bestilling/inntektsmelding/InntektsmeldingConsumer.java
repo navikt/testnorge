@@ -13,6 +13,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -43,14 +44,14 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inntektsmelding_opprett"})
-    public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
+    public Mono<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
         log.info("Inntektsmelding med ident {} callId {} sendt {}",
                 inntekstsmelding.getArbeidstakerFnr(), callId, inntekstsmelding);
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new OpprettInntektsmeldingCommand(webClient,
+                .flatMap(token -> new OpprettInntektsmeldingCommand(webClient,
                         token.getTokenValue(), inntekstsmelding, callId).call());
     }
 

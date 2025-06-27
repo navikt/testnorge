@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.PdlPerson;

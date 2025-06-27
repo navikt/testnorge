@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.instdata;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
 import no.nav.dolly.domain.jpa.BestillingProgress;

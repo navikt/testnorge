@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
@@ -15,7 +16,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class OpprettInntektsmeldingCommand implements Callable<Flux<InntektsmeldingResponse>> {
+public class OpprettInntektsmeldingCommand implements Callable<Mono<InntektsmeldingResponse>> {
 
     private final WebClient webClient;
     private final String token;
@@ -23,7 +24,7 @@ public class OpprettInntektsmeldingCommand implements Callable<Flux<Inntektsmeld
     private final String callId;
 
     @Override
-    public Flux<InntektsmeldingResponse> call() {
+    public Mono<InntektsmeldingResponse> call() {
         return webClient
                 .post()
                 .uri("/api/v1/inntektsmelding")
@@ -32,9 +33,10 @@ public class OpprettInntektsmeldingCommand implements Callable<Flux<Inntektsmeld
                 .header("Nav-Call-Id", callId)
                 .bodyValue(request)
                 .retrieve()
-                .bodyToFlux(InntektsmeldingResponse.class)
+                .bodyToMono(InntektsmeldingResponse.class)
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> InntektsmeldingResponse.of(WebClientError.describe(throwable), request.getArbeidstakerFnr(), request.getMiljoe()))
+                .onErrorResume(throwable ->
+                        InntektsmeldingResponse.of(WebClientError.describe(throwable), request.getArbeidstakerFnr(), request.getMiljoe()))
                 .retryWhen(WebClientError.is5xxException());
     }
 }

@@ -46,13 +46,18 @@ public class TransaksjonMappingService {
                 .switchIfEmpty(Mono.just(false));
     }
 
-    public void saveAll(Collection<TransaksjonMapping> entries) {
-        entries.forEach(this::save);
+    public Mono<Void> saveAll(Collection<TransaksjonMapping> entries) {
+
+        return Flux.fromIterable(entries)
+                .flatMap(this::save)
+                .collectList()
+                .then();
     }
 
     @Transactional
-    public void save(TransaksjonMapping entry) {
-        transaksjonMappingRepository.save(entry);
+    public Mono<TransaksjonMapping> save(TransaksjonMapping entry) {
+
+        return transaksjonMappingRepository.save(entry);
     }
 
 

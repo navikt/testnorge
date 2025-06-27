@@ -120,7 +120,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         } else {
 
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            doFerdig(bestilling);
+            doFerdig(bestilling)
+                    .subscribe();
         }
     }
 }

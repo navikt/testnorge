@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.sigrunstub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
@@ -19,6 +18,7 @@ import no.nav.dolly.util.TransactionHelperService;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,14 +38,14 @@ public class SigrunStubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(Flux.merge(
+        return Flux.merge(
                         doLignetInntekt(bestilling, dollyPerson),
                         doPensjonsgivendeInntekt(bestilling, dollyPerson),
                         doSummertSkattegrunnlag(bestilling, dollyPerson))
                 .collect(Collectors.joining(","))
-                .map(resultat -> futurePersist(progress, resultat)));
+                .flatMap(resultat -> oppdaterStatus(progress, resultat));
     }
 
     private Publisher<String> doSummertSkattegrunnlag(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
@@ -104,12 +104,9 @@ public class SigrunStubClient implements ClientRegister {
                 });
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setSigrunstubStatus, status);
-            return progress;
-        };
+        return transactionHelperService.persister(progress, BestillingProgress::setSigrunstubStatus, status);
     }
 
     @Override
@@ -143,10 +140,10 @@ public class SigrunStubClient implements ClientRegister {
 
         return tilbakemeldinger.stream()
                 .allMatch(SigrunstubResponse.OpprettelseTilbakemelding::isOK) ? "OK" :
-                ErrorStatusDecoder.encodeStatus(String.format("Feil: %s",
+                ErrorStatusDecoder.encodeStatus(java.lang.String.format("Feil: %s",
                         tilbakemeldinger.stream()
                                 .filter(SigrunstubResponse.OpprettelseTilbakemelding::isError)
-                                .map(status -> String.format("Inntektsår: %s, feilmelding: %s", status.getInntektsaar(), status.getMessage()))
+                                .map(status -> java.lang.String.format("Inntektsår: %s, feilmelding: %s", status.getInntektsaar(), status.getMessage()))
                                 .collect(Collectors.joining(", "))));
     }
 }

@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
