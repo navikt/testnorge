@@ -273,3 +273,16 @@ export const formatXml = (xml: string, tab = '\t') => {
 	})
 	return formatted.substring(1, formatted.length - 3)
 }
+
+export const formatBrukerNavn = (brukerNavn: string | undefined) => {
+	if (!brukerNavn) {
+		return ''
+	}
+	const parts = brukerNavn.split(', ')
+	if (parts.length < 2) {
+		return brukerNavn
+	}
+	const firstName = parts[1]
+	const lastName = parts[0]
+	return `${firstName} ${lastName}`
+}

@@ -55,6 +55,11 @@ public class BrukerService {
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
     }
 
+    public Bruker fetchBrukerByBrukerId(String brukerId) {
+        return brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet"));
+    }
+
 
     public Bruker fetchCurrentBrukerWithoutTeam() {
         var brukerId = getUserId(getUserInfo);
@@ -151,7 +156,7 @@ public class BrukerService {
 
         var brukeren = fetchOrCreateBruker();
         if (brukeren.getBrukertype() == AZURE || brukeren.getBrukertype() == TEAM) {
-            return brukerRepository.findAllByOrderById();
+            return brukerRepository.findAllByOrderByBrukernavn();
 
         } else {
             var brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())

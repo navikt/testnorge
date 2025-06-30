@@ -15,6 +15,10 @@ export default {
 		return Request.put(Endpoints.gruppeById(valgtGruppe), data)
 	},
 
+	endreTilknytningGruppe(gruppeId, brukerId) {
+		return Request.put(Endpoints.endreTilknytningGruppe(gruppeId, brukerId))
+	},
+
 	deleteGruppe(gruppeId) {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
 	},
