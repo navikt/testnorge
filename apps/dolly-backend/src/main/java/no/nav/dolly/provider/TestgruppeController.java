@@ -124,7 +124,7 @@ public class TestgruppeController {
         return testgruppeService.fetchPaginertTestgruppeById(gruppeId, pageNo, pageSize, sortKolonne, sortRetning);
     }
 
-    @Cacheable(CACHE_GRUPPE)
+    //    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
     @Operation(description = "Hent testgruppe")
     public RsTestgruppeMedBestillingId getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
