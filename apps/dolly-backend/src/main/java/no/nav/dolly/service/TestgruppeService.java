@@ -3,7 +3,6 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
@@ -97,11 +96,11 @@ public class TestgruppeService {
                 .build();
 
 
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty("brukerId", bruker.getBrukerId());
-
-        var rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class, context);
+        var rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
+        System.out.println("Gruppe opprettet av bruker: " + rsTestgruppe.getOpprettetAv().getBrukerId());
+        System.out.println("Gjeldende brukerId: " + bruker.getBrukerId());
+        rsTestgruppe.setErEierAvGruppe(bruker.getBrukerId().equals(rsTestgruppe.getOpprettetAv().getBrukerId()));
 
         var bestillingerPage = bestillingService.getBestillingerFromGruppeIdPaginert(testgruppe.getId(), 0, 1);
         rsTestgruppe.setAntallBestillinger(bestillingerPage.getTotalElements());
