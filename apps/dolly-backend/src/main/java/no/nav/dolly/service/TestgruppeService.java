@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
@@ -73,6 +74,8 @@ public class TestgruppeService {
 
         sjekkTilgang(gruppeId);
 
+        var bruker = brukerService.fetchOrCreateBruker();
+
         var testgruppeUtenIdenter = testgruppeRepository.findByIdOrderById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
 
@@ -93,7 +96,11 @@ public class TestgruppeService {
                 .testidenter(testidentPage.toList())
                 .build();
 
-        var rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
+
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("brukerId", bruker.getBrukerId());
+
+        var rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class, context);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
 
         var bestillingerPage = bestillingService.getBestillingerFromGruppeIdPaginert(testgruppe.getId(), 0, 1);
