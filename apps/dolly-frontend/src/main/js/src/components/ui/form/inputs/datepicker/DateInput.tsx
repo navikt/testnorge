@@ -19,6 +19,16 @@ const CalendarButton = styled(Button)`
 	}
 `
 
+const StyledInput = styled.input`
+	&& {
+		width: 190px;
+	}
+
+	&.skjemaelement__input--harFeil {
+		border-color: var(--a-border-danger);
+	}
+`
+
 type DateInputProps = {
 	name: string
 	fieldName?: string
@@ -100,7 +110,7 @@ export const DateInput = ({
 
 	return (
 		<>
-			<input
+			<StyledInput
 				id={name}
 				name={name}
 				value={fieldValue || ''}
