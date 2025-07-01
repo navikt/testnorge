@@ -1,0 +1,24 @@
+name: oppdrag-proxy
+
+on:
+  push:
+    paths:
+      - "plugins/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/oppdrag-proxy/**"
+      - ".github/workflows/proxy.oppdrag-proxy.yml"
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      cluster: "dev-fss"
+      working-directory: "proxies/oppdrag-proxy"
+      deploy-tag: "#deploy-proxy-oppdrag"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
