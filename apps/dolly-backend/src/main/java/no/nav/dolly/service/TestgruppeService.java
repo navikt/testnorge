@@ -98,8 +98,6 @@ public class TestgruppeService {
 
         var rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
-        System.out.println("Gruppe opprettet av bruker: " + rsTestgruppe.getOpprettetAv().getBrukerId());
-        System.out.println("Gjeldende brukerId: " + bruker.getBrukerId());
         rsTestgruppe.setErEierAvGruppe(bruker.getBrukerId().equals(rsTestgruppe.getOpprettetAv().getBrukerId()));
 
         var bestillingerPage = bestillingService.getBestillingerFromGruppeIdPaginert(testgruppe.getId(), 0, 1);

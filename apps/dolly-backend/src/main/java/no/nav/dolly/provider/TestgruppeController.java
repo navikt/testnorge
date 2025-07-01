@@ -87,7 +87,7 @@ public class TestgruppeController {
     @PutMapping(value = "/{gruppeId}/tilknytning/{brukerId}")
     @Operation(description = "Endre tilknytning av gruppe")
     public void endreGruppeTilknytning(@PathVariable("gruppeId") Long gruppeId,
-                                             @PathVariable("brukerId") String brukerId) {
+                                       @PathVariable("brukerId") String brukerId) {
 
         testgruppeService.endreGruppeTilknytning(gruppeId, brukerId);
     }
@@ -112,7 +112,6 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeMedBestillingId.class);
     }
 
-    //    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/page/{pageNo}")
     @Operation(description = "Hent paginert testgruppe")
     public RsTestgruppeMedBestillingId getPaginertTestgruppe(@PathVariable("gruppeId") Long gruppeId,
@@ -124,7 +123,7 @@ public class TestgruppeController {
         return testgruppeService.fetchPaginertTestgruppeById(gruppeId, pageNo, pageSize, sortKolonne, sortRetning);
     }
 
-    //    @Cacheable(CACHE_GRUPPE)
+    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
     @Operation(description = "Hent testgruppe")
     public RsTestgruppeMedBestillingId getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
