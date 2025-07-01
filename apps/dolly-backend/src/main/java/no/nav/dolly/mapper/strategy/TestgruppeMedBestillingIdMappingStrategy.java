@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Component
@@ -56,9 +55,6 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                         .build())
                                 .toList());
                         testgruppeMedBestillingId.setErLaast(isTrue(testgruppe.getErLaast()));
-                        if (nonNull(context) && nonNull(context.getProperty("brukerId"))) {
-                            testgruppeMedBestillingId.setErEierAvGruppe(testgruppe.getOpprettetAv().getBrukerId().equals(context.getProperty("brukerId")));
-                        }
                     }
                 })
                 .register();
