@@ -17,6 +17,10 @@ spec:
     application:
       allowAllUsers: true
       enabled: true
+      replyURLs:
+        - http://localhost:8081/swagger-ui/oauth2-redirect.html
+        - https://dolly-texas-proxy.intern.dev.nav.no/swagger-ui/oauth2-redirect.html
+      singlePageApplication: true
       tenant: nav.no
   accessPolicy:
     inbound:
@@ -30,7 +34,6 @@ spec:
         - application: dolly-idporten
         - application: dolly-proxy
         - application: generer-navn-service
-        - application: generer-navn-service
         - application: organisasjon-bestilling-service
         - application: team-dolly-lokal-app
         - application: testnav-adresse-service
@@ -41,7 +44,6 @@ spec:
         - application: testnav-batch-bestilling-service
         - application: testnav-bruker-service
         - application: testnav-bruker-service-dev
-        - application: testnav-budpro-service
         - application: testnav-budpro-service
         - application: testnav-dolly-search-service
         - application: testnav-dolly-search-service-dev
@@ -94,7 +96,6 @@ spec:
         - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: generer-navn-service
-        - application: generer-navn-service
         - application: organisasjon-bestilling-service
         - application: team-dolly-lokal-app
         - application: testnav-adresse-service
@@ -105,7 +106,6 @@ spec:
         - application: testnav-batch-bestilling-service
         - application: testnav-bruker-service
         - application: testnav-bruker-service-dev
-        - application: testnav-budpro-service
         - application: testnav-budpro-service
         - application: testnav-dolly-search-service
         - application: testnav-dolly-search-service-dev
