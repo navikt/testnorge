@@ -112,7 +112,7 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeMedBestillingId.class);
     }
 
-    @Cacheable(CACHE_GRUPPE)
+    //    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/page/{pageNo}")
     @Operation(description = "Hent paginert testgruppe")
     public RsTestgruppeMedBestillingId getPaginertTestgruppe(@PathVariable("gruppeId") Long gruppeId,
