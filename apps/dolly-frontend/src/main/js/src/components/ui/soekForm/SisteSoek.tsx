@@ -7,19 +7,20 @@ export enum soekType {
 	tenor = 'TENOR',
 }
 
-export const SisteSoek = ({ soekType }) => {
+export const SisteSoek = ({ soekType, formMethods, handleChange }) => {
 	const { lagredeSoek, loading, error } = useHentLagredeSoek(soekType)
 	console.log('lagredeSoek: ', lagredeSoek) //TODO - SLETT MEG
-	//TODO: Map igjennom lagredeSoek, hvor siste soek ligger foerst, og push til nytt objekt, kun hvis likt objekt (eller key?) ikke finnes fra foer
-	//TODO: Max 10 items lang
 
 	const [selected, setSelected] = useState([])
 
-	const lagredeSoekData = {
-		kjoenn: { path: 'personRequest.kjoenn', value: 'KVINNE', label: 'Kjønn: Kvinne' },
-		alderFom: { path: 'personRequest.alderFom', value: '20', label: 'Alder f.o.m: 20' },
-		alderTom: { path: 'personRequest.alderTom', value: '30', label: 'Alder t.o.m: 30' },
-	}
+	const lagredeSoekData = {}
+	lagredeSoek?.forEach((soek, idx) => {
+		Object.entries(soek?.soekVerdi)?.forEach((verdi) => {
+			if (!lagredeSoekData[verdi[0]]) {
+				lagredeSoekData[verdi[0]] = verdi[1]
+			}
+		})
+	})
 
 	const options = Object.values(lagredeSoekData)
 
@@ -30,14 +31,19 @@ export const SisteSoek = ({ soekType }) => {
 				{options.map((option) => (
 					<Chips.Toggle
 						key={option.label}
+						// TODO: Kanskje bare la selected gjenspeile det som ligger i soek form, slik at chips blir oppdatert naar man endrer i form?
 						selected={selected.includes(option.label)}
-						onClick={() =>
+						onClick={() => {
 							setSelected(
 								selected.includes(option.label)
 									? selected.filter((x) => x !== option.label)
 									: [...selected, option.label],
 							)
-						}
+							handleChange(
+								!selected.includes(option.label) ? option.value : null,
+								option.path?.split('.')[1].trim(),
+							)
+						}}
 					>
 						{option.label}
 					</Chips.Toggle>

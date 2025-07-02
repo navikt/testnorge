@@ -22,7 +22,6 @@ import { Familierelasjoner } from '@/pages/dollySoek/soekFormPartials/Familierel
 import { Identifikasjon } from '@/pages/dollySoek/soekFormPartials/Identifikasjon'
 import { Annet } from '@/pages/dollySoek/soekFormPartials/Annet'
 import { runningE2ETest } from '@/service/services/Request'
-import { codeToNorskLabel } from '@/utils/DataFormatter'
 
 export const dollySoekLocalStorageKey = 'dollySoek'
 export const personPath = 'personRequest'
@@ -31,20 +30,14 @@ export const adressePath = 'personRequest.adresse'
 export const SoekForm = ({
 	formMethods,
 	localStorageValue,
-	initialValues,
-	lagreSoekRequest,
-	setLagreSoekRequest,
+	handleChange,
+	setRequest,
+	formRequest,
 }) => {
-	const [formRequest, setFormRequest] = useState(initialValues)
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
 	const [soekError, setSoekError] = useState(null)
 	const [visAntall, setVisAntall] = useState(10)
-
-	const setRequest = (request: any) => {
-		localStorage.setItem(dollySoekLocalStorageKey, JSON.stringify(request))
-		setFormRequest(request)
-	}
 
 	const maxTotalHits = 10000
 
@@ -73,22 +66,6 @@ export const SoekForm = ({
 			}
 		})
 	}, [formRequest])
-
-	const handleChange = (value: any, path: string) => {
-		const updatedPersonRequest = { ...values.personRequest, [path]: value }
-		const updatedRequest = { ...values, personRequest: updatedPersonRequest, side: 0, seed: null }
-		reset(updatedRequest)
-		setRequest(updatedRequest)
-		//TODO: Hvis null - fjern fra lagreSoekRequest
-		setLagreSoekRequest({
-			...lagreSoekRequest,
-			[path]: {
-				path: `${personPath}.${path}`,
-				value: value,
-				label: `${codeToNorskLabel(path)}: ${value}`,
-			},
-		})
-	}
 
 	const handleChangeAdresse = (value: any, path: string) => {
 		const updatedAdresseRequest = { ...values.personRequest.adresse, [path]: value }
