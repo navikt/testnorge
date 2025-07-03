@@ -6,6 +6,7 @@ import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorCont
 import Icon from '@/components/ui/icon/Icon'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
+import { formatDate } from '@/utils/DataFormatter'
 
 const CalendarButton = styled(Button)`
 	position: absolute;
@@ -37,7 +38,6 @@ type DateInputProps = {
 	isDisabled?: boolean
 	autoFocus?: boolean
 	value?: string
-	defaultValue?: string
 	style?: React.CSSProperties
 	'data-testid'?: string
 	manualError?: string
@@ -58,18 +58,21 @@ export const DateInput = ({
 	isDisabled,
 	datepickerOnclick,
 	autoFocus,
-	value,
-	defaultValue,
 	style,
 	'data-testid': dataTestId,
 	...props
 }: DateInputProps) => {
-	const { register, formState, watch } = useFormContext() || {}
+	const { register, formState, watch, setValue } = useFormContext() || {}
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
-	const [fieldValue, setFieldValue] = useState(
-		value ?? defaultValue ?? (name ? watch(name) || '' : ''),
-	)
+	const fieldValue = name ? watch(name) : ''
+	const [formattedValue, setFormattedValue] = useState(fieldValue ? formatDate(fieldValue) : '')
+
+	useEffect(() => {
+		if (!fieldValue) {
+			setFormattedValue('')
+		}
+	}, [fieldValue])
 
 	const { onBlur: registerOnBlur } = name && register ? register(name) : {}
 
@@ -86,22 +89,17 @@ export const DateInput = ({
 
 	const shouldShowError = (error && (showError || isTouched)) || !!props.manualError
 
-	useEffect(() => {
-		const externalValue = value ?? (name ? watch(name) : undefined)
-		if (externalValue !== undefined && externalValue !== fieldValue) {
-			setFieldValue(externalValue || '')
-		}
-	}, [value, watch, name, fieldValue])
-
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFieldValue(e.target.value)
+		setValue(name, e.target.value, { shouldTouch: true })
 		props.onChange?.(e)
+		setFormattedValue(e.target.value)
 	}
 
 	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 		registerOnBlur?.(e)
 		props.onBlur?.(e)
 		props.afterChange?.(e)
+		setFormattedValue(formatDate(e.target.value))
 	}
 
 	const inputClassNames = cn('skjemaelement__input', className, {
@@ -113,7 +111,7 @@ export const DateInput = ({
 			<StyledInput
 				id={name}
 				name={name}
-				value={fieldValue || ''}
+				value={formattedValue || fieldValue || ''}
 				type="text"
 				disabled={isDisabled}
 				autoFocus={autoFocus}
