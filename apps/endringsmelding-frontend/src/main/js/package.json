@@ -1,6 +1,6 @@
 {
   "name": "endringsmelding-frontend",
-  "version": "1.2.33",
+  "version": "1.2.34",
   "private": true,
   "type": "module",
   "homepage": "/",
@@ -35,7 +35,7 @@
     "prettier": "^3.0.1",
     "swr": "^2.0.0",
     "typescript": "^5.0.2",
-    "vite": "^6.3.5",
+    "vite": "^7.0.2",
     "vite-plugin-svgr": "^4.0.0",
     "vite-tsconfig-paths": "^5.0.1",
     "esbuild": ">=0.25.0"
