@@ -185,7 +185,6 @@ export const ArbeidsforholdToggle = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						defaultValue={formMethods.watch(`${path}.arbeidsgiver.orgnummer`)}
 						isDisabled={erLaastArbeidsforhold}
 						title={title}
 					/>

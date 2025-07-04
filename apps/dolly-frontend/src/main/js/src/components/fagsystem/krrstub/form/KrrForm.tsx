@@ -32,7 +32,6 @@ export const KrrstubForm = () => {
 
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState(formMethods.watch('krrstub.land'))
-	const [mobilnummer, setMobilnummer] = useState(formMethods.watch('krrstub.mobil') || '')
 	const [showInfoStripe, setShowInfoStripe] = useBoolean(false)
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 
@@ -132,10 +131,8 @@ export const KrrstubForm = () => {
 								<DollyTextInput
 									name="krrstub.mobil"
 									label="Mobilnummer"
-									value={mobilnummer}
 									size={'medium'}
 									onChange={(event) => {
-										setMobilnummer(event.target.value || '')
 										formMethods.setValue('krrstub.mobil', event.target.value || '')
 										formMethods.trigger('krrstub')
 									}}
