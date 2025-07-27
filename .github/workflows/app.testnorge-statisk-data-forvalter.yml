@@ -5,14 +5,19 @@ on:
   push:
     paths:
       - .github/workflows/app.testnorge-statisk-data-forvalter.yml
-      - apps/statisk-data-forvalter/**
+      - apps/testnorge-statisk-data-forvalter/**
+      - libs/avro-schema/**
+      - libs/csv-converter/**
+      - libs/commands/**
       - libs/data-transfer-objects/**
+      - libs/kafka-config/**
+      - libs/kafka-producers/**
       - libs/reactive-core/**
       - libs/security-core/**
       - libs/servlet-core/**
       - libs/servlet-security/**
-      - libs/slack/**
       - libs/testing/**
+      - libs/vault/**
       - plugins/**
 
 jobs:
