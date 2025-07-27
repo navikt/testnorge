@@ -21,6 +21,7 @@ public class PostPersonOrganisasjonTilgangCommand implements Callable<Flux<Organ
 
     @Override
     public Flux<OrganisasjonDTO> call() {
+        log.info("Checking access for ID {}, using token {}", ident, token.replaceAll(".*", "*"));
         return webClient
                 .post()
                 .uri(builder -> builder.path("/api/v1/brukertilgang").build())
