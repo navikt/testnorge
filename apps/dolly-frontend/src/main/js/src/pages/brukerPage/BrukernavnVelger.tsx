@@ -80,7 +80,6 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 					<DollyTextInput
 						name="brukernavn"
 						label="Brukernavn"
-						value={brukernavn}
 						// @ts-ignore
 						size="xlarge"
 						onChange={(e: any) => onChange(e.target.value)}

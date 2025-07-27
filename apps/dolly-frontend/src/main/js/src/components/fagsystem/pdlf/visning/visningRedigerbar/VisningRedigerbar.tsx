@@ -42,7 +42,6 @@ import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel
 import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 import { devEnabled } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
-import Loading from '@/components/ui/loading/Loading'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 type VisningTypes = {
@@ -405,7 +404,7 @@ export const VisningRedigerbar = ({
 						<>
 							{visFormState && (
 								<>
-									<Suspense fallback={<Loading label="Laster komponenter" />}>
+									<Suspense>
 										<DisplayFormState />
 										<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
 									</Suspense>
