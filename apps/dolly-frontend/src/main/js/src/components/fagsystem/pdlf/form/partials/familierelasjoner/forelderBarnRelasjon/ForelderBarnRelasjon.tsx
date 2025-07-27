@@ -131,9 +131,10 @@ export const ForelderBarnRelasjonForm = ({
 	const initiellMaster = testnorgePerson || identtype === 'NPID' ? 'PDL' : 'FREG'
 	const kanVelgeMaster = !testnorgePerson && identtype !== 'NPID'
 
-	const typeAnsvarlig = Options('typeAnsvarlig').filter(
-		(value) => value.value !== 'EKSISTERENDE' || antall === 1,
-	)
+	const typeAnsvarlig =
+		antall > 1
+			? Options('typeAnsvarlig').filter((value) => value.value !== 'EKSISTERENDE')
+			: Options('typeAnsvarlig')
 
 	return (
 		<div className="flexbox--flex-wrap">

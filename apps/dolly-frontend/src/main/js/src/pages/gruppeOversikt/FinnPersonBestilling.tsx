@@ -1,7 +1,7 @@
 import './FinnPersonBestilling.less'
 import { components } from 'react-select'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { JSX, useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -12,6 +12,7 @@ import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/duck
 import { useDispatch, useSelector } from 'react-redux'
 import { identerSearch } from '@/service/services/dollysearch/DollySearch'
 import AsyncSelect from 'react-select/async'
+import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
 
 enum SoekTypeValg {
 	PERSON = 'Person',
@@ -56,6 +57,8 @@ interface GroupedOption {
 
 const FinnPersonBestilling = () => {
 	const dispatch = useDispatch()
+	const searchInputRef = React.useRef(null)
+	const shortcutKey = useSearchHotkey(searchInputRef)
 
 	const feilmelding = useSelector((state: any) => state.finnPerson.feilmelding)
 	const gruppe = useSelector((state: any) => state.finnPerson.navigerTilGruppe)
@@ -67,25 +70,6 @@ const FinnPersonBestilling = () => {
 	const [pdlfIdenter, setPdlfIdenter] = useState([])
 	const [pdlIdenter, setPdlIdenter] = useState([])
 	const [pdlAktoerer, setPdlAktoerer] = useState([])
-
-	const customAsyncSelectStyles = {
-		control: (provided: any, state: { isFocused: boolean }) => ({
-			...provided,
-			minWidth: '360px',
-		}),
-		group: (provided: any) => ({
-			...provided,
-			paddingBottom: 0,
-		}),
-		menuList: (provided: any) => ({
-			...provided,
-			paddingBottom: 0,
-		}),
-		container: (provided: any) => ({
-			...provided,
-			width: '450px',
-		}),
-	}
 
 	const navigate = useNavigate()
 
@@ -104,6 +88,31 @@ const FinnPersonBestilling = () => {
 			: dispatch(navigerTilBestilling(searchQuery.value))
 		return setSearchQuery(null)
 	}, [searchQuery])
+
+	useEffect(() => {
+		if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
+			navigate(`/gruppe/${gruppe}`, { replace: true })
+		}
+	})
+
+	const customAsyncSelectStyles = {
+		control: (provided: any, state: { isFocused: boolean }) => ({
+			...provided,
+			minWidth: '360px',
+		}),
+		group: (provided: any) => ({
+			...provided,
+			paddingBottom: 0,
+		}),
+		menuList: (provided: any) => ({
+			...provided,
+			paddingBottom: 0,
+		}),
+		container: (provided: any) => ({
+			...provided,
+			width: '480px',
+		}),
+	}
 
 	function mapToPersoner(personData: any, personer: Array<Option>) {
 		if (!Array.isArray(personData)) {
@@ -160,9 +169,9 @@ const FinnPersonBestilling = () => {
 
 		if (finnesPdlf || finnesPdl) {
 			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master
-			${finnesPdlf ? ' PDL' : ''}${finnesPdlf && finnesPdl ? ' og' : ''}${
-				finnesPdl ? ' Test-Norge' : ''
-			}, og eksisterer ikke i Dolly.`
+   ${finnesPdlf ? ' PDL' : ''}${finnesPdlf && finnesPdl ? ' og' : ''}${
+			finnesPdl ? ' Test-Norge' : ''
+		}, og eksisterer ikke i Dolly.`
 		}
 		return beskrivendeFeilmelding
 	}
@@ -264,22 +273,26 @@ const FinnPersonBestilling = () => {
 		</components.Option>
 	)
 
+	const windowHeight = window.innerHeight
+
 	const DropdownIndicator = (props: JSX.IntrinsicAttributes) => {
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon fontSize={'1.5rem'} kind={'search'} />
+				<div
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						flexDirection: 'row',
+						height: '24px',
+					}}
+				>
+					<Icon fontSize={'1.5rem'} kind={'search'} />
+					<p style={{ marginLeft: '5px' }}>{shortcutKey}</p>
+				</div>
 			</components.DropdownIndicator>
 		)
 	}
-
-	useEffect(() => {
-		if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
-			navigate(`/gruppe/${gruppe}`, { replace: true })
-		}
-	})
-
-	const windowHeight = window.innerHeight
 
 	return (
 		<ErrorBoundary>
@@ -289,7 +302,9 @@ const FinnPersonBestilling = () => {
 					className="finnperson-container skjemaelement"
 				>
 					<AsyncSelect
+						ref={searchInputRef}
 						data-testid={TestComponentSelectors.SELECT_PERSON_SEARCH}
+						classNamePrefix={'person-search'}
 						styles={customAsyncSelectStyles}
 						loadOptions={fetchOptions}
 						onInputChange={handleChange}

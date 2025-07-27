@@ -75,3 +75,5 @@ spec:
           cluster: dev-gcp
         - application: testnav-aareg-proxy
           cluster: dev-fss
+        - application: logging
+          namespace: nais-system

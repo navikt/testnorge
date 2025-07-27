@@ -26,6 +26,8 @@ spec:
       rules:
         - application: organisasjon-bestilling-service
         - application: testnav-jenkins-batch-status-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
   liveness:

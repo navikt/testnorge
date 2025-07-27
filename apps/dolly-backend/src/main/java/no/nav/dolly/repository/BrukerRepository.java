@@ -13,8 +13,8 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
 
     Bruker save(Bruker bruker);
 
-    @Query(value = "from Bruker b where b.brukertype='AZURE' order by b.brukernavn")
-    List<Bruker> findAllByOrderById();
+    @Query(value = "from Bruker b where (b.brukertype='AZURE' or b.brukertype='TEAM') and b.brukernavn not like 'Systembruker' order by b.brukernavn")
+    List<Bruker> findAllByOrderByBrukernavn();
 
     List<Bruker> findAllByBrukerIdInOrderByBrukernavn(List<String> brukerId);
 
@@ -22,5 +22,7 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
 
     @Modifying
     @Query(value = "delete from BRUKER_FAVORITTER where gruppe_id = :groupId", nativeQuery = true)
-    int deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
+    void deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
+
+    Optional<Bruker> findBrukerById(Long brukerId);
 }

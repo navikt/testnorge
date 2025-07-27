@@ -26,6 +26,10 @@ spec:
         - application: testnav-oversikt-frontend
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   gcp:
     sqlInstances:
       - type: POSTGRES_15

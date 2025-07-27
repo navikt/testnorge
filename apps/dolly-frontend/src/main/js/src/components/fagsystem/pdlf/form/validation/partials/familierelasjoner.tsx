@@ -307,21 +307,22 @@ export const forelderBarnRelasjon = Yup.object().shape(
 			)
 			.test(
 				'er-identisk-person',
-				'Person kan kun benyttes en gang i relasjon',
+				'Person kan kun benyttes en gang i relasjon pr master-register',
 				(value, testContext) => {
 					const forelderBarnRelasjon = testContext?.from?.find(
 						(element) => element.value?.forelderBarnRelasjon?.length > 0,
 					)
-
 					if (!forelderBarnRelasjon) {
 						return true
 					}
-
-					const relasjoner = forelderBarnRelasjon?.value.forelderBarnRelasjon
-						.filter((element) => element.relatertPerson)
-						.map((element) => element.relatertPerson)
-
-					return relasjoner?.length === new Set(relasjoner).size
+					const master = testContext?.parent?.master
+					const relasjoner = forelderBarnRelasjon?.value.forelderBarnRelasjon.filter(
+						(element) => element.relatertPerson,
+					)
+					const duplikatRelasjoner = relasjoner.filter(
+						(relasjon) => relasjon.relatertPerson === value && relasjon.master === master,
+					)
+					return duplikatRelasjoner?.length < 2
 				},
 			)
 			.nullable(),

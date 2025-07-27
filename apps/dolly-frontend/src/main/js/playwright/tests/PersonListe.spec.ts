@@ -6,6 +6,7 @@ import {
 	mockedPersonService,
 } from '#/mocks/Personliste.mocks'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { brukerTeamsMock } from '#/mocks/BasicMocks'
 
 test('should display NaN for alder when a person has inconsistent birth dates', async ({
 	page,
@@ -17,6 +18,7 @@ test('should display NaN for alder when a person has inconsistent birth dates', 
 	const pdlForvalter = new RegExp(/testnav-pdl-forvalter\/api\/v1\/personer\?identer/)
 	const gruppe = new RegExp(/api\/v1\/gruppe\/1\/page\/0\?pageSize=10/)
 	const pdlPersonEnkelt = new RegExp(/person-service\/api\/v2\/personer\/identer\?/)
+	const brukerTeams = new RegExp(/api\/v1\/bruker\/teams/)
 
 	await page.route(pdlForvalter, async (route) => {
 		await route.fulfill({
@@ -47,6 +49,12 @@ test('should display NaN for alder when a person has inconsistent birth dates', 
 		await route.fulfill({
 			status: 200,
 			body: JSON.stringify([]), // Fix: convert empty array to JSON string
+		})
+	})
+	await page.route(brukerTeams, async (route) => {
+		await route.fulfill({
+			status: 200,
+			body: JSON.stringify(brukerTeamsMock),
 		})
 	})
 

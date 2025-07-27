@@ -3,7 +3,7 @@ on:
     - cron: "0 9 * * MON"
   push:
     paths:
-      - "../../.nais/alerts.yml"
+      - ../../.nais/alerts.yml
   workflow_dispatch:
 
 jobs:

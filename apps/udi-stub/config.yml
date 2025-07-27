@@ -29,6 +29,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-udistub-proxy
           cluster: dev-fss
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30

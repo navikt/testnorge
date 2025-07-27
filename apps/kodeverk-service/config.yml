@@ -26,6 +26,9 @@ spec:
     outbound:
       external:
         - host: kodeverk-api.nav.no
+      rules:
+        - application: logging
+          namespace: nais-system
   tokenx:
     enabled: true
   azure:

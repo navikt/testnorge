@@ -43,7 +43,7 @@ export const TagsButton = ({ gruppeId, eksisterendeTags, isSending }: Props) => 
 				kind="link"
 				className="svg-icon-blue"
 			>
-				TILKNYTT TAGS
+				TAGS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
 				<div className="tagsModal">

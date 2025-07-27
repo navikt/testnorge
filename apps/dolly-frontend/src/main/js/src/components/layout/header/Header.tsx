@@ -12,6 +12,7 @@ import { FinnPersonDropdown } from '@/components/layout/header/FinnPersonDropdow
 import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
 import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
+import { TeamVarsel } from '@/components/layout/header/TeamVarsel'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -49,6 +50,7 @@ export default () => {
 				<DokumentasjonDropdown />
 				{erDollyAdmin() && <AdminDropdown />}
 			</div>
+			<TeamVarsel />
 			<BrukerDropdown />
 		</header>
 	)

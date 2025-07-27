@@ -34,6 +34,9 @@ spec:
     outbound:
       external:
         - host: testnav-ereg-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

@@ -3,9 +3,9 @@ name: dolly-lib
 on:
   push:
     paths:
-      - "plugins/**"
-      - "navikt/dolly-lib/**"
-      - ".github/workflows/lib.frontend.dolly-lib.yml"
+      - plugins/**
+      - navikt/dolly-lib/**
+      - .github/workflows/lib.frontend.dolly-lib.yml
 
 jobs:
   workflow:

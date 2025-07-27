@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Meta, Story } from '@storybook/react';
+import { Meta, Story } from '@storybook/react-vite';
 import Comp, { HeaderProps } from './Header';
 import Profil from '../profil/Profil';
 import { HeaderLinkGroup } from '../header-link-group';

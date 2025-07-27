@@ -5,8 +5,6 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
-  annotations:
-    texas.nais.io/enabled: "true"
 spec:
   image: "{{image}}"
   port: 8080
@@ -21,8 +19,135 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: brreg-stub
+        - application: dolly-backend
+        - application: dolly-backend-dev
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-idporten
+        - application: dolly-proxy
+        - application: generer-navn-service
+        - application: generer-navn-service
+        - application: organisasjon-bestilling-service
         - application: team-dolly-lokal-app
+        - application: testnav-adresse-service
+        - application: testnav-altinn3-tilgang-service
+        - application: testnav-altinn3-tilgang-service-prod
+        - application: testnav-api-oversikt-service
+        - application: testnav-app-tilgang-analyse-service
+        - application: testnav-batch-bestilling-service
+        - application: testnav-bruker-service
+        - application: testnav-bruker-service-dev
         - application: testnav-budpro-service
+        - application: testnav-budpro-service
+        - application: testnav-dolly-search-service
+        - application: testnav-dolly-search-service-dev
+        - application: testnav-dollystatus
+        - application: testnav-endringsmelding-frontend
+        - application: testnav-endringsmelding-service
+        - application: testnav-faste-data-frontend
+        - application: testnav-helsepersonell-service
+        - application: testnav-ident-pool
+        - application: testnav-inntektsmelding-generator-service
+        - application: testnav-inntektsmelding-service
+        - application: testnav-jenkins-batch-status-service
+        - application: testnav-joark-dokument-service
+        - application: testnav-kodeverk-service
+        - application: testnav-levende-arbeidsforhold-ansettelse
+        - application: testnav-levende-arbeidsforhold-scheduler
+        - application: testnav-levende-arbeidsforhold-service
+        - application: testnav-miljoer-service
+        - application: testnav-organisasjon-faste-data-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-organisasjon-mottak-service
+        - application: testnav-organisasjon-service
+        - application: testnav-orgnummer-service
+        - application: testnav-oversikt-frontend
+        - application: testnav-pdl-forvalter
+        - application: testnav-pdl-forvalter-dev
+        - application: testnav-person-faste-data-service
+        - application: testnav-person-service
+        - application: testnav-skattekort-service
+        - application: testnav-sykemelding-api
+        - application: testnav-sykemelding-api-dev
+        - application: testnav-synt-vedtakshistorikk-service
+        - application: testnav-tenor-search-service
+        - application: testnav-tps-messaging-frontend
+        - application: testnav-tps-messaging-service
+        - application: testnav-udi-stub
+        - application: testnav-varslinger-service
+        - application: testnav-varslinger-service-dev
+        - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
+        - application: testnorge-statisk-data-forvalter
+        - application: testnorge-tilbakemelding-api
+    outbound:
+      rules:
+        - application: brreg-stub
+        - application: dolly-backend
+        - application: dolly-backend-dev
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-idporten
+        - application: generer-navn-service
+        - application: generer-navn-service
+        - application: organisasjon-bestilling-service
+        - application: team-dolly-lokal-app
+        - application: testnav-adresse-service
+        - application: testnav-altinn3-tilgang-service
+        - application: testnav-altinn3-tilgang-service-prod
+        - application: testnav-api-oversikt-service
+        - application: testnav-app-tilgang-analyse-service
+        - application: testnav-batch-bestilling-service
+        - application: testnav-bruker-service
+        - application: testnav-bruker-service-dev
+        - application: testnav-budpro-service
+        - application: testnav-budpro-service
+        - application: testnav-dolly-search-service
+        - application: testnav-dolly-search-service-dev
+        - application: testnav-dollystatus
+        - application: testnav-endringsmelding-frontend
+        - application: testnav-endringsmelding-service
+        - application: testnav-faste-data-frontend
+        - application: testnav-helsepersonell-service
+        - application: testnav-ident-pool
+        - application: testnav-inntektsmelding-generator-service
+        - application: testnav-inntektsmelding-service
+        - application: testnav-jenkins-batch-status-service
+        - application: testnav-joark-dokument-service
+        - application: testnav-kodeverk-service
+        - application: testnav-levende-arbeidsforhold-ansettelse
+        - application: testnav-levende-arbeidsforhold-scheduler
+        - application: testnav-levende-arbeidsforhold-service
+        - application: testnav-miljoer-service
+        - application: testnav-organisasjon-faste-data-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-organisasjon-mottak-service
+        - application: testnav-organisasjon-service
+        - application: testnav-orgnummer-service
+        - application: testnav-oversikt-frontend
+        - application: testnav-pdl-forvalter
+        - application: testnav-pdl-forvalter-dev
+        - application: testnav-person-faste-data-service
+        - application: testnav-person-service
+        - application: testnav-skattekort-service
+        - application: testnav-sykemelding-api
+        - application: testnav-sykemelding-api-dev
+        - application: testnav-synt-vedtakshistorikk-service
+        - application: testnav-tenor-search-service
+        - application: testnav-tps-messaging-frontend
+        - application: testnav-tps-messaging-service
+        - application: testnav-udi-stub
+        - application: testnav-varslinger-service
+        - application: testnav-varslinger-service-dev
+        - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
+        - application: testnorge-statisk-data-forvalter
+        - application: testnorge-tilbakemelding-api
+        - application: logging
+          namespace: nais-system
   envFrom:
     - secret: dolly-texas-proxy-shared-secret
   liveness:

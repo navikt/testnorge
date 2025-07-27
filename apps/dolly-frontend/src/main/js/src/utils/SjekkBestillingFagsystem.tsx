@@ -108,18 +108,3 @@ export const harYrkesskaderBestilling = (bestillingerFagsystemer: Fagsystem[]): 
 
 export const harInntektsmeldingBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.inntektsmelding)
-
-export const hentTpYtelseOrdning = (bestillingerFagsystemer: Fagsystem[]): string | null => {
-	let tpOrdning: string | null = null
-	bestillingerFagsystemer?.forEach((i) => {
-		const tp = i?.pensjonforvalter?.tp
-		if (tp?.length > 0) {
-			tp?.forEach((j) => {
-				if (j?.ytelser?.length > 0) {
-					tpOrdning = j.ordning || null
-				}
-			})
-		}
-	})
-	return tpOrdning
-}

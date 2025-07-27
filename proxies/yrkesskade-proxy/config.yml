@@ -29,6 +29,8 @@ spec:
       rules:
         - application: yrkesskade-datagenerator-service
           namespace: yrkesskade
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

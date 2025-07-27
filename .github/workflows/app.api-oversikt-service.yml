@@ -3,13 +3,13 @@ name: api-oversikt-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/security-core/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-security/**"
-      - "libs/testing/**"
-      - "apps/api-oversikt-service/**"
-      - ".github/workflows/app.api-oversikt-service.yml"
+      - plugins/**
+      - libs/security-core/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/testing/**
+      - apps/api-oversikt-service/**
+      - .github/workflows/app.api-oversikt-service.yml
 
 jobs:
   workflow:

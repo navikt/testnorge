@@ -1,22 +1,23 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: "testnav-budpro-service"
+  name: testnav-budpro-service
   namespace: "dolly"
   labels:
     "team": "dolly"
-  annotations:
-    texas.nais.io/enabled: "true"
 spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-texas-proxy
         - application: team-dolly-lokal-app
         - application: testnav-dollystatus
     outbound:
       rules:
-        - application: generer-navn-service
         - application: dolly-texas-proxy
+        - application: generer-navn-service
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true
@@ -32,12 +33,12 @@ spec:
     enabled: true
     path: /internal/prometheus
   observability:
-    logging:
-      destinations:
-        - id: elastic
     autoInstrumentation:
       enabled: true
       runtime: java
+    logging:
+      destinations:
+        - id: elastic
   readiness:
     initialDelay: 45
     path: /internal/health/readiness

@@ -45,7 +45,7 @@ export function NyIdent({ gruppeId }: any) {
 						type="number"
 						size="medium"
 						onBlur={(event) => {
-							const selectedValue = event?.target?.value || '1'
+							const selectedValue = event?.target?.value
 							opts.antall = selectedValue
 							formMethods.setValue('antall', selectedValue)
 						}}

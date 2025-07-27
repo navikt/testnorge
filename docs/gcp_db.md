@@ -1,3 +1,12 @@
+# Opprette GCP-database for lokal kjøring
+1. Opprett en database i [Google Cloud Console](https://console.cloud.google.com/sql/instances/). Eksempelvis `testnav-min-database`.
+2. Opprett en bruker i denne databasen (klikk på databasen, velg _Users_, velg _Add user account_.). Eksempelvis `testnav-min-database`. **Ta vare på generert passord til neste steg!**
+3. Opprett en secret for den nye databasebrukeren i [Google Cloud Console](https://console.cloud.google.com/security/secret-manager). Eksempelvis `testnav-min-database`. Legg inn det genererte passordet her, slik at applikasjoner kan konfigureres opp med passordet som en secret `${sm\://testnav-min-database}`.
+4. Databaseinstansen er opprettet, men det er ingen database (skjema) der ennå. Bruk en SQL-klient (f.eks. IntelliJ) og logg på databasen med brukeren opprettet i trinn 3, men mot databasen `postgres`. Opprett databasen med `create database "testnav-min-database";`
+5. Nå kan du logge på databaseinstansen `testnav-min-database` mot databasen `testnav-min-database` med brukeren `testnav-min-database`.
+
+Hvis du ønsker å rotere passord er det bare å generere et nytt for databasebrukeren og oppdatere secret tilsvarende.
+
 # Bruk av GCP-database under lokal kjøring
 
 Enkelte applikasjoner bruker en database i GCP som "lokal" database, dvs. i Spring profile _local_. P.t. gjelder dette:

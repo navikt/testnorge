@@ -6,6 +6,8 @@ import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+
 @Service
 public class TilbakemeldingService {
     private final SlackConsumer slackConsumer;
@@ -25,8 +27,15 @@ public class TilbakemeldingService {
     public void publish(Tilbakemelding tilbakemelding) {
         String visningsNavn = Boolean.TRUE.equals(tilbakemelding.getIsAnonym())
                 ? "Anonym"
-                : profilApiConsumer.getBruker().getVisningsNavn();
+                : utledVisningsNavn(tilbakemelding);
         slackConsumer.publish(tilbakemelding.toSlackMessage(channel, visningsNavn));
+    }
+
+    public String utledVisningsNavn(Tilbakemelding tilbakemelding) {
+        return isNoneBlank(tilbakemelding.getBrukernavn()) ?
+                String.format("%s (%s)", tilbakemelding.getBrukernavn(),
+                        isNoneBlank(tilbakemelding.getTilknyttetOrganisasjon()) ? tilbakemelding.getTilknyttetOrganisasjon() : "Ukjent organisasjon") :
+                profilApiConsumer.getBruker().getVisningsNavn();
     }
 
 }

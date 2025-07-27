@@ -99,17 +99,17 @@ class TestgruppeServiceTest {
 
     @Test
     void opprettTestgruppe_HappyPath() {
-        RsOpprettEndreTestgruppe rsTestgruppe = mock(RsOpprettEndreTestgruppe.class);
-        Bruker bruker = mock(Bruker.class);
+        var rsTestgruppe = mock(RsOpprettEndreTestgruppe.class);
+        var bruker = mock(Bruker.class);
 
-        when(brukerService.fetchBruker(BRUKERID)).thenReturn(bruker);
+        when(brukerService.fetchBrukerOrTeamBruker(BRUKERID)).thenReturn(bruker);
 
         testgruppeService.opprettTestgruppe(rsTestgruppe);
 
         ArgumentCaptor<Testgruppe> cap = ArgumentCaptor.forClass(Testgruppe.class);
         verify(testgruppeRepository).save(cap.capture());
 
-        Testgruppe res = cap.getValue();
+        var res = cap.getValue();
 
         assertThat(res.getOpprettetAv(), is(bruker));
         assertThat(res.getSistEndretAv(), is(bruker));
@@ -126,21 +126,21 @@ class TestgruppeServiceTest {
 
     @Test
     void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() {
-        Testgruppe g = mock(Testgruppe.class);
+        var g = mock(Testgruppe.class);
         Optional<Testgruppe> op = Optional.of(g);
         when(testgruppeRepository.findById(any())).thenReturn(op);
 
-        Testgruppe hentetGruppe = testgruppeService.fetchTestgruppeById(1L);
+        var hentetGruppe = testgruppeService.fetchTestgruppeById(1L);
 
         assertThat(g, is(hentetGruppe));
     }
 
     @Test
     void saveGruppeTilDB_returnererTestgruppeHvisTestgruppeFinnes() {
-        Testgruppe g = new Testgruppe();
+        var g = new Testgruppe();
         when(testgruppeRepository.save(any())).thenReturn(g);
 
-        Testgruppe res = testgruppeService.saveGruppeTilDB(new Testgruppe());
+        var res = testgruppeService.saveGruppeTilDB(new Testgruppe());
         assertThat(res, is(notNullValue()));
     }
 
@@ -183,7 +183,7 @@ class TestgruppeServiceTest {
     @Test
     void oppdaterTestgruppe_sjekkAtDBKalles() {
 
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").build();
+        var rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").build();
 
         when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
@@ -193,7 +193,7 @@ class TestgruppeServiceTest {
     @Test
     void getTestgrupper() {
         when(testgruppeRepository.findAllByOrderByIdDesc(any(Pageable.class))).thenReturn(new PageImpl<>(emptyList()));
-        when(brukerService.fetchOrCreateBruker(any())).thenReturn(new Bruker());
+        when(brukerService.fetchOrCreateBruker()).thenReturn(new Bruker());
         testgruppeService.getTestgruppeByBrukerId(0, 10, null);
         verify(testgruppeRepository).findAllByOrderByIdDesc(Pageable.ofSize(10));
     }

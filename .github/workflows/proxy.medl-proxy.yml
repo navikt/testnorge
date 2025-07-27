@@ -4,13 +4,11 @@ on:
   push:
     paths:
       - .github/workflows/proxy.medl-proxy.yml
-      - libs/data-transfer-objects/**
-      - libs/database/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
       - libs/reactive-security/**
       - libs/security-core/**
-      - libs/servlet-core/**
-      - libs/servlet-insecure-security/**
-      - libs/servlet-security/**
+      - libs/testing/**
       - plugins/**
       - proxies/medl-proxy/**
 

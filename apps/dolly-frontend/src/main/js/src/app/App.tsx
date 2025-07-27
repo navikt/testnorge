@@ -18,8 +18,10 @@ import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
 import { RouteChangeHandler } from '@/RootComponent'
+import { NavigationTitle } from '@/NavigationTitle'
 
 const logout = (feilmelding: string) => {
+	console.error('Kritisk feil i Dolly, logger ut: ', feilmelding)
 	if (!runningE2ETest()) {
 		navigateToLogin(feilmelding)
 	}
@@ -62,6 +64,7 @@ export const App = () => {
 			<main>
 				<ErrorBoundary>
 					<Suspense fallback={<Loading label="Laster inn" />}>
+						<NavigationTitle />
 						<Outlet />
 					</Suspense>
 				</ErrorBoundary>

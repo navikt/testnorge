@@ -34,7 +34,7 @@ export const BVOptions = (
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {
-				identtype,
+				identtype: identtype || 'FNR',
 				syntetisk: true,
 			},
 		},

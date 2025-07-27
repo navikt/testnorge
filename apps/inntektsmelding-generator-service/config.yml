@@ -24,6 +24,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-inntektsmelding-service
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30

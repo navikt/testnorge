@@ -1,6 +1,6 @@
 {
   "name": "tps-messaging-frontend",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "description": "",
   "license": "ISC",
@@ -44,7 +44,7 @@
     "@playwright/test": "^1.48.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@types/lodash": "^4.14.202",
-    "@types/node": "^22.13.13",
+    "@types/node": "^24.0.10",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@types/react-router-dom": "^5.3.3",
@@ -62,7 +62,7 @@
     "prettier": "^3.0.1",
     "swr": "^2.0.0",
     "typescript": "^5.8.2",
-    "vite": "^6.3.5",
+    "vite": "^7.0.2",
     "vite-plugin-svgr": "^4.0.0",
     "vite-tsconfig-paths": "^5.0.1"
   },

@@ -3,11 +3,13 @@ name: norg2-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "proxies/norg2-proxy/**"
-      - ".github/workflows/proxy.norg2-proxy.yml"
+      - .github/workflows/proxy.norg2-proxy.yml
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/norg2-proxy/**
 
 jobs:
   workflow:

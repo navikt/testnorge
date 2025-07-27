@@ -3,13 +3,15 @@ name: inntektsmelding-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-security/**"
-      - "apps/inntektsmelding-service/**"
-      - ".github/workflows/app.inntektsmelding-service.yml"
+      - .github/workflows/app.inntektsmelding-service.yml
+      - apps/inntektsmelding-service/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

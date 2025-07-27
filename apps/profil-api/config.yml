@@ -37,6 +37,8 @@ spec:
     outbound:
       rules:
         - application: testnav-altinn3-tilgang-proxy
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

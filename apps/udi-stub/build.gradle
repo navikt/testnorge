@@ -1,7 +1,7 @@
 plugins {
     id "dolly-apps"
 
-    id "uk.co.boothen.gradle.wsimport" version "0.21"
+    id "uk.co.boothen.gradle.wsimport" version "0.22"
 }
 
 sonarqube {
@@ -13,6 +13,11 @@ sonarqube {
 
 wsimport {
     wsdl("MT_1067_NAV_v1.wsdl")
+}
+
+//Kan fjernes når transitiv import av nyeste versjon av commons-collections er ute
+configurations.configureEach {
+    resolutionStrategy.force "commons-collections:commons-collections:3.2.2"
 }
 
 // tag::jaxb[]
@@ -27,6 +32,8 @@ dependencies {
     implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:vault"
 
+    implementation "commons-collections:commons-collections:3.2.2"
+    //Midlertidig import for å unngå critical vuln i 3.1.1 fra transitive dependency
     implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
     implementation "com.zaxxer:HikariCP"
     implementation "ma.glasnost.orika:orika-core:$versions.orika"

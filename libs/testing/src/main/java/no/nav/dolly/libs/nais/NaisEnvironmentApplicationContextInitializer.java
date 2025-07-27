@@ -13,7 +13,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
 
     private static final String DUMMY = "dummy";
     private static final String FALSE = "false";
-    private static final String OFF = "off";
 
     @Override
     public void initialize(@NonNull ConfigurableApplicationContext context) {
@@ -75,7 +74,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         var properties = environment.getSystemProperties();
 
         properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", FALSE); // Disabling Secret Manager (not available when running builds on GitHub).
-        properties.putIfAbsent("spring.main.banner-mode", OFF); // Disabling Spring Boot banner.
         properties.putIfAbsent("dolly.texas.preload", FALSE); // Don't preload Texas tokens in test profile.
 
         // These will be set to value "dummy".
@@ -108,7 +106,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         log.info("Configuring environment for non-test, non-local profiles");
         var properties = environment.getSystemProperties();
 
-        properties.putIfAbsent("spring.main.banner-mode", OFF);
         properties.putIfAbsent("spring.cloud.gcp.secretmanager.enabled", FALSE); // Unless we actually start using Secret Manager in deployment.
 
     }

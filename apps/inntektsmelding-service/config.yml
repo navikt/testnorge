@@ -29,6 +29,8 @@ spec:
     outbound:
       rules:
         - application: testnav-inntektsmelding-generator-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektsmelding-generator-service.intern.dev.nav.no

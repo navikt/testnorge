@@ -35,6 +35,7 @@ import {
 	kategoriKodeverk,
 	tekniskNavnKodeverk,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
+import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -316,7 +317,7 @@ const mapVergemaal = (vergemaal, data) => {
 			itemRows: vergemaal.map((item, idx) => {
 				return [
 					{ numberHeader: `Vergemål ${idx + 1}` },
-					obj('Fylkesmannsembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
+					obj('Fylkesembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
 					obj('Sakstype', item.sakType, VergemaalKodeverk.Sakstype),
 					obj('Mandattype', item.mandatType, VergemaalKodeverk.Mandattype),
 					obj('Gyldig f.o.m.', formatDate(item.gyldigFraOgMed)),
@@ -1967,6 +1968,7 @@ const mapUdiStub = (bestillingData, data) => {
 }
 
 const mapPensjon = (bestillingData, data, navEnheter) => {
+	const { tpOrdningData } = useTpOrdningKodeverk()
 	const pensjonKriterier = bestillingData.pensjonforvalter
 
 	if (pensjonKriterier) {
@@ -2139,7 +2141,10 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			const pensjonforvalterAfpOffentlig = {
 				header: 'AFP Offentlig',
 				items: [
-					obj('Direktekall', afpOffentlig.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')),
+					obj(
+						'Direktekall',
+						afpOffentlig.direktekall?.map((tpId) => showTpNavn(tpId, tpOrdningData))?.join(', '),
+					),
 				],
 				itemRows: [],
 			}
@@ -2147,7 +2152,7 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			afpOffentlig?.mocksvar?.forEach((mocksvar, i) => {
 				pensjonforvalterAfpOffentlig.itemRows.push([
 					{ numberHeader: `AFP offentlig ${i + 1}` },
-					obj('TP-ordning', showTpNavn(mocksvar.tpId)),
+					obj('TP-ordning', showTpNavn(mocksvar.tpId, tpOrdningData)),
 					obj('Status AFP', showLabel('statusAfp', mocksvar.statusAfp)),
 					obj('Virkningsdato', formatDate(mocksvar.virkningsDato)),
 					obj('Sist benyttet G', mocksvar.sistBenyttetG),

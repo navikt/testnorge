@@ -76,8 +76,8 @@ const DataVisning = ({ data, miljo }) => {
 		<>
 			{!vedtakUT && !loading && (
 				<StyledAlert variant={'warning'} size={'small'}>
-					Kunne ikke hente vedtaksstatus for person. Opprettelse av uføresak har sannsynligvis
-					feilet.
+					Kunne ikke hente vedtaksstatus for person. Dette skyldes enten at vedtaksstatus ikke er
+					klar ennå, eller at opprettelse av uføresak har feilet.
 				</StyledAlert>
 			)}
 			<div className="person-visning_content">

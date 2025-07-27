@@ -43,6 +43,8 @@ spec:
         - application: testnav-endringsmelding-service
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
+        - application: logging
+          namespace: nais-system
   resources:
     requests:
       cpu: 50m

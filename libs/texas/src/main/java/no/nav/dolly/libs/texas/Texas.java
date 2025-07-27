@@ -29,25 +29,25 @@ public class Texas {
     private static final String EXCHANGE_FAILED = "Failed to exchange token using audience '%s'";
     private static final String INTROSPECT_FAILED = "Failed to introspect token";
 
-    private static final String JSON_TOKEN_REQUEST = StringUtils.trimAllWhitespace("""
+    private static final String JSON_TOKEN_REQUEST = """
             {
                 "identity_provider": "azuread",
                 "target": "%s"
             }
-            """);
-    private static final String JSON_EXCHANGE_REQUEST = StringUtils.trimAllWhitespace("""
+            """;
+    private static final String JSON_EXCHANGE_REQUEST = """
             {
                 "identity_provider": "azuread",
                 "target": "%s",
                 "user_token": "%s"
             }
-            """);
-    private static final String JSON_INTROSPECTION_REQUEST = StringUtils.trimAllWhitespace("""
+            """;
+    private static final String JSON_INTROSPECTION_REQUEST = """
             {
                 "identity_provider": "azuread",
                 "token": "%s"
             }
-            """);
+            """;
 
     private final WebClient webClient;
     private final String localSecret;
@@ -129,6 +129,11 @@ public class Texas {
                 .uri(URI.create(exchangeUrl))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(JSON_EXCHANGE_REQUEST.formatted(audience, token))
+                .headers(headers -> {
+                    if (localSecret != null) {
+                        headers.add(HttpHeaders.AUTHORIZATION, "Dolly " + localSecret);
+                    }
+                })
                 .retrieve()
                 .bodyToMono(TexasToken.class)
                 .retryWhen(WebClientError.is5xxException())
@@ -158,6 +163,11 @@ public class Texas {
                 .uri(introspectUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(JSON_INTROSPECTION_REQUEST.formatted(token))
+                .headers(headers -> {
+                    if (localSecret != null) {
+                        headers.add(HttpHeaders.AUTHORIZATION, "Dolly " + localSecret);
+                    }
+                })
                 .retrieve()
                 .bodyToMono(String.class)
                 .retryWhen(WebClientError.is5xxException())

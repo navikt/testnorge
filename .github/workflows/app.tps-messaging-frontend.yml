@@ -3,14 +3,16 @@ name: tps-messaging-frontend
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-frontend/**"
-      - "libs/reactive-session-security/**"
-      - "libs/security-core/**"
-      - "apps/tps-messaging-frontend/**"
-      - ".github/workflows/app.tps-messaging-frontend.yml"
-      - ".github/workflows/common.vitest.yml"
+      - .github/workflows/app.tps-messaging-frontend.yml
+      - .github/workflows/common.vitest.yml
+      - apps/tps-messaging-frontend/**
+      - libs/reactive-core/**
+      - libs/reactive-frontend/**
+      - libs/reactive-security/**
+      - libs/reactive-session-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   vitest:

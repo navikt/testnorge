@@ -59,6 +59,7 @@ const ForelderBarnRelasjonLes = ({
 						<TitleValue title="Rolle for barn" value={forelderBarnData.minRolleForPerson} />
 					)}
 					<TitleValue title="Har delt bosted" value={forelderBarnData.deltBosted && 'Ja'} />
+					<TitleValue title="Master" value={forelderBarnData.master} />
 				</div>
 				{(relasjon || relasjonRedigert) && (
 					<RelatertPerson

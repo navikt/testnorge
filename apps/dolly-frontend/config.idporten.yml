@@ -54,26 +54,19 @@ spec:
         - application: testnav-yrkesskade-proxy
         - application: testnorge-profil-api
         - application: testnorge-tilbakemelding-api
+        - application: testnav-yrkesskade-proxy
+        - application: testnav-altinn3-tilgang-proxy
+        - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-api-oversikt-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: idporten.no
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-        - host: testnav-fullmakt-proxy.dev-fss-pub.nais.io
-        - host: testnav-histark-proxy.dev-fss-pub.nais.io
-        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-inst-proxy.dev-fss-pub.nais.io
-        - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-medl-proxy.dev-fss-pub.nais.io
-        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-        - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-udistub-proxy.dev-fss-pub.nais.io
-  valkey:
-    - instance: idporten
-      access: readwrite
-
+        - host: idporten.no
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

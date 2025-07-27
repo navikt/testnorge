@@ -50,6 +50,8 @@ spec:
       rules:
         - application: skjermede-personer
           namespace: nom
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

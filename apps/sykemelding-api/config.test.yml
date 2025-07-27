@@ -68,6 +68,8 @@ spec:
     outbound:
       rules:
         - application: testnav-sykemelding-proxy
+        - application: logging
+          namespace: nais-system
       external:
         - host: mqls04.preprod.local
           ports:

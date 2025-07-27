@@ -3,10 +3,11 @@ name: texas-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/testing/**"
-      - "proxies/texas-proxy/**"
-      - ".github/workflows/proxy.texas-proxy.yml"
+      - .github/workflows/proxy.texas-proxy.yml
+      - libs/testing/**
+      - libs/texas/**
+      - plugins/**
+      - proxies/texas-proxy/**
 
 jobs:
   workflow:

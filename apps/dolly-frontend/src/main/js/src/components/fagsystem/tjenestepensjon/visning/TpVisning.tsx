@@ -9,12 +9,48 @@ import { fetchTpOrdninger } from '@/components/fagsystem/tjenestepensjon/form/Fo
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
+import { useTpDataYtelse } from '@/utils/hooks/useFagsystemer'
 
 export const sjekkManglerTpData = (tpData) => {
 	return tpData?.length < 1 || tpData?.every((miljoData) => miljoData.data?.length < 1)
 }
 
-const TpOrdning = ({ data, ordninger }) => {
+const TpYtelse = ({ ordning, ident, miljo }) => {
+	const { loading, tpDataYtelse } = useTpDataYtelse(ident, ordning?.ordning, miljo)
+
+	if (loading) {
+		return <Loading label="Laster ytelser ..." />
+	}
+
+	if (!tpDataYtelse || tpDataYtelse?.length < 1) {
+		return null
+	}
+
+	return (
+		<DollyFieldArray data={tpDataYtelse} header="Ytelser" nested>
+			{(ytelse, idx) => (
+				<div className="person-visning_content" key={idx}>
+					<TitleValue title="Type" value={showLabel('tjenestepensjonYtelseType', ytelse?.type)} />
+					<TitleValue
+						title="TP-forhold f.o.m. dato"
+						value={formatDate(ytelse?.datoInnmeldtYtelseFom)}
+					/>
+					<TitleValue
+						title="Dato iverksatt f.o.m."
+						value={formatDate(ytelse?.datoYtelseIverksattFom)}
+					/>
+					<TitleValue
+						title="Dato iverksatt t.o.m."
+						value={formatDate(ytelse?.datoYtelseIverksattTom)}
+					/>
+				</div>
+			)}
+		</DollyFieldArray>
+	)
+}
+
+const TpOrdning = ({ data, miljo, ordninger, ident }) => {
 	if (!data) return null
 
 	const ordningNavn = (nr) => {
@@ -23,17 +59,18 @@ const TpOrdning = ({ data, ordninger }) => {
 	}
 
 	return (
-		<DollyFieldArray data={data} nested>
+		<DollyFieldArray data={data} header="Tjenestepensjonsforhold">
 			{(ordning, idx) => (
-				<div className="person-visning_content" key={idx}>
+				<>
 					<TitleValue size="large" title="Ordning" value={ordningNavn(ordning.ordning)} />
-				</div>
+					<TpYtelse ordning={ordning} ident={ident} miljo={miljo} idx={idx} />
+				</>
 			)}
 		</DollyFieldArray>
 	)
 }
 
-export const TpVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
+export const TpVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe, ident }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
 
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'TP_FORVALTER')
@@ -83,7 +120,7 @@ export const TpVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe
 					forsteMiljo={forsteMiljo}
 					data={filteredData || data}
 				>
-					<TpOrdning ordninger={ordninger} />
+					<TpOrdning ordninger={ordninger} ident={ident} />
 				</MiljoTabs>
 			)}
 		</ErrorBoundary>

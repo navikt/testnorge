@@ -134,9 +134,10 @@ export const ForeldreansvarForm = ({
 		}
 	}, [])
 
-	const ansvarlige = Options('typeAnsvarlig').filter(
-		(ansvar) => ansvar.value !== 'EKSISTERENDE' || antall === 1,
-	)
+	const ansvarlige =
+		antall > 1
+			? Options('typeAnsvarlig').filter((value) => value.value !== 'EKSISTERENDE')
+			: Options('typeAnsvarlig')
 
 	return (
 		<div className="flexbox--flex-wrap foreldre-form">
