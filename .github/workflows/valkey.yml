@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - change/redis_to_valkey
     paths:
       - .nais/valkey.yml
   workflow_dispatch:
