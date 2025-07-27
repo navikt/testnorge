@@ -6,7 +6,8 @@ on:
       - master
       - change/redis_to_valkey
     paths:
-      - .nais/valkey.yml
+      - .github/workflows/valkey.yml
+      - .nais/valkey-dolly-idporten.yml
   workflow_dispatch:
 
 jobs:
