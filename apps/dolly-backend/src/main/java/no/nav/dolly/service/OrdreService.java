@@ -54,13 +54,11 @@ public class OrdreService {
                         .map(dollyperson -> sendOrdre(dollyperson, progress)
                                 .flatMap(pdlOrdreResponse ->
                                         personServiceClient.syncPerson(dollyperson, progress)
-                                                .map(ClientFuture::get)
                                                 .map(BestillingProgress::isPdlSync)
                                                 .filter(BooleanUtils::isTrue)
-                                                .flatMap(opprettet -> Flux.merge(
+                                                .flatMapMany(opprettet -> Flux.merge(
                                                         pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false),
                                                         tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false)))
-                                                .map(ClientFuture::get)
                                                 .collectList()
                                                 .map(status -> RsOrdreStatus.builder()
                                                         .status(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), objectMapper))
@@ -68,7 +66,7 @@ public class OrdreService {
                         .flatMap(Mono::from));
     }
 
-    private Flux<BestillingProgress> sendOrdre(DollyPerson dollyPerson, BestillingProgress progress) {
+    private Mono<BestillingProgress> sendOrdre(DollyPerson dollyPerson, BestillingProgress progress) {
 
         return pdlDataConsumer.sendOrdre(dollyPerson.getIdent(), false)
                 .map(response -> {

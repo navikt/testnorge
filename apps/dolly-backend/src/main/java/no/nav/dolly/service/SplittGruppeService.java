@@ -71,7 +71,7 @@ public class SplittGruppeService {
 
         var nyBestilling = BestillingMapper.shallowCopyBestilling(bestilling);
         nyBestilling.setId(null);
-        nyBestilling.setGruppe(testgruppe);
+        nyBestilling.setGruppeId(testgruppe.getId());
         return bestillingRepository.save(nyBestilling)
                 .flatMap(oppdatertBestilling ->
                         transaksjonMappingRepository.findAllByBestillingId(oppdatertBestilling.getId())

@@ -81,13 +81,13 @@ public class NavigasjonService {
         return bestillingService.fetchBestillingById(bestillingId)
                 .flatMap(bestilling -> testgruppeRepository.findById(bestilling.getId())
                         .map(testgruppe -> {
-                            bestilling.setGruppe(testgruppe);
+                            bestilling.setGruppeId(testgruppe.getId());
                             return bestilling;
                         })
-                        .flatMap(best -> bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppe().getId()))
+                        .flatMap(best -> bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppeId()))
                         .map(indeks -> RsWhereAmI.builder()
                                 .bestillingNavigerTil(bestillingId)
-                                .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))
+//                                .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))
                                 .sidetall(Math.floorDiv(indeks, 10))
                                 .build()))
                 .switchIfEmpty(Mono.error(() -> new NotFoundException(String.format(IKKE_FUNNET, bestillingId))));

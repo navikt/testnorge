@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
@@ -47,13 +48,13 @@ public class OrganisasjonClient {
 
     @Async
     @Transactional
-    public Mono<Void> opprett(RsOrganisasjonBestilling request, OrganisasjonBestilling bestilling) {
+    public void opprett(RsOrganisasjonBestilling request, OrganisasjonBestilling bestilling) {
 
         BestillingRequest bestillingRequest = BestillingRequest.builder()
                 .organisasjoner(List.of(mapperFacade.map(request.getOrganisasjon(), BestillingRequest.SyntetiskOrganisasjon.class)))
                 .build();
 
-        Set<String> orgnumre = new HashSet<>();
+//        Set<String> orgnumre = new HashSet<>();
 
         var miljoer = request.getEnvironments();
 
@@ -61,13 +62,13 @@ public class OrganisasjonClient {
 
             try {
                 log.info("Bestiller orgnumre fra Organisasjon Forvalter");
-                ResponseEntity<BestillingResponse> response = organisasjonConsumer.postOrganisasjon(bestillingRequest);
-
-                orgnumre.addAll(requireNonNull(response.getBody()).getOrgnummer());
+                organisasjonConsumer.postOrganisasjon(bestillingRequest)
+                                .flatMapMany(response -> Flux.fromIterable(response.getOrgnummer()))
+                        .flatMap(orgnummer ->
                 if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId()).isEmpty()) {
                     List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId());
                     OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.getFirst();
-                    organisasjonBestillingProgress.setBestilling(bestilling);
+                    organisasjonBestillingProgress.setBestillingId(bestilling.getId());
                     organisasjonBestillingProgress.setOrganisasjonsnummer(requireNonNull(response.getBody().getOrgnummer().iterator().next()));
                     organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")));
 
@@ -129,7 +130,7 @@ public class OrganisasjonClient {
                             deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).getFirst().getDetails());
                 }
 
-                organisasjonBestillingProgress.setBestilling(bestilling);
+                organisasjonBestillingProgress.setBestillingId(bestilling.getId());
                 organisasjonBestillingProgress.setOrganisasjonsnummer(orgStatus.getKey());
                 organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(mapStatusFraDeploy(orgStatus));
 
