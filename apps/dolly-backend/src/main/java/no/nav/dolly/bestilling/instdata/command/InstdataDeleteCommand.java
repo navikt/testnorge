@@ -42,7 +42,7 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
                 .headers(WebClientHeader.bearer(token))
                 .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
                 .bodyValue(InstdataRequest.builder()
-                .personident(ident)
+                        .personident(ident)
                         .environments(miljoer)
                         .build())
                 .retrieve()
