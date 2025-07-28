@@ -15,7 +15,6 @@ import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -34,9 +33,9 @@ public class KontoregisterClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.just(bestilling)
+        return Mono.just(bestilling)
                 .filter(ordre -> nonNull(bestilling.getBankkonto()))
                 .flatMap(ordre -> {
                     if (isOpprettEndre) {
@@ -54,18 +53,15 @@ public class KontoregisterClient implements ClientRegister {
                                                 errorStatusDecoder.getErrorText(status.getStatus(),
                                                         status.getFeilmelding())));
                     } else {
-                        return Flux.just("OK");
+                        return Mono.just("OK");
                     }
                 })
-                .map(status -> futurePersist(progress, status));
+                .flatMap(status -> oppdaterStatus(progress, status));
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setKontoregisterStatus, status);
-            return progress;
-        };
+        return transactionHelperService.persister(progress, BestillingProgress::setKontoregisterStatus, status);
     }
 
     private Mono<OppdaterKontoRequestDTO> prepareRequest(RsDollyUtvidetBestilling bestilling, String ident) {

@@ -13,7 +13,7 @@ import no.nav.dolly.domain.resultset.medl.MedlData;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +34,7 @@ public class MedlClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getMedl())) {
 
@@ -45,14 +45,14 @@ public class MedlClient implements ClientRegister {
                     bestilling.getMedl(),
                     MedlData.class, context);
 
-            return Flux.from(medlConsumer.createMedlemskapsperiode(medlRequest))
+            return medlConsumer.createMedlemskapsperiode(medlRequest)
                     .map(this::getStatus)
-                    .map(status -> futurePersist(progress,
+                    .flatMap(status -> oppdaterStatus(progress,
                             formaterStatusResponse(status)
                     ));
         }
 
-        return Flux.empty();
+        return Mono.empty();
     }
 
     @Override
@@ -72,12 +72,9 @@ public class MedlClient implements ClientRegister {
                 .subscribe(response -> log.info("Sletting utført mot Medl"));
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setMedlStatus, status);
-            return progress;
-        };
+        return transactionHelperService.persister(progress, BestillingProgress::setMedlStatus, status);
     }
 
     private String getStatus(MedlPostResponse response) {

@@ -164,7 +164,7 @@ class SkjermingsRegisterClientTest {
         BestillingProgress progress = new BestillingProgress();
         String status = "OK";
 
-        ClientFuture clientFuture = skjermingsRegisterClient.futurePersist(progress, status);
+        ClientFuture clientFuture = skjermingsRegisterClient.oppdaterStatus(progress, status);
         BestillingProgress result = clientFuture.get();
 
         ArgumentCaptor<BiConsumer<BestillingProgress, String>> captor = ArgumentCaptor.forClass(BiConsumer.class);

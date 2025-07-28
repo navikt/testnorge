@@ -57,9 +57,9 @@ public class SykemeldingClient implements ClientRegister {
     private final ApplicationConfig applicationConfig;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.just(bestilling)
+        return Mono.just(bestilling)
                 .filter(bestillling -> nonNull(bestillling.getSykemelding()))
                 .map(RsDollyUtvidetBestilling::getSykemelding)
                 .flatMap(sykemelding -> {
@@ -80,18 +80,15 @@ public class SykemeldingClient implements ClientRegister {
                                 .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                                 .onErrorResume(error -> Mono.just(encodeStatus(WebClientError.describe(error).getMessage())))
                                 .collect(Collectors.joining())
-                                .map(status -> futurePersist(progress, status));
+                                .flatMap(status -> oppdaterStatus(progress, status));
                     }
                 });
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
+        return transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
                     BestillingProgress::setSykemeldingStatus, status);
-            return progress;
-        };
     }
 
     @Override

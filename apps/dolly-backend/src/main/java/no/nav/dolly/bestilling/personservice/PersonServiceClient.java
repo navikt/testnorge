@@ -67,7 +67,7 @@ public class PersonServiceClient {
                             .onErrorResume(error -> getError(error, dollyPerson))
                             .doOnNext(status -> logStatus(status, startTime))
                             .collectList()
-                            .flatMap(status -> futurePersist(dollyPerson, progress, status))
+                            .flatMap(status -> oppdaterStatus(dollyPerson, progress, status))
                     );
                 });
     }
@@ -164,8 +164,8 @@ public class PersonServiceClient {
         }
     }
 
-    private Mono<BestillingProgress> futurePersist(DollyPerson dollyPerson, BestillingProgress progress,
-                                                   List<PersonServiceResponse> status) {
+    private Mono<BestillingProgress> oppdaterStatus(DollyPerson dollyPerson, BestillingProgress progress,
+                                                    List<PersonServiceResponse> status) {
 
                 return Flux.fromIterable(status)
                         .filter(entry -> dollyPerson.getIdent().equals(entry.getIdent()))

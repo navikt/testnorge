@@ -10,6 +10,7 @@ import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.consumer.ElasticParamsConsumer;
 import no.nav.dolly.repository.BestillingRepository;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
@@ -18,6 +19,7 @@ import org.springframework.data.elasticsearch.UncategorizedElasticsearchExceptio
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -77,13 +79,15 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
 
     private void importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
 
-        Flux.fromIterable(bestillingRepository.findAll())
+        bestillingRepository.findAll()
                 .sort(Comparator.comparing(Bestilling::getId).reversed())
                 .doOnNext(bestilling -> antallLest.incrementAndGet())
-                .takeWhile(bestilling -> hasNotBestilling(bestilling.getId()))
-                .map(bestilling -> mapperFacade.map(bestilling, ElasticBestilling.class))
+                .flatMap(bestilling -> hasBestilling(bestilling.getId())
+                        .zipWith(Mono.just(bestilling)))
+                .takeWhile(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
+                .map(bestilling -> mapperFacade.map(bestilling.getT2(), ElasticBestilling.class))
                 .filter(bestilling -> !bestilling.isIgnore())
-                .doOnNext(this::save)
+                .flatMap(this::save)
                 .doOnNext(bestilling -> antallSkrevet.incrementAndGet())
                 .doOnNext(bestilling -> {
                     if (antallSkrevet.get() % 1000 == 0) {
@@ -93,19 +97,20 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .subscribe();
     }
 
-    private boolean hasNotBestilling(Long id) {
+    private Mono<Boolean> hasBestilling(Long id) {
 
-        return !bestillingElasticRepository.existsById(id);
+        return bestillingElasticRepository.existsById(id);
     }
 
-    private void save(ElasticBestilling elasticBestilling) {
+    private Mono<ElasticBestilling> save(ElasticBestilling elasticBestilling) {
 
         try {
-            bestillingElasticRepository.save(elasticBestilling);
+            return bestillingElasticRepository.save(elasticBestilling);
 
         } catch (UncategorizedElasticsearchException e) {
 
             log.warn("Feilet å lagre elastic id {}, {}", elasticBestilling.getId(), e.getLocalizedMessage());
+            return Mono.empty();
         }
     }
 }

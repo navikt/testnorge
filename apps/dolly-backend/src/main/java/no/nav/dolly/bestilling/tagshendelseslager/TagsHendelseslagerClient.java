@@ -18,6 +18,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,9 +40,9 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(getPdlIdenter(List.of(dollyPerson.getIdent()))
+        return getPdlIdenter(List.of(dollyPerson.getIdent()))
                 .collectList()
                 .flatMap(identer -> Flux.concat(
                                 Flux.just(dollyPerson.getTags())
@@ -53,17 +54,15 @@ public class TagsHendelseslagerClient implements ClientRegister {
                                         .flatMap(tagsHendelseslagerConsumer::publish)
                                         .map(status -> getPublishStatus(identer, status)))
                         .collect(Collectors.joining(", og ")))
-                .map(status -> futureComplete(progress, status)));
+                .flatMap(status -> oppdaterStatus(progress, status));
     }
 
-    private ClientFuture futureComplete(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
             if (isNotBlank(status)) {
                 log.info(status);
             }
-            return progress;
-        };
+            return Mono.just(progress);
     }
 
     @Override
