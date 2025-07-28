@@ -22,8 +22,6 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
 
     private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person/slett";
 
-    private static final String ENVIRONMENTS = "environments";
-
     private final WebClient webClient;
     private final String ident;
     private final List<String> miljoer;
@@ -35,7 +33,6 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(INSTDATA_URL)
-                        .queryParam(ENVIRONMENTS, miljoer)
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
