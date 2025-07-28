@@ -25,7 +25,6 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
     private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person/soek";
 
     private static final String INST_MILJO = "environments";
-    private static final String INST_IDENT = "norskident";
 
     private final WebClient webClient;
     private final String ident;
@@ -39,7 +38,6 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
                 .uri(builder -> builder.path(INSTDATA_URL)
                         .queryParam(INST_MILJO, miljoe)
                         .build())
-                .header(INST_IDENT, ident)
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .headers(WebClientHeader.bearer(token))
                 .headers(WebClientHeader.jwt(getUserJwt()))
