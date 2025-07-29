@@ -2,10 +2,10 @@ package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.service.BrukerService;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -29,6 +29,7 @@ public class ExcelService {
     private final PersonExcelService personExcelService;
     private final BankkontoExcelService bankkontoExcelService;
     private final OrganisasjonExcelService organisasjonExcelService;
+    private final BrukerService brukerService;
 
     protected static void appendRows(XSSFWorkbook workbook, String fane, List<Object[]> rows) {
 
@@ -75,7 +76,8 @@ public class ExcelService {
 
         var workbook = new XSSFWorkbook();
 
-        return organisasjonExcelService.prepareOrganisasjonSheet(workbook, brukerId)
+        return brukerService.fetchBruker(brukerId)
+                .flatMap(bruker -> organisasjonExcelService.prepareOrganisasjonSheet(workbook, bruker.getId()))
                 .then(Mono.just(convertToResource(timestamp, workbook)));
     }
 

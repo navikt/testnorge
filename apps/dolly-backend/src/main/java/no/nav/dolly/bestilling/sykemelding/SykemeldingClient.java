@@ -24,6 +24,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -62,33 +63,33 @@ public class SykemeldingClient implements ClientRegister {
         return Mono.just(bestilling)
                 .filter(bestillling -> nonNull(bestillling.getSykemelding()))
                 .map(RsDollyUtvidetBestilling::getSykemelding)
-                .flatMap(sykemelding -> {
+                .flatMap(sykemelding -> transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null, bestilling.getId())
+                        .flatMap(exists -> {
 
-                    if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null, bestilling.getId()) && !isOpprettEndre) {
-                        setProgress(progress, "OK");
-                        return Mono.empty();
+                            if (BooleanUtils.isTrue(exists) && !isOpprettEndre) {
+                                return setProgress(progress, "OK");
 
-                    } else {
-                        setProgress(progress, getGenereringStartet());
-
-                        return getPerson(dollyPerson.getIdent())
-                                .flatMap(persondata ->
-                                                postDetaljertSykemelding(sykemelding, persondata)
-                                        .filter(Objects::nonNull)
-                                        .doOnNext(status -> saveTransaksjonId(status, bestilling.getId()))
-                                        .map(this::getStatus))
-                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                                .onErrorResume(error -> Mono.just(encodeStatus(WebClientError.describe(error).getMessage())))
-                                .collect(Collectors.joining())
-                                .flatMap(status -> oppdaterStatus(progress, status));
-                    }
-                });
+                            } else {
+                                return setProgress(progress, getGenereringStartet())
+                                        .then(getPerson(dollyPerson.getIdent())
+                                                .flatMap(persondata ->
+                                                        postDetaljertSykemelding(sykemelding, persondata)
+                                                                .filter(Objects::nonNull)
+                                                                .flatMap(status -> saveTransaksjonId(status, bestilling.getId())
+                                                                        .thenReturn(status))
+                                                                .map(this::getStatus))
+                                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                                .onErrorResume(error -> Mono.just(encodeStatus(WebClientError.describe(error).getMessage())))
+                                                .collect(Collectors.joining())
+                                                .flatMap(status -> oppdaterStatus(progress, status)));
+                            }
+                        }));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
         return transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
-                    BestillingProgress::setSykemeldingStatus, status);
+                BestillingProgress::setSykemeldingStatus, status);
     }
 
     @Override
@@ -104,9 +105,9 @@ public class SykemeldingClient implements ClientRegister {
                 errorStatusDecoder.getErrorText(status.getStatus(), status.getAvvik());
     }
 
-    private void setProgress(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> setProgress(BestillingProgress progress, String status) {
 
-        transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
+        return transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
                 BestillingProgress::setSykemeldingStatus, status);
     }
 
@@ -158,14 +159,14 @@ public class SykemeldingClient implements ClientRegister {
                                 }));
     }
 
-    private void saveTransaksjonId(SykemeldingResponse sykemelding, Long bestillingId) {
+    private Mono<TransaksjonMapping> saveTransaksjonId(SykemeldingResponse sykemelding, Long bestillingId) {
 
         if (sykemelding.getStatus().is2xxSuccessful()) {
 
             log.info("Lagrer transaksjon for {} i q1 ", sykemelding.getIdent());
 
             sykemelding.getSykemeldingRequest().setSykemeldingId(sykemelding.getMsgId());
-            transaksjonMappingService.save(TransaksjonMapping.builder()
+            return transaksjonMappingService.save(TransaksjonMapping.builder()
                     .ident(sykemelding.getIdent())
                     .bestillingId(bestillingId)
                     .transaksjonId(toJson(sykemelding.getSykemeldingRequest()))
@@ -173,6 +174,8 @@ public class SykemeldingClient implements ClientRegister {
                     .system(SYKEMELDING.name())
                     .miljoe("q1")
                     .build());
+        } else {
+            return Mono.empty();
         }
     }
 

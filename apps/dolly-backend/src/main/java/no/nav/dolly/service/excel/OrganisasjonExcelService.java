@@ -5,8 +5,6 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
@@ -170,7 +168,7 @@ public class OrganisasjonExcelService {
                 .findFirst().orElse("");
     }
 
-    public Mono<Void> prepareOrganisasjonSheet(XSSFWorkbook workbook, String brukerId) {
+    public Mono<Void> prepareOrganisasjonSheet(XSSFWorkbook workbook, Long brukerId) {
 
         return getOrganisasjonsdetaljer(brukerId)
                 .collectList()
@@ -201,7 +199,7 @@ public class OrganisasjonExcelService {
                 .then();
     }
 
-    private Flux<Object[]> getOrganisasjonsdetaljer(String brukerId) {
+    private Flux<Object[]> getOrganisasjonsdetaljer(Long brukerId) {
 
         var counter = new AtomicInteger(0);
 
