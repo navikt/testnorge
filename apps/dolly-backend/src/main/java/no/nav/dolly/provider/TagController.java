@@ -31,12 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -80,7 +77,7 @@ public class TagController {
                                                           @PathVariable("gruppeId") Long gruppeId) {
 
         return testgruppeRepository.findById(gruppeId)
-                .flatMap(gruppe -> identRepository.findAllByTestgruppeId(gruppeId, Pageable.unpaged())
+                .flatMap(gruppe -> identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                         .map(Testident::getIdent)
                         .collectList()
                         .flatMap(identer -> personServiceConsumer.getPdlPersoner(identer)

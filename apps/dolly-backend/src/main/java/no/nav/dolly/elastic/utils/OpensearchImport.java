@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -44,7 +43,6 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     private final ObjectMapper objectMapper;
 
     @Override
-    @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
         log.info("OpenSearch database oppdatering starter ...");
@@ -52,40 +50,41 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
         var start = System.currentTimeMillis();
         var antallLest = new AtomicInteger(0);
         var antallSkrevet = new AtomicInteger(0);
-        oppdaterIndexSetting();
-
-        importAll(antallLest, antallSkrevet);
-
-        log.info("OpenSearch database oppdatering ferdig; antall lest {}, antall skrevet {}, medgått tid {} ms",
-                antallLest.get(),
-                antallSkrevet.get(),
-                System.currentTimeMillis() - start);
+        oppdaterIndexSetting()
+                .flatMap(status -> importAll(antallLest, antallSkrevet)
+                        .collectList())
+                .subscribe(bestillinger ->
+                        log.info("OpenSearch database oppdatering ferdig; antall lest {}, antall skrevet {}, medgått tid {} ms",
+                                antallLest.get(),
+                                antallSkrevet.get(),
+                                System.currentTimeMillis() - start));
     }
 
-    private void oppdaterIndexSetting() {
+    private Mono<String> oppdaterIndexSetting() {
 
         try {
             var indexSetting = String.format(INDEX_SETTING, totalFields);
             var jsonFactory = objectMapper.getFactory();
             var jsonParser = jsonFactory.createParser(indexSetting);
             var jsonNode = (JsonNode) objectMapper.readTree(jsonParser);
-            elasticParamsConsumer.oppdaterParametre(jsonNode)
-                    .subscribe(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
+            return elasticParamsConsumer.oppdaterParametre(jsonNode)
+                    .doOnNext(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
 
         } catch (IOException e) {
             log.error("Feilet å gjøre setting for indekser {}", INDEX_SETTING, e);
+            return Mono.just("Feilet");
         }
     }
 
-    private void importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
+    private Flux<ElasticBestilling> importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
 
-        bestillingRepository.findAll()
+        return bestillingRepository.findAllBy()
                 .sort(Comparator.comparing(Bestilling::getId).reversed())
                 .doOnNext(bestilling -> antallLest.incrementAndGet())
                 .flatMap(bestilling -> hasBestilling(bestilling.getId())
                         .zipWith(Mono.just(bestilling)))
                 .takeWhile(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
-                .map(bestilling -> mapperFacade.map(bestilling.getT2(), ElasticBestilling.class))
+                .map(tuple -> mapperFacade.map(tuple.getT2(), ElasticBestilling.class))
                 .filter(bestilling -> !bestilling.isIgnore())
                 .flatMap(this::save)
                 .doOnNext(bestilling -> antallSkrevet.incrementAndGet())
@@ -93,19 +92,18 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                     if (antallSkrevet.get() % 1000 == 0) {
                         log.info("Skrevet {} bestillinger", antallSkrevet.get());
                     }
-                })
-                .subscribe();
+                });
     }
 
     private Mono<Boolean> hasBestilling(Long id) {
 
-        return bestillingElasticRepository.existsById(id);
+        return Mono.just(bestillingElasticRepository.existsById(id));
     }
 
     private Mono<ElasticBestilling> save(ElasticBestilling elasticBestilling) {
 
         try {
-            return bestillingElasticRepository.save(elasticBestilling);
+            return Mono.just(bestillingElasticRepository.save(elasticBestilling));
 
         } catch (UncategorizedElasticsearchException e) {
 

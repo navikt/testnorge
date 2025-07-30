@@ -26,5 +26,5 @@ public interface OrganisasjonBestillingRepository extends ReactiveCrudRepository
                     set ferdig = true
                     where ob.ferdig = false
             """)
-    Mono<Void> stopAllUnfinished();
+   Mono<Integer> stopAllUnfinished();
 }

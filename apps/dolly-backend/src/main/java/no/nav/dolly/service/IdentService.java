@@ -1,6 +1,5 @@
 package no.nav.dolly.service;
 
-import com.google.common.util.concurrent.AtomicLongMap;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.dto.TestidentDTO;
@@ -25,7 +24,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -136,7 +134,7 @@ public class IdentService {
 
     public Flux<Testident> getTestidenterByGruppeId(Long gruppeId) {
 
-        return identRepository.findAllByTestgruppeId(gruppeId, Pageable.unpaged());
+        return identRepository.findByGruppeId(gruppeId, Pageable.unpaged());
     }
 
     public Mono<Page<Testident>> getTestidenterFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
@@ -152,7 +150,7 @@ public class IdentService {
                 )
         );
 
-        return identRepository.findAllByTestgruppeId(gruppeId, page)
+        return identRepository.findByGruppeId(gruppeId, page)
                 .flatMap(ident -> bestillingProgressRepository.findByIdent(ident.getIdent())
                         .collectList()
                         .map(bestillingProgress -> {
@@ -160,7 +158,7 @@ public class IdentService {
                             return ident;
                         }))
                 .collectList()
-                .zipWith(identRepository.countByTestgruppeId(gruppeId))
+                .zipWith(identRepository.countByGruppeId(gruppeId))
                 .map(tuple -> new PageImpl<>(tuple.getT1(), page, tuple.getT2()));
     }
 

@@ -39,8 +39,9 @@ public class ExcelController {
     @Transactional(readOnly = true)
     public Mono<ResponseEntity<Resource>> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId) {
 
-        return excelService.getExcelOrganisasjonerWorkbook(brukerId)
-                .map(this::wrapContents);
+//        return excelService.getExcelOrganisasjonerWorkbook(brukerId)
+//                .map(this::wrapContents);
+        return Mono.empty();
     }
 
     private ResponseEntity<Resource> wrapContents(Resource resource) throws IOException {

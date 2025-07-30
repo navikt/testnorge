@@ -8,10 +8,10 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.service.BestillingService;
 import org.springframework.cache.CacheManager;
+import org.springframework.r2dbc.connection.R2dbcTransactionManager;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
@@ -34,19 +34,19 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Service
 public class TransactionHelperService {
 
-    private final TransactionTemplate transactionTemplate;
+    private final TransactionalOperator transactionalOperator;
     private final CacheManager cacheManager;
     private final BestillingRepository bestillingRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingService bestillingService;
 
-    public TransactionHelperService(PlatformTransactionManager transactionManager,
+    public TransactionHelperService(R2dbcTransactionManager transactionManager,
                                     CacheManager cacheManager,
                                     BestillingRepository bestillingRepository,
                                     BestillingProgressRepository bestillingProgressRepository,
                                     BestillingService bestillingService) {
 
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.transactionalOperator = TransactionalOperator.create(transactionManager);
         this.cacheManager = cacheManager;
         this.bestillingRepository = bestillingRepository;
         this.bestillingProgressRepository = bestillingProgressRepository;
@@ -56,25 +56,27 @@ public class TransactionHelperService {
     @Retryable
     public Mono<BestillingProgress> opprettProgress(BestillingProgress progress) {
 
-        return transactionTemplate.execute(status ->
+        return transactionalOperator.execute(status ->
                 bestillingRepository.findByIdAndLock(progress.getBestillingId())
                         .doOnNext(bestilling -> bestilling.setSistOppdatert(now()))
                         .flatMap(bestillingRepository::save)
                         .flatMap(bestilling -> bestillingProgressRepository.save(progress))
-                        .doFinally(signal -> clearCache()));
+                        .doFinally(signal -> clearCache()))
+                .next();
     }
 
     @Retryable
     public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
 
-        return transactionTemplate.execute(status1 ->
+        return transactionalOperator.execute(status1 ->
 
                 bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                         .flatMap(progress -> {
                             setter.accept(progress, status);
                             return bestillingProgressRepository.save(progress);
                         })
-                        .doFinally(signal -> clearCache()));
+                        .doFinally(signal -> clearCache()))
+                .next();
     }
 
     public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress,
@@ -90,7 +92,7 @@ public class TransactionHelperService {
                                               BiConsumer<BestillingProgress, String> setter, String status,
                                               String separator) {
 
-        return transactionTemplate.execute(status1 ->
+        return transactionalOperator.execute(status1 ->
                 bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                         .doOnNext(progress -> {
                             var value = getter.apply(progress);
@@ -98,9 +100,8 @@ public class TransactionHelperService {
                             setter.accept(progress, result);
                         })
                         .flatMap(bestillingProgressRepository::save)
-                        .doFinally(signal -> clearCache())
-
-        );
+                        .doFinally(signal -> clearCache()))
+                .next();
     }
 
     private String applyChanges(String value, String status, String separator) {
@@ -153,7 +154,7 @@ public class TransactionHelperService {
     @Retryable
     public Mono<Bestilling> persister(Long bestillingId, RsDollyBestilling bestilling) {
 
-        return transactionTemplate.execute(status ->
+        return transactionalOperator.execute(status ->
 
                 bestillingService.getBestKriterier(bestilling)
                         .flatMap(kriterier ->
@@ -162,13 +163,14 @@ public class TransactionHelperService {
                                             bestilling.setId(bestillingId);
                                             best.setBestKriterier(kriterier);
                                         })
-                                        .flatMap(bestillingRepository::save)));
+                                        .flatMap(bestillingRepository::save)))
+                .next();
     }
 
     @Retryable
     public Mono<Bestilling> oppdaterBestillingFerdig(Long id, Consumer<Bestilling> bestillingFunksjon) {
 
-        return transactionTemplate.execute(status ->
+        return transactionalOperator.execute(status ->
 
             bestillingRepository.findByIdAndLock(id)
                     .doOnNext(bestilling -> {
@@ -177,7 +179,8 @@ public class TransactionHelperService {
                                 bestillingFunksjon.accept(bestilling);
                             })
                     .flatMap(bestillingRepository::save)
-                    .doFinally(signal -> clearCache()));
+                    .doFinally(signal -> clearCache()))
+                .next();
     }
 
     public void clearCache() {

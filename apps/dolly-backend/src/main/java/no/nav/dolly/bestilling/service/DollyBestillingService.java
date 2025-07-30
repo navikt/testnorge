@@ -227,7 +227,7 @@ public class DollyBestillingService {
                         request.setIdenter(identer);
                         return request;
                     })
-                    .flatMap(bestillingElasticRepository::save)
+                    .doOnNext(bestillingElasticRepository::save)
                     .then();
         } else {
             return Mono.empty();

@@ -12,6 +12,8 @@ public interface BestillingKontrollRepository extends ReactiveCrudRepository<Bes
     Mono<BestillingKontroll> findByBestillingId(Long bestillingId);
 
     @Modifying
+    @Query("delete from bestilling_kontroll bk where bk.bestilling_id in " +
+            "(select b.id from Bestilling b where b.gruppe_id = :gruppeId)")
     Mono<Void> deleteByGruppeId(Long gruppeId);
 
     @Modifying

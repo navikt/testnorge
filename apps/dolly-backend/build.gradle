@@ -19,6 +19,9 @@ dependencies {
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:reactive-security'
 
+    implementation 'org.aspectj:aspectjweaver:1.9.21'
+    implementation 'org.aspectj:aspectjrt:1.9.21'
+
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
@@ -40,7 +43,8 @@ dependencies {
     implementation 'org.ehcache:ehcache:3.10.8'
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
 
-    implementation 'org.postgresql:postgresql'
+    runtimeOnly "org.postgresql:r2dbc-postgresql"
+    runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
 

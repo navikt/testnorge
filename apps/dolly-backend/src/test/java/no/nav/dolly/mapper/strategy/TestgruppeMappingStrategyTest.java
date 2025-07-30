@@ -11,7 +11,7 @@ import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -42,30 +42,27 @@ class TestgruppeMappingStrategyTest {
 
     @Test
     void mappingFromTestgruppeToRsTestgruppe() {
-        Bruker bruker = Bruker.builder().brukerId(BRUKERID).build();
-        Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
-        List<Testident> identer = singletonList(testident);
+        var bruker = Bruker.builder().brukerId(BRUKERID).build();
+        var testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
+        var identer = singletonList(testident);
 
-        Testgruppe testgruppe = Testgruppe.builder()
+        var testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(bruker)
                 .id(2L)
-                .testidenter(identer)
                 .navn("gruppe")
                 .build();
 
-        testident.setTestgruppe(testgruppe);
+        testident.setGruppeId(testgruppe.getId());
 
         List<RsTestident> rsIdenter = mapper.mapAsList(identer, RsTestident.class);
-        RsTestgruppe rs = mapper.map(testgruppe, RsTestgruppe.class);
+        var rsTestgruppe = mapper.map(testgruppe, RsTestgruppe.class);
 
-        assertThat(rs.getNavn(), is("gruppe"));
-        assertThat(rs.getDatoEndret().getYear(), is(2000));
-        assertThat(rs.getDatoEndret().getMonthValue(), is(1));
-        assertThat(rs.getDatoEndret().getDayOfMonth(), is(1));
-        assertThat(rs.getOpprettetAv().getBrukerId(), is(bruker.getBrukerId()));
-        assertThat(rs.getSistEndretAv().getBrukerId(), is(bruker.getBrukerId()));
+        assertThat(rsTestgruppe.getNavn(), is("gruppe"));
+        assertThat(rsTestgruppe.getDatoEndret().getYear(), is(2000));
+        assertThat(rsTestgruppe.getDatoEndret().getMonthValue(), is(1));
+        assertThat(rsTestgruppe.getDatoEndret().getDayOfMonth(), is(1));
 
         assertThat(rsIdenter.size(), is(1));
         assertThat(rsIdenter.get(0).getIdent(), is("1"));

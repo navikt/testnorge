@@ -356,7 +356,7 @@ public class PersonExcelService {
     private Mono<List<Object[]>> getPersondataRowContents(Testgruppe testgruppe) {
 
         var start = new AtomicLong(System.currentTimeMillis());
-        return identRepository.findAllByTestgruppeId(testgruppe.getId(), Pageable.unpaged())
+        return identRepository.findByGruppeId(testgruppe.getId(), Pageable.unpaged())
                 .collectList()
                 .flatMap(testidenter -> getPersoner(testidenter)
                         .doOnNext(personer ->

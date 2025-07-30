@@ -23,14 +23,14 @@ public class OpensearchController {
     @Operation(description = "Sletter søkbar bestilling, basert på id")
     public Mono<Void> deleteBestilling(@PathVariable long id) {
 
-        return bestillingElasticRepository.deleteById(id);
+        return Mono.fromRunnable(() -> bestillingElasticRepository.deleteById(id));
     }
 
     @DeleteMapping()
     @Operation(description = "Sletter all data inkludert indeks")
     public Mono<JsonNode> delete() {
 
-        return bestillingElasticRepository.deleteAll()
-                .then(openSearchService.deleteIndex());
+         return Mono.fromRunnable(bestillingElasticRepository::deleteAll)
+                 .then(openSearchService.deleteIndex());
     }
 }

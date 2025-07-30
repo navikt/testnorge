@@ -57,9 +57,9 @@ public interface IdentRepository extends ReactiveCrudRepository<Testident, Long>
             select ti from test_ident ti
             where ti.tilhoerer_gruppe = :gruppeId
             """)
-    Flux<Testident> findAllByTestgruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
+    Flux<Testident> findByGruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
-    Mono<Long> countByTestgruppeId(Long id);
+    Mono<Integer> countByGruppeId(Long id);
 
     @Query("""
             select position-1
@@ -86,12 +86,7 @@ public interface IdentRepository extends ReactiveCrudRepository<Testident, Long>
     }
 
     @Query("""
-            select count(*) from test_ident ti where ti.tilhoerer_gruppe = :gruppeId
-            """)
-    Mono<Integer> countByTestgruppe(@Param("gruppeId") Long gruppeId);
-
-    @Query("""
             select ti from test_ident ti where ti.tilhoerer_gruppe = :gruppeId
             """)
-    Flux<Testident> findByTestgruppe(@Param("gruppeId") Long gruppeId);
+    Flux<Testident> findByGruppeId(@Param("gruppeId") Long gruppeId);
 }

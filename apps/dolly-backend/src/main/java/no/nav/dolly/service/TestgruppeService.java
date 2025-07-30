@@ -19,7 +19,6 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestilling
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.IdentRepository;
@@ -89,7 +88,7 @@ public class TestgruppeService {
                                         Mono.just(testgruppe),
                                         getAuthenticatedUserId.call()
                                                 .flatMap(brukerService::fetchBruker),
-                                        identRepository.countByTestgruppeId(testgruppe.getId()),
+                                        identRepository.countByGruppeId(testgruppe.getId()),
                                         bestillingRepository.countAllByGruppeId(testgruppe.getId()),
                                         identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
                                         identService.getTestidenterFromGruppePaginert(gruppeId, pageNo,
@@ -139,14 +138,14 @@ public class TestgruppeService {
                         (bruker.getBrukertype() == Brukertype.BANKID
                                 ? brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                                 .map(TilgangDTO::getBrukere)
-                                .flatMap(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
+                                .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
                                                 PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
                                         .collectList()
-                                        .zipWith(testgruppeRepository.countAllByOpprettetAv_BrukerIdIn(brukere)))
+                                        .zipWith(testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)))
                                 :
-                                testgruppeRepository.findAllOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
                                         .collectList()
-                                        .zipWith(testgruppeRepository.countAll()))
+                                        .zipWith(testgruppeRepository.countBy()))
                                 .flatMap(tuple ->
                                         getRsTestgruppePage(pageNo, pageSize, bruker, tuple.getT1(), tuple.getT2())));
     }
@@ -155,7 +154,7 @@ public class TestgruppeService {
 
         return brukerService.fetchBruker(brukerId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Finner ikke bruker med id = " + brukerId)))
-                .flatMapMany(bruker -> testgruppeRepository.findAllByOpprettetAvId(bruker.getId(),
+                .flatMapMany(bruker -> testgruppeRepository.findByOpprettetAvId(bruker.getId(),
                         PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
     }
 
@@ -171,7 +170,7 @@ public class TestgruppeService {
         return fetchTestgruppeById(gruppeId)
                 .then(transaksjonMappingRepository.deleteByGruppeId(gruppeId))
                 .then(bestillingService.slettBestillingerByGruppeId(gruppeId))
-                .then(identRepository.findAllByTestgruppeId(gruppeId, Pageable.unpaged())
+                .then(identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                         .collectList()
                         .map(testidenter -> mapperFacade.mapAsList(testidenter, TestidentDTO.class))
                         .flatMap(personService::recyclePersoner))
@@ -204,14 +203,14 @@ public class TestgruppeService {
                                 ?
                                 brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                                         .map(TilgangDTO::getBrukere)
-                                        .flatMap(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
+                                        .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
                                                         PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
                                                 .collectList()
-                                                .zipWith(testgruppeRepository.countAllByOpprettetAv_BrukerIdIn(brukere)))
+                                                .zipWith(testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)))
                                 :
-                                testgruppeRepository.findAllByOpprettetAvId(bruker.getId(), PageRequest.of(pageNo, pageSize))
+                                testgruppeRepository.findByOpprettetAvId(bruker.getId(), PageRequest.of(pageNo, pageSize))
                                         .collectList()
-                                        .zipWith(testgruppeRepository.countAllByOpprettetAvId(bruker.getId())))
+                                        .zipWith(testgruppeRepository.countByOpprettetAvId(bruker.getId())))
                                 .flatMap(tuple ->
                                         getRsTestgruppePage(pageNo, pageSize, bruker, tuple.getT1(), tuple.getT2())));
     }
@@ -221,7 +220,7 @@ public class TestgruppeService {
         return Flux.fromIterable(testgrupper)
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
-                        identRepository.countByTestgruppeId(testgruppe.getId()),
+                        identRepository.countByGruppeId(testgruppe.getId()),
                         bestillingRepository.countAllByGruppeId(testgruppe.getId()),
                         identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)))
                 .map(tuple2 -> {

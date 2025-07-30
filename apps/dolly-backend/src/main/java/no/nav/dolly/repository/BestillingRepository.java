@@ -16,7 +16,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
 
     Mono<Bestilling> findById(Long id);
 
-    Flux<Bestilling> findAll();
+    Flux<Bestilling> findAllBy();
 
     Mono<Void> deleteById(Long id);
 
@@ -129,5 +129,5 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             stoppet = true
             where b.ferdig = false
             """)
-    Mono<Bestilling> stopAllUnfinished();
+    Mono<Integer> stopAllUnfinished();
 }

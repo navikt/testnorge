@@ -139,7 +139,7 @@ public class BestillingService {
     public Mono<Integer> getPaginertBestillingIndex(Long bestillingId, Long gruppeId) {
 
         return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId)
-                .switchIfEmpty(Mono.error( new NotFoundException("Bestilling med id %s ble ikke funnet i database".formatted(bestillingId))));
+                .switchIfEmpty(Mono.error(new NotFoundException("Bestilling med id %s ble ikke funnet i database".formatted(bestillingId))));
     }
 
     public Flux<Bestilling> getBestillingerFromGruppeIdPaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
@@ -366,7 +366,7 @@ public class BestillingService {
                 .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),
-                        identRepository.findAllByTestgruppeId(gruppeId, Pageable.unpaged())
+                        identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                                 .collectList()))
                 .flatMap(tuple -> {
                     if (tuple.getT2().isEmpty()) {
@@ -430,7 +430,7 @@ public class BestillingService {
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),
-                        identRepository.countByTestgruppe(gruppeId),
+                        identRepository.countByGruppeId(gruppeId),
                         getBestKriterier(request)))
                 .doOnNext(tuple -> log.info("Antall testidenter {} i gruppe {} ", tuple.getT2(), gruppeId))
                 .map(tuple -> Bestilling.builder()
@@ -455,7 +455,7 @@ public class BestillingService {
 
         return bestillingRepository.findBestillingByGruppeId(gruppeId)
                 .map(Bestilling::getId)
-                .flatMap(elasticRepository::deleteById)
+                .doOnNext(elasticRepository::deleteById)
                 .collectList()
                 .then(bestillingKontrollRepository.deleteByGruppeId(gruppeId))
                 .then(bestillingProgressRepository.deleteByGruppeId(gruppeId))
@@ -480,7 +480,7 @@ public class BestillingService {
                 .flatMap(bestillingId -> bestillingProgressRepository.deleteByIdent(ident)
                         .then(bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId))
                         .then(bestillingRepository.deleteBestillingWithNoChildren(bestillingId))
-                        .then(elasticRepository.deleteById(bestillingId)))
+                        .then(Mono.fromRunnable(() -> elasticRepository.deleteById(bestillingId))))
                 .collectList()
                 .then();
     }

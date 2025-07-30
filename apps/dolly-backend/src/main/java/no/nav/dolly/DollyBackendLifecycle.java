@@ -8,8 +8,9 @@ import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
-@Component
+//@Component
 @Profile({"dev", "local", "prod"})
 @RequiredArgsConstructor
 @Slf4j
@@ -40,14 +41,16 @@ public class DollyBackendLifecycle implements SmartLifecycle {
     @Transactional
     public void start() {
         isRunning = true;
-        var unfinishedBestilling = bestillingRepository.stopAllUnfinished();
-        var unfinishedOrganisasjonBestilling = organisasjonBestillingRepository.stopAllUnfinished();
-        log.info("Stoppet {} kjørende bestilling(er), {} kjørende organisasjonsbestilling(er)", unfinishedBestilling, unfinishedOrganisasjonBestilling);
+        bestillingRepository.stopAllUnfinished()
+                .flatMap(unfinishedBestilling -> organisasjonBestillingRepository.stopAllUnfinished()
+                        .doOnNext(unfinishedOrganisasjonBestilling ->
+                                log.info("Stoppet {} kjørende bestilling(er), {} kjørende organisasjonsbestilling(er)",
+                                        unfinishedBestilling, unfinishedOrganisasjonBestilling)))
+                .subscribe();
     }
 
     @Override
     public void stop() {
         isRunning = false;
     }
-
 }
