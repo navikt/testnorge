@@ -56,8 +56,7 @@ public class BrukerMappingStrategy implements MappingStrategy {
                 emptyList());
 
         return favoritter.stream()
-                .map(BrukerFavoritter::getId)
-                .map(BrukerFavoritter.BrukerFavoritterId::getGruppeId)
+                .map(BrukerFavoritter::getGruppeId)
                 .map(String::valueOf)
                 .toList();
     }

@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class BrukerServiceTest {
 
-    private final static String BRUKERID = "123";
+    private static final String BRUKERID = "123";
 
     @Mock
     private BrukerRepository brukerRepository;
@@ -72,7 +72,7 @@ class BrukerServiceTest {
     void fetchBrukere() {
         when(brukerRepository.save(any())).thenReturn(Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
         brukerService.fetchBrukere();
-        verify(brukerRepository).findAllByOrderById();
+        verify(brukerRepository).findByOrderById();
     }
 
     @Test

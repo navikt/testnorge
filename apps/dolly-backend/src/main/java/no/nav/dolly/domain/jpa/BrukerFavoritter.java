@@ -2,13 +2,11 @@ package no.nav.dolly.domain.jpa;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -20,23 +18,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("BRUKER_FAVORITTER")
-public class BrukerFavoritter {
+public class BrukerFavoritter implements Serializable {
 
-    @Id
-    BrukerFavoritterId id;
+    @Column("BRUKER_ID")
+    private Long brukerId;
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class BrukerFavoritterId implements Serializable {
-
-        @Column("BRUKER_ID")
-        private Long brukerId;
-
-        @Column("GRUPPE_ID")
-        private Long gruppeId;
-    }
+    @Column("GRUPPE_ID")
+    private Long gruppeId;
 
     @Override
     public boolean equals(Object o) {
@@ -47,14 +35,16 @@ public class BrukerFavoritter {
         BrukerFavoritter that = (BrukerFavoritter) o;
 
         return new EqualsBuilder()
-                .append(id, that.id)
+                .append(brukerId, that.brukerId)
+                .append(gruppeId, that.gruppeId)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(id)
+                .append(brukerId)
+                .append(gruppeId)
                 .toHashCode();
     }
 
@@ -62,7 +52,8 @@ public class BrukerFavoritter {
     public String
     toString() {
         return "BrukerFavoritter{" +
-                "id=" + id +
+                "brukerId=" + brukerId +
+                ", gruppeId=" + gruppeId +
                 '}';
     }
 }

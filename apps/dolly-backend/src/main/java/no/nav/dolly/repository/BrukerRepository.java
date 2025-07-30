@@ -13,13 +13,14 @@ import java.util.List;
 public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
 
     @Query("""
+            select *
             from Bruker b
             where b.brukertype='AZURE'
             order by b.brukernavn
             """)
-    Flux<Bruker> findAllByOrderById();
+    Flux<Bruker> findByOrderById();
 
-    Flux<Bruker> findAllByBrukerIdInOrderByBrukernavn(List<String> brukerId);
+    Flux<Bruker> findByBrukerIdInOrderByBrukernavn(List<String> brukerId);
 
     Mono<Bruker> findByBrukerId(String brukerId);
 

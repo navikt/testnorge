@@ -234,9 +234,8 @@ public class TestgruppeService {
                 .collectList()
                 .flatMap(rsTestgrupper -> Mono.zip(
                         Mono.just(rsTestgrupper),
-                        brukerFavoritterRepository.getAllByBrukerId(bruker.getId())
-                                .map(BrukerFavoritter::getId)
-                                .map(BrukerFavoritter.BrukerFavoritterId::getGruppeId)
+                        brukerFavoritterRepository.findByBrukerId(bruker.getId())
+                                .map(BrukerFavoritter::getGruppeId)
                                 .map(gruppeId -> Long.toString(gruppeId))
                                 .collectList()))
                 .map(tuple3 -> RsTestgruppePage.builder()

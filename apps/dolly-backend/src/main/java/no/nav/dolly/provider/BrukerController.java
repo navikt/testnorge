@@ -65,7 +65,8 @@ public class BrukerController {
     public Flux<RsBruker> getAllBrukere() {
 
         return brukerService.fetchBrukere()
-                .flatMap(bruker -> brukerFavoritterRepository.getAllByBrukerId(bruker.getId())
+                .flatMap(bruker -> brukerFavoritterRepository.findByBrukerId(bruker.getId())
+                        .collectList()
                         .map(favoritter -> {
                             var context = MappingContextUtils.getMappingContext();
                             context.setProperty("favoritter", favoritter);
@@ -95,8 +96,8 @@ public class BrukerController {
 
     private <T> Mono<T> getFavoritter(Bruker bruker, Class<T> clazz) {
 
-        return Mono.zip(reactor.core.publisher.Mono.just(bruker),
-                        brukerFavoritterRepository.getAllByBrukerId(bruker.getId())
+        return Mono.zip(Mono.just(bruker),
+                        brukerFavoritterRepository.findByBrukerId(bruker.getId())
                                 .collectList(),
                         getUserInfo.call())
                 .map(tuple -> {

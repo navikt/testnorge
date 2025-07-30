@@ -32,9 +32,8 @@ public class BrukerService {
     private final BrukerRepository brukerRepository;
     private final BrukerServiceConsumer brukerServiceConsumer;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
-    private final TestgruppeRepository testgruppeRepository;
     private final GetUserInfo getUserInfo;
-    private final BrukerFavoritterRepository favoritterRepository;
+    private final TestgruppeRepository testgruppeRepository;
 
     public Mono<Bruker> fetchBruker(String brukerId) {
 
@@ -74,12 +73,10 @@ public class BrukerService {
         return fetchTestgruppe(gruppeId)
                 .flatMap(gruppe -> getAuthenticatedUserId.call()
                         .flatMap(this::fetchBruker)
-                        .flatMap(bruker -> favoritterRepository.save(BrukerFavoritter.builder()
-                                        .id(BrukerFavoritter.BrukerFavoritterId.builder()
+                        .flatMap(bruker -> brukerFavoritterRepository.save(BrukerFavoritter.builder()
                                                 .brukerId(bruker.getId())
                                                 .gruppeId(gruppe.getId())
                                                 .build())
-                                        .build())
                                 .thenReturn(bruker)));
     }
 
@@ -88,24 +85,20 @@ public class BrukerService {
         return fetchTestgruppe(gruppeId)
                 .flatMap(gruppe -> getAuthenticatedUserId.call()
                         .flatMap(this::fetchBruker)
-                        .flatMap(bruker -> favoritterRepository.delete(BrukerFavoritter.builder()
-                                        .id(BrukerFavoritter.BrukerFavoritterId.builder()
-                                                .brukerId(bruker.getId())
-                                                .gruppeId(gruppe.getId())
-                                                .build())
-                                        .build())
+                        .flatMap(bruker -> brukerFavoritterRepository.deleteByBrukerIdAndGruppeId(
+                                                bruker.getId(),
+                                                gruppe.getId())
                                 .thenReturn(bruker)));
     }
-
 
     public Flux<Bruker> fetchBrukere() {
 
         return fetchOrCreateBruker()
                 .flatMapMany(bruker -> Brukertype.AZURE == bruker.getBrukertype() ?
-                        brukerRepository.findAllByOrderById() :
+                        brukerRepository.findByOrderById() :
                         brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                                 .map(TilgangDTO::getBrukere)
-                                .flatMapMany(brukerRepository::findAllByBrukerIdInOrderByBrukernavn));
+                                .flatMapMany(brukerRepository::findByBrukerIdInOrderByBrukernavn));
     }
 
     public Mono<Integer> sletteBrukerFavoritterByGroupId(Long groupId) {
