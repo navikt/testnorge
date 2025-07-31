@@ -154,6 +154,7 @@ public class MalBestillingService {
     public Mono<BestillingMal> saveBestillingMal(Bestilling bestilling, String malNavn, String brukerId) {
 
         return bestillingMalRepository.findByBrukerIdAndMalNavn(brukerId, malNavn)
+                .doOnNext(bestillingMal -> log.info("bestillingMal {}", bestillingMal))
                 .switchIfEmpty(brukerRepository.findByBrukerId(brukerId)
                         .map(bruker -> BestillingMal.builder()
                                 .brukerId(bruker.getId())
@@ -169,7 +170,8 @@ public class MalBestillingService {
                     bestillingMal.setMiljoer(bestilling.getMiljoer());
                     return bestillingMal;
                 })
-                .flatMap(bestillingMalRepository::save)
+                .flatMap(t ->
+                        bestillingMalRepository.save(t))
                 .doFinally(bestillingMal -> {
                     if (nonNull(cacheManager.getCache(CACHE_BESTILLING_MAL))) {
                         cacheManager.getCache(CACHE_BESTILLING_MAL).clear();

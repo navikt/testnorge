@@ -156,10 +156,13 @@ public class TestgruppeController {
 
         return bestillingService.saveBestilling(gruppeId, request,
                         request.getAntall(), null, request.getNavSyntetiskIdent(), request.getBeskrivelse())
-                .map(bestilling -> {
-                    opprettPersonerByKriterierService.executeAsync(bestilling);
-                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-                });
+                .map(bestilling ->
+                                mapperFacade.map(bestilling, RsBestillingStatus.class)
+                        );
+//                .map(bestilling -> {
+//                    opprettPersonerByKriterierService.executeAsync(bestilling);
+//                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
+//                });
     }
 
     @Operation(description = "Opprett berikede testpersoner basert på eskisterende identer")

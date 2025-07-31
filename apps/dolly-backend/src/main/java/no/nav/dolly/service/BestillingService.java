@@ -225,7 +225,8 @@ public class BestillingService {
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         fetchBruker(),
-                        getBestKriterier(request)))
+                        getBestKriterier(request),
+                        miljoerConsumer.getMiljoer()))
                 .flatMap(tuple ->
                         Mono.just(Bestilling.builder()
                                         .gruppeId(tuple.getT1().getGruppeId())
@@ -233,7 +234,7 @@ public class BestillingService {
                                         .antallIdenter(1)
                                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                                         .sistOppdatert(now())
-                                        .miljoer(filterAvailable(request.getEnvironments()))
+                                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT4()))
                                         .bruker(tuple.getT2())
                                         .brukerId(tuple.getT2().getId())
                                         .bestKriterier(tuple.getT3())
@@ -266,14 +267,15 @@ public class BestillingService {
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         fetchBruker(),
-                        getBestKriterier(request)))
+                        getBestKriterier(request),
+                        miljoerConsumer.getMiljoer()))
                 .flatMap(tuple ->
                         Mono.just(Bestilling.builder()
                                         .gruppeId(tuple.getT1().getId())
                                         .antallIdenter(antall)
                                         .navSyntetiskIdent(navSyntetiskIdent)
                                         .sistOppdatert(now())
-                                        .miljoer(filterAvailable(request.getEnvironments()))
+                                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT4()))
                                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                                         .bruker(tuple.getT2())
                                         .brukerId(tuple.getT2().getId())
@@ -303,7 +305,10 @@ public class BestillingService {
     public Mono<Bestilling> createBestillingForGjenopprettFraBestilling(Long bestillingId, String miljoer) {
 
         return fetchBestillingById(bestillingId)
-                .zipWith(fetchBruker())
+                .flatMap(bestilling -> Mono.zip(
+                        Mono.just(bestilling),
+                        fetchBruker(),
+                        miljoerConsumer.getMiljoer()))
                 .flatMap(tuple -> {
                     if (!tuple.getT1().isFerdig()) {
                         return Mono.error(new DollyFunctionalException(format("Du kan ikke starte gjenopprett før bestilling %d er ferdigstilt.", bestillingId)));
@@ -317,7 +322,7 @@ public class BestillingService {
                             .antallIdenter(tuple.getT1().getAntallIdenter())
                             .opprettFraIdenter(tuple.getT1().getOpprettFraIdenter())
                             .sistOppdatert(now())
-                            .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : tuple.getT1().getMiljoer()))
+                            .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : tuple.getT1().getMiljoer(), tuple.getT3()))
                             .opprettetFraId(bestillingId)
                             .bestKriterier("{}")
                             .bruker(tuple.getT2())
@@ -325,10 +330,10 @@ public class BestillingService {
                             .build());
                 })
                 .flatMap(bestillingRepository::save)
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
+                .flatMap(bestilling1 -> getBestillingProgresser(bestilling1)
                         .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
+                            bestilling1.setProgresser(progresser);
+                            return bestilling1;
                         }));
     }
 
@@ -338,14 +343,17 @@ public class BestillingService {
 
         return identRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident))))
-                .zipWith(fetchBruker())
+                .flatMap(testident -> Mono.zip(
+                        Mono.just(testident),
+                        fetchBruker(),
+                        miljoerConsumer.getMiljoer()))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(tuple.getT1().getGruppeId())
                         .ident(ident)
                         .antallIdenter(1)
                         .bestKriterier("{}")
                         .sistOppdatert(now())
-                        .miljoer(filterAvailable(miljoer))
+                        .miljoer(filterAvailable(miljoer, tuple.getT3()))
                         .gjenopprettetFraIdent(ident)
                         .bruker(tuple.getT2())
                         .brukerId(tuple.getT2().getId())
@@ -367,7 +375,8 @@ public class BestillingService {
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),
                         identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
-                                .collectList()))
+                                .collectList(),
+                        miljoerConsumer.getMiljoer()))
                 .flatMap(tuple -> {
                     if (tuple.getT2().isEmpty()) {
                         return Mono.error(new NotFoundException(format("Ingen testpersoner funnet i gruppe: %d", gruppeId)));
@@ -380,7 +389,7 @@ public class BestillingService {
                         .antallIdenter(tuple.getT2().size())
                         .bestKriterier("{}")
                         .sistOppdatert(now())
-                        .miljoer(filterAvailable(miljoer))
+                        .miljoer(filterAvailable(miljoer, tuple.getT3()))
                         .opprettetFraGruppeId(gruppeId)
                         .bruker(tuple.getT1())
                         .brukerId(tuple.getT1().getId())
@@ -399,12 +408,14 @@ public class BestillingService {
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
-                .flatMap(testgruppe -> Mono.zip(fetchBruker(),
-                        getBestKriterier(request)))
+                .flatMap(testgruppe -> Mono.zip(
+                        fetchBruker(),
+                        getBestKriterier(request),
+                        miljoerConsumer.getMiljoer()))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(gruppeId)
                         .kildeMiljoe("PDL")
-                        .miljoer(filterAvailable(request.getEnvironments()))
+                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                         .sistOppdatert(now())
                         .bruker(tuple.getT1())
                         .brukerId(tuple.getT1().getId())
@@ -431,11 +442,12 @@ public class BestillingService {
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),
                         identRepository.countByGruppeId(gruppeId),
-                        getBestKriterier(request)))
+                        getBestKriterier(request),
+                        miljoerConsumer.getMiljoer()))
                 .doOnNext(tuple -> log.info("Antall testidenter {} i gruppe {} ", tuple.getT2(), gruppeId))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(gruppeId)
-                        .miljoer(filterAvailable(request.getEnvironments()))
+                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT4()))
                         .sistOppdatert(now())
                         .bruker(tuple.getT1())
                         .antallIdenter(tuple.getT2())
@@ -571,25 +583,24 @@ public class BestillingService {
                 .map(Dokument::getId);
     }
 
-    private String filterAvailable(Collection<String> environments) {
+    private String filterAvailable(Collection<String> environments, Collection<String> available) {
 
         if (isNull(environments) || environments.isEmpty()) {
             return null;
         }
 
-        var miljoer = miljoerConsumer.getMiljoer().block();
-
-        if (isNull(miljoer)) {
+        if (isNull(available) || available.isEmpty()) {
             return null;
         }
+
         return environments.stream()
-                .filter(miljoer::contains)
+                .filter(available::contains)
                 .collect(Collectors.joining(","));
     }
 
-    private String filterAvailable(String miljoer) {
+    private String filterAvailable(String miljoer, Collection<String> available) {
 
-        return isNotBlank(miljoer) ? filterAvailable(Arrays.asList(miljoer.split(","))) : null;
+        return isNotBlank(miljoer) ? filterAvailable(Arrays.asList(miljoer.split(",")), available) : null;
     }
 
     private String wrapSearchString(String searchString) {

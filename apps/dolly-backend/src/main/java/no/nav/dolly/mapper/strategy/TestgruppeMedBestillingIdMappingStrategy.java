@@ -19,8 +19,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Component
@@ -40,18 +42,18 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                         .ident(testident.getIdent())
                                         .iBruk(isTrue(testident.getIBruk()))
                                         .beskrivelse(testident.getBeskrivelse())
-                                        .bestillingId(testident.getBestillingProgress().stream()
+                                        .bestillingId(nonNull(testident.getBestillingProgress()) ? testident.getBestillingProgress().stream()
                                                 .map(BestillingProgress::getBestillingId)
                                                 .sorted(Comparator.reverseOrder())
-                                                .toList())
+                                                .toList() : null)
                                         .master(testident.getMaster())
-                                        .bestillinger(testident.getBestillingProgress().stream()
+                                        .bestillinger(nonNull(testident.getBestillingProgress()) ? testident.getBestillingProgress().stream()
                                                 .map(progress -> {
                                                     var context2 = MappingContextUtils.getMappingContext();
                                                     context2.setProperty("ident", testident.getIdent());
                                                     return mapperFacade.map(progress.getBestilling(), RsBestillingStatus.class, context2);
                                                 })
-                                                .toList())
+                                                .toList() : null)
                                         .master(testident.getMaster())
                                         .build())
                                 .toList());

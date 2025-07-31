@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -39,6 +40,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                    try {
                                        elasticBestilling.setIgnore(isBlank(bestilling.getBestKriterier()) ||
                                                "{}".equals(bestilling.getBestKriterier()) ||
+                                               isNull(bestilling.getProgresser()) ||
                                                bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
 
                                        if (!elasticBestilling.isIgnore()) {
