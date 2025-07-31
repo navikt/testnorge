@@ -5,13 +5,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 
-public interface IdentRepository extends ReactiveCrudRepository<Testident, Long> {
+public interface IdentRepository extends ReactiveSortingRepository<Testident, Long> {
+
+    Mono<Testident> save(Testident testident);
+    Mono<Void> deleteById(Long id);
 
     Mono<Testident> findByIdent(String ident);
 
@@ -53,10 +56,6 @@ public interface IdentRepository extends ReactiveCrudRepository<Testident, Long>
             """)
     Flux<GruppeBestillingIdent> getBestillingerByIdent(@Param(value = "ident") String ident);
 
-    @Query("""
-            select ti from test_ident ti
-            where ti.tilhoerer_gruppe = :gruppeId
-            """)
     Flux<Testident> findByGruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
     Mono<Integer> countByGruppeId(Long id);
@@ -72,7 +71,7 @@ public interface IdentRepository extends ReactiveCrudRepository<Testident, Long>
     Mono<Integer> getPaginertTestidentIndex(@Param("ident") String ident, @Param("gruppeId") Long gruppe);
 
 
-    Mono<Long> countByGruppeIdAndIBruk(Long id, Boolean iBruk);
+    Mono<Integer> countByGruppeIdAndIBruk(Long id, Boolean iBruk);
 
     interface GruppeBestillingIdent {
 

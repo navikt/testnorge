@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
@@ -78,35 +79,35 @@ public class TestgruppeService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<RsTestgruppeMedBestillingId> fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
-
+    public Mono<RsTestgruppeMedBestillingId> fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize,
+                                                                         String sortColumn, String sortRetning) {
         return harTilgang(gruppeId)
                 .flatMap(tilgang -> {
                     if (isTrue(tilgang)) {
-                        return this.fetchTestgruppeById(gruppeId)
-                                .flatMap(testgruppe -> Mono.zip(
-                                        Mono.just(testgruppe),
-                                        getAuthenticatedUserId.call()
-                                                .flatMap(brukerService::fetchBruker),
-                                        identRepository.countByGruppeId(testgruppe.getId()),
-                                        bestillingRepository.countAllByGruppeId(testgruppe.getId()),
-                                        identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
-                                        identService.getTestidenterFromGruppePaginert(gruppeId, pageNo,
-                                                pageSize, sortColumn, sortRetning)))
-                                .flatMap(tuple -> {
-                                    var context = MappingContextUtils.getMappingContext();
-                                    context.setProperty("bruker", tuple.getT2());
-                                    context.setProperty("antallIdenter", tuple.getT3());
-                                    context.setProperty("antallBestillinger", tuple.getT4());
-                                    context.setProperty("antallIBruk", tuple.getT5());
-                                    return Mono.just(mapperFacade.map(tuple.getT2(), RsTestgruppe.class, context))
-                                            .zipWith(Mono.just(tuple.getT6()));
-                                })
-                                .map(tuple -> {
-                                    var context = MappingContextUtils.getMappingContext();
-                                    context.setProperty("identer", tuple.getT2());
-                                    return mapperFacade.map(tuple.getT1(), RsTestgruppeMedBestillingId.class, context);
-                                });
+                        return brukerService.fetchOrCreateBruker()
+                                .flatMap(bruker -> this.fetchTestgruppeById(gruppeId)
+                                        .flatMap(testgruppe -> Mono.zip(
+                                                Mono.just(testgruppe),
+                                                Mono.just(bruker),
+                                                identRepository.countByGruppeId(testgruppe.getId()),
+                                                bestillingRepository.countAllByGruppeId(testgruppe.getId()),
+                                                identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
+                                                identService.getTestidenterFromGruppePaginert(gruppeId, pageNo,
+                                                        pageSize, sortColumn, sortRetning)))
+                                        .flatMap(tuple -> {
+                                            var context = MappingContextUtils.getMappingContext();
+                                            context.setProperty("bruker", tuple.getT2());
+                                            context.setProperty("antallIdenter", tuple.getT3());
+                                            context.setProperty("antallBestillinger", tuple.getT4());
+                                            context.setProperty("antallIBruk", tuple.getT5());
+                                            return Mono.just(mapperFacade.map(tuple.getT1(), RsTestgruppe.class, context))
+                                                    .zipWith(Mono.just(tuple.getT6()));
+                                        })
+                                        .map(tuple -> {
+                                            var context = MappingContextUtils.getMappingContext();
+                                            context.setProperty("identer", tuple.getT2());
+                                            return mapperFacade.map(tuple.getT1(), RsTestgruppeMedBestillingId.class, context);
+                                        }));
                     } else {
                         return Mono.error(new NotFoundException(GRUPPE_MELDING.formatted(gruppeId)));
                     }
@@ -232,19 +233,12 @@ public class TestgruppeService {
                     return mapperFacade.map(tuple2.getT1(), RsTestgruppe.class, context);
                 })
                 .collectList()
-                .flatMap(rsTestgrupper -> Mono.zip(
-                        Mono.just(rsTestgrupper),
-                        brukerFavoritterRepository.findByBrukerId(bruker.getId())
-                                .map(BrukerFavoritter::getGruppeId)
-                                .map(gruppeId -> Long.toString(gruppeId))
-                                .collectList()))
-                .map(tuple3 -> RsTestgruppePage.builder()
+                .map(contents -> RsTestgruppePage.builder()
                         .pageNo(pageNo)
                         .antallPages(antall.intValue() / pageSize + 1)
                         .pageSize(pageSize)
                         .antallElementer(antall)
-                        .contents(tuple3.getT1())
-                        .favoritter(tuple3.getT2())
+                        .contents(contents)
                         .build());
     }
 

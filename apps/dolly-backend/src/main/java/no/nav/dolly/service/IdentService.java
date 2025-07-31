@@ -1,12 +1,16 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.dto.TestidentDTO;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
@@ -22,12 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class IdentService {
@@ -37,6 +44,7 @@ public class IdentService {
     private final IdentRepository identRepository;
     private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
+    private final BestillingRepository bestillingRepository;
     private final MapperFacade mapperFacade;
     private final PersonService personService;
     private final BestillingService bestillingService;
@@ -109,7 +117,7 @@ public class IdentService {
     @Transactional
     public Mono<Testident> swapIdent(String oldIdent, String newIdent) {
 
-            return identRepository.swapIdent(oldIdent, newIdent);
+        return identRepository.swapIdent(oldIdent, newIdent);
     }
 
     public Flux<GruppeBestillingIdent> getBestillingerFromGruppe(Long gruppeId) {
@@ -151,15 +159,51 @@ public class IdentService {
         );
 
         return identRepository.findByGruppeId(gruppeId, page)
-                .flatMap(ident -> bestillingProgressRepository.findByIdent(ident.getIdent())
-                        .collectList()
-                        .map(bestillingProgress -> {
-                            ident.setBestillingProgress(bestillingProgress);
-                            return ident;
-                        }))
                 .collectList()
-                .zipWith(identRepository.countByGruppeId(gruppeId))
-                .map(tuple -> new PageImpl<>(tuple.getT1(), page, tuple.getT2()));
+                .flatMap(testidenter -> {
+                    var identer = testidenter.stream()
+                            .map(Testident::getIdent)
+                            .toList();
+
+                    return bestillingProgressRepository.findByIdentIn(identer)
+                            .collectList()
+                            .flatMap(progresser -> Flux.fromIterable(progresser)
+                                    .map(BestillingProgress::getBestillingId)
+                                    .collectList()
+                                    .flatMap(bestillingIds -> bestillingRepository.findByIdIn(bestillingIds)
+                                            .collectList()
+                                            .zipWith(Mono.just(progresser))))
+                            .flatMap(tuple ->
+                                    Flux.fromIterable(tuple.getT1())
+                                            .collectMap(Bestilling::getId, bestilling -> bestilling)
+                                            .zipWith(Flux.fromIterable(tuple.getT2())
+                                                    .reduce(new HashMap<String, List<BestillingProgress>>(), (map, bestillingProgress) -> {
+                                                        map.computeIfAbsent(bestillingProgress.getIdent(), k -> new ArrayList<>())
+                                                                .add(bestillingProgress);
+                                                        return map;
+                                                    }))
+                                            .zipWith(Flux.fromIterable(tuple.getT2())
+                                                    .reduce(new HashMap<Long, List<BestillingProgress>>(), (map, bestillingProgress) -> {
+                                                        map.computeIfAbsent(bestillingProgress.getBestillingId(), k -> new ArrayList<>())
+                                                                .add(bestillingProgress);
+                                                        return map;
+                                                    })))
+                            .flatMap(tuple -> {
+
+                                tuple.getT1().getT1().keySet().forEach(bestillingId -> {
+                                    tuple.getT1().getT1().get(bestillingId).setProgresser(tuple.getT2().get(bestillingId));
+                                    tuple.getT2().get(bestillingId)
+                                            .forEach(bestillingProgress ->
+                                                    bestillingProgress.setBestilling(tuple.getT1().getT1().get(bestillingId)));
+                                });
+                                testidenter.forEach(testident ->
+                                        testident.setBestillingProgress(tuple.getT1().getT2().get(testident.getIdent())));
+
+                                return Mono.just(testidenter);
+                            });
+                })
+                .flatMap(testidenter -> identRepository.countByGruppeId(gruppeId)
+                        .map(count -> new PageImpl<>(testidenter, page, count)));
     }
 
     public Mono<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {

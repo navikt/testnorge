@@ -21,5 +21,5 @@ public class RsTestgruppePage {
     private Integer pageSize;
     private Long antallElementer;
     private List<RsTestgruppe> contents;
-    private List<String> favoritter;
+//    private List<String> favoritter;
 }

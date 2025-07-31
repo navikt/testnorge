@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -40,6 +41,9 @@ public class BestillingProgress implements Serializable {
 //    @JoinColumn("BESTILLING_ID", nullable = false)
     @Column("BESTILLING_ID")
     private Long bestillingId;
+
+    @Transient
+    private Bestilling bestilling;
 
     private String ident;
 
@@ -128,7 +132,7 @@ public class BestillingProgress implements Serializable {
 //    @Enumerated(EnumType.STRING)
     private Master master;
 
-//    @Transient
+    @Transient
     private boolean isPdlSync;
 
     private String feil;

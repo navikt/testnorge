@@ -8,6 +8,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BestillingProgressRepository extends ReactiveCrudRepository<BestillingProgress, Long> {
@@ -29,6 +30,7 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
     Mono<Mono> deleteByBestillingId(Long bestillingId);
 
     Flux<BestillingProgress> findByIdent(String ident);
+    Flux<BestillingProgress> findByIdentIn(List<String> identer);
 
     @Modifying
     @Query("""

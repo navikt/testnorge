@@ -114,18 +114,6 @@ public class TestgruppeController {
     }
 
     @Cacheable(CACHE_GRUPPE)
-    @GetMapping("/test/{gruppeId}/page/{pageNo}")
-    @Operation(description = "Hent paginert testgruppe")
-    public Mono<Page<Testident>> getPaginertTestgruppe1(@PathVariable("gruppeId") Long gruppeId,
-                                                  @PathVariable("pageNo") Integer pageNo,
-                                                  @RequestParam Integer pageSize,
-                                                  @RequestParam(required = false) String sortKolonne,
-                                                  @RequestParam(required = false) String sortRetning) {
-
-        return testgruppeService.getIdenter(gruppeId, pageNo, pageSize, sortKolonne, sortRetning);
-    }
-
-    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
     @Operation(description = "Hent testgruppe")
     public Mono<RsTestgruppeMedBestillingId> getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {

@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -47,7 +49,7 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                                 .map(progress -> {
                                                     var context2 = MappingContextUtils.getMappingContext();
                                                     context2.setProperty("ident", testident.getIdent());
-                                                    return mapperFacade.map(progress, RsBestillingStatus.class, context2);
+                                                    return mapperFacade.map(progress.getBestilling(), RsBestillingStatus.class, context2);
                                                 })
                                                 .toList())
                                         .master(testident.getMaster())

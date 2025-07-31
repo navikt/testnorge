@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface BestillingRepository extends ReactiveSortingRepository<Bestilling, Long> {
 
@@ -21,7 +22,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Void> deleteById(Long id);
 
     Flux<Bestilling> findBestillingByGruppeId(Long gruppeId);
-    Mono<Long> countAllByGruppeId(Long gruppeId);
+    Mono<Integer> countAllByGruppeId(Long gruppeId);
 
     @Query("""
             select b.id, g.navn
@@ -130,4 +131,6 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             where b.ferdig = false
             """)
     Mono<Integer> stopAllUnfinished();
+
+    Flux<Bestilling> findByIdIn(List<Long> id);
 }
