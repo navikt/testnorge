@@ -1,4 +1,4 @@
-import { defineConfig, splitVendorChunkPlugin } from 'vite';
+import { defineConfig } from 'vite';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import { resolve } from 'path';
@@ -11,6 +11,15 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: 'build',
     cssCodeSplit: false,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
+      },
+    },
   },
   resolve: {
     alias: {
@@ -33,5 +42,5 @@ export default defineConfig(({ mode }) => ({
     },
     port: 3000,
   },
-  plugins: [react(), svgr(), viteTsconfigPaths(), splitVendorChunkPlugin()],
+  plugins: [react(), svgr(), viteTsconfigPaths()],
 }));
