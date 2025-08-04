@@ -37,4 +37,11 @@ public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe,
     Flux<Long> findAllIdsByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere);
 
     Mono<Long> countBy();
+
+    @Query("""
+            select tg.* from gruppe tg
+            join bestilling b on b.gruppe_id = tg.id
+            where b.id = :bestillingId
+            """)
+    Mono<Testgruppe> findByBestillingId(@Param("bestillingId") Long bestillingId);
 }

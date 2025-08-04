@@ -15,20 +15,17 @@ import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
-import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BestillingRepository.RsBestillingFragment;
 import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -45,11 +42,10 @@ import reactor.core.publisher.Mono;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -58,7 +54,6 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
-import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -107,15 +102,13 @@ public class BestillingService {
                 .filter(word -> !word.equals(bestillingID))
                 .collect(Collectors.joining(" "));
 
-        if (isNoneBlank(gruppeNavn) && isNoneBlank(bestillingID)) {
-            return bestillingRepository.findByIdContainingAndGruppeNavnContaining(bestillingID, gruppeNavn);
-
-        } else {
-            return Flux.merge(
-                            bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
-                            bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn)))
-                    .filter(distinctByKey(RsBestillingFragment::getid));
-        }
+        return Mono.just(bestillingFragment)
+                .flatMapMany(fragment -> isNoneBlank(gruppeNavn) && isNoneBlank(bestillingID) ?
+                        bestillingRepository.findByIdContainingAndGruppeNavnContaining(bestillingID, gruppeNavn) :
+                        Flux.merge(
+                                bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
+                                bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn))));
+//                .sort(Comparator.comparing(RsBestillingFragment::getFragment));
     }
 
     public Flux<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
@@ -313,7 +306,7 @@ public class BestillingService {
     }
 
     @Transactional
-    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
+// Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Mono<Bestilling> createBestillingForGjenopprettFraBestilling(Long bestillingId, String miljoer) {
 
         return fetchBestillingById(bestillingId)
@@ -350,7 +343,7 @@ public class BestillingService {
     }
 
     @Transactional
-    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
+// Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Mono<Bestilling> createBestillingForGjenopprettFraIdent(String ident, List<String> miljoer) {
 
         return identRepository.findByIdent(ident)
@@ -379,7 +372,7 @@ public class BestillingService {
     }
 
     @Transactional
-    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
+// Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Mono<Bestilling> createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {
 
         return testgruppeRepository.findById(gruppeId)

@@ -89,6 +89,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                     .flatMap(dollyPerson ->
                                             gjenopprettKlienter(dollyPerson, bestKriterier, fase1Klienter(), progress, false)
                                                     .then(personServiceClient.syncPerson(dollyPerson, progress)
+                                                            .doOnNext(progress1 -> log.info("Status på progress {}", progress1))
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> createBestilling(bestilling, tuple.getT2().getBestillingId()))
                                                             .flatMap(cobestilling ->

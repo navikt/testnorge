@@ -1,7 +1,6 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -25,16 +24,17 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Integer> countAllByGruppeId(Long gruppeId);
 
     @Query("""
-            select b.id, g.navn
+            select *
             from Bestilling b
             join Gruppe g on b.gruppe_id = g.id
             where length(:id) > 0
-            and cast(b.id as VARCHAR) ilike :id fetch first 10 rows only
+            and cast(b.id as VARCHAR) ilike :id
+            fetch first 10 rows only
             """)
     Flux<RsBestillingFragment> findByIdContaining(String id);
 
     @Query("""
-            select b.id, g.navn
+            select *
             from Bestilling b
             join Gruppe g on b.gruppe_id = g.id
             where length(:gruppenavn) > 0
@@ -44,10 +44,12 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Flux<RsBestillingFragment> findByGruppenavnContaining(String gruppenavn);
 
     @Query("""
-            select b.id as id, g.navn as navn from Bestilling b
+            select *
+            from Bestilling b
             join gruppe g on b.gruppe_id = g.id
             where cast(b.id as varchar) like '%:id%'
-            and g.navn like '%:gruppenavn%'
+            and g.navn ilike '%:gruppenavn%'
+            fetch first 10 rows only
             """)
     Flux<RsBestillingFragment> findByIdContainingAndGruppeNavnContaining(
             @Param("id") String id,
@@ -133,4 +135,10 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Integer> stopAllUnfinished();
 
     Flux<Bestilling> findByIdIn(List<Long> id);
+
+    interface RsBestillingFragment {
+
+        String getId();
+        String getNavn();
+    }
 }

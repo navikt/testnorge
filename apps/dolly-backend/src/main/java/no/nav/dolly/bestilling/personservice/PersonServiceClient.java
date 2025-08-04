@@ -176,7 +176,8 @@ public class PersonServiceClient {
                             }
                             return Mono.just(progress);
                         })
-                        .next();
+                        .collectList()
+                        .thenReturn(progress);
     }
 
     private void logStatus(PersonServiceResponse status, long startTime) {

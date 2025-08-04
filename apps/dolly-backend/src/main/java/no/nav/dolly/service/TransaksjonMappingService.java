@@ -41,7 +41,7 @@ public class TransaksjonMappingService {
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
                 .filter(mapping -> (isBlank(miljoe) || miljoe.equals(mapping.getMiljoe())) &&
                         (isNull(bestillingId) || bestillingId.equals(mapping.getBestillingId())))
-                .next()
+                .collectList()
                 .thenReturn(true)
                 .switchIfEmpty(Mono.just(false));
     }
