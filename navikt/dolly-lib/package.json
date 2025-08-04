@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-lib",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "Bibliotek for diverse dolly funksjoner.",
   "main": "lib/index.js",
   "scripts": {
