@@ -73,13 +73,13 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 		formMethods.watch('skattekort.arbeidsgiverSkatt')?.length,
 	])
 
-	const [orgnummer, setOrgnummer] = useState(formMethods.watch(organisasjonPath) || null)
+	const orgnummer = formMethods.watch(organisasjonPath)
 	const { organisasjoner, loading, error } = useOrganisasjonForvalter([orgnummer])
 	const organisasjon = organisasjoner?.[0]?.q1 || organisasjoner?.[0]?.q2
 
 	useEffect(() => {
 		if (!organisasjon) {
-			if (!loading) {
+			if (orgnummer && !loading) {
 				formMethods.setError(`manual.${organisasjonPath}`, {
 					message: 'Fant ikke organisasjonen',
 				})
@@ -98,7 +98,6 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 			formMethods.setValue(personPath, '')
 			formMethods.setValue(organisasjonPath, undefined)
 		} else {
-			setOrgnummer(null)
 			formMethods.setValue(organisasjonPath, '')
 			formMethods.setValue(personPath, undefined)
 		}
@@ -156,7 +155,6 @@ export const ArbeidsgiverToggle = ({ formMethods, path }: ArbeidsgiverToggleProp
 							loading={loading}
 							onTextBlur={(event) => {
 								formMethods.setValue(organisasjonPath, null)
-								setOrgnummer(event.target.value)
 							}}
 						/>
 					)}

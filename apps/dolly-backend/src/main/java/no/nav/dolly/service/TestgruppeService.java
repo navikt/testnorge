@@ -73,6 +73,8 @@ public class TestgruppeService {
 
         sjekkTilgang(gruppeId);
 
+        var bruker = brukerService.fetchOrCreateBruker();
+
         var testgruppeUtenIdenter = testgruppeRepository.findByIdOrderById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
 
@@ -93,8 +95,10 @@ public class TestgruppeService {
                 .testidenter(testidentPage.toList())
                 .build();
 
+
         var rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
+        rsTestgruppe.setErEierAvGruppe(bruker.getBrukerId().equals(rsTestgruppe.getOpprettetAv().getBrukerId()));
 
         var bestillingerPage = bestillingService.getBestillingerFromGruppeIdPaginert(testgruppe.getId(), 0, 1);
         rsTestgruppe.setAntallBestillinger(bestillingerPage.getTotalElements());

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
@@ -22,6 +23,10 @@ public class TeamBrukerMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
+
+        factory.classMap(Bruker.class, RsBrukerUtenFavoritter.class)
+                .byDefault()
+                .register();
 
         factory.classMap(RsTeam.class, Team.class)
                 .customize(new CustomMapper<>() {
