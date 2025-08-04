@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -196,7 +197,12 @@ public class DollyBestillingService {
 
     protected Mono<Bestilling> doFerdig(Bestilling bestilling) {
 
-        return transactionHelperService.oppdaterBestillingFerdig(bestilling.getId(), bestillingService.cleanBestilling())
+        return bestillingService.cleanBestilling(bestilling)
+                .then(Mono.defer(() -> {
+                    bestilling.setSistOppdatert(now());
+                    bestilling.setFerdig(true);
+                    return bestillingRepository.save(bestilling);
+                }))
                 .doOnNext(signal -> log.info("Bestilling med id=#{} er ferdig", bestilling.getId()));
     }
 
@@ -246,7 +252,7 @@ public class DollyBestillingService {
                         .ident(ident)
                         .master(master)
                         .build())
-                .flatMap(transactionHelperService::opprettProgress);
+                .flatMap(bestillingProgressRepository::save);
     }
 
     protected Mono<PdlResponse> opprettPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {

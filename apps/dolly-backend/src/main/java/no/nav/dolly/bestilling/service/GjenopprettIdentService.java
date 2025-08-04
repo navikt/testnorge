@@ -78,7 +78,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
             bestKriterier.setEkskluderEksternePersoner(true);
 
             identService.getTestIdent(bestilling.getIdent())
-                    .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
+                    .flatMapMany(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
                                     .ident(testident.getIdent())
                                     .build())

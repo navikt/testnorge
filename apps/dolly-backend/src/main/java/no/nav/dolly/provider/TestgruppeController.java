@@ -25,7 +25,6 @@ import no.nav.dolly.service.SplittGruppeService;
 import no.nav.dolly.service.TestgruppeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -86,7 +85,7 @@ public class TestgruppeController {
     @PutMapping(value = "/{gruppeId}/laas")
     @Operation(description = "Oppdater testgruppe Laas")
     public Mono<Testgruppe> oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,
-                                               @RequestBody RsLockTestgruppe lockTestgruppe) {
+                                                   @RequestBody RsLockTestgruppe lockTestgruppe) {
 
         return testgruppeService.oppdaterTestgruppeMedLaas(gruppeId, lockTestgruppe);
     }
@@ -156,13 +155,10 @@ public class TestgruppeController {
 
         return bestillingService.saveBestilling(gruppeId, request,
                         request.getAntall(), null, request.getNavSyntetiskIdent(), request.getBeskrivelse())
-                .map(bestilling ->
-                                mapperFacade.map(bestilling, RsBestillingStatus.class)
-                        );
-//                .map(bestilling -> {
-//                    opprettPersonerByKriterierService.executeAsync(bestilling);
-//                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
-//                });
+                .map(bestilling -> {
+                    opprettPersonerByKriterierService.executeAsync(bestilling);
+                    return mapperFacade.map(bestilling, RsBestillingStatus.class);
+                });
     }
 
     @Operation(description = "Opprett berikede testpersoner basert på eskisterende identer")
@@ -209,7 +205,7 @@ public class TestgruppeController {
     @PutMapping("/{gruppeId}/gjenopprett")
     @Operation(description = "Gjenopprett testidenter tilhørende en gruppe med liste for tilhørende miljoer")
     public Mono<RsBestillingStatus> gjenopprettBestilling(@PathVariable("gruppeId") Long gruppeId,
-                                                    @RequestParam(value = "miljoer", required = false) String miljoer) {
+                                                          @RequestParam(value = "miljoer", required = false) String miljoer) {
 
         return bestillingService.createBestillingForGjenopprettFraGruppe(gruppeId, miljoer)
                 .map(bestilling -> {
@@ -223,7 +219,7 @@ public class TestgruppeController {
     @PutMapping(value = "/{gruppeId}/identer/{identer}")
     @Operation(description = "Flytt angitte identer til denne gruppe")
     public Mono<Void> splittGruppe(@PathVariable("gruppeId") Long gruppeId,
-                             @PathVariable("identer") Set<String> identer) {
+                                   @PathVariable("identer") Set<String> identer) {
 
         return splittGruppeService.flyttIdenterTilDenneGruppe(gruppeId, identer);
     }

@@ -151,11 +151,11 @@ public class MalBestillingService {
                                         .build())));
     }
 
-    public Mono<BestillingMal> saveBestillingMal(Bestilling bestilling, String malNavn, String brukerId) {
+    public Mono<BestillingMal> saveBestillingMal(Bestilling bestilling, String malNavn, Long brukerId) {
 
         return bestillingMalRepository.findByBrukerIdAndMalNavn(brukerId, malNavn)
                 .doOnNext(bestillingMal -> log.info("bestillingMal {}", bestillingMal))
-                .switchIfEmpty(brukerRepository.findByBrukerId(brukerId)
+                .switchIfEmpty(brukerRepository.findById(brukerId)
                         .map(bruker -> BestillingMal.builder()
                                 .brukerId(bruker.getId())
                                 .malNavn(malNavn)
@@ -170,8 +170,7 @@ public class MalBestillingService {
                     bestillingMal.setMiljoer(bestilling.getMiljoer());
                     return bestillingMal;
                 })
-                .flatMap(t ->
-                        bestillingMalRepository.save(t))
+                .flatMap(bestillingMalRepository::save)
                 .doFinally(bestillingMal -> {
                     if (nonNull(cacheManager.getCache(CACHE_BESTILLING_MAL))) {
                         cacheManager.getCache(CACHE_BESTILLING_MAL).clear();
@@ -189,7 +188,7 @@ public class MalBestillingService {
                 .switchIfEmpty(Mono.error(new NotFoundException(bestillingId + " finnes ikke")))
                 .zipWith(getAuthenticatedUserId.call()
                         .flatMap(brukerService::fetchBruker))
-                .flatMap(tuple -> bestillingMalRepository.findByBrukerIdAndMalNavn(tuple.getT2().getBrukerId(), malNavn)
+                .flatMap(tuple -> bestillingMalRepository.findByBrukerIdAndMalNavn(tuple.getT2().getId(), malNavn)
                         .switchIfEmpty(Mono.just(BestillingMal.builder()
                                         .brukerId(tuple.getT2().getId())
                                         .malNavn(malNavn)
@@ -247,7 +246,7 @@ public class MalBestillingService {
                 .collectList()
                 .then(getAuthenticatedUserId.call()
                         .flatMap(brukerService::fetchBruker))
-                .flatMap(bruker -> bestillingMalRepository.findByBrukerIdAndMalNavn(bruker.getBrukerId(), name)
+                .flatMap(bruker -> bestillingMalRepository.findByBrukerIdAndMalNavn(bruker.getId(), name)
                         .switchIfEmpty(Mono.just(BestillingMal.builder()
                                         .brukerId(bruker.getId())
                                         .malNavn(name)

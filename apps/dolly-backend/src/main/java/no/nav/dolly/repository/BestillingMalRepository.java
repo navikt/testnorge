@@ -1,7 +1,6 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingMal;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bestilling.MalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.MalBestillingFragment;
 import org.springframework.data.r2dbc.repository.Modifying;
@@ -19,7 +18,7 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     @Query("update bestilling_mal b set mal_navn = :malNavn where b.id = :id")
     Mono<BestillingMal> updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
-    Flux<BestillingMal> findByBrukerIdAndMalNavn(String brukerId, String navn);
+    Flux<BestillingMal> findByBrukerIdAndMalNavn(Long brukerId, String navn);
 
     Flux<BestillingMal> findByBrukerId(Long brukerId);
 

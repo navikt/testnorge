@@ -15,6 +15,7 @@ import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
@@ -44,6 +45,7 @@ import reactor.core.publisher.Mono;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -188,28 +190,30 @@ public class BestillingService {
                 .map(BestillingKontroll::isStoppet);
     }
 
-    public Consumer<Bestilling> cleanBestilling() {
+    public Mono<Void> cleanBestilling(Bestilling bestilling) {
 
-        return bestilling ->
-                bestilling.getProgresser()
-                        .forEach(progress -> Arrays.stream(progress.getClass().getMethods())
-                                .filter(method -> method.getName().contains("get"))
-                                .forEach(metode -> {
-                                    try {
-                                        var verdi = metode.invoke(progress, (Object[]) null);
-                                        if (verdi instanceof String verdiString &&
-                                                isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
-                                            var oppdaterMetode = progress.getClass()
-                                                    .getMethod("set" + metode.getName().substring(3), String.class);
-                                            oppdaterMetode.invoke(progress, DEFAULT_VALUE);
-                                        }
-                                    } catch (NoSuchMethodException |
-                                             IllegalAccessException |
-                                             InvocationTargetException e) {
-                                        log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}",
-                                                bestilling.getId(), e.getMessage(), e);
-                                    }
-                                }));
+        return bestillingProgressRepository.findByBestillingId(bestilling.getId())
+                .doOnNext(progress -> Arrays.stream(progress.getClass().getMethods())
+                        .filter(method -> method.getName().contains("get"))
+                        .forEach(metode -> {
+                            try {
+                                var verdi = metode.invoke(progress, (Object[]) null);
+                                if (verdi instanceof String verdiString &&
+                                        isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
+                                    var oppdaterMetode = progress.getClass()
+                                            .getMethod("set" + metode.getName().substring(3), String.class);
+                                    oppdaterMetode.invoke(progress, DEFAULT_VALUE);
+                                }
+                            } catch (NoSuchMethodException |
+                                     IllegalAccessException |
+                                     InvocationTargetException e) {
+                                log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}",
+                                        bestilling.getId(), e.getMessage(), e);
+                            }
+                        }))
+                .flatMap(bestillingProgressRepository::save)
+                .collectList()
+                .then();
     }
 
     @Transactional
@@ -225,7 +229,6 @@ public class BestillingService {
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         fetchBruker(),
-                        getBestKriterier(request),
                         miljoerConsumer.getMiljoer()))
                 .flatMap(tuple ->
                         Mono.just(Bestilling.builder()
@@ -234,17 +237,22 @@ public class BestillingService {
                                         .antallIdenter(1)
                                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                                         .sistOppdatert(now())
-                                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT4()))
+                                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                                         .bruker(tuple.getT2())
                                         .brukerId(tuple.getT2().getId())
-                                        .bestKriterier(tuple.getT3())
                                         .build())
                                 .flatMap(bestillingRepository::save))
                 .doOnNext(bestilling -> request.setId(bestilling.getId()))
+                .flatMap(bestilling ->
+                        getBestKriterier(request)
+                                .flatMap(kriterier -> {
+                                    bestilling.setBestKriterier(kriterier);
+                                    return bestillingRepository.save(bestilling);
+                                }))
                 .flatMap(bestilling -> {
                     if (isNotBlank(request.getMalBestillingNavn())) {
                         return malBestillingService.saveBestillingMal(bestilling,
-                                        request.getMalBestillingNavn(), bestilling.getBruker().getBrukerId())
+                                        request.getMalBestillingNavn(), bestilling.getBruker().getId())
                                 .thenReturn(bestilling);
                     } else {
                         return Mono.just(bestilling);
@@ -267,7 +275,6 @@ public class BestillingService {
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         fetchBruker(),
-                        getBestKriterier(request),
                         miljoerConsumer.getMiljoer()))
                 .flatMap(tuple ->
                         Mono.just(Bestilling.builder()
@@ -275,19 +282,24 @@ public class BestillingService {
                                         .antallIdenter(antall)
                                         .navSyntetiskIdent(navSyntetiskIdent)
                                         .sistOppdatert(now())
-                                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT4()))
+                                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                                         .bruker(tuple.getT2())
                                         .brukerId(tuple.getT2().getId())
                                         .beskrivelse(beskrivelse)
-                                        .bestKriterier(tuple.getT3())
                                         .build())
                                 .flatMap(bestillingRepository::save))
                 .doOnNext(bestilling -> request.setId(bestilling.getId()))
+                .flatMap(bestilling ->
+                        getBestKriterier(request)
+                                .flatMap(kriterier -> {
+                                    bestilling.setBestKriterier(kriterier);
+                                    return bestillingRepository.save(bestilling);
+                                }))
                 .flatMap(bestilling -> {
                     if (isNotBlank(request.getMalBestillingNavn())) {
                         return malBestillingService.saveBestillingMal(bestilling,
-                                        request.getMalBestillingNavn(), bestilling.getBruker().getBrukerId())
+                                        request.getMalBestillingNavn(), bestilling.getBruker().getId())
                                 .thenReturn(bestilling);
                     } else {
                         return Mono.just(bestilling);
@@ -410,22 +422,26 @@ public class BestillingService {
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),
-                        getBestKriterier(request),
                         miljoerConsumer.getMiljoer()))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(gruppeId)
                         .kildeMiljoe("PDL")
-                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
+                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT2()))
                         .sistOppdatert(now())
                         .bruker(tuple.getT1())
                         .brukerId(tuple.getT1().getId())
                         .antallIdenter(request.getIdenter().size())
                         .pdlImport(join(",", request.getIdenter()))
                         .beskrivelse(request.getBeskrivelse())
-                        .bestKriterier(tuple.getT2())
                         .build())
                 .flatMap(bestillingRepository::save)
                 .doOnNext(bestilling -> request.setId(bestilling.getId()))
+                .flatMap(bestilling ->
+                        getBestKriterier(request)
+                                .flatMap(kriterier -> {
+                                    bestilling.setBestKriterier(kriterier);
+                                    return bestillingRepository.save(bestilling);
+                                }))
                 .flatMap(bestilling -> getBestillingProgresser(bestilling)
                         .map(progresser -> {
                             bestilling.setProgresser(progresser);
@@ -442,20 +458,24 @@ public class BestillingService {
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),
                         identRepository.countByGruppeId(gruppeId),
-                        getBestKriterier(request),
                         miljoerConsumer.getMiljoer()))
                 .doOnNext(tuple -> log.info("Antall testidenter {} i gruppe {} ", tuple.getT2(), gruppeId))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(gruppeId)
-                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT4()))
+                        .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                         .sistOppdatert(now())
                         .bruker(tuple.getT1())
                         .antallIdenter(tuple.getT2())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
-                        .bestKriterier(tuple.getT3())
                         .build())
                 .flatMap(bestillingRepository::save)
                 .doOnNext(bestilling -> request.setId(bestilling.getId()))
+                .flatMap(bestilling ->
+                        getBestKriterier(request)
+                                .flatMap(kriterier -> {
+                                    bestilling.setBestKriterier(kriterier);
+                                    return bestillingRepository.save(bestilling);
+                                }))
                 .flatMap(bestilling -> getBestillingProgresser(bestilling)
                         .map(progresser -> {
                             bestilling.setProgresser(progresser);
@@ -477,12 +497,10 @@ public class BestillingService {
 
     public Mono<Void> slettBestillingByBestillingId(Long bestillingId) {
 
-        return Mono.zip(bestillingProgressRepository.deleteByBestillingId(bestillingId),
-                        bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId))
-                .flatMap(tuple -> {
-                    elasticRepository.deleteById(bestillingId);
-                    return bestillingRepository.deleteById(bestillingId);
-                });
+        return bestillingProgressRepository.deleteByBestillingId(bestillingId)
+                .then(bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId))
+                .then(Mono.fromRunnable(() -> elasticRepository.deleteById(bestillingId)))
+                .then(bestillingRepository.deleteById(bestillingId));
     }
 
     public Mono<Void> slettBestillingByTestIdent(String ident) {
@@ -504,72 +522,75 @@ public class BestillingService {
 
     public Mono<String> getBestKriterier(RsDollyBestilling request) {
 
-        return oppdaterDokarkivDokumenter(request.getDokarkiv(), request.getId())
-                .then(oppdaterHistarkDokumenter(request.getHistark(), request.getId()))
-                .then(Mono.just(
-                        Objects.requireNonNull(toJson(BestilteKriterier.builder()
-                                .aareg(request.getAareg())
-                                .arbeidsplassenCV(request.getArbeidsplassenCV())
-                                .arbeidssoekerregisteret(request.getArbeidssoekerregisteret())
-                                .arenaforvalter(request.getArenaforvalter())
-                                .bankkonto(request.getBankkonto())
-                                .brregstub(request.getBrregstub())
-                                .dokarkiv(request.getDokarkiv())
-                                .etterlatteYtelser(request.getEtterlatteYtelser())
-                                .fullmakt(request.getFullmakt())
-                                .histark(request.getHistark())
-                                .inntektsmelding(request.getInntektsmelding())
-                                .inntektstub(request.getInntektstub())
-                                .instdata(request.getInstdata())
-                                .krrstub(request.getKrrstub())
-                                .medl(request.getMedl())
-                                .pdldata(request.getPdldata())
-                                .pensjonforvalter(request.getPensjonforvalter())
-                                .sigrunstub(request.getSigrunstub())
-                                .sigrunstubPensjonsgivende(request.getSigrunstubPensjonsgivende())
-                                .sigrunstubSummertSkattegrunnlag(request.getSigrunstubSummertSkattegrunnlag())
-                                .skattekort(request.getSkattekort())
-                                .skjerming(request.getSkjerming())
-                                .sykemelding(request.getSykemelding())
-                                .tpsMessaging(request.getTpsMessaging())
-                                .udistub(request.getUdistub())
-                                .yrkesskader(request.getYrkesskader())
-                                .build()))));
+        return oppdaterDokarkivDokumenter(request)
+                .flatMap(request1 -> oppdaterHistarkDokumenter(request1)
+                        .flatMap(request2 -> Mono.just(
+                                Objects.requireNonNull(toJson(BestilteKriterier.builder()
+                                        .aareg(request2.getAareg())
+                                        .arbeidsplassenCV(request2.getArbeidsplassenCV())
+                                        .arbeidssoekerregisteret(request2.getArbeidssoekerregisteret())
+                                        .arenaforvalter(request2.getArenaforvalter())
+                                        .bankkonto(request2.getBankkonto())
+                                        .brregstub(request2.getBrregstub())
+                                        .dokarkiv(request2.getDokarkiv())
+                                        .etterlatteYtelser(request2.getEtterlatteYtelser())
+                                        .fullmakt(request2.getFullmakt())
+                                        .histark(request2.getHistark())
+                                        .inntektsmelding(request2.getInntektsmelding())
+                                        .inntektstub(request2.getInntektstub())
+                                        .instdata(request2.getInstdata())
+                                        .krrstub(request2.getKrrstub())
+                                        .medl(request2.getMedl())
+                                        .pdldata(request2.getPdldata())
+                                        .pensjonforvalter(request2.getPensjonforvalter())
+                                        .sigrunstub(request2.getSigrunstub())
+                                        .sigrunstubPensjonsgivende(request2.getSigrunstubPensjonsgivende())
+                                        .sigrunstubSummertSkattegrunnlag(request2.getSigrunstubSummertSkattegrunnlag())
+                                        .skattekort(request2.getSkattekort())
+                                        .skjerming(request2.getSkjerming())
+                                        .sykemelding(request2.getSykemelding())
+                                        .tpsMessaging(request2.getTpsMessaging())
+                                        .udistub(request2.getUdistub())
+                                        .yrkesskader(request2.getYrkesskader())
+                                        .build())))));
     }
 
-    private Mono<Void> oppdaterDokarkivDokumenter(List<RsDokarkiv> dokarkiv, Long bestillingId) {
+    private Mono<RsDollyBestilling> oppdaterDokarkivDokumenter(RsDollyBestilling request) {
 
-        return Flux.fromIterable(dokarkiv)
+        return Flux.fromIterable(request.getDokarkiv())
                 .flatMap(tema -> Flux.fromIterable(tema.getDokumenter())
                         .flatMap(dokument -> Flux.fromIterable(dokument.getDokumentvarianter())
                                 .flatMap(dokumentVariant -> {
                                     if (isNotBlank(dokumentVariant.getFysiskDokument())) {
-                                        return lagreDokument(dokumentVariant.getFysiskDokument(), bestillingId, DokumentType.BESTILLING_DOKARKIV)
-                                                .doOnNext(dokumentVariant::setDokumentReferanse)
-                                                .doOnNext(id -> dokumentVariant.setFysiskDokument(null));
+                                        return lagreDokument(dokumentVariant.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_DOKARKIV)
+                                                .map(id -> {
+                                                    dokumentVariant.setDokumentReferanse(id);
+                                                    dokumentVariant.setFysiskDokument(null);
+                                                    return id;
+                                                });
                                     }
-                                    return Mono.empty();
+                                    return Mono.just(0L);
                                 })))
                 .collectList()
-                .then();
+                .thenReturn(request);
     }
 
-    private Mono<Void> oppdaterHistarkDokumenter(RsHistark histark, Long bestillingId) {
+    private Mono<RsDollyBestilling> oppdaterHistarkDokumenter(RsDollyBestilling request) {
 
-        if (nonNull(histark)) {
-            return Flux.fromIterable(histark.getDokumenter())
+        if (nonNull(request.getHistark())) {
+            return Flux.fromIterable(request.getHistark().getDokumenter())
                     .flatMap(dokument -> {
                         if (isNotBlank(dokument.getFysiskDokument())) {
-                            return lagreDokument(dokument.getFysiskDokument(), bestillingId, DokumentType.BESTILLING_HISTARK)
+                            return lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK)
                                     .doOnNext(dokument::setDokumentReferanse)
                                     .doOnNext(id -> dokument.setFysiskDokument(null));
                         }
                         return Mono.empty();
                     })
                     .collectList()
-                    .then();
+                    .thenReturn(request);
         }
-        return Mono.empty();
+        return Mono.just(request);
     }
 
     private Mono<Long> lagreDokument(String dokument, Long bestillingId, DokumentType dokumentType) {
@@ -578,6 +599,7 @@ public class BestillingService {
                         .contents(dokument)
                         .bestillingId(bestillingId)
                         .dokumentType(dokumentType)
+                        .sistOppdatert(now())
                         .build())
                 .flatMap(dokumentRepository::save)
                 .map(Dokument::getId);

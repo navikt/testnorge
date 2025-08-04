@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,29 +53,18 @@ public class TransactionHelperService {
     }
 
     @Retryable
-    public Mono<BestillingProgress> opprettProgress(BestillingProgress progress) {
-
-        return transactionalOperator.execute(status ->
-                bestillingRepository.findByIdAndLock(progress.getBestillingId())
-                        .doOnNext(bestilling -> bestilling.setSistOppdatert(now()))
-                        .flatMap(bestillingRepository::save)
-                        .flatMap(bestilling -> bestillingProgressRepository.save(progress))
-                        .doFinally(signal -> clearCache()))
-                .next();
-    }
-
-    @Retryable
     public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
 
         return transactionalOperator.execute(status1 ->
 
-                bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
-                        .flatMap(progress -> {
-                            setter.accept(progress, status);
-                            return bestillingProgressRepository.save(progress);
-                        })
-                        .doFinally(signal -> clearCache()))
-                .next();
+                        bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                                .flatMap(progress -> {
+                                    setter.accept(progress, status);
+                                    return bestillingProgressRepository.save(progress);
+                                })
+                                .doFinally(signal -> clearCache()))
+                .collectList()
+                .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
     public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress,
@@ -93,15 +81,17 @@ public class TransactionHelperService {
                                               String separator) {
 
         return transactionalOperator.execute(status1 ->
-                bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
-                        .doOnNext(progress -> {
-                            var value = getter.apply(progress);
-                            var result = applyChanges(value, status, separator);
-                            setter.accept(progress, result);
-                        })
-                        .flatMap(bestillingProgressRepository::save)
-                        .doFinally(signal -> clearCache()))
-                .next();
+
+                        bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                                .doOnNext(progress -> {
+                                    var value = getter.apply(progress);
+                                    var result = applyChanges(value, status, separator);
+                                    setter.accept(progress, result);
+                                })
+                                .flatMap(bestillingProgressRepository::save)
+                                .doFinally(signal -> clearCache()))
+                .collectList()
+                .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
     private String applyChanges(String value, String status, String separator) {
@@ -156,31 +146,32 @@ public class TransactionHelperService {
 
         return transactionalOperator.execute(status ->
 
-                bestillingService.getBestKriterier(bestilling)
-                        .flatMap(kriterier ->
-                                bestillingRepository.findByIdAndLock(bestillingId)
-                                        .doOnNext(best -> {
-                                            bestilling.setId(bestillingId);
-                                            best.setBestKriterier(kriterier);
-                                        })
-                                        .flatMap(bestillingRepository::save)))
-                .next();
+                        bestillingService.getBestKriterier(bestilling)
+                                .flatMap(kriterier ->
+                                        bestillingRepository.findByIdAndLock(bestillingId)
+                                                .doOnNext(best -> {
+                                                    bestilling.setId(bestillingId);
+                                                    best.setBestKriterier(kriterier);
+                                                })
+                                                .flatMap(bestillingRepository::save)))
+                .collectList()
+                .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
     @Retryable
-    public Mono<Bestilling> oppdaterBestillingFerdig(Long id, Consumer<Bestilling> bestillingFunksjon) {
+    public Mono<Bestilling> oppdaterBestillingFerdig(Bestilling bestilling) {
 
         return transactionalOperator.execute(status ->
 
-            bestillingRepository.findByIdAndLock(id)
-                    .doOnNext(bestilling -> {
-                                bestilling.setSistOppdatert(now());
-                                bestilling.setFerdig(true);
-                                bestillingFunksjon.accept(bestilling);
-                            })
-                    .flatMap(bestillingRepository::save)
-                    .doFinally(signal -> clearCache()))
-                .next();
+                        bestillingRepository.findByIdAndLock(bestilling.getId())
+                                .doOnNext(bestilling1 -> {
+                                    bestilling1.setSistOppdatert(now());
+                                    bestilling1.setFerdig(true);
+                                })
+                                .flatMap(bestillingRepository::save)
+                                .doFinally(signal -> clearCache()))
+                .collectList()
+                .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
     public void clearCache() {

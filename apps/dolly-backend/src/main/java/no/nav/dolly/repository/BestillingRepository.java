@@ -118,7 +118,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Bestilling> swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
 
     @Query("""
-            select b from bestilling b
+            select * from bestilling b
             where id = :id for update
             """)
     Mono<Bestilling> findByIdAndLock(@Param("id") Long id);

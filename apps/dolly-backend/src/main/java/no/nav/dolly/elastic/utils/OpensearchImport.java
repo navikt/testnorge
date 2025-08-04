@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.consumer.ElasticParamsConsumer;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
 
     private static final String INDEX_SETTING =
             "{\"settings\":{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}}}}";
+    private final BestillingProgressRepository bestillingProgressRepository;
 
     @Value("${open.search.total-fields}")
     private String totalFields;
@@ -84,7 +86,14 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .flatMap(bestilling -> hasBestilling(bestilling.getId())
                         .zipWith(Mono.just(bestilling)))
                 .takeWhile(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
-                .map(tuple -> mapperFacade.map(tuple.getT2(), ElasticBestilling.class))
+                .flatMap(tuple ->
+                        bestillingProgressRepository.findByBestillingId(tuple.getT2().getId())
+                                .collectList()
+                                .map(progress -> {
+                                    tuple.getT2().setProgresser(progress);
+                                    return tuple.getT2();
+                                }))
+                .map(bestilling -> mapperFacade.map(bestilling, ElasticBestilling.class))
                 .filter(bestilling -> !bestilling.isIgnore())
                 .flatMap(this::save)
                 .doOnNext(bestilling -> antallSkrevet.incrementAndGet())
