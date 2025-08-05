@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktGetResponse;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -75,7 +74,7 @@ public class FullmaktClient implements ClientRegister {
         Flux.fromIterable(identer)
                 .flatMap(ident -> fullmaktConsumer.getFullmaktData(List.of(ident))
                         .doOnNext(response -> log.info("Fullmakt response for {}: {}", ident, response))
-                        .map(FullmaktGetResponse::getFullmaktId)
+                        .map(FullmaktPostResponse.Fullmakt::getFullmaktId)
                         .flatMap(fullmaktsId -> fullmaktConsumer.deleteFullmaktData(ident, fullmaktsId)))
                 .collectList()
                 .subscribe(result -> log.info("Fullmakt, slettet {} identer", identer.size()));

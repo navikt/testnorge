@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.fullmakt.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktGetResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
@@ -19,7 +19,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class GetFullmaktDataCommand implements Callable<Flux<FullmaktGetResponse>> {
+public class GetFullmaktDataCommand implements Callable<Flux<FullmaktPostResponse.Fullmakt>> {
 
     private static final String HENT_FULLMAKT_URL = "/api/fullmaktsgiver";
 
@@ -27,7 +27,7 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktGetResponse
     private final String ident;
     private final String token;
 
-    public Flux<FullmaktGetResponse> call() {
+    public Flux<FullmaktPostResponse.Fullmakt> call() {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -39,7 +39,7 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktGetResponse
                 .headers(WebClientHeader.bearer(token))
                 .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
-                .bodyToFlux(FullmaktGetResponse.class)
+                .bodyToFlux(FullmaktPostResponse.Fullmakt.class)
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))

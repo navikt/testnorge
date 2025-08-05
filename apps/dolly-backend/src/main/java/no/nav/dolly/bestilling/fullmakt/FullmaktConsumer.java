@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.fullmakt.command.DeleteFullmaktDataCommand;
 import no.nav.dolly.bestilling.fullmakt.command.GetFullmaktDataCommand;
 import no.nav.dolly.bestilling.fullmakt.command.PostFullmaktDataCommand;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktGetResponse;
 import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
@@ -59,7 +58,7 @@ public class FullmaktConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
-    public Flux<FullmaktGetResponse> getFullmaktData(List<String> identer) {
+    public Flux<FullmaktPostResponse.Fullmakt> getFullmaktData(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())

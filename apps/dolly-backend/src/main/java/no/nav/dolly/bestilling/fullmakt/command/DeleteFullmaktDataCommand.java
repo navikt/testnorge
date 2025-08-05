@@ -29,7 +29,6 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<HttpStatusCode>>
     private final String token;
 
     public Mono<HttpStatusCode> call() {
-        log.info("Deleting fullmakt with id {} for person with ident {}", fullmaktId, ident);
         return webClient
                 .delete()
                 .uri(uriBuilder -> uriBuilder
