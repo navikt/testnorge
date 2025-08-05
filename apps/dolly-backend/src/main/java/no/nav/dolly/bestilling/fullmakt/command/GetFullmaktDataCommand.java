@@ -12,14 +12,16 @@ import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
 public class GetFullmaktDataCommand implements Callable<Flux<FullmaktResponse>> {
 
-    private static final String HENT_FULLMAKT_URL = "/api/fullmektig";
+    private static final String HENT_FULLMAKT_URL = "/api/fullmaktsgiver";
 
     private final WebClient webClient;
     private final String ident;
