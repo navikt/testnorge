@@ -8,11 +8,11 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
+import no.nav.dolly.domain.resultset.entity.bestilling.GruppeBestillingIdent;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -124,20 +124,7 @@ public class IdentService {
 
         return identRepository.getBestillingerFromGruppe(gruppeId)
                 .filter(bestilling -> !"{}".equals(bestilling.getBestkriterier()))
-                .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
-                .switchIfEmpty(identRepository.getBestillingerFromGruppe(gruppeId)
-                        .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
-                        .next());
-    }
-
-    public Flux<GruppeBestillingIdent> getBestillingerFromIdent(String ident) {
-
-        return identRepository.getBestillingerByIdent(ident)
-                .filter(bestilling -> !"{}".equals(bestilling.getBestkriterier()))
-                .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
-                .switchIfEmpty(identRepository.getBestillingerByIdent(ident)
-                        .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
-                        .next());
+                .sort(Comparator.comparing(GruppeBestillingIdent::getId));
     }
 
     public Flux<Testident> getTestidenterByGruppeId(Long gruppeId) {

@@ -15,16 +15,17 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 
@@ -33,6 +34,7 @@ import static java.util.Objects.nonNull;
 public class GjenopprettIdentService extends DollyBestillingService {
 
     private final PersonServiceClient personServiceClient;
+    private final IdentRepository identRepository;
 
     public GjenopprettIdentService(
             BestillingElasticRepository bestillingElasticRepository,
@@ -48,8 +50,8 @@ public class GjenopprettIdentService extends DollyBestillingService {
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
             TestgruppeRepository testgruppeRepository,
-            TransactionHelperService transactionHelperService
-    ) {
+            TransactionHelperService transactionHelperService,
+            IdentRepository identRepository) {
         super(
                 bestillingElasticRepository,
                 bestillingProgressRepository,
@@ -66,6 +68,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                 transactionHelperService
         );
         this.personServiceClient = personServiceClient;
+        this.identRepository = identRepository;
     }
 
     @Async
@@ -77,6 +80,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
+            var countBestillinger = new AtomicInteger(0);
             identService.getTestIdent(bestilling.getIdent())
                     .flatMapMany(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
@@ -91,20 +95,22 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                             progress, true)
                                                             .then(personServiceClient.syncPerson(dollyPerson, progress)
                                                                     .filter(BestillingProgress::isPdlSync)
-                                                                    .map(pdlSync ->
-                                                                            identService.getBestillingerFromIdent(bestilling.getIdent())
-                                                                                    .map(cobestilling -> createBestilling(bestilling, cobestilling))
-                                                                                    .doOnNext(request ->
-                                                                                            log.info("Startet gjenopprett bestilling {} for ident: {}",
-                                                                                                    request.getId(), testident.getIdent()))
-                                                                                    .flatMap(bestillingRequest ->
-                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                    fase2Klienter(),
-                                                                                                    progress, false)
-                                                                                                    .then(gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                            fase3Klienter(),
-                                                                                                            progress, false)))))
-                                                            .flatMap(Mono::from)))))
+                                                                    .flatMapMany(pdlSync ->
+                                                                            identRepository.getBestillingerByIdent(bestilling.getIdent())
+                                                                                    .filter(coBestilling -> !"{}".equals(coBestilling.getBestkriterier()) ||
+                                                                                            countBestillinger.getAndIncrement() == 0))
+                                                                    .map(coBestilling -> createBestilling(bestilling, coBestilling))
+                                                                    .doOnNext(request ->
+                                                                            log.info("Startet gjenopprett bestilling {} for ident: {}",
+                                                                                    request.getId(), testident.getIdent()))
+                                                                    .flatMap(bestillingRequest ->
+                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                    fase2Klienter(),
+                                                                                    progress, false)
+                                                                                    .then(gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                            fase3Klienter(),
+                                                                                            progress, false)))
+                                                                    .collectList())))))
                     .then(doFerdig(bestilling))
                     .doFinally(done -> clearCache())
                     .subscribe();

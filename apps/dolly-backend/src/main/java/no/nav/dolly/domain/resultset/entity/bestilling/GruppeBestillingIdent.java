@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsBestillingFragment {
+public class GruppeBestillingIdent {
 
+    private String ident;
     private Long id;
-    private String navn;
+    private String bestkriterier;
+    private String miljoer;
 }

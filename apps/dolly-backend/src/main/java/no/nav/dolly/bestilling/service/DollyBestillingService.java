@@ -23,13 +23,13 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.domain.resultset.entity.bestilling.GruppeBestillingIdent;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -306,11 +306,11 @@ public class DollyBestillingService {
                 });
     }
 
-    protected RsDollyBestillingRequest createBestilling(Bestilling bestilling, IdentRepository.GruppeBestillingIdent coBestilling) {
+    protected RsDollyBestillingRequest createBestilling(Bestilling bestilling, GruppeBestillingIdent coBestilling) {
 
         return getDollyBestillingRequest(
                 Bestilling.builder()
-                        .id(coBestilling.getBestillingId())
+                        .id(coBestilling.getId())
                         .bestKriterier(coBestilling.getBestkriterier())
                         .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
                                 bestilling.getMiljoer() :

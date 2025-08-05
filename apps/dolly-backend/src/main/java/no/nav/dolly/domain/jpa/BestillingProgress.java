@@ -133,7 +133,7 @@ public class BestillingProgress implements Serializable {
     private Master master;
 
     @Transient
-    private boolean isPdlSync;
+    private boolean pdlSync;
 
     private String feil;
 
@@ -282,7 +282,7 @@ public class BestillingProgress implements Serializable {
                 ", arbeidssoekerregisteretStatus=" + arbeidssoekerregisteretStatus + '\'' +
                 ", etterlatteStatus='" + etterlatteStatus + '\'' +
                 ", master=" + master +
-                ", isPdlSync=" + isPdlSync +
+                ", pdlSync=" + pdlSync +
                 ", feil='" + feil + '\'' +
                 '}';
     }

@@ -1,6 +1,7 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.entity.bestilling.GruppeBestillingIdent;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -40,19 +41,21 @@ public interface IdentRepository extends ReactiveSortingRepository<Testident, Lo
     Mono<Testident> swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
 
     @Query("""
-            select bp.ident as ident, b.id as bestillingId,
+            select bp.ident as ident, b.id as id,
             b.best_kriterier as bestkriterier, b.miljoer as miljoer
             from bestilling b
             join bestilling_progress bp on bp.bestilling_id = b.id
             and b.gruppe_id = :gruppeId
+            order by b.id
             """)
     Flux<GruppeBestillingIdent> getBestillingerFromGruppe(@Param(value = "gruppeId") Long gruppeId);
 
     @Query("""
-            select bp.ident as ident, b.id as bestillingId,
+            select bp.ident as ident, b.id as id,
             b.best_kriterier as bestkriterier, b.miljoer as miljoer from bestilling b
             join bestilling_progress bp on bp.bestilling_id = b.id
             and bp.ident = :ident
+            order by b.id
             """)
     Flux<GruppeBestillingIdent> getBestillingerByIdent(@Param(value = "ident") String ident);
 
@@ -72,17 +75,6 @@ public interface IdentRepository extends ReactiveSortingRepository<Testident, Lo
 
 
     Mono<Integer> countByGruppeIdAndIBruk(Long id, Boolean iBruk);
-
-    interface GruppeBestillingIdent {
-
-        String getIdent();
-
-        Long getBestillingId();
-
-        String getBestkriterier();
-
-        String getMiljoer();
-    }
 
     @Query("""
             select ti from test_ident ti where ti.tilhoerer_gruppe = :gruppeId

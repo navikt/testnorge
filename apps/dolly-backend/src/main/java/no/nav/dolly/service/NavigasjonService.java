@@ -64,7 +64,7 @@ public class NavigasjonService {
                                 .flatMap(testident -> Mono.zip(testgruppeRepository.findById(testident.getGruppeId()),
                                                 identService.getPaginertIdentIndex(testident.getIdent(), testident.getGruppeId()),
                                                 identRepository.countByGruppeId(testident.getGruppeId()),
-                                                bestillingRepository.countAllByGruppeId(testident.getGruppeId()),
+                                                bestillingRepository.countByGruppeId(testident.getGruppeId()),
                                                 identRepository.countByGruppeIdAndIBruk(testident.getGruppeId(), true))
                                         .map(tuple -> {
                                             var context = MappingContextUtils.getMappingContext();
@@ -92,7 +92,7 @@ public class NavigasjonService {
                         bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppeId()),
                         brukerService.fetchOrCreateBruker(),
                         identRepository.countByGruppeId(bestilling.getGruppeId()),
-                        bestillingRepository.countAllByGruppeId(bestilling.getGruppeId()),
+                        bestillingRepository.countByGruppeId(bestilling.getGruppeId()),
                         identRepository.countByGruppeIdAndIBruk(bestilling.getGruppeId(), true)))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();

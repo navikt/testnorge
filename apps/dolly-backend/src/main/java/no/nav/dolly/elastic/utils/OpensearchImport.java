@@ -80,7 +80,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
 
     private Flux<ElasticBestilling> importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
 
-        return bestillingRepository.findAllBy()
+        return bestillingRepository.findBy()
                 .sort(Comparator.comparing(Bestilling::getId).reversed())
                 .doOnNext(bestilling -> antallLest.incrementAndGet())
                 .flatMap(bestilling -> hasBestilling(bestilling.getId())

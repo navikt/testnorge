@@ -39,7 +39,8 @@ public class InstdataClient implements ClientRegister {
         context.setProperty("ident", dollyPerson.getIdent());
 
         return Mono.just(bestilling.getInstdata())
-                .map(rsInstdata -> mapperFacade.mapAsList(rsInstdata, Instdata.class, context))
+                .filter(rsInstdata -> !rsInstdata.isEmpty())
+                .flatMap(rsInstdata -> Mono.just(mapperFacade.mapAsList(rsInstdata, Instdata.class, context)))
                 .flatMap(instdata -> instdataConsumer.getMiljoer()
                         .flatMap(miljoer -> Flux.fromIterable(miljoer)
                                 .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))

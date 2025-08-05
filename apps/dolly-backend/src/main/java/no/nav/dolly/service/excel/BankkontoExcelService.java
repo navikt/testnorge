@@ -124,7 +124,7 @@ public class BankkontoExcelService {
     private Mono<List<Object[]>> getBankkontoDetaljer(Testgruppe testgruppe) {
 
         var start = System.currentTimeMillis();
-        return bestillingRepository.findBestillingByGruppeId(testgruppe.getId())
+        return bestillingRepository.findByGruppeId(testgruppe.getId())
                 .flatMap(bestilling -> bestillingProgressRepository.findByBestillingId(bestilling.getId()))
                 .filter(progress -> isNotBlank(progress.getKontoregisterStatus()))
                 .map(BestillingProgress::getIdent)

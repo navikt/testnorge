@@ -1,6 +1,7 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -16,39 +17,39 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
 
     Mono<Bestilling> findById(Long id);
 
-    Flux<Bestilling> findAllBy();
+    Flux<Bestilling> findBy();
 
     Mono<Void> deleteById(Long id);
 
-    Flux<Bestilling> findBestillingByGruppeId(Long gruppeId);
-    Mono<Integer> countAllByGruppeId(Long gruppeId);
+    Flux<Bestilling> findByGruppeId(Long gruppeId);
+    Mono<Integer> countByGruppeId(Long gruppeId);
 
     @Query("""
-            select *
+            select b.id as id, g.navn as navn
             from Bestilling b
             join Gruppe g on b.gruppe_id = g.id
             where length(:id) > 0
             and cast(b.id as VARCHAR) ilike :id
             fetch first 10 rows only
             """)
-    Flux<RsBestillingFragment> findByIdContaining(String id);
+    Flux<RsBestillingFragment> findByIdContaining(@Param("id") String id);
 
     @Query("""
-            select *
+            select b.id as id, g.navn as navn
             from Bestilling b
             join Gruppe g on b.gruppe_id = g.id
             where length(:gruppenavn) > 0
             and g.navn ilike :gruppenavn
             fetch first 10 rows only
             """)
-    Flux<RsBestillingFragment> findByGruppenavnContaining(String gruppenavn);
+    Flux<RsBestillingFragment> findByGruppenavnContaining(@Param ("gruppenavn") String gruppenavn);
 
     @Query("""
-            select *
+            select b.id as id, g.navn as navn
             from Bestilling b
             join gruppe g on b.gruppe_id = g.id
-            where cast(b.id as varchar) like '%:id%'
-            and g.navn ilike '%:gruppenavn%'
+            where cast(b.id as varchar) like :id
+            and g.navn like :gruppenavn
             fetch first 10 rows only
             """)
     Flux<RsBestillingFragment> findByIdContainingAndGruppeNavnContaining(
@@ -70,22 +71,22 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Integer> getPaginertBestillingIndex(@Param("bestillingId") Long bestillingId, @Param("gruppeId") Long gruppe);
 
     @Query("""
-            select b from Bestilling b
+            select * from Bestilling b
             join Bestilling_Progress bp on b.id = bp.bestilling_id
             where bp.ident = :ident
-            order by b.id asc
+            order by b.id
             """)
     Flux<Bestilling> findBestillingerByIdent(@Param("ident") String ident);
 
     @Query("""
-            select b from Bestilling b
+            select * from Bestilling b
             join Bestilling_Progress bp on b.id = bp.bestilling_id
-            and bp.ident in (:identer) order by b.id asc
+            and bp.ident in (:identer) order by b.id
             """)
     Flux<Bestilling> findBestillingerByIdentIn(@Param("identer") Collection<String> identer);
 
     @Query("""
-            select distinct(b) from Bestilling b
+            select distinct(*) from Bestilling b
             where b.gruppe_id = :gruppeId
             order by b.id desc
             """)
@@ -135,10 +136,4 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Integer> stopAllUnfinished();
 
     Flux<Bestilling> findByIdIn(List<Long> id);
-
-    interface RsBestillingFragment {
-
-        String getId();
-        String getNavn();
-    }
 }

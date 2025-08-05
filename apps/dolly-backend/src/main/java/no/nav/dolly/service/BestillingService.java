@@ -19,13 +19,13 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BestillingRepository.RsBestillingFragment;
 import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -54,7 +54,6 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -96,24 +95,27 @@ public class BestillingService {
         var searchQueries = bestillingFragment.split(" ");
         var bestillingID = Arrays.stream(searchQueries)
                 .filter(word -> word.matches("\\d+"))
+                .map(id -> "%" + id + "%")
                 .findFirst()
                 .orElse("");
         var gruppeNavn = Arrays.stream(searchQueries)
-                .filter(word -> !word.equals(bestillingID))
+                .filter(word -> !word.matches("\\d+"))
+                .filter(StringUtils::isNotBlank)
+                .map(word -> "%" + word + "%")
                 .collect(Collectors.joining(" "));
 
         return Mono.just(bestillingFragment)
-                .flatMapMany(fragment -> isNoneBlank(gruppeNavn) && isNoneBlank(bestillingID) ?
+                .flatMapMany(fragment -> isNotBlank(gruppeNavn) && isNotBlank(bestillingID) ?
                         bestillingRepository.findByIdContainingAndGruppeNavnContaining(bestillingID, gruppeNavn) :
                         Flux.merge(
                                 bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
-                                bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn))));
-//                .sort(Comparator.comparing(RsBestillingFragment::getFragment));
+                                bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn))))
+                .sort(Comparator.comparing(RsBestillingFragment::getId));
     }
 
     public Flux<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
 
-        return bestillingRepository.findBestillingByGruppeId(gruppeId)
+        return bestillingRepository.findByGruppeId(gruppeId)
                 .filter(bestilling -> !bestilling.isFerdig())
                 .flatMap(bestilling -> getBestillingProgresser(bestilling)
                         .map(progresser -> {
@@ -124,9 +126,10 @@ public class BestillingService {
 
     public Mono<Set<String>> fetchBestilteMiljoerByGruppeId(Long gruppeId) {
 
-        return bestillingRepository.findBestillingByGruppeId(gruppeId)
+        return bestillingRepository.findByGruppeId(gruppeId)
+                .doOnNext(bestilling -> log.info("Bestilling {}", bestilling))
+                .filter(bestilling -> isNotBlank(bestilling.getMiljoer()))
                 .map(Bestilling::getMiljoer)
-                .filter(StringUtils::isNotBlank)
                 .flatMap(miljoer -> Flux.just(miljoer.split(",")))
                 .collect(toSet());
     }
@@ -478,7 +481,7 @@ public class BestillingService {
 
     public Mono<Void> slettBestillingerByGruppeId(Long gruppeId) {
 
-        return bestillingRepository.findBestillingByGruppeId(gruppeId)
+        return bestillingRepository.findByGruppeId(gruppeId)
                 .map(Bestilling::getId)
                 .doOnNext(elasticRepository::deleteById)
                 .collectList()

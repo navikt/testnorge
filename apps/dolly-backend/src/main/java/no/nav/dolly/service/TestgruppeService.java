@@ -7,10 +7,8 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
-import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
@@ -59,7 +57,6 @@ public class TestgruppeService {
     private final BrukerServiceConsumer brukerServiceConsumer;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final BestillingRepository bestillingRepository;
-    private final BrukerFavoritterRepository brukerFavoritterRepository;
     private final IdentRepository identRepository;
 
     public Mono<Testgruppe> opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
@@ -90,7 +87,7 @@ public class TestgruppeService {
                                                 Mono.just(testgruppe),
                                                 Mono.just(bruker),
                                                 identRepository.countByGruppeId(testgruppe.getId()),
-                                                bestillingRepository.countAllByGruppeId(testgruppe.getId()),
+                                                bestillingRepository.countByGruppeId(testgruppe.getId()),
                                                 identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
                                                 identService.getTestidenterFromGruppePaginert(gruppeId, pageNo,
                                                         pageSize, sortColumn, sortRetning)))
@@ -222,7 +219,7 @@ public class TestgruppeService {
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         identRepository.countByGruppeId(testgruppe.getId()),
-                        bestillingRepository.countAllByGruppeId(testgruppe.getId()),
+                        bestillingRepository.countByGruppeId(testgruppe.getId()),
                         identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)))
                 .map(tuple2 -> {
                     var context = MappingContextUtils.getMappingContext();
