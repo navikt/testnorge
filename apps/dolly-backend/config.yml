@@ -90,6 +90,7 @@ spec:
   port: 8080
   ingresses:
     - "https://dolly-backend.intern.dev.nav.no"
+    - "https://dolly-backend.ekstern.dev.nav.no"
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
