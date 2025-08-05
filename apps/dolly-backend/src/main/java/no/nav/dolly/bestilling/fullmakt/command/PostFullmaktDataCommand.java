@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.fullmakt.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -15,13 +15,15 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> {
+public class PostFullmaktDataCommand implements Callable<Mono<FullmaktPostResponse>> {
 
     private static final String POST_FULLMAKT_URL = "/api/fullmakt";
 
@@ -30,11 +32,11 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
     private final String ident;
     private final RsFullmakt request;
 
-    public Mono<FullmaktResponse> call() {
+    public Mono<FullmaktPostResponse> call() {
 
         if (isBlank(request.getFullmektig())) {
             log.error("Klarte ikke å hente fullmektig relasjon for ident: {} fra PDL forvalter ", ident);
-            return Mono.just(FullmaktResponse.builder()
+            return Mono.just(FullmaktPostResponse.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .melding("Fullmakt mangler fullmektig for ident: " + ident)
                     .build());
@@ -52,7 +54,7 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                 .headers(WebClientHeader.bearer(token))
                 .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
-                .bodyToMono(FullmaktResponse.class)
+                .bodyToMono(FullmaktPostResponse.class)
                 .doOnError(WebClientError.logTo(log))
                 .doOnError(throwable -> {
                     if (throwable instanceof WebClientResponseException ex && ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
