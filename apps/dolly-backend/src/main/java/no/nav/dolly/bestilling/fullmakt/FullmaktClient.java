@@ -73,6 +73,7 @@ public class FullmaktClient implements ClientRegister {
 
         Flux.fromIterable(identer)
                 .flatMap(ident -> fullmaktConsumer.getFullmaktData(List.of(ident))
+                        .doOnNext(response -> log.info("Fullmakt response for {}: {}", ident, response))
                         .map(FullmaktResponse::getFullmakt)
                         .flatMap(Flux::fromIterable)
                         .map(FullmaktResponse.Fullmakt::getFullmaktId)
