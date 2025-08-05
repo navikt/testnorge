@@ -46,5 +46,4 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktPostRespons
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Flux.empty());
     }
-
 }
