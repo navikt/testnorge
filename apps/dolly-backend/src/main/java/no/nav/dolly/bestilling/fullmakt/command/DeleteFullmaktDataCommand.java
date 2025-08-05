@@ -12,7 +12,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
@@ -28,7 +30,7 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<HttpStatusCode>>
 
     public Mono<HttpStatusCode> call() {
         return webClient
-                .get()
+                .delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(DELETE_FULLMAKT_URL)
                         .build(fullmaktId))
