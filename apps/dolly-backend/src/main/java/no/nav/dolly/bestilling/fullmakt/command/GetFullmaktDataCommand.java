@@ -8,12 +8,13 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
@@ -39,9 +40,14 @@ public class GetFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> 
                 .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(FullmaktResponse.class)
-                .doOnError(
-                        throwable -> !(throwable instanceof WebClientResponseException.NotFound),
-                        WebClientError.logTo(log))
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(FullmaktResponse.builder()
+                            .status(description.getStatus())
+                            .melding(description.getMessage())
+                            .build());
+                })
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Mono.empty());
     }

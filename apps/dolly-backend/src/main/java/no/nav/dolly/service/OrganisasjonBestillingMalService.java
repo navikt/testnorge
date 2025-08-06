@@ -14,11 +14,11 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -26,12 +26,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.service.MalBestillingService.getBruker;
 
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonBestillingMalService {
 
+    private static final String FINNES_IKKE = "Mal med id %d finnes ikke";
     private static final String ANONYM = "FELLES";
     private static final String ALLE = "ALLE";
 
@@ -56,7 +56,7 @@ public class OrganisasjonBestillingMalService {
     public Mono<OrganisasjonBestillingMal> saveOrganisasjonBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
         return organisasjonBestillingRepository.findById(bestillingId)
-                .switchIfEmpty(Mono.error(new NotFoundException(bestillingId + " finnes ikke")))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
                 .flatMap(bestilling -> getAuthenticatedUserId.call()
                         .flatMap(brukerService::fetchBruker)
                         .flatMap(bruker -> slettMalbestillingerMedMatchendeNavn(malNavn, bruker.getId())
@@ -65,6 +65,7 @@ public class OrganisasjonBestillingMalService {
                                         .bruker(bruker)
                                         .malNavn(malNavn)
                                         .miljoer(bestilling.getMiljoer())
+                                        .sistOppdatert(LocalDateTime.now())
                                         .build()))
                                 .flatMap(organisasjonBestillingMalRepository::save)));
     }
@@ -120,13 +121,13 @@ public class OrganisasjonBestillingMalService {
     public Mono<OrganisasjonBestillingMal> updateOrganisasjonMalNavnById(Long id, String nyttMalNavn) {
 
         return organisasjonBestillingMalRepository.updateMalNavnById(id, nyttMalNavn)
-                .switchIfEmpty(Mono.error(new NotFoundException("Mal med id " + id + " finnes ikke")));
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(id))));
     }
 
     public Mono<Void> deleteOrganisasjonMalbestillingById(Long id) {
 
         return organisasjonBestillingMalRepository.findById(id)
-                .switchIfEmpty(Mono.error(new NotFoundException("Mal med id " + id + " finnes ikke")))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(id))))
                 .then(organisasjonBestillingMalRepository.deleteById(id));
     }
 

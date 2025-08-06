@@ -9,38 +9,29 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus.OrgStatus;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
-import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
-import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
@@ -60,6 +51,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @RequiredArgsConstructor
 public class OrganisasjonBestillingService {
 
+    private static final String FINNES_IKKE = "Fant ikke bestilling med id %d";
     private static final int BLOCK_SIZE = 50;
 
     private static final List<Status> DEPLOY_ENDED_STATUS_LIST = List.of(COMPLETED, ERROR, FAILED);
@@ -79,7 +71,7 @@ public class OrganisasjonBestillingService {
     public Mono<RsOrganisasjonBestillingStatus> fetchBestillingStatusById(Long bestillingId) {
 
         return organisasjonBestillingRepository.findById(bestillingId)
-                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke bestilling med id " + bestillingId)))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
                 .flatMap(bestilling -> organisasjonProgressRepository.findByBestillingId(bestillingId)
                         .next()
                         .switchIfEmpty(Mono.just(OrganisasjonBestillingProgress.builder().build()))
@@ -126,7 +118,7 @@ public class OrganisasjonBestillingService {
     public Mono<OrganisasjonBestilling> cancelBestilling(Long bestillingId) {
 
         return organisasjonBestillingRepository.findById(bestillingId)
-                .switchIfEmpty(Mono.error(new NotFoundException(format("Fant ikke bestilling med id %d", bestillingId))))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
                 .map(orgBestilling -> {
 
                     orgBestilling.setFeil("Bestilling stoppet");
@@ -288,6 +280,14 @@ public class OrganisasjonBestillingService {
                 });
     }
 
+    public Mono<Void> slettBestillingById(Long bestillingId) {
+
+        return organisasjonBestillingRepository.findById(bestillingId)
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
+                .flatMap(ignore -> organisasjonProgressRepository.deleteByBestillingId(bestillingId))
+                .then(organisasjonBestillingRepository.deleteBestillingWithNoChildren(bestillingId));
+    }
+
     private String toJson(Object object) {
 
         try {
@@ -299,5 +299,4 @@ public class OrganisasjonBestillingService {
         }
         return null;
     }
-
 }

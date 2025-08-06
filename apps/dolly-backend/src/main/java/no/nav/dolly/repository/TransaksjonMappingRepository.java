@@ -13,7 +13,7 @@ public interface TransaksjonMappingRepository extends ReactiveCrudRepository<Tra
     Flux<TransaksjonMapping> findAllBySystemAndIdent(String system, String ident);
 
     @Query("""
-            select t from transaksjon_mapping t
+            select * from transaksjon_mapping t
             where t.ident=:ident
             and (:bestillingId is null
             or (t.bestilling_id is not null and t.bestilling_id=:bestillingId))
@@ -24,8 +24,6 @@ public interface TransaksjonMappingRepository extends ReactiveCrudRepository<Tra
 
     @Modifying
     Mono<Void> deleteAllByIdent(String ident);
-
-    Mono<Void> deleteByBestillingId(Long bestillingId);
 
     @Modifying
     Mono<Void> deleteByIdentAndMiljoeAndSystem(String ident, String miljoe, String system);
@@ -39,20 +37,4 @@ public interface TransaksjonMappingRepository extends ReactiveCrudRepository<Tra
             (select b.id from Bestilling b where b.gruppe_id = :gruppeId)
             """)
     Mono<Void> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
-
-    @Query(value = """
-            select tm from transaksjon_mapping tm
-            where tm.system = 'DOKARKIV'
-            AND tm.transaksjon_Id like '{%'
-            order by tm.id
-            """)
-    Flux<TransaksjonMapping> findAllByDokarkiv();
-
-    @Query(value = """
-            select tm from transaksjon_mapping tm
-            where tm.system = 'HISTARK'
-            AND tm.transaksjon_id like '{%'
-            order by tm.id
-            """)
-    Flux<TransaksjonMapping> findAllByHistark();
 }

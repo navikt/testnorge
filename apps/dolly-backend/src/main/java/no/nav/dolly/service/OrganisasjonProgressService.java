@@ -39,6 +39,6 @@ public class OrganisasjonProgressService {
     public Flux<OrganisasjonBestillingProgress> findByOrganisasjonnummer(String orgnr) {
 
         return organisasjonProgressRepository.findByOrganisasjonsnummer(orgnr)
-                .switchIfEmpty(Mono.error(new NotFoundException("Fant ingen status for Organisajonnummer " + orgnr)));
+                .switchIfEmpty(Mono.error(new NotFoundException("Fant ingen status for organisajonnummer " + orgnr)));
     }
 }

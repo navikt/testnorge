@@ -13,8 +13,8 @@ public interface OrganisasjonBestillingRepository extends ReactiveCrudRepository
     @Modifying
     @Query("""
             delete from organisasjon_bestilling b
-            where b = :bestilling and not exists
-            (select bp from organisasjon_bestilling_progress bp where bp.bestilling_id = :bestillingId)
+            where b.id = :bestillingId and not exists
+            (select * from organisasjon_bestilling_progress bp where bp.bestilling_id = :bestillingId)
             """)
     Mono<Void> deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 

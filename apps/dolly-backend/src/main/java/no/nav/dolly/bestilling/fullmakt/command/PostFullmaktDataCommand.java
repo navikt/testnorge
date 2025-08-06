@@ -53,16 +53,19 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                 .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(FullmaktResponse.class)
-                .doOnError(WebClientError.logTo(log))
                 .doOnError(throwable -> {
-                    if (throwable instanceof WebClientResponseException ex && ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                        log.error("Bad request mot repr-fullmakt, response: {}", ex.getResponseBodyAsString());
+                    if (throwable instanceof WebClientResponseException webClienResponseException
+                            && !webClienResponseException.getStatusCode().is4xxClientError()) {
+                       WebClientError.logTo(log).accept(throwable);
                     }
                 })
-                .doOnSuccess(response -> log.info("Fullmakt opprettet for person {}, response: {}", ident, response))
-                .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientError.logTo(log));
-
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(FullmaktResponse.builder()
+                                .melding(description.getMessage())
+                                .status(description.getStatus())
+                        .build());
+                })
+                .retryWhen(WebClientError.is5xxException());
     }
-
 }

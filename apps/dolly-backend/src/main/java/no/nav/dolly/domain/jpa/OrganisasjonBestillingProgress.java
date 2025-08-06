@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -29,13 +28,8 @@ public class OrganisasjonBestillingProgress {
     @Column("org_forvalter_status")
     private String organisasjonsforvalterStatus;
 
-//    @ManyToOne
-//    @JoinColumn("bestilling_id", nullable = false)
     @Column("bestilling_id")
     private Long bestillingId;
-
-//    @Transient
-//    private OrganisasjonBestilling bestilling;
 
     @Override
     public boolean equals(Object o) {

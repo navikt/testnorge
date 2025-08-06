@@ -14,6 +14,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +36,7 @@ import static org.apache.commons.lang3.BooleanUtils.isFalse;
 public class GjenopprettGruppeService extends DollyBestillingService {
 
     private final PersonServiceClient personServiceClient;
+    private final IdentRepository identRepository;
 
     public GjenopprettGruppeService(
             BestillingElasticRepository bestillingElasticRepository,
@@ -49,7 +52,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
             TestgruppeRepository testgruppeRepository,
-            TransactionHelperService transactionHelperService) {
+            TransactionHelperService transactionHelperService,
+            IdentRepository identRepository) {
         super(
                 bestillingElasticRepository,
                 bestillingProgressRepository,
@@ -66,6 +70,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 transactionHelperService
         );
         this.personServiceClient = personServiceClient;
+        this.identRepository = identRepository;
     }
 
     @Async
@@ -77,11 +82,13 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
+            var counterIdentBestilling = new HashMap<String, Boolean>();
             identService.getTestidenterByGruppeId(bestilling.getGruppeId())
                     .flatMap(testident -> bestillingService.isStoppet(bestilling.getId())
                             .zipWith(Mono.just(testident)))
                     .takeWhile(tuple -> isFalse(tuple.getT1()))
                     .map(Tuple2::getT2)
+                    .doOnNext(testident -> counterIdentBestilling.put(testident.getIdent(), false))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
                                     .ident(testident.getIdent())
@@ -95,8 +102,10 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                             progress, true)
                                                             .then(personServiceClient.syncPerson(dollyPerson, progress)
                                                                     .filter(BestillingProgress::isPdlSync))
-                                                            .map(sync -> identService.getBestillingerFromGruppe(bestilling.getGruppeId())
-                                                                    .filter(coBestilling -> ident.equals(coBestilling.getIdent()))
+                                                            .map(sync -> identRepository.getBestillingerFromGruppe(bestilling.getGruppeId())
+                                                                    .filter(coBestilling -> ident.equals(coBestilling.getIdent()) &&
+                                                                            !"{}".equals(coBestilling.getBestkriterier()) ||
+                                                                            Boolean.FALSE.equals(counterIdentBestilling.replace(testident.getIdent(), true)))
                                                                     .map(coBestilling -> createBestilling(bestilling, coBestilling))
                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                             request.getId(), testident.getIdent()))

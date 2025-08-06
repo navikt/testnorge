@@ -67,15 +67,23 @@ public class OrganisasjonBestillingController {
     @DeleteMapping("/{orgnummer}")
     @Operation(description = "Slett bestilling ved orgnummer")
     @Transactional
-    public Mono<Void> slettBestilling(@PathVariable("orgnummer") String orgnummer) {
+    public Mono<Void> slettBestillingByOrgnummer(@PathVariable("orgnummer") String orgnummer) {
 
         return bestillingService.slettBestillingByOrgnummer(orgnummer);
+    }
+
+    @DeleteMapping("/id/{id}")
+    @Operation(description = "Slett bestilling ved bestillingId")
+    @Transactional
+    public Mono<Void> slettBestillingById(@PathVariable("id") Long id) {
+
+        return bestillingService.slettBestillingById(id);
     }
 
     @GetMapping("/bestillingsstatus")
     @Operation(description = "Hent status på bestilling basert på brukerId")
     public Flux<RsOrganisasjonBestillingStatus> hentBestillingStatus(
-            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autensiering)",
+            @Parameter(description = "BrukerID som er unik til en Azure bruker",
                     example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
 
         return bestillingService.fetchBestillingStatusByBrukerId(brukerId);

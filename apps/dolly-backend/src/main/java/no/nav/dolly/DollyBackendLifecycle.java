@@ -7,10 +7,8 @@ import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
-//@Component
+@Component
 @Profile({"dev", "local", "prod"})
 @RequiredArgsConstructor
 @Slf4j
@@ -20,12 +18,6 @@ public class DollyBackendLifecycle implements SmartLifecycle {
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
 
     private boolean isRunning = false;
-
-
-    @Override
-    public boolean isAutoStartup() {
-        return true;
-    }
 
     @Override
     public boolean isRunning() {
@@ -38,7 +30,6 @@ public class DollyBackendLifecycle implements SmartLifecycle {
     }
 
     @Override
-    @Transactional
     public void start() {
         isRunning = true;
         bestillingRepository.stopAllUnfinished()

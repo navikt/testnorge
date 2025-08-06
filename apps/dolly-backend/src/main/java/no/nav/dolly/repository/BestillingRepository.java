@@ -97,17 +97,9 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
 
     @Modifying
     @Query("""
-            update Bestilling b
-            set gruppe_id = null, opprettet_fra_id = null, bruker_id = null
-            where b.gruppe_id = :gruppeId
-            """)
-    Flux<Bestilling> updateBestillingNullifyGruppe(@Param("gruppeId") Long gruppeId);
-
-    @Modifying
-    @Query("""
             delete from Bestilling b
             where b.id = :bestillingId
-            and not exists (select bp
+            and not exists (select *
                             from Bestilling_Progress bp
                             where bp.bestilling_id = :bestillingId)
             """)

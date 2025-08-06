@@ -80,7 +80,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                                                 .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                                 .filter(StringUtils::isNotBlank)
                                                 .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
-                                                        .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(bestilling.getIdent()) ?
+                                                        .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(progress.getIdent()) ?
                                                                 updateIdent(dollyPerson, progress) : Mono.just(ident))
                                                                 .doOnNext(nyident -> counterCustomRegistry.invoke(request))
                                                                 .flatMap(nyIdent ->
