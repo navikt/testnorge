@@ -16,7 +16,7 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
 
     @Modifying
     @Query("update bestilling_mal b set mal_navn = :malNavn where b.id = :id")
-    Mono<BestillingMal> updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
+    Mono<Integer> updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
     Flux<BestillingMal> findByBrukerIdAndMalNavn(Long brukerId, String navn);
 
@@ -52,20 +52,18 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     Flux<MalBestilling> findAllByBrukerIsNull();
 
     @Query(value = """
-            select (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
+            select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
                 and b.brukertype = 'AZURE'
-                group by malBruker
-                order by malBruker
+                order by brukernavn
             """)
     Flux<MalBestillingFragment> findAllByBrukertypeAzure();
 
     @Query(value = """
-            select (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
+            select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
                 and b.bruker_id in :brukerIds
-                group by malBruker
-                order by malBruker
+                order by brukernavn
             """)
     Flux<MalBestillingFragment> findAllByBrukerIdIn(@Param("brukerIds") List<String> brukerIds);
 }

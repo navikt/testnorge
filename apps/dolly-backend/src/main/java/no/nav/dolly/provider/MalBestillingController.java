@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingSimple;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.service.MalBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +22,6 @@ import reactor.core.publisher.Mono;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
 import static no.nav.dolly.config.CachingConfig.CACHE_LEGACY_BESTILLING_MAL;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @RequestMapping(value = "/api/v1/malbestilling")
 @RestController
@@ -41,16 +39,6 @@ public class MalBestillingController {
         return malBestillingService.createFromIdent(ident, malNavn);
     }
 
-    @Cacheable(value = CACHE_LEGACY_BESTILLING_MAL)
-    @GetMapping
-    @Transactional(readOnly = true)
-    @Operation(description = "Hent mal-bestilling, kan filtreres på en bruker")
-    public Mono<RsMalBestillingWrapper> getMalBestillinger(@RequestParam(required = false) String brukerId) {
-
-        return isBlank(brukerId) ?
-                malBestillingService.getMalBestillinger() : malBestillingService.getMalbestillingByUser(brukerId);
-    }
-
     @Cacheable(value = CACHE_BESTILLING_MAL)
     @GetMapping("/brukerId/{brukerId}")
     @Transactional(readOnly = true)
@@ -62,7 +50,7 @@ public class MalBestillingController {
 
     @GetMapping("/oversikt")
     @Transactional(readOnly = true)
-    @Operation(description = "Hent oversikt bestillinger")
+    @Operation(description = "Hent oversikt maler")
     public Mono<RsMalBestillingSimple> getMalBestillinger() {
 
         return malBestillingService.getMalBestillingOversikt();
@@ -88,7 +76,7 @@ public class MalBestillingController {
 
     @CacheEvict(value = {CACHE_BESTILLING_MAL, CACHE_LEGACY_BESTILLING_MAL}, allEntries = true)
     @PutMapping("/id/{id}")
-    @Operation(description = "Rediger mal-bestilling")
+    @Operation(description = "Endre navn på mal")
     @Transactional
     public Mono<BestillingMal> redigerMalBestilling(@PathVariable Long id, @RequestParam String malNavn) {
 

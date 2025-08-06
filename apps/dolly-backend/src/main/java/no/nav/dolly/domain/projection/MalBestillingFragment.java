@@ -1,6 +1,14 @@
 package no.nav.dolly.domain.projection;
 
-public interface MalBestillingFragment {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    String getMalBruker();
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MalBestillingFragment {
+
+    private String brukernavn;
+    private String brukerid;
 }
