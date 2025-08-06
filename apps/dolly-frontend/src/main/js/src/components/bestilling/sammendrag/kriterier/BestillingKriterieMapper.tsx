@@ -614,6 +614,8 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 	}
 }
 
+//TODO: Vis delt bosted
+
 const mapAdressebeskyttelse = (adressebeskyttelse, data) => {
 	if (adressebeskyttelse) {
 		const adressebeskyttelseData = {
