@@ -690,7 +690,7 @@ const deltBosted = (personData, path) => {
 		obj('Startdato for kontrakt', formatDate(deltBostedData?.startdatoForKontrakt)),
 		obj('Sluttdato for kontrakt', formatDate(deltBostedData?.sluttdatoForKontrakt)),
 	]
-	return [expandable('DELT BOSTED', deltBostedData, [...fellesVerdier])]
+	return [expandable('DELT BOSTED', !!deltBostedData, [...fellesVerdier])]
 }
 
 const mapForelderBarnRelasjon = (forelderBarnRelasjon, data) => {
