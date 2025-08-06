@@ -40,6 +40,8 @@ test('Åpne bestilt ident med knytning mot alle fagsystem', async ({ page }) => 
 
 	for (const hover_miljoe of await page.getByTestId(TestComponentSelectors.HOVER_MILJOE).all()) {
 		await hover_miljoe.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_KONTAKTINFO).hover()
+		// Hover over kontaktinfo for å lukke gjeldende åpne miljø hover
 		await page.waitForTimeout(200)
 	}
 

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -73,9 +73,8 @@ public class FullmaktClient implements ClientRegister {
 
         Flux.fromIterable(identer)
                 .flatMap(ident -> fullmaktConsumer.getFullmaktData(List.of(ident))
-                        .map(FullmaktResponse::getFullmakt)
-                        .flatMap(Flux::fromIterable)
-                        .map(FullmaktResponse.Fullmakt::getFullmaktId)
+                        .doOnNext(response -> log.info("Fullmakt response for {}: {}", ident, response))
+                        .map(FullmaktPostResponse.Fullmakt::getFullmaktId)
                         .flatMap(fullmaktsId -> fullmaktConsumer.deleteFullmaktData(ident, fullmaktsId)))
                 .collectList()
                 .subscribe(result -> log.info("Fullmakt, slettet {} identer", identer.size()));
@@ -89,7 +88,7 @@ public class FullmaktClient implements ClientRegister {
         };
     }
 
-    private String getStatus(FullmaktResponse response) {
+    private String getStatus(FullmaktPostResponse response) {
 
         return isNull(response.getStatus()) ? "OK" :
                 errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());

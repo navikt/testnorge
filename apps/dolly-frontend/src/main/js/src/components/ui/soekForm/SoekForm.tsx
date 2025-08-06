@@ -46,7 +46,7 @@ export const SoekKategori = styled.div`
 			flex-grow: 0;
 
 			&.small {
-				width: 186px;
+				width: 190px;
 			}
 			.navds-checkbox {
 				padding: var(--a-spacing-1-alt) 0;
