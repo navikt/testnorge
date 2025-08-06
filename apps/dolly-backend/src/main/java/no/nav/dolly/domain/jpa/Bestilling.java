@@ -32,11 +32,6 @@ public class Bestilling implements Serializable {
     @Column("VERSJON")
     private Long versjon;
 
-//    @ManyToOne
-//    @JoinColumn("GRUPPE_ID", nullable = false)
-//    @Transient
-//    private Testgruppe gruppe;
-
     @Column("GRUPPE_ID")
     private Long gruppeId;
 
@@ -50,7 +45,6 @@ public class Bestilling implements Serializable {
     private Integer antallIdenter;
 
     @Column("SIST_OPPDATERT")
-//    @UpdateTimestamp
     private LocalDateTime sistOppdatert;
 
     @Column("STOPPET")
@@ -77,8 +71,6 @@ public class Bestilling implements Serializable {
     @Column("GJENOPPRETTET_FRA_IDENT")
     private String gjenopprettetFraIdent;
 
-//    @ManyToOne
-//    @JoinColumn("BRUKER_ID")
     @Transient
     private Bruker bruker;
 
@@ -94,20 +86,8 @@ public class Bestilling implements Serializable {
     @Column("NAV_SYNTETISK_IDENT")
     private Boolean navSyntetiskIdent;
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn("bestilling_id", updatable = false)
     @Transient
     private List<BestillingProgress> progresser;
-
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn("bestilling_id", updatable = false)
-//    @Builder.Default
-//    private List<BestillingKontroll> kontroller = new ArrayList<>();
-
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn("bestilling_id", updatable = false)
-//    @Builder.Default
-//    private List<TransaksjonMapping> transaksjonmapping = new ArrayList<>();
 
     @Transient
     private String beskrivelse;

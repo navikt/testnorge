@@ -1,7 +1,7 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.bestilling.GruppeBestillingIdent;
+import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -75,9 +75,4 @@ public interface IdentRepository extends ReactiveSortingRepository<Testident, Lo
 
 
     Mono<Integer> countByGruppeIdAndIBruk(Long id, Boolean iBruk);
-
-    @Query("""
-            select ti from test_ident ti where ti.tilhoerer_gruppe = :gruppeId
-            """)
-    Flux<Testident> findByGruppeId(@Param("gruppeId") Long gruppeId);
 }

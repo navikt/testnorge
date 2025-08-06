@@ -34,7 +34,6 @@ public class OrganisasjonBestilling {
     private Integer antall;
 
     @Column("SIST_OPPDATERT")
-//    @UpdateTimestamp
     private LocalDateTime sistOppdatert;
 
     @Column("FEIL")
@@ -49,16 +48,12 @@ public class OrganisasjonBestilling {
     @Column("BEST_KRITERIER")
     private String bestKriterier;
 
-//    @ManyToOne
-//    @JoinColumn("bruker_id")
     @Column("BRUKER_ID")
     private Long brukerId;
 
     @Transient
     private Bruker bruker;
 
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @JoinColumn("bestilling_id")
     @Transient
     @Builder.Default
     private List<OrganisasjonBestillingProgress> progresser = new ArrayList<>();

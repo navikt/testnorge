@@ -34,7 +34,6 @@ public class Dokument implements Serializable {
     private Long bestillingId;
 
     @Column("DOKUMENT_TYPE")
-//    @Enumerated(value = EnumType.STRING)
     private DokumentType dokumentType;
 
     @Column("SIST_OPPDATERT")

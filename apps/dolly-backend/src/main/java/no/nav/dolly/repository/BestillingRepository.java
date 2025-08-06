@@ -1,7 +1,7 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
+import no.nav.dolly.domain.projection.RsBestillingFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;

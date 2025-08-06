@@ -37,14 +37,13 @@ public class BestillingProgress implements Serializable {
     @Column("VERSJON")
     private Long versjon;
 
-//    @ManyToOne
-//    @JoinColumn("BESTILLING_ID", nullable = false)
     @Column("BESTILLING_ID")
     private Long bestillingId;
 
     @Transient
     private Bestilling bestilling;
 
+    @Column("IDENT")
     private String ident;
 
     @Column("SIGRUNSTUB_STATUS")
@@ -129,7 +128,6 @@ public class BestillingProgress implements Serializable {
     private  String etterlatteStatus;
 
     @Column("master")
-//    @Enumerated(EnumType.STRING)
     private Master master;
 
     @Transient

@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.entity.bestilling;
+package no.nav.dolly.domain.projection;
 
 public interface MalBestillingFragment {
 

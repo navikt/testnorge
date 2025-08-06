@@ -14,10 +14,6 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -45,24 +41,7 @@ public class Bruker implements Serializable {
     private String epost;
 
     @Column("BRUKERTYPE")
-//    @Enumerated(EnumType.STRING)
     private Brukertype brukertype;
-
-//    @Transient
-//    @Builder.Default
-//    private List<String> grupper = new ArrayList<>();
-
-//    @OneToMany
-//    @JoinColumn("opprettet_av")
-//    @Builder.Default
-//    private Set<Testgruppe> testgrupper = new HashSet<>();
-
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @Builder.Default
-//    @JoinTable("BRUKER_FAVORITTER",
-//            joinColumns = @JoinColumn("bruker_id"),
-//            inverseJoinColumns = @JoinColumn("gruppe_id"))
-//    private Set<Testgruppe> favoritter = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

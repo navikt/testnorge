@@ -43,19 +43,13 @@ public class Testident implements Serializable {
     @Column("BESKRIVELSE")
     private String beskrivelse;
 
-//    @ManyToOne
-//    @JoinColumn("TILHOERER_GRUPPE", nullable = false)
-//    private Testgruppe testgruppe;
     @Column("TILHOERER_GRUPPE")
     private Long gruppeId;
 
     @Column("MASTER")
-//    @Enumerated(EnumType.STRING)
     private Master master;
 
-//    @OneToMany(fetch = FetchType.LAZY)
     @Builder.Default
-//    @JoinColumn("IDENT", referencedColumn"ident", insertable = false, updatable = false)
     @Transient
     private List<BestillingProgress> bestillingProgress = new ArrayList<>();
 

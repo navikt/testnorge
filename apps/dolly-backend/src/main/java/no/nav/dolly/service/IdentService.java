@@ -8,7 +8,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
-import no.nav.dolly.domain.resultset.entity.bestilling.GruppeBestillingIdent;
+import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
@@ -118,13 +118,6 @@ public class IdentService {
     public Mono<Testident> swapIdent(String oldIdent, String newIdent) {
 
         return identRepository.swapIdent(oldIdent, newIdent);
-    }
-
-    public Flux<GruppeBestillingIdent> getBestillingerFromGruppe(Long gruppeId) {
-
-        return identRepository.getBestillingerFromGruppe(gruppeId)
-                .filter(bestilling -> !"{}".equals(bestilling.getBestkriterier()))
-                .sort(Comparator.comparing(GruppeBestillingIdent::getId));
     }
 
     public Flux<Testident> getTestidenterByGruppeId(Long gruppeId) {

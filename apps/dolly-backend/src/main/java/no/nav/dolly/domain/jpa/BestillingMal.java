@@ -34,11 +34,8 @@ public class BestillingMal implements Serializable {
     private String miljoer;
 
     @Column("MAL_NAVN")
-//    @OrderColumn
     private String malNavn;
 
-//    @ManyToOne
-//    @JoinColumn("BRUKER_ID")
     @Column("BRUKER_ID")
     private Long brukerId;
 
@@ -46,7 +43,6 @@ public class BestillingMal implements Serializable {
     private RsBrukerUtenFavoritter bruker;
 
     @Column("SIST_OPPDATERT")
-//    @UpdateTimestamp
     private LocalDateTime sistOppdatert;
 
     @Override

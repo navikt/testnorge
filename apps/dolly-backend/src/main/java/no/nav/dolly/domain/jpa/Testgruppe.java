@@ -18,9 +18,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -45,16 +43,12 @@ public class Testgruppe implements Serializable {
     @Column("HENSIKT")
     private String hensikt;
 
-//    @ManyToOne
-//    @JoinColumn("OPPRETTET_AV", nullable = false)
     @Column("OPPRETTET_AV")
     private Long opprettetAvId;
 
     @Transient
     private Bruker opprettetAv;
 
-//    @ManyToOne
-//    @JoinColumn("SIST_ENDRET_AV", nullable = false)
     @Column("SIST_ENDRET_AV")
     private Long sistEndretAvId;
 
@@ -63,24 +57,6 @@ public class Testgruppe implements Serializable {
 
     @Column("DATO_ENDRET")
     private LocalDate datoEndret;
-
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn("tilhoerer_gruppe")
-//    @Column(unique = true)
-//    @Builder.Default
-//    @OrderBy("id DESC")
-//    private List<Testident> testidenter = new ArrayList<>();
-
-//    @ManyToMany(mappedBy = "favoritter", fetch = FetchType.EAGER)
-//    @Builder.Default
-//    private Set<Bruker> favorisertAv = new HashSet<>();
-
-//    @OrderBy("id")
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @JoinColumn("gruppe_id")
-//    @Builder.Default
-//    @Transient
-//    private Set<Bestilling> bestillinger = new HashSet<>();
 
     @Column("ER_LAAST")
     private Boolean erLaast;

@@ -11,7 +11,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.MalBestillingFragment;
+import no.nav.dolly.domain.projection.MalBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingSimple;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingSimple.MalBruker;
@@ -55,10 +55,10 @@ import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 @RequiredArgsConstructor
 public class MalBestillingService {
 
+    private static final String FINNES_IKKE = "Mal med id %d finnes ikke";
     private static final String ANONYM = "FELLES";
     private static final String ALLE = "ALLE";
     private static final String EMPTY_JSON = "{}";
-    private static final Long EMPTY_BRUKER = -1L;
 
     private final BestillingMalRepository bestillingMalRepository;
     private final BrukerServiceConsumer brukerServiceConsumer;
@@ -185,7 +185,7 @@ public class MalBestillingService {
     public Mono<BestillingMal> saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
         return bestillingRepository.findById(bestillingId)
-                .switchIfEmpty(Mono.error(new NotFoundException(bestillingId + " finnes ikke")))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
                 .zipWith(getAuthenticatedUserId.call()
                         .flatMap(brukerService::fetchBruker))
                 .flatMap(tuple -> bestillingMalRepository.findByBrukerIdAndMalNavn(tuple.getT2().getId(), malNavn)
@@ -211,7 +211,7 @@ public class MalBestillingService {
     public Mono<Void> deleteMalBestillingByID(Long id) {
 
         return bestillingMalRepository.findById(id)
-                .switchIfEmpty(Mono.error(new NotFoundException(id + " finnes ikke")))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(id))))
                 .flatMap(bestillingMal -> bestillingMalRepository.deleteById(id));
     }
 
@@ -219,7 +219,7 @@ public class MalBestillingService {
     public Mono<BestillingMal> updateMalNavnById(Long id, String nyttMalNavn) {
 
         return bestillingMalRepository.findById(id)
-                .switchIfEmpty(Mono.error(new NotFoundException(id + " finnes ikke")))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(id))))
                 .flatMap(bestillingMal -> bestillingMalRepository.updateMalNavnById(id, nyttMalNavn))
                 .flatMap(bestillingMalRepository::save);
     }
@@ -356,6 +356,7 @@ public class MalBestillingService {
                     case ALLE -> bestillingMalRepository.findAllByBrukerAzure();
                     default -> bestillingMalRepository.findAllByBrukerId(brukerId);
                 })
+                .flatMap(Flux::from)
                 .map(bestillingMal -> mapperFacade.map(bestillingMal, RsMalBestilling.class));
     }
 }

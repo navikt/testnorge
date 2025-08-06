@@ -1,8 +1,8 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingMal;
-import no.nav.dolly.domain.resultset.entity.bestilling.MalBestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.MalBestillingFragment;
+import no.nav.dolly.domain.projection.MalBestilling;
+import no.nav.dolly.domain.projection.MalBestillingFragment;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,8 +23,8 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     Flux<BestillingMal> findByBrukerId(Long brukerId);
 
     @Query(value = """
-            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
-                               bm.sist_oppdatert sistOppdatert
+            select bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
+                               bm.sist_oppdatert sistoppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
             and b.brukertype = 'AZURE'
@@ -33,8 +33,8 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     Flux<MalBestilling> findAllByBrukerAzure();
 
     @Query(value = """
-            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
-                               bm.sist_oppdatert sistOppdatert
+            select bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
+                               bm.sist_oppdatert sistoppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
             where b.bruker_id = :brukerId
@@ -43,8 +43,8 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     Flux<MalBestilling> findAllByBrukerId(@Param("brukerId") String brukerId);
 
     @Query(value = """
-            select bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
-                               bm.sist_oppdatert sistOppdatert
+            select bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
+                               bm.sist_oppdatert sistoppdatert
                         from bestilling_mal bm
             where bm.bruker_id is null
             order by bm.mal_navn;

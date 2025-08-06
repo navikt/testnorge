@@ -23,7 +23,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.domain.resultset.entity.bestilling.GruppeBestillingIdent;
+import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -209,11 +209,6 @@ public class DollyBestillingService {
     protected void clearCache() {
 
         transactionHelperService.clearCache();
-    }
-
-    protected Mono<BestillingProgress> saveFeil(BestillingProgress progress, String error) {
-
-        return transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
     }
 
     protected Mono<Void> saveBestillingToElasticServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {
