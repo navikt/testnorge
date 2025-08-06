@@ -3,14 +3,18 @@ package no.nav.dolly.bestilling.organisasjonforvalter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.command.GetOrganisasjonCommand;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.*;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -20,9 +24,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
@@ -71,7 +76,6 @@ public class OrganisasjonConsumer {
                                         .queryParam("orgnumre", orgnumre)
                                         .build())
                         .headers(WebClientHeader.bearer(token.getTokenValue()))
-                        .headers(WebClientHeader.jwt(getUserJwt()))
                         .header(HEADER_NAV_CALL_ID, navCallId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .retrieve()
@@ -91,7 +95,6 @@ public class OrganisasjonConsumer {
                         .post()
                         .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_FORVALTER_URL).build())
                         .headers(WebClientHeader.bearer(token.getTokenValue()))
-                        .headers(WebClientHeader.jwt(getUserJwt()))
                         .header(HEADER_NAV_CALL_ID, navCallId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .bodyValue(bestillingRequest)
@@ -117,7 +120,6 @@ public class OrganisasjonConsumer {
                         .post()
                         .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_DEPLOYMENT_URL).build())
                         .headers(WebClientHeader.bearer(token.getTokenValue()))
-                        .headers(WebClientHeader.jwt(getUserJwt()))
                         .header(HEADER_NAV_CALL_ID, callId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .bodyValue(deployRequest)

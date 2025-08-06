@@ -7,12 +7,9 @@ import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.Inntektsmeldin
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
-
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +26,6 @@ public class OpprettInntektsmeldingCommand implements Callable<Mono<Inntektsmeld
                 .post()
                 .uri("/api/v1/inntektsmelding")
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header("Nav-Call-Id", callId)
                 .bodyValue(request)
                 .retrieve()

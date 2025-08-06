@@ -140,10 +140,11 @@ public class SigrunStubClient implements ClientRegister {
 
         return tilbakemeldinger.stream()
                 .allMatch(SigrunstubResponse.OpprettelseTilbakemelding::isOK) ? "OK" :
-                ErrorStatusDecoder.encodeStatus(java.lang.String.format("Feil: %s",
+                ErrorStatusDecoder.encodeStatus("Feil: %s".formatted(
                         tilbakemeldinger.stream()
                                 .filter(SigrunstubResponse.OpprettelseTilbakemelding::isError)
-                                .map(status -> java.lang.String.format("Inntektsår: %s, feilmelding: %s", status.getInntektsaar(), status.getMessage()))
+                                .map(status -> "Inntektsår: %s, feilmelding: %s".formatted(
+                                        status.getInntektsaar(), status.getMessage()))
                                 .collect(Collectors.joining(", "))));
     }
 }

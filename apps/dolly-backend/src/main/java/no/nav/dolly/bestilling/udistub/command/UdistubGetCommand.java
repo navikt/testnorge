@@ -13,8 +13,6 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class UdistubGetCommand implements Callable<Mono<UdiPersonResponse>> {
@@ -33,7 +31,6 @@ public class UdistubGetCommand implements Callable<Mono<UdiPersonResponse>> {
                         .path(UDISTUB_PERSON)
                         .pathSegment(ident).build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toEntity(UdiPersonResponse.class)
                 .map(response -> UdiPersonResponse

@@ -19,7 +19,6 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -41,7 +40,6 @@ public class PdlDataOppdateringCommand implements Callable<Mono<PdlResponse>> {
                     reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
                 })
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(body))
                 .retrieve()

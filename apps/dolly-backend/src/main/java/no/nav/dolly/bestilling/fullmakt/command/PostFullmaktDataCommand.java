@@ -15,8 +15,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
@@ -50,7 +51,6 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("fnr", ident)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(FullmaktResponse.class)
                 .doOnError(throwable -> {

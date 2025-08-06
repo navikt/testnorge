@@ -37,7 +37,6 @@ public class Dokument implements Serializable {
     private DokumentType dokumentType;
 
     @Column("SIST_OPPDATERT")
-//    @UpdateTimestamp
     private LocalDateTime sistOppdatert;
 
     @Column("CONTENTS")

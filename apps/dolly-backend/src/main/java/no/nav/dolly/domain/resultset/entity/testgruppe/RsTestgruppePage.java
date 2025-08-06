@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -21,5 +18,4 @@ public class RsTestgruppePage {
     private Integer pageSize;
     private Long antallElementer;
     private List<RsTestgruppe> contents;
-//    private List<String> favoritter;
 }

@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -37,7 +36,6 @@ public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataR
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(digitalKontaktdata)
                 .retrieve()
                 .toBodilessEntity()

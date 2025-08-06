@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @Slf4j
 @RequiredArgsConstructor
 public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdRespons>> {
@@ -41,7 +39,6 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
                 .header(INST_IDENT, ident)
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, List<Instdata>>>() {
                 })

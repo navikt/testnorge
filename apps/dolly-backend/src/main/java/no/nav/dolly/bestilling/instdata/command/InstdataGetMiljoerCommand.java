@@ -11,8 +11,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
@@ -30,7 +28,6 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
                         .path(INSTMILJO_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(MiljoerResponse.class)
                 .map(MiljoerResponse::getInstitusjonsoppholdEnvironments)
