@@ -26,9 +26,8 @@ public class InfoStripe implements Serializable {
     @Id
     private Long id;
 
-    @Builder.Default
     @Column("TYPE")
-    private InfoStripeType type = InfoStripeType.INFO;
+    private InfoStripeType type;
 
     @Column("MESSAGE")
     private String message;

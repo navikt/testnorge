@@ -22,6 +22,10 @@ public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
 
     Flux<Bruker> findByBrukerIdInOrderByBrukernavn(List<String> brukerId);
 
+    @Query("""
+            select * from bruker b
+            where b.bruker_id = :brukerId
+            """)
     Mono<Bruker> findByBrukerId(String brukerId);
 
     @Modifying

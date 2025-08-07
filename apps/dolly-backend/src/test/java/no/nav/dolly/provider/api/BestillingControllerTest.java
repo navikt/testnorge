@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -40,11 +41,14 @@ class BestillingControllerTest {
     @Test
     void getBestillingById_oppdatererMedPersonstatusOrReturnererBestilling() {
 
-        RsBestillingStatus bestillingStatus = RsBestillingStatus.builder().build();
+        var bestillingStatus = RsBestillingStatus.builder().build();
         when(bestillingService.fetchBestillingById(any())).thenReturn(Mono.just(new Bestilling()));
         when(mapperFacade.map(any(), any())).thenReturn(bestillingStatus);
 
-        RsBestillingStatus res = bestillingController.getBestillingById(BESTILLING_ID);
+        StepVerifier
+                .create(bestillingController.getBestillingById(BESTILLING_ID))
+                .expectNext(bestillingStatus)
+                .verifyComplete();
 
         assertThat(res, is(bestillingStatus));
     }
@@ -64,7 +68,7 @@ class BestillingControllerTest {
 
     @Test
     void stopBestillingProgressOk() {
-        when(bestillingService.cancelBestilling(BESTILLING_ID)).thenReturn(Bestilling.builder().build());
+        when(bestillingService.cancelBestilling(BESTILLING_ID)).thenReturn(Mono<Bestilling.builder().build()));
         bestillingController.stopBestillingProgress(BESTILLING_ID, null);
 
         verify(bestillingService).cancelBestilling(BESTILLING_ID);

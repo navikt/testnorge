@@ -86,7 +86,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Flux<Bestilling> findBestillingerByIdentIn(@Param("identer") Collection<String> identer);
 
     @Query("""
-            select distinct(*) from Bestilling b
+            select * from Bestilling b
             where b.gruppe_id = :gruppeId
             order by b.id desc
             """)

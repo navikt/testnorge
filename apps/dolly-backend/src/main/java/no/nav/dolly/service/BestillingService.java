@@ -62,7 +62,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class BestillingService {
 
-    private static final String NOT_FOUND = "Finner ikke gruppe basert på gruppeId: ";
+    private static final String FINNES_IKKE = "Finner ikke gruppe med id %d";
     private static final String SEARCH_STRING = "info:";
     private static final String DEFAULT_VALUE = null;
 
@@ -137,30 +137,36 @@ public class BestillingService {
     public Mono<Integer> getPaginertBestillingIndex(Long bestillingId, Long gruppeId) {
 
         return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException("Bestilling med id %s ble ikke funnet i database".formatted(bestillingId))));
+                .switchIfEmpty(Mono.error(new NotFoundException("Bestilling med id %d ble ikke funnet i database".formatted(bestillingId))));
     }
 
     public Flux<Bestilling> getBestillingerFromGruppeIdPaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
 
-        return bestillingRepository.getBestillingerFromGruppeId(gruppeId, PageRequest.of(pageNo, pageSize))
-                .flatMap(bestilling -> Mono.zip(Mono.just(bestilling),
-                        testgruppeRepository.findById(bestilling.getGruppeId()),
-                        getBestillingProgresser(bestilling)))
-                .map(tuple -> {
-                    tuple.getT1().setGruppeId(tuple.getT2().getId());
-                    tuple.getT1().setProgresser(tuple.getT3());
-                    return tuple.getT1();
-                });
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .flatMapMany(gruppe ->
+                        bestillingRepository.getBestillingerFromGruppeId(gruppeId, PageRequest.of(pageNo, pageSize))
+                                .flatMap(bestilling -> Mono.zip(
+                                        Mono.just(bestilling),
+                                        Mono.just(gruppe),
+                                        getBestillingProgresser(bestilling)))
+                                .map(tuple -> {
+                                    tuple.getT1().setGruppeId(tuple.getT2().getId());
+                                    tuple.getT1().setProgresser(tuple.getT3());
+                                    return tuple.getT1();
+                                }));
     }
 
     @Transactional
     @Retryable
     public Mono<Bestilling> cancelBestilling(Long bestillingId) {
 
-        return bestillingKontrollRepository.findByBestillingId(bestillingId)
+        return bestillingRepository.findById(bestillingId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Bestilling med id %d ikke funnet".formatted(bestillingId))))
+                .flatMap(bestilling -> bestillingKontrollRepository.findByBestillingId(bestillingId))
                 .switchIfEmpty(bestillingKontrollRepository.save(BestillingKontroll.builder()
-                        .bestillingId(bestillingId)
                         .stoppet(true)
+                        .bestillingId(bestillingId)
                         .build()))
                 .flatMap(bestKontroll -> fetchBestillingById(bestillingId))
                 .zipWith(fetchBruker())
@@ -266,7 +272,7 @@ public class BestillingService {
                                            List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
@@ -379,7 +385,7 @@ public class BestillingService {
     public Mono<Bestilling> createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),
                         identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
@@ -414,7 +420,7 @@ public class BestillingService {
     public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),
@@ -449,7 +455,7 @@ public class BestillingService {
     public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(NOT_FOUND + gruppeId)))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         fetchBruker(),

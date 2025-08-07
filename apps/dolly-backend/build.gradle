@@ -51,16 +51,22 @@ dependencies {
     implementation "org.apache.poi:poi:$versions.apachePoi"
     implementation "org.apache.poi:poi-ooxml:$versions.apachePoi"
 
-    testImplementation 'org.opensearch:opensearch-testcontainers:2.1.2'
-
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'io.r2dbc:r2dbc-h2'
     testImplementation 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
     testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-    testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.bitbucket.b_c:jose4j:0.9.6'
+    testImplementation 'org.opensearch:opensearch-testcontainers:2.1.2'
+//
+//    testImplementation 'org.springframework.security:spring-security-test'
+//    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+//    testImplementation 'com.h2database:h2'
+//    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
+//    testImplementation 'org.testcontainers:junit-jupiter'
+//    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+//    testImplementation 'org.testcontainers:postgresql'
+//    testImplementation 'org.bitbucket.b_c:jose4j:0.9.6'
 
     implementation 'net.java.dev.jna:jna:5.14.0'
 }

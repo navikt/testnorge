@@ -74,9 +74,9 @@ public class BrukerService {
                 .flatMap(gruppe -> getAuthenticatedUserId.call()
                         .flatMap(this::fetchBruker)
                         .flatMap(bruker -> brukerFavoritterRepository.save(BrukerFavoritter.builder()
-                                                .brukerId(bruker.getId())
-                                                .gruppeId(gruppe.getId())
-                                                .build())
+                                        .brukerId(bruker.getId())
+                                        .gruppeId(gruppe.getId())
+                                        .build())
                                 .thenReturn(bruker)));
     }
 
@@ -86,8 +86,8 @@ public class BrukerService {
                 .flatMap(gruppe -> getAuthenticatedUserId.call()
                         .flatMap(this::fetchBruker)
                         .flatMap(bruker -> brukerFavoritterRepository.deleteByBrukerIdAndGruppeId(
-                                                bruker.getId(),
-                                                gruppe.getId())
+                                        bruker.getId(),
+                                        gruppe.getId())
                                 .thenReturn(bruker)));
     }
 

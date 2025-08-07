@@ -83,13 +83,12 @@ management:
         include: none
 
 spring:
-  datasource:
-    type: org.springframework.jdbc.datasource.SimpleDriverDataSource
-    url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true
-    username: user
-    password: pass
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password:
   flyway:
     enabled: true
-    url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true
-    user: user
-    password: pass
+    url: jdbc:h2:mem///testdb
+    user: sa
+    password:

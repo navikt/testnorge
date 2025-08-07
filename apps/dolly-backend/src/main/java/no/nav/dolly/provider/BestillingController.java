@@ -76,7 +76,7 @@ public class BestillingController {
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
-    @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
+    @Operation(description = "Hent bestillinger tilhørende en gruppe med gruppeId")
     public Flux<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
                                                     @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "2000") Integer pageSize) {
@@ -86,7 +86,7 @@ public class BestillingController {
     }
 
     @GetMapping("/gruppe/{gruppeId}/ikkeferdig")
-    @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
+    @Operation(description = "Hent bestillinger tilhørende en gruppe med gruppeId")
     public Flux<RsBestillingStatus> getIkkeFerdigBestillinger(@PathVariable("gruppeId") Long gruppeId) {
 
         return bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(gruppeId)

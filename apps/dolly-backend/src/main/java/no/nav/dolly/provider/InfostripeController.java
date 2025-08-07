@@ -9,7 +9,6 @@ import no.nav.dolly.domain.resultset.entity.infostripe.InfostripeMelding;
 import no.nav.dolly.domain.resultset.entity.infostripe.RsInfostripeMelding;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.InformasjonsmeldingRepository;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +33,7 @@ public class InfostripeController {
     private final InformasjonsmeldingRepository informasjonsmeldingRepository;
     private final MapperFacade mapperFacade;
 
-    @GetMapping()
+    @GetMapping
     @Operation(description = "Hent alle gyldige informasjonsmeldinger")
     public Flux<InfostripeMelding> hentAlle() {
 
@@ -44,7 +41,7 @@ public class InfostripeController {
                 .map(melding -> mapperFacade.map(melding, InfostripeMelding.class));
     }
 
-    @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping
     @Operation(description = "Opprett ny informasjonsmelding")
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
