@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import * as _ from 'lodash-es'
 import { dollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
 import { DollyApi } from '@/service/Api'
-import { codeToNorskLabel } from '@/utils/DataFormatter'
+import { codeToNorskLabel, oversettBoolean } from '@/utils/DataFormatter'
 
 export default () => {
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
@@ -48,6 +48,15 @@ export default () => {
 	const { watch, reset, control, getValues } = formMethods
 	const values = watch()
 
+	const getLabel = (value: any) => {
+		if (value === true || value === false) {
+			return oversettBoolean(value)
+		} else if (value.length > 3) {
+			return codeToNorskLabel(value)
+		}
+		return value
+	}
+
 	const handleChange = (value: any, path: string) => {
 		const updatedPersonRequest = { ...values.personRequest, [path]: value }
 		const updatedRequest = { ...values, personRequest: updatedPersonRequest, side: 0, seed: null }
@@ -59,7 +68,7 @@ export default () => {
 				[path]: {
 					path: `${personPath}.${path}`,
 					value: value,
-					label: `${codeToNorskLabel(path)}: ${value}`,
+					label: `${codeToNorskLabel(path)}: ${getLabel(value)}`,
 				},
 			})
 		} else {

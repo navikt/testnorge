@@ -34,6 +34,12 @@ export const SoekForm = ({
 	setRequest,
 	formRequest,
 }) => {
+	//TODO: Felter/kategorier som maa fikses
+	// Fagsystemer: alle
+	// Personinformasjon: skjerming
+	// Adresser: alle
+	// Familierelasjoner: harDeltBosted
+
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
 	const [soekError, setSoekError] = useState(null)

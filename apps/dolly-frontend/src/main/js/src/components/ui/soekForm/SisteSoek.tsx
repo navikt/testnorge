@@ -23,12 +23,13 @@ export const SisteSoek = ({ soekType, formValues, handleChange }) => {
 	})
 
 	const options = Object.values(lagredeSoekData)
+	console.log('formValues: ', formValues) //TODO - SLETT MEG
 
 	return (
 		<VStack gap="3" style={{ marginBottom: '15px' }}>
 			{/*<h4>SISTE SØK:</h4>*/}
 			<Chips>
-				{options.map((option) => (
+				{options.slice(0, 10).map((option, idx) => (
 					<Chips.Toggle
 						key={option.label}
 						selected={_.get(formValues, option.path) === option.value}
