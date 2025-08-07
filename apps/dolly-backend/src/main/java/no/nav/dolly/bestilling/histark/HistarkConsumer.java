@@ -2,11 +2,13 @@ package no.nav.dolly.bestilling.histark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.histark.command.HistarkPostCommand;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class HistarkConsumer {
+public class HistarkConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -31,8 +33,10 @@ public class HistarkConsumer {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         serverProperties = consumers.getTestnavHistarkProxy();
         this.tokenService = tokenService;
         this.webClient = webClient
@@ -57,4 +61,13 @@ public class HistarkConsumer {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
+    @Override
+    public String serviceUrl() {
+        return serverProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-histark-proxy";
+    }
 }

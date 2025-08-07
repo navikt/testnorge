@@ -5,6 +5,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.MiljoerGetCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -25,8 +26,10 @@ public class MiljoerConsumer extends ConsumerStatus {
     public MiljoerConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavMiljoerService();
         this.webClient = webClient

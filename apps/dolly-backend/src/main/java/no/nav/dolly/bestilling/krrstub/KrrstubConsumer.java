@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,10 @@ public class KrrstubConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService    ) {
+
+        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavKrrstubProxy();
         this.webClient = webClient

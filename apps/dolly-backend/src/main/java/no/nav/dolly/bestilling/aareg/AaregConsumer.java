@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPutCommand;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -33,8 +34,10 @@ public class AaregConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient webClient,
-            WebClientLogger webClientLogger
-    ) {
+            WebClientLogger webClientLogger,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         serverProperties = consumers.getTestnavAaregProxy();
         this.tokenService = tokenService;
         var webClientBuilder = webClient

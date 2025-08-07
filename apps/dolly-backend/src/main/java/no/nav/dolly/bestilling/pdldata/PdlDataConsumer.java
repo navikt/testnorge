@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.pdldata.command.*;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AvailibilityResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
@@ -34,8 +35,10 @@ public class PdlDataConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPdlForvalter();
         this.webClient = webClient

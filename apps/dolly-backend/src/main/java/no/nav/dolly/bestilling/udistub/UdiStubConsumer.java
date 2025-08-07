@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -31,8 +32,10 @@ public class UdiStubConsumer extends ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavUdistubProxy();
         this.webClient = webClient

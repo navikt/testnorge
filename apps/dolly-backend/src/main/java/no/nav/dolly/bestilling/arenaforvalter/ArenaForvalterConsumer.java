@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,10 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         serverProperties = consumers.getTestnavArenaForvalterenProxy();
         this.tokenService = tokenService;
         this.webClient = webClient
@@ -73,7 +76,7 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new ArenaforvalterPostArenaBruker(webClient, arenaNyeBrukere, token.getTokenValue()).call()
                         .doOnNext(response -> log.info("Opprettet bruker {} mot Arenaforvalter {}",
-                                arenaNyeBrukere.getNyeBrukere().get(0).getPersonident(), response)));
+                                arenaNyeBrukere.getNyeBrukere().getFirst().getPersonident(), response)));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postAap"})

@@ -1,11 +1,13 @@
 package no.nav.dolly.bestilling.yrkesskade;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.yrkesskade.command.YrkesskadeGetCommand;
 import no.nav.dolly.bestilling.yrkesskade.command.YrkesskadePostCommand;
 import no.nav.dolly.bestilling.yrkesskade.dto.SaksoversiktDTO;
 import no.nav.dolly.bestilling.yrkesskade.dto.YrkesskadeResponseDTO;
 import no.nav.dolly.config.Consumers;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -15,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-public class YrkesskadeConsumer {
+public class YrkesskadeConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
@@ -24,8 +26,10 @@ public class YrkesskadeConsumer {
     public YrkesskadeConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getYrkesskadeProxy();
         this.webClient = webClient
@@ -50,5 +54,15 @@ public class YrkesskadeConsumer {
                 .flatMap(token -> new YrkesskadeGetCommand(webClient, ident, token.getTokenValue()).call())
                 .doOnNext(response ->
                         log.info("Mottatt saksoversikt fra yrkesskade service {}", response));
+    }
+
+    @Override
+    public String serviceUrl() {
+        return serverProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-yrkesskade-proxy";
     }
 }

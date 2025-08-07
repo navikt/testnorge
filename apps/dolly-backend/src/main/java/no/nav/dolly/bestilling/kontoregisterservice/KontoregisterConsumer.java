@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterGetComm
 import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterPostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
@@ -37,8 +38,10 @@ public class KontoregisterConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavKontoregisterPersonProxy();
         this.webClient = webClient

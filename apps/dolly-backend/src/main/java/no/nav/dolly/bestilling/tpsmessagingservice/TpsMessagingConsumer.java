@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.tpsmessagingservice.command.PersonHentCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TpsMessagingPostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
@@ -40,8 +41,10 @@ public class TpsMessagingConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavTpsMessagingService();
         this.webClient = webClient

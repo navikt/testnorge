@@ -1,11 +1,13 @@
 package no.nav.dolly.bestilling.etterlatte;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.etterlatte.command.EtterlattePostCommand;
 import no.nav.dolly.bestilling.etterlatte.dto.VedtakRequestDTO;
 import no.nav.dolly.bestilling.etterlatte.dto.VedtakResponseDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -15,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-public class EtterlatteConsumer {
+public class EtterlatteConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -25,7 +27,10 @@ public class EtterlatteConsumer {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            WebClientLogger webClientLogger) {
+            WebClientLogger webClientLogger,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         this.tokenService = tokenService;
         this.serverProperties = consumers.getEtterlatte();
         var webClientBuilder = webClient
@@ -42,5 +47,15 @@ public class EtterlatteConsumer {
         log.info("Etterlatte opprett {}", vedtakRequest);
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new EtterlattePostCommand(webClient, vedtakRequest, token.getTokenValue()).call());
+    }
+
+    @Override
+    public String serviceUrl() {
+        return serverProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-etterlatte-proxy";
     }
 }

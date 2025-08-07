@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -33,8 +34,10 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         serverProperties = consumers.getTestnavArbeidsplassenCVProxy();
         this.tokenService = tokenService;
         this.webClient = webClient

@@ -6,13 +6,13 @@ import no.nav.dolly.bestilling.inntektsmelding.command.OpprettInntektsmeldingCom
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -32,8 +32,10 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            WebClientLogger webClientLogger
-    ) {
+            WebClientLogger webClientLogger,
+            CheckAliveService checkAliveService) {
+
+        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavInntektsmeldingService();
         var webClientBuilder = webClient.mutate();
