@@ -1,17 +1,17 @@
 import { useHentLagredeSoek } from '@/utils/hooks/useSoek'
 import { Chips, VStack } from '@navikt/ds-react'
-import { useState } from 'react'
+import * as _ from 'lodash-es'
 
 export enum soekType {
 	dolly = 'DOLLY',
 	tenor = 'TENOR',
 }
 
-export const SisteSoek = ({ soekType, formMethods, handleChange }) => {
-	const { lagredeSoek, loading, error } = useHentLagredeSoek(soekType)
-	console.log('lagredeSoek: ', lagredeSoek) //TODO - SLETT MEG
+export const SisteSoek = ({ soekType, formValues, handleChange }) => {
+	// TODO: Funker det med registreRequest?
+	// TODO: Sjekk ulike typer felter, at de fungerer som forventet
 
-	const [selected, setSelected] = useState([])
+	const { lagredeSoek, loading, error } = useHentLagredeSoek(soekType)
 
 	const lagredeSoekData = {}
 	lagredeSoek?.forEach((soek, idx) => {
@@ -31,16 +31,10 @@ export const SisteSoek = ({ soekType, formMethods, handleChange }) => {
 				{options.map((option) => (
 					<Chips.Toggle
 						key={option.label}
-						// TODO: Kanskje bare la selected gjenspeile det som ligger i soek form, slik at chips blir oppdatert naar man endrer i form?
-						selected={selected.includes(option.label)}
+						selected={_.get(formValues, option.path) === option.value}
 						onClick={() => {
-							setSelected(
-								selected.includes(option.label)
-									? selected.filter((x) => x !== option.label)
-									: [...selected, option.label],
-							)
 							handleChange(
-								!selected.includes(option.label) ? option.value : null,
+								_.get(formValues, option.path) !== option.value ? option.value : null,
 								option.path?.split('.')[1].trim(),
 							)
 						}}

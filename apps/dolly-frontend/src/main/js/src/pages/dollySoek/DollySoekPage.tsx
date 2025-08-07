@@ -79,7 +79,11 @@ export default () => {
 					eksisterende personer til nye formål.
 				</Hjelpetekst>
 			</div>
-			<SisteSoek soekType={soekType.dolly} formMethods={formMethods} handleChange={handleChange} />
+			<SisteSoek
+				soekType={soekType.dolly}
+				formValues={formMethods.watch()}
+				handleChange={handleChange}
+			/>
 			<SoekForm
 				formMethods={formMethods}
 				localStorageValue={localStorageValue}
