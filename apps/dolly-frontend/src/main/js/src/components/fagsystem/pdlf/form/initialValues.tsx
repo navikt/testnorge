@@ -44,7 +44,6 @@ export const getInitialBostedsadresse = (master = 'FREG') => ({
 })
 
 export const initialDeltBosted = {
-	adressetype: null as unknown as string,
 	startdatoForKontrakt: null as unknown as string,
 	sluttdatoForKontrakt: null as unknown as string,
 	master: 'FREG',

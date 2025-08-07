@@ -614,6 +614,20 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 	}
 }
 
+const mapDeltBosted = (deltBosted, data) => {
+	if (deltBosted?.length > 0) {
+		const deltBostedData = deltBosted[0]
+		data.push({
+			header: 'Delt bosted',
+			items: [
+				obj('Har delt bosted', 'Ja'),
+				obj('Startdato for kontrakt', formatDate(deltBostedData.startdatoForKontrakt)),
+				obj('Sluttdato for kontrakt', formatDate(deltBostedData.sluttdatoForKontrakt)),
+			],
+		})
+	}
+}
+
 const mapAdressebeskyttelse = (adressebeskyttelse, data) => {
 	if (adressebeskyttelse) {
 		const adressebeskyttelseData = {
@@ -670,55 +684,13 @@ const mapSivilstand = (sivilstand, data) => {
 }
 
 const deltBosted = (personData, path) => {
-	if (!personData || !_.get(personData, path)) return [expandable(null, false, null)]
 	const deltBostedData = _.get(personData, path)
-
 	const fellesVerdier = [
-		obj('Adressetype', showLabel('adressetypeDeltBosted', deltBostedData.adressetype)),
-		obj('Startdato for kontrakt', formatDate(deltBostedData.startdatoForKontrakt)),
-		obj('Sluttdato for kontrakt', formatDate(deltBostedData.sluttdatoForKontrakt)),
+		obj('Har delt bosted', 'Ja'),
+		obj('Startdato for kontrakt', formatDate(deltBostedData?.startdatoForKontrakt)),
+		obj('Sluttdato for kontrakt', formatDate(deltBostedData?.sluttdatoForKontrakt)),
 	]
-
-	if (deltBostedData.vegadresse) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Vegadresse',
-					deltBostedData.adressetype === 'VEGADRESSE' &&
-						isEmpty(deltBostedData.vegadresse) &&
-						ingenVerdierSatt,
-				),
-				...vegadresse(deltBostedData.vegadresse),
-			]),
-		]
-	} else if (deltBostedData.matrikkeladresse) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Matrikkeladresse',
-					deltBostedData.adressetype === 'MATRIKKELADRESSE' &&
-						isEmpty(deltBostedData.matrikkeladresse) &&
-						ingenVerdierSatt,
-				),
-				...matrikkeladresse(deltBostedData.matrikkeladresse),
-			]),
-		]
-	} else if (deltBostedData.ukjentBosted) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Bostedskommune',
-					deltBostedData.ukjentBosted.bostedskommune,
-					AdresseKodeverk.Kommunenummer,
-				),
-			]),
-		]
-	} else {
-		return [expandable('DELT BOSTED', !isEmpty(deltBostedData), [...fellesVerdier])]
-	}
+	return [expandable('DELT BOSTED', !!deltBostedData, [...fellesVerdier])]
 }
 
 const mapForelderBarnRelasjon = (forelderBarnRelasjon, data) => {
@@ -2466,6 +2438,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 			doedfoedtBarn,
 			foreldreansvar,
 			nyident,
+			deltBosted,
 		} = pdldataKriterier
 
 		mapFoedsel(foedsel, data)
@@ -2483,6 +2456,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 		mapBostedsadresse(bostedsadresse, data)
 		mapOppholdsadresse(oppholdsadresse, data)
 		mapKontaktadresse(kontaktadresse, data)
+		mapDeltBosted(deltBosted, data)
 		mapAdressebeskyttelse(adressebeskyttelse, data)
 		mapSikkerhetstiltak(sikkerhetstiltak, data)
 		mapSivilstand(sivilstand, data)
