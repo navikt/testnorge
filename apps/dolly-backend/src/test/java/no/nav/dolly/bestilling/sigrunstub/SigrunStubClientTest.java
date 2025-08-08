@@ -90,8 +90,7 @@ class SigrunStubClientTest {
         request.setSigrunstub(singletonList(new RsLignetInntekt()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request,
-                                DollyPerson.builder().ident(IDENT).build(), progress, false)
-                        .map(ClientFuture::get))
+                                DollyPerson.builder().ident(IDENT).build(), progress, false))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
@@ -120,8 +119,7 @@ class SigrunStubClientTest {
         request.setSigrunstubPensjonsgivende(List.of(new RsPensjonsgivendeForFolketrygden()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request,
-                                DollyPerson.builder().ident(IDENT).build(), progress, false)
-                        .map(ClientFuture::get))
+                                DollyPerson.builder().ident(IDENT).build(), progress, false))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
@@ -147,8 +145,7 @@ class SigrunStubClientTest {
                 .build()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                new BestillingProgress(), true)
-                        .map(ClientFuture::get))
+                                new BestillingProgress(), true))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
@@ -175,8 +172,7 @@ class SigrunStubClientTest {
                 .build()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                new BestillingProgress(), true)
-                        .map(ClientFuture::get))
+                                new BestillingProgress(), true))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());

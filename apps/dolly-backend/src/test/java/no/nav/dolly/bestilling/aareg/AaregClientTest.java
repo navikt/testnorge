@@ -142,8 +142,7 @@ class AaregClientTest {
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT)
                                         .bruker(bruker)
-                                        .build(), bestillingProgress, false)
-                        .map(ClientFuture::get))
+                                        .build(), bestillingProgress, false))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -178,8 +177,7 @@ class AaregClientTest {
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)
-                                .build(), bestillingProgress, false)
-                        .map(ClientFuture::get))
+                                .build(), bestillingProgress, false))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());

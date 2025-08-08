@@ -71,8 +71,7 @@ class InstdataClientTest {
         var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
         StepVerifier.create(instdataClient.gjenopprett(new RsDollyBestillingRequest(), dollyPerson,
-                                new BestillingProgress(), false)
-                        .map(ClientFuture::get))
+                                new BestillingProgress(), false))
                 .expectNextCount(0)
                 .verifyComplete();
     }
@@ -95,8 +94,7 @@ class InstdataClientTest {
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton("q2"));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true)
-                        .map(ClientFuture::get))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true))
                 .assertNext(status -> {
                     verify(transactionHelperService)
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -126,8 +124,7 @@ class InstdataClientTest {
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton("q2"));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false)
-                        .map(ClientFuture::get))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false))
                 .assertNext(status -> {
                     verify(transactionHelperService)
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());

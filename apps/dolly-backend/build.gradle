@@ -60,7 +60,7 @@ dependencies {
     testImplementation 'org.opensearch:opensearch-testcontainers:2.1.2'
 //
 //    testImplementation 'org.springframework.security:spring-security-test'
-//    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 //    testImplementation 'com.h2database:h2'
 //    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
 //    testImplementation 'org.testcontainers:junit-jupiter'

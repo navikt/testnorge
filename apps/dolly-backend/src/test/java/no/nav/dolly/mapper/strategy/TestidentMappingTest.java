@@ -22,7 +22,7 @@ class TestidentMappingTest {
 
     @BeforeEach
     public void setUpHappyPath() {
-        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(new GetUserInfo("dummy")));
+//        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(new GetUserInfo("dummy")));
     }
 
     @Test

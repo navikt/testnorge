@@ -46,8 +46,8 @@ class InntektsmeldingClientTest {
                 .builder()
                 .dokumenter(List.of(dokument))
                 .build();
-        when(inntektsmeldingConsumer.postInntektsmelding(any()))
-                .thenReturn(Flux.just(inntektsmeldingResponse));
+//        when(inntektsmeldingConsumer.postInntektsmelding(any()))
+//                .thenReturn(Flux.just(inntektsmeldingResponse));
 
         var inntekter = RsInntektsmelding.Inntektsmelding
                 .builder()

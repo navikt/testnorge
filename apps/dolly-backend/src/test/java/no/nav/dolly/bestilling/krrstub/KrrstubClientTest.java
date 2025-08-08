@@ -106,8 +106,7 @@ class KrrstubClientTest {
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
 
         StepVerifier.create(krrstubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                new BestillingProgress(), false)
-                        .map(ClientFuture::get))
+                                new BestillingProgress(), false))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());

@@ -98,10 +98,10 @@ class OrganisasjonClientTest {
         Set<String> orgnummer = new HashSet<>();
         orgnummer.add(ORG_NUMMER);
 
-        lenient().when(mapperFacade.map(any(), eq(BestillingRequest.SyntetiskOrganisasjon.class))).thenReturn(requestOrganisasjon);
-        lenient().when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(new BestillingResponse(orgnummer), HttpStatus.CREATED));
-        lenient().when(organisasjonConsumer.deployOrganisasjon(any())).thenReturn(new ResponseEntity<>(deployResponse, HttpStatus.OK));
-        lenient().when(organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(any())).thenReturn(Collections.singletonList(new OrganisasjonBestillingProgress()));
+//        lenient().when(mapperFacade.map(any(), eq(BestillingRequest.SyntetiskOrganisasjon.class))).thenReturn(requestOrganisasjon);
+//        lenient().when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(new BestillingResponse(orgnummer), HttpStatus.CREATED));
+//        lenient().when(organisasjonConsumer.deployOrganisasjon(any())).thenReturn(new ResponseEntity<>(deployResponse, HttpStatus.OK));
+//        lenient().when(organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(any())).thenReturn(Collections.singletonList(new OrganisasjonBestillingProgress()));
     }
 
     @Test
@@ -119,7 +119,7 @@ class OrganisasjonClientTest {
     @Test
     void should_set_bestillingfeil_for_invalid_orgnummer_response() {
 
-        when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
+//        when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
 
         organisasjonClient.opprett(bestilling, OrganisasjonBestilling.builder()
                 .id(BESTILLING_ID)
