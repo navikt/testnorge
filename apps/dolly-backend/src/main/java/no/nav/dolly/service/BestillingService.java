@@ -42,7 +42,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -79,12 +78,12 @@ public class BestillingService {
     public Mono<Bestilling> fetchBestillingById(Long bestillingId) {
 
         return bestillingRepository.findById(bestillingId)
+                .switchIfEmpty(Mono.error(new NotFoundException(format("Fant ikke bestillingId %d", bestillingId))))
                 .flatMap(bestilling -> getBestillingProgresser(bestilling)
                         .map(progresser -> {
                             bestilling.setProgresser(progresser);
                             return bestilling;
-                        }))
-                .switchIfEmpty(Mono.error(new NotFoundException(format("Fant ikke bestillingId %d", bestillingId))));
+                        }));
     }
 
     public Flux<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
@@ -160,21 +159,21 @@ public class BestillingService {
 
         return bestillingRepository.findById(bestillingId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Bestilling med id %d ikke funnet".formatted(bestillingId))))
-                .flatMap(bestilling -> bestillingKontrollRepository.findByBestillingId(bestillingId))
-                .switchIfEmpty(bestillingKontrollRepository.save(BestillingKontroll.builder()
-                        .stoppet(true)
-                        .bestillingId(bestillingId)
-                        .build()))
-                .flatMap(bestKontroll -> fetchBestillingById(bestillingId))
-                .zipWith(brukerService.fetchOrCreateBruker())
-                .map(tuple2 -> {
-                    tuple2.getT1().setStoppet(true);
-                    tuple2.getT1().setFerdig(true);
-                    tuple2.getT1().setSistOppdatert(now());
-                    tuple2.getT1().setBruker(tuple2.getT2());
-                    return tuple2.getT1();
-                })
-                .flatMap(bestillingRepository::save)
+                .flatMap(bestilling -> bestillingKontrollRepository.findByBestillingId(bestillingId)
+                        .switchIfEmpty(bestillingKontrollRepository.save(BestillingKontroll.builder()
+                                .stoppet(true)
+                                .bestillingId(bestillingId)
+                                .build()))
+                        .flatMap(bestKontroll -> Mono.just(bestilling))
+                        .zipWith(brukerService.fetchOrCreateBruker())
+                        .map(tuple2 -> {
+                            tuple2.getT1().setStoppet(true);
+                            tuple2.getT1().setFerdig(true);
+                            tuple2.getT1().setSistOppdatert(now());
+                            tuple2.getT1().setBruker(tuple2.getT2());
+                            return tuple2.getT1();
+                        })
+                        .flatMap(bestillingRepository::save))
                 .flatMap(bestilling -> getBestillingProgresser(bestilling)
                         .map(progresser -> {
                             bestilling.setProgresser(progresser);
@@ -523,35 +522,37 @@ public class BestillingService {
 
         return oppdaterDokarkivDokumenter(request)
                 .flatMap(request1 -> oppdaterHistarkDokumenter(request1)
-                        .flatMap(request2 -> Mono.just(
-                                Objects.requireNonNull(toJson(BestilteKriterier.builder()
-                                        .aareg(request2.getAareg())
-                                        .arbeidsplassenCV(request2.getArbeidsplassenCV())
-                                        .arbeidssoekerregisteret(request2.getArbeidssoekerregisteret())
-                                        .arenaforvalter(request2.getArenaforvalter())
-                                        .bankkonto(request2.getBankkonto())
-                                        .brregstub(request2.getBrregstub())
-                                        .dokarkiv(request2.getDokarkiv())
-                                        .etterlatteYtelser(request2.getEtterlatteYtelser())
-                                        .fullmakt(request2.getFullmakt())
-                                        .histark(request2.getHistark())
-                                        .inntektsmelding(request2.getInntektsmelding())
-                                        .inntektstub(request2.getInntektstub())
-                                        .instdata(request2.getInstdata())
-                                        .krrstub(request2.getKrrstub())
-                                        .medl(request2.getMedl())
-                                        .pdldata(request2.getPdldata())
-                                        .pensjonforvalter(request2.getPensjonforvalter())
-                                        .sigrunstub(request2.getSigrunstub())
-                                        .sigrunstubPensjonsgivende(request2.getSigrunstubPensjonsgivende())
-                                        .sigrunstubSummertSkattegrunnlag(request2.getSigrunstubSummertSkattegrunnlag())
-                                        .skattekort(request2.getSkattekort())
-                                        .skjerming(request2.getSkjerming())
-                                        .sykemelding(request2.getSykemelding())
-                                        .tpsMessaging(request2.getTpsMessaging())
-                                        .udistub(request2.getUdistub())
-                                        .yrkesskader(request2.getYrkesskader())
-                                        .build())))));
+                        .flatMap(request2 -> {
+                            var bestKriterier = toJson(BestilteKriterier.builder()
+                                    .aareg(request2.getAareg())
+                                    .arbeidsplassenCV(request2.getArbeidsplassenCV())
+                                    .arbeidssoekerregisteret(request2.getArbeidssoekerregisteret())
+                                    .arenaforvalter(request2.getArenaforvalter())
+                                    .bankkonto(request2.getBankkonto())
+                                    .brregstub(request2.getBrregstub())
+                                    .dokarkiv(request2.getDokarkiv())
+                                    .etterlatteYtelser(request2.getEtterlatteYtelser())
+                                    .fullmakt(request2.getFullmakt())
+                                    .histark(request2.getHistark())
+                                    .inntektsmelding(request2.getInntektsmelding())
+                                    .inntektstub(request2.getInntektstub())
+                                    .instdata(request2.getInstdata())
+                                    .krrstub(request2.getKrrstub())
+                                    .medl(request2.getMedl())
+                                    .pdldata(request2.getPdldata())
+                                    .pensjonforvalter(request2.getPensjonforvalter())
+                                    .sigrunstub(request2.getSigrunstub())
+                                    .sigrunstubPensjonsgivende(request2.getSigrunstubPensjonsgivende())
+                                    .sigrunstubSummertSkattegrunnlag(request2.getSigrunstubSummertSkattegrunnlag())
+                                    .skattekort(request2.getSkattekort())
+                                    .skjerming(request2.getSkjerming())
+                                    .sykemelding(request2.getSykemelding())
+                                    .tpsMessaging(request2.getTpsMessaging())
+                                    .udistub(request2.getUdistub())
+                                    .yrkesskader(request2.getYrkesskader())
+                                    .build());
+                            return Mono.just(isNotBlank(bestKriterier) ? bestKriterier : "{}");
+                        }));
     }
 
     private Mono<RsDollyBestilling> oppdaterDokarkivDokumenter(RsDollyBestilling request) {
