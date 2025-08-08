@@ -35,8 +35,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-@RestController
-@RequestMapping("/api/v1/brukere")
+@RestController("brukerControllerV2")
+@RequestMapping("/api/v2/brukere")
 @RequiredArgsConstructor
 public class BrukerController {
 

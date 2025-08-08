@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-@Service
+@Service("userServiceV2")
 @RequiredArgsConstructor
 public class UserService {
     private final CryptographyService cryptographyService;
