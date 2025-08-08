@@ -7,7 +7,7 @@ export enum soekType {
 	tenor = 'TENOR',
 }
 
-export const SisteSoek = ({ soekType, formValues, handleChange }) => {
+export const SisteSoek = ({ soekType, formValues, handleChange, handleChangeAdresse }) => {
 	// TODO: Funker det med registreRequest?
 	// TODO: Sjekk ulike typer felter, at de fungerer som forventet
 
@@ -23,6 +23,7 @@ export const SisteSoek = ({ soekType, formValues, handleChange }) => {
 	})
 
 	const options = Object.values(lagredeSoekData)
+	console.log('options: ', options) //TODO - SLETT MEG
 	console.log('formValues: ', formValues) //TODO - SLETT MEG
 
 	return (
@@ -34,10 +35,18 @@ export const SisteSoek = ({ soekType, formValues, handleChange }) => {
 						key={option.label}
 						selected={_.get(formValues, option.path) === option.value}
 						onClick={() => {
-							handleChange(
-								_.get(formValues, option.path) !== option.value ? option.value : null,
-								option.path?.split('.')[1].trim(),
-							)
+							if (option.path.includes('adresse') || option.path.includes('harDeltBosted')) {
+								const pathArray = option.path?.split('.')
+								handleChangeAdresse(
+									_.get(formValues, option.path) !== option.value ? option.value : null,
+									pathArray[pathArray.length - 1],
+								)
+							} else {
+								handleChange(
+									_.get(formValues, option.path) !== option.value ? option.value : null,
+									option.path?.split('.')[1].trim(),
+								)
+							}
 						}}
 					>
 						{option.label}

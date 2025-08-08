@@ -31,14 +31,13 @@ export const SoekForm = ({
 	formMethods,
 	localStorageValue,
 	handleChange,
+	handleChangeAdresse,
 	setRequest,
 	formRequest,
 }) => {
 	//TODO: Felter/kategorier som maa fikses
 	// Fagsystemer: alle
 	// Personinformasjon: skjerming
-	// Adresser: alle
-	// Familierelasjoner: harDeltBosted
 
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
@@ -72,18 +71,6 @@ export const SoekForm = ({
 			}
 		})
 	}, [formRequest])
-
-	const handleChangeAdresse = (value: any, path: string) => {
-		const updatedAdresseRequest = { ...values.personRequest.adresse, [path]: value }
-		const updatedRequest = {
-			...values,
-			side: 0,
-			seed: null,
-		}
-		_.set(updatedRequest, 'personRequest.adresse', updatedAdresseRequest)
-		reset(updatedRequest)
-		setRequest(updatedRequest)
-	}
 
 	const handleChangeList = (value: any, path: string) => {
 		const list = value.map((item: any) => item.value)

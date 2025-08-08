@@ -1,19 +1,25 @@
 import Title from '../../components/title'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
-import { dollySoekLocalStorageKey, personPath, SoekForm } from '@/pages/dollySoek/SoekForm'
+import {
+	adressePath,
+	dollySoekLocalStorageKey,
+	personPath,
+	SoekForm,
+} from '@/pages/dollySoek/SoekForm'
 import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as _ from 'lodash-es'
 import { dollySoekInitialValues } from '@/pages/dollySoek/dollySoekInitialValues'
 import { DollyApi } from '@/service/Api'
-import { codeToNorskLabel, oversettBoolean } from '@/utils/DataFormatter'
+import { codeToNorskLabel } from '@/utils/DataFormatter'
 
 export default () => {
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
 	const lagreSoekRequestRef = useRef(lagreSoekRequest)
 	console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
+	// TODO: Sett lagreSoekRequest til aa vaere det som evt ligger i form naar man kommer til siden?
 
 	useEffect(() => {
 		lagreSoekRequestRef.current = lagreSoekRequest
@@ -48,13 +54,13 @@ export default () => {
 	const { watch, reset, control, getValues } = formMethods
 	const values = watch()
 
-	const getLabel = (value: any) => {
-		if (value === true || value === false) {
-			return oversettBoolean(value)
+	const getLabel = (value: any, path: string) => {
+		if (value === true) {
+			return `${codeToNorskLabel(path)}`
 		} else if (value.length > 3) {
-			return codeToNorskLabel(value)
+			return `${codeToNorskLabel(path)}: ${codeToNorskLabel(value)}`
 		}
-		return value
+		return `${codeToNorskLabel(path)}: ${value}`
 	}
 
 	const handleChange = (value: any, path: string) => {
@@ -68,7 +74,34 @@ export default () => {
 				[path]: {
 					path: `${personPath}.${path}`,
 					value: value,
-					label: `${codeToNorskLabel(path)}: ${getLabel(value)}`,
+					label: getLabel(value, path),
+				},
+			})
+		} else {
+			setLagreSoekRequest({
+				...lagreSoekRequest,
+				[path]: undefined,
+			})
+		}
+	}
+
+	const handleChangeAdresse = (value: any, path: string) => {
+		const updatedAdresseRequest = { ...values.personRequest.adresse, [path]: value }
+		const updatedRequest = {
+			...values,
+			side: 0,
+			seed: null,
+		}
+		_.set(updatedRequest, 'personRequest.adresse', updatedAdresseRequest)
+		reset(updatedRequest)
+		setRequest(updatedRequest)
+		if (value) {
+			setLagreSoekRequest({
+				...lagreSoekRequest,
+				[path]: {
+					path: `${adressePath}.${path}`,
+					value: value,
+					label: getLabel(value, path),
 				},
 			})
 		} else {
@@ -92,11 +125,13 @@ export default () => {
 				soekType={soekType.dolly}
 				formValues={formMethods.watch()}
 				handleChange={handleChange}
+				handleChangeAdresse={handleChangeAdresse}
 			/>
 			<SoekForm
 				formMethods={formMethods}
 				localStorageValue={localStorageValue}
 				handleChange={handleChange}
+				handleChangeAdresse={handleChangeAdresse}
 				setRequest={setRequest}
 				formRequest={formRequest}
 			/>
