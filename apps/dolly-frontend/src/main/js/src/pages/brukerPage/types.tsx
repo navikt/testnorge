@@ -11,6 +11,7 @@ export type OrgResponse = {
 export type Bruker = {
 	id?: string
 	brukernavn: string
+	epost: string
 	organisasjonsnummer: string
 	opprettet?: string
 	sistInnlogget?: string

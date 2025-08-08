@@ -25,7 +25,7 @@ type TextInputProps = {
 	value?: string
 	fieldName?: string
 	type?: 'text' | 'number'
-	size?: 'small' | 'medium' | 'large'
+	size?: 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
 	className?: string
 	icon?: string
 	isDisabled?: boolean
