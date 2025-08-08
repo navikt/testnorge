@@ -1,17 +1,16 @@
-package no.nav.testnav.apps.brukerservice.controller;
+package no.nav.testnav.apps.brukerservice.controller.v1;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import reactor.core.publisher.Mono;
-
 import no.nav.testnav.apps.brukerservice.domain.User;
-import no.nav.testnav.apps.brukerservice.service.UserService;
-import no.nav.testnav.apps.brukerservice.service.ValidateService;
+import no.nav.testnav.apps.brukerservice.service.v1.UserService;
+import no.nav.testnav.apps.brukerservice.service.v1.ValidateService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController

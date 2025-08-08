@@ -1,9 +1,19 @@
-package no.nav.testnav.apps.brukerservice.controller;
+package no.nav.testnav.apps.brukerservice.controller.v1;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.brukerservice.domain.User;
+import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
+import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
+import no.nav.testnav.apps.brukerservice.exception.UserAlreadyExistsException;
+import no.nav.testnav.apps.brukerservice.exception.UserHasNoAccessToOrgnisasjonException;
+import no.nav.testnav.apps.brukerservice.exception.UsernameAlreadyTakenException;
+import no.nav.testnav.apps.brukerservice.service.v1.JwtService;
+import no.nav.testnav.apps.brukerservice.service.v1.UserService;
+import no.nav.testnav.apps.brukerservice.service.v1.ValidateService;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -24,17 +34,6 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-
-import no.nav.testnav.apps.brukerservice.domain.User;
-import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
-import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
-import no.nav.testnav.apps.brukerservice.exception.UserAlreadyExistsException;
-import no.nav.testnav.apps.brukerservice.exception.UserHasNoAccessToOrgnisasjonException;
-import no.nav.testnav.apps.brukerservice.exception.UsernameAlreadyTakenException;
-import no.nav.testnav.apps.brukerservice.service.JwtService;
-import no.nav.testnav.apps.brukerservice.service.UserService;
-import no.nav.testnav.apps.brukerservice.service.ValidateService;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 @Slf4j
 @RestController

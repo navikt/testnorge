@@ -1,8 +1,8 @@
-package no.nav.testnav.apps.brukerservice.controller;
+package no.nav.testnav.apps.brukerservice.controller.v1;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.brukerservice.dto.TilgangDTO;
-import no.nav.testnav.apps.brukerservice.service.TilgangService;
+import no.nav.testnav.apps.brukerservice.service.v1.TilgangService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
