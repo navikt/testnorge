@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.etterlatte.dto.VedtakRequestDTO;
 import no.nav.dolly.bestilling.etterlatte.dto.VedtakResponseDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -27,10 +26,8 @@ public class EtterlatteConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            WebClientLogger webClientLogger,
-            CheckAliveService checkAliveService) {
+            WebClientLogger webClientLogger) {
 
-        super(checkAliveService);
         this.tokenService = tokenService;
         this.serverProperties = consumers.getEtterlatte();
         var webClientBuilder = webClient

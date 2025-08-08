@@ -7,7 +7,6 @@ import no.nav.dolly.config.Consumers;
 import no.nav.dolly.consumer.norg2.command.Norg2GetCommand;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -28,10 +27,8 @@ public class Norg2Consumer extends ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient,
-            CheckAliveService checkAliveService) {
+            WebClient webClient) {
 
-        super(checkAliveService);
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavNorg2Proxy();
         this.webClient = webClient

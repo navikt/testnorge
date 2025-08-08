@@ -3,15 +3,25 @@ package no.nav.dolly.bestilling.arenaforvalter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.arenaforvalter.command.*;
-import no.nav.dolly.bestilling.arenaforvalter.dto.*;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetMiljoeCommand;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaGetCommand;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostAap;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostAap115;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenaBruker;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadagpenger;
+import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
+import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
+import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
+import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -37,10 +47,8 @@ public class ArenaForvalterConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient webClient,
-            CheckAliveService checkAliveService) {
+            WebClient webClient) {
 
-        super(checkAliveService);
         serverProperties = consumers.getTestnavArenaForvalterenProxy();
         this.tokenService = tokenService;
         this.webClient = webClient

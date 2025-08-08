@@ -3,11 +3,16 @@ package no.nav.dolly.bestilling.pdldata;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.pdldata.command.*;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataHentCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataStanaloneCommand;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AvailibilityResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
@@ -35,10 +40,8 @@ public class PdlDataConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient,
-            CheckAliveService checkAliveService) {
+            WebClient webClient) {
 
-        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPdlForvalter();
         this.webClient = webClient

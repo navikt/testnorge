@@ -1,19 +1,19 @@
-package no.nav.dolly.service;
+package no.nav.dolly.util;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-@Service
-public class CheckAliveService {
+@UtilityClass
+public class CheckAliveUtil {
 
     private static final String TEAM_DOLLY = "Team Dolly";
     private static final String PATTERN = "%s, URL: %s";
 
-    public Mono<TestnavStatusResponse> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+    public static Mono<TestnavStatusResponse> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
 
         return Mono.just(TEAM_DOLLY)
                 .flatMap(ignore -> Mono.zip(
@@ -26,7 +26,7 @@ public class CheckAliveService {
                         .build());
     }
 
-    private Mono<String> checkInternal(WebClient webClient, String url) {
+    private static Mono<String> checkInternal(WebClient webClient, String url) {
 
         return webClient.get()
                 .uri(url)

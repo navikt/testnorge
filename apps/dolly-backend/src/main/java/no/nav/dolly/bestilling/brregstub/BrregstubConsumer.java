@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.brregstub.command.BrregGetCommand;
 import no.nav.dolly.bestilling.brregstub.command.BrregPostCommand;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.config.Consumers;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -32,10 +31,8 @@ public class BrregstubConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient,
-            CheckAliveService checkAliveService) {
+            WebClient webClient) {
 
-        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavBrregStubProxy();
         this.webClient = webClient

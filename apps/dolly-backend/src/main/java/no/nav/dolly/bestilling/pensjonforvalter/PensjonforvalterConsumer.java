@@ -3,11 +3,39 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.pensjonforvalter.command.*;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.*;
+import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAfpOffentligCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreGenerertPoppInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePensjonsavtaleCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreUforetrygdCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.PensjonHentVedtakCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.SletteAfpOffentligCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePensjonsavtaleCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePoppInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AfpOffentligRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -32,10 +60,8 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient,
-            CheckAliveService checkAliveService) {
+            WebClient webClient) {
 
-        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPensjonTestdataFacadeProxy();
         this.webClient = webClient

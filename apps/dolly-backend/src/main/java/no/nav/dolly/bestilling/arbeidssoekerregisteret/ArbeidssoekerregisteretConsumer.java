@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.arbeidssoekerregisteret.command.SlettArbeidssoeke
 import no.nav.dolly.bestilling.arbeidssoekerregisteret.dto.ArbeidssoekerregisteretRequest;
 import no.nav.dolly.bestilling.arbeidssoekerregisteret.dto.ArbeidssoekerregisteretResponse;
 import no.nav.dolly.config.Consumers;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
@@ -24,10 +23,8 @@ public class ArbeidssoekerregisteretConsumer extends ConsumerStatus {
     public ArbeidssoekerregisteretConsumer(
             Consumers consumers,
             WebClient webClient,
-            TokenExchange tokenExchange,
-            CheckAliveService checkAliveService) {
+            TokenExchange tokenExchange) {
 
-        super(checkAliveService);
         this.serverProperties = consumers.getArbeidssoekerregisteretProxy();
         this.webClient = webClient
                 .mutate()

@@ -1,8 +1,6 @@
 package no.nav.dolly.bestilling;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,14 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.dolly.util.CheckAliveUtil.checkConsumerStatus;
+
 @Slf4j
-@RequiredArgsConstructor
 public abstract class ConsumerStatus {
 
-    public static final String LIVENESS_ENDPOINT = "/internal/health/liveness";
-    public static final String READINESS_ENDPOINT = "/internal/health/readiness";
-
-    private final CheckAliveService checkAliveService;
+    private static final String LIVENESS_ENDPOINT = "/internal/health/liveness";
+    private static final String READINESS_ENDPOINT = "/internal/health/readiness";
 
     public abstract String serviceUrl();
 
@@ -29,7 +26,7 @@ public abstract class ConsumerStatus {
 
     public Mono<Map<String, TestnavStatusResponse>> checkStatus(WebClient webClient) {
 
-        return checkAliveService.checkConsumerStatus(
+        return checkConsumerStatus(
                         serviceUrl() + LIVENESS_ENDPOINT,
                         serviceUrl() + READINESS_ENDPOINT,
                         webClient)

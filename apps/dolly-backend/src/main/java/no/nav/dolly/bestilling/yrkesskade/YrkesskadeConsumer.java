@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.yrkesskade.command.YrkesskadePostCommand;
 import no.nav.dolly.bestilling.yrkesskade.dto.SaksoversiktDTO;
 import no.nav.dolly.bestilling.yrkesskade.dto.YrkesskadeResponseDTO;
 import no.nav.dolly.config.Consumers;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -26,10 +25,8 @@ public class YrkesskadeConsumer extends ConsumerStatus {
     public YrkesskadeConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient webClient,
-            CheckAliveService checkAliveService) {
+            WebClient webClient) {
 
-        super(checkAliveService);
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getYrkesskadeProxy();
         this.webClient = webClient

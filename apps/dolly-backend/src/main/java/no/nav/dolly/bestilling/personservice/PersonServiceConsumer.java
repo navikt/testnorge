@@ -9,7 +9,6 @@ import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -40,10 +39,8 @@ public class PersonServiceConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            ObjectMapper objectMapper,
-            CheckAliveService checkAliveService) {
+            ObjectMapper objectMapper) {
 
-        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPersonService();
         this.webClient = webClient

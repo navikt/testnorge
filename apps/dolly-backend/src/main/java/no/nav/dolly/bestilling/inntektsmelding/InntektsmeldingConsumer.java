@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.inntektsmelding.command.OpprettInntektsmeldingCom
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.service.CheckAliveService;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -32,10 +31,8 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            WebClientLogger webClientLogger,
-            CheckAliveService checkAliveService) {
+            WebClientLogger webClientLogger) {
 
-        super(checkAliveService);
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavInntektsmeldingService();
         var webClientBuilder = webClient.mutate();
