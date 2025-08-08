@@ -47,12 +47,9 @@ public class BrukerService {
             return getAuthenticatedUserId.call()
                     .flatMap(this::fetchBruker)
                     .onErrorResume(NotFoundException.class, error -> createBruker());
-        }
-        try {
-            return fetchBruker(brukerId);
-
-        } catch (NotFoundException e) {
-            return createBruker();
+        } else {
+            return fetchBruker(brukerId)
+                    .onErrorResume(NotFoundException.class, error -> createBruker());
         }
     }
 
@@ -71,8 +68,7 @@ public class BrukerService {
     public Mono<Bruker> leggTilFavoritt(Long gruppeId) {
 
         return fetchTestgruppe(gruppeId)
-                .flatMap(gruppe -> getAuthenticatedUserId.call()
-                        .flatMap(this::fetchBruker)
+                .flatMap(gruppe -> fetchOrCreateBruker()
                         .flatMap(bruker -> brukerFavoritterRepository.save(BrukerFavoritter.builder()
                                         .brukerId(bruker.getId())
                                         .gruppeId(gruppe.getId())
@@ -83,8 +79,8 @@ public class BrukerService {
     public Mono<Bruker> fjernFavoritt(Long gruppeId) {
 
         return fetchTestgruppe(gruppeId)
-                .flatMap(gruppe -> getAuthenticatedUserId.call()
-                        .flatMap(this::fetchBruker)
+                .flatMap(gruppe ->
+                        fetchOrCreateBruker()
                         .flatMap(bruker -> brukerFavoritterRepository.deleteByBrukerIdAndGruppeId(
                                         bruker.getId(),
                                         gruppe.getId())
