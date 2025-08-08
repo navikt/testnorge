@@ -19,7 +19,6 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
@@ -59,7 +58,6 @@ public class MalBestillingService {
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
-    private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final ObjectMapper objectMapper;
     private final CacheManager cacheManager;
     private final BrukerRepository brukerRepository;
@@ -99,8 +97,7 @@ public class MalBestillingService {
 
         return bestillingRepository.findById(bestillingId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
-                .zipWith(getAuthenticatedUserId.call()
-                        .flatMap(brukerService::fetchBruker))
+                .zipWith(brukerService.fetchOrCreateBruker())
                 .flatMap(tuple -> bestillingMalRepository.findByBrukerIdAndMalNavn(tuple.getT2().getId(), malNavn)
                         .switchIfEmpty(Mono.just(BestillingMal.builder()
                                         .brukerId(tuple.getT2().getId())
@@ -157,8 +154,7 @@ public class MalBestillingService {
                     return aggregertRequest;
                 })
                 .collectList()
-                .then(getAuthenticatedUserId.call()
-                        .flatMap(brukerService::fetchBruker))
+                .then(brukerService.fetchOrCreateBruker())
                 .flatMap(bruker -> bestillingMalRepository.findByBrukerIdAndMalNavn(bruker.getId(), name)
                         .switchIfEmpty(Mono.just(BestillingMal.builder()
                                         .brukerId(bruker.getId())
@@ -217,8 +213,7 @@ public class MalBestillingService {
 
     public Mono<RsMalBestillingSimple> getMalBestillingOversikt() {
 
-        return getAuthenticatedUserId.call()
-                .flatMap(brukerService::fetchBruker)
+        return brukerService.fetchOrCreateBruker()
                 .flatMap(bruker -> {
                     if (bruker.getBrukertype() == AZURE) {
                         return bestillingMalRepository.findAllByBrukertypeAzure()

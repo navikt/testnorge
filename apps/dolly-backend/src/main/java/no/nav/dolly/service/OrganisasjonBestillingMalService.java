@@ -13,7 +13,6 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -39,7 +38,6 @@ public class OrganisasjonBestillingMalService {
     private final BrukerService brukerService;
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final MapperFacade mapperFacade;
-    private final GetAuthenticatedUserId getAuthenticatedUserId;
 
     public Mono<OrganisasjonBestillingMal> saveOrganisasjonBestillingMal(OrganisasjonBestilling bestilling, String malNavn) {
 
@@ -57,8 +55,7 @@ public class OrganisasjonBestillingMalService {
 
         return organisasjonBestillingRepository.findById(bestillingId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
-                .flatMap(bestilling -> getAuthenticatedUserId.call()
-                        .flatMap(brukerService::fetchBruker)
+                .flatMap(bestilling -> brukerService.fetchOrCreateBruker()
                         .flatMap(bruker -> slettMalbestillingerMedMatchendeNavn(malNavn, bruker.getId())
                                 .then(Mono.just(OrganisasjonBestillingMal.builder()
                                         .bestKriterier(bestilling.getBestKriterier())

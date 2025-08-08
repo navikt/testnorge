@@ -9,9 +9,9 @@ import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
+import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
@@ -19,7 +19,6 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -29,7 +28,6 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -72,7 +70,6 @@ public class BestillingService {
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final DokumentRepository dokumentRepository;
-    private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final IdentRepository identRepository;
     private final MalBestillingService malBestillingService;
     private final MiljoerConsumer miljoerConsumer;
@@ -169,7 +166,7 @@ public class BestillingService {
                         .bestillingId(bestillingId)
                         .build()))
                 .flatMap(bestKontroll -> fetchBestillingById(bestillingId))
-                .zipWith(fetchBruker())
+                .zipWith(brukerService.fetchOrCreateBruker())
                 .map(tuple2 -> {
                     tuple2.getT1().setStoppet(true);
                     tuple2.getT1().setFerdig(true);
@@ -230,7 +227,7 @@ public class BestillingService {
                 .doOnNext(tuple -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
-                        fetchBruker(),
+                        brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
                 .flatMap(tuple ->
                         Mono.just(Bestilling.builder()
@@ -276,7 +273,7 @@ public class BestillingService {
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
-                        fetchBruker(),
+                        brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
                 .flatMap(tuple ->
                         Mono.just(Bestilling.builder()
@@ -321,7 +318,7 @@ public class BestillingService {
         return fetchBestillingById(bestillingId)
                 .flatMap(bestilling -> Mono.zip(
                         Mono.just(bestilling),
-                        fetchBruker(),
+                        brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
                 .flatMap(tuple -> {
                     if (!tuple.getT1().isFerdig()) {
@@ -359,7 +356,7 @@ public class BestillingService {
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident))))
                 .flatMap(testident -> Mono.zip(
                         Mono.just(testident),
-                        fetchBruker(),
+                        brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(tuple.getT1().getGruppeId())
@@ -387,7 +384,7 @@ public class BestillingService {
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
                 .flatMap(testgruppe -> Mono.zip(
-                        fetchBruker(),
+                        brukerService.fetchOrCreateBruker(),
                         identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                                 .collectList(),
                         miljoerConsumer.getMiljoer()))
@@ -423,7 +420,7 @@ public class BestillingService {
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
-                        fetchBruker(),
+                        brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
                 .map(tuple -> Bestilling.builder()
                         .gruppeId(gruppeId)
@@ -458,7 +455,7 @@ public class BestillingService {
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
                 .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
-                        fetchBruker(),
+                        brukerService.fetchOrCreateBruker(),
                         identRepository.countByGruppeId(gruppeId),
                         miljoerConsumer.getMiljoer()))
                 .doOnNext(tuple -> log.info("Antall testidenter {} i gruppe {} ", tuple.getT2(), gruppeId))
@@ -629,12 +626,6 @@ public class BestillingService {
 
     private String wrapSearchString(String searchString) {
         return isNotBlank(searchString) ? "%%%s%%".formatted(searchString) : "";
-    }
-
-    private Mono<Bruker> fetchBruker() {
-
-        return getAuthenticatedUserId.call()
-                .flatMap(brukerService::fetchBruker);
     }
 
     private String toJson(Object object) {

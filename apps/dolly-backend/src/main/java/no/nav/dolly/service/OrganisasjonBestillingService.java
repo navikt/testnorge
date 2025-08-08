@@ -17,10 +17,8 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingS
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -56,9 +54,7 @@ public class OrganisasjonBestillingService {
 
     private static final List<Status> DEPLOY_ENDED_STATUS_LIST = List.of(COMPLETED, ERROR, FAILED);
 
-    private final BrukerRepository brukerRepository;
     private final BrukerService brukerService;
-    private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final JsonBestillingMapper jsonBestillingMapper;
     private final ObjectMapper objectMapper;
     private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
@@ -132,8 +128,7 @@ public class OrganisasjonBestillingService {
     @Transactional
     public Mono<OrganisasjonBestilling> saveBestilling(RsOrganisasjonBestilling request) {
 
-        return getAuthenticatedUserId.call()
-                .flatMap(brukerRepository::findByBrukerId)
+        return brukerService.fetchOrCreateBruker()
                 .map(bruker -> OrganisasjonBestilling.builder()
                         .antall(1)
                         .ferdig(false)
@@ -165,8 +160,7 @@ public class OrganisasjonBestillingService {
     @Transactional
     public Mono<OrganisasjonBestilling> saveBestilling(RsOrganisasjonBestillingStatus status) {
 
-        return getAuthenticatedUserId.call()
-                .flatMap(brukerService::fetchBruker)
+        return brukerService.fetchOrCreateBruker()
                 .flatMap(bruker -> Mono.just(
                         OrganisasjonBestilling.builder()
                                 .antall(1)

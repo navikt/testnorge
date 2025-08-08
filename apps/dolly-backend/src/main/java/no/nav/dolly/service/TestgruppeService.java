@@ -19,11 +19,9 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -55,14 +53,12 @@ public class TestgruppeService {
     private final PersonService personService;
     private final PdlDataConsumer pdlDataConsumer;
     private final BrukerServiceConsumer brukerServiceConsumer;
-    private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final BestillingRepository bestillingRepository;
     private final IdentRepository identRepository;
 
     public Mono<Testgruppe> opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
 
-        return getAuthenticatedUserId.call()
-                .flatMap(brukerService::fetchBruker)
+        return brukerService.fetchOrCreateBruker()
                 .map(bruker -> Testgruppe.builder()
                         .navn(rsTestgruppe.getNavn())
                         .hensikt(rsTestgruppe.getHensikt())
@@ -148,14 +144,6 @@ public class TestgruppeService {
                                         getRsTestgruppePage(pageNo, pageSize, bruker, tuple.getT1(), tuple.getT2())));
     }
 
-    public Flux<Testgruppe> fetchTestgrupperByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
-
-        return brukerService.fetchBruker(brukerId)
-                .switchIfEmpty(Mono.error(new NotFoundException("Finner ikke bruker med id = " + brukerId)))
-                .flatMapMany(bruker -> testgruppeRepository.findByOpprettetAvId(bruker.getId(),
-                        PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
-    }
-
     public Flux<Testgruppe> saveGrupper(Collection<Testgruppe> testgrupper) {
 
         return Flux.fromIterable(testgrupper)
@@ -180,8 +168,7 @@ public class TestgruppeService {
     public Mono<Testgruppe> oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
 
         return fetchTestgruppeById(gruppeId)
-                .zipWith(getAuthenticatedUserId.call()
-                        .flatMap(brukerService::fetchBruker))
+                .zipWith(brukerService.fetchOrCreateBruker())
                 .map(tuple -> {
                     tuple.getT1().setHensikt(endreGruppe.getHensikt());
                     tuple.getT1().setNavn(endreGruppe.getNavn());
@@ -243,8 +230,7 @@ public class TestgruppeService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Finner ikke testgruppe med id = " + gruppeId)))
-                .zipWith(getAuthenticatedUserId.call()
-                        .flatMap(brukerService::fetchBruker))
+                .zipWith(brukerService.fetchOrCreateBruker())
                 .map(tuple -> {
                     tuple.getT1().setSistEndretAvId(tuple.getT2().getId());
                     tuple.getT1().setSistEndretAv(tuple.getT2());
