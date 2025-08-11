@@ -122,9 +122,9 @@ export default () => {
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
-				{((organisasjon && !loading) || (brukerResponse.brukernavn && !brukerResponse.epost)) && (
+				{((organisasjon && !loading) || (brukerResponse?.brukernavn && !brukerResponse?.epost)) && (
 					<BrukernavnVelger
-						eksisterendeBrukernavn={brukerResponse.brukernavn}
+						eksisterendeBrukernavn={brukerResponse?.brukernavn}
 						organisasjon={organisasjon}
 						addToSession={addToSession}
 					/>

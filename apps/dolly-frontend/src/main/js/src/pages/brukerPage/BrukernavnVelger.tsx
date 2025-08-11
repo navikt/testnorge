@@ -68,7 +68,11 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 	const onSubmit = async (formData: any) => {
 		setError(null)
 		setLoading(true)
-		BrukerApi.opprettBruker(formData.brukernavn, formData.epost, organisasjon.organisasjonsnummer)
+		BrukerApi.opprettBruker(
+			formData?.brukernavn,
+			formData?.epost,
+			organisasjon?.organisasjonsnummer,
+		)
 			.then((response: Bruker) => {
 				if (response !== null) {
 					addToSession(organisasjon.organisasjonsnummer)
