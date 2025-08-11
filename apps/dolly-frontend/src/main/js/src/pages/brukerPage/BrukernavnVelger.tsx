@@ -6,49 +6,57 @@ import { Bruker, Organisasjon } from '@/pages/brukerPage/types'
 import { BrukerApi } from '@/service/Api'
 import { FormProvider, useForm } from 'react-hook-form'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+import { DollyErrorMessage } from '@/utils/DollyErrorMessageWrapper'
 
 type BrukernavnVelgerProps = {
+	eksisterendeBrukernavn?: string
 	organisasjon: Organisasjon
 	addToSession: (org: string) => void
 }
 
+const validation = yup.object().shape({
+	brukernavn: yup
+		.string()
+		.required('Brukernavn er påkrevd')
+		.min(5, 'Brukernavn må være minst 5 tegn')
+		.max(25, 'Brukernavn kan ikke være mer enn 25 tegn')
+		.matches(/^[a-zA-Z0-9æøåÆØÅ]+$/, 'Kun bokstaver og tall er tillatt'),
+	epost: yup.string().email('Epost må være på gyldig format').required('Epost er påkrevd'),
+})
+
 const Selector = styled.div`
-	display: flexbox;
-	text-align: -webkit-center;
-	justify-content: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
 	margin-bottom: 20px;
 `
 
 const feilmeldinger = {
 	ukjent: 'Noe gikk galt. Vennligst prøv på nytt.',
-	alleredeTatt: 'Brukernavn er allerede tatt. Vennligst velg et annet.',
-	feilLengde: 'Brukernavn må være minst 5 tegn og maksimalt 25 tegn.',
-	feilTegn: 'Brukernavn kan kun inneholde bokstaver og tall.',
 }
 
-export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
-	const formMethods = useForm()
-	const [brukernavn, setBrukernavn] = useState<string>('')
+export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: BrukernavnVelgerProps) => {
+	const formMethods = useForm({
+		defaultValues: {
+			brukernavn: eksisterendeBrukernavn || '',
+			epost: '',
+		},
+		resolver: yupResolver(validation),
+		mode: 'onChange',
+	})
 	const [loading, setLoading] = useState(false)
-	const [error, setError] = useState(null)
+	const [error, setError] = useState(null as string | null)
 
-	const onSubmit = () => {
+	const onSubmitUpdate = async (formData: any) => {
 		setError(null)
 		setLoading(true)
-		BrukerApi.getBrukernavnStatus(brukernavn)
-			.then((status: number) => {
-				if (status === 404) {
-					BrukerApi.opprettBruker(brukernavn, organisasjon.organisasjonsnummer)
-						.then((response: Bruker) => {
-							if (response !== null) {
-								addToSession(organisasjon.organisasjonsnummer)
-							} else {
-								setError(feilmeldinger.ukjent)
-							}
-						})
-						.catch(() => setError(feilmeldinger.ukjent))
-				} else if (status === 200) {
-					setError(feilmeldinger.alleredeTatt)
+		BrukerApi.updateBruker(eksisterendeBrukernavn, formData.epost, organisasjon.organisasjonsnummer)
+			.then((response: Bruker) => {
+				if (response !== null) {
+					addToSession(organisasjon.organisasjonsnummer)
 				} else {
 					setError(feilmeldinger.ukjent)
 				}
@@ -57,40 +65,40 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 		setLoading(false)
 	}
 
-	const onChange = (brukernavn: string) => {
-		setBrukernavn(brukernavn)
-		if (brukernavn.length < 5 || brukernavn.length > 25) {
-			setError(feilmeldinger.feilLengde)
-		} else if (!/^[A-Za-z0-9]*$/.test(brukernavn)) {
-			setError(feilmeldinger.feilTegn)
-		} else {
-			setError(null)
-		}
+	const onSubmit = async (formData: any) => {
+		setError(null)
+		setLoading(true)
+		BrukerApi.opprettBruker(formData.brukernavn, formData.epost, organisasjon.organisasjonsnummer)
+			.then((response: Bruker) => {
+				if (response !== null) {
+					addToSession(organisasjon.organisasjonsnummer)
+				} else {
+					setError(feilmeldinger.ukjent)
+				}
+			})
+			.catch(() => setError(feilmeldinger.ukjent))
+		setLoading(false)
 	}
 
 	return (
-		<React.Fragment>
-			<FormProvider {...formMethods}>
+		<FormProvider {...formMethods}>
+			<form onSubmit={formMethods.handleSubmit(eksisterendeBrukernavn ? onSubmitUpdate : onSubmit)}>
 				<h3>
-					Lag ditt eget brukernavn som brukes når du representerer <b>{organisasjon.navn}</b>. Neste
-					gang du logger inn for denne organisasjonen skjer det automatisk med dette brukernavnet.
+					Lag ditt eget brukernavn som brukes når du representerer <b>{organisasjon.navn}</b> og
+					legg inn en epost du kan kontaktes på. Neste gang du logger inn for denne organisasjonen
+					skjer det automatisk med dette brukernavnet.
 				</h3>
 
 				<Selector>
 					<DollyTextInput
 						name="brukernavn"
-						label="Brukernavn"
-						// @ts-ignore
+						label="Navn"
 						size="xlarge"
-						onChange={(e: any) => onChange(e.target.value)}
-						isDisabled={loading}
+						defaultValue={eksisterendeBrukernavn}
+						isDisabled={loading || !!eksisterendeBrukernavn}
 					/>
-					<NavButton
-						onClick={() => onSubmit()}
-						variant={'primary'}
-						className="videre-button"
-						disabled={error}
-					>
+					<DollyTextInput name="epost" label="Epost" size="xlarge" isDisabled={loading} />
+					<NavButton type="submit" variant={'primary'} className="videre-button" disabled={loading}>
 						Gå videre til Dolly
 					</NavButton>
 					<NavButton
@@ -100,8 +108,9 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 					>
 						Tilbake til innlogging
 					</NavButton>
+					{error && <DollyErrorMessage message={error} />}
 				</Selector>
-			</FormProvider>
-		</React.Fragment>
+			</form>
+		</FormProvider>
 	)
 }
