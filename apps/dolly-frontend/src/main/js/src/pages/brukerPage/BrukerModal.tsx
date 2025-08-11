@@ -66,8 +66,8 @@ export default () => {
 				if (response !== null) {
 					setBrukerResponse(response)
 					if (!response.epost) {
-						setLoading(false)
 					} else {
+						setLoading(false)
 						addToSession(org.organisasjonsnummer)
 					}
 				} else {
