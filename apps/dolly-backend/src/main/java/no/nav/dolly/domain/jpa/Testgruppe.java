@@ -46,11 +46,11 @@ public class Testgruppe implements Serializable {
     @Column("OPPRETTET_AV")
     private Long opprettetAvId;
 
-    @Transient
-    private Bruker opprettetAv;
-
     @Column("SIST_ENDRET_AV")
     private Long sistEndretAvId;
+
+    @Transient
+    private Bruker opprettetAv;
 
     @Transient
     private Bruker sistEndretAv;

@@ -57,7 +57,6 @@ public class NavigasjonService {
                 .flatMapMany(bruker -> Flux.merge(
                                 getPdlForvalterIdenter(ident),
                                 getPdlPersonIdenter(ident))
-                        .switchIfEmpty(Mono.error(() -> new NotFoundException(String.format(IKKE_FUNNET, ident))))
                         .filter(ident1 -> filterOnBrukertype(ident, bruker.getBrukertype()))
                         .distinct()
                         .flatMap(ident1 -> identRepository.findByIdent(ident1)
@@ -80,7 +79,9 @@ public class NavigasjonService {
                                                     .build();
                                         }))))
                 .collectList()
-                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
+                .flatMap(list -> list.isEmpty() ?
+                        Mono.error(new NotFoundException(String.format(IKKE_FUNNET, ident))) :
+                        Mono.just(list.getFirst()));
     }
 
     public Mono<RsWhereAmI> navigerTilBestilling(Long bestillingId) {
