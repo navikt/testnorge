@@ -60,14 +60,13 @@ export default () => {
 	const selectOrganisasjon = (org: Organisasjon) => {
 		setLoading(true)
 		setOrganisasjon(org)
-		setModalHeight(420)
+		setModalHeight(620)
 		BrukerApi.getBruker(org.organisasjonsnummer)
 			.then((response: Bruker) => {
 				if (response !== null) {
 					setBrukerResponse(response)
-					if (!response.epost) {
-					} else {
-						setLoading(false)
+					setLoading(false)
+					if (response.epost) {
 						addToSession(org.organisasjonsnummer)
 					}
 				} else {

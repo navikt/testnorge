@@ -22,15 +22,21 @@ const validation = yup.object().shape({
 		.required('Brukernavn er påkrevd')
 		.min(5, 'Brukernavn må være minst 5 tegn')
 		.max(25, 'Brukernavn kan ikke være mer enn 25 tegn')
-		.matches(/^[a-zA-Z0-9æøåÆØÅ]+$/, 'Kun bokstaver og tall er tillatt'),
+		.matches(/^[a-zA-Z0-9æøåÆØÅ ]+$/, 'Kun bokstaver og tall er tillatt'),
 	epost: yup.string().email('Epost må være på gyldig format').required('Epost er påkrevd'),
 })
+
+const ButtonDiv = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 20px;
+`
 
 const Selector = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 20px;
 	margin-bottom: 20px;
 `
 
@@ -88,30 +94,37 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 		<FormProvider {...formMethods}>
 			<form onSubmit={formMethods.handleSubmit(eksisterendeBrukernavn ? onSubmitUpdate : onSubmit)}>
 				<h3>
-					Lag ditt eget brukernavn som brukes når du representerer <b>{organisasjon.navn}</b> og
-					legg inn en epost du kan kontaktes på. Neste gang du logger inn for denne organisasjonen
-					skjer det automatisk med dette brukernavnet.
+					Fyll inn eget navn som brukes når du representerer <b>{organisasjon.navn}</b> og legg inn
+					en epost du kan kontaktes på. Neste gang du logger inn for denne organisasjonen skjer det
+					automatisk med denne brukeren.
 				</h3>
 
 				<Selector>
 					<DollyTextInput
 						name="brukernavn"
 						label="Navn"
-						size="xlarge"
+						size="large"
 						defaultValue={eksisterendeBrukernavn}
 						isDisabled={loading || !!eksisterendeBrukernavn}
 					/>
-					<DollyTextInput name="epost" label="Epost" size="xlarge" isDisabled={loading} />
-					<NavButton type="submit" variant={'primary'} className="videre-button" disabled={loading}>
-						Gå videre til Dolly
-					</NavButton>
-					<NavButton
-						className="tilbake-button"
-						onClick={() => navigateToLogin()}
-						variant={'secondary'}
-					>
-						Tilbake til innlogging
-					</NavButton>
+					<DollyTextInput name="epost" label="Epost" size="large" isDisabled={loading} />
+					<ButtonDiv>
+						<NavButton
+							type="submit"
+							variant={'primary'}
+							className="videre-button"
+							disabled={loading}
+						>
+							Gå videre til Dolly
+						</NavButton>
+						<NavButton
+							className="tilbake-button"
+							onClick={() => navigateToLogin()}
+							variant={'secondary'}
+						>
+							Tilbake til innlogging
+						</NavButton>
+					</ButtonDiv>
 					{error && <DollyErrorMessage message={error} />}
 				</Selector>
 			</form>

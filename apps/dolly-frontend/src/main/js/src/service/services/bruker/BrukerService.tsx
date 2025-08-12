@@ -6,7 +6,7 @@ const brukerServiceUrl = '/testnav-bruker-service/api/v2/brukere'
 export default {
 	getBruker(orgnummer: string) {
 		return api
-			.fetchJson(`testnav-bruker-service/api/v1/brukere?organisasjonsnummer=${orgnummer}`, {
+			.fetchJson(`${brukerServiceUrl}?organisasjonsnummer=${orgnummer}`, {
 				method: 'GET',
 			})
 			.then((brukere: Bruker[]) => brukere[0])
