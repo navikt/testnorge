@@ -64,6 +64,7 @@ export default () => {
 		BrukerApi.getBruker(org.organisasjonsnummer)
 			.then((response: Bruker) => {
 				if (response !== null) {
+					console.log('response: ', response) //TODO - SLETT MEG
 					setBrukerResponse(response)
 					setLoading(false)
 					if (response.epost) {

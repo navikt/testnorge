@@ -67,7 +67,6 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 				organisasjon.organisasjonsnummer,
 			)
 			if (response !== null) {
-				console.log('Adding organisasjon to session from submitUpdate')
 				addToSession(organisasjon.organisasjonsnummer)
 			} else {
 				setError(feilmeldinger.ukjent)
@@ -89,7 +88,6 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 				organisasjon?.organisasjonsnummer,
 			)
 			if (response !== null) {
-				console.log('Adding organisasjon to session from submit')
 				addToSession(organisasjon.organisasjonsnummer)
 			} else {
 				setError(feilmeldinger.ukjent)
