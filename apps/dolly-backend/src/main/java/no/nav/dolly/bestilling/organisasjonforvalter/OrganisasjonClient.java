@@ -47,36 +47,31 @@ public class OrganisasjonClient {
                 .build();
 
         var miljoer = request.getEnvironments();
-        try {
 
-            log.info("Bestiller orgnumre fra Organisasjonforvalter");
-            return Flux.fromIterable(bestillingRequest.getOrganisasjoner())
-                    .flatMap(organisasjon -> organisasjonConsumer.postOrganisasjon(bestillingRequest)
-                            .flatMapMany(response -> Flux.fromIterable(response.getOrgnummer()))
-                            .flatMap(orgnummer -> organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId())
-                                    .flatMap(organisasjonBestillingProgress -> {
-                                        organisasjonBestillingProgress.setBestillingId(bestilling.getId());
-                                        organisasjonBestillingProgress.setOrganisasjonsnummer(orgnummer);
-                                        organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(
-                                                miljoer.stream().map(env -> env + ":Deployer")
-                                                        .collect(Collectors.joining(",")));
+        log.info("Bestiller orgnumre fra Organisasjonforvalter");
+        return Flux.fromIterable(bestillingRequest.getOrganisasjoner())
+                .flatMap(organisasjon -> organisasjonConsumer.postOrganisasjon(bestillingRequest)
+                        .flatMapMany(response -> Flux.fromIterable(response.getOrgnummer()))
+                        .flatMap(orgnummer -> organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId())
+                                .flatMap(organisasjonBestillingProgress -> {
+                                    organisasjonBestillingProgress.setBestillingId(bestilling.getId());
+                                    organisasjonBestillingProgress.setOrganisasjonsnummer(orgnummer);
+                                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(
+                                            miljoer.stream().map(env -> env + ":Deployer")
+                                                    .collect(Collectors.joining(",")));
 
-                                        return organisasjonBestillingProgressRepository.save(organisasjonBestillingProgress)
-                                                .thenReturn(orgnummer);
-                                    }))
-                            .collectList()
-                            .map(HashSet::new)
-                            .flatMap(orgnumre -> saveErrorToDb(orgnumre, bestilling.getId(), miljoer)
-                                    .then(deployOrganisasjon(orgnumre, bestilling, miljoer))))
-                    .collectList()
-                    .then();
-
-        } catch (RuntimeException e) {
-
-            log.error("Feilet med å opprette organisasjon(er)", e);
-            return organisasjonBestillingService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(e))
-                    .then(organisasjonProgressService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(e)));
-        }
+                                    return organisasjonBestillingProgressRepository.save(organisasjonBestillingProgress)
+                                            .thenReturn(orgnummer);
+                                }))
+                        .collectList()
+                        .map(HashSet::new)
+                        .flatMap(orgnumre -> saveErrorToDb(orgnumre, bestilling.getId(), miljoer)
+                                .then(deployOrganisasjon(orgnumre, bestilling, miljoer))))
+                .collectList()
+                .then()
+                .onErrorResume(throwable ->
+                        organisasjonBestillingService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(throwable))
+                                .then(organisasjonProgressService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(throwable))));
     }
 
     public Mono<Void> gjenopprett(DeployRequest request, OrganisasjonBestilling bestilling) {

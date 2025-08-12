@@ -49,6 +49,7 @@ public class SigrunStubClient implements ClientRegister {
     }
 
     private Publisher<String> doSummertSkattegrunnlag(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+
         return Flux.just(bestilling)
                 .filter(bestilling1 -> !bestilling1.getSigrunstubSummertSkattegrunnlag().isEmpty())
                 .map(RsDollyUtvidetBestilling::getSigrunstubSummertSkattegrunnlag)
@@ -69,6 +70,7 @@ public class SigrunStubClient implements ClientRegister {
     }
 
     private Flux<String> doPensjonsgivendeInntekt(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+
         return Flux.just(bestilling)
                 .filter(bestilling2 -> !bestilling2.getSigrunstubPensjonsgivende().isEmpty())
                 .map(RsDollyUtvidetBestilling::getSigrunstubPensjonsgivende)
@@ -87,6 +89,7 @@ public class SigrunStubClient implements ClientRegister {
     }
 
     private Flux<String> doLignetInntekt(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+
         return Flux.just(bestilling)
                 .filter(bestilling1 -> !bestilling1.getSigrunstub().isEmpty())
                 .map(RsDollyUtvidetBestilling::getSigrunstub)

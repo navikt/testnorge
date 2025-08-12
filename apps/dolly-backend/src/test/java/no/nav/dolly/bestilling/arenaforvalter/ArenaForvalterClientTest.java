@@ -96,6 +96,7 @@ class ArenaForvalterClientTest {
         when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaStansYtelseService.stopYtelse(any(), any(), any())).thenReturn(Flux.empty());
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
@@ -133,6 +134,7 @@ class ArenaForvalterClientTest {
         when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaStansYtelseService.stopYtelse(any(), any(), any())).thenReturn(Flux.empty());
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .build(), progress, false))
@@ -156,6 +158,7 @@ class ArenaForvalterClientTest {
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .build(), progress, false))
@@ -172,6 +175,7 @@ class ArenaForvalterClientTest {
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton("t3"));
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 progress, false))

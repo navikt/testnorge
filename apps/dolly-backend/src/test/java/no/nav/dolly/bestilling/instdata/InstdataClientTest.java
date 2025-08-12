@@ -9,7 +9,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,9 +46,6 @@ class InstdataClientTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private ErrorStatusDecoder errorStatusDecoder;
-
-    @Mock
     private InstdataConsumer instdataConsumer;
 
     @Mock
@@ -60,10 +56,6 @@ class InstdataClientTest {
 
     @InjectMocks
     private InstdataClient instdataClient;
-
-    void setup() {
-        statusCaptor = ArgumentCaptor.forClass(String.class);
-    }
 
     @Test
     void gjenopprettUtenInstdata_TomRetur() {
@@ -89,6 +81,7 @@ class InstdataClientTest {
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
@@ -119,6 +112,7 @@ class InstdataClientTest {
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));

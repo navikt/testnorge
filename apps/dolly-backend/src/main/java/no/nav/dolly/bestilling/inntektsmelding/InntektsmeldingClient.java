@@ -67,14 +67,16 @@ public class InntektsmeldingClient implements ClientRegister {
                 .filter(RsDollyBestilling::isExistInntekstsmelding)
                 .map(RsDollyBestilling::getInntektsmelding)
                 .flatMap(inntektsmelding -> Flux.fromIterable(bestilling.getEnvironments())
-                                .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
-                                        .flatMapMany(isOpprett -> isTrue(isOpprett) ?
-                                                postInntektsmelding(bestilling.getInntektsmelding(), dollyPerson.getIdent(), miljoe, bestilling.getId()) :
-                                                Mono.just(miljoe + ":OK")))
-                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                                .onErrorResume(error -> getErrors(error, bestilling.getEnvironments()))
-                                .collect(Collectors.joining(","))
-                        .flatMap(status -> futurePersist(progress, status)));
+                        .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
+                                .flatMapMany(isOpprett -> isTrue(isOpprett) ?
+                                        postInntektsmelding(bestilling.getInntektsmelding(), dollyPerson.getIdent(), miljoe, bestilling.getId()) :
+                                        Mono.just(miljoe + ":OK")))
+                        .doOnNext(status ->
+                                log.info("Inntektsmelding status for {} ", status))
+                        .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                        .onErrorResume(error -> getErrors(error, bestilling.getEnvironments()))
+                        .collect(Collectors.joining(","))
+                        .flatMap(status -> oppdaterStatus(progress, status)));
     }
 
     private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {
@@ -120,7 +122,7 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private Mono<BestillingProgress> futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
         return transactionHelperService.persister(progress,
                 BestillingProgress::getInntektsmeldingStatus,

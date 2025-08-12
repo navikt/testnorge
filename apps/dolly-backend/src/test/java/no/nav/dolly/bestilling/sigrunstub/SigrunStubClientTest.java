@@ -29,8 +29,6 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -62,18 +60,15 @@ class SigrunStubClientTest {
     @InjectMocks
     private SigrunStubClient sigrunStubClient;
 
-    void setup() {
-        statusCaptor = ArgumentCaptor.forClass(String.class);
-    }
-
     @Test
     void gjenopprett_ingendata() {
 
-        BestillingProgress progress = new BestillingProgress();
-        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().ident(IDENT).build(),
-                new BestillingProgress(), false);
+        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.empty());
 
-        assertThat(progress.getSigrunstubStatus(), is(nullValue()));
+        StepVerifier.create(sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().ident(IDENT).build(),
+                new BestillingProgress(), false))
+                .expectNextCount(0)
+                .verifyComplete();
     }
 
     @Test
@@ -85,6 +80,7 @@ class SigrunStubClientTest {
                 .melding("Feil ...")
                 .build()));
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.BAD_REQUEST), anyString())).thenReturn("Feil:");
+        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new RsLignetInntekt()));
@@ -114,6 +110,7 @@ class SigrunStubClientTest {
 
         when(mapperFacade.mapAsList(anyList(), eq(SigrunstubPensjonsgivendeInntektRequest.class), any(MappingContext.class)))
                 .thenReturn(List.of(new SigrunstubPensjonsgivendeInntektRequest()));
+        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
         request.setSigrunstubPensjonsgivende(List.of(new RsPensjonsgivendeForFolketrygden()));
@@ -133,6 +130,7 @@ class SigrunStubClientTest {
     void gjenopprett_sigrunstubLignetInntekt_ok() {
 
         var request = new RsDollyBestillingRequest();
+        var progress = new BestillingProgress();
         request.setSigrunstub(singletonList(new RsLignetInntekt()));
 
         when(mapperFacade.mapAsList(anyList(), eq(SigrunstubLignetInntektRequest.class), any(MappingContext.class)))
@@ -143,6 +141,7 @@ class SigrunStubClientTest {
                         .status(200)
                         .build()))
                 .build()));
+        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 new BestillingProgress(), true))
@@ -160,6 +159,7 @@ class SigrunStubClientTest {
     void gjenopprett_sigrunstubPensjonsgivendeInntekt_ok() {
 
         var request = new RsDollyBestillingRequest();
+        var progress = new BestillingProgress();
         request.setSigrunstubPensjonsgivende(singletonList(new RsPensjonsgivendeForFolketrygden()));
 
         when(mapperFacade.mapAsList(anyList(), eq(SigrunstubPensjonsgivendeInntektRequest.class), any(MappingContext.class)))
@@ -170,6 +170,7 @@ class SigrunStubClientTest {
                         .status(200)
                         .build()))
                 .build()));
+        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 new BestillingProgress(), true))

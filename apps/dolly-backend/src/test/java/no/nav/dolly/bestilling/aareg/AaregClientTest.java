@@ -118,6 +118,7 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerPerson_returnsOK() {
+
         when(applicationConfig.getClientTimeout()).thenReturn(30L);
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
@@ -138,6 +139,7 @@ class AaregClientTest {
                 .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold());
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold().getFirst());
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT)
@@ -174,6 +176,7 @@ class AaregClientTest {
                 .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold().getFirst());
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)

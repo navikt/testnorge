@@ -31,6 +31,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class KrrstubClientTest {
 
@@ -54,10 +55,6 @@ class KrrstubClientTest {
 
     @InjectMocks
     private KrrstubClient krrstubClient;
-
-    void setup() {
-        statusCaptor = ArgumentCaptor.forClass(String.class);
-    }
 
     @Test
     void gjenopprett_ingendata() {
@@ -101,12 +98,13 @@ class KrrstubClientTest {
                         .build()));
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.BAD_REQUEST), anyString())).thenReturn("Feil:");
         when(krrstubConsumer.deleteKontaktdataPerson(anyString())).thenReturn(Mono.just(new DigitalKontaktdataResponse()));
+        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(new BestillingProgress()));
 
         var request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
 
         StepVerifier.create(krrstubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                new BestillingProgress(), false))
+                        new BestillingProgress(), false))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
