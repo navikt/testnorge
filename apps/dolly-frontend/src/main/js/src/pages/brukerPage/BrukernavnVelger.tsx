@@ -57,42 +57,55 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 	const [error, setError] = useState(null as string | null)
 
 	const onSubmitUpdate = async (formData: any) => {
+		if (!eksisterendeBrukernavn) return
 		setError(null)
 		setLoading(true)
-		BrukerApi.updateBruker(eksisterendeBrukernavn, formData.epost, organisasjon.organisasjonsnummer)
-			.then((response: Bruker) => {
-				if (response !== null) {
-					addToSession(organisasjon.organisasjonsnummer)
-				} else {
-					setError(feilmeldinger.ukjent)
-				}
-			})
-			.catch(() => setError(feilmeldinger.ukjent))
-		setLoading(false)
+		try {
+			const response: Bruker = await BrukerApi.updateBruker(
+				eksisterendeBrukernavn,
+				formData.epost,
+				organisasjon.organisasjonsnummer,
+			)
+			if (response !== null) {
+				addToSession(organisasjon.organisasjonsnummer)
+			} else {
+				setError(feilmeldinger.ukjent)
+			}
+		} catch (e) {
+			setError(feilmeldinger.ukjent)
+		} finally {
+			setLoading(false)
+		}
 	}
 
 	const onSubmit = async (formData: any) => {
 		setError(null)
 		setLoading(true)
-		BrukerApi.opprettBruker(
-			formData?.brukernavn,
-			formData?.epost,
-			organisasjon?.organisasjonsnummer,
-		)
-			.then((response: Bruker) => {
-				if (response !== null) {
-					addToSession(organisasjon.organisasjonsnummer)
-				} else {
-					setError(feilmeldinger.ukjent)
-				}
-			})
-			.catch(() => setError(feilmeldinger.ukjent))
-		setLoading(false)
+		try {
+			const response: Bruker = await BrukerApi.opprettBruker(
+				formData?.brukernavn,
+				formData?.epost,
+				organisasjon?.organisasjonsnummer,
+			)
+			if (response !== null) {
+				addToSession(organisasjon.organisasjonsnummer)
+			} else {
+				setError(feilmeldinger.ukjent)
+			}
+		} catch (e) {
+			setError(feilmeldinger.ukjent)
+		} finally {
+			setLoading(false)
+		}
 	}
 
 	return (
 		<FormProvider {...formMethods}>
-			<form onSubmit={formMethods.handleSubmit(eksisterendeBrukernavn ? onSubmitUpdate : onSubmit)}>
+			<form
+				onSubmit={formMethods.handleSubmit(() =>
+					eksisterendeBrukernavn ? onSubmitUpdate : onSubmit,
+				)}
+			>
 				<h3>
 					Fyll inn eget navn som brukes når du representerer <b>{organisasjon.navn}</b> og legg inn
 					en epost du kan kontaktes på. Neste gang du logger inn for denne organisasjonen skjer det
