@@ -43,6 +43,6 @@ public class User {
     }
 
     public BrukerDTO toDTO() {
-        return new BrukerDTO(id, brukernavn, organisasjonsnummer, epost, opprett, sisteLoggetinn);
+        return new BrukerDTO(id, brukernavn, epost, organisasjonsnummer, opprett, sisteLoggetinn);
     }
 }
