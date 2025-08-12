@@ -8,7 +8,9 @@ import no.nav.testnav.apps.brukerservice.repository.UserEntity;
 import no.nav.testnav.apps.brukerservice.repository.UserRepository;
 import no.nav.testnav.apps.brukerservice.service.v1.CryptographyService;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -61,12 +63,14 @@ public class UserService {
         }).map(User::new);
     }
 
-    public Mono<User> updateUser(String id, BrukerDTO bruker) {
-        return repository.findById(id).flatMap(entity -> {
-                    entity.setBrukernavn(bruker.brukernavn());
+    public Mono<User> updateUser(BrukerDTO bruker) {
+        return getAuthenticatedUserId
+                .call()
+                .map(userId -> cryptographyService.createId(userId, bruker.organisasjonsnummer()))
+                .flatMap(repository::findById)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Bruker ikke funnet.")))
+                .flatMap(entity -> {
                     entity.setEpost(bruker.epost());
-                    entity.setNew(false);
-                    entity.setOppdatert(LocalDateTime.now());
                     return repository.save(entity);
                 })
                 .map(User::new);
@@ -81,6 +85,17 @@ public class UserService {
     }
 
     private Mono<Void> validateCreateUser(String userId, String representing) {
+        var id = cryptographyService.createId(userId, representing);
+        return repository.existsById(id)
+                .doOnNext(exists -> {
+                    if (Boolean.TRUE.equals(exists)) {
+                        throw new UserAlreadyExistsException(id);
+                    }
+                })
+                .then();
+    }
+
+    private Mono<Void> validateUpdateUser(String userId, String representing) {
         var id = cryptographyService.createId(userId, representing);
         return repository.existsById(id)
                 .doOnNext(exists -> {
