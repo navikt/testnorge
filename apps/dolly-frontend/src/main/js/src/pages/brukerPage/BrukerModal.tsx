@@ -67,6 +67,7 @@ export default () => {
 					setBrukerResponse(response)
 					setLoading(false)
 					if (response.epost) {
+						console.log('Adding organisasjon to session from modal')
 						addToSession(org.organisasjonsnummer)
 					}
 				} else {
