@@ -123,7 +123,7 @@ export default () => {
 				)}
 				{organisasjon && !loading && !brukerResponse?.epost && (
 					<BrukernavnVelger
-						eksisterendeBruker={brukerResponse?.brukernavn}
+						eksisterendeBrukernavn={brukerResponse?.brukernavn}
 						organisasjon={organisasjon}
 						addToSession={addToSession}
 					/>
