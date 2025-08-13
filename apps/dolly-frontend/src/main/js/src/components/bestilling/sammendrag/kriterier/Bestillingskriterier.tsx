@@ -22,10 +22,12 @@ const _renderBestillingsDetaljer = (data) => {
 				<Fragment key={j}>
 					<h4>{kategori.header} </h4>
 					{kategori.items && kategori.items.length > 0 && (
-						<>
+						<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
 							{kategori.items[0].header && <h4>{kategori.items[0].header}</h4>}
-							<div className={cssClass}>{kategori.items.map(_renderStaticValue)}</div>
-						</>
+							<div className={cssClass} style={{ marginBottom: '10px' }}>
+								{kategori.items.map(_renderStaticValue)}
+							</div>
+						</div>
 					)}
 					{kategori.paginering?.length > 0 && (
 						<>
