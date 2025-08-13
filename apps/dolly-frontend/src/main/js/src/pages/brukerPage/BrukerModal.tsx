@@ -107,7 +107,6 @@ export default () => {
 	if (sessionUpdated) {
 		return <Navigate to={'/'} />
 	}
-	console.log('brukerResponse: ', brukerResponse) //TODO - SLETT MEG
 
 	return (
 		<div className="bruker-container">
