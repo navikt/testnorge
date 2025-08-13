@@ -1,23 +1,14 @@
 package no.nav.testnav.apps.brukerservice.controller.v2;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.brukerservice.domain.User;
 import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
-import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
-import no.nav.testnav.apps.brukerservice.exception.UserAlreadyExistsException;
-import no.nav.testnav.apps.brukerservice.exception.UserHasNoAccessToOrgnisasjonException;
 import no.nav.testnav.apps.brukerservice.service.v1.JwtService;
 import no.nav.testnav.apps.brukerservice.service.v1.ValidateService;
 import no.nav.testnav.apps.brukerservice.service.v2.UserService;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,11 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,103 +34,64 @@ public class BrukerController {
     private final JwtService jwtService;
 
     @PostMapping
-    public Mono<ResponseEntity<BrukerDTO>> createBruker(
-            @RequestBody BrukerDTO brukerDTO,
-            ServerHttpRequest serverHttpRequest
+    public Mono<BrukerDTO> createBruker(
+            @RequestBody BrukerDTO brukerDTO
     ) {
         return validateService.validateOrganiasjonsnummerAccess(brukerDTO.organisasjonsnummer())
                 .then(userService.create(brukerDTO))
-                .map(User::toDTO)
-                .map(dto -> ResponseEntity.created(URI.create(serverHttpRequest.getURI() + "/" + dto.id())).body(dto));
+                .map(User::toDTO);
     }
 
     @GetMapping
-    public Mono<ResponseEntity<List<BrukerDTO>>> getBrukere(
+    public Mono<List<BrukerDTO>> getBrukere(
             @RequestParam String organisasjonsnummer
     ) {
         return validateService.validateOrganiasjonsnummerAccess(organisasjonsnummer)
                 .then(userService.getUserFromOrganisasjonsnummer(organisasjonsnummer))
                 .map(User::toDTO)
-                .map(Collections::singletonList)
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+                .map(Collections::singletonList);
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<BrukerDTO>> getBruker(
+    public Mono<BrukerDTO> getBruker(
             @PathVariable String id,
             @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
     ) {
         return jwtService.verify(jwt, id)
                 .then(userService.getUser(id))
-                .map(User::toDTO)
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+                .map(User::toDTO);
     }
 
     @PutMapping()
-    public Mono<ResponseEntity<BrukerDTO>> updateBruker(
-            @RequestBody BrukerDTO bruker,
-            ServerHttpRequest serverHttpRequest
+    public Mono<BrukerDTO> updateBruker(
+            @RequestBody BrukerDTO bruker
     ) {
         return validateService.validateOrganiasjonsnummerAccess(bruker.organisasjonsnummer())
                 .then(userService.updateUser(bruker))
-                .map(User::toDTO)
-                .map(dto -> ResponseEntity.created(URI.create(serverHttpRequest.getURI() + "/" + dto.id())).body(dto));
+                .map(User::toDTO);
     }
 
     @GetMapping("/brukernavn/{brukernavn}")
-    public Mono<ResponseEntity<String>> getBrukernavn(
+    public Mono<String> getBrukernavn(
             @PathVariable String brukernavn
     ) {
         return userService.getUserByBrukernavn(brukernavn)
-                .map(User::getBrukernavn)
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+                .map(User::getBrukernavn);
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Object>> deleteBruker(
+    public Mono<Void> deleteBruker(
             @PathVariable String id,
             @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
     ) {
         return jwtService.verify(jwt, id)
-                .then(userService.delete(id))
-                .then(Mono.just(ResponseEntity.noContent().build()));
+                .then(userService.delete(id));
     }
 
     @PostMapping("/{id}/token")
-    public Mono<ResponseEntity<String>> getToken(@PathVariable String id) {
+    public Mono<String> getToken(@PathVariable String id) {
         return userService.getUser(id, true)
                 .doOnNext(user -> validateService.validateOrganiasjonsnummerAccess(user.getOrganisasjonsnummer()))
-                .flatMap(jwtService::getToken)
-                .map(ResponseEntity::ok);
-    }
-
-    @ExceptionHandler({
-            UserAlreadyExistsException.class,
-    })
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public String conflictHandler(Exception e) {
-        log.trace("CONFLICT: {}", e.getMessage());
-        return e.getMessage();
-    }
-
-    @ExceptionHandler(TokenExpiredException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String tokenExpiredHandler(Exception e) {
-        log.trace("UNAUTHORIZED: {}", e.getMessage());
-        return e.getMessage();
-    }
-
-    @ExceptionHandler({
-            JWTVerificationException.class,
-            JwtIdMismatchException.class,
-            UserHasNoAccessToOrgnisasjonException.class
-    })
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String forbiddenHandler(Exception e) {
-        log.trace("FORBIDDEN: {}", e.getMessage());
-        return e.getMessage();
+                .flatMap(jwtService::getToken);
     }
 }
