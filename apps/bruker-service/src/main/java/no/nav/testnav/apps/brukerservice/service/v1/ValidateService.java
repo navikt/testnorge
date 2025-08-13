@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.brukerservice.service;
+package no.nav.testnav.apps.brukerservice.service.v1;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.brukerservice.consumer.AltinnTilgangServiceConsumer;

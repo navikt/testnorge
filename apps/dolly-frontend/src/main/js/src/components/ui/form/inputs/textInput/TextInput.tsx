@@ -25,7 +25,7 @@ type TextInputProps = {
 	value?: string
 	fieldName?: string
 	type?: 'text' | 'number'
-	size?: 'small' | 'medium' | 'large'
+	size?: 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
 	className?: string
 	icon?: string
 	isDisabled?: boolean
@@ -79,13 +79,15 @@ export const TextInput = ({
 		((fieldName && _.has(formState.touchedFields, fieldName)) ||
 			(name && _.has(formState.touchedFields, name)))
 
+	const hasSubmitted = formState?.isSubmitted || formState?.submitCount > 0
+
 	const error =
 		formState?.errors &&
 		(_.get(formState.errors, `manual.${name}`) ||
 			_.get(formState.errors, name) ||
 			(fieldName && _.get(formState.errors, fieldName)))
 
-	const shouldShowError = (error && (showError || isTouched)) || !!props.manualError
+	const shouldShowError = (error && (showError || isTouched || hasSubmitted)) || !!props.manualError
 
 	useEffect(() => {
 		if (useControlled && formValue !== undefined) {
