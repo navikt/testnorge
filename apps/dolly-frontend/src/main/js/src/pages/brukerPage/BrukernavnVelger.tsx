@@ -123,6 +123,7 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 							variant={'primary'}
 							className="videre-button"
 							disabled={loading}
+							loading={loading}
 						>
 							Gå videre til Dolly
 						</NavButton>
