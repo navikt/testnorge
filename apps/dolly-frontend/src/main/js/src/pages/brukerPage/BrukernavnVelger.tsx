@@ -16,14 +16,14 @@ type BrukernavnVelgerProps = {
 	addToSession: (org: string) => void
 }
 
-const validation = yup.object().shape({
+const validation = yup.object({
 	brukernavn: yup
 		.string()
 		.required('Brukernavn er påkrevd')
 		.min(5, 'Brukernavn må være minst 5 tegn')
 		.max(25, 'Brukernavn kan ikke være mer enn 25 tegn')
 		.matches(/^[a-zA-Z0-9æøåÆØÅ ]+$/, 'Kun bokstaver og tall er tillatt'),
-	epost: yup.string().email('Epost må være på gyldig format').required('Epost er påkrevd'),
+	epost: yup.string().trim().required('Epost er påkrevd').email('Epost må være på gyldig format'),
 })
 
 const ButtonDiv = styled.div`
@@ -101,11 +101,7 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 
 	return (
 		<FormProvider {...formMethods}>
-			<form
-				onSubmit={formMethods.handleSubmit(() =>
-					eksisterendeBrukernavn ? onSubmitUpdate : onSubmit,
-				)}
-			>
+			<form onSubmit={formMethods.handleSubmit(eksisterendeBrukernavn ? onSubmitUpdate : onSubmit)}>
 				<h3>
 					Fyll inn eget navn som brukes når du representerer <b>{organisasjon.navn}</b> og legg inn
 					en epost du kan kontaktes på. Neste gang du logger inn for denne organisasjonen skjer det

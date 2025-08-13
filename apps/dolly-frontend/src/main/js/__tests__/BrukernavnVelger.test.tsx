@@ -35,12 +35,10 @@ dollyTest('renders BrukernavnVelger and handles successful user creation', async
 
 	render(<TestComponent organisasjon={mockOrganisasjon} addToSession={addToSessionMock} />)
 
-	expect(
-		screen.getByText(/Lag ditt eget brukernavn som brukes når du representerer/),
-	).toBeInTheDocument()
+	expect(screen.getByText(/Fyll inn eget navn/)).toBeInTheDocument()
 	expect(screen.getByText('Test Organisasjon')).toBeInTheDocument()
 
-	const brukernavnInput = screen.getByLabelText('Brukernavn')
+	const brukernavnInput = screen.getByLabelText('Navn')
 	const epostInput = screen.getByLabelText('Epost')
 	const submitButton = screen.getByRole('button', { name: 'Gå videre til Dolly' })
 
@@ -83,7 +81,7 @@ dollyTest('shows validation error for invalid email', async () => {
 	const addToSessionMock = vi.fn()
 	render(<TestComponent organisasjon={mockOrganisasjon} addToSession={addToSessionMock} />)
 
-	const brukernavnInput = screen.getByLabelText('Brukernavn')
+	const brukernavnInput = screen.getByLabelText('Navn')
 	const epostInput = screen.getByLabelText('Epost')
 	const submitButton = screen.getByRole('button', { name: 'Gå videre til Dolly' })
 

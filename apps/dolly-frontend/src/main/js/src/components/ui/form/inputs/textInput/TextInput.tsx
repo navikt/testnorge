@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React from 'react'
 import cn from 'classnames'
 import styled from 'styled-components'
 import { useFormContext } from 'react-hook-form'
@@ -55,101 +55,46 @@ export const TextInput = ({
 	isDisabled,
 	autoFocus,
 	type = 'text',
-	value,
-	defaultValue,
 	style,
 	'data-testid': dataTestId,
-	useControlled = false,
 	...props
 }: TextInputProps) => {
-	const { register, formState, setValue, watch } = useFormContext() || {}
+	const form = useFormContext()
+	const {
+		register,
+		formState: { errors = {}, touchedFields = {}, isSubmitted = false, submitCount = 0 } = {},
+	} = form || ({} as any)
+
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
-	const { onChange: registerOnChange, onBlur: registerOnBlur } =
-		name && register ? register(name) : {}
-
-	const initialValue = value ?? defaultValue ?? (name ? watch(name) || '' : '')
-	const [fieldValue, setFieldValue] = useState(initialValue)
-	const validateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-	const formValue = name ? watch(name) : undefined
+	const { onChange, onBlur, ...restOfRegister } = name ? register(name) : ({} as any)
 
 	const isTouched =
-		formState?.touchedFields &&
-		((fieldName && _.has(formState.touchedFields, fieldName)) ||
-			(name && _.has(formState.touchedFields, name)))
+		(fieldName && _.has(touchedFields, fieldName)) || (name && _.has(touchedFields, name))
 
 	const error =
-		formState?.errors &&
-		(_.get(formState.errors, `manual.${name}`) ||
-			_.get(formState.errors, name) ||
-			(fieldName && _.get(formState.errors, fieldName)))
+		(name && errors[name]) || (fieldName && errors[fieldName]) || _.get(errors, `manual.${name}`)
 
-	const shouldShowError = (error && (showError || isTouched)) || !!props.manualError
+	const hasSubmitted = isSubmitted || submitCount > 0
+	const shouldShowError =
+		(!!error && (showError || isTouched || hasSubmitted)) || !!props.manualError
 
-	useEffect(() => {
-		if (useControlled && formValue !== undefined) {
-			setFieldValue(formValue || '')
-		} else if (!useControlled) {
-			const propValue = value
-			if (propValue !== undefined) {
-				setFieldValue(propValue || '')
-			}
-		}
-	}, [value, formValue, useControlled])
-
-	const handleChange = useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			const newValue = e.target.value
-			setFieldValue(newValue)
-
-			// Update form without validation during typing
-			if (name && setValue) {
-				setValue(name, newValue, { shouldDirty: true, shouldValidate: false })
-			}
-
-			registerOnChange?.(e)
-			props.onChange?.(e)
-
-			if (validateTimeoutRef.current) {
-				clearTimeout(validateTimeoutRef.current)
-			}
-
-			validateTimeoutRef.current = setTimeout(() => {
-				if (name && setValue) {
-					setValue(name, newValue, { shouldValidate: true })
-				}
-			}, 400) // Validate after inactivity
-		},
-		[name, setValue, registerOnChange, props.onChange],
-	)
-
-	const handleBlur = useCallback(
+	const handleBlur = React.useCallback(
 		(e: React.FocusEvent<HTMLInputElement>) => {
-			if (validateTimeoutRef.current) {
-				clearTimeout(validateTimeoutRef.current)
-				validateTimeoutRef.current = null
-			}
-
-			registerOnBlur?.(e)
+			onBlur?.(e)
 			props.onBlur?.(e)
-
-			if (name && setValue) {
-				setValue(name, fieldValue, { shouldValidate: true })
-			}
-
 			props.afterChange?.(e)
 		},
-		[name, setValue, fieldValue, registerOnBlur, props.onBlur, props.afterChange],
+		[onBlur, props.onBlur, props.afterChange],
 	)
 
-	useEffect(() => {
-		return () => {
-			if (validateTimeoutRef.current) {
-				clearTimeout(validateTimeoutRef.current)
-			}
-		}
-	}, [])
+	const handleChange = React.useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			onChange?.(e)
+			props.onChange?.(e)
+		},
+		[onChange, props.onChange],
+	)
 
 	const inputClassNames = cn('skjemaelement__input', className, {
 		'skjemaelement__input--harFeil': shouldShowError,
@@ -159,8 +104,6 @@ export const TextInput = ({
 		<>
 			<input
 				id={name}
-				name={name}
-				value={fieldValue || ''}
 				type={type}
 				disabled={isDisabled}
 				autoFocus={autoFocus}
@@ -174,6 +117,7 @@ export const TextInput = ({
 				style={style}
 				data-testid={dataTestId}
 				readOnly={props.readOnly}
+				{...restOfRegister}
 			/>
 
 			{icon && (
