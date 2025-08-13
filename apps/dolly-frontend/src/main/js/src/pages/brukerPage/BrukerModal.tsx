@@ -64,11 +64,9 @@ export default () => {
 		BrukerApi.getBruker(org.organisasjonsnummer)
 			.then((response: Bruker) => {
 				if (response !== null) {
-					console.log('response: ', response) //TODO - SLETT MEG
 					setBrukerResponse(response)
 					setLoading(false)
 					if (response.epost) {
-						console.log('Adding organisasjon to session from modal')
 						addToSession(org.organisasjonsnummer)
 					}
 				} else {
@@ -109,6 +107,7 @@ export default () => {
 	if (sessionUpdated) {
 		return <Navigate to={'/'} />
 	}
+	console.log('brukerResponse: ', brukerResponse) //TODO - SLETT MEG
 
 	return (
 		<div className="bruker-container">
@@ -123,9 +122,9 @@ export default () => {
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
-				{((organisasjon && !loading) || (brukerResponse?.brukernavn && !brukerResponse?.epost)) && (
+				{organisasjon && !loading && !brukerResponse?.epost && (
 					<BrukernavnVelger
-						eksisterendeBrukernavn={brukerResponse?.brukernavn}
+						eksisterendeBruker={brukerResponse?.brukernavn}
 						organisasjon={organisasjon}
 						addToSession={addToSession}
 					/>
