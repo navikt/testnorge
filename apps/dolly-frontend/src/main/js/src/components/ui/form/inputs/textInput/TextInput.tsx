@@ -9,7 +9,6 @@ import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Icon from '@/components/ui/icon/Icon'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
-import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
@@ -198,8 +197,8 @@ export const DollyTextInput = (props: TextInputProps) => (
 export const FormTextInput = ({ visHvisAvhuket = true, ...props }: TextInputProps) =>
 	visHvisAvhuket ? (
 		<Vis attributt={props.name}>
-			<FormFieldInput {...props} />
+			<DollyTextInput {...props} />
 		</Vis>
 	) : (
-		<FormFieldInput {...props} />
+		<DollyTextInput {...props} />
 	)
