@@ -32,11 +32,12 @@ export const SoekForm = ({
 	localStorageValue,
 	handleChange,
 	handleChangeAdresse,
+	handleChangeList,
 	setRequest,
 	formRequest,
 }) => {
 	//TODO: Felter/kategorier som maa fikses
-	// Fagsystemer: alle
+	// Miljoer
 	// Personinformasjon: skjerming
 
 	const [result, setResult] = useState(null)
@@ -71,13 +72,6 @@ export const SoekForm = ({
 			}
 		})
 	}, [formRequest])
-
-	const handleChangeList = (value: any, path: string) => {
-		const list = value.map((item: any) => item.value)
-		const updatedRequest = { ...values, [path]: list, side: 0, seed: null }
-		reset(updatedRequest)
-		setRequest(updatedRequest)
-	}
 
 	const handleChangeSide = (side: number) => {
 		const updatedRequest = { ...values, side: side - 1, seed: result?.seed }

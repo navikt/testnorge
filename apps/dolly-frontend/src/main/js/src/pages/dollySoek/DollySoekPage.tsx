@@ -112,6 +112,31 @@ export default () => {
 		}
 	}
 
+	const handleChangeList = (value: any, path: string) => {
+		const list = value?.map((item: any) => item.value || item)
+		const updatedRequest = { ...values, [path]: list, side: 0, seed: null }
+		reset(updatedRequest)
+		setRequest(updatedRequest)
+		if (path === 'registreRequest') {
+			if (value?.length > 0) {
+				const fagsystemer = value.map((system) => ({
+					path: 'registreRequest',
+					value: system.value,
+					label: `Fagsystem: ${system.label}`,
+				}))
+				setLagreSoekRequest({
+					...lagreSoekRequest,
+					registreRequest: fagsystemer,
+				})
+			} else {
+				setLagreSoekRequest({
+					...lagreSoekRequest,
+					registreRequest: [],
+				})
+			}
+		}
+	}
+
 	return (
 		<div>
 			<div className="flexbox--align-center--justify-start">
@@ -126,12 +151,14 @@ export default () => {
 				formValues={formMethods.watch()}
 				handleChange={handleChange}
 				handleChangeAdresse={handleChangeAdresse}
+				handleChangeList={handleChangeList}
 			/>
 			<SoekForm
 				formMethods={formMethods}
 				localStorageValue={localStorageValue}
 				handleChange={handleChange}
 				handleChangeAdresse={handleChangeAdresse}
+				handleChangeList={handleChangeList}
 				setRequest={setRequest}
 				formRequest={formRequest}
 			/>
