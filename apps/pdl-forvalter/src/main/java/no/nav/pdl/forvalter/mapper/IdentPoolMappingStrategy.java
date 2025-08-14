@@ -64,6 +64,10 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
 
                         destinasjon.setAntall(1);
                         destinasjon.setRekvirertAv(PDL_FORVALTER);
+
+                        if (isNull(kilde.getSyntetisk())) {
+                            destinasjon.setSyntetisk(true);
+                        }
                     }
                 })
                 .exclude("identtype")

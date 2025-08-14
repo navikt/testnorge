@@ -9,9 +9,11 @@ import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -19,7 +21,14 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.created;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -32,18 +41,14 @@ class AaregConsumerTest {
     private static final String IDENT = "01010101010";
     private static final String ORGNUMMER = "202020202";
 
-    private static final String MILJOE = "t0";
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private AccessToken accessToken;
-
-    @Autowired
-    private AaregConsumer aaregConsumer;
+    private static final String MILJOE = "q2";
 
     @MockitoBean
     @SuppressWarnings("unused")
     private TokenExchange tokenService;
+
+    @Autowired
+    private AaregConsumer aaregConsumer;
 
     private Arbeidsforhold opprettRequest;
 
@@ -55,8 +60,7 @@ class AaregConsumerTest {
 
     @BeforeEach
     void setUp() {
-        when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
-
+        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
         opprettRequest = Arbeidsforhold.builder()
                 .arbeidstaker(Person.builder()
                         .offentligIdent(IDENT)
@@ -80,7 +84,7 @@ class AaregConsumerTest {
     @Test
     void opprettArbeidsforhold() throws JsonProcessingException {
         stubOpprettArbeidsforhold(arbeidsforholdRespons);
-        var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE, accessToken)
+        var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
                 .collectList()
                 .block();
         assertThat(response)
@@ -93,7 +97,7 @@ class AaregConsumerTest {
     @Test
     void oppdaterArbeidsforhold() throws JsonProcessingException {
         stubOppdaterArbeidsforhold(arbeidsforholdRespons);
-        var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE, accessToken)
+        var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
                 .collectList()
                 .block();
         assertThat(response)
@@ -106,7 +110,7 @@ class AaregConsumerTest {
     @Test
     void hentArbeidsforhold() throws JsonProcessingException {
         stubHentArbeidsforhold(arbeidsforholdRespons);
-        var arbeidsforholdResponses = aaregConsumer.hentArbeidsforhold(IDENT, MILJOE, accessToken)
+        var arbeidsforholdResponses = aaregConsumer.hentArbeidsforhold(IDENT, MILJOE)
                 .block();
         assertThat(arbeidsforholdResponses)
                 .isNotNull()

@@ -68,4 +68,5 @@ public class Consumers {
     private ServerProperties testnavYrkesskadeProxy;
     private ServerProperties testnavAltinn3TilgangService;
     private ServerProperties testnavArbeidssoekerregisteretProxy;
+    private ServerProperties testnavApiOversiktService;
 }

@@ -33,7 +33,7 @@ export const DollyIdentValidation = Yup.object({
 		Yup.number()
 			.transform((v, o) => (o === '' ? null : v))
 			.positive('Må være et positivt tall')
-			.min(1, 'Må minst opprette {min} person')
+			.min(1, 'Må minst opprette 1 person')
 			.max(50, 'Kan kun bestille max 50 identer om gangen.')
 			.required('Oppgi antall personer'),
 	),

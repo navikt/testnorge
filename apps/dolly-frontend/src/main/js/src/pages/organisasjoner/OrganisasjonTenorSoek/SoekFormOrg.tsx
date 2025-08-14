@@ -1,6 +1,6 @@
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import styled from 'styled-components'
-import { Accordion } from '@navikt/ds-react'
+import { Table } from '@navikt/ds-react'
 import React, { lazy, Suspense } from 'react'
 import { Header } from '@/components/ui/soekForm/SoekForm'
 import { isDate } from 'date-fns'
@@ -19,14 +19,14 @@ const SoekefeltWrapper = styled.div`
 	flex-direction: column;
 	margin-bottom: 20px;
 	background-color: white;
-	border: 1px @color-bg-grey-border;
+	border: 1px solid @color-bg-grey-border;
 	border-radius: 4px;
 	margin-top: -70px;
 	width: 100%;
 `
 
 const Soekefelt = styled.div`
-	padding: 20px 15px;
+	padding: 15px;
 `
 
 export const SoekFormOrg = ({ setRequest, mutate }: any) => {
@@ -91,124 +91,124 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 				<FormProvider {...formMethods}>
 					<>
 						<Form control={control} className="flexbox--flex-wrap">
-							<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
-								<Accordion.Item defaultOpen={true}>
-									<Accordion.Header>
-										<Header
-											title="Enhetsregisteret og Foretaksregisteret"
-											dataCy={TestComponentSelectors.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET}
-											paths={[
-												'organisasjonsnummer',
-												'organisasjonsform.kode',
-												'forretningsadresse.kommunenummer',
-												'harUtenlandskForretningsadresse',
-												'harUtenlandskPostadresse',
-												'naeringBeskrivelse',
-												'naeringKode',
-												'registrertIMvaregisteret',
-												'registrertIForetaksregisteret',
-												'registrertIFrivillighetsregisteret',
-												'enhetStatuser.kode',
-												'slettetIEnhetsregisteret',
-												'revisorer',
-												'regnskapsfoerere',
-												'dagligLeder',
-												'styremedlemmer',
-												'forretningsfoerer',
-												'kontaktpersoner',
-												'norsk_representant',
-												'erUnderenhet.hovedenhet',
-												'harUnderenheter',
-												'antallUnderenheter',
-												'antallAnsatte.fraOgMed',
-												'antallAnsatte.tilOgMed',
-											]}
-											getValues={getValues}
-											emptyCategory={emptyCategory}
-										/>
-									</Accordion.Header>
-									<Accordion.Content style={{ paddingRight: '0' }}>
-										<EnhetsregisteretForetaksregisteret handleChange={handleChange} />
-									</Accordion.Content>
-								</Accordion.Item>
-								<Accordion.Item>
-									<Accordion.Header>
-										<Header
-											title="Opplysninger fra Skatteetatens innsendingsmiljø"
-											paths={[
-												'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar',
-												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast',
-												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt',
-												'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast',
-												'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt',
-												'tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata',
-												'tenorRelasjoner.testinnsendingSkattEnhet.manntall',
-											]}
-											getValues={getValues}
-											emptyCategory={emptyCategory}
-										/>
-									</Accordion.Header>
-									<Accordion.Content style={{ paddingRight: '0' }}>
-										<TestInnsendingSkattEnhet handleChange={handleChange} />
-									</Accordion.Content>
-								</Accordion.Item>
-								<Accordion.Item>
-									<Accordion.Header>
-										<Header
-											title="Arbeidsforhold"
-											paths={[
-												'tenorRelasjoner.arbeidsforhold.startDato.fraOgMed',
-												'tenorRelasjoner.arbeidsforhold.startDato.tilOgMed',
-												'tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed',
-												'tenorRelasjoner.arbeidsforhold.sluttDato.tilOgMed',
-												'tenorRelasjoner.arbeidsforhold.harPermisjoner',
-												'tenorRelasjoner.arbeidsforhold.harPermitteringer',
-												'tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn',
-												'tenorRelasjoner.arbeidsforhold.harUtenlandsopphold',
-												'tenorRelasjoner.arbeidsforhold.harHistorikk',
-												'tenorRelasjoner.arbeidsforhold.arbeidsforholdtype',
-											]}
-											getValues={getValues}
-											emptyCategory={emptyCategory}
-										/>
-									</Accordion.Header>
-									<Accordion.Content style={{ paddingRight: '0' }}>
-										<EnhetsregisteretArbeidsforhold handleChange={handleChange} />
-									</Accordion.Content>
-								</Accordion.Item>
-								<Accordion.Item>
-									<Accordion.Header>
-										<Header
-											title="Samlet reskontroinnsyn"
-											paths={[
-												'tenorRelasjoner.samletReskontroinnsyn.harKrav',
-												'tenorRelasjoner.samletReskontroinnsyn.harInnbetaling',
-											]}
-											getValues={getValues}
-											emptyCategory={emptyCategory}
-										/>
-									</Accordion.Header>
-									<Accordion.Content style={{ paddingRight: '0' }}>
-										<SamletReskontroinnsyn handleChange={handleChange} />
-									</Accordion.Content>
-								</Accordion.Item>
-								<Accordion.Item>
-									<Accordion.Header>
-										<Header
-											title="Tjenestepensjonsavtale"
-											paths={[
-												'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr',
-												'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
-											]}
-											getValues={getValues}
-											emptyCategory={emptyCategory}
-										/>
-									</Accordion.Header>
-									<Accordion.Content style={{ paddingRight: '0' }}>
-										<Tjenestepensjonsavtale handleChange={handleChange} />
-									</Accordion.Content>
-								</Accordion.Item>
-							</Accordion>
+							<Table size="small">
+								<Table.Body>
+									<Table.ExpandableRow
+										content={<EnhetsregisteretForetaksregisteret handleChange={handleChange} />}
+										defaultOpen={true}
+									>
+										<Table.HeaderCell>
+											<Header
+												title="Enhetsregisteret og Foretaksregisteret"
+												dataCy={
+													TestComponentSelectors.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET
+												}
+												paths={[
+													'organisasjonsnummer',
+													'organisasjonsform.kode',
+													'forretningsadresse.kommunenummer',
+													'harUtenlandskForretningsadresse',
+													'harUtenlandskPostadresse',
+													'naeringBeskrivelse',
+													'naeringKode',
+													'registrertIMvaregisteret',
+													'registrertIForetaksregisteret',
+													'registrertIFrivillighetsregisteret',
+													'enhetStatuser.kode',
+													'slettetIEnhetsregisteret',
+													'revisorer',
+													'regnskapsfoerere',
+													'dagligLeder',
+													'styremedlemmer',
+													'forretningsfoerer',
+													'kontaktpersoner',
+													'norsk_representant',
+													'erUnderenhet.hovedenhet',
+													'harUnderenheter',
+													'antallUnderenheter',
+													'antallAnsatte.fraOgMed',
+													'antallAnsatte.tilOgMed',
+												]}
+												getValues={getValues}
+												emptyCategory={emptyCategory}
+											/>
+										</Table.HeaderCell>
+									</Table.ExpandableRow>
+									<Table.ExpandableRow
+										content={<TestInnsendingSkattEnhet handleChange={handleChange} />}
+									>
+										<Table.HeaderCell>
+											<Header
+												title="Opplysninger fra Skatteetatens innsendingsmiljø"
+												paths={[
+													'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar',
+													'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast',
+													'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt',
+													'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast',
+													'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt',
+													'tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata',
+													'tenorRelasjoner.testinnsendingSkattEnhet.manntall',
+												]}
+												getValues={getValues}
+												emptyCategory={emptyCategory}
+											/>
+										</Table.HeaderCell>
+									</Table.ExpandableRow>
+									<Table.ExpandableRow
+										content={<EnhetsregisteretArbeidsforhold handleChange={handleChange} />}
+									>
+										<Table.HeaderCell>
+											<Header
+												title="Arbeidsforhold"
+												paths={[
+													'tenorRelasjoner.arbeidsforhold.startDato.fraOgMed',
+													'tenorRelasjoner.arbeidsforhold.startDato.tilOgMed',
+													'tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed',
+													'tenorRelasjoner.arbeidsforhold.sluttDato.tilOgMed',
+													'tenorRelasjoner.arbeidsforhold.harPermisjoner',
+													'tenorRelasjoner.arbeidsforhold.harPermitteringer',
+													'tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn',
+													'tenorRelasjoner.arbeidsforhold.harUtenlandsopphold',
+													'tenorRelasjoner.arbeidsforhold.harHistorikk',
+													'tenorRelasjoner.arbeidsforhold.arbeidsforholdtype',
+												]}
+												getValues={getValues}
+												emptyCategory={emptyCategory}
+											/>
+										</Table.HeaderCell>
+									</Table.ExpandableRow>
+									<Table.ExpandableRow
+										content={<SamletReskontroinnsyn handleChange={handleChange} />}
+									>
+										<Table.HeaderCell>
+											<Header
+												title="Samlet reskontroinnsyn"
+												paths={[
+													'tenorRelasjoner.samletReskontroinnsyn.harKrav',
+													'tenorRelasjoner.samletReskontroinnsyn.harInnbetaling',
+												]}
+												getValues={getValues}
+												emptyCategory={emptyCategory}
+											/>
+										</Table.HeaderCell>
+									</Table.ExpandableRow>
+									<Table.ExpandableRow
+										content={<Tjenestepensjonsavtale handleChange={handleChange} />}
+									>
+										<Table.HeaderCell>
+											<Header
+												title="Tjenestepensjonsavtale"
+												paths={[
+													'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr',
+													'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
+												]}
+												getValues={getValues}
+												emptyCategory={emptyCategory}
+											/>
+										</Table.HeaderCell>
+									</Table.ExpandableRow>
+								</Table.Body>
+							</Table>
 						</Form>
 						{(devEnabled || erDollyAdmin()) && (
 							<Suspense fallback={<Loading label="Laster komponenter" />}>

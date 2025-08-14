@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -109,7 +110,7 @@ public class MalBestillingService {
     @Transactional(readOnly = true)
     public RsMalBestillingWrapper getMalbestillingByUser(String brukerId) {
 
-        var bruker = brukerService.fetchBruker(brukerId);
+        var bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
 
         var malBestillinger = bestillingMalRepository.findByBruker(bruker)
                 .stream()
@@ -155,9 +156,9 @@ public class MalBestillingService {
                     .build());
         } else {
 
-            var oppdateEksisterende = eksisterende.getFirst();
-            oppdateEksisterende.setBestKriterier(bestilling.getBestKriterier());
-            oppdateEksisterende.setMiljoer(bestilling.getMiljoer());
+            var oppdaterEksisterende = eksisterende.getFirst();
+            oppdaterEksisterende.setBestKriterier(bestilling.getBestKriterier());
+            oppdaterEksisterende.setMiljoer(bestilling.getMiljoer());
         }
 
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING_MAL))) {
@@ -171,7 +172,7 @@ public class MalBestillingService {
     @Transactional
     public RsMalBestillingUtenFavoritter saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
-        var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
 
         var bestilling = bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
@@ -221,7 +222,7 @@ public class MalBestillingService {
     @Transactional
     public RsMalBestillingUtenFavoritter createFromIdent(String ident, String name) {
 
-        var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
 
         var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
         if (bestillinger.isEmpty()) {
@@ -261,6 +262,47 @@ public class MalBestillingService {
         }
 
         return mapperFacade.map(akkumulertMal, RsMalBestillingUtenFavoritter.class);
+    }
+
+    public Mono<RsMalBestillingSimple> getMalBestillingOversikt() {
+
+        var brukeren = brukerService.fetchOrCreateBruker();
+        if (brukeren.getBrukertype() == AZURE || brukeren.getBrukertype() == Bruker.Brukertype.TEAM) {
+
+            return Mono.just(RsMalBestillingSimple.builder()
+                    .brukereMedMaler(Stream.of(List.of(
+                                            MalBruker.builder()
+                                                    .brukernavn(ALLE)
+                                                    .brukerId(ALLE)
+                                                    .build(),
+                                            MalBruker.builder()
+                                                    .brukernavn(ANONYM)
+                                                    .brukerId(ANONYM)
+                                                    .build()),
+                                    mapFragment(bestillingMalRepository.findAllByBrukertypeAzureOrTeam()))
+                            .flatMap(List::stream)
+                            .toList())
+                    .build());
+
+        } else {
+
+            return brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .map(bestillingMalRepository::findAllByBrukerIdIn)
+                    .map(MalBestillingService::mapFragment)
+                    .map(RsMalBestillingSimple::new);
+        }
+    }
+
+    public List<RsMalBestilling> getMalBestillingerBrukerId(String brukerId) {
+
+        var malBestillinger = switch (brukerId) {
+            case ANONYM -> bestillingMalRepository.findAllByBrukerIsNull();
+            case ALLE -> bestillingMalRepository.findAllByBrukerAzureOrTeam();
+            default -> bestillingMalRepository.findAllByBrukerId(brukerId);
+        };
+
+        return mapperFacade.mapAsList(malBestillinger, RsMalBestilling.class);
     }
 
     public static String getBruker(Bruker bruker) {
@@ -303,33 +345,6 @@ public class MalBestillingService {
                 Collections.emptySet();
     }
 
-    public RsMalBestillingSimple getMalBestillingOversikt() {
-
-        var brukeren = brukerService.fetchOrCreateBruker();
-        if (brukeren.getBrukertype() == AZURE) {
-
-            return RsMalBestillingSimple.builder()
-                    .brukereMedMaler(Stream.of(List.of(
-                                            MalBruker.builder()
-                                                    .brukernavn(ANONYM)
-                                                    .brukerId(ANONYM)
-                                                    .build()),
-                                    mapFragment(bestillingMalRepository.findAllByBrukertypeAzure()))
-                            .flatMap(List::stream)
-                            .toList())
-                    .build();
-
-        } else {
-            var brukere = brukerServiceConsumer.getKollegaerIOrganisasjon(brukeren.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .block();
-
-            return RsMalBestillingSimple.builder()
-                    .brukereMedMaler(mapFragment(bestillingMalRepository.findAllByBrukerIdIn(brukere)))
-                    .build();
-        }
-    }
-
     private static List<MalBruker> mapFragment(List<MalBestillingFragment> malBestillingFragment) {
 
         return malBestillingFragment.stream()
@@ -341,14 +356,5 @@ public class MalBestillingService {
                         .brukerId(malBruker[1])
                         .build())
                 .toList();
-    }
-
-    public List<RsMalBestilling> getMalBestillingerBrukerId(String brukerId) {
-
-        var malBestillinger =  ANONYM.equals(brukerId) ?
-                    bestillingMalRepository.findAllByBrukerIsNull() :
-                    bestillingMalRepository.findAllByBrukerId(brukerId);
-
-        return mapperFacade.mapAsList(malBestillinger, RsMalBestilling.class);
     }
 }

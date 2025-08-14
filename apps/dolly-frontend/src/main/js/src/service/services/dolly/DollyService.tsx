@@ -15,6 +15,10 @@ export default {
 		return Request.put(Endpoints.gruppeById(valgtGruppe), data)
 	},
 
+	endreTilknytningGruppe(gruppeId, brukerId) {
+		return Request.put(Endpoints.endreTilknytningGruppe(gruppeId, brukerId))
+	},
+
 	deleteGruppe(gruppeId) {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
 	},
@@ -130,6 +134,35 @@ export default {
 	},
 	getPersonerFraPdl(identer) {
 		return Request.get(Endpoints.personoppslagMange(identer))
+	},
+
+	//* Team
+	opprettTeam(data) {
+		return Request.post(Endpoints.opprettTeam(), data)
+	},
+
+	redigerTeam(teamId, data) {
+		return Request.put(Endpoints.redigerTeam(teamId), data)
+	},
+
+	leggTilBrukerITeam(teamId, brukerId) {
+		return Request.post(Endpoints.leggTilFjernBrukerFraTeam(teamId, brukerId))
+	},
+
+	fjernBrukerFraTeam(teamId, brukerId) {
+		return Request.delete(Endpoints.leggTilFjernBrukerFraTeam(teamId, brukerId))
+	},
+
+	slettTeam(teamId) {
+		return Request.delete(Endpoints.slettTeam(teamId))
+	},
+
+	setRepresentererTeam(teamId) {
+		return Request.put(Endpoints.setRepresentererTeam(teamId))
+	},
+
+	fjernRepresentererTeam() {
+		return Request.delete(Endpoints.fjernRepresentererTeam())
 	},
 
 	//* Organisasjoner

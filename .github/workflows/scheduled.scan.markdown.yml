@@ -8,9 +8,6 @@ on:
         description: "Directory to scan, e.g. apps/dolly-backend. Defaults to whole repo."
         default: "."
         required: true
-    secrets:
-      SLACK_DEAD_URLS_WEBHOOK_URL:
-        required: true
 
 jobs:
   markdown:
@@ -19,14 +16,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
       - name: "Markdown"
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        uses: tcort/github-action-markdown-link-check@v1
         with:
           folder-path: ${{ inputs.working-directory }}
           config-file: .github/workflows/scheduled.scan.markdown.json
           use-quiet-mode: yes
       - name: "Slack"
         if: ${{ failure() }}
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@v2.1.0
         with:
           payload: |
             {

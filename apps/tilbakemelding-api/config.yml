@@ -21,6 +21,8 @@ spec:
       rules:
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
+        - application: logging
+          namespace: nais-system
       external:
         - host: slack.com
         - host: login.microsoftonline.com

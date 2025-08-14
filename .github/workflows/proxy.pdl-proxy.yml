@@ -3,13 +3,15 @@ name: pdl-proxy
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/reactive-core/**"
-      - "libs/reactive-proxy/**"
-      - "libs/reactive-security/**"
-      - "libs/security-core/**"
-      - "proxies/pdl-proxy/**"
-      - ".github/workflows/proxy.pdl-proxy.yml"
+      - .github/workflows/proxy.pdl-proxy.yml
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/pdl-proxy/**
 
 jobs:
   workflow:

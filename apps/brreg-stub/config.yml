@@ -39,9 +39,14 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-texas-proxy
         - application: testnav-brregstub-proxy
         - application: flex-brreg-proxy
           cluster: dev-gcp
           namespace: flex
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   ingresses:
     - "https://brreg-stub.intern.dev.nav.no" # dev-fss

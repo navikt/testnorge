@@ -50,6 +50,8 @@ spec:
     outbound:
       rules:
         - application: synthdata-arena-meldekort
+        - application: logging
+          namespace: nais-system
       external:
         - host: synthdata-arena-meldekort.intern.dev.nav.no
   liveness:

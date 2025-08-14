@@ -3,14 +3,17 @@ name: synt-vedtakshistorikk-service
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/data-transfer-objects/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-insecure-security/**"
-      - "libs/servlet-security/**"
-      - "apps/synt-vedtakshistorikk-service/**"
-      - ".github/workflows/app.synt-vedtakshistorikk-service.yml"
+      - .github/workflows/app.synt-vedtakshistorikk-service.yml
+      - apps/synt-vedtakshistorikk-service/**
+      - libs/data-transfer-objects/**
+      - libs/data-transfer-search-objects/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
+      - libs/servlet-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

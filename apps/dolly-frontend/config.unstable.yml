@@ -23,10 +23,6 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - https://dolly-frontend-dev-unstable.intern.dev.nav.no/login/oauth2/code/aad
-        - http://localhost:8020/login/oauth2/code/aad
-        - http://localhost:3000/login/oauth2/code/aad
   accessPolicy:
     outbound:
       rules:
@@ -55,6 +51,9 @@ spec:
         - application: testnav-yrkesskade-proxy
         - application: testnav-altinn3-tilgang-service
         - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-api-oversikt-service
+        - application: logging
+          namespace: nais-system
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io

@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -42,8 +43,8 @@ public class IdentGeneratorService {
             LocalDate foedtEtter,
             LocalDate foedtFoer,
             Identtype type,
-            boolean syntetiskIdent
-    ) {
+            boolean syntetiskIdent) {
+
         validateDates(foedtEtter, foedtFoer);
         int days = toIntExact(ChronoUnit.DAYS.between(foedtEtter, foedtFoer));
         BiFunction<LocalDate, Boolean, List<String>> numberGenerator = generatorMap.get(type);
@@ -59,7 +60,10 @@ public class IdentGeneratorService {
                 ));
     }
 
-    public Set<String> genererIdenter(HentIdenterRequest request, Set<String> identerIIdentPool) {
+    @SuppressWarnings("java:S3776")
+    public Set<String> genererIdenter(HentIdenterRequest request) {
+
+        var identerIIdentPool = new HashSet<String>();
 
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 
@@ -68,7 +72,7 @@ public class IdentGeneratorService {
             request.setFoedtFoer(request.getFoedtEtter().plusDays(1));
         }
 
-        var antall = request.getAntall() + identerIIdentPool.size();
+        var antall = request.getAntall();
         var iteratorRange = (request.getKjoenn() == null) ? 1 : 2;
         var numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
 
@@ -111,7 +115,7 @@ public class IdentGeneratorService {
         return identerIIdentPool;
     }
 
-    private void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
+    private static void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
 
         if (foedtEtter.isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Til dato (%s) kan ikke være etter før dato (%s)", foedtEtter, foedtFoer));

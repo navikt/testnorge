@@ -37,6 +37,10 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

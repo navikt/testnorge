@@ -1,31 +1,49 @@
 import { useDispatch } from 'react-redux'
 import { setSearchText } from '@/ducks/search'
-import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 import './SearchField.less'
 import { FormProvider, useForm } from 'react-hook-form'
+import { Search } from '@navikt/ds-react'
 
-export const SearchField = ({ placeholder = 'Hva leter du etter?', setText, ...rest }) => {
+export const SearchField = ({
+	placeholder = 'Hva leter du etter?',
+	setText,
+	label = 'Søk',
+	shortcutKey,
+	ref,
+	...rest
+}) => {
 	const dispatch = useDispatch()
 	const formMethods = useForm()
 
-	const handleChange = (event) => {
-		return setText
-			? setText(event.target.value.trim())
-			: dispatch(setSearchText(event.target.value.trim()))
+	const handleChange = (value) => {
+		return setText ? setText(value?.trim()) : dispatch(setSearchText(value?.trim()))
+	}
+
+	const focusSearchInput = (event: MouseEvent) => {
+		event.preventDefault()
+		const inputElement = ref.current
+		if (inputElement) {
+			inputElement.focus()
+		}
 	}
 
 	return (
 		<div className="searchfield-container skjemaelement">
 			<FormProvider {...formMethods}>
-				<TextInput
-					name="searchfield-inputfield"
+				<Search
+					label={label}
 					placeholder={placeholder}
 					onChange={handleChange}
 					aria-label="Search"
-					icon="search"
+					size={'small'}
+					maxLength={20}
+					ref={ref}
+					variant={'secondary'}
 					{...rest}
-				/>
+				>
+					<Search.Button onClick={focusSearchInput}>{shortcutKey}</Search.Button>
+				</Search>
 			</FormProvider>
 		</div>
 	)

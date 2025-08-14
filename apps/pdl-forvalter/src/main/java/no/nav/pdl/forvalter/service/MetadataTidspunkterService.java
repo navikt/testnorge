@@ -133,7 +133,9 @@ public class MetadataTidspunkterService {
 
         for (var i = opplysningstype.size() - 1; i > 0; i--) {
             opplysningstype.get(i).getFolkeregistermetadata().setOpphoerstidspunkt(
-                    subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()));
+                    opplysningstype.get(i).getFolkeregistermetadata().getGyldighetstidspunkt().isAfter(opplysningstype.get(i-1).getFolkeregistermetadata().getGyldighetstidspunkt()) ?
+                    subtractADay(opplysningstype.get(i - 1).getFolkeregistermetadata().getGyldighetstidspunkt()) :
+                            null);
         }
     }
 

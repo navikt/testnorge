@@ -37,11 +37,17 @@ spec:
       rules:
         - application: repr-fullmakt
           namespace: repr
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
     periodSeconds: 10
     failureThreshold: 20
+  observability:
+    logging:
+      destinations:
+        - id: elastic
   readiness:
     path: /internal/health/readiness
     initialDelay: 20

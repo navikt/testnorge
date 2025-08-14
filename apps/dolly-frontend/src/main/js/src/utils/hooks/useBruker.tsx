@@ -26,6 +26,12 @@ type BrukerType = {
 	epost: string
 	favoritter: []
 	grupper: []
+	representererTeam?: {
+		id: string
+		brukerId: string
+		navn: string
+		beskrivelse: string
+	}
 }
 
 export const useAlleBrukere = () => {
@@ -39,9 +45,13 @@ export const useAlleBrukere = () => {
 }
 
 export const useCurrentBruker = () => {
-	const { data, isLoading, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher, {
-		revalidateOnFocus: true,
-	})
+	const { data, isLoading, error, mutate } = useSWR<BrukerType, Error>(
+		getCurrentBrukerUrl,
+		fetcher,
+		{
+			revalidateOnFocus: true,
+		},
+	)
 
 	if (error && !runningE2ETest()) {
 		console.error(ERROR_ACTIVE_USER)
@@ -52,6 +62,7 @@ export const useCurrentBruker = () => {
 		currentBruker: data,
 		loading: isLoading,
 		error: error,
+		mutate: mutate,
 	}
 }
 
@@ -72,5 +83,16 @@ export const useBrukerProfilBilde = () => {
 		brukerBilde: data,
 		loading: isLoading,
 		error: error,
+	}
+}
+
+export const useBrukerTeams = () => {
+	const { data, isLoading, error, mutate } = useSWR<any, Error>(`${getBrukereUrl}/teams`, fetcher)
+
+	return {
+		brukerTeams: data,
+		loading: isLoading,
+		error: error,
+		mutate: mutate,
 	}
 }

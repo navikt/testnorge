@@ -38,6 +38,8 @@ spec:
       rules:
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+        - application: logging
+          namespace: nais-system
   gcp:
     sqlInstances:
       - type: POSTGRES_15

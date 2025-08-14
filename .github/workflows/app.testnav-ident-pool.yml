@@ -3,15 +3,14 @@ name: testnav-ident-pool
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/database/**"
-      - "libs/security-core/**"
-      - "libs/servlet-core/**"
-      - "libs/servlet-insecure-security/**"
-      - "libs/servlet-security/**"
-      - "libs/testing/**"
-      - "apps/testnav-ident-pool/**"
-      - ".github/workflows/app.testnav-ident-pool.yml"
+      - .github/workflows/app.testnav-ident-pool.yml
+      - apps/testnav-ident-pool/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-insecure-security/**
+      - libs/reactive-security/**
+      - libs/testing/**
+      - plugins/**
 
 jobs:
   workflow:

@@ -3,12 +3,12 @@ package no.nav.testnav.identpool.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Ident;
-import no.nav.testnav.identpool.domain.Rekvireringsstatus;
-import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -17,6 +17,9 @@ import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static no.nav.testnav.identpool.util.DatoFraIdentUtility.getFoedselsdato;
+import static no.nav.testnav.identpool.util.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.testnav.identpool.util.KjoennFraIdentUtility.getKjoenn;
 import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -25,19 +28,13 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class PoolService {
 
-    private static final int ATTEMPT_OBTAIN = 40;
+    private static final int ATTEMPT_OBTAIN = 480;
     private final IdenterAvailService identerAvailService;
     private final DatabaseService databaseService;
     private final IdentRepository identRepository;
-    private final DatoFraIdentService datoFraIdentService;
-    private final KjoennFraIdentService kjoennFraIdentService;
-    private final IdenttypeFraIdentService identtypeFraIdentService;
 
-    private static Rekvireringsstatus getRekvireringsstatus(boolean inUse) {
-        return inUse ? I_BRUK : LEDIG;
-    }
+    private static Throwable throwException(HentIdenterRequest request) {
 
-    private static void throwException(HentIdenterRequest request) {
         throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
                         "identType %s, kjønn %s, fødtEtter %s, fødtFør %s, syntetisk %b -- "
                         + "forsøk å bestille med andre kriterier.",
@@ -49,6 +46,7 @@ public class PoolService {
     }
 
     private static void logRequest(HentIdenterRequest request) {
+
         log.info("Leverte identer: antall {}, rekvirertAv {}, identType {}, kjønn {}, fødtEtter {}, fødtFør {}, syntetisk {}",
                 request.getAntall(), request.getRekvirertAv(),
                 nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
@@ -58,64 +56,62 @@ public class PoolService {
                 isTrue(request.getSyntetisk()));
     }
 
-    public synchronized List<String> allocateIdenter(HentIdenterRequest request) {
+    public synchronized Mono<List<String>> allocateIdenter(HentIdenterRequest request) {
 
-        var identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
-        int missingIdentCount = request.getAntall() - identEntities.size();
+        var counter = request.getAntall() * 2;
 
-        if (missingIdentCount > 0) {
+        return databaseService.hentLedigeIdenterFraDatabase(request)
+                .collectList()
+                .flatMap(ledigeIdenter -> {
+                    if (ledigeIdenter.size() < request.getAntall()) {
+                        return generateIdenter(request, counter);
+                    } else {
+                        return oppdaterIBruk(request, ledigeIdenter);
+                    }
+                })
+                .switchIfEmpty(generateIdenter(request, counter))
+                .doOnNext(identer -> logRequest(request));
+    }
 
-            var statusDTOS = identerAvailService.generateAndCheckIdenter(request,
-                    isTrue(request.getSyntetisk()) ? ATTEMPT_OBTAIN * 12 : ATTEMPT_OBTAIN);
+    private Mono<List<String>> generateIdenter(HentIdenterRequest request, int antall) {
 
-            log.info("Generert {} identer ved mining", statusDTOS.size());
+        return identerAvailService.generateAndCheckIdenter(request, ATTEMPT_OBTAIN)
+                .take(antall)
+                .map(this::buildIdentLedig)
+                .flatMap(identRepository::save)
+                .collectList()
+                .doOnNext(identer -> log.info("Antall identer allokert: {}", identer.size()))
+                .doOnNext(identer -> {
+                    if (identer.size() < request.getAntall()) {
+                        log.warn("For få identer allokert: {} for rekvirering: {}", identer.size(), request);
+                        throwException(request);
+                    }
+                })
+                .flatMap(identer -> oppdaterIBruk(request, identer));
+    }
 
-            var identerFraMining = statusDTOS.stream()
-                    .map(this::buildIdent)
-                    .toList();
-            identRepository.saveAll(identerFraMining);
+    private Mono<List<String>> oppdaterIBruk(HentIdenterRequest request, List<Ident> ledige) {
 
-            var ledigeIdents = identerFraMining.stream()
-                    .filter(Ident::isLedig)
-                    .toList().iterator();
-
-            int i = 0;
-            while (i < missingIdentCount && ledigeIdents.hasNext()) {
-                identEntities.add(ledigeIdents.next());
-                i++;
-            }
-
-            logRequest(request);
-
-            if (identEntities.size() < request.getAntall()) {
-                throwException(request);
-            }
-        }
-
-        identRepository.saveAll(identEntities.stream()
+        return Flux.fromIterable(ledige)
+                .take(request.getAntall())
                 .map(ident -> {
-                    ident.setRekvireringsstatus(I_BRUK);
                     ident.setRekvirertAv(request.getRekvirertAv());
+                    ident.setRekvireringsstatus(I_BRUK);
                     return ident;
                 })
-                .toList());
-
-        return identEntities.stream().map(Ident::getPersonidentifikator).toList();
+                .flatMap(identRepository::save)
+                .map(Ident::getPersonidentifikator)
+                .collectList();
     }
 
-    private Ident buildIdent(TpsStatusDTO tpsStatusDTO) {
-        return buildIdent(tpsStatusDTO.getIdent(), "TPS", getRekvireringsstatus(tpsStatusDTO.isInUse()));
-    }
+    private Ident buildIdentLedig(String ident) {
 
-    private Ident buildIdent(String ident, String rekvirertAv, Rekvireringsstatus rekvireringsstatus) {
         return Ident.builder()
                 .personidentifikator(ident)
-                .finnesHosSkatt(false)
-                .foedselsdato(datoFraIdentService.getFoedselsdato(ident))
-                .kjoenn(kjoennFraIdentService.getKjoenn(ident))
-                .identtype(identtypeFraIdentService.getIdenttype(ident))
-                .rekvirertAv(rekvireringsstatus == LEDIG ? null : rekvirertAv)
-                .rekvireringsstatus(rekvireringsstatus)
+                .foedselsdato(getFoedselsdato(ident))
+                .kjoenn(getKjoenn(ident))
+                .identtype(getIdenttype(ident))
+                .rekvireringsstatus(LEDIG)
                 .syntetisk(isSyntetisk(ident))
                 .build();
     }

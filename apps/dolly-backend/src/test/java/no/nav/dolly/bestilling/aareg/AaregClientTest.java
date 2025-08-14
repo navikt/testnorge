@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.aareg;
 
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.ApplicationConfig;
@@ -17,7 +16,6 @@ import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +44,7 @@ import static org.mockito.Mockito.when;
 class AaregClientTest {
 
     private static final String IDENT = "111111111111";
-    private static final String ENV = "u2";
+    private static final String ENV = "q2";
     private static final String ORGNUMMER = "222222222";
 
     @Mock
@@ -57,9 +55,6 @@ class AaregClientTest {
 
     @Mock
     private MapperFacade mapperFacade;
-
-    @Mock
-    private AccessToken accessToken;
 
     @Mock
     private Bruker bruker;
@@ -78,15 +73,13 @@ class AaregClientTest {
 
     @BeforeEach
     void setup() {
-        when(applicationConfig.getClientTimeout()).thenReturn(30L);
-        when(aaregConsumer.getAccessToken())
-                .thenReturn(Mono.just(accessToken));
         statusCaptor = ArgumentCaptor.forClass(String.class);
     }
 
     private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
 
         return ArbeidsforholdRespons.builder()
+                .miljo(ENV)
                 .eksisterendeArbeidsforhold(singletonList(
                         Arbeidsforhold.builder()
                                 .arbeidstaker(Person.builder()
@@ -112,14 +105,6 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any()))
-                .thenReturn(singletonList(new Arbeidsforhold()));
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
-                .thenReturn(Mono.just(new ArbeidsforholdRespons()));
-        when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
-                .thenReturn(Flux.just(new ArbeidsforholdRespons()));
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
-                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
 
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
@@ -129,11 +114,12 @@ class AaregClientTest {
                                 .bruker(bruker)
                                 .build(), bestillingProgress, false)
                 .subscribe(resultat ->
-                        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
+                        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)));
     }
 
     @Test
     void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerPerson_returnsOK() {
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
@@ -141,19 +127,18 @@ class AaregClientTest {
                 .build()));
         request.setEnvironments(singleton(ENV));
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
                 .thenReturn(Mono.just(
                         buildArbeidsforhold(false)));
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any(MappingContext.class)))
-                .thenReturn(buildArbeidsforhold(false)
-                        .getEksisterendeArbeidsforhold());
-        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
+        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
                 .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
                         .miljo(ENV)
                         .arbeidsforholdId("1")
                         .build()));
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
                 .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold());
+        when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
+                .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold().getFirst());
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT)
@@ -163,14 +148,15 @@ class AaregClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().get(0), is(equalTo("u2:Info= Oppretting startet mot AAREG ...")));
-                    assertThat(statusCaptor.getAllValues().get(1), is(equalTo("u2: arbforhold=1$OK")));
+                    assertThat(statusCaptor.getAllValues().get(0), is(equalTo("q2:Info= Oppretting startet mot AAREG ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), is(equalTo("q2: arbforhold=1$OK")));
                 })
                 .verifyComplete();
     }
 
     @Test
     void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerOrganisasjon_returnsOK() {
+        when(applicationConfig.getClientTimeout()).thenReturn(30L);
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
@@ -179,18 +165,17 @@ class AaregClientTest {
                 .build()));
         request.setEnvironments(singleton(ENV));
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
                 .thenReturn(Mono.just(buildArbeidsforhold(true)));
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any(MappingContext.class)))
-                .thenReturn(buildArbeidsforhold(true)
-                        .getEksisterendeArbeidsforhold());
-        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
+        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
                 .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
                         .miljo(ENV)
                         .arbeidsforholdId("1")
                         .build()));
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
                 .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
+        when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
+                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold().getFirst());
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)
@@ -199,8 +184,8 @@ class AaregClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().get(0), is(equalTo("u2:Info= Oppretting startet mot AAREG ...")));
-                    assertThat(statusCaptor.getAllValues().get(1), is(equalTo("u2: arbforhold=1$OK")));
+                    assertThat(statusCaptor.getAllValues().get(0), is(equalTo("q2:Info= Oppretting startet mot AAREG ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), is(equalTo("q2: arbforhold=1$OK")));
                 })
                 .verifyComplete();
     }

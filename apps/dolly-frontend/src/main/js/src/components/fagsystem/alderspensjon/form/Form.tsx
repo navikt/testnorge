@@ -54,7 +54,7 @@ export const AlderspensjonForm = () => {
 	}, [])
 
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
+	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is || {}
 
 	function sjekkAlderFelt() {
 		const harAlder =

@@ -40,10 +40,7 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="laasModal">
 					<div className="laasModal laasModal-content">
-						{
-							// @ts-ignore
-							<Icon size={50} kind="report-problem-circle" />
-						}
+						<Icon size={50} kind="report-problem-circle" />
 						<h1>Lås gruppen</h1>
 						<h4>{children}</h4>
 					</div>

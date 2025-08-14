@@ -19,9 +19,10 @@ export default ({ fraGruppe = null }: AlleGrupper) => {
 	const [valgtBruker, setValgtBruker] = useState(formMethods?.watch('bruker') || '')
 
 	const brukerOptions = brukere?.map((bruker) => {
+		const erTeam = bruker?.brukertype === 'TEAM'
 		return {
 			value: bruker?.brukerId,
-			label: bruker?.brukernavn,
+			label: bruker?.brukernavn + (erTeam ? ' (team)' : ''),
 		}
 	})
 
@@ -40,7 +41,7 @@ export default ({ fraGruppe = null }: AlleGrupper) => {
 		<div className="flexbox--flex-wrap">
 			<DollySelect
 				name={'bruker'}
-				label={'Bruker'}
+				label={'Bruker/team'}
 				options={brukerOptions}
 				size="medium"
 				onChange={(bruker) => {

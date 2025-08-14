@@ -59,21 +59,21 @@ class DeleteRelasjonerUtilityTest {
                         .build())
                 .build();
 
-        mor.setRelasjoner(new ArrayList(List.of(buildDbRelasjon(mor, RelasjonType.FAMILIERELASJON_BARN, barn))));
+        mor.setRelasjoner(new ArrayList<>(List.of(buildDbRelasjon(mor, RelasjonType.FAMILIERELASJON_BARN, barn))));
 
-        barn.setRelasjoner(new ArrayList(List.of(
+        barn.setRelasjoner(new ArrayList<>(List.of(
                 buildDbRelasjon(barn, RelasjonType.FAMILIERELASJON_FORELDER, mor),
                 buildDbRelasjon(barn, RelasjonType.FAMILIERELASJON_FORELDER, far),
                 buildDbRelasjon(barn, RelasjonType.FORELDREANSVAR_FORELDER, far))));
 
-        far.setRelasjoner(new ArrayList(List.of(buildDbRelasjon(far, RelasjonType.FAMILIERELASJON_BARN, barn),
+        far.setRelasjoner(new ArrayList<>(List.of(buildDbRelasjon(far, RelasjonType.FAMILIERELASJON_BARN, barn),
                 buildDbRelasjon(far, RelasjonType.FORELDREANSVAR_BARN, barn))));
     }
 
     @Test
     void slettefamilieRelasjonMorBarn() {
 
-        DeleteRelasjonerUtility.deleteRelasjoner(mor, RelasjonType.FAMILIERELASJON_BARN);
+        DeleteRelasjonerUtility.deleteRelasjoner(mor, barn, RelasjonType.FAMILIERELASJON_BARN);
 
         assertThat(mor.getRelasjoner(), hasSize(0));
         assertThat(mor.getPerson().getForelderBarnRelasjon(), hasSize(0));
@@ -88,7 +88,7 @@ class DeleteRelasjonerUtilityTest {
     @Test
     void sletteforeldreansvarFarBarn() {
 
-        DeleteRelasjonerUtility.deleteRelasjoner(far, RelasjonType.FORELDREANSVAR_BARN);
+        DeleteRelasjonerUtility.deleteRelasjoner(far, barn, RelasjonType.FORELDREANSVAR_BARN);
 
         assertThat(mor.getRelasjoner(), hasSize(1));
         assertThat(mor.getPerson().getForelderBarnRelasjon(), hasSize(1));

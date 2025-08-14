@@ -16,6 +16,7 @@ const UNKNOWN_ERROR = 'unknown_error'
 
 export default () => {
 	const [loading, setLoading] = useState(true)
+	const [brukerResponse, setBrukerResponse] = useState(null as Bruker | null)
 	const [organisasjoner, setOrganisasjoner] = useState([])
 	const [organisasjon, setOrganisasjon] = useState(null)
 	const [modalHeight, setModalHeight] = useState(310)
@@ -59,11 +60,15 @@ export default () => {
 	const selectOrganisasjon = (org: Organisasjon) => {
 		setLoading(true)
 		setOrganisasjon(org)
-		setModalHeight(420)
+		setModalHeight(620)
 		BrukerApi.getBruker(org.organisasjonsnummer)
 			.then((response: Bruker) => {
 				if (response !== null) {
-					addToSession(org.organisasjonsnummer)
+					setBrukerResponse(response)
+					setLoading(false)
+					if (response.epost) {
+						addToSession(org.organisasjonsnummer)
+					}
 				} else {
 					Logger.error({
 						event: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
@@ -116,8 +121,12 @@ export default () => {
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
-				{organisasjon && !loading && (
-					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
+				{organisasjon && !loading && !brukerResponse?.epost && (
+					<BrukernavnVelger
+						eksisterendeBrukernavn={brukerResponse?.brukernavn}
+						organisasjon={organisasjon}
+						addToSession={addToSession}
+					/>
 				)}
 			</div>
 		</div>

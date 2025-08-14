@@ -7,7 +7,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
-import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -45,7 +44,7 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
                         .deletedOpplysninger(response.getDeletedOpplysninger())
                         .build()))
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> {
                     var message = WebClientError.describe(throwable).getMessage();
                     return Mono.just(OrdreResponseDTO.HendelseDTO

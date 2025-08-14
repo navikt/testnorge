@@ -164,5 +164,8 @@
   },
   "/testnav-arbeidssoekerregisteret-proxy": {
     "changeOrigin": true
+  },
+  "/testnav-oversikt-service/api": {
+    "changeOrigin": true
   }
 }

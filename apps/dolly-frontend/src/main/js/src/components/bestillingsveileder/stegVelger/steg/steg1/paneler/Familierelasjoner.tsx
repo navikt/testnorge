@@ -38,8 +38,8 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 
 	const foedselsaar =
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0].foedselsaar ||
-		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0].foedselsaar
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0]?.foedselsaar ||
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0]?.foedselsaar
 
 	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
 	const getIgnoreKeys = () => {
@@ -129,8 +129,8 @@ FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
 	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const foedselsaar =
-		personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0].foedselsaar ||
-		personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0].foedselsaar
+		personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0]?.foedselsaar ||
+		personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0]?.foedselsaar
 
 	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
 

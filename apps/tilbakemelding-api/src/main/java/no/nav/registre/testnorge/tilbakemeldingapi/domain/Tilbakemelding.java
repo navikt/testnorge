@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.tilbakemeldingapi.domain;
 
-import java.util.ArrayList;
-
 import lombok.Value;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.Rating;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
@@ -12,6 +10,10 @@ import no.nav.testnav.libs.slack.dto.Message;
 import no.nav.testnav.libs.slack.dto.Section;
 import no.nav.testnav.libs.slack.dto.TextAttachment;
 
+import java.util.ArrayList;
+
+import static java.util.Objects.nonNull;
+
 @Value
 public class Tilbakemelding {
     String title;
@@ -19,6 +21,8 @@ public class Tilbakemelding {
     Rating rating;
     Boolean isAnonym;
     String brukerType;
+    String brukernavn;
+    String tilknyttetOrganisasjon;
 
     public Tilbakemelding(TilbakemeldingDTO dto) {
         rating = dto.getRating();
@@ -26,17 +30,21 @@ public class Tilbakemelding {
         message = dto.getMessage();
         isAnonym = dto.getIsAnonym();
         brukerType = dto.getBrukerType();
+        brukernavn = dto.getBrukernavn();
+        tilknyttetOrganisasjon = dto.getTilknyttetOrganisasjon();
+
     }
 
     public Message toSlackMessage(String channel, String visningsNavn) {
         var ratingIcon = (rating != null ? " " + getIcon(rating) : "");
+        var brukerTypeString = (nonNull(brukerType) && brukerType.toUpperCase().contains("AZURE") ? " (" + brukerType + ")" : "");
 
         var headerBlock = Section.from(
                 "*" + title + "*" + ratingIcon
         );
 
         var senderBlock = Section.from(
-                "Avsender: " + visningsNavn + (null != brukerType ? " (" + brukerType + ") " : "")
+                "Avsender: " + visningsNavn + brukerTypeString
         );
 
         var blocks = new ArrayList<Block>();
@@ -56,13 +64,9 @@ public class Tilbakemelding {
     }
 
     private String getIcon(Rating rating) {
-        switch (rating) {
-            case POSITIVE:
-                return ":thumbsup:";
-            case NEGATIVE:
-                return ":thumbsdown:";
-            default:
-                return "";
-        }
+        return switch (rating) {
+            case POSITIVE -> ":thumbsup:";
+            case NEGATIVE -> ":thumbsdown:";
+        };
     }
 }

@@ -9,6 +9,7 @@ import React from 'react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 export const sjekkManglerSykemeldingData = (sykemeldingData) => {
 	return (
@@ -60,6 +61,22 @@ const VisningAvTransaksjonsId = ({ data }) => {
 	}
 }
 
+const Visning = ({ data }) => {
+	if (!data) {
+		return null
+	}
+	if (Array.isArray(data)) {
+		return (
+			<DollyFieldArray header="Sykemelding" data={data} expandable={data.length > 1}>
+				{(sykemelding: Sykemelding, idx: number) => (
+					<VisningAvTransaksjonsId data={sykemelding} key={idx} />
+				)}
+			</DollyFieldArray>
+		)
+	}
+	return <VisningAvTransaksjonsId data={data} />
+}
+
 export const SykemeldingVisning = ({
 	data,
 	loading,
@@ -85,8 +102,25 @@ export const SykemeldingVisning = ({
 
 	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
 
+	const mergeData = () => {
+		const mergeMiljo = []
+		data?.forEach((item: any) => {
+			const indexOfMiljo = mergeMiljo.findIndex((sykemelding) => sykemelding?.miljo === item?.miljo)
+			if (indexOfMiljo >= 0) {
+				mergeMiljo[indexOfMiljo].data?.push(item.data)
+			} else {
+				mergeMiljo.push({
+					data: [item.data],
+					miljo: item.miljo,
+				})
+			}
+		})
+		return mergeMiljo
+	}
+	const mergetData = mergeData()
+
 	const filteredData =
-		tilgjengeligMiljoe && data?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
+		tilgjengeligMiljoe && mergetData?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<div>
@@ -102,9 +136,9 @@ export const SykemeldingVisning = ({
 					bestilteMiljoer={bestilteMiljoer}
 					errorMiljoer={errorMiljoer}
 					forsteMiljo={forsteMiljo}
-					data={filteredData ? filteredData : data}
+					data={filteredData ?? mergetData}
 				>
-					<VisningAvTransaksjonsId />
+					<Visning />
 				</MiljoTabs>
 			)}
 		</div>

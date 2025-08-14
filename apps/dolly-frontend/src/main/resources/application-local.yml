@@ -86,3 +86,5 @@ consumers:
     url: https://testnav-sykemelding-api-dev.intern.dev.nav.no
   testnav-arbeidssoekerregisteret-proxy:
     url: https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no
+  testnav-api-oversikt-service:
+    url: https://testnav-oversikt-service.intern.dev.nav.no

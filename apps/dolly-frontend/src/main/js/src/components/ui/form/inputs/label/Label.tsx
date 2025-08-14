@@ -36,9 +36,10 @@ export const Label = ({
 }: LabelProps) => {
 	const {
 		getFieldState,
-		formState: { touchedFields },
+		formState: { touchedFields, isSubmitted, submitCount },
 	} = useFormContext() || useForm()
 	const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
+	const hasSubmitted = isSubmitted || submitCount > 0
 	const error =
 		getFieldState(`manual.${name}`)?.error ||
 		getFieldState(name)?.error ||
@@ -47,7 +48,8 @@ export const Label = ({
 	const feilmelding = error?.message
 	const wrapClass = cn('skjemaelement', containerClass, {
 		error: Boolean(
-			(!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched)) || manualError,
+			(!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched || hasSubmitted)) ||
+				manualError,
 		),
 		'label-offscreen': _.isNil(label),
 	})
@@ -69,7 +71,7 @@ export const Label = ({
 				</StyledLabel>
 			)}
 			{children}
-			{!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched) && (
+			{!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched || hasSubmitted) && (
 				<div role="alert" aria-live="assertive">
 					<div className="skjemaelement__feilmelding">{feilmelding}</div>
 				</div>

@@ -55,6 +55,7 @@ const GruppeOversikt: React.FC = () => {
 	const dispatch = useDispatch()
 	const { currentBruker } = useCurrentBruker()
 	const { brukerId, brukertype } = currentBruker
+	const teamId = currentBruker?.representererTeam?.brukerId
 
 	const [visningType, setVisningType] = useState<VisningType>(VisningType.MINE)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
@@ -62,7 +63,7 @@ const GruppeOversikt: React.FC = () => {
 	const { grupper, loading } = useGrupper(
 		sidetall,
 		sideStoerrelse,
-		visningType === VisningType.ALLE ? null : brukerId,
+		visningType === VisningType.ALLE ? null : (teamId ?? brukerId),
 	)
 
 	useEffect(() => {

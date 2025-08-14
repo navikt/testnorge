@@ -18,6 +18,9 @@ spec:
     outbound:
       external:
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: logging
+          namespace: nais-system
   azure:
     application:
       allowAllUsers: true

@@ -54,34 +54,39 @@ export default function BestillingListe({
 	const columns = [
 		{
 			text: 'ID',
-			width: '15',
+			width: '10',
 			dataField: 'listedata[0]',
 			unique: true,
 		},
 		{
-			text: 'Antall personer',
+			text: 'Gruppe',
 			width: '10',
 			dataField: 'listedata[1]',
 		},
 		{
-			text: 'Sist oppdatert',
-			width: '20',
+			text: 'Antall personer',
+			width: '15',
 			dataField: 'listedata[2]',
 		},
 		{
-			text: 'Type',
+			text: 'Sist oppdatert',
 			width: '20',
 			dataField: 'listedata[3]',
 		},
 		{
+			text: 'Type',
+			width: '20',
+			dataField: 'listedata[4]',
+		},
+		{
 			text: 'Miljø',
 			width: '15',
-			dataField: 'listedata[4]',
+			dataField: 'listedata[5]',
 		},
 		{
 			text: 'Status',
 			width: '10',
-			dataField: 'listedata[5]',
+			dataField: 'listedata[6]',
 			formatter: (cell) => {
 				return cell === 'Pågår' ? (
 					<Spinner size={24} />

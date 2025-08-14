@@ -35,6 +35,7 @@ import {
 	kategoriKodeverk,
 	tekniskNavnKodeverk,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
+import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -67,7 +68,7 @@ export const getTypePerson = (identNr: string) => {
 	if (parseInt(identNr?.charAt(2)) < 4) {
 		return 'Standard'
 	}
-	return parseInt(identNr?.charAt(2)) > 5 ? 'Test-Norge' : 'NAV-syntetisk'
+	return parseInt(identNr?.charAt(2)) > 7 ? 'Test-Norge' : 'NAV-syntetisk'
 }
 
 const mapBestillingsinformasjon = (
@@ -316,7 +317,7 @@ const mapVergemaal = (vergemaal, data) => {
 			itemRows: vergemaal.map((item, idx) => {
 				return [
 					{ numberHeader: `Vergemål ${idx + 1}` },
-					obj('Fylkesmannsembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
+					obj('Fylkesembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
 					obj('Sakstype', item.sakType, VergemaalKodeverk.Sakstype),
 					obj('Mandattype', item.mandatType, VergemaalKodeverk.Mandattype),
 					obj('Gyldig f.o.m.', formatDate(item.gyldigFraOgMed)),
@@ -613,6 +614,20 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 	}
 }
 
+const mapDeltBosted = (deltBosted, data) => {
+	if (deltBosted?.length > 0) {
+		const deltBostedData = deltBosted[0]
+		data.push({
+			header: 'Delt bosted',
+			items: [
+				obj('Har delt bosted', 'Ja'),
+				obj('Startdato for kontrakt', formatDate(deltBostedData.startdatoForKontrakt)),
+				obj('Sluttdato for kontrakt', formatDate(deltBostedData.sluttdatoForKontrakt)),
+			],
+		})
+	}
+}
+
 const mapAdressebeskyttelse = (adressebeskyttelse, data) => {
 	if (adressebeskyttelse) {
 		const adressebeskyttelseData = {
@@ -669,55 +684,13 @@ const mapSivilstand = (sivilstand, data) => {
 }
 
 const deltBosted = (personData, path) => {
-	if (!personData || !_.get(personData, path)) return [expandable(null, false, null)]
 	const deltBostedData = _.get(personData, path)
-
 	const fellesVerdier = [
-		obj('Adressetype', showLabel('adressetypeDeltBosted', deltBostedData.adressetype)),
-		obj('Startdato for kontrakt', formatDate(deltBostedData.startdatoForKontrakt)),
-		obj('Sluttdato for kontrakt', formatDate(deltBostedData.sluttdatoForKontrakt)),
+		obj('Har delt bosted', 'Ja'),
+		obj('Startdato for kontrakt', formatDate(deltBostedData?.startdatoForKontrakt)),
+		obj('Sluttdato for kontrakt', formatDate(deltBostedData?.sluttdatoForKontrakt)),
 	]
-
-	if (deltBostedData.vegadresse) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Vegadresse',
-					deltBostedData.adressetype === 'VEGADRESSE' &&
-						isEmpty(deltBostedData.vegadresse) &&
-						ingenVerdierSatt,
-				),
-				...vegadresse(deltBostedData.vegadresse),
-			]),
-		]
-	} else if (deltBostedData.matrikkeladresse) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Matrikkeladresse',
-					deltBostedData.adressetype === 'MATRIKKELADRESSE' &&
-						isEmpty(deltBostedData.matrikkeladresse) &&
-						ingenVerdierSatt,
-				),
-				...matrikkeladresse(deltBostedData.matrikkeladresse),
-			]),
-		]
-	} else if (deltBostedData.ukjentBosted) {
-		return [
-			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
-				...fellesVerdier,
-				obj(
-					'Bostedskommune',
-					deltBostedData.ukjentBosted.bostedskommune,
-					AdresseKodeverk.Kommunenummer,
-				),
-			]),
-		]
-	} else {
-		return [expandable('DELT BOSTED', !isEmpty(deltBostedData), [...fellesVerdier])]
-	}
+	return [expandable('DELT BOSTED', !!deltBostedData, [...fellesVerdier])]
 }
 
 const mapForelderBarnRelasjon = (forelderBarnRelasjon, data) => {
@@ -1967,6 +1940,7 @@ const mapUdiStub = (bestillingData, data) => {
 }
 
 const mapPensjon = (bestillingData, data, navEnheter) => {
+	const { tpOrdningData } = useTpOrdningKodeverk()
 	const pensjonKriterier = bestillingData.pensjonforvalter
 
 	if (pensjonKriterier) {
@@ -2139,7 +2113,10 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			const pensjonforvalterAfpOffentlig = {
 				header: 'AFP Offentlig',
 				items: [
-					obj('Direktekall', afpOffentlig.direktekall?.map((tpId) => showTpNavn(tpId))?.join(', ')),
+					obj(
+						'Direktekall',
+						afpOffentlig.direktekall?.map((tpId) => showTpNavn(tpId, tpOrdningData))?.join(', '),
+					),
 				],
 				itemRows: [],
 			}
@@ -2147,7 +2124,7 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			afpOffentlig?.mocksvar?.forEach((mocksvar, i) => {
 				pensjonforvalterAfpOffentlig.itemRows.push([
 					{ numberHeader: `AFP offentlig ${i + 1}` },
-					obj('TP-ordning', showTpNavn(mocksvar.tpId)),
+					obj('TP-ordning', showTpNavn(mocksvar.tpId, tpOrdningData)),
 					obj('Status AFP', showLabel('statusAfp', mocksvar.statusAfp)),
 					obj('Virkningsdato', formatDate(mocksvar.virkningsDato)),
 					obj('Sist benyttet G', mocksvar.sistBenyttetG),
@@ -2461,6 +2438,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 			doedfoedtBarn,
 			foreldreansvar,
 			nyident,
+			deltBosted,
 		} = pdldataKriterier
 
 		mapFoedsel(foedsel, data)
@@ -2478,6 +2456,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 		mapBostedsadresse(bostedsadresse, data)
 		mapOppholdsadresse(oppholdsadresse, data)
 		mapKontaktadresse(kontaktadresse, data)
+		mapDeltBosted(deltBosted, data)
 		mapAdressebeskyttelse(adressebeskyttelse, data)
 		mapSikkerhetstiltak(sikkerhetstiltak, data)
 		mapSivilstand(sivilstand, data)

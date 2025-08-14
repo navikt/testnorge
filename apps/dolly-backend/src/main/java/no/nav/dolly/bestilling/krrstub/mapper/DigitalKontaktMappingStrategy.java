@@ -30,20 +30,20 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                         kontaktdataRequest.setGyldigFra(getDato(digitalKontaktdata));
 
                         if (isNotBlank(digitalKontaktdata.getMobil())) {
-                            kontaktdataRequest.setMobilOppdatert(getDato(digitalKontaktdata));
-                            kontaktdataRequest.setMobilVerifisert(getDato(digitalKontaktdata));
                             kontaktdataRequest.setMobil(digdirFormatertTlfNummer(digitalKontaktdata.getMobil(), digitalKontaktdata.getLandkode()));
+                            kontaktdataRequest.setMobilOppdatert(ZonedDateTime.now(ZoneId.of("UTC")));
                         }
                         if (isNotBlank(digitalKontaktdata.getEpost())) {
-                            kontaktdataRequest.setEpostOppdatert(getDato(digitalKontaktdata));
-                            kontaktdataRequest.setEpostVerifisert(getDato(digitalKontaktdata));
+                            kontaktdataRequest.setEpostOppdatert(ZonedDateTime.now(ZoneId.of("UTC")));
                         }
                         if (isNotBlank(digitalKontaktdata.getSpraak())) {
-                            kontaktdataRequest.setSpraakOppdatert(getDato(digitalKontaktdata));
+                            kontaktdataRequest.setSpraakOppdatert(ZonedDateTime.now(ZoneId.of("UTC")));
                         }
 
                         kontaktdataRequest.setEpost(isBlank(digitalKontaktdata.getEpost()) ? null : digitalKontaktdata.getEpost());
                         kontaktdataRequest.setSpraak(isBlank(digitalKontaktdata.getSpraak()) ? null : digitalKontaktdata.getSpraak());
+
+                        kontaktdataRequest.setReservertOppdatert(ZonedDateTime.now());
                     }
 
                     private String digdirFormatertTlfNummer(String mobil, String landkode) {
@@ -62,7 +62,7 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
                     private ZonedDateTime getDato(RsDigitalKontaktdata digitalKontaktdata) {
                         return nonNull(digitalKontaktdata.getGyldigFra()) ?
-                                ZonedDateTime.of(digitalKontaktdata.getGyldigFra(), ZoneId.systemDefault()) :
+                                digitalKontaktdata.getGyldigFra().atStartOfDay(ZoneId.of("UTC")) :
                                 ZonedDateTime.now();
                     }
                 })

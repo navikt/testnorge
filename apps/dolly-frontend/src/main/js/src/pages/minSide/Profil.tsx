@@ -3,6 +3,7 @@ import dolly from '@/favicon.ico'
 import playwright from '@/assets/img/playwright.png'
 import { useBrukerProfil, useBrukerProfilBilde } from '@/utils/hooks/useBruker'
 import { runningE2ETest } from '@/service/services/Request'
+import { formatBrukerNavn } from '@/utils/DataFormatter'
 
 export const getDefaultImage = () => {
 	return runningE2ETest() ? playwright : dolly
@@ -11,6 +12,8 @@ export const getDefaultImage = () => {
 export default function Profil() {
 	const { brukerProfil: info } = useBrukerProfil()
 	const { brukerBilde: bilde } = useBrukerProfilBilde()
+
+	const brukerNavn = formatBrukerNavn(info?.visningsNavn)
 
 	const bankIdProfil = info && info.type && info.type === 'BankId'
 
@@ -21,7 +24,7 @@ export default function Profil() {
 				<div className="person-info">
 					<p>
 						<span className="blokk">NAVN</span>
-						<span>{info.visningsNavn}</span>
+						<span>{brukerNavn}</span>
 					</p>
 					<p>
 						<span className="blokk">E-POST</span>

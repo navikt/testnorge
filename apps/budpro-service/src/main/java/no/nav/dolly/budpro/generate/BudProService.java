@@ -2,16 +2,17 @@ package no.nav.dolly.budpro.generate;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.budpro.ansettelsestype.AnsettelsestypeService;
-import no.nav.dolly.budpro.navn.GeneratedNameService;
 import no.nav.dolly.budpro.kommune.KommuneService;
 import no.nav.dolly.budpro.koststed.Koststed;
 import no.nav.dolly.budpro.koststed.KoststedService;
+import no.nav.dolly.budpro.navn.GeneratedNameService;
 import no.nav.dolly.budpro.organisasjonsenhet.OrganisasjonsenhetService;
 import no.nav.dolly.budpro.ressursnummer.LeaderGenerator;
 import no.nav.dolly.budpro.ressursnummer.ResourceNumberGenerator;
 import no.nav.dolly.budpro.stillinger.StillingService;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -86,7 +87,12 @@ class BudProService {
         var random = seed == null ? new Random() : new Random(seed);
 
         var numberOfLeaders = (int) Math.ceil((double) numberOfEmployees / 10);
-        var allNames = nameService.getNames(seed, numberOfEmployees + numberOfLeaders);
+        var allNames = nameService
+                .getNames(seed, numberOfEmployees + numberOfLeaders)
+                .collectList()
+                .blockOptional(Duration.ofSeconds(5))
+                .orElse(Collections.emptyList())
+                .toArray(new String[0]);
         var employeeNames = Arrays.copyOfRange(allNames, numberOfLeaders, numberOfEmployees + numberOfLeaders);
 
         var leaderNames = Arrays.copyOfRange(allNames, 0, numberOfLeaders);

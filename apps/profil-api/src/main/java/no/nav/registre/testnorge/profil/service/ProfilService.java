@@ -40,14 +40,14 @@ public class ProfilService {
                                     userInfo.organisasjonsnummer(),
                                     BANK_ID)
                             ))
-                            .orElse(Mono.just(new Profil(
-                                    BANK_ID,
-                                    UKJENT,
-                                    UKJENT,
-                                    UKJENT,
-                                    UKJENT,
-                                    BANK_ID
-                            )));
+                    .orElse(Mono.just(new Profil(
+                            BANK_ID,
+                            UKJENT,
+                            UKJENT,
+                            UKJENT,
+                            UKJENT,
+                            BANK_ID
+                    )));
         }
         return azureAdProfileConsumer.getProfil();
     }

@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.*;
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.GYLDIG_FRA;
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.GYLDIG_TIL;
+import static no.nav.testnav.kodeverkservice.utility.CommonKeysAndUtils.YRKESKLASSIFISERING;
 
 @UtilityClass
 public class YrkesklassifiseringUtility {
@@ -19,7 +21,6 @@ public class YrkesklassifiseringUtility {
     private static final List<Map<String, String>> yrkesklassifisering = new ArrayList<>();
 
     static {
-
         yrkesklassifisering.add(Map.of("0", "Militære yrker og uoppgitt"));
         yrkesklassifisering.add(Map.of("1", "Ledere"));
         yrkesklassifisering.add(Map.of("2", "Akademiske yrker"));

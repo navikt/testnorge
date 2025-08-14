@@ -237,7 +237,7 @@ public class ArtifactUpdateService {
             if (endretRelasjon && relasjon.isRelatertMedIdentifikator()) {
 
                 var slettePerson = getPerson(relasjon.getIdentForRelasjon());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FAMILIERELASJON_BARN);
+                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FAMILIERELASJON_BARN);
 
                 deletePerson(slettePerson, relasjon.isEksisterendePerson());
 
@@ -274,7 +274,7 @@ public class ArtifactUpdateService {
                     !ansvar.getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig())) {
 
                 var slettePerson = getPerson(ansvar.getAnsvarlig());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FORELDREANSVAR_FORELDER);
+                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FORELDREANSVAR_FORELDER);
 
                 person.getPerson().getForeldreansvar().stream()
                         .filter(ansvar1 -> ansvar1.getAnsvar() == Ansvar.FELLES)
@@ -282,7 +282,7 @@ public class ArtifactUpdateService {
                         .filter(ansvar1 -> !ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
                         .findFirst()
                         .ifPresent(ansvar1 ->
-                                DeleteRelasjonerUtility.deleteRelasjoner(getPerson(ansvar1.getAnsvarlig()), FORELDREANSVAR_FORELDER));
+                                DeleteRelasjonerUtility.deleteRelasjoner(person, getPerson(ansvar1.getAnsvarlig()), FORELDREANSVAR_FORELDER));
 
                 deletePerson(slettePerson, ansvar.isEksisterendePerson());
 
@@ -329,7 +329,7 @@ public class ArtifactUpdateService {
             if (endretRelasjon) {
 
                 var slettePerson = getPerson(kontakt.getPersonSomKontakt().getIdentifikasjonsnummer());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, KONTAKT_FOR_DOEDSBO);
+                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, KONTAKT_FOR_DOEDSBO);
 
                 deletePerson(slettePerson, kontakt.getPersonSomKontakt().isEksisterendePerson());
 
@@ -376,7 +376,7 @@ public class ArtifactUpdateService {
 
             if (relasjonEndret) {
                 var slettePerson = getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FALSK_IDENTITET);
+                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FALSK_IDENTITET);
 
                 deletePerson(slettePerson, falskId.isEksisterendePerson());
 
@@ -483,7 +483,7 @@ public class ArtifactUpdateService {
             if (endretRelasjon) {
 
                 var slettePerson = getPerson(eksisterendeSivilstand.getRelatertVedSivilstand());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, EKTEFELLE_PARTNER);
+                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, EKTEFELLE_PARTNER);
 
                 deletePerson(slettePerson, eksisterendeSivilstand.isEksisterendePerson());
 
@@ -535,7 +535,7 @@ public class ArtifactUpdateService {
             if (endretRelasjon) {
 
                 var slettePerson = getPerson(vergemaal.getVergeIdent());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, VERGE);
+                DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, VERGE);
 
                 deletePerson(slettePerson, vergemaal.isEksisterendePerson());
 
@@ -603,7 +603,7 @@ public class ArtifactUpdateService {
 
     private DbPerson getPerson(String ident) {
 
-        return personRepository.findByIdent(ident)
+        return personRepository.findByIdent(ident.trim())
                 .orElseThrow(() -> new NotFoundException(String.format(IDENT_NOT_FOUND, ident)));
     }
 

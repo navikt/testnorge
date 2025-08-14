@@ -465,6 +465,7 @@ const selectOptions = {
 		{ value: 'AO11', label: 'Grisen (AO11)' },
 		{ value: 'HJELPEMIDLER', label: 'Hjelpemidler' },
 		{ value: 'IT01', label: 'Infotrygd (IT01)' },
+		{ value: 'KELVIN', label: 'Kelvin' },
 		{ value: 'KONT', label: 'Kontantstøtte (KONT)' },
 		{ value: 'FS38', label: 'Melosys (FS38)' },
 		{ value: 'OMSORGSPENGER', label: 'Omsorgspenger' },
@@ -841,8 +842,10 @@ const selectOptions = {
 	// Yrkesskader:
 	klassifisering: [
 		{ value: 'BAGATELLMESSIGE_SKADER', label: 'Bagatellmessige skader' },
-		{ value: 'MANUELL', label: 'Manuell' },
 		{ value: 'IMPORT', label: 'Import' },
+		{ value: 'MANUELL', label: 'Manuell' },
+		{ value: 'MELLOMSKADER', label: 'Mellomskader' },
+		{ value: 'MULIG_NULLSKADE', label: 'Mulig nullskade' },
 	],
 
 	tidstype: [

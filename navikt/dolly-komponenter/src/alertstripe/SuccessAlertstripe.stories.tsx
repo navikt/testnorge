@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { Story, Meta } from '@storybook/react-vite';
 import Comp, { SuccessAlertstripeProps } from './SuccessAlertstripe';
 
 export default {

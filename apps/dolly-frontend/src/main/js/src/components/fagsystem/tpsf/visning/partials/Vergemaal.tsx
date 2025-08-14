@@ -38,7 +38,7 @@ export const Visning = ({ data }: Data) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<TitleValue
-						title="Fylkesmannsembete"
+						title="Fylkesembete"
 						kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
 						value={data.embete}
 					/>

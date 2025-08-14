@@ -29,6 +29,9 @@ spec:
     outbound:
       external:
         - host: sokos-skattekort-dolly.dev-fss-pub.nais.io
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30

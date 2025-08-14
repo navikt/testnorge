@@ -1,6 +1,6 @@
-import React from 'react'
-
-export const BestillingsveilederContext = React.createContext(undefined)
+import React, { Context } from 'react'
+import { Person } from '@/components/fagsystem/pdlf/PdlTypes'
+import { BestillingData } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 export interface BestillingsveilederContextType {
 	gruppeId?: string
@@ -10,6 +10,8 @@ export interface BestillingsveilederContextType {
 	identMaster?: string
 	antall?: number
 	identtype?: string
+	importPersoner?: Person[]
+	tidligereBestillinger?: BestillingData[]
 	opprettFraIdenter?: string[]
 	mal?: { malNavn?: string }
 	is?: {
@@ -24,3 +26,10 @@ export interface BestillingsveilederContextType {
 		importTestnorge?: boolean
 	}
 }
+
+const defaultContextValue: BestillingsveilederContextType = {
+	initialValues: {},
+}
+
+export const BestillingsveilederContext: Context<BestillingsveilederContextType> =
+	React.createContext(defaultContextValue)

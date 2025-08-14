@@ -44,6 +44,7 @@ export default function BestillingResultat({
 }: ResultatProps) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [showConfetti, setShowConfetti] = useState(false)
+	const mutate = useMatchMutate()
 
 	useEffect(() => {
 		if (bestilling.ferdig && !bestilling.stoppet && !bestillingHarFeil(bestilling)) {
@@ -58,7 +59,10 @@ export default function BestillingResultat({
 	const brukerId = bestilling?.bruker?.brukerId
 	const antallOpprettet = antallIdenterOpprettet(bestilling)
 	const harIdenterOpprettet = bestilling?.antallIdenterOpprettet > 0 || bestilling?.antallLevert > 0
-	const mutate = useMatchMutate()
+	const disableGjenopprett =
+		bestilling?.opprettetFraId ||
+		bestilling?.opprettetFraGruppeId ||
+		bestilling?.gjenopprettetFraIdent
 
 	return (
 		<div className="bestilling-status" key={`ferdig-bestilling-${bestilling.id}`}>
@@ -77,13 +81,13 @@ export default function BestillingResultat({
 					</div>
 				</div>
 				<hr />
-				{/*// @ts-ignore*/}
 				<BestillingStatus bestilling={bestilling} erOrganisasjon={erOrganisasjon} />
 				{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
 				{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 				<Feedback
 					label="Hvordan var din opplevelse med bruk av Dolly?"
 					feedbackFor="Bruk av Dolly etter bestilling"
+					etterBestilling={true}
 				/>
 				{showConfetti && (
 					<div data-testid="confetti" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -94,9 +98,9 @@ export default function BestillingResultat({
 					<BestillingSammendragModal bestillinger={[bestilling]} />
 					{harIdenterOpprettet && (
 						<Button
-							disabled={bestilling?.opprettetFraId || bestilling?.opprettetFraGruppeId}
+							disabled={disableGjenopprett}
 							title={
-								bestilling?.opprettetFraId
+								disableGjenopprett
 									? 'Kan ikke gjenopprette gjenoppretting av bestilling'
 									: 'Gjenopprett'
 							}

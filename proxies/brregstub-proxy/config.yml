@@ -36,6 +36,10 @@ spec:
         - application: flex-brreg-proxy
           cluster: dev-gcp
           namespace: flex
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   liveness:
     path: /internal/health/liveness
     initialDelay: 20

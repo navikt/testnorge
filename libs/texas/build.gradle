@@ -1,0 +1,19 @@
+plugins {
+    id "dolly-libs"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "dolly-texas"
+        property "sonar.projectName", "dolly-texas"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:reactive-core"
+    
+    implementation "com.github.ben-manes.caffeine:caffeine"
+    implementation "org.springframework.boot:spring-boot-starter-test"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.security:spring-security-oauth2-jose"
+}

@@ -3,9 +3,9 @@ name: commands
 on:
   push:
     paths:
-      - "plugins/**"
-      - "libs/commands/**"
-      - ".github/workflows/lib.commands.yml"
+      - plugins/**
+      - libs/commands/**
+      - .github/workflows/lib.commands.yml
 
 jobs:
   workflow:

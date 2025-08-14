@@ -21,10 +21,10 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const gruppeId = formMethods.getValues('gruppeId') || opts?.gruppeId || opts?.gruppe?.id
 
-	const {
-		currentBruker: { brukerId },
-	} = useCurrentBruker()
-	const { grupper, loading } = useEgneGrupper(brukerId)
+	const { currentBruker } = useCurrentBruker()
+	const { grupper, loading } = useEgneGrupper(
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
+	)
 
 	const [valgtGruppe] = useState(gruppeId)
 

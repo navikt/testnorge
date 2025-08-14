@@ -27,6 +27,11 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+    outbound:
+      rules:
+        - application: dolly-texas-proxy
+        - application: logging
+          namespace: nais-system
   tokenx:
     enabled: true
   azure:

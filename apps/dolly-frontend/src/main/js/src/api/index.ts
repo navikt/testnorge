@@ -160,7 +160,12 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
-			if (!response.ok && response?.status !== 404 && !runningE2ETest()) {
+			if (
+				!response?.ok &&
+				response?.status !== 404 &&
+				response?.status !== 400 &&
+				!runningE2ETest()
+			) {
 				if (response?.status === 401 && logoutForbidden.some((value) => url.includes(value))) {
 					console.error('Auth feilet, navigerer til login')
 					navigateToLogin()
@@ -190,7 +195,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		if (response.redirected) {
 			window.location.href = response.url
 		}
-		if (!response.ok && !runningE2ETest()) {
+		if (!response.ok && response.status !== 400 && !runningE2ETest()) {
 			if (response?.status === 401 && logoutForbidden.some((value) => url.includes(value))) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()

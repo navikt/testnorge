@@ -219,7 +219,7 @@ public class ArtifactDeleteService {
                 .forEach(type -> {
                     var slettePerson = getPerson(type.getRelatertPerson());
 
-                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FAMILIERELASJON_FORELDER);
+                    DeleteRelasjonerUtility.deleteRelasjoner(dbPerson, slettePerson, FAMILIERELASJON_FORELDER);
 
                     deletePerson(slettePerson, type.isEksisterendePerson());
                 });
@@ -243,7 +243,7 @@ public class ArtifactDeleteService {
                     var slettePerson = getPerson(isNotBlank(type.getAnsvarlig()) ?
                             type.getAnsvarlig() : type.getAnsvarssubjekt());
 
-                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FORELDREANSVAR_FORELDER);
+                    DeleteRelasjonerUtility.deleteRelasjoner(dbPerson, slettePerson, FORELDREANSVAR_FORELDER);
 
                     deletePerson(slettePerson, type.isEksisterendePerson());
                 });
@@ -267,7 +267,7 @@ public class ArtifactDeleteService {
                 .forEach(doedsbo -> {
                     var slettePerson = getPerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer());
 
-                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, KONTAKT_FOR_DOEDSBO);
+                    DeleteRelasjonerUtility.deleteRelasjoner(hovedPerson, slettePerson, KONTAKT_FOR_DOEDSBO);
 
                     deletePerson(slettePerson, doedsbo.getPersonSomKontakt().isEksisterendePerson());
                 });
@@ -303,7 +303,7 @@ public class ArtifactDeleteService {
                 .forEach(falskId -> {
                     var slettePerson = getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer());
 
-                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FALSK_IDENTITET);
+                    DeleteRelasjonerUtility.deleteRelasjoner(person, slettePerson, FALSK_IDENTITET);
 
                     deletePerson(slettePerson, falskId.isEksisterendePerson());
                 });
@@ -416,7 +416,7 @@ public class ArtifactDeleteService {
                 .forEach(type -> {
                     var slettePerson = getPerson(type.getRelatertVedSivilstand());
 
-                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, EKTEFELLE_PARTNER);
+                    DeleteRelasjonerUtility.deleteRelasjoner(dbPerson, slettePerson, EKTEFELLE_PARTNER);
 
                     deletePerson(slettePerson, type.isEksisterendePerson());
                 });
@@ -450,7 +450,7 @@ public class ArtifactDeleteService {
                 .forEach(vergemaal -> {
                     var slettePerson = getPerson(vergemaal.getVergeIdent());
 
-                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, RelasjonType.VERGE_MOTTAKER);
+                    DeleteRelasjonerUtility.deleteRelasjoner(hovedPerson, slettePerson, RelasjonType.VERGE_MOTTAKER);
 
                     deletePerson(slettePerson, vergemaal.isEksisterendePerson());
                 });

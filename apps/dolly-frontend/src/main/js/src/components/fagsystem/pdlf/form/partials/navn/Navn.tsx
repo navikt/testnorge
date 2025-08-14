@@ -28,6 +28,11 @@ const RefreshButton = styled(Button)`
 	margin: 8px 0 0 -10px;
 `
 
+const manuelleNavn = [
+	{ adjektiv: 'Lillegull', adverb: 'Lillesøster', substantiv: 'Navnesen' },
+	{ adjektiv: 'Sussebass', adverb: 'Lillebror', substantiv: 'Etternavnesen' },
+]
+
 const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	if (!navnInfo) {
 		return []
@@ -59,7 +64,7 @@ export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnType
 
 	const [mellomnavnOptions, setMellomnavnOptions] = useState([])
 	const [etternavnOptions, setetternavnOptions] = useState([])
-	const { data, navnInfo, mutate } = useGenererNavn()
+	const { data, navnInfo, mutate } = useGenererNavn(manuelleNavn)
 
 	if (!formMethods.watch(path)) {
 		return null

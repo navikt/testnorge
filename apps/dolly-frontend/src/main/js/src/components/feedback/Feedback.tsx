@@ -9,7 +9,7 @@ import dolly from '@/favicon.ico'
 import Icon from '@/components/ui/icon/Icon'
 
 import './Feedback.less'
-import { useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { Button, Checkbox, Textarea } from '@navikt/ds-react'
 import { Logger } from '@/logger/Logger'
 
@@ -21,12 +21,14 @@ enum Rating {
 interface FeedbackProps {
 	label: string
 	feedbackFor: string
+	etterBestilling?: boolean
 }
 
 const MAX_LENGTH = 2000
 
-export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
+export const Feedback = ({ label, feedbackFor, etterBestilling = false }: FeedbackProps) => {
 	const { brukerBilde } = useBrukerProfilBilde()
+	const { brukerProfil } = useBrukerProfil()
 	const { currentBruker } = useCurrentBruker()
 
 	const [rating, setRating] = useState<Rating>()
@@ -37,6 +39,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 
 	return (
 		<ThumbsRating
+			etterBestilling={etterBestilling}
 			label={label}
 			ratingFor={feedbackFor}
 			onClick={(rating) => setRating(rating)}
@@ -78,6 +81,8 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 									uuid: uuid,
 									isAnonym: isAnonym,
 									brukerType: currentBruker.brukertype,
+									brukernavn: isAnonym ? null : brukerProfil?.visningsNavn,
+									tilknyttetOrganisasjon: isAnonym ? null : brukerProfil?.organisasjon,
 								})
 								setSubmit(true)
 							}}

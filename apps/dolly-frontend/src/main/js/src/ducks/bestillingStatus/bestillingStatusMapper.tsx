@@ -105,6 +105,7 @@ const extractValuesForBestillingListe = (
 
 	const values = {
 		id: data.id.toString(),
+		gruppe: data.gruppeId ? data.gruppeId.toString() : null,
 		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : null,
 		sistOppdatert: formatDateTimeWithSeconds(data.sistOppdatert),
 		variant: bestillingTag,

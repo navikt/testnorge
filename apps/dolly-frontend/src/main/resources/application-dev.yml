@@ -29,3 +29,6 @@ consumers:
   testnav-dolly-search-service:
     name: testnav-dolly-search-service-dev
     url: http://testnav-dolly-search-service-dev.dolly.svc.cluster.local
+  testnav-api-oversikt-service:
+    name: testnav-api-oversikt-service
+    url: http://testnav-api-oversikt-service.dolly.svc.cluster.local

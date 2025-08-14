@@ -5,11 +5,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -84,6 +86,18 @@ public class Bruker implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
     private Set<Testgruppe> favoritter = new HashSet<>();
 
+
+    @ManyToMany
+    @Builder.Default
+    @JoinTable(name = "TEAM_BRUKER",
+            joinColumns = @JoinColumn(name = "bruker_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id"))
+    private Set<Team> teamMedlemskap = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REPRESENTERER_TEAM")
+    private Team representererTeam;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -114,5 +128,5 @@ public class Bruker implements Serializable {
                 .toHashCode();
     }
 
-    public enum Brukertype {AZURE, BANKID}
+    public enum Brukertype {AZURE, BANKID, TEAM}
 }
