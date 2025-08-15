@@ -1,5 +1,6 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt, AttributtKategori } from '../Attributt'
+import { Attributt } from '../Attributt'
+import { AttributtKategori } from '../AttributtKategori'
 import { initialArbeidsforholdOrg } from '@/components/fagsystem/aareg/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { aaregAttributt } from '@/components/fagsystem/aareg/form/Form'
@@ -44,22 +45,22 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 			])}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.aareg} />
+				<Attributt item={sm.attrs.aareg} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntekt (Sigrun)" attr={sm.attrs}>
 				<div style={{ display: 'flex', flexWrap: 'wrap' }}>
-					<Attributt attr={sm.attrs.sigrunstubPensjonsgivende} />
-					<Attributt attr={sm.attrs.sigrunstubSummertSkattegrunnlag} />
+					<Attributt item={sm.attrs.sigrunstubPensjonsgivende} />
+					<Attributt item={sm.attrs.sigrunstubSummertSkattegrunnlag} />
 				</div>
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektstub)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.inntektstub} />
+				<Attributt item={sm.attrs.inntektstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
+				<Attributt item={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
 			</AttributtKategori>
 			<AttributtKategori title="Skattekort (SOKOS)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.skattekort} />
+				<Attributt item={sm.attrs.skattekort} />
 			</AttributtKategori>
 		</Panel>
 	)

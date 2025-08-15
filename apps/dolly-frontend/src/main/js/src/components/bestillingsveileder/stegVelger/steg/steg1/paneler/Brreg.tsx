@@ -1,5 +1,6 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt, AttributtKategori } from '../Attributt'
+import { Attributt } from '../Attributt'
+import { AttributtKategori } from '../AttributtKategori'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { brregAttributt } from '@/components/fagsystem/brregstub/form/Form'
 
@@ -15,7 +16,7 @@ export const BrregPanel = ({ stateModifier, formValues }) => {
 			startOpen={harValgtAttributt(formValues, [brregAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
-				<Attributt attr={sm.attrs.brregstub} />
+				<Attributt item={sm.attrs.brregstub} />
 			</AttributtKategori>
 		</Panel>
 	)

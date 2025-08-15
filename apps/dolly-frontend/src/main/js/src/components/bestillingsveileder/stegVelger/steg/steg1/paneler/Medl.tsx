@@ -1,5 +1,6 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt, AttributtKategori } from '../Attributt'
+import { Attributt } from '../Attributt'
+import { AttributtKategori } from '../AttributtKategori'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { initialMedl } from '@/components/fagsystem/pdlf/form/initialValues'
 import { MedlAttributt } from '@/components/fagsystem/medl/MedlConstants'
@@ -16,7 +17,7 @@ export const MedlPanel = ({ stateModifier, formValues }: any) => {
 			startOpen={harValgtAttributt(formValues, [MedlAttributt])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
-				<Attributt attr={sm.attrs.medl} />
+				<Attributt item={sm.attrs.medl} />
 			</AttributtKategori>
 		</Panel>
 	)

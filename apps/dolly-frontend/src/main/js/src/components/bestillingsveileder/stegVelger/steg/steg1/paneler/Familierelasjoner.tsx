@@ -1,5 +1,6 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt, AttributtKategori } from '../Attributt'
+import { Attributt } from '../Attributt'
+import { AttributtKategori } from '../AttributtKategori'
 import {
 	getInitialBarn,
 	getInitialForeldreansvar,

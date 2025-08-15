@@ -1,21 +1,23 @@
-import React, { useContext } from 'react'
-import {
-	BestillingsveilederContext,
-	BestillingsveilederContextType,
-} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import React, { memo, useContext } from 'react'
+import type { BestillingsveilederContextType } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import type { useStateModifierFns } from '@/components/bestillingsveileder/stateModifier'
 import { Steg1Person } from './Steg1Person'
 import { Steg1Organisasjon } from './Steg1Organisasjon'
 
-const Steg1 = ({ stateModifier }) => {
-	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+export interface Steg1Props {
+	stateModifier: ReturnType<typeof useStateModifierFns>
+}
 
-	return opts.is.nyOrganisasjon ||
-		opts.is.nyStandardOrganisasjon ||
-		opts.is.nyOrganisasjonFraMal ? (
+const Steg1: React.FC<Steg1Props> = ({ stateModifier }) => {
+	const { is } = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const isOrg = is.nyOrganisasjon || is.nyStandardOrganisasjon || is.nyOrganisasjonFraMal
+	return isOrg ? (
 		<Steg1Organisasjon stateModifier={stateModifier} />
 	) : (
 		<Steg1Person stateModifier={stateModifier} />
 	)
 }
 
-export default Steg1
+Steg1.displayName = 'Steg1'
+export default memo(Steg1)

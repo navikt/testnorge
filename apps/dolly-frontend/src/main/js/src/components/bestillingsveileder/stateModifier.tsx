@@ -1,15 +1,13 @@
 import { useCallback, useContext } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { BestillingsveilederContext, BestillingsveilederContextType } from './BestillingsveilederContext'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from './BestillingsveilederContext'
+import type { AttributeItem } from './stegVelger/steg/steg1/Attributt'
 
-type AttrItem = {
-	checked?: boolean
-	label?: string
-	add?: () => void
-	remove?: () => void
-	[k: string]: any
-}
-type Attrs = Record<string, AttrItem>
+export type AttrItem = AttributeItem
+export type Attrs = Record<string, AttrItem>
 
 interface HelperArgs<TForm extends FieldValues> {
 	set: (path: string, value: unknown) => void
@@ -25,8 +23,8 @@ interface HelperArgs<TForm extends FieldValues> {
 interface ReturnBatch {
 	attrs: Attrs
 	checked: string[]
-	batchAdd: (ignoreKeys?: string[]) => void
-	batchRemove: (ignoreKeys?: string[]) => void
+	batchAdd: (ignoreKeys?: string[] | unknown) => void
+	batchRemove: (ignoreKeys?: string[] | unknown) => void
 }
 
 export const useStateModifierFns = <TForm extends FieldValues = FieldValues>(
@@ -43,8 +41,8 @@ export const useStateModifierFns = <TForm extends FieldValues = FieldValues>(
 		[setValue],
 	)
 
-	const has = useCallback((path: string) => watch(path) !== undefined, [watch])
-	const values = useCallback((path: string) => watch(path), [watch])
+	const has = useCallback((path: string) => watch(path as any) !== undefined, [watch])
+	const values = useCallback((path: string) => watch(path as any), [watch])
 	const delMutate = useCallback(() => setFormMutate?.(() => undefined), [setFormMutate])
 
 	const setMulti = useCallback(
@@ -90,10 +88,13 @@ export const useStateModifierFns = <TForm extends FieldValues = FieldValues>(
 			const attrs = fn(helpers) || {}
 			const checked = Object.values(attrs)
 				.filter((a) => a.checked)
-				.map((a) => a.label!)
-				.filter(Boolean)
+				.map((a) => a.label)
 
-			const batchUpdate = (ignore: string[] = [], key: 'add' | 'remove') => {
+			const batchUpdate = (maybeIgnore: unknown, key: 'add' | 'remove') => {
+				const ignore =
+					Array.isArray(maybeIgnore) && maybeIgnore.every((v) => typeof v === 'string')
+						? (maybeIgnore as string[])
+						: []
 				delMutate()
 				Object.entries(attrs)
 					.filter(([name]) => !ignore.includes(name))

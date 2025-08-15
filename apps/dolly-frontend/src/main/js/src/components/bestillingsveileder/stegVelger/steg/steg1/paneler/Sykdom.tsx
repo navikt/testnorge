@@ -1,5 +1,6 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt, AttributtKategori } from '../Attributt'
+import { Attributt } from '../Attributt'
+import { AttributtKategori } from '../AttributtKategori'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { sykdomAttributt } from '@/components/fagsystem/sykdom/form/Form'
 import { useContext } from 'react'
@@ -37,7 +38,7 @@ export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 					disabled={harGyldigSykemeldingBestilling}
 					title={harGyldigSykemeldingBestilling ? 'Personen har allerede sykemelding' : null}
 				/>
-				<Attributt attr={sm.attrs.yrkesskader} />
+				<Attributt item={sm.attrs.yrkesskader} />
 			</AttributtKategori>
 		</Panel>
 	)

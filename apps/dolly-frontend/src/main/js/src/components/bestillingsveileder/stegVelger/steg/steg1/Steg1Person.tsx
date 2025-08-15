@@ -1,4 +1,5 @@
-import React, { useContext } from 'react'
+// Steg1Person.tsx
+import React, { useContext, useMemo } from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
 import { PersoninformasjonPanel } from './paneler/Personinformasjon'
 import { AdressePanel } from './paneler/Adresse'
@@ -13,57 +14,64 @@ import { UdiPanel } from './paneler/Udi'
 import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
+import { PensjonPanel } from './paneler/Pensjon'
+import { ArbeidssoekerPanel } from './paneler/Arbeidssoeker'
+import { MedlPanel } from './paneler/Medl'
 import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
-import { ArbeidssoekerPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidssoeker'
-import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
+import { useStateModifierFns } from '@/components/bestillingsveileder/stateModifier'
 
-export const identFraTestnorge = (opts: any) => {
-	if (opts?.is?.importTestnorge) {
-		return true
-	}
-	return opts?.is?.leggTil && opts?.identMaster === 'PDL'
+type PanelWithMeta = React.FC<any> & { heading: string; initialValues: any }
+
+const PANELS: PanelWithMeta[] = [
+	PersoninformasjonPanel,
+	AdressePanel,
+	FamilierelasjonPanel,
+	ArbeidInntektPanel,
+	ArbeidssoekerPanel,
+	SykdomPanel,
+	MedlPanel,
+	BrregPanel,
+	IdentifikasjonPanel,
+	KontaktDoedsboPanel,
+	InstitusjonsoppholdPanel,
+	KontaktReservasjonsPanel,
+	ArenaPanel,
+	UdiPanel,
+	DokarkivPanel,
+	PensjonPanel,
+]
+
+export const identFraTestnorge = (opts: BestillingsveilederContextType | undefined) =>
+	!!(opts?.is?.importTestnorge || (opts?.is?.leggTil && opts?.identMaster === 'PDL'))
+
+export interface Steg1PersonProps {
+	stateModifier: ReturnType<typeof useStateModifierFns>
 }
 
-export const Steg1Person = ({ stateModifier }: any) => {
-	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+export const Steg1Person: React.FC<Steg1PersonProps> = ({ stateModifier }) => {
+	const ctx = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const { watch } = useFormContext()
-	const testnorgeIdent = identFraTestnorge(opts)
-	const personFoerLeggTil = opts?.personFoerLeggTil
-	const leggTil = opts?.is?.leggTil || opts?.is?.leggTilPaaGruppe
-
-	const checked = [
-		PersoninformasjonPanel,
-		AdressePanel,
-		FamilierelasjonPanel,
-		ArbeidInntektPanel,
-		ArbeidssoekerPanel,
-		SykdomPanel,
-		MedlPanel,
-		BrregPanel,
-		IdentifikasjonPanel,
-		KontaktDoedsboPanel,
-		InstitusjonsoppholdPanel,
-		KontaktReservasjonsPanel,
-		ArenaPanel,
-		UdiPanel,
-		DokarkivPanel,
-		PensjonPanel,
-	]
-		.map((panel) => ({
-			label: panel.heading,
-			values: stateModifier(panel.initialValues).checked?.filter(
-				(val: string) =>
-					(!personFoerLeggTil && !leggTil) || ((personFoerLeggTil || leggTil) && val !== 'Alder'),
-			),
-		}))
-		.filter((v) => v.values.length)
-
 	const formValues = watch()
+	const testnorgeIdent = identFraTestnorge(ctx)
+	const personFoerLeggTil = ctx?.personFoerLeggTil
+	const leggTil = ctx?.is?.leggTil || ctx?.is?.leggTilPaaGruppe
+	const removeAlder = !!(personFoerLeggTil || leggTil)
+
+	const checked = useMemo(
+		() =>
+			PANELS.map((panel) => {
+				const res = stateModifier(panel.initialValues)
+				return {
+					label: panel.heading,
+					values: res.checked.filter((v) => !(removeAlder && v === 'Alder')),
+				}
+			}).filter((g) => g.values.length),
+		[stateModifier, removeAlder],
+	)
 
 	return (
 		<AttributtVelger checked={checked}>
@@ -72,9 +80,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 			<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
 			<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
 			{!testnorgeIdent && (
-				<>
-					<KontaktDoedsboPanel stateModifier={stateModifier} formValues={formValues} />
-				</>
+				<KontaktDoedsboPanel stateModifier={stateModifier} formValues={formValues} />
 			)}
 			<ArbeidInntektPanel stateModifier={stateModifier} formValues={formValues} />
 			<ArbeidssoekerPanel stateModifier={stateModifier} formValues={formValues} />

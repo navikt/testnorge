@@ -1,8 +1,6 @@
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
-import {
-	Attributt,
-	AttributtKategori,
-} from '@/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
+import { Attributt } from '../Attributt'
+import { AttributtKategori } from '../AttributtKategori'
 import Panel from '@/components/ui/panel/Panel'
 import {
 	initialAndreGodkjenningerVerdier,
@@ -33,21 +31,21 @@ export const ArbeidssoekerPanel = ({ stateModifier, formValues }) => {
 			startOpen={harValgtAttributt(formValues, ['arbeidsplassenCV', 'arbeidssoekerregisteret'])}
 		>
 			<AttributtKategori title="Arbeidssøkerregisteret" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.arbeidssoekerregisteret} />
+				<Attributt item={sm.attrs.arbeidssoekerregisteret} />
 			</AttributtKategori>
 			<AttributtKategori title="Arbeidsplassen (CV)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.jobboensker} />
-				<Attributt attr={sm.attrs.utdanning} />
-				<Attributt attr={sm.attrs.fagbrev} />
-				<Attributt attr={sm.attrs.arbeidserfaring} />
-				<Attributt attr={sm.attrs.annenErfaring} />
-				<Attributt attr={sm.attrs.kompetanser} />
-				<Attributt attr={sm.attrs.offentligeGodkjenninger} />
-				<Attributt attr={sm.attrs.andreGodkjenninger} />
-				<Attributt attr={sm.attrs.spraak} />
-				<Attributt attr={sm.attrs.foererkort} />
-				<Attributt attr={sm.attrs.kurs} />
-				<Attributt attr={sm.attrs.sammendrag} />
+				<Attributt item={sm.attrs.jobboensker} />
+				<Attributt item={sm.attrs.utdanning} />
+				<Attributt item={sm.attrs.fagbrev} />
+				<Attributt item={sm.attrs.arbeidserfaring} />
+				<Attributt item={sm.attrs.annenErfaring} />
+				<Attributt item={sm.attrs.kompetanser} />
+				<Attributt item={sm.attrs.offentligeGodkjenninger} />
+				<Attributt item={sm.attrs.andreGodkjenninger} />
+				<Attributt item={sm.attrs.spraak} />
+				<Attributt item={sm.attrs.foererkort} />
+				<Attributt item={sm.attrs.kurs} />
+				<Attributt item={sm.attrs.sammendrag} />
 			</AttributtKategori>
 		</Panel>
 	)
