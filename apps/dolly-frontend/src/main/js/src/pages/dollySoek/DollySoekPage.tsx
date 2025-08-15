@@ -19,7 +19,6 @@ export default () => {
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
 	const lagreSoekRequestRef = useRef(lagreSoekRequest)
 	console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
-	// TODO: Sett lagreSoekRequest til aa vaere det som evt ligger i form naar man kommer til siden?
 
 	useEffect(() => {
 		lagreSoekRequestRef.current = lagreSoekRequest

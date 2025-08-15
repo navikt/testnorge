@@ -40,7 +40,6 @@ export const SoekForm = ({
 }) => {
 	//TODO: Felter/kategorier som maa fikses
 	// Miljoer
-	// Personinformasjon: skjerming
 
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
@@ -88,8 +87,8 @@ export const SoekForm = ({
 	}
 
 	const emptyCategory = (paths: string[]) => {
-		//TODO: Toem lagresoek
 		const requestClone = { ...values }
+		const lagreSoekRequestClone = { ...lagreSoekRequest }
 		paths.forEach((path) => {
 			_.set(requestClone, path, _.get(dollySoekInitialValues, path))
 			if (path === 'personRequest.harSkjerming') {
@@ -99,17 +98,23 @@ export const SoekForm = ({
 					watch('registreRequest')?.filter((item: string) => item !== 'SKJERMING'),
 				)
 			}
+			Object.entries(lagreSoekRequestClone)?.forEach((item, idx) => {
+				if (item[1]?.path === path) {
+					delete lagreSoekRequestClone[item[0]]
+				}
+			})
 		})
 		const updatedRequest = { ...requestClone, side: 0, seed: null }
 		reset(updatedRequest)
 		setRequest(updatedRequest)
+		setLagreSoekRequest(lagreSoekRequestClone)
 	}
 
 	const emptySearch = () => {
-		//TODO: Toem lagresoek
 		setVisAntall(10)
 		reset(dollySoekInitialValues)
 		setRequest(dollySoekInitialValues)
+		setLagreSoekRequest({})
 	}
 
 	const getNewResult = () => {
