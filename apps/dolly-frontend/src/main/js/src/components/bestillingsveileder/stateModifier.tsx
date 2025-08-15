@@ -1,127 +1,112 @@
-import { useContext } from 'react'
-import { UseFormReturn } from 'react-hook-form'
-import { BestillingsveilederContext } from './BestillingsveilederContext'
-import * as _ from 'lodash-es'
+import { useCallback, useContext } from 'react'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { BestillingsveilederContext, BestillingsveilederContextType } from './BestillingsveilederContext'
 
-export interface BestillingsveilederContextType {
-	is?: {
-		nyPerson?: boolean
-		nyOrganisasjon?: boolean
-		nyStandardOrganisasjon?: boolean
-		nyOrganisasjonFraMal?: boolean
-		leggTil?: boolean
-		kopi?: boolean
-	}
+type AttrItem = {
+	checked?: boolean
+	label?: string
+	add?: () => void
+	remove?: () => void
+	[k: string]: any
+}
+type Attrs = Record<string, AttrItem>
+
+interface HelperArgs<TForm extends FieldValues> {
+	set: (path: string, value: unknown) => void
+	setMulti: (...entries: [string, unknown][]) => void
+	opts: BestillingsveilederContextType | undefined
+	del: (path: string | string[]) => void
+	delMutate: () => void
+	has: (path: string) => boolean
+	values: (path: string) => unknown
+	methods: UseFormReturn<TForm>
 }
 
-export interface AttributeMethod {
-	(): void
+interface ReturnBatch {
+	attrs: Attrs
+	checked: string[]
+	batchAdd: (ignoreKeys?: string[]) => void
+	batchRemove: (ignoreKeys?: string[]) => void
 }
 
-export interface Attribute {
-	label: string
-	checked: boolean
-	add: AttributeMethod
-	remove: AttributeMethod
-	[key: string]: any
-}
-
-export interface AttributeRecord {
-	[key: string]: Attribute
-}
-
-export const useStateModifierFns = (formMethods: UseFormReturn, setFormMutate: any) => {
+export const useStateModifierFns = <TForm extends FieldValues = FieldValues>(
+	formMethods: UseFormReturn<TForm>,
+	setFormMutate?: (fn: (() => void) | undefined) => void,
+) => {
 	const { setValue, watch, resetField, getValues, reset } = formMethods
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType | undefined
 
-	const set = (path: string, value: any) => setValue(path, value)
-	const has = (path: string) => watch(path) !== undefined
-	const values = (path: string) => watch(path)
-	const delMutate = () => setFormMutate?.(() => undefined)
+	const set = useCallback(
+		(path: string, value: unknown) => {
+			setValue(path as any, value)
+		},
+		[setValue],
+	)
 
-	const del = (path: string | string[]) => {
-		if (Array.isArray(path)) {
-			path.forEach((p) => resetField(p))
-		} else {
-			resetField(path)
-		}
-		let newObj = _.omit(getValues(), path)
+	const has = useCallback((path: string) => watch(path) !== undefined, [watch])
+	const values = useCallback((path: string) => watch(path), [watch])
+	const delMutate = useCallback(() => setFormMutate?.(() => undefined), [setFormMutate])
 
-		// Ingen tomme objekter guard
-		let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
-		if (
-			path.includes('pdldata.person') ||
-			(Array.isArray(path) && path[0]?.includes('pdldata.person'))
-		)
-			rootPath = 'pdldata.person'
-		if (_.isEmpty(_.get(newObj, rootPath))) newObj = _.omit(newObj, rootPath)
-		reset(newObj)
-	}
+	const setMulti = useCallback(
+		(...entries: [string, unknown][]) => {
+			entries.forEach(([p, v]) => setValue(p as any, v))
+		},
+		[setValue],
+	)
 
-	const setMulti = (...arrays: [string, any][]) => {
-		arrays.forEach(([path, val]) => setValue(path, val))
-	}
+	const del = useCallback(
+		(path: string | string[]) => {
+			const paths = Array.isArray(path) ? path : [path]
+			paths.forEach((p) => resetField(p as any))
+			const current = { ...getValues() } as Record<string, any>
 
-	const allCheckedLabels = (attrs: AttributeRecord) =>
-		Object.values(attrs)
-			.filter((a) => a.checked)
-			.map((b) => b.label)
+			let rootPath = paths[0].split('.')[0]
+			if (paths.some((p) => p.includes('pdldata.person'))) rootPath = 'pdldata.person'
 
-	const batchUpdate = (
-		attrs: AttributeRecord,
-		ignoreKeys: string[] = [],
-		key: 'add' | 'remove',
-	) => {
-		delMutate()
+			const rootVal = rootPath.split('.').reduce<any>((o, key) => o?.[key], current)
+			const isEmptyObject = (v: any) =>
+				v == null || (typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 0)
 
-		const updateOperation = async () => {
-			try {
-				// Process each attribute sequentially
-				for (const attrName of Object.keys(attrs)) {
-					if (ignoreKeys.includes(attrName)) continue
-
-					const attr = attrs[attrName]
-					if (!attr || typeof attr[key] !== 'function') continue
-
-					// Execute the operation
-					await Promise.resolve(attr[key]())
-				}
-
-				// Trigger re-render
-				setValue('_triggerRender', Date.now(), { shouldDirty: false })
-				return { status: 'OK' }
-			} catch (error) {
-				console.error(`Error in batch ${key} operation:`, error)
-				return { status: 'ERROR', error }
+			if (isEmptyObject(rootVal)) {
+				delete (current as any)[rootPath]
 			}
-		}
+			reset(current as any)
+		},
+		[getValues, reset, resetField],
+	)
 
-		setFormMutate(() => updateOperation)
-		return updateOperation
-	}
+	return useCallback(
+		(fn: (helpers: HelperArgs<TForm>) => Attrs | undefined): ReturnBatch => {
+			const helpers: HelperArgs<TForm> = {
+				set,
+				setMulti,
+				opts,
+				del,
+				delMutate,
+				has,
+				values,
+				methods: formMethods,
+			}
+			const attrs = fn(helpers) || {}
+			const checked = Object.values(attrs)
+				.filter((a) => a.checked)
+				.map((a) => a.label!)
+				.filter(Boolean)
 
-	return (
-		fn: (args: {
-			set: (path: string, value: any) => void
-			setMulti: (...arrays: [string, any][]) => void
-			opts: any
-			del: (path: string | string[]) => void
-			delMutate: () => void
-			has: (path: string) => boolean
-			values: (path: string) => any
-			methods: UseFormReturn
-		}) => Record<string, any>,
-	) => {
-		const attrs =
-			fn({ set, setMulti, opts, del, delMutate, has, values, methods: formMethods }) || {}
-		const checked = allCheckedLabels(attrs as AttributeRecord)
+			const batchUpdate = (ignore: string[] = [], key: 'add' | 'remove') => {
+				delMutate()
+				Object.entries(attrs)
+					.filter(([name]) => !ignore.includes(name))
+					.forEach(([, v]) => v[key]?.())
+			}
 
-		return {
-			attrs,
-			checked,
-			batchAdd: (ignoreKeys?: string[]) => batchUpdate(attrs as AttributeRecord, ignoreKeys, 'add'),
-			batchRemove: (ignoreKeys?: string[]) =>
-				batchUpdate(attrs as AttributeRecord, ignoreKeys, 'remove'),
-		}
-	}
+			return {
+				attrs,
+				checked,
+				batchAdd: (ignoreKeys) => batchUpdate(ignoreKeys, 'add'),
+				batchRemove: (ignoreKeys) => batchUpdate(ignoreKeys, 'remove'),
+			}
+		},
+		[set, setMulti, opts, del, delMutate, has, values, formMethods],
+	)
 }
