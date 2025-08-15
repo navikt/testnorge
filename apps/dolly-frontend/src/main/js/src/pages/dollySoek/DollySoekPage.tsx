@@ -161,6 +161,8 @@ export default () => {
 				handleChangeList={handleChangeList}
 				setRequest={setRequest}
 				formRequest={formRequest}
+				lagreSoekRequest={lagreSoekRequest}
+				setLagreSoekRequest={setLagreSoekRequest}
 			/>
 		</div>
 	)

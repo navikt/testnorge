@@ -10,7 +10,12 @@ import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 import { personPath } from '../SoekForm'
 import { useFormContext } from 'react-hook-form'
 
-export const Personinformasjon = ({ handleChange, setRequest }: any) => {
+export const Personinformasjon = ({
+	handleChange,
+	setRequest,
+	lagreSoekRequest,
+	setLagreSoekRequest,
+}: any) => {
 	const formMethods = useFormContext()
 	const { watch, reset } = formMethods
 	const values = watch()
@@ -109,6 +114,19 @@ export const Personinformasjon = ({ handleChange, setRequest }: any) => {
 					}
 					reset(updatedRequest)
 					setRequest(updatedRequest)
+					let registreSoekValues = lagreSoekRequest?.registreRequest || []
+					if (val.target.checked) {
+						registreSoekValues.push({
+							path: 'registreRequest',
+							value: 'SKJERMING',
+							label: 'Fagsystem: Skjermingsregisteret',
+						})
+					} else {
+						registreSoekValues = registreSoekValues.filter(
+							(item: string) => item.value !== 'SKJERMING',
+						)
+					}
+					setLagreSoekRequest({ ...lagreSoekRequest, registreRequest: registreSoekValues })
 				}}
 			/>
 			<div style={{ marginLeft: '-20px', marginTop: '3px' }}>

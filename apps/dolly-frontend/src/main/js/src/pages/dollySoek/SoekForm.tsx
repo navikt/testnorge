@@ -35,6 +35,8 @@ export const SoekForm = ({
 	handleChangeList,
 	setRequest,
 	formRequest,
+	lagreSoekRequest,
+	setLagreSoekRequest,
 }) => {
 	//TODO: Felter/kategorier som maa fikses
 	// Miljoer
@@ -154,7 +156,14 @@ export const SoekForm = ({
 											</Table.HeaderCell>
 										</Table.ExpandableRow>
 										<Table.ExpandableRow
-											content={<Personinformasjon handleChange={handleChange} />}
+											content={
+												<Personinformasjon
+													handleChange={handleChange}
+													setRequest={setRequest}
+													lagreSoekRequest={lagreSoekRequest}
+													setLagreSoekRequest={setLagreSoekRequest}
+												/>
+											}
 											data-testid={TestComponentSelectors.EXPANDABLE_PERSONINFORMASJON}
 											expandOnRowClick={runningE2ETest()}
 										>
