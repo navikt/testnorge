@@ -28,7 +28,7 @@ interface SivilstandFormTypes {
 	ident?: string
 }
 
-const gyldigeSivilstander = [
+export const gyldigeSivilstander = [
 	'GIFT',
 	'REGISTRERT_PARTNER',
 	'SEPARERT',

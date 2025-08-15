@@ -1,33 +1,37 @@
-package no.nav.testnav.apps.brukerservice.service;
+package no.nav.testnav.apps.brukerservice.service.v2;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.brukerservice.domain.User;
+import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.apps.brukerservice.exception.UserAlreadyExistsException;
-import no.nav.testnav.apps.brukerservice.exception.UsernameAlreadyTakenException;
 import no.nav.testnav.apps.brukerservice.repository.UserEntity;
 import no.nav.testnav.apps.brukerservice.repository.UserRepository;
+import no.nav.testnav.apps.brukerservice.service.v1.CryptographyService;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-@Service
+@Service("userServiceV2")
 @RequiredArgsConstructor
 public class UserService {
     private final CryptographyService cryptographyService;
     private final UserRepository repository;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
 
-    public Mono<User> create(String username, String representing) {
+    public Mono<User> create(BrukerDTO bruker) {
         return getAuthenticatedUserId
                 .call()
-                .flatMap(userId -> validateCreateUser(userId, username, representing).then(Mono.just(userId)))
+                .flatMap(userId -> validateCreateUser(userId, bruker.organisasjonsnummer()).then(Mono.just(userId)))
                 .map(userId -> {
                     var entity = new UserEntity();
-                    entity.setId(cryptographyService.createId(userId, representing));
-                    entity.setOrganisasjonsnummer(representing);
-                    entity.setBrukernavn(username);
+                    entity.setId(cryptographyService.createId(userId, bruker.organisasjonsnummer()));
+                    entity.setOrganisasjonsnummer(bruker.organisasjonsnummer());
+                    entity.setEpost(bruker.epost());
+                    entity.setBrukernavn(bruker.brukernavn());
                     entity.setNew(true);
                     return entity;
                 })
@@ -59,14 +63,16 @@ public class UserService {
         }).map(User::new);
     }
 
-    public Mono<User> updateUsername(String id, String username) {
-        return validateUpdateUser(username)
-                .then(repository.findById(id).flatMap(entity -> {
-                    entity.setBrukernavn(username);
-                    entity.setNew(false);
-                    entity.setOppdatert(LocalDateTime.now());
+    public Mono<User> updateUser(BrukerDTO bruker) {
+        return getAuthenticatedUserId
+                .call()
+                .map(userId -> cryptographyService.createId(userId, bruker.organisasjonsnummer()))
+                .flatMap(repository::findById)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Bruker ikke funnet.")))
+                .flatMap(entity -> {
+                    entity.setEpost(bruker.epost());
                     return repository.save(entity);
-                }))
+                })
                 .map(User::new);
     }
 
@@ -78,17 +84,7 @@ public class UserService {
         return repository.deleteById(id);
     }
 
-    private Mono<Void> validateUpdateUser(String username) {
-        return repository.existsByBrukernavn(username)
-                .doOnNext(exists -> {
-                    if (Boolean.TRUE.equals(exists)) {
-                        throw new UsernameAlreadyTakenException(username);
-                    }
-                })
-                .then();
-    }
-
-    private Mono<Void> validateCreateUser(String userId, String username, String representing) {
+    private Mono<Void> validateCreateUser(String userId, String representing) {
         var id = cryptographyService.createId(userId, representing);
         return repository.existsById(id)
                 .doOnNext(exists -> {
@@ -96,10 +92,15 @@ public class UserService {
                         throw new UserAlreadyExistsException(id);
                     }
                 })
-                .flatMap(ignored -> repository.existsByBrukernavn(username))
+                .then();
+    }
+
+    private Mono<Void> validateUpdateUser(String userId, String representing) {
+        var id = cryptographyService.createId(userId, representing);
+        return repository.existsById(id)
                 .doOnNext(exists -> {
                     if (Boolean.TRUE.equals(exists)) {
-                        throw new UsernameAlreadyTakenException(username);
+                        throw new UserAlreadyExistsException(id);
                     }
                 })
                 .then();

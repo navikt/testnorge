@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FullmaktResponse {
+public class FullmaktPostResponse {
 
     private HttpStatus status;
     private String melding;

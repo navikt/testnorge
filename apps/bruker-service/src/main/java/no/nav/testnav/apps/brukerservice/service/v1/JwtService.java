@@ -1,9 +1,13 @@
-package no.nav.testnav.apps.brukerservice.service;
+package no.nav.testnav.apps.brukerservice.service.v1;
 
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import no.nav.testnav.apps.brukerservice.domain.User;
+import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -11,11 +15,6 @@ import reactor.core.publisher.Mono;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
-
-import no.nav.testnav.apps.brukerservice.domain.User;
-import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 @Service
 public class JwtService {
@@ -46,6 +45,16 @@ public class JwtService {
                 .then(Mono.just(encodeJwt(user)));
     }
 
+    public Mono<DecodedJWT> verify(String jwt, String id) {
+        return getAuthenticatedUserId.call().map(ident -> {
+            var verifier = JWT
+                    .require(Algorithm.HMAC256(secretKey))
+                    .withClaim(UserConstant.USER_CLAIM_ID, id)
+                    .withIssuer(issuer)
+                    .build();
+            return verifier.verify(jwt);
+        });
+    }
 
     private String encodeJwt(User user) {
         var date = Calendar.getInstance();
@@ -60,18 +69,6 @@ public class JwtService {
                 .withJWTId(UUID.randomUUID().toString())
                 .withExpiresAt(new Date(date.getTimeInMillis() + (2 * 60 * 60 * 1000)))
                 .sign(Algorithm.HMAC256(secretKey));
-    }
-
-
-    public Mono<DecodedJWT> verify(String jwt, String id) {
-        return getAuthenticatedUserId.call().map(ident -> {
-            var verifier = JWT
-                    .require(Algorithm.HMAC256(secretKey))
-                    .withClaim(UserConstant.USER_CLAIM_ID, id)
-                    .withIssuer(issuer)
-                    .build();
-            return verifier.verify(jwt);
-        });
     }
 
 
