@@ -8,7 +8,6 @@ import no.nav.dolly.domain.dto.TestidentDTO;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.result.method.annotation.ResponseBodyResultHandler;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public class PersonService {
 
     private final List<ClientRegister> clientRegister;
     private final PdlDataConsumer pdlDataConsumer;
-    private final ResponseBodyResultHandler responseBodyResultHandler;
 
     @Transactional
     public Mono<Void> recyclePersoner(List<TestidentDTO> testidenter) {

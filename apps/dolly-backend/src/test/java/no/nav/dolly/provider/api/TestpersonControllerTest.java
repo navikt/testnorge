@@ -1,84 +1,64 @@
 package no.nav.dolly.provider.api;
 
 
-import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.dolly.service.PersonService;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Random;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 class TestpersonControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
     @MockitoBean
-    private PersonService personService;
-
-    @Autowired
-    private TestgruppeRepository testgruppeRepository;
-
-//    @PersistenceContext
-//    private EntityManager entityManager;
-
+    private PdlDataConsumer pdlDataConsumer;
 
     @Test
-    @Transactional
     @DisplayName("Sletter Testident fra Testgruppe")
-    void deleteExisting()
-            throws Exception {
+    void deleteExisting() {
 
-//        var testgruppe = super.createTestgruppe("Testgruppe", super.createBruker());
-//
-//        var testident1 = super.createTestident("Testident 1", testgruppe);
-//        var testident2 = super.createTestident("Testident 2", testgruppe);
-//        var testident3 = super.createTestident("Testident 3", testgruppe);
-//
-//
-//        testgruppe.getTestidenter().add(testident1);
-//        testgruppe.getTestidenter().add(testident2);
-//        testgruppe.getTestidenter().add(testident3);
-//
-//        testgruppeRepository.save(testgruppe);
-//
-//        entityManager.flush();
-//
-//        mockMvc
-//                .perform(delete("/api/v1/ident/{ident}", testident2.getIdent()))
-//                .andExpect(status().isOk());
-//
-//        testgruppe = super
-//                .findTestgruppeById(testgruppe.getId())
-//                .orElseThrow(IllegalStateException::new);
-//        assertThat(testgruppe.getTestidenter())
-//                .isNotNull()
-//                .contains(testident1, testident3);
-//
-//        verify(personService).recyclePersoner(anyList());
+        var bruker = createBruker().block();
 
+        var testgruppe = createTestgruppe("Testgruppe", bruker).block();
+        var testident1 = createTestident("Testident 1", testgruppe).block();
+
+        when(pdlDataConsumer.slettPdl(any())).thenReturn(Mono.empty());
+
+        webTestClient
+                .delete()
+                .uri("/api/v1/ident/{ident}", testident1.getIdent())
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        assertThat(findTestident(testident1.getIdent()).block())
+                .isNull();
     }
 
     @Test
     @DisplayName("Kan ikke slette ikke-eksisterende Testident")
-    void cannotDeleteNonExisting()
-            throws Exception {
+    void cannotDeleteNonExisting() {
 
         var id = new Random().nextLong(100, Long.MAX_VALUE);
-        mockMvc
-                .perform(delete("/api/v1/ident/{ident}", id))
-                .andExpect(status().isNotFound());
 
+        webTestClient
+                .delete()
+                .uri("/api/v1/ident/{ident}", id)
+                .exchange()
+                .expectStatus()
+                .isNotFound()
+                .expectBody()
+                .jsonPath("$.message")
+                .value(message -> assertThat(message).asString().contains("Testperson med ident " + id + " ble ikke funnet"));
     }
-
 }

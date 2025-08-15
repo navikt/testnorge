@@ -487,10 +487,15 @@ public class BestillingService {
                 .map(Bestilling::getId)
                 .doOnNext(elasticRepository::deleteById)
                 .collectList()
+                .doOnNext(ignore->
+                        log.info("Sletter {} bestillinger for gruppeId {}", ignore.size(), gruppeId))
                 .then(bestillingKontrollRepository.deleteByGruppeId(gruppeId))
                 .then(bestillingProgressRepository.deleteByGruppeId(gruppeId))
                 .then(bestillingRepository.deleteByGruppeId(gruppeId))
-                .then();
+                .onErrorResume(ignore -> {
+                    log.error("Feil ved sletting av bestillinger for gruppeId {}: {}", gruppeId, ignore.getMessage());
+                    return Mono.empty();
+                });
     }
 
     public Mono<Void> slettBestillingByBestillingId(Long bestillingId) {

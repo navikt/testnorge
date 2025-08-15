@@ -97,7 +97,7 @@ public class BrukerService {
                                 .flatMapMany(brukerRepository::findByBrukerIdInOrderByBrukernavn));
     }
 
-    public Mono<Integer> sletteBrukerFavoritterByGroupId(Long groupId) {
+    public Mono<Void> sletteBrukerFavoritterByGroupId(Long groupId) {
 
         return brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
     }

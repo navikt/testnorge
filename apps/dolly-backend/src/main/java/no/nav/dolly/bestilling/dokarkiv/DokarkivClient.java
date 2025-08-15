@@ -27,7 +27,6 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.boot.actuate.health.StatusAggregator;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -64,7 +63,6 @@ public class DokarkivClient implements ClientRegister {
     private final SafConsumer safConsumer;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingService transaksjonMappingService;
-    private final StatusAggregator statusAggregator;
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {

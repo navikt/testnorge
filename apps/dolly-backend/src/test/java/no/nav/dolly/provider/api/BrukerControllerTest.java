@@ -1,31 +1,37 @@
 package no.nav.dolly.provider.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.provider.BrukerController;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.service.BrukerService;
-import org.junit.jupiter.api.BeforeEach;
+import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
+import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class BrukerControllerTest {
+
+    private static final String BRUKERID = "123";
 
     @Mock
     private BrukerService brukerService;
@@ -33,58 +39,93 @@ class BrukerControllerTest {
     @Mock
     private MapperFacade mapperFacade;
 
+    @Mock
+    private GetUserInfo getUserInfo;
+
+    @Mock
+    private UserInfoExtended userInfoExtended;
+
+    @Mock
+    private BrukerFavoritterRepository brukerFavoritterRepository;
+
     @InjectMocks
     private BrukerController controller;
 
-    @BeforeEach
-    public void setup() {
-        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
-    }
-
     @Test
     void getBrukerByBrukerId() {
-        RsBrukerAndClaims bruker = RsBrukerAndClaims.builder().brukerId("brukerId").build();
-        Bruker b = Bruker.builder().build();
 
-//        when(brukerService.fetchBruker("brukerId")).thenReturn(b);
-        when(mapperFacade.map(b, RsBrukerAndClaims.class)).thenReturn(bruker);
+        var bruker = Bruker.builder().build();
 
-//        RsBrukerAndClaims res = controller.getBrukerBybrukerId("brukerId");
+        when(brukerService.fetchBruker(BRUKERID)).thenReturn(Mono.just(bruker));
+        when(mapperFacade.map(eq(bruker), eq(RsBruker.class), any())).thenReturn(RsBruker.builder()
+                .brukerId(BRUKERID)
+                .build());
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
+        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
+                BrukerFavoritter.builder()
+                        .build()));
 
-//        assertThat(res.getBrukerId(), is("brukerId"));
+        StepVerifier.create(controller.getBrukerBybrukerId(BRUKERID))
+                .assertNext(resultat -> assertThat(resultat.getBrukerId(), is(BRUKERID)))
+                .verifyComplete();
     }
 
     @Test
     void getCurrentBruker() {
 
-        Bruker bruker = Bruker.builder().build();
-        RsBruker rsBruker = new RsBruker();
+        var bruker = Bruker.builder().build();
+        var brukerAndClaims = RsBrukerAndClaims.builder()
+                .brukerId(BRUKERID)
+                .build();
 
-//        when(brukerService.fetchOrCreateBruker()).thenReturn(bruker);
-        when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
+        when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(brukerAndClaims);
+        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(BrukerFavoritter.builder().build()));
 
-        assertThat(controller.getCurrentBruker(), is(rsBruker));
+        StepVerifier.create(controller.getCurrentBruker())
+                .assertNext(resultat ->
+                        assertThat(resultat.getBrukerId(), is(BRUKERID)))
+                .verifyComplete();
     }
 
     @Test
     void getAllBrukere() {
-        controller.getAllBrukere();
-        verify(brukerService).fetchBrukere();
+
+        when(brukerService.fetchBrukere()).thenReturn(Flux.just(Bruker.builder().build()));
+        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(BrukerFavoritter.builder().build()));
+        when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class), any())).thenReturn(RsBruker.builder().build());
+
+        StepVerifier.create(controller.getAllBrukere())
+                .assertNext(bruker -> verify(brukerService).fetchBrukere())
+                .verifyComplete();
     }
 
     @Test
     void fjernFavoritter() {
-        RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
+
+        var req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1L);
-        controller.fjernFavoritt(req);
-        verify(brukerService).fjernFavoritt(anyLong());
+
+        when(brukerService.fjernFavoritt(1L)).thenReturn(Mono.just(Bruker.builder().build()));
+        when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class))).thenReturn(RsBruker.builder().build());
+
+        StepVerifier.create(controller.fjernFavoritt(req))
+                .assertNext(resultat -> verify(brukerService).fjernFavoritt(anyLong()))
+                .verifyComplete();
     }
 
     @Test
     void leggTilFavoritter() {
+
         RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1L);
-        controller.leggTilFavoritt(req);
-        verify(brukerService).leggTilFavoritt(anyLong());
+
+        when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class))).thenReturn(RsBruker.builder().build());
+        when(brukerService.leggTilFavoritt(any())).thenReturn(Mono.just(Bruker.builder().build()));
+
+        StepVerifier.create(controller.leggTilFavoritt(req))
+                .assertNext(resultat -> verify(brukerService).leggTilFavoritt(anyLong()))
+                .verifyComplete();
     }
 }

@@ -42,6 +42,8 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
 
     runtimeOnly 'org.postgresql:r2dbc-postgresql'
+    runtimeOnly 'io.r2dbc:r2dbc-pool'
+
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
@@ -51,20 +53,19 @@ dependencies {
     implementation "org.apache.poi:poi:$versions.apachePoi"
     implementation "org.apache.poi:poi-ooxml:$versions.apachePoi"
 
-    testImplementation 'io.r2dbc:r2dbc-h2'
-    testImplementation 'com.h2database:h2'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
-    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.2'
+    testImplementation 'org.testcontainers:postgresql:1.20.2'
     testImplementation 'org.opensearch:opensearch-testcontainers:2.1.2'
-//
-//    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.12'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:5.0.0-alpha.12'
+
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 //    testImplementation 'com.h2database:h2'
-//    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
-//    testImplementation 'org.testcontainers:junit-jupiter'
-//    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 //    testImplementation 'org.testcontainers:postgresql'
 //    testImplementation 'org.bitbucket.b_c:jose4j:0.9.6'
 

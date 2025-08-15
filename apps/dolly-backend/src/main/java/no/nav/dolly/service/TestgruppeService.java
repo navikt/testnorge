@@ -19,6 +19,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
@@ -55,6 +56,7 @@ public class TestgruppeService {
     private final BrukerServiceConsumer brukerServiceConsumer;
     private final BestillingRepository bestillingRepository;
     private final IdentRepository identRepository;
+    private final BrukerRepository brukerRepository;
 
     public Mono<Testgruppe> opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
 
@@ -78,7 +80,8 @@ public class TestgruppeService {
                 .flatMap(tilgang -> {
                     if (isTrue(tilgang)) {
                         return brukerService.fetchOrCreateBruker()
-                                .flatMap(bruker -> this.fetchTestgruppeById(gruppeId)
+                                .flatMap(bruker ->
+                                        this.fetchTestgruppeById(gruppeId)
                                         .flatMap(testgruppe -> Mono.zip(
                                                 Mono.just(testgruppe),
                                                 Mono.just(bruker),
@@ -161,7 +164,7 @@ public class TestgruppeService {
                         .map(testidenter -> mapperFacade.mapAsList(testidenter, TestidentDTO.class))
                         .flatMap(personService::recyclePersoner))
                 .then(identRepository.deleteByGruppeId(gruppeId))
-                .then(brukerService.sletteBrukerFavoritterByGroupId(gruppeId))
+                .then(brukerRepository.deleteBrukerFavoritterByGroupId(gruppeId))
                 .then(testgruppeRepository.deleteById(gruppeId));
     }
 

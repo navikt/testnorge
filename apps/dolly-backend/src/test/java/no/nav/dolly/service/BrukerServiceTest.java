@@ -155,7 +155,7 @@ class BrukerServiceTest {
 
         long groupId = 1L;
 
-        when(brukerRepository.deleteBrukerFavoritterByGroupId(groupId)).thenReturn(Mono.just(1));
+        when(brukerRepository.deleteBrukerFavoritterByGroupId(groupId)).thenReturn(Mono.empty());
 
         StepVerifier.create(brukerService.sletteBrukerFavoritterByGroupId(groupId))
                 .expectNextCount(1)

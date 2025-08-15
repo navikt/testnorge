@@ -3,18 +3,17 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
@@ -30,15 +29,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
-@AutoConfigureWireMock(port = 0)
-class TpsMessagingConsumerTest {
+class TpsMessagingConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final List<String> MILJOER = List.of("q1", "q2");
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private TokenExchange tokenService;
 
     @MockitoBean
     @SuppressWarnings("unused")
@@ -60,7 +54,7 @@ class TpsMessagingConsumerTest {
 
     @BeforeEach
     void setup() {
-        when(tokenService.exchange(any(ServerProperties.class))).thenReturn(Mono.just(accessToken));
+        when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(accessToken));
     }
 
     private void stubPostUtenlandskBankkontoData() {
@@ -92,7 +86,7 @@ class TpsMessagingConsumerTest {
     @Test
     void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
-        when(tokenService.exchange(any(ServerProperties.class))).thenThrow(new SecurityException());
+        when(tokenExchange.exchange(any(ServerProperties.class))).thenThrow(new SecurityException());
 
         BankkontonrUtlandDTO bankkontonrUtlandDTO = new BankkontonrUtlandDTO();
 
@@ -104,7 +98,7 @@ class TpsMessagingConsumerTest {
                         .collectList()
                         .block());
 
-        verify(tokenService).exchange(any(ServerProperties.class));
+        verify(tokenExchange).exchange(any(ServerProperties.class));
     }
 
     @Test

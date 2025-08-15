@@ -92,7 +92,6 @@ public class MalBestillingService {
                 });
     }
 
-    @Transactional
     public Mono<BestillingMal> saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
         return bestillingRepository.findById(bestillingId)
@@ -117,7 +116,6 @@ public class MalBestillingService {
                         .flatMap(bestillingMalRepository::save));
     }
 
-    @Transactional
     public Mono<Void> deleteMalBestillingByID(Long id) {
 
         return bestillingMalRepository.findById(id)
@@ -125,7 +123,6 @@ public class MalBestillingService {
                 .flatMap(bestillingMal -> bestillingMalRepository.deleteById(id));
     }
 
-    @Transactional
     public Mono<BestillingMal> updateMalNavnById(Long id, String nyttMalNavn) {
 
         return bestillingMalRepository.findById(id)
@@ -134,7 +131,6 @@ public class MalBestillingService {
                 .then(bestillingMalRepository.findById(id));
     }
 
-    @Transactional
     public Mono<BestillingMal> createFromIdent(String ident, String name) {
 
         var aggregertRequest = new RsDollyUtvidetBestilling();

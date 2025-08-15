@@ -1,39 +1,23 @@
 package no.nav.dolly.provider.api;
 
-import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BrukerService;
-import no.nav.dolly.libs.test.DollySpringBootTest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import static org.mockito.ArgumentMatchers.anyString;
+import static java.time.LocalDateTime.now;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DollySpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-class MalBestillingControllerTest {
+class MalBestillingControllerTest extends AbstractControllerTest {
 
     private static final String MALNAVN_EN = "testmalEn";
     private static final String MALNAVN_TO = "testmalTo";
@@ -56,165 +40,161 @@ class MalBestillingControllerTest {
     private static final String TESTGRUPPE = "Testgruppe";
     private static final String UGYLDIG_BESTILLINGID = "999";
 
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private BestillingElasticRepository bestillingElasticRepository;
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private ElasticsearchOperations elasticsearchOperations;
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private BrukerService brukerService;
-
     @Autowired
-    private MockMvc mockMvc;
+    private BestillingRepository bestillingRepository;
+
+    @MockitoBean
+    private BrukerService brukerService;
 
     @Autowired
     private BestillingMalRepository bestillingMalRepository;
 
     @Autowired
-    private BestillingRepository bestillingRepository;
-
-    @Autowired
-    private TestgruppeRepository testgruppeRepository;
-
-    @Autowired
-    private BrukerRepository brukerRepository;
-
-    @BeforeEach
-    public void beforeEach() {
-
-        saveDummyBruker(DUMMY_EN);
-        saveDummyBruker(DUMMY_TO);
-        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
-
-//        when(brukerService.fetchBruker(anyString())).thenReturn(DUMMY_EN);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
-
-    }
+    private WebTestClient webTestClient;
 
     @Test
     @DisplayName("Oppretter og returnerer alle maler tilknyttet to forskjellige brukere")
-    void shouldCreateAndGetMaler() throws Exception {
+    void shouldCreateAndGetMaler() {
 
-//        var brukerEn = brukerRepository.findByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-//        var brukerTo = brukerRepository.findByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
+        var brukerEn = saveBruker(DUMMY_EN).block();
+        var brukerTo = saveBruker(DUMMY_TO).block();
+        var dummyGruppe = createTestgruppe(TESTGRUPPE, brukerEn).block();
 
-//        var bestilling = saveDummyBestilling(brukerEn, saveDummyGruppe());
-//        var bestillingTo = saveDummyBestilling(brukerTo, saveDummyGruppe());
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(brukerEn));
 
-//        mockMvc.perform(post("/api/v1/malbestilling")
-//                        .queryParam("bestillingId", String.valueOf(bestilling.getId()))
-//                        .queryParam("malNavn", MALNAVN_EN))
-//                .andExpect(status().isOk());
-//
-//        when(brukerService.fetchBruker(anyString())).thenReturn(DUMMY_TO);
-//
-//        mockMvc.perform(post("/api/v1/malbestilling")
-//                        .queryParam("bestillingId", String.valueOf(bestillingTo.getId()))
-//                        .queryParam("malNavn", MALNAVN_TO))
-//                .andExpect(status().isOk());
-//
-//        mockMvc.perform(get("/api/v1/malbestilling"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN_EN))
-//                .andExpect(jsonPath("$.malbestillinger.test_to[0].malNavn").value(MALNAVN_TO))
-//                .andExpect(jsonPath("$.malbestillinger.ALLE.length()").value(2));
+        var bestilling = saveDummyBestilling(brukerEn, dummyGruppe).block();
+        var bestillingTo = saveDummyBestilling(brukerTo, dummyGruppe).block();
+
+        webTestClient
+                .post()
+                .uri("/api/v1/malbestilling?bestillingId={bestillingId}&malNavn={malNavn}",
+                        bestilling.getId(), MALNAVN_EN)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(brukerTo));
+
+        webTestClient
+                .post()
+                .uri("/api/v1/malbestilling?bestillingId={bestillingId}&malNavn={malNavn}",
+                        bestillingTo.getId(), MALNAVN_TO)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        webTestClient
+                .get()
+                .uri("/api/v1/malbestilling/oversikt")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$.brukereMedMaler.length()").isEqualTo(4)
+                .jsonPath("$.brukereMedMaler[2].brukernavn").isEqualTo("test_en")
+                .jsonPath("$.brukereMedMaler[2].brukerId").isEqualTo("testbruker_en")
+                .jsonPath("$.brukereMedMaler[3].brukernavn").isEqualTo("test_to")
+                .jsonPath("$.brukereMedMaler[3].brukerId").isEqualTo("testbruker_to");
     }
 
     @Test
     @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
-    void shouldCreateMalerFromExistingOrder()
-            throws Exception {
+    void shouldCreateMalerFromExistingOrder() {
 
-//        var brukerEn = brukerRepository.findByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-//        var bestilling = saveDummyBestilling(brukerEn, saveDummyGruppe());
+        var brukerEn = saveBruker(DUMMY_EN).block();
+        var dummyGruppe = createTestgruppe(TESTGRUPPE, brukerEn).block();
+        var bestilling = saveDummyBestilling(brukerEn, dummyGruppe).block();
 
-//        mockMvc.perform(post("/api/v1/malbestilling")
-//                        .queryParam("bestillingId", String.valueOf(bestilling.getId()))
-//                        .queryParam("malNavn", MALNAVN_EN))
-//                .andExpect(status().isOk());
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(brukerEn));
 
-        mockMvc.perform(post("/api/v1/malbestilling")
-                        .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
-                        .queryParam("malNavn", MALNAVN_TO))
-                .andExpect(status().is4xxClientError());
+        webTestClient
+                .post()
+                .uri("/api/v1/malbestilling?bestillingId={bestillingId}&malNavn={malNavn}",
+                        bestilling.getId(), MALNAVN_EN)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        webTestClient
+                .post()
+                .uri("/api/v1/malbestilling?bestillingId={bestillingId}&malNavn={malNavn}",
+                        UGYLDIG_BESTILLINGID, MALNAVN_TO)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody()
+                .jsonPath("$.message")
+                .isEqualTo("Mal med id " + UGYLDIG_BESTILLINGID + " finnes ikke");
     }
 
     @Test
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
-    void shouldCreateUpdateAndDeleteMal()
-            throws Exception {
+    void shouldCreateUpdateAndDeleteMal() {
 
-//        var brukerEn = brukerRepository.findByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
-//        var bestillingMal = saveDummyBestillingMal(brukerEn);
+        var brukerEn = saveBruker(DUMMY_EN).block();
+        var bestillingMal = saveDummyBestillingMal(brukerEn).block();
 
-//        mockMvc.perform(put("/api/v1/malbestilling/id/{id}", bestillingMal.getId())
-//                        .queryParam("malNavn", NYTT_MALNAVN))
-//                .andExpect(status().isOk());
-//
-//        mockMvc.perform(get("/api/v1/malbestilling"))
-//                .andExpect(status().isOk());
-//
-//        mockMvc.perform(delete("/api/v1/malbestilling/id/{id}", bestillingMal.getId()))
-//                .andExpect(status().isOk());
-//
-//        mockMvc.perform(get("/api/v1/malbestilling"))
-//                .andExpect(status().isOk());
+        webTestClient
+                .put()
+                .uri("/api/v1/malbestilling/id/{id}?malNavn={malNavn}",
+                        bestillingMal.getId(), NYTT_MALNAVN)
+                .exchange()
+                .expectStatus()
+                .isOk();
 
+        webTestClient.get()
+                .uri("/api/v1/malbestilling/brukerId/{brukerId}", brukerEn.getBrukerId())
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$[0].malNavn").isEqualTo(NYTT_MALNAVN);
+
+        webTestClient
+                .delete()
+                .uri("/api/v1/malbestilling/id/{id}", bestillingMal.getId())
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        webTestClient.get()
+                .uri("/api/v1/malbestilling/brukerId/{brukerId}", brukerEn.getBrukerId())
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$").isEmpty();
     }
 
 
-    BestillingMal saveDummyBestillingMal(Bruker bruker) {
-//        return bestillingMalRepository.save(
-//                BestillingMal
-//                        .builder()
-//                        .bestKriterier(BEST_KRITERIER)
-//                        .bruker(bruker)
-//                        .malNavn(MALNAVN_EN)
-//                        .sistOppdatert(LocalDateTime.now())
-//                        .build()
-//        );
-        return null;
+    Mono<BestillingMal> saveDummyBestillingMal(Bruker bruker) {
+
+        return bestillingMalRepository.save(
+                BestillingMal
+                        .builder()
+                        .bestKriterier(BEST_KRITERIER)
+                        .brukerId(bruker.getId())
+                        .malNavn(MALNAVN_EN)
+                        .sistOppdatert(now())
+                        .build()
+        );
     }
 
-    Bestilling saveDummyBestilling(Bruker bruker, Testgruppe testgruppe) {
-//        return bestillingRepository.save(
-//                Bestilling
-//                        .builder()
-////                        .gruppe(testgruppe)
-//                        .ferdig(false)
-//                        .antallIdenter(1)
-//                        .bestKriterier(BEST_KRITERIER)
-//                        .bruker(bruker)
-//                        .beskrivelse(BESKRIVELSE)
-//                        .sistOppdatert(LocalDateTime.now())
-//                        .ident(IDENT)
-//                        .navSyntetiskIdent(true)
-//                        .build()
-//        );
+    Mono<Bestilling> saveDummyBestilling(Bruker bruker, Testgruppe testgruppe) {
 
-        return null;
-    }
-
-    Testgruppe saveDummyGruppe() {
-//        return testgruppeRepository.save(
-//                Testgruppe.builder()
-//                        .opprettetAv(DUMMY_EN)
-//                        .sistEndretAv(DUMMY_EN)
-//                        .navn(TESTGRUPPE)
-//                        .hensikt(TESTGRUPPE)
-//                        .datoEndret(LocalDate.now())
-//                        .build()
-//        );
-        return null;
-    }
-
-    void saveDummyBruker(Bruker bruker) {
-        brukerRepository.save(bruker);
+        return bestillingRepository.save(
+                Bestilling
+                        .builder()
+                        .gruppeId(testgruppe.getId())
+                        .ferdig(false)
+                        .antallIdenter(1)
+                        .bestKriterier(BEST_KRITERIER)
+                        .bruker(bruker)
+                        .beskrivelse(BESKRIVELSE)
+                        .sistOppdatert(now())
+                        .ident(IDENT)
+                        .navSyntetiskIdent(true)
+                        .build()
+        );
     }
 }

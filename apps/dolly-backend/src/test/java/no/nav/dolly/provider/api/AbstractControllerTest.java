@@ -1,19 +1,20 @@
 package no.nav.dolly.provider.api;
 
-import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
+import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Mono;
@@ -25,8 +26,7 @@ import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
 @DollySpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-@AutoConfigureWireMock(port = 0)
+@ExtendWith(TestDatabaseConfig.class)
 public abstract class AbstractControllerTest {
 
     @Autowired
@@ -35,6 +35,8 @@ public abstract class AbstractControllerTest {
     private TestgruppeRepository testgruppeRepository;
     @Autowired
     private IdentRepository identRepository;
+    @Autowired
+    private BrukerFavoritterRepository brukerFavoritterRepository;
 
     @MockitoBean
     @SuppressWarnings("unused")
@@ -44,16 +46,6 @@ public abstract class AbstractControllerTest {
     @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
-    @BeforeEach
-    public void beforeEach() {
-        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
-    }
-
-    @AfterEach
-    public void afterEach() {
-        MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
-    }
-
     Mono<Bruker> createBruker() {
 
         return brukerRepository.save(
@@ -61,7 +53,7 @@ public abstract class AbstractControllerTest {
                         .builder()
                         .brukerId(UUID.randomUUID().toString())
                         .brukertype(AZURE)
-                        .brukernavn("brukernavn")
+                        .brukernavn("testbruker")
                         .build());
     }
 
@@ -76,10 +68,22 @@ public abstract class AbstractControllerTest {
                         .builder()
                         .navn(navn)
                         .hensikt("Testing")
+                        .opprettetAvId(bruker.getId())
                         .opprettetAv(bruker)
+                        .sistEndretAv(bruker)
+                        .sistEndretAvId(bruker.getId())
                         .datoEndret(LocalDate.now())
                         .sistEndretAv(bruker)
                         .build());
+    }
+
+    Mono<BrukerFavoritter> saveBrukerFavoritter(Bruker bruker, Testgruppe gruppe) {
+
+        return brukerFavoritterRepository.save(
+                BrukerFavoritter.builder()
+                        .brukerId(bruker.getId())
+                        .gruppeId(gruppe.getId())
+                .build());
     }
 
     Mono<Testgruppe> findTestgruppeById(Long id) {
@@ -96,5 +100,10 @@ public abstract class AbstractControllerTest {
                         .gruppeId(testgruppe.getId())
                         .master(PDL)
                         .build());
+    }
+
+    Mono<Testident> findTestident(String ident) {
+
+        return identRepository.findByIdent(ident);
     }
 }

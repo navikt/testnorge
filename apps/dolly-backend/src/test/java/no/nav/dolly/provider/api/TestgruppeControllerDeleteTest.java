@@ -1,46 +1,58 @@
 package no.nav.dolly.provider.api;
 
-import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("DELETE /api/v1/gruppe")
 class TestgruppeControllerDeleteTest extends AbstractControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
     @MockitoBean
     private BrukerService brukerService;
 
+    @MockitoBean
+    private PdlDataConsumer pdlDataConsumer;
+
     @Test
     @DisplayName("Sletter Testgruppe")
-    void deleteTestgruppe()
-            throws Exception {
+    void deleteTestgruppe() {
 
-//        when(brukerService.fetchOrCreateBruker()).thenReturn(new Bruker());
-//
-//        var testgruppe = super.createTestgruppe("Testgruppe", super.createBruker());
-//        mockMvc
-//                .perform(get("/api/v1/gruppe/{id}", testgruppe.getId()))
-//                .andExpect(status().isOk());
-//        mockMvc
-//                .perform(delete("/api/v1/gruppe/{id}", testgruppe.getId()))
-//                .andExpect(status().isOk());
-//        mockMvc
-//                .perform(get("/api/v1/gruppe/{id}", testgruppe.getId()))
-//                .andExpect(status().isNotFound());
-//        assertThat(super.findTestgruppeById(testgruppe.getId())).isEmpty();
+        var bruker = createBruker().block();
+        var testgruppe = createTestgruppe("Testgruppe", bruker).block();
+
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(pdlDataConsumer.slettPdl(any())).thenReturn(Mono.empty());
+
+        webTestClient
+                .get()
+                .uri("/api/v1/gruppe/{id}", testgruppe.getId())
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        webTestClient
+                .delete()
+                .uri("/api/v1/gruppe/{id}", testgruppe.getId())
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        webTestClient
+                .get()
+                .uri("/api/v1/gruppe/{id}", testgruppe.getId())
+                .exchange()
+                .expectStatus()
+                .isNotFound();
     }
 }

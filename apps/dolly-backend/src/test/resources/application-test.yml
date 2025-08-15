@@ -83,12 +83,46 @@ management:
         include: none
 
 spring:
-  r2dbc:
-    url: r2dbc:h2:mem:///testdb
-    username: sa
-    password:
-  flyway:
-    enabled: true
-    url: jdbc:h2:mem///testdb
-    user: sa
-    password:
+  config:
+    activate:
+      on-profile: test
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  #  flyway:
+  #    enabled: true
+  #    locations: classpath:db/migration
+  #    url: jdbc:tc:postgresql:15:///test
+  #    user: test
+  #    password: test
+  #  r2dbc:
+  #    url: r2dbc:tc:postgresql:///test?TC_IMAGE_TAG=15
+  #    username: test
+  #    password: test
+  #  sql:
+  #    init:
+  #      mode: always
+  #spring:
+#    url: r2dbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    username: user
+#    password: pass
+#  flyway:
+#    enabled: true
+#    url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    user: user
+#    password: pass
+
+  main:
+    web-application-type: reactive
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          enabled: false
+#  autoconfigure:
+#    exclude:
+#      org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRestClientAutoConfiguration,
+#      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration,
+#      org.springframework.boot.autoconfigure.data.r2dbc.R2dbcAutoConfiguration,
+#      org.springframework.boot.autoconfigure.security.oauth2.resource.reactive.ReactiveOAuth2ResourceServerAutoConfiguration

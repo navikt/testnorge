@@ -1,6 +1,6 @@
 package no.nav.dolly.provider.api;
 
-import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
@@ -15,12 +15,11 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,14 +27,9 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DollySpringBootTest
-@ActiveProfiles({ "test", "integrationtest" })
-@AutoConfigureMockMvc(addFilters = false)
-@Slf4j
+@ExtendWith(TestDatabaseConfig.class)
 class OpensearchControllerTest {
 
     private static final String BASE_URL = "/api/v1/elastic";
@@ -49,7 +43,7 @@ class OpensearchControllerTest {
     private BestillingElasticRepository bestillingElasticRepository;
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
     private List<ElasticBestilling> getTestBestillinger() {
 
@@ -107,25 +101,39 @@ class OpensearchControllerTest {
     }
 
     @Test
-    void deleteBestilling_OK() throws Exception {
+    void deleteBestilling_OK() {
 
-        mockMvc
-                .perform(delete(BASE_URL + "/bestilling/id/{id}", 2L)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
+        webTestClient
+                .delete()
+                .uri(BASE_URL + "/bestilling/id/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+//                .perform(delete(BASE_URL + "/bestilling/id/{id}", 2L)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(print())
+//                .andExpect(status().isOk());
 
         var bestilling = bestillingElasticRepository.findById(2L);
         assertThat(bestilling.isPresent(), is(false));
     }
 
     @Test
-    void deleteAlleBestillingerInkludertIndeks_OK() throws Exception {
+    void deleteAlleBestillingerInkludertIndeks_OK() {
 
-        mockMvc
-                .perform(delete(BASE_URL))
-                .andDo(print())
-                .andExpect(status().isOk());
+        webTestClient
+                .delete()
+                .uri(BASE_URL + "/bestilling")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk();
+//        mockMvc
+//                .perform(delete(BASE_URL))
+//                .andDo(print())
+//                .andExpect(status().isOk());
 
         var bestillinger = (PageImpl<ElasticBestilling>) bestillingElasticRepository.findAll();
         assertThat(bestillinger.getTotalElements(), is(equalTo(0L)));

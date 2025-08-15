@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -47,31 +48,40 @@ class BestillingControllerTest {
 
         StepVerifier
                 .create(bestillingController.getBestillingById(BESTILLING_ID))
-                .expectNext(bestillingStatus)
+                .assertNext(status -> verify(bestillingService).fetchBestillingById(BESTILLING_ID))
                 .verifyComplete();
-
-//        assertThat(res, is(bestillingStatus));
     }
 
     @Test
     void getBestillingerOk() {
-        when(mapperFacade.mapAsList(anyList(), eq(RsBestillingStatus.class)))
-                .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
-//        RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID, 0, 10).getFirst();
+        when(mapperFacade.map(any(), eq(RsBestillingStatus.class)))
+                .thenReturn(RsBestillingStatus.builder().id(BESTILLING_ID).build());
+        when(bestillingService.getBestillingerFromGruppeIdPaginert(GRUPPE_ID, 0, 10))
+                .thenReturn(Flux.just(new Bestilling()));
 
-        verify(bestillingService).getBestillingerFromGruppeIdPaginert(GRUPPE_ID, 0, 10);
-        verify(mapperFacade).mapAsList(anyList(), eq(RsBestillingStatus.class));
-
-//        assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
+        StepVerifier.create(bestillingController.getBestillinger(GRUPPE_ID, 0, 10))
+                .assertNext(bestilling -> {
+                    assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
+                    verify(bestillingService).getBestillingerFromGruppeIdPaginert(GRUPPE_ID, 0, 10);
+                    verify(mapperFacade).map(any(), eq(RsBestillingStatus.class));
+                })
+                .verifyComplete();
     }
 
     @Test
     void stopBestillingProgressOk() {
-//        when(bestillingService.cancelBestilling(BESTILLING_ID)).thenReturn(Mono<Bestilling.builder().build()));
-        bestillingController.stopBestillingProgress(BESTILLING_ID, null);
 
-        verify(bestillingService).cancelBestilling(BESTILLING_ID);
-        verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
+        when(bestillingService.cancelBestilling(BESTILLING_ID)).thenReturn(Mono.just(new Bestilling()));
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class)))
+                .thenReturn(RsBestillingStatus.builder().id(BESTILLING_ID).build());
+
+        StepVerifier.create(bestillingController.stopBestillingProgress(BESTILLING_ID, null))
+                .assertNext(bestilling -> {
+                    verify(bestillingService).cancelBestilling(BESTILLING_ID);
+                    verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
+                    assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
+                })
+                .verifyComplete();
     }
 }
