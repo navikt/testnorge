@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt } from '../Attributt'
-import { AttributtKategori } from '../AttributtKategori'
+import { Attributt, AttributtKategori } from '../Attributt'
 import {
 	getInitialNyIdent,
 	getInitialUtenlandskIdentifikasjonsnummer,

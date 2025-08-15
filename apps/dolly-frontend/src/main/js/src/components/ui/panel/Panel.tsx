@@ -1,92 +1,102 @@
-import React, { PropsWithChildren, useCallback } from 'react'
+import { useToggle } from 'react-use'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import Icon from '@/components/ui/icon/Icon'
 import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
 import LinkButton from '@/components/ui/button/LinkButton/LinkButton'
+
+import './Panel.less'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
-import { useToggle } from 'react-use'
-import './Panel.less'
+import { useContext } from 'react'
 
-export interface PanelProps {
-	heading: string
-	startOpen?: boolean
-	forceOpen?: boolean
-	hasErrors?: boolean
-	informasjonstekst?: string | null
-	iconType?: string | null
-	checkAttributeArray?: (() => void) | null
-	uncheckAttributeArray?: (() => void) | null
-	setPanelOpen?: ((open: boolean) => void) | null
-}
-
-const envDependent = ['PENSJON', 'ARBEIDSYTELSER', 'INSTITUSJONSOPPHOLD', 'DOKUMENTER']
-
-export const Panel: React.FC<PropsWithChildren<PanelProps>> = ({
-	heading,
+export default function Panel({
 	startOpen = false,
-	forceOpen = false,
 	hasErrors = false,
-	iconType,
-	informasjonstekst,
-	checkAttributeArray,
-	uncheckAttributeArray,
-	setPanelOpen,
-	children,
-}) => {
-	const errorCtx: ShowErrorContextType = React.useContext(ShowErrorContext)
-	const [isOpen, toggle] = useToggle(startOpen)
-	const open = forceOpen || isOpen
-	const isEnvDependent = envDependent.includes(heading.toUpperCase())
+	heading = 'Panel',
+	content = null,
+	children = null as any,
+	checkAttributeArray = null,
+	uncheckAttributeArray = null,
+	informasjonstekst = null,
+	iconType = null as unknown as string,
+	forceOpen = false,
+	setPanelOpen = null,
+}) {
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const [isOpen, toggleOpen] = useToggle(startOpen)
+	const shouldOpen = isOpen || forceOpen
 
-	const handleToggle = useCallback(() => {
-		setPanelOpen?.(!open)
-		toggle()
-	}, [open, setPanelOpen, toggle])
+	const renderContent = children ? children : content
+
+	const check = (e) => {
+		e.stopPropagation()
+		checkAttributeArray()
+	}
+
+	const uncheck = (e) => {
+		e.stopPropagation()
+		uncheckAttributeArray()
+	}
+
+	const erAvhengigAvQ1EllerQ2 = (heading: string) => {
+		const miljoeAvhengigeArtifakter = [
+			'PENSJON',
+			'ARBEIDSYTELSER',
+			'INSTITUSJONSOPPHOLD',
+			'DOKUMENTER',
+		]
+		return miljoeAvhengigeArtifakter.includes(heading.toUpperCase())
+	}
 
 	return (
-		<section className={open ? 'dolly-panel dolly-panel-open' : 'dolly-panel'} aria-label={heading}>
-			<header className="dolly-panel-heading" onClick={handleToggle}>
-				{iconType && <Icon fontSize="2.8rem" kind={iconType} className="header-icon" />}
+		<div className={shouldOpen ? 'dolly-panel dolly-panel-open' : 'dolly-panel'}>
+			<div
+				className="dolly-panel-heading"
+				onClick={() => {
+					setPanelOpen && setPanelOpen(!startOpen)
+					toggleOpen()
+				}}
+			>
+				{iconType && <Icon fontSize={'2.8rem'} kind={iconType} className="header-icon" />}
 				<h2>{heading}</h2>
+
 				{informasjonstekst && <Hjelpetekst>{informasjonstekst}</Hjelpetekst>}
-				{hasErrors && errorCtx.showError && (
-					<div className="dolly-panel-heading_error" aria-live="polite">
+				{hasErrors && errorContext.showError && (
+					<div className="dolly-panel-heading_error">
 						<Icon size={16} kind="report-problem-triangle" />
 						Feil i felter
 					</div>
 				)}
-				<span className="dolly-panel-heading_buttons" onClick={(e) => e.stopPropagation()}>
+				<span className="dolly-panel-heading_buttons">
 					{checkAttributeArray && (
 						<LinkButton
 							data-testid={
-								isEnvDependent
+								erAvhengigAvQ1EllerQ2(heading)
 									? TestComponentSelectors.BUTTON_VELG_MILJOE_AVHENGIG
 									: TestComponentSelectors.BUTTON_VELG_ALLE
 							}
 							text="Velg alle"
-							onClick={checkAttributeArray}
+							onClick={check}
 						/>
 					)}
 					{uncheckAttributeArray && (
 						<LinkButton
 							data-testid={
-								isEnvDependent
+								erAvhengigAvQ1EllerQ2(heading)
 									? TestComponentSelectors.BUTTON_FJERN_MILJOE_AVHENGIG
 									: TestComponentSelectors.BUTTON_FJERN_ALLE
 							}
 							text="Fjern alle"
-							onClick={uncheckAttributeArray}
+							onClick={uncheck}
 						/>
 					)}
-					<ExpandButton expanded={open} onClick={toggle} />
+					<ExpandButton expanded={shouldOpen} onClick={toggleOpen} />
 				</span>
-			</header>
-			{open && <div className="dolly-panel-content">{children}</div>}
-		</section>
+			</div>
+			{shouldOpen && <div className="dolly-panel-content">{renderContent}</div>}
+		</div>
 	)
 }
-export default Panel

@@ -1,6 +1,5 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt } from '../Attributt'
-import { AttributtKategori } from '../AttributtKategori'
+import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { instAttributt } from '@/components/fagsystem/inst/form/Form'
 import { runningE2ETest } from '@/service/services/Request'
@@ -17,7 +16,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }) => {
 			startOpen={harValgtAttributt(formValues, [instAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
-				<Attributt item={sm.attrs.instdata} />
+				<Attributt attr={sm.attrs.instdata} />
 			</AttributtKategori>
 		</Panel>
 	)

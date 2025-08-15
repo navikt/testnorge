@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt } from '../Attributt'
-import { AttributtKategori } from '../AttributtKategori'
+import { Attributt, AttributtKategori } from '../Attributt'
 import {
 	fetchTpOrdninger,
 	initialOrdning,
@@ -75,13 +74,13 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 			])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>
-				<Attributt item={sm.attrs.inntekt} id="inntekt_pensjon" />
+				<Attributt attr={sm.attrs.inntekt} id="inntekt_pensjon" />
 			</AttributtKategori>
 			<AttributtKategori title="Pensjonsavtale" attr={sm.attrs}>
-				<Attributt item={sm.attrs.pensjonsavtale} />
+				<Attributt attr={sm.attrs.pensjonsavtale} />
 			</AttributtKategori>
 			<AttributtKategori title="Tjenestepensjon (TP)" attr={sm.attrs}>
-				<Attributt item={sm.attrs.tp} />
+				<Attributt attr={sm.attrs.tp} />
 			</AttributtKategori>
 			<AttributtKategori title="Alderspensjon" attr={sm.attrs}>
 				<Attributt
@@ -98,7 +97,7 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="AFP offentlig" attr={sm.attrs}>
-				<Attributt item={sm.attrs.afpOffentlig} />
+				<Attributt attr={sm.attrs.afpOffentlig} />
 			</AttributtKategori>
 		</Panel>
 	)

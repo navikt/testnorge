@@ -1,8 +1,7 @@
 import React, { useContext } from 'react'
 import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt } from '../Attributt'
-import { AttributtKategori } from '../AttributtKategori'
+import { Attributt, AttributtKategori } from '../Attributt'
 import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
@@ -90,17 +89,17 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				iconType={'personinformasjon'}
 			>
 				<AttributtKategori title="Alder" attr={sm.attrs}>
-					<Attributt item={sm.attrs.foedested} />
-					<Attributt item={sm.attrs.foedselsdato} />
-					<Attributt item={sm.attrs.doedsdato} />
+					<Attributt attr={sm.attrs.foedested} />
+					<Attributt attr={sm.attrs.foedselsdato} />
+					<Attributt attr={sm.attrs.doedsdato} />
 				</AttributtKategori>
 				<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
-					<Attributt item={sm.attrs.statsborgerskap} />
+					<Attributt attr={sm.attrs.statsborgerskap} />
 				</AttributtKategori>
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
-					<Attributt item={sm.attrs.kjonn} />
-					<Attributt item={sm.attrs.navn} />
-					<Attributt item={sm.attrs.telefonnummer} />
+					<Attributt attr={sm.attrs.kjonn} />
+					<Attributt attr={sm.attrs.navn} />
+					<Attributt attr={sm.attrs.telefonnummer} />
 					<Attributt
 						attr={sm.attrs.norskBankkonto}
 						disabled={sm.attrs.utenlandskBankkonto.checked}
@@ -109,14 +108,14 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						attr={sm.attrs.utenlandskBankkonto}
 						disabled={sm.attrs.norskBankkonto.checked}
 					/>
-					<Attributt item={sm.attrs.sikkerhetstiltak} />
-					<Attributt item={sm.attrs.tilrettelagtKommunikasjon} />
+					<Attributt attr={sm.attrs.sikkerhetstiltak} />
+					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 					<Attributt
 						attr={sm.attrs.fullmakt}
 						disabled={ukjentGruppe}
 						title={(ukjentGruppe && tekstUkjentGruppe) || ''}
 					/>
-					<Attributt item={sm.attrs.egenAnsattDatoFom} />
+					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				</AttributtKategori>
 			</Panel>
 		)
@@ -132,14 +131,14 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			iconType={'personinformasjon'}
 		>
 			<AttributtKategori title="Alder" attr={sm.attrs}>
-				<Attributt item={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
-				<Attributt item={sm.attrs.foedested} />
-				<Attributt item={sm.attrs.foedselsdato} />
-				<Attributt item={sm.attrs.doedsdato} />
+				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
+				<Attributt attr={sm.attrs.foedested} />
+				<Attributt attr={sm.attrs.foedselsdato} />
+				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
-				<Attributt item={sm.attrs.statsborgerskap} />
+				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
 					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
@@ -162,11 +161,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse" attr={sm.attrs}>
-				<Attributt item={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-				<Attributt item={sm.attrs.navn} />
-				<Attributt item={sm.attrs.telefonnummer} />
-				<Attributt item={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
-				<Attributt item={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
+				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
+				<Attributt attr={sm.attrs.navn} />
+				<Attributt attr={sm.attrs.telefonnummer} />
+				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
+				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
 				<Attributt
 					attr={sm.attrs.vergemaal}
 					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
@@ -176,10 +175,10 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						''
 					}
 				/>
-				<Attributt item={sm.attrs.fullmakt} />
-				<Attributt item={sm.attrs.sikkerhetstiltak} />
-				<Attributt item={sm.attrs.tilrettelagtKommunikasjon} />
-				<Attributt item={sm.attrs.egenAnsattDatoFom} />
+				<Attributt attr={sm.attrs.fullmakt} />
+				<Attributt attr={sm.attrs.sikkerhetstiltak} />
+				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
+				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 			</AttributtKategori>
 		</Panel>
 	)

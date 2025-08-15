@@ -1,6 +1,5 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt } from '../Attributt'
-import { AttributtKategori } from '../AttributtKategori'
+import { Attributt, AttributtKategori } from '../Attributt'
 import { initialOpphold } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { udiAttributt } from '@/components/fagsystem/udistub/form/Form'
@@ -20,12 +19,12 @@ export const UdiPanel = ({ stateModifier, testnorgeIdent, formValues }) => {
 			startOpen={harValgtAttributt(formValues, [udiAttributt])}
 		>
 			<AttributtKategori title="Gjeldende oppholdstatus" attr={sm.attrs}>
-				<Attributt item={sm.attrs.oppholdStatus} />
+				<Attributt attr={sm.attrs.oppholdStatus} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Arbeidsadgang" attr={sm.attrs}>
-				<Attributt item={sm.attrs.arbeidsadgang} />
-				<Attributt item={sm.attrs.hjemmel} />
+				<Attributt attr={sm.attrs.arbeidsadgang} />
+				<Attributt attr={sm.attrs.hjemmel} />
 			</AttributtKategori>
 
 			{/*Alias er midlertidig fjernet*/}
@@ -34,8 +33,8 @@ export const UdiPanel = ({ stateModifier, testnorgeIdent, formValues }) => {
 			{/*</AttributtKategori>*/}
 
 			<AttributtKategori title="Annet" attr={sm.attrs}>
-				<Attributt item={sm.attrs.flyktning} />
-				<Attributt item={sm.attrs.asylsoker} />
+				<Attributt attr={sm.attrs.flyktning} />
+				<Attributt attr={sm.attrs.asylsoker} />
 			</AttributtKategori>
 		</Panel>
 	)

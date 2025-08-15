@@ -1,47 +1,55 @@
-// Attributt.tsx
-import React from 'react'
-import { Checkbox } from '@navikt/ds-react'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { CheckboxGroup } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
-export interface AttributeItem {
-	label: string
-	checked: boolean
-	add: () => void
-	remove: () => void
-	[key: string]: unknown
-}
-
-export interface AttributtProps {
-	item: AttributeItem
-	vis?: boolean
-	disabled?: boolean
-	infoTekst?: string
-	onToggle?: (nextChecked: boolean, item: AttributeItem) => void
-}
-
-export const Attributt: React.FC<AttributtProps> = ({
-	item,
+export const Attributt = ({
+	attr,
 	vis = true,
-	disabled,
-	infoTekst,
-	onToggle,
+	disabled = false,
+	title = null,
+	id = null,
+	infoTekst = '',
+	...props
 }) => {
-	if (!vis) return null
-	const standalone = !!onToggle
+	if (!vis) {
+		return null
+	}
 	return (
-		<div className="attributt-velger_panel-content">
-			<Checkbox
-				size="small"
-				value={item.label}
-				disabled={disabled}
-				{...(standalone && {
-					checked: item.checked,
-					onChange: (e: React.ChangeEvent<HTMLInputElement>) => onToggle?.(e.target.checked, item),
-				})}
-			>
-				{item.label}
-			</Checkbox>
-			{infoTekst && <Hjelpetekst>{infoTekst}</Hjelpetekst>}
+		<div title={title} style={{ display: 'flex' }}>
+			<DollyCheckbox
+				wrapperSize={null}
+				label={attr?.label}
+				attributtCheckbox={true}
+				size={'small'}
+				onChange={attr?.checked ? attr?.remove : attr?.add}
+				value={attr?.label}
+				isDisabled={disabled}
+				id={id}
+				{...props}
+			/>
+			{infoTekst && (
+				<Hjelpetekst style={{ marginLeft: '-25px', marginTop: '3px' }}>{infoTekst}</Hjelpetekst>
+			)}
 		</div>
+	)
+}
+
+export const AttributtKategori = ({ title, children, attr }) => {
+	const values = attr && Object.values(attr)
+	const checked = values
+		?.filter((attribute) => attribute.checked)
+		?.map((attribute) => attribute.label)
+
+	const attributter = Array.isArray(children) ? children : [children]
+	const attributterSomSkalVises = attributter.some(
+		(attr) => attr.props.vis || !attr.props.hasOwnProperty('vis'),
+	)
+	if (!attributterSomSkalVises) {
+		return null
+	}
+	return (
+		<CheckboxGroup name={title} legend={title} value={checked}>
+			<div className="attributt-velger_panelsubcontent">{children}</div>
+		</CheckboxGroup>
 	)
 }

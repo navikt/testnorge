@@ -1,6 +1,5 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt } from '../Attributt'
-import { AttributtKategori } from '../AttributtKategori'
+import { Attributt, AttributtKategori } from '../Attributt'
 
 export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 	const sm = stateModifier(OrganisasjonDetaljerPanel.initialValues)
@@ -20,20 +19,20 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 					disabled={true}
 					title="Det er obligatorisk å velge enhetstype for organisasjonen"
 				/>
-				<Attributt item={sm.attrs.naeringskode} />
-				<Attributt item={sm.attrs.sektorkode} />
-				<Attributt item={sm.attrs.formaal} />
-				<Attributt item={sm.attrs.stiftelsesdato} />
-				<Attributt item={sm.attrs.maalform} />
+				<Attributt attr={sm.attrs.naeringskode} />
+				<Attributt attr={sm.attrs.sektorkode} />
+				<Attributt attr={sm.attrs.formaal} />
+				<Attributt attr={sm.attrs.stiftelsesdato} />
+				<Attributt attr={sm.attrs.maalform} />
 			</AttributtKategori>
 			<AttributtKategori title="Kontaktdata" attr={sm.attrs}>
-				<Attributt item={sm.attrs.telefon} />
-				<Attributt item={sm.attrs.epost} />
-				<Attributt item={sm.attrs.nettside} />
+				<Attributt attr={sm.attrs.telefon} />
+				<Attributt attr={sm.attrs.epost} />
+				<Attributt attr={sm.attrs.nettside} />
 			</AttributtKategori>
 			<AttributtKategori title="Adresser" attr={sm.attrs}>
-				<Attributt item={sm.attrs.forretningsadresse} />
-				<Attributt item={sm.attrs.postadresse} />
+				<Attributt attr={sm.attrs.forretningsadresse} />
+				<Attributt attr={sm.attrs.postadresse} />
 			</AttributtKategori>
 		</Panel>
 	)
