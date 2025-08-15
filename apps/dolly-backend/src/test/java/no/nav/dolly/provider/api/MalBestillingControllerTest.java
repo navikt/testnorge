@@ -7,6 +7,8 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.service.BrukerService;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,12 @@ class MalBestillingControllerTest extends AbstractControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @AfterEach
+    void tearDown() {
+
+        bestillingMalRepository.deleteAll().block();
+    }
 
     @Test
     @DisplayName("Oppretter og returnerer alle maler tilknyttet to forskjellige brukere")
@@ -163,9 +171,8 @@ class MalBestillingControllerTest extends AbstractControllerTest {
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("$").isEmpty();
+                .jsonPath("$").value(Matchers.hasSize(0));
     }
-
 
     Mono<BestillingMal> saveDummyBestillingMal(Bruker bruker) {
 

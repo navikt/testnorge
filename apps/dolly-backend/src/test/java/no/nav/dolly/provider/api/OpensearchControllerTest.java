@@ -1,5 +1,6 @@
 package no.nav.dolly.provider.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
@@ -9,6 +10,7 @@ import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.dolly.elastic.service.OpenSearchService;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
@@ -19,7 +21,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +31,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
 @ExtendWith(TestDatabaseConfig.class)
@@ -44,6 +49,12 @@ class OpensearchControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @MockitoBean
+    private OpenSearchService openSearchService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private List<ElasticBestilling> getTestBestillinger() {
 
@@ -111,29 +122,34 @@ class OpensearchControllerTest {
                 .expectStatus()
                 .isOk();
 
-//                .perform(delete(BASE_URL + "/bestilling/id/{id}", 2L)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andDo(print())
-//                .andExpect(status().isOk());
-
         var bestilling = bestillingElasticRepository.findById(2L);
-        assertThat(bestilling.isPresent(), is(false));
-    }
-
-    @Test
-    void deleteAlleBestillingerInkludertIndeks_OK() {
+        assertThat(bestilling.isPresent(), is(true));
 
         webTestClient
                 .delete()
-                .uri(BASE_URL + "/bestilling")
+                .uri(BASE_URL + "/bestilling/id/{id}", 2L)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk();
-//        mockMvc
-//                .perform(delete(BASE_URL))
-//                .andDo(print())
-//                .andExpect(status().isOk());
+
+        bestilling = bestillingElasticRepository.findById(1L);
+        assertThat(bestilling.isPresent(), is(false));
+    }
+
+    @Test
+    void deleteAlleBestillingerInkludertIndeks_OK() throws Exception {
+
+        when(openSearchService.deleteIndex())
+                .thenReturn(Mono.just(objectMapper.readTree("{\"acknowledged\": true}")));
+
+        webTestClient
+                .delete()
+                .uri(BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk();
 
         var bestillinger = (PageImpl<ElasticBestilling>) bestillingElasticRepository.findAll();
         assertThat(bestillinger.getTotalElements(), is(equalTo(0L)));

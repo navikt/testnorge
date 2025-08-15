@@ -1,6 +1,8 @@
 package no.nav.dolly.bestilling;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.reactivecore.logging.WebClientLogger;
@@ -41,8 +43,9 @@ public abstract class AbstractConsumerTest {
     @BeforeAll
     static void setUpBeforeAll() {
 
-        wireMockServer = new WireMockServer(8080);
+        wireMockServer = new WireMockServer(WireMockConfiguration.options().dynamicPort());
         wireMockServer.start();
+        WireMock.configureFor("localhost", wireMockServer.port());
     }
 
     @AfterAll
@@ -56,7 +59,7 @@ public abstract class AbstractConsumerTest {
 
         wireMockServer.resetAll();
         webClient = WebClient.builder()
-                .baseUrl("http://localhost:8080")
+                .baseUrl("http://localhost:" + wireMockServer.port())
                 .build();
         when(tokenExchange.exchange(any())).thenReturn(Mono.just(new AccessToken("token")));
     }
