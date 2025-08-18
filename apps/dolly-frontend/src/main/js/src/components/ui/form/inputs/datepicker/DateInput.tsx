@@ -47,7 +47,6 @@ type DateInputProps = {
 	onClick?: (event: React.MouseEvent<HTMLInputElement>) => void
 	onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
 	onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void
-	afterChange?: (event: React.FocusEvent<HTMLInputElement>) => void
 }
 
 export const DateInput = ({
@@ -98,7 +97,6 @@ export const DateInput = ({
 	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 		registerOnBlur?.(e)
 		props.onBlur?.(e)
-		props.afterChange?.(e)
 		setFormattedValue(formatDate(e.target.value))
 	}
 
