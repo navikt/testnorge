@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
 
 import java.util.List;
@@ -27,7 +28,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AaregConsumerTest extends AbstractConsumerTest {
@@ -37,6 +37,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
 
     private static final String MILJOE = "q2";
 
+    @Autowired
     private AaregConsumer aaregConsumer;
 
     private Arbeidsforhold opprettRequest;
@@ -49,9 +50,6 @@ class AaregConsumerTest extends AbstractConsumerTest {
 
     @BeforeEach
     void setUp() {
-
-        when(consumers.getTestnavAaregProxy()).thenReturn(serverProperties);
-        aaregConsumer = new AaregConsumer(consumers, tokenExchange, new ObjectMapper(), webClient, webClientLogger);
 
         opprettRequest = Arbeidsforhold.builder()
                 .arbeidstaker(Person.builder()
@@ -77,43 +75,48 @@ class AaregConsumerTest extends AbstractConsumerTest {
     void opprettArbeidsforhold() throws Exception {
 
         stubOpprettArbeidsforhold(arbeidsforholdRespons);
+
         StepVerifier.create(aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
                 .collectList())
-                .expectNextMatches(response ->
-                        response != null && !response.isEmpty())
+                .assertNext(response ->
+                        assertThat(response)
+                                .isNotNull()
+                                .extracting(List::getFirst)
+                                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
+                                .containsExactly("1", MILJOE))
                 .verifyComplete();
-
-//        assertThat(response)
-//                .isNotNull()
-//                .extracting(List::getFirst)
-//                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
-//                .containsExactly("1", MILJOE);
     }
 
     @Test
     void oppdaterArbeidsforhold() throws Exception {
 
         stubOppdaterArbeidsforhold(arbeidsforholdRespons);
-        var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
+
+        aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
                 .collectList()
-                .block();
-        assertThat(response)
-                .isNotNull()
-                .extracting(List::getFirst)
-                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
-                .containsExactly("1", MILJOE);
+                .as(StepVerifier::create)
+                .assertNext(response ->
+                        assertThat(response)
+                                .isNotNull()
+                                .extracting(List::getFirst)
+                                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
+                                .containsExactly("1", MILJOE))
+                .verifyComplete();
     }
 
     @Test
     void hentArbeidsforhold() throws Exception {
 
         stubHentArbeidsforhold(arbeidsforholdRespons);
-        var arbeidsforholdResponses = aaregConsumer.hentArbeidsforhold(IDENT, MILJOE)
-                .block();
-        assertThat(arbeidsforholdResponses)
-                .isNotNull()
+
+        aaregConsumer.hentArbeidsforhold(IDENT, MILJOE)
+                .as(StepVerifier::create)
+                .assertNext(arbeidsforholdResponses ->
+                        assertThat(arbeidsforholdResponses)
+                                .isNotNull()
                 .extracting(ArbeidsforholdRespons::getEksisterendeArbeidsforhold)
-                .isEqualTo(emptyList());
+                .isEqualTo(emptyList()))
+                .verifyComplete();
     }
 
     private void stubOpprettArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {

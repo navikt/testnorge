@@ -149,18 +149,4 @@ class BrukerServiceTest {
 
         verify(brukerFavoritterRepository).deleteByBrukerIdAndGruppeId(id, id);
     }
-
-    @Test
-    void sletteBrukerFavoritterByGroupId() {
-
-        long groupId = 1L;
-
-        when(brukerRepository.deleteBrukerFavoritterByGroupId(groupId)).thenReturn(Mono.empty());
-
-        StepVerifier.create(brukerService.sletteBrukerFavoritterByGroupId(groupId))
-                .expectNextCount(1)
-                .verifyComplete();
-
-        verify(brukerRepository).deleteBrukerFavoritterByGroupId(groupId);
-    }
 }

@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.krrstub;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import no.nav.dolly.bestilling.AbstractConsumerTest;
@@ -8,10 +7,8 @@ import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.domain.CommonKeysAndUtils;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -32,7 +29,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 class KrrstubConsumerTest extends AbstractConsumerTest {
 
     private static final String EPOST = "morro.pa@landet.no";
@@ -40,14 +36,8 @@ class KrrstubConsumerTest extends AbstractConsumerTest {
     private static final String IDENT = "12345678901";
     private static final boolean RESERVERT = true;
 
+    @Autowired
     private KrrstubConsumer krrStubConsumer;
-
-    @BeforeEach
-    void setup() {
-
-        when(consumers.getTestnavKrrstubProxy()).thenReturn(serverProperties);
-        krrStubConsumer = new KrrstubConsumer(tokenExchange, consumers, new ObjectMapper(), webClient);
-    }
 
     @Test
     void createDigitalKontaktdata_Ok() {

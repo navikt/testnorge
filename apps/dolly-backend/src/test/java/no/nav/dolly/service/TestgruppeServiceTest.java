@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
@@ -64,6 +65,9 @@ class TestgruppeServiceTest {
 
     @Mock
     private BrukerServiceConsumer brukerServiceConsumer;
+
+    @Mock
+    private BrukerRepository brukerRepository;
 
     @Mock
     private IdentRepository identRepository;
@@ -137,9 +141,10 @@ class TestgruppeServiceTest {
         when(identRepository.findByGruppeId(GROUP_ID, Pageable.unpaged()))
                 .thenReturn(Flux.just(new Testident()));
         when(identRepository.deleteByGruppeId(GROUP_ID)).thenReturn(Mono.empty());
-        when(brukerService.sletteBrukerFavoritterByGroupId(GROUP_ID)).thenReturn(Mono.empty());
+        when(brukerRepository.deleteBrukerFavoritterByGroupId(GROUP_ID)).thenReturn(Mono.empty());
         when(testgruppeRepository.deleteById(GROUP_ID)).thenReturn(Mono.empty());
         when(personService.recyclePersoner(any())).thenReturn(Mono.empty());
+        when(brukerRepository.deleteBrukerFavoritterByGroupId(GROUP_ID)).thenReturn(Mono.empty());
 
         StepVerifier.create(testgruppeService.deleteGruppeById(GROUP_ID))
                 .expectNextCount(0)
@@ -150,9 +155,10 @@ class TestgruppeServiceTest {
         verify(bestillingService).slettBestillingerByGruppeId(GROUP_ID);
         verify(identRepository).findByGruppeId(GROUP_ID, Pageable.unpaged());
         verify(identRepository).deleteByGruppeId(GROUP_ID);
-        verify(brukerService).sletteBrukerFavoritterByGroupId(GROUP_ID);
+        verify(brukerRepository).deleteBrukerFavoritterByGroupId(GROUP_ID);
         verify(personService).recyclePersoner(any());
         verify(testgruppeRepository).deleteById(GROUP_ID);
+        verify(brukerRepository).deleteBrukerFavoritterByGroupId(GROUP_ID);
     }
 
     @Test

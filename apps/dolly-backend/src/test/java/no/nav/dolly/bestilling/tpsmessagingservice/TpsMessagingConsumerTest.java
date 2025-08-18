@@ -4,47 +4,31 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.bestilling.AbstractConsumerTest;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@DollySpringBootTest
 class TpsMessagingConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final List<String> MILJOER = List.of("q1", "q2");
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private AccessToken accessToken;
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private TpsMessagingConsumer tpsMessagingConsumer;
@@ -52,35 +36,21 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Random randomKontonummer = new SecureRandom();
 
-    @BeforeEach
-    void setup() {
-        when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(accessToken));
-    }
-
-    private void stubPostUtenlandskBankkontoData() {
-
-        stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
-                .willReturn(ok()
-                        .withBody("[{\"miljoe\" : \"q1\", \"status\" : \"OK\"}]")
-                        .withHeader("Content-Type", "application/json")));
-    }
-
     @Test
     void createUtenlandskbankkonto_OK() {
 
         stubPostUtenlandskBankkontoData();
 
-        var response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+        tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                         IDENT,
                         MILJOER,
                         new BankkontonrUtlandDTO())
                 .collectList()
-                .block();
-
-        assertThat(response)
-                .isNotNull()
-                .extracting(list -> list.getFirst().getMiljoe())
-                .isEqualTo("q1");
+                .as(StepVerifier::create)
+                .assertNext(response -> assertThat(response)
+                        .isNotNull()
+                        .extracting(list -> list.getFirst().getStatus())
+                        .isEqualTo("OK"));
     }
 
     @Test
@@ -88,15 +58,14 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
 
         when(tokenExchange.exchange(any(ServerProperties.class))).thenThrow(new SecurityException());
 
-        BankkontonrUtlandDTO bankkontonrUtlandDTO = new BankkontonrUtlandDTO();
-
         Assertions.assertThrows(SecurityException.class, () ->
-                tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+                StepVerifier.create(tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                                 IDENT,
                                 MILJOER,
-                                bankkontonrUtlandDTO)
-                        .collectList()
-                        .block());
+                                new BankkontonrUtlandDTO())
+                        .collectList())
+                        .verifyError(SecurityException.class)
+        );
 
         verify(tokenExchange).exchange(any(ServerProperties.class));
     }
@@ -117,7 +86,14 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
                                                 .kontonummer(Integer.toString(randomKontonummer.nextInt()))
                                                 .build())
                                 .collectList()
-                                .block()
+                                .as(StepVerifier::create)
+                                .assertNext(response -> {
+                                    assertThat(response)
+                                            .isNotNull()
+                                            .extracting(list -> list.getFirst().getStatus())
+                                            .isEqualTo("OK");
+                                })
+                                .verifyComplete()
                 );
 
         var sendtBankkontoer = WireMock.getAllServeEvents()
@@ -138,4 +114,13 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
                 .assertThat(forskjelligeBankkontoer)
                 .hasSameSizeAs(sendtBankkontoer);
     }
+
+    private void stubPostUtenlandskBankkontoData() {
+
+        stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
+                .willReturn(ok()
+                        .withBody("[{\"miljoe\" : \"q1\", \"status\" : \"OK\"}]")
+                        .withHeader("Content-Type", "application/json")));
+    }
+
 }

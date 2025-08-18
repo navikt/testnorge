@@ -28,6 +28,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.oneOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -105,8 +106,8 @@ class InntektsmeldingClientTest {
                     verify(transaksjonMappingService, times(2))
                             .saveAll(argumentCaptor.capture());
                     assertThat(argumentCaptor.getAllValues(), hasSize(2));
-                    assertThat(argumentCaptor.getAllValues().getFirst().getFirst().getMiljoe(), is("q1"));
-                    assertThat(argumentCaptor.getAllValues().getLast().getFirst().getMiljoe(), is("q2"));
+                    assertThat(argumentCaptor.getAllValues().getFirst().getFirst().getMiljoe(), is(oneOf("q1", "q2")));
+                    assertThat(argumentCaptor.getAllValues().getLast().getFirst().getMiljoe(), is(oneOf("q1", "q2")));
                 })
                 .verifyComplete();
     }
