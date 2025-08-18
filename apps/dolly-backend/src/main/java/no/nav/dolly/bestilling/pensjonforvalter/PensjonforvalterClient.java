@@ -12,7 +12,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -26,7 +25,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.*;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.ANNET;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PENSJON_FORVALTER;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SEP;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SYSTEM;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
@@ -86,7 +88,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<String> getErrors(Set<String> miljoer, Throwable throwable) {
 
         return Flux.fromIterable(miljoer)
-                .map(miljo -> "%s%s:Feil= %s".formatted(ANNET, miljo,
+                .map(miljo -> "%s%s:Feil= %s" .formatted(ANNET, miljo,
                         encodeStatus(WebClientError.describe(throwable).getMessage())));
     }
 

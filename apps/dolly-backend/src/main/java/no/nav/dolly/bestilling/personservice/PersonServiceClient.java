@@ -41,6 +41,8 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class PersonServiceClient {
 
     private static final String PDL_SYNC_START = "Info: Synkronisering mot PDL startet ...";
+    private static final String HENDELSER = "hendelser";
+
     private static final int TIMEOUT = 500;
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -85,7 +87,7 @@ public class PersonServiceClient {
 
     private Mono<Map<String, Set<String>>> getHendelseIder(boolean isOrdre, BestillingProgress progress) {
 
-        return Mono.just("hendelser")
+        return Mono.just(HENDELSER)
                 .flatMap(ignore -> isOrdre ?
                         Mono.just(progress.getPdlOrdreStatus()) :
                         transactionHelperService.getProgress(progress, BestillingProgress::getPdlOrdreStatus))
@@ -98,7 +100,7 @@ public class PersonServiceClient {
                 })
                 .flatMap(tree -> Mono.just(Map.of(tree.path("hovedperson").path("ident").asText(),
                                 toStream(tree.path("hovedperson").path("ordrer"))
-                                        .map(entry -> toStream(entry.path("hendelser"))
+                                        .map(entry -> toStream(entry.path(HENDELSER))
                                                 .map(hendelse -> hendelse.path("hendelseId").asText())
                                                 .collect(Collectors.toSet()))
                                         .flatMap(Collection::stream)
@@ -107,7 +109,7 @@ public class PersonServiceClient {
                         .flatMap(hovedperson -> Mono.just(toStream(tree.path("relasjoner"))
                                         .collect(Collectors.toMap(relasjon -> relasjon.path("ident").asText(),
                                                 relasjon -> toStream(relasjon.path("ordrer"))
-                                                        .map(entry -> toStream(entry.path("hendelser"))
+                                                        .map(entry -> toStream(entry.path(HENDELSER))
                                                                 .map(hendelse -> hendelse.path("hendelseId").asText())
                                                                 .collect(Collectors.toSet()))
                                                         .flatMap(Collection::stream)

@@ -13,8 +13,6 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.YtelseType;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -44,12 +39,6 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
 
     @MockitoBean
     private BrukerService brukerService;
-
-    @BeforeEach
-    void setup() {
-
-
-    }
 
     @Test
     @DisplayName("Returnerer opprettet Testgruppe med innlogget bruker som eier")

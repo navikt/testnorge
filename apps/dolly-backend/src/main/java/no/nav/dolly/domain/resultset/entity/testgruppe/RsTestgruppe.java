@@ -7,13 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.resultset.Tags;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Data
 @Builder

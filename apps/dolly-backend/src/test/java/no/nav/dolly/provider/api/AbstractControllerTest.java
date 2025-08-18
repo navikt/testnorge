@@ -2,7 +2,6 @@ package no.nav.dolly.provider.api;
 
 import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.elastic.BestillingElasticRepository;
@@ -11,8 +10,6 @@ import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -75,20 +72,6 @@ public abstract class AbstractControllerTest {
                         .datoEndret(LocalDate.now())
                         .sistEndretAv(bruker)
                         .build());
-    }
-
-    Mono<BrukerFavoritter> saveBrukerFavoritter(Bruker bruker, Testgruppe gruppe) {
-
-        return brukerFavoritterRepository.save(
-                BrukerFavoritter.builder()
-                        .brukerId(bruker.getId())
-                        .gruppeId(gruppe.getId())
-                .build());
-    }
-
-    Mono<Testgruppe> findTestgruppeById(Long id) {
-
-        return testgruppeRepository.findById(id);
     }
 
     Mono<Testident> createTestident(String ident, Testgruppe testgruppe) {

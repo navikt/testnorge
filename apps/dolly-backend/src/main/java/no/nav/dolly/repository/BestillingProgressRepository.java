@@ -18,9 +18,9 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
 
     @Modifying
     @Query("""
-            delete from bestilling_progress bp 
-                   where bp.bestilling_id in (select b.id 
-                                              from Bestilling b where b.gruppe_id = :gruppeId)
+            delete from bestilling_progress bp
+            where bp.bestilling_id in (select b.id
+                  from Bestilling b where b.gruppe_id = :gruppeId)
             """)
     Mono<Void> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
@@ -28,7 +28,7 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
     Mono<Void> deleteByIdent(String ident);
 
     @Modifying
-    Mono<Mono> deleteByBestillingId(Long bestillingId);
+    Mono<Void> deleteByBestillingId(Long bestillingId);
 
     Flux<BestillingProgress> findByIdent(String ident);
     Flux<BestillingProgress> findByIdentIn(List<String> identer);

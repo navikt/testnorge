@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.resultset.entity.bestilling;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

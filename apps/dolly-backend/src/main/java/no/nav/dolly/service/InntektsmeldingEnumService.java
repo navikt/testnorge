@@ -7,7 +7,6 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.BegrunnelseForReduksjon
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.YtelseType;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;

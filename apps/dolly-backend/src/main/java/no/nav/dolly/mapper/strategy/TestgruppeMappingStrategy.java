@@ -11,8 +11,6 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-
 @Component
 @RequiredArgsConstructor
 public class TestgruppeMappingStrategy implements MappingStrategy {
