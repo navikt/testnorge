@@ -142,29 +142,27 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 	}
 
 	return (
-		<>
-			<DollyModal isOpen={modalIsOpen} closeModal={handleClose} minWidth="50%" overflow="auto">
-				<ModalContent>
-					<FormProvider {...formMethods}>
-						<Form onSubmit={handleSubmit}>
-							<FlyttPersonForm
-								gruppeId={gruppeId}
-								gruppeLoading={gruppeLoading}
-								error={error}
-								loading={loading}
-								gruppeIdenterListe={gruppeIdenterListe}
-								gruppeOptions={gruppeOptions}
-								pdlLoading={pdlLoading}
-								pdlError={pdlError}
-								testnorgeLoading={testnorgeLoading}
-								testnorgeError={testnorgeError}
-								handleClose={handleClose}
-								harRelatertePersoner={harRelatertePersoner}
-							/>
-						</Form>
-					</FormProvider>
-				</ModalContent>
-			</DollyModal>
-		</>
+		<DollyModal isOpen={modalIsOpen} closeModal={handleClose} minWidth="50%" overflow="auto">
+			<ModalContent>
+				<FormProvider {...formMethods}>
+					<Form onSubmit={handleSubmit}>
+						<FlyttPersonForm
+							gruppeId={gruppeId}
+							gruppeLoading={gruppeLoading}
+							error={error}
+							loading={loading}
+							gruppeIdenterListe={gruppeIdenterListe}
+							gruppeOptions={gruppeOptions}
+							pdlLoading={pdlLoading}
+							pdlError={pdlError}
+							testnorgeLoading={testnorgeLoading}
+							testnorgeError={testnorgeError}
+							handleClose={handleClose}
+							harRelatertePersoner={harRelatertePersoner}
+						/>
+					</Form>
+				</FormProvider>
+			</ModalContent>
+		</DollyModal>
 	)
 }

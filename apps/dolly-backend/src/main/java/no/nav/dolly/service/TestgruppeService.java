@@ -257,4 +257,32 @@ public class TestgruppeService {
 
         return identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
     }
+
+    public void endreGruppeTilknytning(Long gruppeId, String brukerId) {
+
+        var gruppe = fetchTestgruppeById(gruppeId);
+        var nyEier = brukerService.fetchBrukerByBrukerId(brukerId);
+
+        if (gruppe.getOpprettetAv().equals(nyEier)) {
+            throw new DollyFunctionalException(format("Gruppe med id %s er allerede tilknyttet bruker %s.", gruppeId, nyEier.getBrukernavn()));
+        } else {
+
+            gruppe.setOpprettetAv(nyEier);
+            gruppe.setSistEndretAv(nyEier);
+            testgruppeRepository.save(gruppe);
+        }
+    }
+
+    private void sjekkTilgang(Long gruppeId) {
+
+        var bruker = brukerService.fetchOrCreateBruker();
+        if (bruker.getBrukertype() == BANKID) {
+            brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                    .map(TilgangDTO::getBrukere)
+                    .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
+                    .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
+                    .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
+                    .block();
+        }
+    }
 }

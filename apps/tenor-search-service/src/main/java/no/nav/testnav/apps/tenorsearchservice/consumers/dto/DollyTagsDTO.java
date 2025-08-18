@@ -23,8 +23,8 @@ public class DollyTagsDTO {
 
     @JsonIgnore
     public static boolean hasDollyTag(List<String> tags) {
+
         return nonNull(tags) &&
-                tags.contains("DOLLY") ||
-                tags.contains("ARENASYNT");
+                tags.contains("DOLLY");
     }
 }

@@ -21,5 +21,6 @@ public class RsBruker {
     private Brukertype brukertype;
     private String epost;
     private String navIdent;
+    private RsTeamWithBrukere representererTeam;
     private List<String> favoritter;
 }

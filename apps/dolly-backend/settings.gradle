@@ -13,6 +13,7 @@ includeBuild "../../libs/security-core"
 includeBuild "../../libs/reactive-security"
 includeBuild "../../libs/servlet-insecure-security"
 includeBuild "../../libs/testing"
+includeBuild '../../.github/workflows'
 
 develocity {
     buildScan {
@@ -20,3 +21,4 @@ develocity {
         termsOfUseAgree = "yes"
     }
 }
+

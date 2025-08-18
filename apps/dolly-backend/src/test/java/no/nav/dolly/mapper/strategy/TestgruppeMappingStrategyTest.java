@@ -7,6 +7,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -25,6 +26,8 @@ class TestgruppeMappingStrategyTest {
     @MockitoBean
     private BestillingElasticRepository bestillingElasticRepository;
 
+    @MockitoBean
+    private BrukerService brukerService;
     @MockitoBean
     private ElasticsearchOperations elasticsearchOperations;
 

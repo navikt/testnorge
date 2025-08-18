@@ -161,9 +161,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
 			if (
-				!response.ok &&
+				!response?.ok &&
 				response?.status !== 404 &&
-				response.status !== 400 &&
+				response?.status !== 400 &&
 				!runningE2ETest()
 			) {
 				if (response?.status === 401 && logoutForbidden.some((value) => url.includes(value))) {

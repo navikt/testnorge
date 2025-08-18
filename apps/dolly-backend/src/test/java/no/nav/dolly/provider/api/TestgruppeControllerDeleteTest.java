@@ -33,6 +33,7 @@ class TestgruppeControllerDeleteTest extends AbstractControllerTest {
 
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
         when(pdlDataConsumer.slettPdl(any())).thenReturn(Mono.empty());
+        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(Mono.just(bruker));
 
         webTestClient
                 .get()

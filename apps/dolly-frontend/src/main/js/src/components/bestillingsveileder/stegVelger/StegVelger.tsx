@@ -168,7 +168,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 					<CurrentStepComponent stateModifier={stateModifier} loadingBestilling={loading} />
 				</Suspense>
 				{(devEnabled || erDollyAdmin()) && (
-					<Suspense fallback={<Loading label="Laster komponenter" />}>
+					<Suspense>
 						<DisplayFormState />
 						<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
 					</Suspense>

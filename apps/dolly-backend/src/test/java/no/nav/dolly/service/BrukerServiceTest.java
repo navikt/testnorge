@@ -54,20 +54,20 @@ class BrukerServiceTest {
     private BrukerService brukerService;
 
     @Test
-    void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerErFunnet() {
+    void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerOrTeamBrukerErFunnet() {
 
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(Bruker.builder().build()));
-        StepVerifier.create(brukerService.fetchBruker("test"))
+        StepVerifier.create(brukerService.fetchBrukerOrTeamBruker("test"))
                 .assertNext(bruker ->
                         assertThat(bruker, is(notNullValue())))
                 .verifyComplete();
     }
 
     @Test
-    void fetchBruker_kasterExceptionHvisIngenBrukerFunnet() {
+    void fetchBruker_kasterExceptionHvisIngenBrukerOrTeamBrukerFunnet() {
 
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.empty());
-        StepVerifier.create(brukerService.fetchBruker(BRUKERID))
+        StepVerifier.create(brukerService.fetchBrukerOrTeamBruker(BRUKERID))
                 .verifyError(NotFoundException.class);
     }
 

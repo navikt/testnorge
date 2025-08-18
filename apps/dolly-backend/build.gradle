@@ -9,6 +9,10 @@ sonarqube {
     }
 }
 
+test {
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+}
+
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:security-core'

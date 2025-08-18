@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.fullmakt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -16,10 +16,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.FULLMAKT;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.http.util.TextUtils.isBlank;
@@ -70,11 +69,9 @@ public class FullmaktClient implements ClientRegister {
     public void release(List<String> identer) {
 
         Flux.fromIterable(identer)
-                .flatMap(ident -> fullmaktConsumer.getFullmaktData(ident)
-                        .delayElement(Duration.ofMillis(50))
-                        .map(FullmaktResponse::getFullmakt)
-                        .flatMapMany(Flux::fromIterable)
-                        .map(FullmaktResponse.Fullmakt::getFullmaktId)
+                .flatMap(ident -> fullmaktConsumer.getFullmaktData(List.of(ident))
+                        .doOnNext(response -> log.info("Fullmakt response for {}: {}", ident, response))
+                        .map(FullmaktPostResponse.Fullmakt::getFullmaktId)
                         .flatMap(fullmaktsId -> fullmaktConsumer.deleteFullmaktData(ident, fullmaktsId)))
                 .collectList()
                 .subscribe(result -> log.info("Fullmakt, slettet {} identer", identer.size()));
@@ -85,13 +82,10 @@ public class FullmaktClient implements ClientRegister {
         return transactionHelperService.persister(progress, BestillingProgress::setFullmaktStatus, status);
     }
 
-    private String getStatus(List<FullmaktResponse> response) {
+    private String getStatus(FullmaktPostResponse response) {
 
-        return response.stream()
-                .filter(status1 -> nonNull(status1.getStatus()))
-                .findFirst()
-                .map(error -> errorStatusDecoder.getErrorText(error.getStatus(), error.getMelding()))
-                .orElse("OK");
+        return isNull(response.getStatus()) ? "OK" :
+                errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());
     }
 
     private String getFullName(PersonDTO person) {

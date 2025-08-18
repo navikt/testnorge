@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class RsBrukerAndClaims {
     private Brukertype brukertype;
     private String epost;
     private String navIdent;
+    private RsTeamWithBrukere representererTeam;
     private List<String> grupper;
     private List<String> favoritter;
 }

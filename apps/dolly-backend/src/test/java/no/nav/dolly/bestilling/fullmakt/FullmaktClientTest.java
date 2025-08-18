@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.fullmakt;
 
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -85,7 +85,7 @@ class FullmaktClientTest {
 
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fullPersonDTO));
 
-        var fullmaktResponse = FullmaktResponse.builder().fullmakt(emptyList()).build();
+        var fullmaktResponse = FullmaktPostResponse.builder().fullmakt(emptyList()).build();
         when(fullmaktConsumer.createFullmaktData(any(), any())).thenReturn(Flux.just(fullmaktResponse));
         when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 

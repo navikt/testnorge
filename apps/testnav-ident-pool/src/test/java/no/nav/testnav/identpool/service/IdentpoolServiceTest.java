@@ -12,12 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,15 +27,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class IdentpoolServiceTest {
 
+    private static final String FNR1 = "01010101010";
+    private static final String FNR2 = "02020202020";
+
     @Mock
-    private IdentRepository repository;
+    private IdentRepository identRepository;
 
     @Mock
     private TpsMessagingConsumer tpsMessagingConsumer;
@@ -45,78 +49,106 @@ class IdentpoolServiceTest {
 
     @Test
     void frigjoerRekvirertMenLedigIdentTest() {
-        String fnr1 = "01010101010";
-        List<String> identer = new ArrayList<>(Collections.singletonList(fnr1));
-        Ident ident = Ident.builder()
-                .personidentifikator(fnr1)
-                .finnesHosSkatt(false)
+
+        var ident1 = Ident.builder()
+                .personidentifikator(FNR1)
                 .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
-                .syntetisk(isSyntetisk(fnr1))
+                .syntetisk(isSyntetisk(FNR1))
                 .build();
 
-        TpsStatusDTO tpsStatusDTO = new TpsStatusDTO();
-        tpsStatusDTO.setIdent(fnr1);
-        tpsStatusDTO.setInUse(false);
-
-        Set<TpsStatusDTO> statusSet = new HashSet<>();
-        statusSet.add(tpsStatusDTO);
-
-        when(repository.findByPersonidentifikator(fnr1)).thenReturn(ident);
-        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(statusSet);
-
-        List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
-
-        verify(repository).findByPersonidentifikator(fnr1);
-        verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
-        verify(repository).save(ident);
-
-        assertEquals(fnr1, frigjorteIdenter.get(0));
-    }
-
-    @Test
-    void markerBruktFlereTest() {
-        String rekvirertAv = "test";
-        String fnr1 = "01010101010";
-        String fnr2 = "02020202020";
-        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-        Ident ident1 = Ident.builder()
-                .personidentifikator(fnr1)
+        var ident2 = Ident.builder()
+                .personidentifikator(FNR1)
                 .rekvireringsstatus(LEDIG)
-                .syntetisk(isSyntetisk(fnr1))
+                .syntetisk(isSyntetisk(FNR1))
                 .build();
-        TpsStatusDTO tpsStatusDTO = new TpsStatusDTO();
-        tpsStatusDTO.setIdent(fnr2);
-        tpsStatusDTO.setInUse(false);
 
-        when(repository.findByPersonidentifikator(fnr1)).thenReturn(ident1);
-        when(repository.findByPersonidentifikator(fnr2)).thenReturn(null);
-        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatusDTO)));
+        when(identRepository.findByPersonidentifikatorIn(anyList())).thenReturn(Flux.just(ident1));
+        when(identRepository.save(ident2)).thenReturn(Mono.just(ident2));
 
-        List<String> identerMarkertSomIBruk = identpoolService.markerBruktFlere(rekvirertAv, identer);
-
-        assertThat(identerMarkertSomIBruk, containsInAnyOrder(fnr1, fnr2));
-
-        verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
-
+        identpoolService.frigjoerIdenter(List.of(FNR1))
+                .as(StepVerifier::create)
+                .expectNext(List.of(FNR1))
+                .verifyComplete();
     }
 
     @Test
-    void hentLedigeFNRFoedtMellomTest() {
-        List<Ident> identer = new ArrayList<>();
-        Ident id = new Ident();
-        id.setRekvireringsstatus(LEDIG);
-        id.setFoedselsdato(LocalDate.of(1992, 3, 1));
-        id.setIdenttype(Identtype.FNR);
-        id.setKjoenn(Kjoenn.MANN);
-        id.setPersonidentifikator("123");
-        identer.add(id);
-        when(repository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate.of(1991, 1, 1),
+    void finnesIProd_happyTest() {
+
+        when(tpsMessagingConsumer.getIdenterProdStatus(anySet()))
+                .thenReturn(Flux.just(
+                        TpsStatusDTO.builder()
+                                .ident(FNR1)
+                                .inUse(false)
+                                .build(),
+                        TpsStatusDTO.builder()
+                                .ident(FNR2)
+                                .inUse(true)
+                                .build()));
+
+        identpoolService.finnesIProd(Set.of(FNR1, FNR2))
+                .as(StepVerifier::create)
+                .assertNext(tpsStatusDTO -> {
+                    assertEquals(FNR1, tpsStatusDTO.getIdent());
+                    assertFalse(tpsStatusDTO.isInUse());
+                })
+                .assertNext(tpsStatusDTO -> {
+                    assertEquals(FNR2, tpsStatusDTO.getIdent());
+                    assertTrue(tpsStatusDTO.isInUse());
+                })
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void lesInnhold_happyTest() {
+
+        Ident ident = Ident.builder()
+                .personidentifikator(FNR1)
+                .rekvireringsstatus(Rekvireringsstatus.LEDIG)
+                .syntetisk(isSyntetisk(FNR1))
+                .build();
+
+        when(identRepository.findByPersonidentifikator(FNR1)).thenReturn(Mono.just(ident));
+
+        identpoolService.lesInnhold(FNR1)
+                .as(StepVerifier::create)
+                .expectNext(ident)
+                .verifyComplete();
+    }
+
+    @Test
+    void lesInnhold_ikkeFunnet() {
+
+        when(identRepository.findByPersonidentifikator(FNR1)).thenReturn(Mono.empty());
+
+        identpoolService.lesInnhold(FNR1)
+                .as(StepVerifier::create)
+                .expectErrorMatches(throwable -> throwable instanceof ResponseStatusException &&
+                        throwable.getMessage().contains("Fant ikke ident 01010101010"))
+                .verify();
+    }
+
+    @Test
+    void hentLedigeFNRFoedtMellomSyntetiskTest() {
+
+        var ident = Ident.builder()
+                .rekvireringsstatus(LEDIG)
+                .foedselsdato(LocalDate.of(1992, 3, 1))
+                .identtype(Identtype.FNR)
+                .kjoenn(Kjoenn.MANN)
+                .personidentifikator("123")
+                .build();
+
+        when(identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate.of(1991, 1, 1),
                 LocalDate.of(2000, 1, 1),
                 Identtype.FNR, LEDIG,
-                false)).
-                thenReturn(identer);
-        List<String> ids = identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(1991, 1, 1), LocalDate.of(2000, 1, 1));
-        assertFalse(ids.isEmpty());
-        assertEquals("123", ids.get(0));
+                true)).
+                thenReturn(Flux.just(ident));
+
+        identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(1991, 1, 1),
+                        LocalDate.of(2000, 1, 1), true)
+                .as(StepVerifier::create)
+                .assertNext(tpsStatusDTO -> assertThat(tpsStatusDTO, containsInAnyOrder("123")))
+                .verifyComplete();
     }
 }

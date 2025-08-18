@@ -14,19 +14,24 @@ const ErrorMessageText = styled.p`
 `
 
 export const DollyErrorMessageWrapper = ({ name }: { name: string }) => {
-	const {
-		formState: { errors },
-	} = useFormContext()
+	const methods = useFormContext()
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-	return (
-		(!errorContext || errorContext?.showError) && (
-			<ErrorMessage
-				name={name}
-				errors={errors}
-				render={({ message }) => <DollyErrorMessage message={message} />}
-			/>
-		)
-	)
+
+	const errors = methods?.formState?.errors ?? {}
+	const isSubmitted = methods?.formState?.isSubmitted || methods?.formState.submitCount > 0
+
+	const fieldState = methods?.getFieldState?.(name, methods.formState)
+	const isTouched = fieldState?.isTouched ?? false
+
+	const shouldRender = !errorContext || errorContext?.showError || isSubmitted || isTouched
+
+	return shouldRender ? (
+		<ErrorMessage
+			name={name}
+			errors={errors}
+			render={({ message }) => <DollyErrorMessage message={message} />}
+		/>
+	) : null
 }
 
 export const DollyErrorMessage = ({ message }: { message: string }) => (

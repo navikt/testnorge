@@ -3,6 +3,8 @@ package no.nav.dolly.provider.api;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.service.BrukerService;
+import no.nav.testnav.libs.dto.dokarkiv.v1.Bruker;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +22,20 @@ import static org.mockito.Mockito.when;
 @DisplayName("GET /api/v1/gruppe")
 class TestgruppeControllerGetTest extends AbstractControllerTest {
 
+    private static final Bruker BRUKER = Bruker.builder()
+            .brukerId("test")
+            .build();
     @Autowired
     private WebTestClient webTestClient;
 
     @MockitoBean
     private BrukerService brukerService;
+
+    @BeforeEach
+    void setup() {
+        when(brukerService.fetchOrCreateBruker()).thenReturn(BRUKER);
+        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(BRUKER);
+    }
 
     @Test
     @DisplayName("Returnerer testgrupper tilknyttet til bruker-ID gjennom favoritter")
@@ -33,9 +44,15 @@ class TestgruppeControllerGetTest extends AbstractControllerTest {
         var bruker = createBruker().block();
         createTestgruppe("Gruppen er ikke en favoritt", bruker).block();
         createTestgruppe("Gruppen er en favoritt", bruker).block();
+        var bruker = super.createBruker();
+        when(brukerService.fetchOrCreateBruker(any())).thenReturn(bruker);
+        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(bruker);
 
         when(brukerService.fetchOrCreateBruker(bruker.getBrukerId()))
                 .thenReturn(Mono.just(bruker));
+        var testgruppe2 = super.createTestgruppe("Gruppen er en favoritt", bruker);
+        bruker.setFavoritter(Set.of(testgruppe2));
+        bruker = super.saveBruker(bruker);
 
         webTestClient
                 .get()

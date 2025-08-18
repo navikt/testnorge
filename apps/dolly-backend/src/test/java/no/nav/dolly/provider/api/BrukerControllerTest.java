@@ -3,9 +3,11 @@ package no.nav.dolly.provider.api;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
+import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.provider.BrukerController;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.service.BrukerService;
@@ -19,6 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -78,7 +82,7 @@ class BrukerControllerTest {
                 .brukerId(BRUKERID)
                 .build();
 
-        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(bruker));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
         when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(brukerAndClaims);
         when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(BrukerFavoritter.builder().build()));
@@ -118,7 +122,7 @@ class BrukerControllerTest {
     @Test
     void leggTilFavoritter() {
 
-        RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
+        var req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1L);
 
         when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class))).thenReturn(RsBruker.builder().build());
@@ -128,4 +132,45 @@ class BrukerControllerTest {
                 .assertNext(resultat -> verify(brukerService).leggTilFavoritt(anyLong()))
                 .verifyComplete();
     }
+
+    @Test
+    void getUserTeams() {
+        var team = Team.builder().id(1L).build();
+        var rsTeam = RsTeamWithBrukere.builder().id(1L).build();
+
+        when(brukerService.fetchTeamsForCurrentBruker()).thenReturn(List.of(team));
+        when(mapperFacade.mapAsList(List.of(team), RsTeamWithBrukere.class)).thenReturn(List.of(rsTeam));
+
+        var result = controller.getUserTeams();
+
+        assertThat(result.size(), is(1));
+        assertThat(result.getFirst().getId(), is(1L));
+    }
+
+    @Test
+    void setRepresentererTeam() {
+        var bruker = Bruker.builder().id(1L).build();
+        var rsBruker = new RsBruker();
+
+        when(brukerService.setRepresentererTeam(1L)).thenReturn(bruker);
+        when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
+
+        var result = controller.setRepresentererTeam(1L);
+
+        assertThat(result, is(rsBruker));
+    }
+
+    @Test
+    void clearRepresenterendeTeam() {
+        var bruker = Bruker.builder().id(1L).build();
+        var rsBruker = new RsBruker();
+
+        when(brukerService.setRepresentererTeam(null)).thenReturn(bruker);
+        when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
+
+        var result = controller.clearRepresentererTeam();
+
+        assertThat(result, is(rsBruker));
+    }
+
 }

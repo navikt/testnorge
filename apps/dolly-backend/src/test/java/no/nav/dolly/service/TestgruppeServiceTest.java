@@ -239,7 +239,7 @@ class TestgruppeServiceTest {
                 .navn("navn")
                 .build();
 
-        when(brukerService.fetchOrCreateBruker(any())).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
         when(testgruppeRepository.findByOpprettetAvId(any(), any())).thenReturn(Flux.just(testgruppe));
         when(testgruppeRepository.countByOpprettetAvId(bruker.getId())).thenReturn(Mono.just(1L));
         when(identRepository.countByGruppeId(testgruppe.getId())).thenReturn(Mono.just(1));

@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.fullmakt.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -22,7 +22,7 @@ import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> {
+public class PostFullmaktDataCommand implements Callable<Mono<FullmaktPostResponse>> {
 
     private static final String POST_FULLMAKT_URL = "/api/fullmakt";
 
@@ -31,11 +31,11 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
     private final String ident;
     private final RsFullmakt request;
 
-    public Mono<FullmaktResponse> call() {
+    public Mono<FullmaktPostResponse> call() {
 
         if (isBlank(request.getFullmektig())) {
             log.error("Klarte ikke å hente fullmektig relasjon for ident: {} fra PDL forvalter ", ident);
-            return Mono.just(FullmaktResponse.builder()
+            return Mono.just(FullmaktPostResponse.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .melding("Fullmakt mangler fullmektig for ident: " + ident)
                     .build());
@@ -52,7 +52,7 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                 .header("fnr", ident)
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
-                .bodyToMono(FullmaktResponse.class)
+                .bodyToMono(FullmaktPostResponse.class)
                 .doOnError(throwable -> {
                     if (throwable instanceof WebClientResponseException webClienResponseException
                             && !webClienResponseException.getStatusCode().is4xxClientError()) {
@@ -61,7 +61,7 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktResponse>>
                 })
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
-                    return Mono.just(FullmaktResponse.builder()
+                    return Mono.just(FullmaktPostResponse.builder()
                                 .melding(description.getMessage())
                                 .status(description.getStatus())
                         .build());

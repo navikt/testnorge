@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.fullmakt.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
@@ -18,15 +18,15 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 
 @RequiredArgsConstructor
 @Slf4j
-public class GetFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> {
+public class GetFullmaktDataCommand implements Callable<Mono<FullmaktPostResponse.Fullmakt>> {
 
-    private static final String HENT_FULLMAKT_URL = "/api/fullmektig";
+    private static final String HENT_FULLMAKT_URL = "/api/fullmaktsgiver";
 
     private final WebClient webClient;
     private final String ident;
     private final String token;
 
-    public Mono<FullmaktResponse> call() {
+    public Mono<FullmaktPostResponse.Fullmakt> call() {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -37,11 +37,11 @@ public class GetFullmaktDataCommand implements Callable<Mono<FullmaktResponse>> 
                 .header("fnr", ident)
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
-                .bodyToMono(FullmaktResponse.class)
+                .bodyToMono(FullmaktPostResponse.Fullmakt.class)
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
-                    return Mono.just(FullmaktResponse.builder()
+                    return Mono.just(FullmaktPostResponse.builder()
                             .status(description.getStatus())
                             .melding(description.getMessage())
                             .build());

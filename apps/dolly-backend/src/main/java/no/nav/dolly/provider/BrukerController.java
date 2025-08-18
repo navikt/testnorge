@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
@@ -17,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,7 +48,7 @@ public class BrukerController {
     @Operation(description = "Hent Bruker med brukerId")
     public Mono<RsBruker> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
-        return brukerService.fetchBruker(brukerId)
+        return brukerService.fetchBrukerOrTeamBruker(brukerId)
                 .flatMap(bruker -> getFavoritter(bruker, RsBruker.class));
     }
 
@@ -106,5 +108,29 @@ public class BrukerController {
                     context.setProperty("brukerInfo", tuple.getT3());
                     return mapperFacade.map(tuple.getT1(), clazz, context);
                 });
+    }
+    @Transactional(readOnly = true)
+    @GetMapping("/teams")
+    @Operation(description = "Hent alle team gjeldende bruker er medlem av")
+    public List<RsTeamWithBrukere> getUserTeams() {
+        return mapperFacade.mapAsList(brukerService.fetchTeamsForCurrentBruker(), RsTeamWithBrukere.class);
+    }
+
+    @Transactional
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @PutMapping("/representererTeam/{teamId}")
+    @Operation(description = "Sett aktivt team for innlogget bruker")
+    public RsBruker setRepresentererTeam(@PathVariable("teamId") Long teamId) {
+        var bruker = brukerService.setRepresentererTeam(teamId);
+        return mapperFacade.map(bruker, RsBruker.class);
+    }
+
+    @Transactional
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @DeleteMapping("/representererTeam")
+    @Operation(description = "Fjern aktivt team for innlogget bruker")
+    public RsBruker clearRepresentererTeam() {
+        var bruker = brukerService.setRepresentererTeam(null);
+        return mapperFacade.map(bruker, RsBruker.class);
     }
 }

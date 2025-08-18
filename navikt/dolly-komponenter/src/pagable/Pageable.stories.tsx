@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Meta, Story } from '@storybook/react';
+import { Meta, Story } from '@storybook/react-vite';
 import Comp, { PaginationProps } from './Pageable';
 
 export default {

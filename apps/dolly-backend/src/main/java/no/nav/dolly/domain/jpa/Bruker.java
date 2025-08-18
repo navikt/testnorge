@@ -43,6 +43,34 @@ public class Bruker implements Serializable {
     @Column("BRUKERTYPE")
     private Brukertype brukertype;
 
+//    @Transient
+//    @Builder.Default
+//    private List<String> grupper = new ArrayList<>();
+//
+//    @OneToMany
+//    @JoinColumn(name = "opprettet_av")
+//    @Builder.Default
+//    private Set<Testgruppe> testgrupper = new HashSet<>();
+//
+//    @ManyToMany
+//    @Builder.Default
+//    @JoinTable(name = "BRUKER_FAVORITTER",
+//            joinColumns = @JoinColumn(name = "bruker_id"),
+//            inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
+//    private Set<Testgruppe> favoritter = new HashSet<>();
+//
+//
+//    @ManyToMany
+//    @Builder.Default
+//    @JoinTable(name = "TEAM_BRUKER",
+//            joinColumns = @JoinColumn(name = "bruker_id"),
+//            inverseJoinColumns = @JoinColumn(name = "team_id"))
+//    private Set<Team> teamMedlemskap = new HashSet<>();
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "REPRESENTERER_TEAM")
+//    private Team representererTeam;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,5 +101,5 @@ public class Bruker implements Serializable {
                 .toHashCode();
     }
 
-    public enum Brukertype {AZURE, BANKID}
+    public enum Brukertype {AZURE, BANKID, TEAM}
 }

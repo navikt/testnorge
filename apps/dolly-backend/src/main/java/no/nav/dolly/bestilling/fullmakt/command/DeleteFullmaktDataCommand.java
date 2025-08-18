@@ -29,7 +29,7 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<HttpStatusCode>>
 
     public Mono<HttpStatusCode> call() {
         return webClient
-                .get()
+                .delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(DELETE_FULLMAKT_URL)
                         .build(fullmaktId))

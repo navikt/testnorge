@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.fullmakt.command.DeleteFullmaktDataCommand;
 import no.nav.dolly.bestilling.fullmakt.command.GetFullmaktDataCommand;
 import no.nav.dolly.bestilling.fullmakt.command.PostFullmaktDataCommand;
-import no.nav.dolly.bestilling.fullmakt.dto.FullmaktResponse;
+import no.nav.dolly.bestilling.fullmakt.dto.FullmaktPostResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.metrics.Timed;
@@ -46,8 +46,8 @@ public class FullmaktConsumer extends ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "fullmakt_createData"})
-    public Flux<FullmaktResponse> createFullmaktData(List<RsFullmakt> fullmakter, String ident) {
+    @Timed(name = "providers", tags = { "operation", "fullmakt_createData" })
+    public Flux<FullmaktPostResponse> createFullmaktData(List<RsFullmakt> fullmakter, String ident) {
 
         log.info("Fullmakt opprett  {}", fullmakter);
         return tokenService.exchange(serverProperties)
@@ -58,15 +58,15 @@ public class FullmaktConsumer extends ConsumerStatus {
                 .doOnNext(fullmaktResponse -> log.info("Fullmakt opprettet for ident {} {}", ident, fullmaktResponse.getMelding()));
     }
 
-    @Timed(name = "providers", tags = {"operation", "fullmakt_getData"})
-    public Mono<FullmaktResponse> getFullmaktData(String ident) {
+    @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
+    public Mono<FullmaktPostResponse.Fullmakt> getFullmaktData(String ident) {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new GetFullmaktDataCommand(webClient, ident,
                         token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "fullmakt_getData"})
+    @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
     public Mono<HttpStatusCode> deleteFullmaktData(String ident, Integer fullmaktId) {
 
         return tokenService.exchange(serverProperties)

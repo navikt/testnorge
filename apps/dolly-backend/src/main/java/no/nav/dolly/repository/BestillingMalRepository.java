@@ -24,18 +24,19 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
 
     Flux<BestillingMal> findByBrukerId(Long brukerId);
 
+
     @Query(value = """
-            select bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
+            select distinct bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
                                bm.sist_oppdatert sistoppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
-            and b.brukertype = 'AZURE'
+            where (b.brukertype = 'AZURE' or b.brukertype = 'TEAM')
             order by bm.mal_navn;
             """)
-    Flux<MalBestilling> findAllByBrukerAzure();
+    Flux<MalBestilling> findAllByBrukerAzureOrTeam();
 
     @Query(value = """
-            select bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
+            select distinct bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
                                bm.sist_oppdatert sistoppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
@@ -45,7 +46,7 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     Flux<MalBestilling> findAllByBrukerId(@Param("brukerId") String brukerId);
 
     @Query(value = """
-            select bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
+            select distinct bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
                                bm.sist_oppdatert sistoppdatert
                         from bestilling_mal bm
             where bm.bruker_id is null
@@ -56,15 +57,15 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     @Query(value = """
             select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
-                and b.brukertype = 'AZURE'
+                where (b.brukertype = 'AZURE' or b.brukertype = 'TEAM')
                 order by brukernavn
             """)
-    Flux<MalBestillingFragment> findAllByBrukertypeAzure();
+    Flux<MalBestillingFragment> findAllByBrukertypeAzureOrTeam();
 
     @Query(value = """
             select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
-                and b.bruker_id in :brukerIds
+                where b.bruker_id in :brukerIds
                 order by brukernavn
             """)
     Flux<MalBestillingFragment> findAllByBrukerIdIn(@Param("brukerIds") List<String> brukerIds);
