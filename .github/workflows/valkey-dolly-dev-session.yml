@@ -1,6 +1,13 @@
 name: Deploy Valkey (valkey-dolly-dev-session)
 
 on:
+  push:
+    branches:
+      - master
+      - change/redis_to_valkey_nocode
+    paths:
+      - .github/workflows/valkey-dolly-dev-session.yml
+      - .nais/valkey-dolly-dev-session.yml
   workflow_dispatch:
 
 jobs:
