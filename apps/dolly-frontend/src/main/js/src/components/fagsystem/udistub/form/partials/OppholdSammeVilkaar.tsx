@@ -11,12 +11,12 @@ export const OppholdSammeVilkaar = ({ formMethods }: { formMethods: UseFormRetur
 	<React.Fragment>
 		<FormDatepicker
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra"
-			afterChange={(dato: Date) => formMethods.setValue(`${pdlBasePath}[0].oppholdFra`, dato)}
+			duplicateName={`${pdlBasePath}[0].oppholdFra`}
 			label="Oppholdstillatelse fra dato"
 		/>
 		<FormDatepicker
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til"
-			afterChange={(dato: Date) => formMethods.setValue(`${pdlBasePath}[0].oppholdTil`, dato)}
+			duplicateName={`${pdlBasePath}[0].oppholdTil`}
 			label="Oppholdstillatelse til dato"
 		/>
 		<FormDatepicker

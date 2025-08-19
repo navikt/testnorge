@@ -12,6 +12,7 @@ import { DateInput } from '@/components/ui/form/inputs/datepicker/DateInput'
 
 type DollyDatepickerProps = {
 	name: string
+	duplicateName?: string
 	label?: string
 	excludeDates?: Date[]
 	disabled?: boolean
@@ -28,6 +29,7 @@ export const DollyDatepicker = ({
 	onChange,
 	minDate = subYears(new Date(), 125),
 	name,
+	duplicateName,
 	label,
 	maxDate = addYears(new Date(), 5),
 	format,
@@ -81,6 +83,7 @@ export const DollyDatepicker = ({
 
 				const dateStr = formDate?.toISOString?.().substring?.(0, 19)
 				formMethods.setValue(name, dateStr || date, { shouldTouch: true })
+				duplicateName && formMethods.setValue(duplicateName, dateStr || date, { shouldTouch: true })
 				validateDate(date)
 			}
 		} catch (err) {
@@ -176,8 +179,8 @@ const P_FormDatepicker = (props: any) => {
 	const handleChange = useCallback(
 		(date: any) => {
 			formMethods.setValue(props.name, date, { shouldTouch: true })
+			props.duplicateName && formMethods.setValue(props.duplicateName, date, { shouldTouch: true })
 			props.onChange?.(date)
-			props.afterChange?.(date)
 			formMethods.trigger(props.name)
 		},
 		[formMethods, props],
@@ -186,6 +189,7 @@ const P_FormDatepicker = (props: any) => {
 	const handleBlur = useCallback(() => {
 		props?.onBlur?.(SyntEvent(props.name, value))
 		formMethods.setValue(props.name, value, { shouldTouch: true })
+		props.duplicateName && formMethods.setValue(props.duplicateName, value, { shouldTouch: true })
 		formMethods.trigger(props.name)
 	}, [props, formMethods, value])
 

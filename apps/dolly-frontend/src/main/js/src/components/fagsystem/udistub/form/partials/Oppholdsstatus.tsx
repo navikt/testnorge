@@ -5,7 +5,6 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { OppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/OppholdSammeVilkaar'
 import { IkkeOppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/IkkeOppholdSammeVilkaar'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { fixTimezone } from '@/components/ui/form/formUtils'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const basePath = 'udistub.oppholdStatus'
@@ -130,16 +129,12 @@ export const Oppholdsstatus = ({ formMethods }: { formMethods: UseFormReturn }) 
 					/>
 					<FormDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.fra`}
-						afterChange={(dato: Date) =>
-							formMethods.setValue(`${pdlBasePath}[0].oppholdFra`, fixTimezone(dato))
-						}
+						duplicateName={`${pdlBasePath}[0].oppholdFra`}
 						label="Oppholdstillatelse fra dato"
 					/>
 					<FormDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.til`}
-						afterChange={(dato: Date) =>
-							formMethods.setValue(`${pdlBasePath}[0].oppholdTil`, fixTimezone(dato))
-						}
+						duplicateName={`${pdlBasePath}[0].oppholdTil`}
 						label="Oppholdstillatelse til dato"
 					/>
 					<FormDatepicker
