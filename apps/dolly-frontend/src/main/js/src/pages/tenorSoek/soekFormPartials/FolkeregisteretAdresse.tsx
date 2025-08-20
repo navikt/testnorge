@@ -9,7 +9,8 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { Option } from '@/service/SelectOptionsOppslag'
 
 export const FolkeregisteretAdresse = ({ handleChange }: any) => {
-	const { domain: adresseGraderingOptions } = useTenorDomain('AdresseGradering')
+	const { domain: adresseGraderingOptions, loading: loadingAdresseGradering } =
+		useTenorDomain('AdresseGradering')
 
 	return (
 		<SoekKategori>
@@ -18,6 +19,7 @@ export const FolkeregisteretAdresse = ({ handleChange }: any) => {
 				options={createOptions(adresseGraderingOptions?.data)}
 				label="Adressegradering"
 				onChange={(val: any) => handleChange(val?.value || null, 'adresser.adresseGradering')}
+				isLoading={loadingAdresseGradering}
 			/>
 			<FormSelect
 				name="adresser.kommunenummer"

@@ -7,7 +7,8 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const Arbeidsforhold = ({ handleChange, handleChangeList, getValue }: any) => {
-	const { domain: arbeidsforholdstypeOptions } = useTenorDomain('Arbeidsforholdstype')
+	const { domain: arbeidsforholdstypeOptions, loading: loadingArbeidsforholdstype } =
+		useTenorDomain('Arbeidsforholdstype')
 
 	return (
 		<SoekKategori>
@@ -19,6 +20,7 @@ export const Arbeidsforhold = ({ handleChange, handleChangeList, getValue }: any
 				onChange={(val: SyntheticEvent) =>
 					handleChange(val?.value || null, 'arbeidsforhold.arbeidsforholdstype')
 				}
+				isLoading={loadingArbeidsforholdstype}
 			/>
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker

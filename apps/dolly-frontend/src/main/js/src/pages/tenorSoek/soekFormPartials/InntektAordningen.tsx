@@ -8,9 +8,12 @@ import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: any) => {
-	const { domain: inntektstypeOptions } = useTenorDomain('Inntektstype')
-	const { domain: beskrivelseOptions } = useTenorDomain('AOrdningBeskrivelse')
-	const { domain: forskuddstrekkOptions } = useTenorDomain('Forskuddstrekk')
+	const { domain: inntektstypeOptions, loading: loadingInntektstype } =
+		useTenorDomain('Inntektstype')
+	const { domain: beskrivelseOptions, loading: loadingBeskrivelse } =
+		useTenorDomain('AOrdningBeskrivelse')
+	const { domain: forskuddstrekkOptions, loading: loadingForskuddstrekk } =
+		useTenorDomain('Forskuddstrekk')
 
 	return (
 		<SoekKategori>
@@ -49,6 +52,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 					size="grow"
 					label="Inntektstyper"
 					onChange={(val: SyntheticEvent) => handleChangeList(val || null, 'inntekt.inntektstyper')}
+					isLoading={loadingInntektstype}
 				/>
 				<FormSelect
 					name="inntekt.forskuddstrekk"
@@ -59,6 +63,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 					onChange={(val: SyntheticEvent) =>
 						handleChangeList(val || null, 'inntekt.forskuddstrekk')
 					}
+					isLoading={loadingForskuddstrekk}
 				/>
 			</div>
 			<FormSelect
@@ -67,6 +72,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 				size="xlarge"
 				label="Beskrivelse"
 				onChange={(val: any) => handleChange(val?.value || null, 'inntekt.beskrivelse')}
+				isLoading={loadingBeskrivelse}
 			/>
 			<FormSelect
 				name="inntekt.harHistorikk"

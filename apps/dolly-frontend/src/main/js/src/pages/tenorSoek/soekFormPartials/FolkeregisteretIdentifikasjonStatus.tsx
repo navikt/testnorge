@@ -10,15 +10,19 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChangeList }: any) => {
-	const { domain: identifikatorTypeOptions } = useTenorDomain('IdentifikatorType')
-	const { domain: kjoennOptions } = useTenorDomain('Kjoenn')
-	const { domain: personstatusOptions } = useTenorDomain('Personstatus')
-	const { domain: sivilstatusOptions } = useTenorDomain('Sivilstatus')
-	const { domain: utenlandskPersonIdentifikasjonOptions } = useTenorDomain(
-		'UtenlandskPersonIdentifikasjon',
+	const { domain: identifikatorTypeOptions, loading: loadingIdentifikatorType } =
+		useTenorDomain('IdentifikatorType')
+	const { domain: kjoennOptions, loading: loadingKjoenn } = useTenorDomain('Kjoenn')
+	const { domain: personstatusOptions, loading: loadingPersonstatus } =
+		useTenorDomain('Personstatus')
+	const { domain: sivilstatusOptions, loading: loadingSivilstatus } = useTenorDomain('Sivilstatus')
+	const { domain: utenlandskPersonIdentifikasjonOptions, loading: loadingUtenlandsid } =
+		useTenorDomain('UtenlandskPersonIdentifikasjon')
+	const { domain: identitetsgrunnlagStatusOptions, loading: loadingIdentgrunnlag } = useTenorDomain(
+		'IdentitetsgrunnlagStatus',
 	)
-	const { domain: identitetsgrunnlagStatusOptions } = useTenorDomain('IdentitetsgrunnlagStatus')
-	const { domain: adressebeskyttelseOptions } = useTenorDomain('Adressebeskyttelse')
+	const { domain: adressebeskyttelseOptions, loading: loadingAdressebeskyttelse } =
+		useTenorDomain('Adressebeskyttelse')
 
 	return (
 		<SoekKategori>
@@ -34,6 +38,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 				options={createOptions(identifikatorTypeOptions?.data, true)}
 				label="Identifikatortype"
 				onChange={(val: any) => handleChange(val?.value || null, 'identifikatorType')}
+				isLoading={loadingIdentifikatorType}
 			/>
 			<FormDatepicker
 				name="foedselsdato.fraOgMed"
@@ -64,30 +69,35 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 				options={createOptions(kjoennOptions?.data)}
 				label="Kjønn"
 				onChange={(val: any) => handleChange(val?.value || null, 'kjoenn')}
+				isLoading={loadingKjoenn}
 			/>
 			<FormSelect
 				name="personstatus"
 				options={createOptions(personstatusOptions?.data)}
 				label="Personstatus"
 				onChange={(val: any) => handleChange(val?.value || null, 'personstatus')}
+				isLoading={loadingPersonstatus}
 			/>
 			<FormSelect
 				name="sivilstand"
 				options={createOptions(sivilstatusOptions?.data)}
 				label="Sivilstand"
 				onChange={(val: any) => handleChange(val?.value || null, 'sivilstand')}
+				isLoading={loadingSivilstatus}
 			/>
 			<FormSelect
 				name="identitetsgrunnlagStatus"
 				options={createOptions(identitetsgrunnlagStatusOptions?.data)}
 				label="Identitetsgrunnlagsstatus"
 				onChange={(val: any) => handleChange(val?.value || null, 'identitetsgrunnlagStatus')}
+				isLoading={loadingIdentgrunnlag}
 			/>
 			<FormSelect
 				name="adressebeskyttelse"
 				options={createOptions(adressebeskyttelseOptions?.data)}
 				label="Adressebeskyttelse"
 				onChange={(val: any) => handleChange(val?.value || null, 'adressebeskyttelse')}
+				isLoading={loadingAdressebeskyttelse}
 			/>
 			<FormSelect
 				name="harFalskIdentitet"
@@ -105,6 +115,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 					onChange={(val: SyntheticEvent) =>
 						handleChangeList(val || null, 'utenlandskPersonIdentifikasjon')
 					}
+					isLoading={loadingUtenlandsid}
 				/>
 			</div>
 			<FormCheckbox

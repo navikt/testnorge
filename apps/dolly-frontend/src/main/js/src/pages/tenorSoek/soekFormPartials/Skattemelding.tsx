@@ -5,7 +5,8 @@ import React from 'react'
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 
 export const Skattemelding = ({ handleChange }: any) => {
-	const { domain: skattemeldingstypeOptions } = useTenorDomain('Skattemeldingstype')
+	const { domain: skattemeldingstypeOptions, loading: loadingSkattemeldingstype } =
+		useTenorDomain('Skattemeldingstype')
 
 	const getInntektsaarOptions = () => {
 		const inntektsaarListe = []
@@ -34,6 +35,7 @@ export const Skattemelding = ({ handleChange }: any) => {
 				onChange={(val: any) =>
 					handleChange(val?.value || null, 'skattemelding.skattemeldingstype')
 				}
+				isLoading={loadingSkattemeldingstype}
 			/>
 		</SoekKategori>
 	)

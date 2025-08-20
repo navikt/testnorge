@@ -7,7 +7,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
-	const { domain: relasjonOptions } = useTenorDomain('Relasjon')
+	const { domain: relasjonOptions, loading: loadingRelasjon } = useTenorDomain('Relasjon')
 
 	return (
 		<SoekKategori>
@@ -16,6 +16,7 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 				options={createOptions(relasjonOptions?.data)}
 				label="Relasjon"
 				onChange={(val: any) => handleChange(val?.value || null, 'relasjoner.relasjon')}
+				isLoading={loadingRelasjon}
 			/>
 			<div className="flexbox--flex-wrap">
 				<FormTextInput
