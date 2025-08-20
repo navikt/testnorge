@@ -1,5 +1,5 @@
 import React from 'react'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 

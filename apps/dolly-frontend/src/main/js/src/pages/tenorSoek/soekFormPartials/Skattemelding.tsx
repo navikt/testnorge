@@ -2,7 +2,7 @@ import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React from 'react'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 
 export const Skattemelding = ({ handleChange }: any) => {
 	const { domain: skattemeldingstypeOptions } = useTenorDomain('Skattemeldingstype')

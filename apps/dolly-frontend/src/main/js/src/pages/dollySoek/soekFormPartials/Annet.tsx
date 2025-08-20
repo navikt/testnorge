@@ -1,6 +1,6 @@
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React, { SyntheticEvent } from 'react'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { personPath } from '@/pages/dollySoek/SoekForm'
 
 export const Annet = ({ handleChange }: any) => {
