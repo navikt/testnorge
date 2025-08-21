@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -16,28 +16,23 @@ import {
 	initialForenkletOppgjoersordning,
 } from '../initialValues'
 import { isDate } from 'date-fns'
-import {
-	BestillingsveilederContext,
-	BestillingsveilederContextType,
-} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import * as _ from 'lodash-es'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
-import { hentAaregEksisterendeData } from '@/components/fagsystem/aareg/form/utils'
 
 type ArbeidsforholdProps = {
 	path: string
 	arbeidsforholdIndex: number
+	tidligereAaregdata: any
 }
 
-export const ArbeidsforholdForm = ({ path, arbeidsforholdIndex }: ArbeidsforholdProps) => {
+export const ArbeidsforholdForm = ({
+	path,
+	arbeidsforholdIndex,
+	tidligereAaregdata,
+}: ArbeidsforholdProps) => {
 	const { watch, getValues, setValue, trigger } = useFormContext()
 
-	//@ts-ignore
-	const { personFoerLeggTil } = useContext(
-		BestillingsveilederContext,
-	) as BestillingsveilederContextType
-	const tidligereAaregdata = hentAaregEksisterendeData(personFoerLeggTil)
 	const erLaastArbeidsforhold = arbeidsforholdIndex < tidligereAaregdata?.length
 
 	const gjeldendeArbeidsgiver = watch(`${path}.arbeidsgiver`)
