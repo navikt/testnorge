@@ -93,7 +93,8 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                                     tuple.getT2().setProgresser(progress);
                                     return tuple.getT2();
                                 }))
-                .map(bestilling -> mapperFacade.map(bestilling, ElasticBestilling.class))
+                .map(bestilling ->
+                        mapperFacade.map(bestilling, ElasticBestilling.class))
                 .filter(bestilling -> !bestilling.isIgnore())
                 .flatMap(this::save)
                 .doOnNext(bestilling -> antallSkrevet.incrementAndGet())

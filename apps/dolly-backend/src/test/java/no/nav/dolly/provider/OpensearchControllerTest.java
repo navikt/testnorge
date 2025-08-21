@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.config.TestDatabaseConfig;

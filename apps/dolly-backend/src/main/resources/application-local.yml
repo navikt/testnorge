@@ -16,6 +16,9 @@ spring:
     url: r2dbc:postgresql://localhost:5432/testnav-dolly-backend-local
     username: testnav-dolly-backend-local
     password: ${sm\://testnav-dolly-backend-local}
+  devtools:
+    restart:
+      enabled: false
 
 management:
   health:

@@ -8,7 +8,6 @@ import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 
@@ -18,9 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 class TestidentMappingTest {
 
     private MapperFacade mapper;
-
-    @MockitoBean
-    private BrukerService brukerService;
 
     @BeforeEach
    void setUpHappyPath() {

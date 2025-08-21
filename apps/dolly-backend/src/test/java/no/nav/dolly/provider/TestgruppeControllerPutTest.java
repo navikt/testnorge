@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;

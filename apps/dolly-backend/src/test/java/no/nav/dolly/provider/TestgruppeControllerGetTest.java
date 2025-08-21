@@ -1,9 +1,9 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.service.BrukerService;
-import no.nav.testnav.libs.dto.dokarkiv.v1.Bruker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import java.util.Random;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("GET /api/v1/gruppe")
@@ -33,8 +34,8 @@ class TestgruppeControllerGetTest extends AbstractControllerTest {
 
     @BeforeEach
     void setup() {
-        when(brukerService.fetchOrCreateBruker()).thenReturn(BRUKER);
-        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(BRUKER);
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(BRUKER));
+        when(brukerService.fetchOrCreateBruker(any())).thenReturn(Mono.just(BRUKER));
     }
 
     @Test
@@ -44,15 +45,9 @@ class TestgruppeControllerGetTest extends AbstractControllerTest {
         var bruker = createBruker().block();
         createTestgruppe("Gruppen er ikke en favoritt", bruker).block();
         createTestgruppe("Gruppen er en favoritt", bruker).block();
-        var bruker = super.createBruker();
-        when(brukerService.fetchOrCreateBruker(any())).thenReturn(bruker);
-        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(bruker);
-
+        when(brukerService.fetchOrCreateBruker(any())).thenReturn(Mono.just(bruker));
         when(brukerService.fetchOrCreateBruker(bruker.getBrukerId()))
                 .thenReturn(Mono.just(bruker));
-        var testgruppe2 = super.createTestgruppe("Gruppen er en favoritt", bruker);
-        bruker.setFavoritter(Set.of(testgruppe2));
-        bruker = super.saveBruker(bruker);
 
         webTestClient
                 .get()

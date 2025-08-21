@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BrukerServiceTest {
 
+    private static final Long ID = 1L;
     private static final String BRUKERID = "123";
     private static final String BRUKERID2 = "1234";
 
@@ -56,10 +57,14 @@ class BrukerServiceTest {
     @Test
     void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerOrTeamBrukerErFunnet() {
 
-        when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(Bruker.builder().build()));
-        StepVerifier.create(brukerService.fetchBrukerOrTeamBruker("test"))
-                .assertNext(bruker ->
-                        assertThat(bruker, is(notNullValue())))
+        var bruker = Bruker.builder().id(1L).build();
+
+        when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(bruker));
+        when(brukerRepository.findById(any(Long.class))).thenReturn(Mono.just(bruker));
+
+        StepVerifier.create(brukerService.fetchBruker("test"))
+                .assertNext(bruker1 ->
+                        assertThat(bruker1, is(notNullValue())))
                 .verifyComplete();
     }
 
@@ -67,27 +72,28 @@ class BrukerServiceTest {
     void fetchBruker_kasterExceptionHvisIngenBrukerOrTeamBrukerFunnet() {
 
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.empty());
-        StepVerifier.create(brukerService.fetchBrukerOrTeamBruker(BRUKERID))
+        StepVerifier.create(brukerService.fetchBruker(BRUKERID))
                 .verifyError(NotFoundException.class);
     }
 
     @Test
     void fetchBrukere() {
 
-        var bruker = Bruker.builder().brukerId(BRUKERID).brukertype(Bruker.Brukertype.AZURE).build();
+        var bruker = Bruker.builder().id(ID).brukerId(BRUKERID).brukertype(Bruker.Brukertype.AZURE).build();
         when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BRUKERID));
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(bruker));
         when(brukerRepository.findByOrderById()).thenReturn(Flux.just(bruker));
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(bruker));
         when(brukerRepository.findByOrderById()).thenReturn(Flux.just(bruker));
+        when(brukerRepository.findById(any(Long.class))).thenReturn(Mono.just(bruker));
 
         StepVerifier.create(brukerService.fetchBrukere())
                 .assertNext(bruker1 -> {
                     assertThat(bruker1, is(notNullValue()));
                     assertThat(bruker1.getBrukertype(), is(Bruker.Brukertype.AZURE));
+                    verify(brukerRepository).findByOrderById();
                 })
                 .verifyComplete();
-        verify(brukerRepository).findByOrderById();
     }
 
     @Test
@@ -101,52 +107,50 @@ class BrukerServiceTest {
                 .assertNext(bruker1 -> {
                     assertThat(bruker1, is(notNullValue()));
                     assertThat(bruker1.getBrukerId(), is(BRUKERID2));
+                    verify(brukerRepository).save(any());
                 })
                 .verifyComplete();
-        verify(brukerRepository).save(any());
     }
 
     @Test
     void leggTilFavoritter_medGrupperIDer() {
 
-        var id = 1L;
         var testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
-        var bruker = Bruker.builder().brukerId(BRUKERID).build();
+        var bruker = Bruker.builder().id(ID).brukerId(BRUKERID).build();
 
         when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BRUKERID));
         when(brukerRepository.findByBrukerId(BRUKERID)).thenReturn(Mono.just(bruker));
-        when(testgruppeRepository.findById(id)).thenReturn(Mono.just(testgruppe));
-        when(brukerFavoritterRepository.save(any())).thenReturn(Mono.just(BrukerFavoritter.builder().gruppeId(id).build()));
+        when(testgruppeRepository.findById(ID)).thenReturn(Mono.just(testgruppe));
+        when(brukerFavoritterRepository.save(any())).thenReturn(Mono.just(BrukerFavoritter.builder().gruppeId(ID).build()));
+        when(brukerRepository.findById(any(Long.class))).thenReturn(Mono.just(bruker));
 
-        StepVerifier.create(brukerService.leggTilFavoritt(id))
+        StepVerifier.create(brukerService.leggTilFavoritt(ID))
                 .assertNext(hentetBruker -> {
                     assertThat(hentetBruker, is(notNullValue()));
                     assertThat(hentetBruker.getBrukerId(), is(BRUKERID));
+                    verify(brukerFavoritterRepository).save(any());
                 })
                 .verifyComplete();
-
-        verify(brukerFavoritterRepository).save(any());
     }
 
     @Test
     void fjernFavoritter_medGrupperIDer() {
 
-        var id = 1L;
-        var bruker = Bruker.builder().id(id).brukerId(BRUKERID).build();
-        var testgruppe = Testgruppe.builder().id(id).navn("gruppe").hensikt("hen").build();
+        var bruker = Bruker.builder().id(ID).brukerId(BRUKERID).build();
+        var testgruppe = Testgruppe.builder().id(ID).navn("gruppe").hensikt("hen").build();
 
         when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BRUKERID));
         when(brukerRepository.findByBrukerId(BRUKERID)).thenReturn(Mono.just(bruker));
-        when(brukerFavoritterRepository.deleteByBrukerIdAndGruppeId(id, id)).thenReturn(Mono.empty());
-        when(testgruppeRepository.findById(id)).thenReturn(Mono.just(testgruppe));
+        when(brukerFavoritterRepository.deleteByBrukerIdAndGruppeId(ID, ID)).thenReturn(Mono.empty());
+        when(testgruppeRepository.findById(ID)).thenReturn(Mono.just(testgruppe));
+        when(brukerRepository.findById(any(Long.class))).thenReturn(Mono.just(bruker));
 
-        StepVerifier.create(brukerService.fjernFavoritt(id))
+        StepVerifier.create(brukerService.fjernFavoritt(ID))
                 .assertNext(hentetBruker -> {
                     assertThat(hentetBruker, is(notNullValue()));
                     assertThat(hentetBruker.getBrukerId(), is(BRUKERID));
+                    verify(brukerFavoritterRepository).deleteByBrukerIdAndGruppeId(ID, ID);
                 })
                 .verifyComplete();
-
-        verify(brukerFavoritterRepository).deleteByBrukerIdAndGruppeId(id, id);
     }
 }

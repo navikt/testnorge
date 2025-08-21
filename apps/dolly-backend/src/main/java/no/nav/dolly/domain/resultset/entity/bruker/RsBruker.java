@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 
 import java.util.List;
 

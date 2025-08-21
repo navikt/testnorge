@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.FULLMAKT;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.http.util.TextUtils.isBlank;
@@ -59,9 +59,9 @@ public class FullmaktClient implements ClientRegister {
                                     }
                                 })
                                 .collectList()
-                                .flatMapMany(fullmakter -> fullmaktConsumer.createFullmaktData(fullmakter, dollyPerson.getIdent()))
-                                .collectList()
-                                .map(this::getStatus)
+                        .flatMapMany(fullmakter -> fullmaktConsumer.createFullmaktData(fullmakter, dollyPerson.getIdent()))
+                        .collectList()
+                        .map(this::getStatus)
                     .flatMap(status -> oppdaterStatus(progress, status)));
     }
 
@@ -69,7 +69,7 @@ public class FullmaktClient implements ClientRegister {
     public void release(List<String> identer) {
 
         Flux.fromIterable(identer)
-                .flatMap(ident -> fullmaktConsumer.getFullmaktData(List.of(ident))
+                .flatMap(ident -> fullmaktConsumer.getFullmaktData(ident)
                         .doOnNext(response -> log.info("Fullmakt response for {}: {}", ident, response))
                         .map(FullmaktPostResponse.Fullmakt::getFullmaktId)
                         .flatMap(fullmaktsId -> fullmaktConsumer.deleteFullmaktData(ident, fullmaktsId)))
@@ -82,10 +82,13 @@ public class FullmaktClient implements ClientRegister {
         return transactionHelperService.persister(progress, BestillingProgress::setFullmaktStatus, status);
     }
 
-    private String getStatus(FullmaktPostResponse response) {
+    private String getStatus(List<FullmaktPostResponse> response) {
 
-        return isNull(response.getStatus()) ? "OK" :
-                errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());
+        return response.stream()
+                .filter(status1 -> nonNull(status1.getStatus()))
+                .findFirst()
+                .map(error -> errorStatusDecoder.getErrorText(error.getStatus(), error.getMelding()))
+                .orElse("OK");
     }
 
     private String getFullName(PersonDTO person) {

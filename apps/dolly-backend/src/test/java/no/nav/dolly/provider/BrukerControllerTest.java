@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -8,7 +8,6 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
-import no.nav.dolly.provider.BrukerController;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
@@ -21,8 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -58,9 +55,11 @@ class BrukerControllerTest {
     @Test
     void getBrukerByBrukerId() {
 
-        var bruker = Bruker.builder().build();
+        var bruker = Bruker.builder()
+                .brukerId(BRUKERID)
+                .build();
 
-        when(brukerService.fetchBruker(BRUKERID)).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Mono.just(bruker));
         when(mapperFacade.map(eq(bruker), eq(RsBruker.class), any())).thenReturn(RsBruker.builder()
                 .brukerId(BRUKERID)
                 .build());
@@ -82,7 +81,7 @@ class BrukerControllerTest {
                 .brukerId(BRUKERID)
                 .build();
 
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
         when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(brukerAndClaims);
         when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(BrukerFavoritter.builder().build()));
@@ -138,13 +137,16 @@ class BrukerControllerTest {
         var team = Team.builder().id(1L).build();
         var rsTeam = RsTeamWithBrukere.builder().id(1L).build();
 
-        when(brukerService.fetchTeamsForCurrentBruker()).thenReturn(List.of(team));
-        when(mapperFacade.mapAsList(List.of(team), RsTeamWithBrukere.class)).thenReturn(List.of(rsTeam));
+        when(brukerService.fetchTeamsForCurrentBruker()).thenReturn(Flux.just(team));
+        when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeam);
 
-        var result = controller.getUserTeams();
-
-        assertThat(result.size(), is(1));
-        assertThat(result.getFirst().getId(), is(1L));
+        StepVerifier.create(controller.getUserTeams()
+                        .collectList())
+                .assertNext(result -> {
+                    assertThat(result.size(), is(1));
+                    assertThat(result.getFirst().getId(), is(1L));
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -152,12 +154,12 @@ class BrukerControllerTest {
         var bruker = Bruker.builder().id(1L).build();
         var rsBruker = new RsBruker();
 
-        when(brukerService.setRepresentererTeam(1L)).thenReturn(bruker);
+        when(brukerService.setRepresentererTeam(1L)).thenReturn(Mono.just(bruker));
         when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
 
-        var result = controller.setRepresentererTeam(1L);
-
-        assertThat(result, is(rsBruker));
+        StepVerifier.create(controller.setRepresentererTeam(1L))
+                .assertNext(result -> assertThat(result, is(rsBruker)))
+                .verifyComplete();
     }
 
     @Test
@@ -165,12 +167,11 @@ class BrukerControllerTest {
         var bruker = Bruker.builder().id(1L).build();
         var rsBruker = new RsBruker();
 
-        when(brukerService.setRepresentererTeam(null)).thenReturn(bruker);
+        when(brukerService.setRepresentererTeam(null)).thenReturn(Mono.just(bruker));
         when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
 
-        var result = controller.clearRepresentererTeam();
-
-        assertThat(result, is(rsBruker));
+        StepVerifier.create(controller.clearRepresentererTeam())
+                .assertNext(result -> assertThat(result, is(rsBruker)))
+                .verifyComplete();
     }
-
 }

@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.service.BrukerService;
@@ -33,7 +33,7 @@ class TestgruppeControllerDeleteTest extends AbstractControllerTest {
 
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
         when(pdlDataConsumer.slettPdl(any())).thenReturn(Mono.empty());
-        when(brukerService.fetchBrukerOrTeamBruker(any())).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchOrCreateBruker(any())).thenReturn(Mono.just(bruker));
 
         webTestClient
                 .get()

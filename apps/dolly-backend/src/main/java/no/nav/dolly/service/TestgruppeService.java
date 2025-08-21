@@ -16,6 +16,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BestillingRepository;
@@ -258,31 +259,21 @@ public class TestgruppeService {
         return identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
     }
 
-    public void endreGruppeTilknytning(Long gruppeId, String brukerId) {
+    public Mono<Void> endreGruppeTilknytning(Long gruppeId, String brukerId) {
 
-        var gruppe = fetchTestgruppeById(gruppeId);
-        var nyEier = brukerService.fetchBrukerByBrukerId(brukerId);
+        return Mono.zip(fetchTestgruppeById(gruppeId),
+                brukerService.fetchBruker(brukerId))
+                .flatMap(tuple -> {
 
-        if (gruppe.getOpprettetAv().equals(nyEier)) {
-            throw new DollyFunctionalException(format("Gruppe med id %s er allerede tilknyttet bruker %s.", gruppeId, nyEier.getBrukernavn()));
-        } else {
-
-            gruppe.setOpprettetAv(nyEier);
-            gruppe.setSistEndretAv(nyEier);
-            testgruppeRepository.save(gruppe);
-        }
-    }
-
-    private void sjekkTilgang(Long gruppeId) {
-
-        var bruker = brukerService.fetchOrCreateBruker();
-        if (bruker.getBrukertype() == BANKID) {
-            brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
-                    .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
-                    .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
-                    .block();
-        }
+                    if (tuple.getT1().getOpprettetAvId().equals(tuple.getT2().getId())) {
+                        return Mono.error(new DollyFunctionalException(
+                                "Gruppe med id %d er allerede tilknyttet bruker %s.".formatted(gruppeId, tuple.getT2().getBrukernavn())));
+                    } else {
+                        tuple.getT1().setOpprettetAvId(tuple.getT2().getId());
+                        tuple.getT1().setSistEndretAvId(tuple.getT2().getId());
+                        return testgruppeRepository.save(tuple.getT1());
+                    }
+                })
+                .then();
     }
 }

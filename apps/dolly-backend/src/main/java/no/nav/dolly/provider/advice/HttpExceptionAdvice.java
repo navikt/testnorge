@@ -68,7 +68,7 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler({ DollyFunctionalException.class, ConstraintViolationException.class,
+    @ExceptionHandler({ DollyFunctionalException.class, IllegalArgumentException.class, ConstraintViolationException.class,
             MissingHttpHeaderException.class, KodeverkException.class, WebClientResponseException.BadRequest.class })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     ExceptionInformation badRequest(ServerWebExchange serverWebExchange, RuntimeException exception) {

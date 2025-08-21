@@ -1,9 +1,8 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.provider.BestillingController;
 import no.nav.dolly.service.BestillingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

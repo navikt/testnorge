@@ -11,7 +11,6 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -67,9 +66,9 @@ class InstdataConsumerTest extends AbstractConsumerTest {
                             .withHeader("Content-Type", "application/json")
                             .withBody("{\"institusjonsoppholdEnvironments\":[\"" + ENVIRONMENT + "\"]}")));
 
-            stubFor(delete(urlPathMatching("(.*)/api/v1/institusjonsopphold/person"))
-                    .withQueryParam("environments", equalTo(ENVIRONMENT))
-                    .withHeader("norskident", equalTo(IDENT))
+            stubFor(post(urlPathMatching("(.*)/api/v1/institusjonsopphold/person/slett"))
+                    .withRequestBody(equalTo("{\"personident\": \"" + IDENT + "\"+" +
+                            "\"environments\": [\"" + ENVIRONMENT + "\"]}"))
                     .willReturn(ok()
                             .withHeader("Content-Type", "application/json")));
 

@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -212,7 +211,7 @@ public class MalBestillingService {
         return brukerService.fetchOrCreateBruker()
                 .flatMap(bruker -> {
                     if (bruker.getBrukertype() == AZURE) {
-                        return bestillingMalRepository.findAllByBrukertypeAzure()
+                        return bestillingMalRepository.findAllByBrukertypeAzureOrTeam()
                                 .collectList()
                                 .flatMap(bestillingMalFragments -> Mono.just(RsMalBestillingSimple.builder()
                                         .brukereMedMaler(Stream.of(List.of(
@@ -254,7 +253,7 @@ public class MalBestillingService {
 
         return Flux.just(switch (brukerId) {
                     case ANONYM -> bestillingMalRepository.findAllByBrukerIsNull();
-                    case ALLE -> bestillingMalRepository.findAllByBrukerAzure();
+                    case ALLE -> bestillingMalRepository.findAllByBrukerAzureOrTeam();
                     default -> bestillingMalRepository.findAllByBrukerId(brukerId);
                 })
                 .flatMap(Flux::from)

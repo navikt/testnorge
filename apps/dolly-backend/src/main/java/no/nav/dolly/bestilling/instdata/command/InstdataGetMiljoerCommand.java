@@ -22,6 +22,7 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
 
     @Override
     public Mono<List<String>> call() {
+
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -36,5 +37,4 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
                         Mono.just(List.of("q1", "q2")))
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }

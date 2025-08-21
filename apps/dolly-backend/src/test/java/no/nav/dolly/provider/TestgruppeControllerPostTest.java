@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api;
+package no.nav.dolly.provider;
 
 import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
