@@ -39,7 +39,6 @@ export const UforetrygdForm = () => {
 			>
 				<div className="flexbox--flex-wrap">
 					<FormDatepicker name={`${uforetrygdPath}.uforetidspunkt`} label="Uføretidspunkt" />
-					<FormDatepicker name={`${uforetrygdPath}.kravFremsattDato`} label="Krav fremsatt dato" />
 					<Monthpicker
 						name={`${uforetrygdPath}.onsketVirkningsDato`}
 						label="Ønsket virkningsdato"
@@ -49,8 +48,6 @@ export const UforetrygdForm = () => {
 							formMethods.trigger(`${uforetrygdPath}`)
 						}}
 					/>
-				</div>
-				<div className="flexbox--flex-wrap">
 					<FormTextInput
 						name={`${uforetrygdPath}.inntektForUforhet`}
 						label="Inntekt før uførhet"
