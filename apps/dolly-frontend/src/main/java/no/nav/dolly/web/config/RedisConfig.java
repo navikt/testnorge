@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -21,7 +22,11 @@ import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
+import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisClientConfig;
+
+import java.net.URI;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
@@ -32,19 +37,32 @@ import redis.clients.jedis.Jedis;
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
-public class RedisConfig {
+class RedisConfig {
+
+    @Value("${spring.data.redis.url}")
+    private String url;
+
+    @Value("${spring.data.redis.username}")
+    private String username;
+
+    @Value("${spring.data.redis.password}")
+    private String password;
 
     @Bean
-    public Jedis jedis(
-            @Value("${spring.data.redis.host}") String host,
-            @Value("${spring.data.redis.port}") Integer port
-    ) {
-        return new Jedis(host, port);
+    Jedis jedis() {
+        var uri = URI.create(url);
+        var config = DefaultJedisClientConfig
+                .builder()
+                .user(username)
+                .password(password)
+                .ssl(true)
+                .build();
+        return new Jedis(uri, config);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TokenExchange tokenExchange(
+    TokenExchange tokenExchange(
             TokenXExchange tokenXExchange,
             AzureAdTokenExchange azureAdTokenExchange,
             ClientRegistrationIdResolver clientRegistrationIdResolver,
@@ -58,36 +76,44 @@ public class RedisConfig {
     }
 
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory(RedisStandaloneConfiguration redisStandaloneConfiguration) {
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    LettuceConnectionFactory redisConnectionFactory(
+            RedisStandaloneConfiguration redisStandaloneConfiguration,
+            LettuceClientConfiguration lettuceClientConfiguration
+    ) {
+        return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RedisStandaloneConfiguration redisStandaloneConfiguration(
-            @Value("${spring.data.redis.host}") String host,
-            @Value("${spring.data.redis.port}") Integer post
-    ) {
-        var redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(host);
-        redisStandaloneConfiguration.setPort(post);
-        return redisStandaloneConfiguration;
+    RedisStandaloneConfiguration redisStandaloneConfiguration() {
+        var uri = URI.create(url);
+        var config = new RedisStandaloneConfiguration();
+        config.setHostName(uri.getHost());
+        config.setPort(uri.getPort());
+        config.setUsername(username);
+        config.setPassword(password);
+        return config;
     }
 
     @Bean
-    public ServerOAuth2AuthorizedClientRepository authorizedClientRepository() {
+    @ConditionalOnMissingBean
+    LettuceClientConfiguration lettuceClientConfiguration() {
+        return LettuceClientConfiguration
+                .builder()
+                .useSsl()
+                .build();
+    }
+
+    @Bean
+    ServerOAuth2AuthorizedClientRepository authorizedClientRepository() {
         return new WebSessionServerOAuth2AuthorizedClientRepository();
     }
 
     @Bean
-    public RedisSerializer<Object> springSessionRedisSerializer() {
-        return new GenericJackson2JsonRedisSerializer(objectMapper());
-    }
-
-    private ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return mapper;
+    RedisSerializer<Object> springSessionRedisSerializer() {
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
     }
 
 }
