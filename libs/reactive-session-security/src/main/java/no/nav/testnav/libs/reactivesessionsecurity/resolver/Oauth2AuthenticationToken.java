@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-abstract class Oauth2AuthenticationToken {
+public abstract class Oauth2AuthenticationToken {
     Mono<OAuth2AuthenticationToken> oauth2AuthenticationToken(Mono<Authentication> authentication) {
         return authentication
                 .map(auth -> {
