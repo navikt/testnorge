@@ -35,8 +35,9 @@ public class TokenExchange implements ExchangeToken {
         this.tokenCache = new HashMap<>();
     }
 
-    public void addExchange(ResourceServerType id, ExchangeToken exchange) {
+    public TokenExchange addExchange(ResourceServerType id, ExchangeToken exchange) {
         exchanges.put(id, exchange);
+        return this;
     }
 
     public Mono<AccessToken> exchange(ServerProperties serverProperties, ServerWebExchange exchange) {

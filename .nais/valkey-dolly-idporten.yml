@@ -1,0 +1,10 @@
+apiVersion: aiven.io/v1alpha1
+kind: Valkey
+metadata:
+  labels:
+    team: dolly
+  name: valkey-dolly-idporten
+  namespace: dolly
+spec:
+  plan: startup-4
+  project: nav-dev
