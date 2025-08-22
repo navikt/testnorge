@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
-import { Form, FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { DollyApi } from '@/service/Api'
@@ -9,7 +9,7 @@ import React, { useState } from 'react'
 import Loading from '@/components/ui/loading/Loading'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import './RedigerGruppe.less'
 import { Alert } from '@navikt/ds-react'
 
@@ -98,17 +98,6 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 				data-testid={TestComponentSelectors.BUTTON_OPPRETT}
 				variant={'primary'}
 				type={'submit'}
-				onClick={() => {
-					formMethods.trigger(['navn', 'hensikt'])
-					formMethods.setValue('navn', formMethods.getValues('navn'), {
-						shouldValidate: true,
-						shouldTouch: true,
-					})
-					formMethods.setValue('hensikt', formMethods.getValues('hensikt'), {
-						shouldValidate: true,
-						shouldTouch: true,
-					})
-				}}
 			>
 				{erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
 			</NavButton>
@@ -120,27 +109,24 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 
 	return (
 		<FormProvider {...formMethods}>
-			<Form
-				control={formMethods.control}
+			<form
 				className={'opprett-tabellrad'}
 				autoComplete={'off'}
 				onSubmit={formMethods.handleSubmit(erRedigering ? handleUpdateGruppe : handleCreateGruppe)}
 			>
 				<div className="fields">
-					<FormTextInput
+					<DollyTextInput
 						data-testid={TestComponentSelectors.INPUT_NAVN}
 						name="navn"
 						label="NAVN"
 						size="grow"
-						useOnChange={true}
 						autoFocus
 					/>
-					<FormTextInput
+					<DollyTextInput
 						data-testid={TestComponentSelectors.INPUT_HENSIKT}
 						name="hensikt"
 						label="HENSIKT"
 						size="grow"
-						useOnChange={true}
 					/>
 					{buttons}
 				</div>
@@ -149,7 +135,7 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 						{feilmelding}
 					</Alert>
 				)}
-			</Form>
+			</form>
 		</FormProvider>
 	)
 }
