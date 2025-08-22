@@ -2052,7 +2052,6 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			const pensjonforvalterAlderspensjon = {
 				header: 'Alderspensjon: ' + (ap.soknad ? 'Søknad' : 'Vedtak'),
 				items: [
-					obj('KravFremsattDato', formatDate(ap.kravFremsattDato)),
 					obj('Iverksettelsesdato', formatDate(ap.iverksettelsesdato)),
 					obj('Saksbehandler', ap.saksbehandler),
 					obj('Attesterer', ap.attesterer),
@@ -2076,7 +2075,6 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			const pensjonforvalterUforetrygd = {
 				header: 'Uføretrygd',
 				items: [
-					obj('Krav fremsatt dato', formatDate(uforetrygd.kravFremsattDato)),
 					obj('Ønsket virkningsdato', formatDate(uforetrygd.onsketVirkningsDato)),
 					obj('Uføretidspunkt', formatDate(uforetrygd.uforetidspunkt)),
 					obj('Inntekt før uførhet', uforetrygd.inntektForUforhet),
