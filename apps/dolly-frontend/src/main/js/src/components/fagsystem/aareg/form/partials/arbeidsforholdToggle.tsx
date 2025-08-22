@@ -50,16 +50,22 @@ const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
 
 type ArbeidsforholdToggleProps = {
 	path: string
-	idx: number
-	fasteOrganisasjoner: any
-	brukerOrganisasjoner: any
-	egneOrganisasjoner: any
-	loadingOrganisasjoner: boolean
+	idx?: number
+	afterChange?: (value: any) => any
+	onToggle?: (value: any) => any
+	disablePrivat?: boolean
+	fasteOrganisasjoner?: any
+	brukerOrganisasjoner?: any
+	egneOrganisasjoner?: any
+	loadingOrganisasjoner?: boolean
 }
 
 export const ArbeidsforholdToggle = ({
 	path,
 	idx,
+	onToggle,
+	afterChange,
+	disablePrivat = false,
 	fasteOrganisasjoner,
 	brukerOrganisasjoner,
 	egneOrganisasjoner,
@@ -104,6 +110,7 @@ export const ArbeidsforholdToggle = ({
 	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('aareg')?.length])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
+		onToggle && onToggle(value)
 		setTypeArbeidsgiver(value)
 		if (value === ArbeidsgiverTyper.privat) {
 			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverPers })
@@ -122,6 +129,15 @@ export const ArbeidsforholdToggle = ({
 		? 'Kan ikke endre arbeidsgiver på eksisterende arbeidsforhold'
 		: ''
 
+	const renderArbeidsgiverToggleItems = (disablePrivat: boolean) =>
+		arbeidsgiverToggleValues
+			.filter((t) => !(disablePrivat && t.value === ArbeidsgiverTyper.privat))
+			.map((t) => (
+				<ToggleGroup.Item key={t.value} value={t.value}>
+					{t.label}
+				</ToggleGroup.Item>
+			))
+
 	return (
 		<div className="toggle--wrapper" key={idx}>
 			{erLaastArbeidsforhold ? (
@@ -133,11 +149,7 @@ export const ArbeidsforholdToggle = ({
 					key={idx}
 					title={'Kan ikke endre arbeidsgivertype på eksisterende arbeidsforhold'}
 				>
-					{arbeidsgiverToggleValues.map((type) => (
-						<ToggleGroup.Item key={type.value} value={type.value}>
-							{type.label}
-						</ToggleGroup.Item>
-					))}
+					{renderArbeidsgiverToggleItems(disablePrivat)}
 				</DisabledToggleArbeidsgiver>
 			) : (
 				<ToggleArbeidsgiver
@@ -148,11 +160,7 @@ export const ArbeidsforholdToggle = ({
 					fill
 					key={idx}
 				>
-					{arbeidsgiverToggleValues.map((type) => (
-						<ToggleGroup.Item key={type.value} value={type.value}>
-							{type.label}
-						</ToggleGroup.Item>
-					))}
+					{renderArbeidsgiverToggleItems(disablePrivat)}
 				</ToggleArbeidsgiver>
 			)}
 			<div className="flexbox--full-width">
@@ -163,6 +171,7 @@ export const ArbeidsforholdToggle = ({
 							label={'Organisasjonsnummer'}
 							isDisabled={erLaastArbeidsforhold}
 							placeholder={'Velg organisasjon ...'}
+							afterChange={afterChange}
 						/>
 					</div>
 				)}
@@ -170,6 +179,7 @@ export const ArbeidsforholdToggle = ({
 					<div className="flex-box" title={title}>
 						<EgneOrganisasjoner
 							path={`${path}.arbeidsgiver.orgnummer`}
+							afterChange={afterChange}
 							handleChange={(selected: any) => {
 								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
 								formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
@@ -185,6 +195,7 @@ export const ArbeidsforholdToggle = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
+						onBlur={afterChange}
 						isDisabled={erLaastArbeidsforhold}
 						title={title}
 					/>
@@ -192,7 +203,7 @@ export const ArbeidsforholdToggle = ({
 				{typeArbeidsgiver === ArbeidsgiverTyper.privat && (
 					<ArbeidsgiverIdent
 						path={`${path}.arbeidsgiver.ident`}
-						isDisabled={erLaastArbeidsforhold}
+						isDisabled={erLaastArbeidsforhold || disablePrivat}
 						title={title}
 					/>
 				)}

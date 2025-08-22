@@ -70,7 +70,7 @@ export const validation = {
 						hprId: requiredString,
 					}),
 					arbeidsgiver: Yup.object({
-						navn: testHarArbeidsforhold(Yup.string().nullable()),
+						navn: testHarArbeidsforhold(Yup.string().required('Må ha gyldig arbeidsgiver')),
 						stillingsprosent: requiredNumber.transform((num) => (isNaN(num) ? undefined : num)),
 						yrkesbetegnelse: requiredString,
 					}),
