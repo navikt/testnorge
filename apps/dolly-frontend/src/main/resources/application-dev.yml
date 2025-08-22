@@ -1,6 +1,12 @@
 #Dev config
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
-REDIS_HOST: dolly-dev-redis-session.dolly.svc.cluster.local
+
+spring:
+  data:
+    redis:
+      url: ${VALKEY_URI_SESSION}
+      username: ${VALKEY_USERNAME_SESSION}
+      password: ${VALKEY_PASSWORD_SESSION}
 
 consumers:
   # Konsumenter for dev-miljø
