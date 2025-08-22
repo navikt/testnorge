@@ -42,8 +42,7 @@ public class TeamService {
 
     public Mono<Team> fetchTeamById(Long id) {
 
-        return teamRepository.findById(id)
-                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke team med id %d".formatted(id))))
+        return fetchTeamByIdBasic(id)
                 .flatMap(team -> fetchTeam(() -> Flux.from(teamRepository.findById(id)))
                         .next());
     }
@@ -83,7 +82,7 @@ public class TeamService {
     @Transactional
     public Mono<Team> updateTeam(Long teamId, RsTeamUpdate teamUpdates) {
 
-        return fetchTeamById(teamId)
+        return fetchTeamByIdBasic(teamId)
                 .then(assertCurrentBrukerIsTeamMember(teamId))
                 .then(teamRepository.findById(teamId)
                         .flatMap(existingTeam -> {
@@ -124,8 +123,7 @@ public class TeamService {
     @Transactional
     public Mono<Void> deleteTeamById(Long teamId) {
 
-        return teamRepository.findById(teamId)
-                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke team med id %d".formatted(teamId))))
+        return fetchTeamByIdBasic(teamId)
                 .flatMap(team -> assertCurrentBrukerIsTeamMember(teamId)
                         .thenReturn(team))
                 .flatMap(team -> {
@@ -157,10 +155,20 @@ public class TeamService {
     @Transactional
     public Mono<Void> removeBrukerFromTeam(Long teamId, String brukerId) {
 
-        return fetchTeamById(teamId)
+        return fetchTeamByIdBasic(teamId)
+                .then(assertCurrentBrukerIsTeamMember(teamId))
                 .then(brukerRepository.findByBrukerId(brukerId))
-                .flatMap(bruker -> teamBrukerRepository.findByTeamIdAndBrukerId(teamId, bruker.getId()))
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Kan ikke utføre operasjonen da bruker ikke er medlem av team %d".formatted(teamId))))
+                .flatMap(bruker -> teamBrukerRepository.findByTeamId(teamId)
+                        .collectList()
+                        .flatMap(teamBrukere -> {
+                            if (teamBrukere.size() == 1 && teamBrukere.stream()
+                                    .anyMatch(teamBruker -> teamBruker.getBrukerId().equals(bruker.getId()))) {
+                                return Mono.error(new IllegalArgumentException(
+                                        "Siste bruker i et team kan ikke fjerne seg selv, forsøk heller å slette teamet"));
+                            } else {
+                                return Mono.just(bruker);
+                            }
+                        }))
                 .flatMap(teamBruker -> teamBrukerRepository.deleteById(teamBruker.getId()));
     }
 
@@ -203,5 +211,11 @@ public class TeamService {
                 .switchIfEmpty(Mono.empty())
                 .flatMap(ignore -> Mono.error(
                         new IllegalArgumentException("Team med navn '%s' finnes allerede".formatted(team.getNavn()))));
+    }
+
+    private Mono<Team> fetchTeamByIdBasic(Long id) {
+
+        return teamRepository.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke team med id %d".formatted(id))));
     }
 }

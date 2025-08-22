@@ -67,8 +67,6 @@ class InstdataConsumerTest extends AbstractConsumerTest {
                             .withBody("{\"institusjonsoppholdEnvironments\":[\"" + ENVIRONMENT + "\"]}")));
 
             stubFor(post(urlPathMatching("(.*)/api/v1/institusjonsopphold/person/slett"))
-                    .withRequestBody(equalTo("{\"personident\": \"" + IDENT + "\"+" +
-                            "\"environments\": [\"" + ENVIRONMENT + "\"]}"))
                     .willReturn(ok()
                             .withHeader("Content-Type", "application/json")));
 

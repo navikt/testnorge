@@ -37,6 +37,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -97,17 +98,19 @@ class TestgruppeServiceTest {
         when(testgruppeRepository.save(any(Testgruppe.class))).thenReturn(Mono.just(new Testgruppe()));
 
         StepVerifier.create(testgruppeService.opprettTestgruppe(rsTestgruppe))
-                .assertNext(testgruppe -> assertThat(testgruppe, is(notNullValue())))
-                .verifyComplete();
+                .assertNext(testgruppe -> {
+                    assertThat(testgruppe, is(notNullValue()));
 
-        var testgruppeCaptor = ArgumentCaptor.forClass(Testgruppe.class);
-        verify(testgruppeRepository).save(testgruppeCaptor.capture());
-        assertThat(testgruppeCaptor.getValue().getOpprettetAv(), is(bruker));
-        assertThat(testgruppeCaptor.getValue().getOpprettetAvId(), is(bruker.getId()));
-        assertThat(testgruppeCaptor.getValue().getSistEndretAv(), is(bruker));
-        assertThat(testgruppeCaptor.getValue().getSistEndretAvId(), is(bruker.getId()));
-        assertThat(testgruppeCaptor.getValue().getHensikt(), is(rsTestgruppe.getHensikt()));
-        assertThat(testgruppeCaptor.getValue().getNavn(), is(rsTestgruppe.getNavn()));
+                    var testgruppeCaptor = ArgumentCaptor.forClass(Testgruppe.class);
+                    verify(testgruppeRepository).save(testgruppeCaptor.capture());
+                    assertThat(testgruppeCaptor.getValue().getOpprettetAv(), is(bruker));
+                    assertThat(testgruppeCaptor.getValue().getOpprettetAvId(), is(bruker.getId()));
+                    assertThat(testgruppeCaptor.getValue().getSistEndretAv(), is(bruker));
+                    assertThat(testgruppeCaptor.getValue().getSistEndretAvId(), is(bruker.getId()));
+                    assertThat(testgruppeCaptor.getValue().getHensikt(), is(rsTestgruppe.getHensikt()));
+                    assertThat(testgruppeCaptor.getValue().getNavn(), is(rsTestgruppe.getNavn()));
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -186,16 +189,19 @@ class TestgruppeServiceTest {
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
         when(testgruppeRepository.save(any(Testgruppe.class))).thenReturn(Mono.just(testgruppe));
         StepVerifier.create(testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe))
-                .assertNext(testgruppe1 -> assertThat(testgruppe1, is(notNullValue())))
-                .verifyComplete();
+                .assertNext(testgruppe1 -> {
+                    assertThat(testgruppe1, is(notNullValue()));
 
-        var testgruppeCaptor = ArgumentCaptor.forClass(Testgruppe.class);
-        verify(testgruppeRepository).save(testgruppeCaptor.capture());
-        assertThat(testgruppeCaptor.getValue().getSistEndretAv(), is(notNullValue()));
-        assertThat(testgruppeCaptor.getValue().getHensikt(), is(testgruppe.getHensikt()));
-        assertThat(testgruppeCaptor.getValue().getNavn(), is(testgruppe.getNavn()));
-        assertThat(testgruppeCaptor.getValue().getSistEndretAvId(), is(bruker.getId()));
-        assertThat(testgruppeCaptor.getValue().getSistEndretAv(), is(bruker));
+                    var testgruppeCaptor = ArgumentCaptor.forClass(Testgruppe.class);
+                    verify(testgruppeRepository).save(testgruppeCaptor.capture());
+                    assertThat(testgruppeCaptor.getValue().getSistEndretAv(), is(notNullValue()));
+                    assertThat(testgruppeCaptor.getValue().getHensikt(), is(testgruppe.getHensikt()));
+                    assertThat(testgruppeCaptor.getValue().getNavn(), is(testgruppe.getNavn()));
+                    assertThat(testgruppeCaptor.getValue().getSistEndretAvId(), is(bruker.getId()));
+                    assertThat(testgruppeCaptor.getValue().getSistEndretAv(), is(bruker));
+
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -217,16 +223,18 @@ class TestgruppeServiceTest {
         when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
 
         StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, null))
-                .assertNext(testgruppe1 -> assertThat(testgruppe1, is(notNullValue())))
-                .verifyComplete();
-        verify(testgruppeRepository).findByOpprettetAvId(bruker.getId(), Pageable.ofSize(10));
+                .assertNext(testgruppe1 -> {
+                    assertThat(testgruppe1, is(notNullValue()));
+                    verify(testgruppeRepository).findByOpprettetAvId(bruker.getId(), Pageable.ofSize(10));
 
-        var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
-        verify(mapperFacade).map(any(), any(), contextArgumentCaptor.capture());
-        assertThat(contextArgumentCaptor.getValue().getProperty("bruker"), is(bruker));
-        assertThat(contextArgumentCaptor.getValue().getProperty("antallIdenter"), is(1));
-        assertThat(contextArgumentCaptor.getValue().getProperty("antallBestillinger"), is(1));
-        assertThat(contextArgumentCaptor.getValue().getProperty("antallIBruk"), is(1));
+                    var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
+                    verify(mapperFacade).map(any(), any(), contextArgumentCaptor.capture());
+                    assertThat(contextArgumentCaptor.getValue().getProperty("bruker"), is(bruker));
+                    assertThat(contextArgumentCaptor.getValue().getProperty("antallIdenter"), is(1));
+                    assertThat(contextArgumentCaptor.getValue().getProperty("antallBestillinger"), is(1));
+                    assertThat(contextArgumentCaptor.getValue().getProperty("antallIBruk"), is(1));
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -239,7 +247,7 @@ class TestgruppeServiceTest {
                 .navn("navn")
                 .build();
 
-        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchOrCreateBruker(anyString())).thenReturn(Mono.just(bruker));
         when(testgruppeRepository.findByOpprettetAvId(any(), any())).thenReturn(Flux.just(testgruppe));
         when(testgruppeRepository.countByOpprettetAvId(bruker.getId())).thenReturn(Mono.just(1L));
         when(identRepository.countByGruppeId(testgruppe.getId())).thenReturn(Mono.just(1));
@@ -247,23 +255,26 @@ class TestgruppeServiceTest {
         when(bestillingRepository.countByGruppeId(GROUP_ID)).thenReturn(Mono.just(1));
         when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
         when(brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())).thenReturn(Mono.just(TilgangDTO.builder()
-                        .brukere(List.of(bruker.getBrukerId()))
-                        .build()));
+                .brukere(List.of(bruker.getBrukerId()))
+                .build()));
         when(testgruppeRepository.findByOpprettetAv_BrukerIdIn(any(), any()))
                 .thenReturn(Flux.just(testgruppe));
         when(testgruppeRepository.countByOpprettetAv_BrukerIdIn(any())).thenReturn(Mono.just(1L));
 
-        StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, null))
-                .assertNext(testgruppe1 -> assertThat(testgruppe1, is(notNullValue())))
-                .verifyComplete();
-        verify(testgruppeRepository).findByOpprettetAv_BrukerIdIn(any(), any());
-        verify(testgruppeRepository).countByOpprettetAv_BrukerIdIn(any());
+        StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, "123"))
+                .assertNext(testgruppe1 -> {
 
-        var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
-        verify(mapperFacade).map(any(), any(), contextArgumentCaptor.capture());
-        assertThat(contextArgumentCaptor.getValue().getProperty("bruker"), is(bruker));
-        assertThat(contextArgumentCaptor.getValue().getProperty("antallIdenter"), is(1));
-        assertThat(contextArgumentCaptor.getValue().getProperty("antallBestillinger"), is(1));
-        assertThat(contextArgumentCaptor.getValue().getProperty("antallIBruk"), is(1));
+                    assertThat(testgruppe1, is(notNullValue()));
+                    verify(testgruppeRepository).findByOpprettetAv_BrukerIdIn(any(), any());
+                    verify(testgruppeRepository).countByOpprettetAv_BrukerIdIn(any());
+
+                    var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
+                    verify(mapperFacade).map(any(), any(), contextArgumentCaptor.capture());
+                    assertThat(contextArgumentCaptor.getValue().getProperty("bruker"), is(bruker));
+                    assertThat(contextArgumentCaptor.getValue().getProperty("antallIdenter"), is(1));
+                    assertThat(contextArgumentCaptor.getValue().getProperty("antallBestillinger"), is(1));
+                    assertThat(contextArgumentCaptor.getValue().getProperty("antallIBruk"), is(1));
+                })
+                .verifyComplete();
     }
 }

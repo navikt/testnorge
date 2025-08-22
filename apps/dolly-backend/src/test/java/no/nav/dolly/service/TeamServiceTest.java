@@ -4,6 +4,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
@@ -20,15 +21,14 @@ import reactor.test.StepVerifier;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,10 +51,12 @@ class TeamServiceTest {
     private TeamService teamService;
 
     private Bruker currentBruker;
+    private TeamBruker teamBruker;
     private Team team;
 
     @BeforeEach
     void setUp() {
+
         currentBruker = Bruker.builder()
                 .id(1L)
                 .brukerId("current_user")
@@ -65,18 +67,26 @@ class TeamServiceTest {
                 .id(10L)
                 .navn("Test Team")
                 .beskrivelse("Test Team Description")
-//                .brukere(new HashSet<>())
+                .brukere(Set.of(currentBruker))
+                .brukerId(22L)
                 .build();
-//        team.getBrukere().add(currentBruker);
+
+        teamBruker = TeamBruker.builder()
+                .id(2L)
+                .brukerId(team.getId())
+                .teamId(team.getId())
+                .build();
     }
 
     @Test
     void fetchAllTeam_shouldReturnAllTeams() {
 
         when(teamRepository.findAll()).thenReturn(Flux.just(team));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(currentBruker));
+        when(teamBrukerRepository.findAll()).thenReturn(Flux.just(teamBruker));
 
         StepVerifier.create(teamService.fetchAllTeam()
-                .collectList())
+                        .collectList())
                 .assertNext(result -> {
                     assertThat(result).isNotEmpty();
                     assertThat(result.getFirst()).isSameAs(team);
@@ -89,11 +99,13 @@ class TeamServiceTest {
     void fetchTeamById_shouldReturnTeam_whenTeamExists() {
 
         when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(currentBruker));
+        when(teamBrukerRepository.findAll()).thenReturn(Flux.just(teamBruker));
 
         StepVerifier.create(teamService.fetchTeamById(10L))
                 .assertNext(result -> {
                     assertThat(result).isSameAs(team);
-                    verify(teamRepository).findById(10L);
+                    verify(teamRepository, times(2)).findById(10L);
                 })
                 .verifyComplete();
     }
@@ -103,9 +115,10 @@ class TeamServiceTest {
 
         when(teamRepository.findById(99L)).thenReturn(Mono.empty());
 
-        assertThatThrownBy(() -> teamService.fetchTeamById(99L))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("Fant ikke team med id=99");
+        StepVerifier.create(teamService.fetchTeamById(99L))
+                .expectErrorMatches(throwable -> throwable instanceof NotFoundException &&
+                        throwable.getMessage().contains("Fant ikke team med id 99"))
+                .verify();
     }
 
     @Test
@@ -120,12 +133,12 @@ class TeamServiceTest {
                 .navn(rsTeam.getNavn())
                 .beskrivelse(rsTeam.getBeskrivelse())
                 .brukerId(2L)
-//                .brukere(new HashSet<>())
+                .brukere(new HashSet<>())
                 .build();
 
         when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
 
-        var teamBruker = Bruker.builder()
+        var teamBruker1 = Bruker.builder()
                 .id(2L)
                 .brukernavn("New Team")
                 .brukertype(Bruker.Brukertype.TEAM)
@@ -133,13 +146,14 @@ class TeamServiceTest {
 
         when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
         when(teamRepository.save(any(Team.class))).thenReturn(Mono.just(newTeam));
-        when(brukerRepository.save(any(Bruker.class))).thenReturn(Mono.just(teamBruker));
+        when(brukerRepository.save(any(Bruker.class))).thenReturn(Mono.just(teamBruker1));
         when(teamBrukerRepository.save(any(TeamBruker.class))).thenReturn(Mono.just(new TeamBruker()));
+        when(teamRepository.findByNavn(anyString())).thenReturn(Mono.empty());
 
         StepVerifier.create(teamService.opprettTeam(rsTeam))
                 .assertNext(result -> {
                     assertThat(result).isSameAs(newTeam);
-//                    assertThat(newTeam.getBrukere()).contains(currentBruker);
+                    assertThat(newTeam.getBrukere()).contains(currentBruker);
                     assertThat(newTeam.getBrukerId()).isEqualTo(2L);
                     verify(teamRepository).save(any(Team.class));
                 })
@@ -148,31 +162,39 @@ class TeamServiceTest {
 
     @Test
     void updateTeam_shouldUpdateTeam_whenUserIsTeamMember() {
-        var teamUpdates = Team.builder()
+
+        var teamUpdates = RsTeamUpdate.builder()
                 .navn("Updated Team")
                 .beskrivelse("Updated Description")
                 .build();
 
-        var teamBruker = Bruker.builder()
+        var teamBruker1 = Bruker.builder()
                 .id(2L)
                 .brukernavn("Test Team")
                 .build();
 
-//        when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
-//        when(brukerRepository.findBrukerById(team.getBrukerId())).thenReturn(Optional.of(teamBruker));
-//        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(currentBruker);
-//        when(teamRepository.save(any(Team.class))).thenReturn(team);
-//
-//        var result = teamService.updateTeam(10L, teamUpdates);
-//
-//        assertThat(result).isSameAs(team);
-        assertThat(team.getNavn()).isEqualTo("Updated Team");
-        assertThat(team.getBeskrivelse()).isEqualTo("Updated Description");
-        verify(teamRepository).save(team);
+        when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
+        when(brukerRepository.findById(team.getBrukerId())).thenReturn(Mono.just(teamBruker1));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(teamRepository.save(any(Team.class))).thenReturn(Mono.just(team));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(currentBruker));
+        when(teamBrukerRepository.findAll()).thenReturn(Flux.just(teamBruker));
+        when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker));
+        when(brukerRepository.save(any(Bruker.class))).thenReturn(Mono.just(teamBruker1));
+
+        StepVerifier.create(teamService.updateTeam(10L, teamUpdates))
+                .assertNext(result -> {
+                    assertThat(result).isSameAs(team);
+                    assertThat(team.getNavn()).isEqualTo("Updated Team");
+                    assertThat(team.getBeskrivelse()).isEqualTo("Updated Description");
+                    verify(teamRepository).save(team);
+                })
+                .verifyComplete();
     }
 
     @Test
     void updateTeam_shouldThrowException_whenUserIsNotTeamMember() {
+
         var nonMember = Bruker.builder()
                 .id(3L)
                 .brukerId("non_member")
@@ -180,67 +202,81 @@ class TeamServiceTest {
 
         var teamWithoutCurrentUser = Team.builder()
                 .id(10L)
-//                .brukere(Collections.emptySet())
+                .brukere(Collections.emptySet())
                 .build();
 
-//        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamWithoutCurrentUser));
-//        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(nonMember);
+        when(teamRepository.findById(10L)).thenReturn(Mono.just(teamWithoutCurrentUser));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(nonMember));
+        when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.empty());
 
-//        assertThatThrownBy(() -> teamService.updateTeam(10L, new Team()))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining("Kan ikke utføre denne operasjonen på et team som brukeren ikke er medlem av");
+        StepVerifier.create(teamService.updateTeam(10L, new RsTeamUpdate()))
+                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
+                        throwable.getMessage().contains("Kan ikke utføre operasjonen på team som bruker ikke er medlem av"))
+                .verify();
 
         verify(teamRepository, never()).save(any());
     }
 
     @Test
     void deleteTeamById_shouldDeleteTeamAndTeamMembers() {
-//        when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
-//        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(currentBruker);
-//        doNothing().when(teamRepository).deleteById(10L);
-//        doNothing().when(teamBrukerRepository).deleteAllByIdTeamId(10L);
 
-        teamService.deleteTeamById(10L);
+        when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(teamRepository.deleteById(10L)).thenReturn(Mono.empty());
+        when(teamBrukerRepository.deleteByTeamId(10L)).thenReturn(Mono.empty());
+        when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker));
+        when(brukerRepository.deleteById(22L)).thenReturn(Mono.empty());
+
+        StepVerifier.create(teamService.deleteTeamById(10L))
+                .expectComplete()
+                .verify();
 
         verify(teamRepository).deleteById(10L);
-//        verify(teamBrukerRepository).deleteAllByIdTeamId(10L);
+        verify(teamBrukerRepository).deleteByTeamId(10L);
+        verify(brukerRepository).deleteById(22L);
     }
 
     @Test
     void addBrukerToTeam_shouldAddUserToTeam_whenUserNotAlreadyMember() {
+
         var newMember = Bruker.builder()
                 .id(4L)
                 .brukerId("new_member")
                 .build();
 
-//        when(brukerRepository.findBrukerByBrukerId("new_member")).thenReturn(Optional.of(newMember));
-//        when(teamBrukerRepository.existsById(any())).thenReturn(false);
-//        when(teamBrukerRepository.save(any())).thenReturn(new TeamBruker());
+        when(brukerRepository.findByBrukerId("new_member")).thenReturn(Mono.just(newMember));
+        when(teamBrukerRepository.save(any())).thenReturn(Mono.just(new TeamBruker()));
+        when(teamBrukerRepository.existsByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(false));
 
-        teamService.addBrukerToTeam(10L, "new_member");
+        StepVerifier.create(teamService.addBrukerToTeam(10L, "new_member"))
+                .expectComplete()
+                .verify();
 
         verify(teamBrukerRepository).save(any(TeamBruker.class));
     }
 
     @Test
     void addBrukerToTeam_shouldThrowException_whenUserAlreadyTeamMember() {
+
         var existingMember = Bruker.builder()
                 .id(5L)
                 .brukerId("existing_member")
                 .build();
 
-//        when(brukerRepository.findBrukerByBrukerId("existing_member")).thenReturn(Optional.of(existingMember));
-//        when(teamBrukerRepository.existsById(any())).thenReturn(true);
+        when(brukerRepository.findByBrukerId("existing_member")).thenReturn(Mono.just(existingMember));
+        when(teamBrukerRepository.existsByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(true));
 
-        assertThatThrownBy(() -> teamService.addBrukerToTeam(10L, "existing_member"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Bruker er allerede medlem av dette teamet");
+        StepVerifier.create(teamService.addBrukerToTeam(10L, "existing_member"))
+                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
+                        throwable.getMessage().contains("Bruker er allerede medlem av dette teamet"))
+                .verify();
 
         verify(teamBrukerRepository, never()).save(any());
     }
 
     @Test
     void removeBrukerFromTeam_shouldRemoveUserFromTeam() {
+
         var memberToRemove = Bruker.builder()
                 .id(5L)
                 .brukerId("member_to_remove")
@@ -250,61 +286,70 @@ class TeamServiceTest {
         brukere.add(currentBruker);
         brukere.add(memberToRemove);
 
-//        team.setBrukere(brukere);
-//
-//        when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
-//        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(currentBruker);
-//        when(brukerRepository.findBrukerByBrukerId("member_to_remove")).thenReturn(Optional.of(memberToRemove));
-//        doNothing().when(teamBrukerRepository).deleteById(any());
+        team.setBrukere(brukere);
 
-        teamService.removeBrukerFromTeam(10L, "member_to_remove");
+        when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
+        when(brukerRepository.findByBrukerId("member_to_remove")).thenReturn(Mono.just(memberToRemove));
+        when(teamBrukerRepository.deleteById(any(Long.class))).thenReturn(Mono.empty());
+        when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(teamBrukerRepository.findByTeamId(10L)).thenReturn(Flux.just(teamBruker, teamBruker));
 
-//        verify(teamBrukerRepository).deleteById(any());
+        StepVerifier.create(teamService.removeBrukerFromTeam(10L, "member_to_remove"))
+                .expectComplete()
+                .verify();
+
+        verify(teamBrukerRepository).deleteById(any(Long.class));
     }
 
     @Test
     void removeBrukerFromTeam_shouldThrowException_whenRemovingLastMember() {
+
         var teamWithOnlyCurrentUser = Team.builder()
                 .id(10L)
-//                .brukere(Set.of(currentBruker))
+                .brukere(Set.of(currentBruker))
+                .brukerId(1L)
                 .build();
 
-//        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamWithOnlyCurrentUser));
-//        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(currentBruker);
-//        when(brukerRepository.findBrukerByBrukerId("current_user")).thenReturn(Optional.of(currentBruker));
+        var teamBruker = TeamBruker.builder()
+                .id(1L)
+                .teamId(10L)
+                .brukerId(currentBruker.getId())
+                .build();
 
-        assertThatThrownBy(() -> teamService.removeBrukerFromTeam(10L, "current_user"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Siste bruker i et team kan ikke fjerne seg selv, forsøk heller å slette teamet");
+        when(teamRepository.findById(10L)).thenReturn(Mono.just(teamWithOnlyCurrentUser));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(brukerRepository.findByBrukerId("current_user")).thenReturn(Mono.just(currentBruker));
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(teamBrukerRepository.findByTeamId(anyLong())).thenReturn(Flux.just(teamBruker));
+        when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker));
 
-//        verify(teamBrukerRepository, never()).deleteById(any());
+        StepVerifier.create(teamService.removeBrukerFromTeam(10L, "current_user"))
+                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
+                        throwable.getMessage().contains("Siste bruker i et team kan ikke fjerne seg selv, forsøk heller å slette teamet"))
+                .verify();
+
+        verify(teamBrukerRepository, never()).deleteById(any(Long.class));
     }
 
     @Test
     void removeBrukerFromTeam_shouldThrowException_whenUserIsNotTeamMember() {
-        var nonMember = Bruker.builder()
-                .id(3L)
-                .brukerId("non_member")
-                .build();
 
         var memberToRemove = Bruker.builder()
                 .id(5L)
                 .brukerId("member_to_remove")
                 .build();
 
-        var teamWithoutCurrentUser = Team.builder()
-                .id(10L)
-//                .brukere(Collections.emptySet())
-                .build();
+        when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
+        when(brukerRepository.findByBrukerId("member_to_remove")).thenReturn(Mono.just(memberToRemove));
+        when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.empty());
+        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
 
-//        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamWithoutCurrentUser));
-//        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(nonMember);
-//        when(brukerRepository.findBrukerByBrukerId("member_to_remove")).thenReturn(Optional.of(memberToRemove));
+        StepVerifier.create(teamService.removeBrukerFromTeam(10L, "member_to_remove"))
+                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
+                        throwable.getMessage().contains("Kan ikke utføre operasjonen på team som bruker ikke er medlem av"))
+                .verify();
 
-        assertThatThrownBy(() -> teamService.removeBrukerFromTeam(10L, "member_to_remove"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Kan ikke utføre denne operasjonen på et team som brukeren ikke er medlem av");
-
-//        verify(teamBrukerRepository, never()).deleteById(any());
+        verify(teamBrukerRepository, never()).deleteById(any(Long.class));
     }
 }
