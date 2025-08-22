@@ -221,6 +221,7 @@ class TestgruppeServiceTest {
         when(identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)).thenReturn(Mono.just(1));
         when(bestillingRepository.countByGruppeId(GROUP_ID)).thenReturn(Mono.just(1));
         when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
+        when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
 
         StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, null))
                 .assertNext(testgruppe1 -> {
@@ -260,6 +261,7 @@ class TestgruppeServiceTest {
         when(testgruppeRepository.findByOpprettetAv_BrukerIdIn(any(), any()))
                 .thenReturn(Flux.just(testgruppe));
         when(testgruppeRepository.countByOpprettetAv_BrukerIdIn(any())).thenReturn(Mono.just(1L));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
 
         StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, "123"))
                 .assertNext(testgruppe1 -> {

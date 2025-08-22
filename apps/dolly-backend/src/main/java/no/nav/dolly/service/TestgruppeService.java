@@ -35,6 +35,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -83,28 +84,34 @@ public class TestgruppeService {
                         return brukerService.fetchOrCreateBruker()
                                 .flatMap(bruker ->
                                         this.fetchTestgruppeById(gruppeId)
-                                        .flatMap(testgruppe -> Mono.zip(
-                                                Mono.just(testgruppe),
-                                                Mono.just(bruker),
-                                                identRepository.countByGruppeId(testgruppe.getId()),
-                                                bestillingRepository.countByGruppeId(testgruppe.getId()),
-                                                identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
-                                                identService.getTestidenterFromGruppePaginert(gruppeId, pageNo,
-                                                        pageSize, sortColumn, sortRetning)))
-                                        .flatMap(tuple -> {
-                                            var context = MappingContextUtils.getMappingContext();
-                                            context.setProperty("bruker", tuple.getT2());
-                                            context.setProperty("antallIdenter", tuple.getT3());
-                                            context.setProperty("antallBestillinger", tuple.getT4());
-                                            context.setProperty("antallIBruk", tuple.getT5());
-                                            return Mono.just(mapperFacade.map(tuple.getT1(), RsTestgruppe.class, context))
-                                                    .zipWith(Mono.just(tuple.getT6()));
-                                        })
-                                        .map(tuple -> {
-                                            var context = MappingContextUtils.getMappingContext();
-                                            context.setProperty("identer", tuple.getT2());
-                                            return mapperFacade.map(tuple.getT1(), RsTestgruppeMedBestillingId.class, context);
-                                        }));
+                                                .flatMap(testgruppe -> Mono.zip(
+                                                        Mono.just(testgruppe),
+                                                        Mono.just(bruker),
+                                                        identRepository.countByGruppeId(testgruppe.getId()),
+                                                        bestillingRepository.countByGruppeId(testgruppe.getId()),
+                                                        identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
+                                                        brukerRepository.findAll()
+                                                                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                                                                    map.put(bruker1.getId(), bruker1);
+                                                                    return map;
+                                                                }),
+                                                        identService.getTestidenterFromGruppePaginert(gruppeId, pageNo,
+                                                                pageSize, sortColumn, sortRetning)))
+                                                .flatMap(tuple -> {
+                                                    var context = MappingContextUtils.getMappingContext();
+                                                    context.setProperty("bruker", tuple.getT2());
+                                                    context.setProperty("antallIdenter", tuple.getT3());
+                                                    context.setProperty("antallBestillinger", tuple.getT4());
+                                                    context.setProperty("antallIBruk", tuple.getT5());
+                                                    context.setProperty("alleBrukere", tuple.getT6());
+                                                    return Mono.just(mapperFacade.map(tuple.getT1(), RsTestgruppe.class, context))
+                                                            .zipWith(Mono.just(tuple.getT7()));
+                                                })
+                                                .map(tuple -> {
+                                                    var context = MappingContextUtils.getMappingContext();
+                                                    context.setProperty("identer", tuple.getT2());
+                                                    return mapperFacade.map(tuple.getT1(), RsTestgruppeMedBestillingId.class, context);
+                                                }));
                     } else {
                         return Mono.error(new NotFoundException(GRUPPE_MELDING.formatted(gruppeId)));
                     }
@@ -211,13 +218,19 @@ public class TestgruppeService {
                         Mono.just(testgruppe),
                         identRepository.countByGruppeId(testgruppe.getId()),
                         bestillingRepository.countByGruppeId(testgruppe.getId()),
-                        identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)))
+                        identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
+                        brukerRepository.findAll()
+                                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                                    map.put(bruker1.getId(), bruker1);
+                                    return map;
+                                })))
                 .map(tuple2 -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty("bruker", bruker);
                     context.setProperty("antallIdenter", tuple2.getT2());
                     context.setProperty("antallBestillinger", tuple2.getT3());
                     context.setProperty("antallIBruk", tuple2.getT4());
+                    context.setProperty("alleBrukere", tuple2.getT5());
                     return mapperFacade.map(tuple2.getT1(), RsTestgruppe.class, context);
                 })
                 .collectList()
@@ -262,7 +275,7 @@ public class TestgruppeService {
     public Mono<Void> endreGruppeTilknytning(Long gruppeId, String brukerId) {
 
         return Mono.zip(fetchTestgruppeById(gruppeId),
-                brukerService.fetchBruker(brukerId))
+                        brukerService.fetchBruker(brukerId))
                 .flatMap(tuple -> {
 
                     if (tuple.getT1().getOpprettetAvId().equals(tuple.getT2().getId())) {

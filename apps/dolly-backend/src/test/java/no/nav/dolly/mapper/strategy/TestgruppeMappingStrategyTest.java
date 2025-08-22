@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -47,7 +48,8 @@ class TestgruppeMappingStrategyTest {
         var testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)
                 .datoEndret(LocalDate.of(2000, 1, 1))
-                .opprettetAv(bruker)
+                .opprettetAvId(bruker.getId())
+                .sistEndretAvId(bruker.getId())
                 .id(2L)
                 .navn("gruppe")
                 .build();
@@ -57,6 +59,7 @@ class TestgruppeMappingStrategyTest {
         context.setProperty("antallIdenter", 1);
         context.setProperty("antallBestillinger", 1);
         context.setProperty("antallIBruk", 1);
+        context.setProperty("alleBrukere", Map.of(BRUKERID, bruker) );
 
         var rsTestgruppe = mapper.map(testgruppe, RsTestgruppe.class, context);
 

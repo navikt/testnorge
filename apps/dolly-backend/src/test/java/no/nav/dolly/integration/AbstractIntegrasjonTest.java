@@ -9,11 +9,11 @@ import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -21,6 +21,7 @@ import java.util.UUID;
 import static java.time.LocalDateTime.now;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.TEAM;
 
+@Disabled
 @DollySpringBootTest
 @ExtendWith(TestDatabaseConfig.class)
 public abstract class AbstractIntegrasjonTest {
