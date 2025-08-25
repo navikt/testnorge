@@ -54,6 +54,13 @@ export const validation = {
 						diagnose: requiredString,
 						diagnosekode: requiredString,
 					}),
+					mottaker: Yup.object({
+						orgNr: Yup.string()
+							.min(9, 'Orgnummer må være 9 siffer')
+							.max(9, 'Orgnummer må være 9 siffer')
+							.required('Må ha gyldig organisasjonsnummer'),
+						navn: requiredString,
+					}),
 					biDiagnoser: Yup.array().of(
 						ifPresent(
 							'$sykemelding.detaljertSykemelding.biDiagnoser[0].diagnose',
