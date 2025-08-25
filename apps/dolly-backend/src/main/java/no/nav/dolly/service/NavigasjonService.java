@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -50,6 +52,7 @@ public class NavigasjonService {
     private final TestgruppeRepository testgruppeRepository;
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
+    private final BrukerRepository brukerRepository;
 
     @Transactional(readOnly = true)
     public Mono<RsWhereAmI> navigerTilIdent(String ident) {
@@ -64,13 +67,19 @@ public class NavigasjonService {
                                                 identService.getPaginertIdentIndex(testident.getIdent(), testident.getGruppeId()),
                                                 identRepository.countByGruppeId(testident.getGruppeId()),
                                                 bestillingRepository.countByGruppeId(testident.getGruppeId()),
-                                                identRepository.countByGruppeIdAndIBruk(testident.getGruppeId(), true))
+                                                identRepository.countByGruppeIdAndIBruk(testident.getGruppeId(), true),
+                                                brukerRepository.findAll()
+                                                        .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                                                            map.put(bruker1.getId(), bruker1);
+                                                            return map;
+                                                        }))
                                         .map(tuple -> {
                                             var context = MappingContextUtils.getMappingContext();
                                             context.setProperty("bruker", bruker);
                                             context.setProperty("antallIdenter", tuple.getT3());
                                             context.setProperty("antallBestillinger", tuple.getT4());
                                             context.setProperty("antallIBruk", tuple.getT5());
+                                            context.setProperty("alleBrukere", tuple.getT6());
                                             return RsWhereAmI.builder()
                                                     .gruppe(mapperFacade.map(tuple.getT1(), RsTestgruppe.class, context))
                                                     .identHovedperson(testident.getIdent())
@@ -94,13 +103,19 @@ public class NavigasjonService {
                         brukerService.fetchOrCreateBruker(),
                         identRepository.countByGruppeId(bestilling.getGruppeId()),
                         bestillingRepository.countByGruppeId(bestilling.getGruppeId()),
-                        identRepository.countByGruppeIdAndIBruk(bestilling.getGruppeId(), true)))
+                        identRepository.countByGruppeIdAndIBruk(bestilling.getGruppeId(), true),
+                        brukerRepository.findAll()
+                                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                                    map.put(bruker1.getId(), bruker1);
+                                    return map;
+                                })))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty("bruker", tuple.getT3());
                     context.setProperty("antallIdenter", tuple.getT4());
                     context.setProperty("antallBestillinger", tuple.getT5());
                     context.setProperty("antallIBruk", tuple.getT6());
+                    context.setProperty("alleBrukere", tuple.getT7());
                     return RsWhereAmI.builder()
                             .bestillingNavigerTil(bestillingId)
                             .gruppe(mapperFacade.map(tuple.getT1(), RsTestgruppe.class, context))

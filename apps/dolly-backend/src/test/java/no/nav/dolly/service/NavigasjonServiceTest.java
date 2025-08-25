@@ -12,6 +12,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
@@ -60,6 +61,9 @@ class NavigasjonServiceTest {
     private BrukerService brukerService;
 
     @Mock
+    private BrukerRepository brukerRepository;
+
+    @Mock
     private TestgruppeRepository testgruppeRepository;
 
     @Mock
@@ -95,6 +99,7 @@ class NavigasjonServiceTest {
         when(identRepository.countByGruppeId(any())).thenReturn(Mono.just(1));
         when(bestillingRepository.countByGruppeId(any())).thenReturn(Mono.just(0));
         when(identRepository.countByGruppeIdAndIBruk(any(), any())).thenReturn(Mono.just(1));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
 
         StepVerifier.create(navigasjonService.navigerTilIdent(IDENT))
                 .expectNextMatches(rsWhereAmI ->
@@ -133,6 +138,7 @@ class NavigasjonServiceTest {
         when(identRepository.countByGruppeId(any())).thenReturn(Mono.just(1));
         when(bestillingRepository.countByGruppeId(any())).thenReturn(Mono.just(0));
         when(identRepository.countByGruppeIdAndIBruk(any(), any())).thenReturn(Mono.just(1));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
 
         StepVerifier.create(navigasjonService.navigerTilIdent(TENOR_IDENT))
                 .expectNextMatches(rsWhereAmI ->
@@ -190,6 +196,7 @@ class NavigasjonServiceTest {
         when(identRepository.countByGruppeId(1L)).thenReturn(Mono.just(1));
         when(bestillingRepository.countByGruppeId(bestilling.getGruppeId())).thenReturn(Mono.just(1));
         when(identRepository.countByGruppeIdAndIBruk(bestilling.getGruppeId(), true)).thenReturn(Mono.just(1));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
 
         Mono<RsWhereAmI> result = navigasjonService.navigerTilBestilling(1L);
 
