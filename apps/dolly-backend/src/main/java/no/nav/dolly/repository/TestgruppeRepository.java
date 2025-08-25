@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,9 +13,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Repository
-public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe, Long> {
+public interface TestgruppeRepository extends ReactiveSortingRepository<Testgruppe, Long> {
 
-    Flux<Testgruppe> findByOpprettetAvId(Long brukerId, Pageable pageable);
+    Flux<Testgruppe> findByOpprettetAvIdOrderByIdDesc(Long brukerId, Pageable pageable);
     Mono<Long> countByOpprettetAvId(Long brukerId);
 
     Flux<Testgruppe> findByOrderByIdDesc(Pageable pageable);
@@ -46,4 +46,9 @@ public interface TestgruppeRepository extends ReactiveCrudRepository<Testgruppe,
             where b.id = :bestillingId
             """)
     Mono<Testgruppe> findByBestillingId(@Param("bestillingId") Long bestillingId);
+
+    Mono<Testgruppe> findById(Long id);
+
+    @Modifying
+    Mono<Testgruppe> save(Testgruppe testgruppe);
 }

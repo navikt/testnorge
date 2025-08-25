@@ -204,7 +204,7 @@ public class TestgruppeService {
                                                 .collectList()
                                                 .zipWith(testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)))
                                 :
-                                testgruppeRepository.findByOpprettetAvId(bruker.getId(), PageRequest.of(pageNo, pageSize))
+                                testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(bruker.getId(), PageRequest.of(pageNo, pageSize))
                                         .collectList()
                                         .zipWith(testgruppeRepository.countByOpprettetAvId(bruker.getId())))
                                 .flatMap(tuple ->

@@ -71,7 +71,7 @@ public class OrganisasjonBestillingMalService {
 
         return brukerService.fetchBrukere()
                 .collect(Collectors.toMap(Bruker::getId, bruker -> bruker))
-                .flatMap(brukere -> organisasjonBestillingMalRepository.findAll()
+                .flatMap(brukere -> organisasjonBestillingMalRepository.findByOrderByMalNavn()
                         .collect(Collectors.groupingBy(bestilling -> getBruker(brukere, bestilling.getBrukerId())))
                         .flatMap(maler -> Flux.fromIterable(maler.entrySet())
                                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
@@ -101,7 +101,7 @@ public class OrganisasjonBestillingMalService {
     public Mono<RsOrganisasjonMalBestillingWrapper> getMalbestillingerByUser(String brukerId) {
 
         return brukerService.fetchBruker(brukerId)
-                .flatMap(bruker -> organisasjonBestillingMalRepository.findByBrukerId(bruker.getId())
+                .flatMap(bruker -> organisasjonBestillingMalRepository.findByBrukerIdOrderByMalNavn(bruker.getId())
                         .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
                                 .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
                                 .malNavn(bestilling1.getMalNavn())
@@ -133,7 +133,7 @@ public class OrganisasjonBestillingMalService {
         if (StringUtils.isBlank(malNavn)) {
             return Mono.empty();
         }
-        return organisasjonBestillingMalRepository.findByBrukerIdAndMalNavn(brukerId, malNavn)
+        return organisasjonBestillingMalRepository.findByBrukerIdAndMalNavnOrderByMalNavn(brukerId, malNavn)
                 .flatMap(malBestilling -> organisasjonBestillingMalRepository.deleteById(malBestilling.getId()))
                 .collectList()
                 .then();

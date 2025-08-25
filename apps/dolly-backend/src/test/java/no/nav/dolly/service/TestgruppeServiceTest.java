@@ -215,7 +215,7 @@ class TestgruppeServiceTest {
                 .build();
 
         when(brukerService.fetchOrCreateBruker(any())).thenReturn(Mono.just(bruker));
-        when(testgruppeRepository.findByOpprettetAvId(any(), any())).thenReturn(Flux.just(testgruppe));
+        when(testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(any(), any())).thenReturn(Flux.just(testgruppe));
         when(testgruppeRepository.countByOpprettetAvId(bruker.getId())).thenReturn(Mono.just(1L));
         when(identRepository.countByGruppeId(testgruppe.getId())).thenReturn(Mono.just(1));
         when(identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)).thenReturn(Mono.just(1));
@@ -226,7 +226,7 @@ class TestgruppeServiceTest {
         StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, null))
                 .assertNext(testgruppe1 -> {
                     assertThat(testgruppe1, is(notNullValue()));
-                    verify(testgruppeRepository).findByOpprettetAvId(bruker.getId(), Pageable.ofSize(10));
+                    verify(testgruppeRepository).findByOpprettetAvIdOrderByIdDesc(bruker.getId(), Pageable.ofSize(10));
 
                     var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
                     verify(mapperFacade).map(any(), any(), contextArgumentCaptor.capture());
@@ -249,7 +249,7 @@ class TestgruppeServiceTest {
                 .build();
 
         when(brukerService.fetchOrCreateBruker(anyString())).thenReturn(Mono.just(bruker));
-        when(testgruppeRepository.findByOpprettetAvId(any(), any())).thenReturn(Flux.just(testgruppe));
+        when(testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(any(), any())).thenReturn(Flux.just(testgruppe));
         when(testgruppeRepository.countByOpprettetAvId(bruker.getId())).thenReturn(Mono.just(1L));
         when(identRepository.countByGruppeId(testgruppe.getId())).thenReturn(Mono.just(1));
         when(identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)).thenReturn(Mono.just(1));

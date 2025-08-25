@@ -59,8 +59,8 @@ class TestgruppeControllerGetTest extends AbstractControllerTest {
                 .value(rsTestgruppePage -> {
                     assertThat(rsTestgruppePage.getAntallElementer(), is(2L));
                     assertThat(rsTestgruppePage.getContents().size(), is(2));
-                    assertThat(rsTestgruppePage.getContents().getFirst().getNavn(), is("Gruppen er ikke en favoritt"));
-                    assertThat(rsTestgruppePage.getContents().getLast().getNavn(), is("Gruppen er en favoritt"));
+                    assertThat(rsTestgruppePage.getContents().getFirst().getNavn(), is("Gruppen er en favoritt"));
+                    assertThat(rsTestgruppePage.getContents().getLast().getNavn(), is("Gruppen er ikke en favoritt"));
                 });
     }
 
