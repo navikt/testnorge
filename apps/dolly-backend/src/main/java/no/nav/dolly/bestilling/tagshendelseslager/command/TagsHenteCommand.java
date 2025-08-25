@@ -9,8 +9,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 public class TagsHenteCommand implements Callable<Mono<JsonNode>> {
 
@@ -31,11 +29,9 @@ public class TagsHenteCommand implements Callable<Mono<JsonNode>> {
                         .path(PDL_TAGS_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header(PERSONIDENT, ident)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }

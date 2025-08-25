@@ -8,16 +8,14 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.service.BestillingService;
 import org.springframework.cache.CacheManager;
+import org.springframework.r2dbc.connection.R2dbcTransactionManager;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.reactive.TransactionalOperator;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,19 +32,19 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Service
 public class TransactionHelperService {
 
-    private final TransactionTemplate transactionTemplate;
+    private final TransactionalOperator transactionalOperator;
     private final CacheManager cacheManager;
     private final BestillingRepository bestillingRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingService bestillingService;
 
-    public TransactionHelperService(PlatformTransactionManager transactionManager,
+    public TransactionHelperService(R2dbcTransactionManager transactionManager,
                                     CacheManager cacheManager,
                                     BestillingRepository bestillingRepository,
                                     BestillingProgressRepository bestillingProgressRepository,
                                     BestillingService bestillingService) {
 
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.transactionalOperator = TransactionalOperator.create(transactionManager);
         this.cacheManager = cacheManager;
         this.bestillingRepository = bestillingRepository;
         this.bestillingProgressRepository = bestillingProgressRepository;
@@ -54,89 +52,45 @@ public class TransactionHelperService {
     }
 
     @Retryable
-    public BestillingProgress opprettProgress(BestillingProgress progress) {
+    public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
 
-        return transactionTemplate.execute(status -> {
-            bestillingRepository.findByIdAndLock(progress.getBestilling().getId())
-                    .ifPresent(bestilling -> {
-                        bestilling.setSistOppdatert(now());
-                        bestillingRepository.save(bestilling);
-                        bestillingProgressRepository.save(progress);
-                    });
-            clearCache();
-            return progress;
-        });
+        return transactionalOperator.execute(status1 ->
+
+                        bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                                .flatMap(progress -> {
+                                    setter.accept(progress, status);
+                                    return bestillingProgressRepository.save(progress);
+                                })
+                                .doFinally(signal -> clearCache()))
+                .collectList()
+                .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
-    @Retryable
-    public BestillingProgress persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
-
-        return transactionTemplate.execute(status1 -> {
-
-            var akkumulert = new AtomicReference<>(bestillingProgress);
-
-            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
-                    .ifPresent(progress -> {
-                        setter.accept(progress, status);
-                        akkumulert.set(bestillingProgressRepository.save(progress));
-                        clearCache();
-                    });
-
-            return akkumulert.get();
-        });
-    }
-
-    public BestillingProgress persister(BestillingProgress bestillingProgress,
-                                        Function<BestillingProgress, String> getter,
-                                        BiConsumer<BestillingProgress, String> setter, String status) {
+    public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress,
+                                              Function<BestillingProgress, String> getter,
+                                              BiConsumer<BestillingProgress, String> setter, String status) {
 
         return persister(bestillingProgress, getter, setter, status, null);
     }
 
     @Retryable
-    public BestillingProgress persister(BestillingProgress bestillingProgress,
-                                        Function<BestillingProgress, String> getter,
-                                        BiConsumer<BestillingProgress, String> setter, String status,
-                                        String separator) {
+    public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress,
+                                              Function<BestillingProgress, String> getter,
+                                              BiConsumer<BestillingProgress, String> setter, String status,
+                                              String separator) {
 
-        return transactionTemplate.execute(status1 -> {
+        return transactionalOperator.execute(status1 ->
 
-            var akkumulert = new AtomicReference<>(bestillingProgress);
-
-            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
-                    .ifPresent(progress -> {
-                        var value = getter.apply(progress);
-                        var result = applyChanges(value, status, separator);
-                        setter.accept(progress, result);
-                        akkumulert.set(bestillingProgressRepository.save(progress));
-                        clearCache();
-                    });
-
-            return akkumulert.get();
-        });
-    }
-
-    @Retryable
-    public BestillingProgress persisterDynamicProgress(BestillingProgress bestillingProgress,
-                                                       Function<BestillingProgress, String> getter,
-                                                       BiConsumer<BestillingProgress, String> setter,
-                                                       String status) {
-
-        return transactionTemplate.execute(status1 -> {
-
-            var akkumulert = new AtomicReference<>(bestillingProgress);
-
-            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
-                    .ifPresent(progress -> {
-                        var value = getter.apply(progress);
-                        var result = applyChanges(value, status);
-                        setter.accept(progress, result);
-                        akkumulert.set(bestillingProgressRepository.save(progress));
-                        clearCache();
-                    });
-
-            return akkumulert.get();
-        });
+                        bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                                .doOnNext(progress -> {
+                                    var value = getter.apply(progress);
+                                    var result = applyChanges(value, status, separator);
+                                    setter.accept(progress, result);
+                                })
+                                .flatMap(bestillingProgressRepository::save)
+                                .doFinally(signal -> clearCache()))
+                .collectList()
+                .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
     private String applyChanges(String value, String status, String separator) {
@@ -156,75 +110,46 @@ public class TransactionHelperService {
         }
     }
 
-    private String applyChanges(String gmlStatus, String nyStatus) {
+    @Retryable
+    public Mono<String> getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
 
-        if (isBlank(gmlStatus)) {
-            return nyStatus;
-
-        } else {
-
-            var nyeStatuser = Arrays.stream(nyStatus.split(","))
-                    .filter(status -> status.split(":").length > 1)
-                    .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
-            var gamleStatuser = Arrays.stream(gmlStatus.split(","))
-                    .filter(status -> status.split(":").length > 1)
-                    .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
-
-            var resultater = new HashMap<>(gamleStatuser);
-            resultater.putAll(nyeStatuser);
-
-            return resultater.entrySet().stream()
-                    .map(data -> "%s:%s".formatted(data.getKey(), data.getValue()))
-                    .collect(Collectors.joining(","));
-        }
+        return bestillingProgressRepository.findById(bestillingProgress.getId())
+                .map(getter);
     }
 
     @Retryable
-    public String getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
+    public Mono<Bestilling> persister(Long bestillingId, RsDollyBestilling bestilling) {
 
-        var status = new AtomicReference<String>(null);
-        bestillingProgressRepository.findById(bestillingProgress.getId())
-                .ifPresent(progress ->
-                        status.set(getter.apply(progress)));
+        return transactionalOperator.execute(status ->
 
-        return status.get();
+                        bestillingService.getBestKriterier(bestilling)
+                                .flatMap(kriterier ->
+                                        bestillingRepository.findByIdAndLock(bestillingId)
+                                                .doOnNext(best -> {
+                                                    bestilling.setId(bestillingId);
+                                                    best.setBestKriterier(kriterier);
+                                                })
+                                                .flatMap(bestillingRepository::save)))
+                .collectList()
+                .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
     @Retryable
-    public Bestilling persister(Long bestillingId, RsDollyBestilling bestilling) {
+    public Mono<Bestilling> oppdaterBestillingFerdig(Long id) {
 
-        return transactionTemplate.execute(status -> {
-
-            var akkumulert = new AtomicReference<Bestilling>(null);
-            bestillingRepository.findByIdAndLock(bestillingId)
-                    .ifPresent(best -> {
-                        bestilling.setId(bestillingId);
-                        best.setBestKriterier(bestillingService.getBestKriterier(bestilling));
-                        akkumulert.set(bestillingRepository.save(best));
-                    });
-
-            return akkumulert.get();
-        });
-    }
-
-    @Retryable
-    public Bestilling oppdaterBestillingFerdig(Long id, Consumer<Bestilling> bestillingFunksjon) {
-
-        return transactionTemplate.execute(status -> {
-
-            var akkumulert = new AtomicReference<Bestilling>(null);
+        return transactionalOperator.execute(status ->
 
             bestillingRepository.findByIdAndLock(id)
-                    .ifPresent(bestilling -> {
+                    .flatMap(bestilling -> {
                         bestilling.setSistOppdatert(now());
                         bestilling.setFerdig(true);
-                        bestillingFunksjon.accept(bestilling);
-                        akkumulert.set(bestillingRepository.save(bestilling));
-                        clearCache();
-                    });
-
-            return akkumulert.get();
-        });
+                        return bestillingService.cleanBestilling(bestilling)
+                                .flatMap(bestillingRepository::save)
+                                .doOnNext(ignore -> clearCache());
+                    })
+                    .switchIfEmpty(Mono.error(new RuntimeException("Bestilling med id " + id + " finnes ikke."))))
+                    .collectList()
+                    .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
     public void clearCache() {

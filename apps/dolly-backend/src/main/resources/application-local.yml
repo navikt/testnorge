@@ -8,10 +8,17 @@ spring:
     type: none
   config:
     import: "sm://"
-  datasource:
+  flyway:
     url: jdbc:postgresql://localhost:5432/testnav-dolly-backend-local
+    user: testnav-dolly-backend-local
+    password: ${sm\://testnav-dolly-backend-local}
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/testnav-dolly-backend-local
     username: testnav-dolly-backend-local
     password: ${sm\://testnav-dolly-backend-local}
+  devtools:
+    restart:
+      enabled: false
 
 management:
   health:

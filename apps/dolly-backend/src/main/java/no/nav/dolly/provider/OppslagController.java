@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -26,14 +28,14 @@ public class OppslagController {
 
     @GetMapping("/inntektsmelding/{enumtype}")
     @Operation(description = "Henter enumtyper for inntektsmelding")
-    public List<String> getInntektsmeldingeTyper(@PathVariable EnumTypes enumtype) {
+    public Mono<List<String>> getInntektsmeldingeTyper(@PathVariable EnumTypes enumtype) {
 
         return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 
     @GetMapping("/transaksjonid")
     @Operation(description = "Henter transaksjon IDer for bestillingId, ident og system")
-    public List<RsTransaksjonMapping> getTransaksjonIderIdent(
+    public Flux<RsTransaksjonMapping> getTransaksjonIderIdent(
             @Parameter(description = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long
                     bestillingId,
             @Parameter(description = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam String

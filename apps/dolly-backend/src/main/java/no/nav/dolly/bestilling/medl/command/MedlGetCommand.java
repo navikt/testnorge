@@ -11,8 +11,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class MedlGetCommand implements Callable<Flux<MedlDataResponse>> {
@@ -30,7 +28,6 @@ public class MedlGetCommand implements Callable<Flux<MedlDataResponse>> {
                         .path(MEDL_URL)
                         .build(ident))
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(MedlDataResponse.class)
                 .doOnError(

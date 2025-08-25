@@ -4,8 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
+import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.service.BestillingService;
@@ -22,12 +21,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.Set;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -38,29 +36,33 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequestMapping(value = "/api/v1/bestilling", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BestillingController {
 
-    private final MapperFacade mapperFacade;
     private final BestillingService bestillingService;
-    private final OrganisasjonBestillingService organisasjonBestillingService;
-    private final NavigasjonService navigasjonService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
+    private final MapperFacade mapperFacade;
+    private final NavigasjonService navigasjonService;
+    private final OrganisasjonBestillingService organisasjonBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
     @Operation(description = "Hent Bestilling med bestillingsId")
-    public RsBestillingStatus getBestillingById(@PathVariable("bestillingId") Long bestillingId) {
-        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
+    public Mono<RsBestillingStatus> getBestillingById(@PathVariable("bestillingId") Long bestillingId) {
+
+        return bestillingService.fetchBestillingById(bestillingId)
+                .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class));
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @DeleteMapping("/{bestillingId}")
     @Operation(description = "Slett Bestilling med bestillingsId")
-    public void deleteBestillingById(@PathVariable("bestillingId") Long bestillingId) {
-        bestillingService.slettBestillingByBestillingId(bestillingId);
+    public Mono<Void> deleteBestillingById(@PathVariable("bestillingId") Long bestillingId) {
+
+        return bestillingService.slettBestillingByBestillingId(bestillingId);
     }
 
     @GetMapping("/soekBestilling")
     @Operation(description = "Hent Bestillinger basert på fragment")
-    public List<RsBestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
+    public Flux<RsBestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
+
         return bestillingService.fetchBestillingByFragment(fragment);
     }
 
@@ -74,48 +76,52 @@ public class BestillingController {
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
-    @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
-    public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
+    @Operation(description = "Hent bestillinger tilhørende en gruppe med gruppeId")
+    public Flux<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
                                                     @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "2000") Integer pageSize) {
-        var bestillinger = bestillingService.getBestillingerFromGruppeIdPaginert(gruppeId, page, pageSize);
-        if (nonNull(bestillinger) && !bestillinger.isEmpty()) {
-            return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
-        }
-        return mapperFacade.mapAsList(emptyList(), RsBestillingStatus.class);
+
+        return bestillingService.getBestillingerFromGruppeIdPaginert(gruppeId, page, pageSize)
+                .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class));
     }
 
     @GetMapping("/gruppe/{gruppeId}/ikkeferdig")
-    @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
-    public List<RsBestillingStatus> getIkkeFerdigBestillinger(@PathVariable("gruppeId") Long gruppeId) {
-        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(gruppeId), RsBestillingStatus.class);
+    @Operation(description = "Hent bestillinger tilhørende en gruppe med gruppeId")
+    public Flux<RsBestillingStatus> getIkkeFerdigBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+
+        return bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(gruppeId)
+                .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class));
     }
 
     @GetMapping("/gruppe/{gruppeId}/miljoer")
     @Operation(description = "Hent alle bestilte miljøer for en gruppe med gruppeId")
-    public List<String> getAlleBestilteMiljoer(@PathVariable("gruppeId") Long gruppeId) {
-        return bestillingService.fetchBestilteMiljoerByGruppeId(gruppeId).stream()
-                .toList();
+    public Mono<Set<String>> getAlleBestilteMiljoer(@PathVariable("gruppeId") Long gruppeId) {
+
+        return bestillingService.fetchBestilteMiljoerByGruppeId(gruppeId);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @Operation(description = "Stopp en Bestilling med bestillingsId")
     @Transactional
-    public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "organisasjonBestilling", required = false) Boolean organisasjonBestilling) {
+    public Mono<RsBestillingStatus> stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "organisasjonBestilling", required = false) Boolean organisasjonBestilling) {
 
-        return isTrue(organisasjonBestilling)
-                ? mapperFacade.map(organisasjonBestillingService.cancelBestilling(bestillingId), RsBestillingStatus.class)
-                : mapperFacade.map(bestillingService.cancelBestilling(bestillingId), RsBestillingStatus.class);
+        return (isTrue(organisasjonBestilling)
+                ? organisasjonBestillingService.cancelBestilling(bestillingId)
+                : bestillingService.cancelBestilling(bestillingId))
+                .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class));
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
     @Operation(description = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
     @Transactional
-    public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
-        Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer);
-        gjenopprettBestillingService.executeAsync(bestilling);
-        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    public Mono<RsBestillingStatus> gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
+
+        return bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer)
+                        .map(bestilling -> {
+                            gjenopprettBestillingService.executeAsync(bestilling);
+                            return mapperFacade.map(bestilling, RsBestillingStatus.class);
+                        });
     }
 }

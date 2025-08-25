@@ -11,8 +11,6 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class TagsSlettingCommand implements Callable<Flux<String>> {
@@ -37,7 +35,6 @@ public class TagsSlettingCommand implements Callable<Flux<String>> {
                         .queryParam(TAGS_QUERY, tags)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(String.class)
                 .doOnError(WebClientError.logTo(log))

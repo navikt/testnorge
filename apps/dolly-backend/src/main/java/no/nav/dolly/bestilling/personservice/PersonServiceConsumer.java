@@ -39,8 +39,8 @@ public class PersonServiceConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            ObjectMapper objectMapper
-    ) {
+            ObjectMapper objectMapper) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPersonService();
         this.webClient = webClient

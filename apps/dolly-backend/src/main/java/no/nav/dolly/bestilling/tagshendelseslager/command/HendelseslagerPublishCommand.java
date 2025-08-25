@@ -12,8 +12,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class HendelseslagerPublishCommand implements Callable<Mono<HendelselagerResponse>> {
@@ -34,7 +32,6 @@ public class HendelseslagerPublishCommand implements Callable<Mono<Hendelselager
                         .path(PDL_PUBLISH)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header(PERSON_IDENTER, String.join(",", identer))
                 .retrieve()
                 .toEntity(String.class)

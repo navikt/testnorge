@@ -7,6 +7,7 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.BegrunnelseForReduksjon
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.YtelseType;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -14,10 +15,10 @@ import java.util.stream.Stream;
 @Service
 public class InntektsmeldingEnumService {
 
-    public List<String> getEnumType(EnumTypes enumType) {
+    public Mono<List<String>> getEnumType(EnumTypes enumType) {
 
-        return switch (enumType) {
-            case AARSAK_TIL_INNSENDING_TYPE -> Stream.of(AarsakTilInnsendingType.values())
+        return Mono.just(switch (enumType) {
+            case AARSAK_TIL_INNSENDING_TYPE -> (Stream.of(AarsakTilInnsendingType.values()))
                     .map(Enum::name)
                     .toList();
             case AARSAK_TIL_UTSETTELSE_TYPE -> Stream.of(AarsakTilUtsettelseType.values())
@@ -35,7 +36,7 @@ public class InntektsmeldingEnumService {
             case YTELSE_TYPE -> Stream.of(YtelseType.values())
                     .map(Enum::name)
                     .toList();
-        };
+        });
     }
 
     public enum EnumTypes {

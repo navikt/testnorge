@@ -1,29 +1,21 @@
 package no.nav.dolly.domain.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Entity
 @Getter
 @Setter
 @Builder
@@ -33,29 +25,60 @@ import java.util.Set;
 public class Team implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "BRUKER_ID")
+    @Column("BRUKER_ID")
     private Long brukerId;
 
-    @Column(nullable = false, unique = true)
+    @Column("NAVN")
     private String navn;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "opprettet_av")
+    @Column("OPPRETTET")
+    private LocalDateTime opprettetTidspunkt;
+
+    @Column("OPPRETTET_AV")
+    private Long opprettetAvId;
+
+    @Transient
     private Bruker opprettetAv;
 
-    @Column
+    @Column("BESKRIVELSE")
     private String beskrivelse;
 
-    @ManyToMany
-    @JoinTable(name = "TEAM_BRUKER",
-            joinColumns = @JoinColumn(name = "team_id"),
-            inverseJoinColumns = @JoinColumn(name = "bruker_id"))
+    @Transient
     @Builder.Default
     private Set<Bruker> brukere = new HashSet<>();
 
-    @CreationTimestamp
-    private LocalDateTime opprettet;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Team team = (Team) o;
+        return Objects.equals(id, team.id) &&
+                Objects.equals(brukerId, team.brukerId) &&
+                Objects.equals(navn, team.navn) &&
+                Objects.equals(opprettetTidspunkt, team.opprettetTidspunkt) &&
+                Objects.equals(opprettetAvId, team.opprettetAvId) &&
+                Objects.equals(opprettetAv, team.opprettetAv) &&
+                Objects.equals(beskrivelse, team.beskrivelse);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, brukerId, navn,
+                opprettetTidspunkt, opprettetAvId,
+                opprettetAv, beskrivelse);
+    }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "id=" + id +
+                ", brukerId=" + brukerId +
+                ", navn='" + navn + '\'' +
+                ", opprettetTidspunkt=" + opprettetTidspunkt +
+                ", opprettetAvId=" + opprettetAvId +
+                ", opprettetAv=" + opprettetAv +
+                ", beskrivelse='" + beskrivelse + '\'' +
+                '}';
+    }
 }

@@ -66,10 +66,10 @@ public class TagsHendelseslagerConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "tags_get"})
-    public JsonNode getTag(String ident) {
+    public Mono<JsonNode> getTag(String ident) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new TagsHenteCommand(webClient, ident, token.getTokenValue()).call()).block();
+                .flatMap(token -> new TagsHenteCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})

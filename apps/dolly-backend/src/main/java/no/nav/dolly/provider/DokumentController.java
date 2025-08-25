@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class DokumentController {
 
     @Operation(description = "Henter dokumenter basert på bestillingId")
     @GetMapping("/bestilling/{bestillingId}")
-    public List<Dokument> getDokumenterRelatertTilBestilling(@Parameter(description = "bestillingId fra bestilling")
+    public Flux<Dokument> getDokumenterRelatertTilBestilling(@Parameter(description = "bestillingId fra bestilling")
                                         @PathVariable("bestillingId") Long bestilllingId) {
 
         return dokumentService.getDokumenterByBestilling(bestilllingId);
@@ -29,7 +30,7 @@ public class DokumentController {
 
     @Operation(description = "Henter dokumenter basert på mal-Id")
     @GetMapping("/mal/{malId}")
-    public List<Dokument> getDokumenterRelatertTilMal(@Parameter(description = "mal-Id fra mal")
+    public Flux<Dokument> getDokumenterRelatertTilMal(@Parameter(description = "mal-Id fra mal")
                                         @PathVariable("malId") Long malId) {
 
         return dokumentService.getDokumenterByMal(malId);
@@ -37,7 +38,7 @@ public class DokumentController {
 
     @Operation(description = "Henter dokumenter basert på liste av dokumentId")
     @GetMapping("/dokument/{dokumentId}")
-    public List<Dokument> getDokumenter(@Parameter(description = "Liste av dokumentId")
+    public Flux<Dokument> getDokumenter(@Parameter(description = "Liste av dokumentId")
                                         @PathVariable("dokumentId") List<Long> dokumentIdListe) {
 
         return dokumentService.getDokumenter(dokumentIdListe);

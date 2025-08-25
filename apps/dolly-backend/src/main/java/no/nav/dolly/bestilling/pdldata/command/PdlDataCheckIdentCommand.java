@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static java.lang.String.join;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,7 +34,6 @@ public class PdlDataCheckIdentCommand implements Callable<Flux<AvailibilityRespo
                         .queryParam("identer", identer)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(AvailibilityResponseDTO.class)
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on GET of idents %s".formatted(join(",", identer))))

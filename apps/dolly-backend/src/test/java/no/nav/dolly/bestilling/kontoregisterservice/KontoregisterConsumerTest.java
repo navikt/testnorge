@@ -3,62 +3,36 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
 
-@DollySpringBootTest
-@AutoConfigureWireMock(port = 0)
-class KontoregisterConsumerTest {
+class KontoregisterConsumerTest extends AbstractConsumerTest {
+
     private static final String IDENT = "12345678901";
     private static final String KONTONUMMER = "1234567890";
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private TokenExchange tokenService;
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private BestillingElasticRepository bestillingElasticRepository;
-
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    void setup() {
-
-        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
-    }
 
     @AfterEach
     void cleanUp() {
@@ -67,7 +41,7 @@ class KontoregisterConsumerTest {
                 .forEach(e -> WireMock.removeServeEvent(e.getId()));
     }
 
-    private String hentKontoResponse() {
+    private static String hentKontoResponse() {
         return "{\n" +
                 "    \"kontohaver\": \"" + IDENT + "\",\n" +
                 "    \"kontonummer\": \"" + KONTONUMMER + "\",\n" +
@@ -159,9 +133,8 @@ class KontoregisterConsumerTest {
                 .toList();
 
         hentBankkontoer
-                .forEach(b -> {
-                    assertThat("sendt ident er riktig", IDENT.equals(b.getKontohaver()));
-                });
+                .forEach(b ->
+                        assertThat("sendt ident er riktig", IDENT.equals(b.getKontohaver())));
 
         assertThat(hentResponse.getAktivKonto().getKontonummer(), is(equalTo(KONTONUMMER)));
         assertThat(hentResponse.getAktivKonto().getKontohaver(), is(equalTo(IDENT)));

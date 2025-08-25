@@ -31,8 +31,8 @@ public class UdiStubConsumer extends ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient) {
+
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavUdistubProxy();
         this.webClient = webClient

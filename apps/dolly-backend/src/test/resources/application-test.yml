@@ -11,6 +11,7 @@ open:
     username: dummy
     password: dummy
     total-fields: 150
+    index: dolly
 
 consumers:
   kodeverk-api:
@@ -83,13 +84,17 @@ management:
         include: none
 
 spring:
-  datasource:
-    type: org.springframework.jdbc.datasource.SimpleDriverDataSource
-    url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true
-    username: user
-    password: pass
-  flyway:
-    enabled: true
-    url: jdbc:tc:postgresql:15:///dollyDB?TC_REUSABLE=true
-    user: user
-    password: pass
+  config:
+    activate:
+      on-profile: test
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  main:
+    web-application-type: reactive
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          enabled: false

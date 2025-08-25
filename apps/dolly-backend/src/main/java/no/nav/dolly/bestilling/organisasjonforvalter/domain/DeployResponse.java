@@ -22,7 +22,11 @@ public class DeployResponse {
     private Map<String, List<EnvStatus>> orgStatus;
 
     public Map<String, List<EnvStatus>> getOrgStatus() {
-        return isNull(orgStatus) ? new HashMap<>() : orgStatus;
+
+        if (isNull(orgStatus)) {
+            orgStatus = new HashMap<>();
+        }
+        return orgStatus;
     }
 
     @Data
@@ -35,5 +39,9 @@ public class DeployResponse {
         private String uuid;
         private Status status;
         private String details;
+
+        public boolean isError() {
+            return Status.ERROR == status;
+        }
     }
 }

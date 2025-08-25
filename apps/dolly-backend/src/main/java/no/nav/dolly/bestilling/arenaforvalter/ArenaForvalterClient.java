@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.arenaforvalter.service.*;
 import no.nav.dolly.bestilling.arenaforvalter.utils.ArenaEksisterendeVedtakUtil;
@@ -46,25 +45,22 @@ public class ArenaForvalterClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.just(bestilling)
+        return Mono.just(bestilling)
                 .filter(best -> nonNull(best.getArenaforvalter()))
                 .map(RsDollyUtvidetBestilling::getArenaforvalter)
                 .flatMap(ordre -> arenaForvalterConsumer.getEnvironments()
                         .filter(env -> bestilling.getEnvironments().contains(env))
                         .collectList()
-                        .doOnNext(miljoer -> {
-                            var initStatus = miljoer.stream()
-                                    .map(miljo -> String.format(MILJOE_FMT, miljo, getInfoVenter(SYSTEM)))
-                                    .collect(Collectors.joining(","));
-                            transactionHelperService.persister(progress, BestillingProgress::getArenaforvalterStatus,
-                                    BestillingProgress::setArenaforvalterStatus, initStatus);
-                        })
+                        .flatMap(miljoer -> oppdaterStatus(progress, miljoer.stream()
+                                .map(miljo -> String.format(MILJOE_FMT, miljo, getInfoVenter(SYSTEM)))
+                                .collect(Collectors.joining(",")))
+                                .thenReturn(miljoer))
                         .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
                                 .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                                 .onErrorResume(error -> Mono.just(fmtResponse(miljoer, ANDREFEIL, WebClientError.describe(error).getMessage())))
-                                .map(status -> futurePersist(progress, status))));
+                                .flatMap(status -> oppdaterStatus(progress, status))));
     }
 
     private Mono<String> doArenaOpprett(Arenadata arenadata, String ident, List<String> miljoer) {
@@ -92,20 +88,18 @@ public class ArenaForvalterClient implements ClientRegister {
                                         arenaDagpengerService.sendDagpenger(arenadata, arenaOperasjoner, ident, miljoe)
                                                 .map(dagpengerStatus -> fmtResponse(miljoe, DAGPENGER, dagpengerStatus))
                                 ));
-                           } else {
+                    } else {
                         return Flux.just(fmtResponse(miljoe, BRUKER, NOT_SUPPORTED));
                     }
                 })
                 .collect(Collectors.joining(","));
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::getArenaforvalterStatus,
-                    BestillingProgress::setArenaforvalterStatus, StringUtils.left(status, 4000));
-            return progress;
-        };
+        return
+                transactionHelperService.persister(progress, BestillingProgress::getArenaforvalterStatus,
+                        BestillingProgress::setArenaforvalterStatus, StringUtils.left(status, 4000));
     }
 
     @Override

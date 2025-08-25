@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Set;
@@ -31,35 +33,37 @@ public class OrganisasjonController {
 
     @PutMapping("/gjenopprett/{bestillingId}")
     @Operation(description = "Gjenopprett organisasjon")
-    public RsOrganisasjonBestillingStatus gjenopprettOrganisasjon(@PathVariable("bestillingId") Long bestillingId,
-                                                                  @RequestParam(value = "miljoer", required = false) String miljoer) {
+    public Mono<RsOrganisasjonBestillingStatus> gjenopprettOrganisasjon(@PathVariable("bestillingId") Long bestillingId,
+                                                                        @RequestParam(value = "miljoer", required = false) String miljoer) {
 
-        RsOrganisasjonBestillingStatus bestillingStatus = bestillingService.fetchBestillingStatusById(bestillingId);
+        return bestillingService.fetchBestillingStatusById(bestillingId)
+                .flatMap(bestillingStatus -> {
 
-        DeployRequest request = new DeployRequest(
-                Set.of(bestillingStatus.getOrganisasjonNummer()),
-                Set.of(miljoer.split(",")));
+                    var request = new DeployRequest(
+                            Set.of(bestillingStatus.getOrganisasjonNummer()),
+                            Set.of(miljoer.split(",")));
 
-        RsOrganisasjonBestillingStatus status = RsOrganisasjonBestillingStatus.builder()
-                .organisasjonNummer(request.getOrgnumre().iterator().next())
-                .environments(request.getEnvironments())
-                .bestilling(bestillingStatus.getBestilling())
-                .build();
+                    var status = RsOrganisasjonBestillingStatus.builder()
+                            .organisasjonNummer(request.getOrgnumre().iterator().next())
+                            .environments(request.getEnvironments())
+                            .bestilling(bestillingStatus.getBestilling())
+                            .build();
 
-        OrganisasjonBestilling bestilling = bestillingService.saveBestilling(status);
-
-        organisasjonClient.gjenopprett(request, bestilling);
-
-        return getStatus(bestilling, bestillingStatus.getOrganisasjonNummer());
+                    return bestillingService.saveBestilling(status)
+                            .flatMap(bestilling ->
+                                    Mono.zip(Mono.just(bestilling), Mono.just(bestillingStatus), Mono.just(request)));
+                })
+                .flatMap(tuple ->
+                        organisasjonClient.gjenopprett(tuple.getT3(), tuple.getT1())
+                                .then(getStatus(tuple.getT1(), tuple.getT2().getOrganisasjonNummer())));
     }
 
     @GetMapping()
     @Operation(description = "Hent opprettede organisasjoner basert på brukerId")
-    public List<OrganisasjonDetaljer> hentOrganisasjoner(
+    public Flux<OrganisasjonDetaljer> hentOrganisasjoner(
             @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autentisering)")
             @RequestParam(required = false) String brukerId) {
 
         return bestillingService.getOrganisasjoner(brukerId);
     }
-
 }

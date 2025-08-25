@@ -33,8 +33,8 @@ public class AaregConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient webClient,
-            WebClientLogger webClientLogger
-    ) {
+            WebClientLogger webClientLogger) {
+
         serverProperties = consumers.getTestnavAaregProxy();
         this.tokenService = tokenService;
         var webClientBuilder = webClient

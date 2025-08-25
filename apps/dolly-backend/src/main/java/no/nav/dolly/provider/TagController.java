@@ -13,11 +13,13 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.Tags.TagBeskrivelse;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -50,22 +49,22 @@ public class TagController {
     private final TestgruppeRepository testgruppeRepository;
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
     private final PersonServiceConsumer personServiceConsumer;
+    private final IdentRepository identRepository;
 
     @GetMapping()
     @Transactional
     @Operation(description = "Hent alle gyldige Tags")
-    public Set<TagBeskrivelse> hentAlleTags() {
+    public Flux<TagBeskrivelse> hentAlleTags() {
 
-        return Arrays.stream(Tags.values())
+        return Flux.fromArray(Tags.values())
                 .filter(tags -> !tags.name().equals(Tags.DOLLY.name()))
-                .map(tag -> TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build())
-                .collect(Collectors.toSet());
+                .map(tag -> TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build());
     }
 
     @GetMapping("/ident/{ident}")
     @Transactional
     @Operation(description = "Hent tags på ident")
-    public JsonNode hentTagsPaaIdent(@PathVariable("ident") String ident) {
+    public Mono<JsonNode> hentTagsPaaIdent(@PathVariable("ident") String ident) {
 
         return tagsHendelseslagerConsumer.getTag(ident);
     }
@@ -78,42 +77,42 @@ public class TagController {
                                                           @PathVariable("gruppeId") Long gruppeId) {
 
         return testgruppeRepository.findById(gruppeId)
-                .map(gruppe -> personServiceConsumer.getPdlPersoner(
-                                gruppe.getTestidenter().stream()
-                                        .map(Testident::getIdent)
-                                        .toList())
-                        .filter(pdlBolk -> nonNull(pdlBolk.getData()))
-                        .map(PdlPersonBolk::getData)
-                        .map(PdlPersonBolk.Data::getHentPersonBolk)
-                        .flatMap(Flux::fromIterable)
-                        .filter(personBolk -> nonNull(personBolk.getPerson()))
-                        .map(person -> Stream.of(Stream.of(person.getIdent()),
-                                        person.getPerson().getSivilstand().stream()
-                                                .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                                .filter(Objects::nonNull),
-                                        person.getPerson().getForelderBarnRelasjon().stream()
-                                                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent),
-                                        person.getPerson().getForeldreansvar().stream()
-                                                .map(ForeldreansvarDTO::getAnsvarlig)
-                                                .filter(Objects::nonNull),
-                                        person.getPerson().getFullmakt().stream()
-                                                .map(FullmaktDTO::getMotpartsPersonident)
-                                                .filter(Objects::nonNull),
-                                        person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
-                                                .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
-                                                .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                                .filter(Objects::nonNull),
-                                        person.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                                                .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
-                                                .filter(Objects::nonNull)
-                                                .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                                .filter(Objects::nonNull))
-                                .flatMap(Function.identity())
-                                .distinct()
-                                .toList())
-                        .flatMap(Flux::fromIterable)
+                .flatMap(gruppe -> identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
+                        .map(Testident::getIdent)
                         .collectList()
-                        .flatMap(personBolk -> tagsHendelseslagerConsumer.createTags(personBolk, tags)))
-                .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
+                        .flatMap(identer -> personServiceConsumer.getPdlPersoner(identer)
+                                .filter(pdlBolk -> nonNull(pdlBolk.getData()))
+                                .map(PdlPersonBolk::getData)
+                                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                                .flatMap(Flux::fromIterable)
+                                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                                .map(person -> Stream.of(Stream.of(person.getIdent()),
+                                                person.getPerson().getSivilstand().stream()
+                                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                                        .filter(Objects::nonNull),
+                                                person.getPerson().getForelderBarnRelasjon().stream()
+                                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent),
+                                                person.getPerson().getForeldreansvar().stream()
+                                                        .map(ForeldreansvarDTO::getAnsvarlig)
+                                                        .filter(Objects::nonNull),
+                                                person.getPerson().getFullmakt().stream()
+                                                        .map(FullmaktDTO::getMotpartsPersonident)
+                                                        .filter(Objects::nonNull),
+                                                person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
+                                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                                        .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                                        .filter(Objects::nonNull),
+                                                person.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                                        .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                                        .filter(Objects::nonNull)
+                                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                                        .filter(Objects::nonNull))
+                                        .flatMap(Function.identity())
+                                        .distinct()
+                                        .toList())
+                                .flatMap(Flux::fromIterable)
+                                .collectList()
+                                .flatMap(personBolk -> tagsHendelseslagerConsumer.createTags(personBolk, tags))))
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId))));
     }
 }

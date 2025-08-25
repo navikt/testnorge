@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.arbeidssoekerregisteret;
 
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arbeidssoekerregisteret.command.LagreTilArbeidsoekerregisteret;
 import no.nav.dolly.bestilling.arbeidssoekerregisteret.command.SlettArbeidssoekerregisteretCommand;
 import no.nav.dolly.bestilling.arbeidssoekerregisteret.dto.ArbeidssoekerregisteretRequest;
@@ -13,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class ArbeidssoekerregisteretConsumer {
+public class ArbeidssoekerregisteretConsumer extends ConsumerStatus {
 
     private final ServerProperties serverProperties;
     private final WebClient webClient;
@@ -22,8 +23,8 @@ public class ArbeidssoekerregisteretConsumer {
     public ArbeidssoekerregisteretConsumer(
             Consumers consumers,
             WebClient webClient,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange) {
+
         this.serverProperties = consumers.getArbeidssoekerregisteretProxy();
         this.webClient = webClient
                 .mutate()
@@ -42,5 +43,15 @@ public class ArbeidssoekerregisteretConsumer {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new SlettArbeidssoekerregisteretCommand(webClient, ident, token.getTokenValue()).call());
+    }
+
+    @Override
+    public String serviceUrl() {
+        return serverProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-arbeidssoekerregisteret-proxy";
     }
 }

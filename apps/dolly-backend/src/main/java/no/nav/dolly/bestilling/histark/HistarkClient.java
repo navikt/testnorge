@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
@@ -36,6 +35,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.HISTARK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -53,38 +53,30 @@ public class HistarkClient implements ClientRegister {
     private final DokumentService dokumentService;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getHistark())) {
+        if (isNull(bestilling.getHistark())) {
 
-            updateProgress(progress);
-
-            return Flux.just(!transaksjonMappingService.existAlready(HISTARK,
-                            dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre)
-                    .flatMap(isSendInn -> {
-                        if (isTrue(isSendInn)) {
-                            return Flux.fromIterable(bestilling.getHistark().getDokumenter())
-                                    .flatMap(dokument -> Mono.just(buildRequest(dokument, dollyPerson.getIdent(), progress.getBestilling().getId()))
-                                            .flatMap(histarkConsumer::postHistark))
-                                    .collectList()
-                                    .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status));
-                        } else {
-                            return Mono.just("OK");
-                        }
-                    })
-                    .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                    .onErrorResume(this::getErrors)
-                    .map(status -> futurePersist(progress, status));
+            return Mono.empty();
         }
-        return Flux.empty();
-    }
 
-    private void updateProgress(BestillingProgress progress) {
-
-        transactionHelperService.persister(progress,
-                BestillingProgress::getHistarkStatus,
-                BestillingProgress::setHistarkStatus,
-                getInfoVenter(HISTARK.name()));
+        return oppdaterStatus(progress, getInfoVenter(HISTARK.name()))
+                .then(transaksjonMappingService.existAlready(HISTARK,
+                        dollyPerson.getIdent(), "NA", bestilling.getId()))
+                .flatMap(eksisterer -> {
+                    if (isFalse(eksisterer) || isOpprettEndre) {
+                        return Flux.fromIterable(bestilling.getHistark().getDokumenter())
+                                .flatMap(dokument -> buildRequest(dokument, dollyPerson.getIdent(), progress.getBestillingId()))
+                                .flatMap(histarkConsumer::postHistark)
+                                .collectList()
+                                .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status));
+                    } else {
+                        return Mono.just("OK");
+                    }
+                })
+                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                .onErrorResume(this::getErrors)
+                .flatMap(status -> oppdaterStatus(progress, status));
     }
 
     @Override
@@ -93,12 +85,9 @@ public class HistarkClient implements ClientRegister {
         // Sletting er ikke støttet
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setHistarkStatus, status);
-            return progress;
-        };
+        return transactionHelperService.persister(progress, BestillingProgress::setHistarkStatus, status);
     }
 
     private Mono<String> getErrors(Throwable error) {
@@ -123,13 +112,17 @@ public class HistarkClient implements ClientRegister {
                 .collect(Collectors.joining(","));
     }
 
-    private HistarkRequest buildRequest(RsHistark.RsHistarkDokument dokument, String ident, Long bestillingId) {
+    private Mono<HistarkRequest> buildRequest(RsHistark.RsHistarkDokument dokument, String ident, Long bestillingId) {
 
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty("personIdent", ident);
-        context.setProperty("dokumenter", dokumentService.getDokumenterByBestilling(bestillingId));
-
-        return mapperFacade.map(dokument, HistarkRequest.class, context);
+        return dokumentService.getDokumenterByBestilling(bestillingId)
+                .collectList()
+                .map(dokumenter -> {
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty("personIdent", ident);
+                    context.setProperty("dokumenter", dokumenter);
+                    return context;
+                })
+                .map(context -> mapperFacade.map(dokument, HistarkRequest.class, context));
     }
 
     private void saveTransaksjonId(List<HistarkResponse> histarkIds, String ident, Long bestillingId) {

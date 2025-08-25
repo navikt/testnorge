@@ -26,16 +26,16 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 public class KrrstubConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
-    private final TokenExchange tokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
     public KrrstubConsumer(
-            TokenExchange tokenService,
+            TokenExchange tokenExchange,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
-        this.tokenService = tokenService;
+            WebClient webClient) {
+
+        this.tokenExchange = tokenExchange;
         serverProperties = consumers.getTestnavKrrstubProxy();
         this.webClient = webClient
                 .mutate()
@@ -48,14 +48,14 @@ public class KrrstubConsumer extends ConsumerStatus {
     public Mono<DigitalKontaktdataResponse> createDigitalKontaktdata(DigitalKontaktdata digitalKontaktdata) {
 
         log.info("Kontaktdata opprett {}", digitalKontaktdata);
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new KontaktdataPostCommand(webClient, digitalKontaktdata, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "krrstub_deleteKontaktdata"})
     public Flux<DigitalKontaktdataResponse> deleteKontaktdata(List<String> identer) {
 
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(100))
                         .flatMap(idx -> new KontaktadataDeleteCommand(webClient, identer.get(idx),
@@ -64,7 +64,7 @@ public class KrrstubConsumer extends ConsumerStatus {
 
     public Mono<DigitalKontaktdataResponse> deleteKontaktdataPerson(String ident) {
 
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new KontaktadataDeleteCommand(webClient, ident, token.getTokenValue()).call());
     }
 
