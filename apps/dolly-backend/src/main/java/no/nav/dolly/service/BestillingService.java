@@ -188,30 +188,33 @@ public class BestillingService {
                 .map(BestillingKontroll::isStoppet);
     }
 
-    public Mono<Void> cleanBestilling(Bestilling bestilling) {
+    public Mono<Bestilling> cleanBestilling(Bestilling bestilling) {
 
         return bestillingProgressRepository.findByBestillingId(bestilling.getId())
-                .doOnNext(progress -> Arrays.stream(progress.getClass().getMethods())
+                .flatMap(progress -> Flux.fromArray(progress.getClass().getMethods())
                         .filter(method -> method.getName().contains("get"))
-                        .forEach(metode -> {
+                        .flatMap(metode -> {
                             try {
                                 var verdi = metode.invoke(progress, (Object[]) null);
                                 if (verdi instanceof String verdiString &&
                                         isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
                                     var oppdaterMetode = progress.getClass()
                                             .getMethod("set" + metode.getName().substring(3), String.class);
-                                    oppdaterMetode.invoke(progress, DEFAULT_VALUE);
+                                    return Mono.just((BestillingProgress) oppdaterMetode.invoke(progress, DEFAULT_VALUE));
+                                } else {
+                                    return Mono.empty();
                                 }
                             } catch (NoSuchMethodException |
                                      IllegalAccessException |
                                      InvocationTargetException e) {
                                 log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}",
                                         bestilling.getId(), e.getMessage(), e);
+                                return Mono.empty();
                             }
                         }))
                 .flatMap(bestillingProgressRepository::save)
                 .collectList()
-                .then();
+                .thenReturn(bestilling);
     }
 
     @Transactional
@@ -487,7 +490,7 @@ public class BestillingService {
                 .map(Bestilling::getId)
                 .doOnNext(elasticRepository::deleteById)
                 .collectList()
-                .doOnNext(ignore->
+                .doOnNext(ignore ->
                         log.info("Sletter {} bestillinger for gruppeId {}", ignore.size(), gruppeId))
                 .then(bestillingKontrollRepository.deleteByGruppeId(gruppeId))
                 .then(bestillingProgressRepository.deleteByGruppeId(gruppeId))

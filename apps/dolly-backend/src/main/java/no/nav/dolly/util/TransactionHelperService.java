@@ -15,7 +15,6 @@ import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -111,29 +110,6 @@ public class TransactionHelperService {
         }
     }
 
-    private String applyChanges(String gmlStatus, String nyStatus) {
-
-        if (isBlank(gmlStatus)) {
-            return nyStatus;
-
-        } else {
-
-            var nyeStatuser = Arrays.stream(nyStatus.split(","))
-                    .filter(status -> status.split(":").length > 1)
-                    .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
-            var gamleStatuser = Arrays.stream(gmlStatus.split(","))
-                    .filter(status -> status.split(":").length > 1)
-                    .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
-
-            var resultater = new HashMap<>(gamleStatuser);
-            resultater.putAll(nyeStatuser);
-
-            return resultater.entrySet().stream()
-                    .map(data -> "%s:%s".formatted(data.getKey(), data.getValue()))
-                    .collect(Collectors.joining(","));
-        }
-    }
-
     @Retryable
     public Mono<String> getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
 
@@ -159,19 +135,21 @@ public class TransactionHelperService {
     }
 
     @Retryable
-    public Mono<Bestilling> oppdaterBestillingFerdig(Bestilling bestilling) {
+    public Mono<Bestilling> oppdaterBestillingFerdig(Long id) {
 
         return transactionalOperator.execute(status ->
 
-                        bestillingRepository.findByIdAndLock(bestilling.getId())
-                                .doOnNext(bestilling1 -> {
-                                    bestilling1.setSistOppdatert(now());
-                                    bestilling1.setFerdig(true);
-                                })
+            bestillingRepository.findByIdAndLock(id)
+                    .flatMap(bestilling -> {
+                        bestilling.setSistOppdatert(now());
+                        bestilling.setFerdig(true);
+                        return bestillingService.cleanBestilling(bestilling)
                                 .flatMap(bestillingRepository::save)
-                                .doFinally(signal -> clearCache()))
-                .collectList()
-                .map(list -> list.isEmpty() ? null : list.getFirst());
+                                .doOnNext(ignore -> clearCache());
+                    })
+                    .switchIfEmpty(Mono.error(new RuntimeException("Bestilling med id " + id + " finnes ikke."))))
+                    .collectList()
+                    .map(list -> list.isEmpty() ? null : list.getFirst());
     }
 
     public void clearCache() {

@@ -18,12 +18,12 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -197,13 +196,8 @@ public class DollyBestillingService {
 
     protected Mono<Bestilling> doFerdig(Bestilling bestilling) {
 
-        return bestillingService.cleanBestilling(bestilling)
-                .then(Mono.defer(() -> {
-                    bestilling.setSistOppdatert(now());
-                    bestilling.setFerdig(true);
-                    return bestillingRepository.save(bestilling);
-                }))
-                .doOnNext(signal -> log.info("Bestilling med id=#{} er ferdig", bestilling.getId()));
+        return transactionHelperService.oppdaterBestillingFerdig(bestilling.getId())
+                .doOnNext(bestilling1 -> log.info("Bestilling med id=#{} er ferdig", bestilling1.getId()));
     }
 
     protected void clearCache() {
