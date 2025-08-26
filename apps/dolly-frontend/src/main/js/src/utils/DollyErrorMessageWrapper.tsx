@@ -13,25 +13,47 @@ const ErrorMessageText = styled.p`
 	font-style: italic;
 `
 
-export const DollyErrorMessageWrapper = ({ name }: { name: string }) => {
+export const DollyErrorMessageWrapper = ({ name }: { name: string | string[] }) => {
 	const methods = useFormContext()
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 
 	const errors = methods?.formState?.errors ?? {}
 	const isSubmitted = methods?.formState?.isSubmitted || methods?.formState.submitCount > 0
 
-	const fieldState = methods?.getFieldState?.(name, methods.formState)
-	const isTouched = fieldState?.isTouched ?? false
+	const shouldRender = !errorContext || errorContext?.showError || isSubmitted
 
-	const shouldRender = !errorContext || errorContext?.showError || isSubmitted || isTouched
+	if (typeof name === 'string') {
+		const fieldState = methods?.getFieldState?.(name, methods.formState)
+		const isTouched = fieldState?.isTouched ?? false
+		const shouldRenderField = shouldRender || isTouched
 
-	return shouldRender ? (
-		<ErrorMessage
-			name={name}
-			errors={errors}
-			render={({ message }) => <DollyErrorMessage message={message} />}
-		/>
-	) : null
+		return shouldRenderField ? (
+			<ErrorMessage
+				name={name}
+				errors={errors}
+				render={({ message }) => <DollyErrorMessage message={message} />}
+			/>
+		) : null
+	}
+
+	return (
+		<>
+			{name.map((fieldName) => {
+				const fieldState = methods?.getFieldState?.(fieldName, methods.formState)
+				const isTouched = fieldState?.isTouched ?? false
+				const shouldRenderField = shouldRender || isTouched
+
+				return shouldRenderField ? (
+					<ErrorMessage
+						key={fieldName}
+						name={fieldName}
+						errors={errors}
+						render={({ message }) => <DollyErrorMessage message={message} />}
+					/>
+				) : null
+			})}
+		</>
+	)
 }
 
 export const DollyErrorMessage = ({ message }: { message: string }) => (

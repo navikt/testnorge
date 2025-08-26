@@ -3,12 +3,13 @@ import { fetcher, multiFetcherAareg } from '@/api'
 import {
 	Organisasjon,
 	OrganisasjonFasteData,
-	OrganisasjonForvalterData,
+	OrganisasjonForvalterData
 } from '@/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash'
+import { useMemo } from 'react'
 
 type MiljoDataListe = {
 	miljo: string
@@ -180,10 +181,14 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 		urls.length > 0 ? urls : null,
 		fetchAllOrganisasjoner,
 	)
-	const dataFiltered = data?.filter((org) => org !== null && !_.isEmpty(org))
+
+	const dataFiltered = useMemo(
+		() => (data ? data.filter((org) => org !== null && !_.isEmpty(org)) : []),
+		[data],
+	)
 
 	return {
-		organisasjoner: dataFiltered || [],
+		organisasjoner: dataFiltered,
 		loading: isLoading,
 		error: error,
 	}

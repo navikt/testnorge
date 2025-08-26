@@ -48,7 +48,6 @@ export const AaregForm = () => {
 								path={path}
 								idx={idx}
 								fasteOrganisasjoner={fasteOrganisasjoner}
-								brukerOrganisasjoner={brukerOrganisasjoner}
 								egneOrganisasjoner={egneOrganisasjoner}
 								loadingOrganisasjoner={fasteOrganisasjonerLoading || brukerOrganisasjonerLoading}
 							/>
