@@ -84,6 +84,7 @@ class BrukerServiceTest {
         when(brukerRepository.findByOrderById()).thenReturn(Flux.just(bruker));
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(bruker));
         when(brukerRepository.findByOrderById()).thenReturn(Flux.just(bruker));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
 
         StepVerifier.create(brukerService.fetchBrukere())
                 .assertNext(bruker1 -> {
@@ -120,6 +121,7 @@ class BrukerServiceTest {
         when(brukerRepository.findByBrukerId(BRUKERID)).thenReturn(Mono.just(bruker));
         when(testgruppeRepository.findById(ID)).thenReturn(Mono.just(testgruppe));
         when(brukerFavoritterRepository.save(any())).thenReturn(Mono.just(BrukerFavoritter.builder().gruppeId(ID).build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
 
         StepVerifier.create(brukerService.leggTilFavoritt(ID))
                 .assertNext(hentetBruker -> {
@@ -140,6 +142,7 @@ class BrukerServiceTest {
         when(brukerRepository.findByBrukerId(BRUKERID)).thenReturn(Mono.just(bruker));
         when(brukerFavoritterRepository.deleteByBrukerIdAndGruppeId(ID, ID)).thenReturn(Mono.empty());
         when(testgruppeRepository.findById(ID)).thenReturn(Mono.just(testgruppe));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
 
         StepVerifier.create(brukerService.fjernFavoritt(ID))
                 .assertNext(hentetBruker -> {

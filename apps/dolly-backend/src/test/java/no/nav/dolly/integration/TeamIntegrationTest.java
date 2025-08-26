@@ -4,7 +4,6 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
 import no.nav.dolly.service.BrukerService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -46,12 +45,7 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
                 .block();
 
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(bruker));
-    }
-
-    @AfterEach
-    void tearDown() {
-//        tearDown();
+        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(bruker));
     }
 
     @Test

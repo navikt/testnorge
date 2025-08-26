@@ -136,7 +136,7 @@ class TeamServiceTest {
                 .brukere(new HashSet<>())
                 .build();
 
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
 
         var teamBruker1 = Bruker.builder()
                 .id(2L)
@@ -144,7 +144,7 @@ class TeamServiceTest {
                 .brukertype(Bruker.Brukertype.TEAM)
                 .build();
 
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
         when(teamRepository.save(any(Team.class))).thenReturn(Mono.just(newTeam));
         when(brukerRepository.save(any(Bruker.class))).thenReturn(Mono.just(teamBruker1));
         when(teamBrukerRepository.save(any(TeamBruker.class))).thenReturn(Mono.just(new TeamBruker()));
@@ -175,7 +175,7 @@ class TeamServiceTest {
 
         when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
         when(brukerRepository.findById(team.getBrukerId())).thenReturn(Mono.just(teamBruker1));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
         when(teamRepository.save(any(Team.class))).thenReturn(Mono.just(team));
         when(brukerRepository.findAll()).thenReturn(Flux.just(currentBruker));
         when(teamBrukerRepository.findAll()).thenReturn(Flux.just(teamBruker));
@@ -206,7 +206,7 @@ class TeamServiceTest {
                 .build();
 
         when(teamRepository.findById(10L)).thenReturn(Mono.just(teamWithoutCurrentUser));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(nonMember));
+        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(nonMember));
         when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.empty());
 
         StepVerifier.create(teamService.updateTeam(10L, new RsTeamUpdate()))
@@ -221,7 +221,7 @@ class TeamServiceTest {
     void deleteTeamById_shouldDeleteTeamAndTeamMembers() {
 
         when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
+        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
         when(teamRepository.deleteById(10L)).thenReturn(Mono.empty());
         when(teamBrukerRepository.deleteByTeamId(10L)).thenReturn(Mono.empty());
         when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker));

@@ -62,7 +62,7 @@ public class BrukerController {
     @Operation(description = "Hent Bruker med brukerId")
     public Mono<RsBrukerAndClaims> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
-        return brukerService.fetchOrCreateBruker(brukerId)
+        return brukerService.fetchBrukerWithoutTeam(brukerId)
                 .flatMap(this::getFavoritterOgMedlemmer);
     }
 
@@ -71,7 +71,7 @@ public class BrukerController {
     @Operation(description = "Hent pålogget Bruker")
     public Mono<RsBrukerAndClaims> getCurrentBruker() {
 
-        return brukerService.fetchOrCreateBruker()
+        return brukerService.fetchBrukerWithoutTeam()
                 .flatMap(this::getFavoritterOgMedlemmer);
     }
 
@@ -153,13 +153,19 @@ public class BrukerController {
                                         .collectList()
                                         .flatMapMany(brukerRepository::findByIdIn)
                                         .sort(Comparator.comparing(Bruker::getBrukernavn))
-                                        .collectList())
+                                        .collectList(),
+                        isNull(bruker.getRepresentererTeam()) ? Mono.just("") :
+                                teamRepository.findById(bruker.getRepresentererTeam())
+                                        .map(Team::getBrukerId)
+                                        .flatMap(brukerRepository::findById)
+                                        .map(Bruker::getBrukerId))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty("favoritter", tuple.getT2());
                     context.setProperty("brukerInfo", tuple.getT3());
                     context.setProperty("representererTeam", tuple.getT4());
                     context.setProperty("teamMedlemmer", tuple.getT5());
+                    context.setProperty("brukerId", tuple.getT6());
                     return mapperFacade.map(tuple.getT1(),  RsBrukerAndClaims.class, context);
                 });
     }

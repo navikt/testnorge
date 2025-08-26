@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static java.util.Objects.nonNull;
+
 @Component
 @RequiredArgsConstructor
 public class TestgruppeMappingStrategy implements MappingStrategy {
@@ -30,14 +32,20 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                         var antallBestillinger = (Integer) context.getProperty("antallBestillinger");
                         var antallIBruk = (Integer) context.getProperty("antallIBruk");
                         var alleBrukere = (Map<Long, Bruker>) context.getProperty("alleBrukere");
+                        var opprettetAv = nonNull(testgruppe.getOpprettetAv()) ?
+                                testgruppe.getOpprettetAv() :
+                                alleBrukere.get(testgruppe.getOpprettetAvId());
+                        var sistEndretAv = nonNull(testgruppe.getSistEndretAv()) ?
+                                testgruppe.getSistEndretAv() :
+                                alleBrukere.get(testgruppe.getSistEndretAvId());
 
                         rsTestgruppe.setAntallIdenter(antallIdenter);
                         rsTestgruppe.setAntallIBruk(antallIBruk);
                         rsTestgruppe.setAntallIdenter(antallIdenter);
                         rsTestgruppe.setAntallBestillinger(antallBestillinger);
                         rsTestgruppe.setErEierAvGruppe(bruker.getId().equals(testgruppe.getOpprettetAvId()));
-                        rsTestgruppe.setOpprettetAv(mapperFacade.map(alleBrukere.get(testgruppe.getOpprettetAvId()), RsBrukerUtenFavoritter.class));
-                        rsTestgruppe.setSistEndretAv(mapperFacade.map(alleBrukere.get(testgruppe.getSistEndretAvId()), RsBrukerUtenFavoritter.class));
+                        rsTestgruppe.setOpprettetAv(mapperFacade.map(opprettetAv, RsBrukerUtenFavoritter.class));
+                        rsTestgruppe.setSistEndretAv(mapperFacade.map(sistEndretAv, RsBrukerUtenFavoritter.class));
                         rsTestgruppe.setTags(testgruppe.getTags().stream()
                                 .filter(tag -> Tags.DOLLY != tag)
                                 .toList());

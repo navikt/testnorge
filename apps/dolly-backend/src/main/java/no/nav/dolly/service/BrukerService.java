@@ -44,24 +44,33 @@ public class BrukerService {
     public Mono<Bruker> fetchBruker(String brukerId) {
 
         return brukerRepository.findByBrukerId(brukerId)
-                .switchIfEmpty(Mono.error(new NotFoundException("Bruker med brukerId %s ikke funnet" .formatted(brukerId))));
+                .switchIfEmpty(Mono.error(new NotFoundException("Bruker med brukerId %s ikke funnet".formatted(brukerId))));
     }
 
     public Mono<Bruker> fetchOrCreateBruker(String brukerId) {
 
         if (isBlank(brukerId)) {
             return getAuthenticatedUserId.call()
-                    .flatMap(this::fetchBruker)
-                    .onErrorResume(NotFoundException.class, error -> createBruker());
+                    .flatMap(this::fetchBrukerOrTeam)
+                    .switchIfEmpty(createBruker());
         } else {
-            return fetchBruker(brukerId)
-                    .onErrorResume(NotFoundException.class, error -> createBruker());
+            return fetchBrukerOrTeam(brukerId)
+                    .switchIfEmpty(createBruker());
         }
     }
 
     public Mono<Bruker> fetchOrCreateBruker() {
 
         return fetchOrCreateBruker(null);
+    }
+
+    private Mono<Bruker> fetchBrukerOrTeam(String brukerId) {
+
+        return brukerRepository.findByBrukerId(brukerId)
+                .flatMap(bruker -> isNull(bruker.getRepresentererTeam()) ?
+                        Mono.just(bruker) :
+                        teamRepository.findById(bruker.getRepresentererTeam())
+                                .flatMap(team -> brukerRepository.findById(team.getBrukerId())));
     }
 
     @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
@@ -71,16 +80,26 @@ public class BrukerService {
                 .flatMap(brukerRepository::save);
     }
 
-    public Mono<Bruker> fetchCurrentBrukerWithoutTeam() {
+    public Mono<Bruker> fetchBrukerWithoutTeam(String brukerId) {
 
-        return getAuthenticatedUserId.call()
-                .flatMap(brukerId -> brukerRepository.findByBrukerId(brukerId)
-                        .switchIfEmpty(createBruker()));
+        if (isBlank(brukerId)) {
+            return getAuthenticatedUserId.call()
+                    .flatMap(brukerRepository::findByBrukerId)
+                    .switchIfEmpty(createBruker());
+        } else {
+            return brukerRepository.findByBrukerId(brukerId)
+                    .switchIfEmpty(createBruker());
+        }
+    }
+
+    public Mono<Bruker> fetchBrukerWithoutTeam() {
+
+        return fetchBrukerWithoutTeam(null);
     }
 
     public Flux<Team> fetchTeamsForCurrentBruker() {
 
-        return fetchCurrentBrukerWithoutTeam()
+        return fetchBrukerWithoutTeam()
                 .flatMapMany(bruker ->
                         teamBrukerRepository.findAllByBrukerId(bruker.getId())
                                 .flatMap(teamBruker -> teamRepository.findById(teamBruker.getTeamId())));
@@ -110,7 +129,7 @@ public class BrukerService {
 
     public Flux<Bruker> fetchBrukere() {
 
-        return fetchOrCreateBruker()
+        return fetchBrukerWithoutTeam()
                 .flatMapMany(bruker -> Brukertype.AZURE == bruker.getBrukertype() ?
                         brukerRepository.findByOrderById() :
                         brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
@@ -126,7 +145,7 @@ public class BrukerService {
 
     public Mono<Bruker> setRepresentererTeam(Long teamId) {
 
-        return fetchCurrentBrukerWithoutTeam()
+        return fetchBrukerWithoutTeam()
                 .flatMap(bruker -> {
 
                     if (isNull(teamId)) {

@@ -60,7 +60,7 @@ public class TeamService {
                             brukerTeam.setBrukerId("team-bruker-id-%d".formatted(brukerTeam.getId()));
                             return brukerRepository.save(brukerTeam);
                         })
-                        .flatMap(brukerTeam -> brukerService.fetchCurrentBrukerWithoutTeam()
+                        .flatMap(brukerTeam -> brukerService.fetchBrukerWithoutTeam()
                                 .flatMap(bruker -> teamRepository.save(Team.builder()
                                                 .navn(team.getNavn())
                                                 .beskrivelse(team.getBeskrivelse())
@@ -200,7 +200,7 @@ public class TeamService {
 
     private Mono<Void> assertCurrentBrukerIsTeamMember(Long teamId) {
 
-        return brukerService.fetchCurrentBrukerWithoutTeam()
+        return brukerService.fetchBrukerWithoutTeam()
                 .flatMap(bruker -> teamBrukerRepository.findByTeamIdAndBrukerId(teamId, bruker.getId())
                         .switchIfEmpty(Mono.error(new IllegalArgumentException("Kan ikke utføre operasjonen på team som bruker ikke er medlem av"))))
                 .then();

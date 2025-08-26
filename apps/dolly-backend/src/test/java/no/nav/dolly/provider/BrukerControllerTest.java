@@ -68,7 +68,7 @@ class BrukerControllerTest {
                 .brukerId(BRUKERID)
                 .build();
 
-        when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchBrukerWithoutTeam(BRUKERID)).thenReturn(Mono.just(bruker));
         when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(RsBrukerAndClaims.builder()
                 .brukerId(BRUKERID)
                 .build());
@@ -95,7 +95,7 @@ class BrukerControllerTest {
                 .brukerId(BRUKERID)
                 .build();
 
-        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(bruker));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
         when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(brukerAndClaims);
         when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(BrukerFavoritter.builder().build()));

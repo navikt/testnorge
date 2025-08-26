@@ -20,6 +20,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.SplittGruppeService;
 import no.nav.dolly.service.TestgruppeService;
@@ -105,9 +106,14 @@ public class TestgruppeController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(description = "Opprett testgruppe")
-    public Mono<Testgruppe> opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
+    public Mono<RsTestgruppeMedBestillingId> opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
 
-        return testgruppeService.opprettTestgruppe(createTestgruppeRequest);
+        return testgruppeService.opprettTestgruppe(createTestgruppeRequest)
+                .map(testgruppe -> {
+                    var context = MappingContextUtils.getMappingContext();
+                    context.setProperty("bruker", testgruppe.getOpprettetAv());
+                    return mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class, context);
+                });
     }
 
     @GetMapping("/{gruppeId}/page/{pageNo}")
