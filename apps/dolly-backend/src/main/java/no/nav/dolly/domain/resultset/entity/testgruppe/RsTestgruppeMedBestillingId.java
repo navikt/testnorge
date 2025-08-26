@@ -36,8 +36,10 @@ public class RsTestgruppeMedBestillingId extends RsTestgruppe {
         private String ident;
         private boolean iBruk;
         private String beskrivelse;
-        private List<Long> bestillingId;
-        private List<RsBestillingStatus> bestillinger;
+        @Builder.Default
+        private List<Long> bestillingId = new ArrayList<>();
+        @Builder.Default
+        private List<RsBestillingStatus> bestillinger = new ArrayList<>();
         private Testident.Master master;
     }
 }
