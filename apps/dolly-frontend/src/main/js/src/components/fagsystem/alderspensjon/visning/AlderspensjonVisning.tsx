@@ -41,7 +41,6 @@ const DataVisning = ({ data, miljo }) => {
 							: vedtakAP?.sisteOppdatering
 					}
 				/>
-				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Iverksettelsesdato" value={formatDate(data?.iverksettelsesdato)} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
 				<TitleValue title="Attesterer" value={data?.attesterer} />
