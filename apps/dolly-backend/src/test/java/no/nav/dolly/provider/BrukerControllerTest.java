@@ -1,19 +1,18 @@
 package no.nav.dolly.provider;
 
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TeamBrukerRepository;
-import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.BrukerService;
+import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
 import org.junit.jupiter.api.Test;
@@ -51,10 +50,7 @@ class BrukerControllerTest {
     private UserInfoExtended userInfoExtended;
 
     @Mock
-    private TeamBrukerRepository  teamBrukerRepository;
-
-    @Mock
-    private TeamRepository teamRepository;
+    private TeamService teamService;
 
     @Mock
     private BrukerRepository brukerRepository;
@@ -73,7 +69,7 @@ class BrukerControllerTest {
                 .build();
 
         when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Mono.just(bruker));
-        when(mapperFacade.map(eq(bruker), eq(RsBruker.class), any())).thenReturn(RsBruker.builder()
+        when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(RsBrukerAndClaims.builder()
                 .brukerId(BRUKERID)
                 .build());
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
@@ -89,7 +85,12 @@ class BrukerControllerTest {
     @Test
     void getCurrentBruker() {
 
-        var bruker = Bruker.builder().build();
+        var bruker = Bruker.builder()
+                .brukerId(BRUKERID)
+                .id(1L)
+                .brukernavn("brukernavn")
+                .brukertype(Bruker.Brukertype.AZURE)
+                .build();
         var brukerAndClaims = RsBrukerAndClaims.builder()
                 .brukerId(BRUKERID)
                 .build();
@@ -98,9 +99,6 @@ class BrukerControllerTest {
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
         when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(brukerAndClaims);
         when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(BrukerFavoritter.builder().build()));
-        when(teamRepository.findById(anyLong())).thenReturn(Mono.just(Team.builder().id(1L).build()));
-        when(teamBrukerRepository.findByTeamId(anyLong())).thenReturn(Flux.just(TeamBruker.builder().build()));
-        when(brukerRepository.findByIdIn(any())).thenReturn(Flux.just(Bruker.builder().brukernavn("A").build()));
 
         StepVerifier.create(controller.getCurrentBruker())
                 .assertNext(resultat ->
@@ -150,11 +148,13 @@ class BrukerControllerTest {
 
     @Test
     void getUserTeams() {
-        var team = Team.builder().id(1L).build();
+
+        var team = Team.builder().id(1L).brukerId(1L).build();
         var rsTeam = RsTeamWithBrukere.builder().id(1L).build();
 
-        when(brukerService.fetchTeamsForCurrentBruker()).thenReturn(Flux.just(team));
-        when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeam);
+        when(mapperFacade.map(eq(team), eq(RsTeamWithBrukere.class), any(MappingContext.class))).thenReturn(rsTeam);
+        when(teamService.fetchTeam(any())).thenReturn(Flux.just(team));
+        when(brukerRepository.findById(anyLong())).thenReturn(Mono.just(Bruker.builder().id(1L).build()));
 
         StepVerifier.create(controller.getUserTeams()
                         .collectList())
@@ -167,6 +167,7 @@ class BrukerControllerTest {
 
     @Test
     void setRepresentererTeam() {
+
         var bruker = Bruker.builder().id(1L).build();
         var rsBruker = new RsBruker();
 

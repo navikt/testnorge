@@ -35,7 +35,7 @@ public class BrukerMappingStrategy implements MappingStrategy {
                         rsBruker.setGrupper(brukerInfo.grupper());
 
                         rsBruker.setFavoritter(getFavoritter(context));
-                        if (nonNull(representererTeam)) {
+                        if (nonNull(representererTeam) && nonNull(representererTeam.getId())) {
                             rsBruker.setRepresentererTeam(mapperFacade.map(representererTeam, RsTeamWithBrukere.class, context));
                         }
                     }

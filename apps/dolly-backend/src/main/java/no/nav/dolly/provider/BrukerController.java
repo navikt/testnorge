@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
@@ -16,6 +17,7 @@ import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.BrukerService;
+import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -52,15 +54,16 @@ public class BrukerController {
     private final TeamRepository teamRepository;
     private final TeamBrukerRepository teamBrukerRepository;
     private final BrukerRepository brukerRepository;
+    private final TeamService teamService;
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
     @Transactional(readOnly = true)
     @Operation(description = "Hent Bruker med brukerId")
-    public Mono<RsBruker> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
+    public Mono<RsBrukerAndClaims> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
         return brukerService.fetchOrCreateBruker(brukerId)
-                .flatMap(bruker -> getFavoritterOgMedlemmer(bruker, RsBruker.class));
+                .flatMap(this::getFavoritterOgMedlemmer);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
@@ -69,7 +72,7 @@ public class BrukerController {
     public Mono<RsBrukerAndClaims> getCurrentBruker() {
 
         return brukerService.fetchOrCreateBruker()
-                .flatMap(bruker -> getFavoritterOgMedlemmer(bruker, RsBrukerAndClaims.class));
+                .flatMap(this::getFavoritterOgMedlemmer);
     }
 
     @Transactional(readOnly = true)
@@ -112,8 +115,8 @@ public class BrukerController {
     @Operation(description = "Hent alle team gjeldende bruker er medlem av")
     public Flux<RsTeamWithBrukere> getUserTeams() {
 
-        return brukerService.fetchTeamsForCurrentBruker()
-                .map(team -> mapperFacade.map(team, RsTeamWithBrukere.class));
+        return teamService.fetchTeam(brukerService::fetchTeamsForCurrentBruker)
+                .flatMap(this::mapTeam);
     }
 
     @Transactional
@@ -136,13 +139,13 @@ public class BrukerController {
                 .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
     }
 
-    private <T> Mono<T> getFavoritterOgMedlemmer(Bruker bruker, Class<T> clazz) {
+    private Mono<RsBrukerAndClaims> getFavoritterOgMedlemmer(Bruker bruker) {
 
         return Mono.zip(Mono.just(bruker),
                         brukerFavoritterRepository.findByBrukerId(bruker.getId())
                                 .collectList(),
                         getUserInfo.call(),
-                        isNull(bruker.getRepresentererTeam()) ? Mono.empty() :
+                        isNull(bruker.getRepresentererTeam()) ? Mono.just(new Team()) :
                                 teamRepository.findById(bruker.getRepresentererTeam()),
                         isNull(bruker.getRepresentererTeam()) ? Mono.just(emptyList()) :
                                 teamBrukerRepository.findByTeamId(bruker.getRepresentererTeam())
@@ -157,7 +160,18 @@ public class BrukerController {
                     context.setProperty("brukerInfo", tuple.getT3());
                     context.setProperty("representererTeam", tuple.getT4());
                     context.setProperty("teamMedlemmer", tuple.getT5());
-                    return mapperFacade.map(tuple.getT1(), clazz, context);
+                    return mapperFacade.map(tuple.getT1(),  RsBrukerAndClaims.class, context);
+                });
+    }
+
+    private Mono<RsTeamWithBrukere> mapTeam(Team team) {
+
+        return brukerRepository.findById(team.getBrukerId())
+                .zipWith(Mono.just(team))
+                .map(tuple -> {
+                    var context = MappingContextUtils.getMappingContext();
+                    context.setProperty("brukerId", tuple.getT1().getBrukerId());
+                    return mapperFacade.map(tuple.getT2(), RsTeamWithBrukere.class, context);
                 });
     }
 }

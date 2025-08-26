@@ -176,7 +176,7 @@ public class TeamService {
                 .flatMap(teamBruker -> teamBrukerRepository.deleteByBrukerId(teamBruker.getId()));
     }
 
-    private Flux<Team> fetchTeam(Supplier<Flux<Team>> teamSupplier) {
+    public Flux<Team> fetchTeam(Supplier<Flux<Team>> teamSupplier) {
 
         return brukerRepository.findAll()
                 .reduce(new HashMap<Long, Bruker>(), (acc, bruker) -> {
