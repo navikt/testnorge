@@ -7,11 +7,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { SelectOptionsDiagnoser } from './SelectOptionsDiagnoser'
 import { ArbeidKodeverk } from '@/config/kodeverk'
-import {
-	Arbeidsgiver,
-	Helsepersonell,
-	SykemeldingForm,
-} from '@/components/fagsystem/sykdom/SykemeldingTypes'
+import { Arbeidsgiver, Helsepersonell, SykemeldingForm } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
 import React, { BaseSyntheticEvent, useContext, useEffect, useRef, useState } from 'react'
@@ -187,6 +183,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	const clearValgtOrganisasjon = () => {
 		formMethods.clearErrors('manual.sykemelding.detaljertSykemelding.arbeidsgiver.navn')
+		formMethods.clearErrors('manual.sykemelding.detaljertSykemelding.mottaker.orgNr')
 		formMethods.clearErrors('sykemelding.detaljertSykemelding.arbeidsgiver.navn')
 		formMethods.clearErrors('sykemelding.detaljertSykemelding.mottaker.orgNr')
 		formMethods.clearErrors('sykemelding.detaljertSykemelding.mottaker.navn')
@@ -208,6 +205,13 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	useEffect(() => {
 		const org = organisasjoner?.[0]?.q1
+		if (organisasjoner.length > 0 && !org) {
+			formMethods.setError('manual.sykemelding.detaljertSykemelding.mottaker.orgNr', {
+				message: 'Organisasjon ikke funnet i Q1',
+			})
+		} else {
+			formMethods.clearErrors('manual.sykemelding.detaljertSykemelding.mottaker.orgNr')
+		}
 		const currentOrgNr = org?.organisasjonsnummer
 		if (
 			selectedOrgnummer &&
@@ -342,7 +346,10 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 							)}
 							<div style={{ width: 'max-content', position: 'absolute', translate: '0 -10px' }}>
 								<DollyErrorMessageWrapper
-									name={'sykemelding.detaljertSykemelding.mottaker.orgNr'}
+									name={[
+										'sykemelding.detaljertSykemelding.mottaker.orgNr',
+										'manual.sykemelding.detaljertSykemelding.mottaker.orgNr',
+									]}
 								/>
 							</div>
 						</div>
