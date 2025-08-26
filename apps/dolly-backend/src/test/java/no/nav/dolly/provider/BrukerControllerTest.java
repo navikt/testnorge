@@ -4,11 +4,15 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamBrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
@@ -45,6 +49,15 @@ class BrukerControllerTest {
 
     @Mock
     private UserInfoExtended userInfoExtended;
+
+    @Mock
+    private TeamBrukerRepository  teamBrukerRepository;
+
+    @Mock
+    private TeamRepository teamRepository;
+
+    @Mock
+    private BrukerRepository brukerRepository;
 
     @Mock
     private BrukerFavoritterRepository brukerFavoritterRepository;
@@ -85,6 +98,9 @@ class BrukerControllerTest {
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
         when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(brukerAndClaims);
         when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(BrukerFavoritter.builder().build()));
+        when(teamRepository.findById(anyLong())).thenReturn(Mono.just(Team.builder().id(1L).build()));
+        when(teamBrukerRepository.findByTeamId(anyLong())).thenReturn(Flux.just(TeamBruker.builder().build()));
+        when(brukerRepository.findByIdIn(any())).thenReturn(Flux.just(Bruker.builder().brukernavn("A").build()));
 
         StepVerifier.create(controller.getCurrentBruker())
                 .assertNext(resultat ->

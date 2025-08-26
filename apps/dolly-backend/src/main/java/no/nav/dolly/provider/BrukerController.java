@@ -36,7 +36,6 @@ import java.util.Comparator;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
@@ -61,7 +60,7 @@ public class BrukerController {
     public Mono<RsBruker> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
         return brukerService.fetchOrCreateBruker(brukerId)
-                .flatMap(bruker -> getFavoritter(bruker, RsBruker.class));
+                .flatMap(bruker -> getFavoritterOgMedlemmer(bruker, RsBruker.class));
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
@@ -70,7 +69,7 @@ public class BrukerController {
     public Mono<RsBrukerAndClaims> getCurrentBruker() {
 
         return brukerService.fetchOrCreateBruker()
-                .flatMap(bruker -> getFavoritter(bruker, RsBrukerAndClaims.class));
+                .flatMap(bruker -> getFavoritterOgMedlemmer(bruker, RsBrukerAndClaims.class));
     }
 
     @Transactional(readOnly = true)
@@ -137,7 +136,7 @@ public class BrukerController {
                 .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
     }
 
-    private <T> Mono<T> getFavoritter(Bruker bruker, Class<T> clazz) {
+    private <T> Mono<T> getFavoritterOgMedlemmer(Bruker bruker, Class<T> clazz) {
 
         return Mono.zip(Mono.just(bruker),
                         brukerFavoritterRepository.findByBrukerId(bruker.getId())
@@ -151,7 +150,7 @@ public class BrukerController {
                                         .collectList()
                                         .flatMapMany(brukerRepository::findByIdIn)
                                         .sort(Comparator.comparing(Bruker::getBrukernavn))
-                                        .collect(toSet()))
+                                        .collectList())
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty("favoritter", tuple.getT2());
