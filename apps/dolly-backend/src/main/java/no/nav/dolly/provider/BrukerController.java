@@ -5,12 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamBrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
@@ -28,6 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Comparator;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
@@ -41,6 +50,9 @@ public class BrukerController {
     private final MapperFacade mapperFacade;
     private final GetUserInfo getUserInfo;
     private final BrukerFavoritterRepository brukerFavoritterRepository;
+    private final TeamRepository teamRepository;
+    private final TeamBrukerRepository teamBrukerRepository;
+    private final BrukerRepository brukerRepository;
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
@@ -130,11 +142,22 @@ public class BrukerController {
         return Mono.zip(Mono.just(bruker),
                         brukerFavoritterRepository.findByBrukerId(bruker.getId())
                                 .collectList(),
-                        getUserInfo.call())
+                        getUserInfo.call(),
+                        isNull(bruker.getRepresentererTeam()) ? Mono.empty() :
+                                teamRepository.findById(bruker.getRepresentererTeam()),
+                        isNull(bruker.getRepresentererTeam()) ? Mono.just(emptyList()) :
+                                teamBrukerRepository.findByTeamId(bruker.getRepresentererTeam())
+                                        .map(TeamBruker::getBrukerId)
+                                        .collectList()
+                                        .flatMapMany(brukerRepository::findByIdIn)
+                                        .sort(Comparator.comparing(Bruker::getBrukernavn))
+                                        .collect(toSet()))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty("favoritter", tuple.getT2());
                     context.setProperty("brukerInfo", tuple.getT3());
+                    context.setProperty("representererTeam", tuple.getT4());
+                    context.setProperty("teamMedlemmer", tuple.getT5());
                     return mapperFacade.map(tuple.getT1(), clazz, context);
                 });
     }

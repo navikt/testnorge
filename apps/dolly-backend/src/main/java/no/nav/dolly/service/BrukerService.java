@@ -43,8 +43,7 @@ public class BrukerService {
 
     public Mono<Bruker> fetchBruker(String brukerId) {
 
-        return getEffectiveIdForUser(brukerId)
-                .flatMap(brukerRepository::findById)
+        return brukerRepository.findByBrukerId(brukerId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Bruker med brukerId %s ikke funnet" .formatted(brukerId))));
     }
 
@@ -58,14 +57,6 @@ public class BrukerService {
             return fetchBruker(brukerId)
                     .onErrorResume(NotFoundException.class, error -> createBruker());
         }
-    }
-
-    private Mono<Long> getEffectiveIdForUser(String brukerId) {
-
-        return brukerRepository.findByBrukerId(brukerId)
-                .map(bruker -> isNull(bruker.getRepresentererTeam()) ?
-                        bruker.getId() :
-                        bruker.getRepresentererTeam());
     }
 
     public Mono<Bruker> fetchOrCreateBruker() {

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -110,6 +111,7 @@ public class TeamService {
                                                                     TeamBruker.builder()
                                                                             .teamId(teamId)
                                                                             .brukerId(tamBruker.getId())
+                                                                            .opprettetTidspunkt(now())
                                                                             .build()))
                                                             .collectList();
                                                 }));
@@ -156,8 +158,10 @@ public class TeamService {
     public Mono<Void> removeBrukerFromTeam(Long teamId, String brukerId) {
 
         return fetchTeamByIdBasic(teamId)
-                .then(assertCurrentBrukerIsTeamMember(teamId))
                 .then(brukerRepository.findByBrukerId(brukerId))
+                .flatMap(bruker -> teamBrukerRepository.findByTeamIdAndBrukerId(teamId, bruker.getId())
+                        .switchIfEmpty(Mono.error(new IllegalArgumentException("Bruker er ikke medlem av dette teamet")))
+                        .thenReturn(bruker))
                 .flatMap(bruker -> teamBrukerRepository.findByTeamId(teamId)
                         .collectList()
                         .flatMap(teamBrukere -> {
@@ -169,7 +173,7 @@ public class TeamService {
                                 return Mono.just(bruker);
                             }
                         }))
-                .flatMap(teamBruker -> teamBrukerRepository.deleteById(teamBruker.getId()));
+                .flatMap(teamBruker -> teamBrukerRepository.deleteByBrukerId(teamBruker.getId()));
     }
 
     private Flux<Team> fetchTeam(Supplier<Flux<Team>> teamSupplier) {
@@ -190,7 +194,8 @@ public class TeamService {
                                                     .map(teamBruker -> brukere.get(teamBruker.getBrukerId()))
                                                     .collect(Collectors.toSet()));
                                     return Mono.just(team);
-                                })));
+                                })))
+                .sort(Comparator.comparing(Team::getNavn));
     }
 
     private Mono<Void> assertCurrentBrukerIsTeamMember(Long teamId) {

@@ -36,4 +36,6 @@ public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
             where bf.gruppe_id = :groupId
             """)
     Mono<Void> deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
+
+    Flux<Bruker> findByIdIn(List<Long> brukerIds);
 }

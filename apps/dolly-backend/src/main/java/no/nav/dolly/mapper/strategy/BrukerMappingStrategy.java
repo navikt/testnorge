@@ -6,8 +6,10 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
+import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
 import org.springframework.stereotype.Component;
@@ -29,9 +31,13 @@ public class BrukerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Bruker bruker, RsBrukerAndClaims rsBruker, MappingContext context) {
 
                         var brukerInfo = (UserInfoExtended) context.getProperty("brukerInfo");
+                        var representererTeam = (Team) context.getProperty("representererTeam");
                         rsBruker.setGrupper(brukerInfo.grupper());
 
                         rsBruker.setFavoritter(getFavoritter(context));
+                        if (nonNull(representererTeam)) {
+                            rsBruker.setRepresentererTeam(mapperFacade.map(representererTeam, RsTeamWithBrukere.class, context));
+                        }
                     }
                 })
                 .byDefault()

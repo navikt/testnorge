@@ -23,5 +23,6 @@ public class RsBruker {
     private String epost;
     private String navIdent;
     private RsTeamWithBrukere representererTeam;
+    private List<String> grupper;
     private List<String> favoritter;
 }

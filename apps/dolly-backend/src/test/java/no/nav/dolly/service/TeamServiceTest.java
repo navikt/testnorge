@@ -290,16 +290,15 @@ class TeamServiceTest {
 
         when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
         when(brukerRepository.findByBrukerId("member_to_remove")).thenReturn(Mono.just(memberToRemove));
-        when(teamBrukerRepository.deleteById(any(Long.class))).thenReturn(Mono.empty());
+        when(teamBrukerRepository.deleteByBrukerId(any(Long.class))).thenReturn(Mono.empty());
         when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
         when(teamBrukerRepository.findByTeamId(10L)).thenReturn(Flux.just(teamBruker, teamBruker));
 
         StepVerifier.create(teamService.removeBrukerFromTeam(10L, "member_to_remove"))
                 .expectComplete()
                 .verify();
 
-        verify(teamBrukerRepository).deleteById(any(Long.class));
+        verify(teamBrukerRepository).deleteByBrukerId(any(Long.class));
     }
 
     @Test
@@ -311,18 +310,16 @@ class TeamServiceTest {
                 .brukerId(1L)
                 .build();
 
-        var teamBruker = TeamBruker.builder()
+        var teamBruker2 = TeamBruker.builder()
                 .id(1L)
                 .teamId(10L)
                 .brukerId(currentBruker.getId())
                 .build();
 
         when(teamRepository.findById(10L)).thenReturn(Mono.just(teamWithOnlyCurrentUser));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
         when(brukerRepository.findByBrukerId("current_user")).thenReturn(Mono.just(currentBruker));
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
-        when(teamBrukerRepository.findByTeamId(anyLong())).thenReturn(Flux.just(teamBruker));
-        when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker));
+        when(teamBrukerRepository.findByTeamId(anyLong())).thenReturn(Flux.just(teamBruker2));
+        when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.just(teamBruker2));
 
         StepVerifier.create(teamService.removeBrukerFromTeam(10L, "current_user"))
                 .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
@@ -343,11 +340,10 @@ class TeamServiceTest {
         when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
         when(brukerRepository.findByBrukerId("member_to_remove")).thenReturn(Mono.just(memberToRemove));
         when(teamBrukerRepository.findByTeamIdAndBrukerId(anyLong(), anyLong())).thenReturn(Mono.empty());
-        when(brukerService.fetchCurrentBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
 
         StepVerifier.create(teamService.removeBrukerFromTeam(10L, "member_to_remove"))
                 .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
-                        throwable.getMessage().contains("Kan ikke utføre operasjonen på team som bruker ikke er medlem av"))
+                        throwable.getMessage().contains("Bruker er ikke medlem av dette teamet"))
                 .verify();
 
         verify(teamBrukerRepository, never()).deleteById(any(Long.class));
