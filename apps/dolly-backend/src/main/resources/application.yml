@@ -21,7 +21,6 @@ server:
     include-message: always
   max-http-request-header-size: 128KB
 
-
 spring:
   config:
     import: "classpath:dolly-application.yml"
@@ -52,9 +51,6 @@ spring:
   jackson:
     parser:
       include-source-in-location: true
-  reactor:
-    bufferSize:
-      small: 10000
 
 springdoc:
   swagger-ui:
