@@ -78,12 +78,4 @@ public abstract class AbstractIntegrasjonTest {
                         .brukerId(bruker.getId())
                         .build());
     }
-
-    void tearDown() {
-
-        teamBrukerRepository.deleteAll()
-                .then(teamRepository.deleteAll())
-                .then(brukerRepository.deleteAll())
-                .block();
-    }
 }

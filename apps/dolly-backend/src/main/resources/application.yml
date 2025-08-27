@@ -21,6 +21,10 @@ server:
     include-message: always
   max-http-request-header-size: 128KB
 
+reactor:
+  buffer-size:
+    small: 16KB
+
 spring:
   config:
     import: "classpath:dolly-application.yml"
