@@ -24,7 +24,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -222,11 +224,13 @@ class TestgruppeServiceTest {
         when(bestillingRepository.countByGruppeId(GROUP_ID)).thenReturn(Mono.just(1));
         when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
         when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
+        when(testgruppeRepository.findByOrderByIdDesc(any())).thenReturn(Flux.just(testgruppe));
+        when(testgruppeRepository.countBy()).thenReturn(Mono.just(1L));
 
         StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, null))
                 .assertNext(testgruppe1 -> {
                     assertThat(testgruppe1, is(notNullValue()));
-                    verify(testgruppeRepository).findByOpprettetAvIdOrderByIdDesc(bruker.getId(), Pageable.ofSize(10));
+                    verify(testgruppeRepository).findByOrderByIdDesc(PageRequest.of(0, 10, Sort.by("id").descending()));
 
                     var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
                     verify(mapperFacade).map(any(), any(), contextArgumentCaptor.capture());

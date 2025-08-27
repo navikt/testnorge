@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -194,21 +195,34 @@ public class TestgruppeService {
     public Mono<RsTestgruppePage> getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
         return brukerService.fetchOrCreateBruker(brukerId)
-                .flatMap(bruker ->
-                        (bruker.getBrukertype() == Brukertype.BANKID
-                                ?
-                                brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                                        .map(TilgangDTO::getBrukere)
-                                        .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
-                                                        PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
-                                                .collectList()
-                                                .zipWith(testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)))
-                                :
-                                testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(bruker.getId(), PageRequest.of(pageNo, pageSize))
-                                        .collectList()
-                                        .zipWith(testgruppeRepository.countByOpprettetAvId(bruker.getId())))
-                                .flatMap(tuple ->
-                                        getRsTestgruppePage(pageNo, pageSize, bruker, tuple.getT1(), tuple.getT2())));
+                .flatMap(bruker -> {
+                    if (bruker.getBrukertype() == Brukertype.BANKID) {
+
+                        return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                                .map(TilgangDTO::getBrukere)
+                                .flatMap(brukere -> Mono.zip(Mono.just(bruker),
+                                        testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
+                                                PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                        .collectList(),
+                                        testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)));
+                    } else {
+
+                        if (isNotBlank(brukerId)) {
+                            return Mono.zip(Mono.just(bruker),
+                                    testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(bruker.getId(), PageRequest.of(pageNo, pageSize))
+                                    .collectList(),
+                                    testgruppeRepository.countByOpprettetAvId(bruker.getId()));
+
+                        } else {
+                            return Mono.zip(Mono.just(bruker),
+                                    testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                    .collectList(),
+                                    testgruppeRepository.countBy());
+                        }
+                    }
+                })
+                .flatMap(tuple ->
+                        getRsTestgruppePage(pageNo, pageSize, tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
 
     private Mono<RsTestgruppePage> getRsTestgruppePage(Integer pageNo, Integer pageSize, Bruker bruker, List<Testgruppe> testgrupper, Long antall) {
