@@ -21,10 +21,6 @@ server:
     include-message: always
   max-http-request-header-size: 128KB
 
-reactor:
-  buffer-size:
-    small: 16KB
-
 spring:
   config:
     import: "classpath:dolly-application.yml"
@@ -55,6 +51,11 @@ spring:
   jackson:
     parser:
       include-source-in-location: true
+  r2dbc:
+    pool:
+      max-size: 20
+      initial-size: 5
+      max-queue-size: 200
 
 springdoc:
   swagger-ui:
