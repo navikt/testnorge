@@ -16,7 +16,9 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.util.ClearCacheUtil;
+import no.nav.dolly.service.TransactionHelperService;
+import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -49,7 +51,8 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
             PersonServiceClient personServiceClient,
             PdlDataConsumer pdlDataConsumer,
             TestgruppeRepository testgruppeRepository,
-            TransactionHelperService transactionHelperService
+            TransactionHelperService transactionHelperService,
+            CacheManager cacheManager
     ) {
         super(
                 bestillingElasticRepository,
@@ -64,7 +67,8 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 objectMapper,
                 pdlDataConsumer,
                 testgruppeRepository,
-                transactionHelperService
+                transactionHelperService,
+                cacheManager
         );
         this.personServiceClient = personServiceClient;
     }
@@ -105,7 +109,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                     .collectList()
                     .then(doFerdig(bestilling))
                     .then(saveBestillingToElasticServer(bestKriterier, bestilling))
-                    .doFinally(done -> clearCache())
+                    .doOnTerminate(new ClearCacheUtil(cacheManager))
                     .subscribe();
 
         } else {

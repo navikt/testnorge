@@ -33,7 +33,7 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import org.springframework.cache.CacheManager;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -70,6 +71,7 @@ public class DollyBestillingService {
     protected final PdlDataConsumer pdlDataConsumer;
     protected final TestgruppeRepository testgruppeRepository;
     protected final TransactionHelperService transactionHelperService;
+    protected final CacheManager cacheManager;
 
     public static Set<String> getEnvironments(String miljoer) {
         return isNotBlank(miljoer) ? Set.of(miljoer.split(",")) : emptySet();
@@ -198,11 +200,6 @@ public class DollyBestillingService {
 
         return transactionHelperService.oppdaterBestillingFerdig(bestilling.getId())
                 .doOnNext(bestilling1 -> log.info("Bestilling med id=#{} er ferdig", bestilling1.getId()));
-    }
-
-    protected void clearCache() {
-
-        transactionHelperService.clearCache();
     }
 
     protected Mono<Void> saveBestillingToElasticServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {

@@ -1,4 +1,4 @@
-package no.nav.dolly.util;
+package no.nav.dolly.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -6,7 +6,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.util.ClearCacheUtil;
 import org.springframework.cache.CacheManager;
 import org.springframework.r2dbc.connection.R2dbcTransactionManager;
 import org.springframework.retry.annotation.Retryable;
@@ -22,9 +22,6 @@ import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
-import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.util.DollyTextUtil.containsInfoText;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -61,7 +58,7 @@ public class TransactionHelperService {
                                     setter.accept(progress, status);
                                     return bestillingProgressRepository.save(progress);
                                 })
-                                .doFinally(signal -> clearCache()))
+                                .doFinally(signal -> new ClearCacheUtil(cacheManager)))
                 .collectList()
                 .map(list -> list.isEmpty() ? null : list.getFirst());
     }
@@ -88,7 +85,7 @@ public class TransactionHelperService {
                                     setter.accept(progress, result);
                                 })
                                 .flatMap(bestillingProgressRepository::save)
-                                .doFinally(signal -> clearCache()))
+                                .doFinally(signal -> new ClearCacheUtil(cacheManager)))
                 .collectList()
                 .map(list -> list.isEmpty() ? null : list.getFirst());
     }
@@ -145,19 +142,10 @@ public class TransactionHelperService {
                         bestilling.setFerdig(true);
                         return bestillingService.cleanBestilling(bestilling)
                                 .flatMap(bestillingRepository::save)
-                                .doOnNext(ignore -> clearCache());
+                                .doOnNext(ignore -> new ClearCacheUtil(cacheManager));
                     })
                     .switchIfEmpty(Mono.error(new RuntimeException("Bestilling med id " + id + " finnes ikke."))))
                     .collectList()
                     .map(list -> list.isEmpty() ? null : list.getFirst());
-    }
-
-    public void clearCache() {
-        if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
-            requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
-        }
-        if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
-            requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
-        }
     }
 }

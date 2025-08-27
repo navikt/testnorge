@@ -19,7 +19,9 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.util.ClearCacheUtil;
+import no.nav.dolly.service.TransactionHelperService;
+import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +53,8 @@ public class GjenopprettIdentService extends DollyBestillingService {
             PersonServiceClient personServiceClient,
             TestgruppeRepository testgruppeRepository,
             TransactionHelperService transactionHelperService,
-            IdentRepository identRepository) {
+            IdentRepository identRepository,
+            CacheManager cacheManager) {
         super(
                 bestillingElasticRepository,
                 bestillingProgressRepository,
@@ -65,7 +68,8 @@ public class GjenopprettIdentService extends DollyBestillingService {
                 objectMapper,
                 pdlDataConsumer,
                 testgruppeRepository,
-                transactionHelperService
+                transactionHelperService,
+                cacheManager
         );
         this.personServiceClient = personServiceClient;
         this.identRepository = identRepository;
@@ -112,7 +116,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                                                             progress, false)))
                                                                     .collectList())))))
                     .then(doFerdig(bestilling))
-                    .doFinally(done -> clearCache())
+                    .doOnTerminate(new ClearCacheUtil(cacheManager))
                     .subscribe();
         }
     }
