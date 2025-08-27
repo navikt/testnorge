@@ -172,7 +172,7 @@ public class OrganisasjonExcelService {
 
         return getOrganisasjonsdetaljer(brukerId)
                 .collectList()
-                .map(rows -> {
+                .flatMap(rows -> {
                     var sheet = workbook.createSheet(ORGANISASJON_FANE);
                     sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
                             CALCULATED_COLUMN,
@@ -194,9 +194,8 @@ public class OrganisasjonExcelService {
                                     .flatMap(Collection::stream)
                                     .toList());
                     appendHyperlinkRelasjon(workbook, ORGANISASJON_FANE, rows, 1, UNDERENHET);
-                    return sheet;
-                })
-                .then();
+                    return Mono.empty();
+                });
     }
 
     private Flux<Object[]> getOrganisasjonsdetaljer(Long brukerId) {

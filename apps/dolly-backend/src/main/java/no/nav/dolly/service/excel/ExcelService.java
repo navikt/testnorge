@@ -39,21 +39,21 @@ public class ExcelService {
 
         var rowCount = new AtomicInteger(0);
         rows.forEach(rowValue -> {
-                    var row = sheet.createRow(rowCount.getAndIncrement());
-                    var cellCount = new AtomicInteger(0);
-                    Arrays.stream(rowValue)
-                            .forEach(cellValue -> {
-                                var cell = row.createCell(cellCount.getAndIncrement());
-                                if (cellValue instanceof String text) {
-                                    cell.setCellValue(text);
-                                    if (text.contains(",") || text.length() > 25) {
-                                        cell.setCellStyle(wrapStyle);
-                                    }
-                                } else {
-                                    cell.setCellValue((Integer) cellValue);
-                                }
-                            });
-                });
+            var row = sheet.createRow(rowCount.getAndIncrement());
+            var cellCount = new AtomicInteger(0);
+            Arrays.stream(rowValue)
+                    .forEach(cellValue -> {
+                        var cell = row.createCell(cellCount.getAndIncrement());
+                        if (cellValue instanceof String text) {
+                            cell.setCellValue(text);
+                            if (text.contains(",") || text.length() > 25) {
+                                cell.setCellStyle(wrapStyle);
+                            }
+                        } else {
+                            cell.setCellValue((Integer) cellValue);
+                        }
+                    });
+        });
     }
 
     public Mono<Resource> getExcelWorkbook(Long gruppeId) {
@@ -62,23 +62,22 @@ public class ExcelService {
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Testgruppe ikke funnet for id " + gruppeId)))
                 .flatMap(testgruppe -> Mono.just(new XSSFWorkbook())
-                .flatMap(workbook -> Flux.merge(
-                                personExcelService.preparePersonSheet(workbook, testgruppe),
-                                bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
-                        .collectList()
-                        .doOnNext(resultat -> BankkontoToPersonHelper.appendData(workbook))
-                        .then(Mono.fromCallable(() -> convertToResource(timestamp, workbook)))));
+                        .flatMap(workbook -> Flux.merge(
+                                        personExcelService.preparePersonSheet(workbook, testgruppe),
+                                        bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
+                                .collectList()
+                                .doOnNext(resultat -> BankkontoToPersonHelper.appendData(workbook))
+                                .then(Mono.fromCallable(() -> convertToResource(timestamp, workbook)))));
     }
 
     public Mono<Resource> getExcelOrganisasjonerWorkbook(String brukerId) {
 
         long timestamp = System.currentTimeMillis();
 
-        var workbook = new XSSFWorkbook();
-
-        return brukerService.fetchBruker(brukerId)
-                .flatMap(bruker -> organisasjonExcelService.prepareOrganisasjonSheet(workbook, bruker.getId()))
-                .then(Mono.just(convertToResource(timestamp, workbook)));
+        return brukerService.fetchOrCreateBruker(brukerId)
+                .flatMap(bruker -> Mono.just(new XSSFWorkbook())
+                        .flatMap(workbook -> organisasjonExcelService.prepareOrganisasjonSheet(workbook, bruker.getId())
+                                .then(Mono.fromCallable(() -> convertToResource(timestamp, workbook)))));
     }
 
     private Resource convertToResource(long timestamp, XSSFWorkbook workbook) {
