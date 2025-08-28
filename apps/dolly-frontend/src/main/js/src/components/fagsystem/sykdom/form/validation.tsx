@@ -55,11 +55,15 @@ export const validation = {
 						diagnosekode: requiredString,
 					}),
 					mottaker: Yup.object({
-						orgNr: Yup.string()
-							.min(9, 'Orgnummer må være 9 siffer')
-							.max(9, 'Orgnummer må være 9 siffer')
-							.required('Må ha gyldig organisasjonsnummer'),
 						navn: requiredString,
+					}),
+					organisasjon: Yup.object({
+						arbeidsgiver: Yup.object({
+							orgnummer: Yup.string()
+								.required('Må ha gyldig organisasjonsnummer')
+								.min(9, 'Orgnummer må være 9 siffer')
+								.max(9, 'Orgnummer må være 9 siffer'),
+						}),
 					}),
 					biDiagnoser: Yup.array().of(
 						ifPresent(

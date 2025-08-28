@@ -196,7 +196,10 @@ export const ArbeidsforholdToggle = ({
 							afterChange={afterChange}
 							showMiljoeInfo={showMiljoeInfo}
 							handleChange={(selected: any) => {
-								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
+								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value, {
+									shouldDirty: true,
+									shouldTouch: true,
+								})
 								formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
 								formMethods.clearErrors(`${path}.arbeidsgiver`)
 							}}

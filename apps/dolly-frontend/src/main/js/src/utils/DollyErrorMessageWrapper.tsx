@@ -2,10 +2,7 @@ import * as React from 'react'
 import { useContext } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
-import {
-	ShowErrorContext,
-	ShowErrorContextType,
-} from '@/components/bestillingsveileder/ShowErrorContext'
+import { ShowErrorContext, ShowErrorContextType } from '@/components/bestillingsveileder/ShowErrorContext'
 import styled from 'styled-components'
 
 const ErrorMessageText = styled.p`
@@ -25,7 +22,7 @@ export const DollyErrorMessageWrapper = ({ name }: { name: string | string[] }) 
 	if (typeof name === 'string') {
 		const fieldState = methods?.getFieldState?.(name, methods.formState)
 		const isTouched = fieldState?.isTouched ?? false
-		const shouldRenderField = shouldRender || isTouched
+		const shouldRenderField = name?.includes('manual') || shouldRender || isTouched
 
 		return shouldRenderField ? (
 			<ErrorMessage
@@ -41,7 +38,7 @@ export const DollyErrorMessageWrapper = ({ name }: { name: string | string[] }) 
 			{name.map((fieldName) => {
 				const fieldState = methods?.getFieldState?.(fieldName, methods.formState)
 				const isTouched = fieldState?.isTouched ?? false
-				const shouldRenderField = shouldRender || isTouched
+				const shouldRenderField = fieldName?.includes('manual') || shouldRender || isTouched
 
 				return shouldRenderField ? (
 					<ErrorMessage
