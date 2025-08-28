@@ -5,7 +5,6 @@ import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
 import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,7 +16,6 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 
-@Disabled
 class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
     @Autowired
@@ -51,6 +49,8 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
     @Test
     void getAllTeams_shouldReturnListOfTeams() {
 
+        var teams = getAllTeams().collectList().block();
+
         webTestClient
                 .get()
                 .uri("/api/v1/team")
@@ -59,22 +59,24 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("$[0].id").isEqualTo("1")
+                .jsonPath("$[0].id").isEqualTo(teams.getFirst().getId())
                 .jsonPath("$[0].navn").isEqualTo("Test Team");
     }
 
     @Test
     void getTeamById_shouldReturnTeam() {
 
+        var teams = getAllTeams().collectList().block();
+
         webTestClient
                 .get()
-                .uri("/api/v1/team/1")
+                .uri("/api/v1/team/" + teams.getFirst().getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("$.id").isEqualTo("1")
+                .jsonPath("$.id").isEqualTo(teams.getFirst().getId())
                 .jsonPath("$.navn").isEqualTo("Test Team");
     }
 
@@ -101,9 +103,11 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
     @Test
     void updateTeam_shouldReturnUpdatedTeam() {
 
+        var teams = getAllTeams().collectList().block();
+
         webTestClient
                 .put()
-                .uri("/api/v1/team/1")
+                .uri("/api/v1/team/" + teams.getFirst().getId())
                 .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(RsTeamUpdate.builder()
@@ -114,7 +118,7 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("$.id").isEqualTo("1")
+                .jsonPath("$.id").isEqualTo(teams.getFirst().getId())
                 .jsonPath("$.navn").isEqualTo("Test Team 2");
     }
 
@@ -123,7 +127,7 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
         webTestClient
                 .delete()
-                .uri("/api/v1/team/2")
+                .uri("/api/v1/team/33")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
@@ -151,9 +155,11 @@ class TeamIntegrationTest extends AbstractIntegrasjonTest {
     @Test
     void removeTeamMember_shouldReturnNoContent() {
 
+        var teams = getAllTeams().collectList().block();
+
         webTestClient
                 .delete()
-                .uri("/api/v1/team/1/medlem/user1")
+                .uri("/api/v1/team/"+ teams.getFirst().getId()+ "/medlem/user1")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()

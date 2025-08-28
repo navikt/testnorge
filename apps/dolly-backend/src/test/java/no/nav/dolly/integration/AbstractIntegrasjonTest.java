@@ -9,11 +9,13 @@ import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -28,8 +30,10 @@ public abstract class AbstractIntegrasjonTest {
 
     @Autowired
     private BrukerRepository brukerRepository;
+
     @Autowired
     private TeamRepository teamRepository;
+
     @Autowired
     private TeamBrukerRepository teamBrukerRepository;
 
@@ -40,6 +44,14 @@ public abstract class AbstractIntegrasjonTest {
     @MockitoBean
     @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
+
+    @BeforeEach
+    void cleanup() {
+
+        teamBrukerRepository.deleteAll().block();
+        teamRepository.deleteAll().block();
+        brukerRepository.deleteAll().block();
+    }
 
     Mono<Bruker> createTeamBruker() {
 
@@ -77,5 +89,10 @@ public abstract class AbstractIntegrasjonTest {
                         .teamId(team.getId())
                         .brukerId(bruker.getId())
                         .build());
+    }
+
+    Flux<Team> getAllTeams() {
+
+        return teamRepository.findAll();
     }
 }
