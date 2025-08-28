@@ -85,7 +85,7 @@ public class DokarkivClient implements ClientRegister {
                                                                 buildRequest(dokarkiv, person, bestilling.getId())
                                                                         .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
                                                         .collectList()
-                                                        .map(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
+                                                        .flatMap(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
                                                 :
                                                 Mono.just(miljoe + ":OK")
                                         )
@@ -147,28 +147,27 @@ public class DokarkivClient implements ClientRegister {
                 .collectList();
     }
 
-    private String getStatus(String ident, Long bestillingId, List<DokarkivResponse> response) {
+    private Mono<String> getStatus(String ident, Long bestillingId, List<DokarkivResponse> response) {
 
         log.info("Dokarkiv response {} for ident {}", response, ident);
 
         if (isNull(response)) {
-            return "UKJENT:Intet svar";
+            return Mono.just("UKJENT:Intet svar");
         }
 
         if (response.stream().allMatch(arkiv -> isBlank(arkiv.getFeilmelding()))) {
 
-            saveTransaksjonId(response, ident, bestillingId, response.getFirst().getMiljoe());
-            return response.getFirst().getMiljoe() + ":OK";
+            return saveTransaksjonId(response, ident, bestillingId, response.getFirst().getMiljoe())
+                    .then(Mono.just(response.getFirst().getMiljoe() + ":OK"));
 
         } else {
 
-            return String.format("%s:FEIL=Teknisk feil se logg! %s", response.getFirst().getMiljoe(),
-
+            return Mono.just("%s:FEIL=Teknisk feil se logg! %s".formatted(response.getFirst().getMiljoe(),
                     response.stream()
                             .filter(arkiv -> isNotBlank(arkiv.getFeilmelding()))
                             .map(arkiv -> encodeStatus(errorStatusDecoder.getStatusMessage(arkiv.getFeilmelding())))
                             .findFirst()
-                            .orElse("UKJENT"));
+                            .orElse("UKJENT")));
         }
     }
 
@@ -201,11 +200,11 @@ public class DokarkivClient implements ClientRegister {
                 .map(context -> mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context));
     }
 
-    private void saveTransaksjonId(List<DokarkivResponse> response, String ident, Long bestillingId, String miljoe) {
+    private Mono<TransaksjonMapping> saveTransaksjonId(List<DokarkivResponse> response, String ident, Long bestillingId, String miljoe) {
 
         log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
 
-        transaksjonMappingService.save(
+        return transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
                         .bestillingId(bestillingId)

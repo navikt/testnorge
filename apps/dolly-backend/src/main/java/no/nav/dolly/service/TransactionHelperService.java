@@ -58,7 +58,7 @@ public class TransactionHelperService {
                                     setter.accept(progress, status);
                                     return bestillingProgressRepository.save(progress);
                                 })
-                                .doFinally(signal -> new ClearCacheUtil(cacheManager)))
+                                .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
                 .map(list -> list.isEmpty() ? null : list.getFirst());
     }
@@ -85,7 +85,7 @@ public class TransactionHelperService {
                                     setter.accept(progress, result);
                                 })
                                 .flatMap(bestillingProgressRepository::save)
-                                .doFinally(signal -> new ClearCacheUtil(cacheManager)))
+                                .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
                 .map(list -> list.isEmpty() ? null : list.getFirst());
     }
@@ -142,7 +142,7 @@ public class TransactionHelperService {
                         bestilling.setFerdig(true);
                         return bestillingService.cleanBestilling(bestilling)
                                 .flatMap(bestillingRepository::save)
-                                .doOnNext(ignore -> new ClearCacheUtil(cacheManager));
+                                .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());
                     })
                     .switchIfEmpty(Mono.error(new RuntimeException("Bestilling med id " + id + " finnes ikke."))))
                     .collectList()
