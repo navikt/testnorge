@@ -128,7 +128,7 @@ public class TransactionHelperService {
                                                 })
                                                 .flatMap(bestillingRepository::save)))
                 .collectList()
-                .map(list -> list.isEmpty() ? null : list.getFirst());
+                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
     }
 
     @Retryable

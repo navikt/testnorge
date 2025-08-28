@@ -2,7 +2,6 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 
 import static java.lang.String.format;
@@ -102,7 +100,7 @@ public class SplittGruppeService {
                                                 deleteKildeBestilling(oppdatertBestilling)
                                                         .thenReturn(oppdatertBestilling)
                                                         .flatMap(oppdatert -> {
-                                                            oppdatertBestilling.setAntallIdenter(nyBestilling.getAntallIdenter() - progresser.size());
+                                                            oppdatertBestilling.setAntallIdenter(bestilling.getAntallIdenter() - progresser.size());
                                                             return bestillingRepository.save(oppdatertBestilling);
                                                         }))));
     }

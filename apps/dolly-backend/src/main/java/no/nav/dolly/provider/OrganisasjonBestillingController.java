@@ -45,7 +45,7 @@ public class OrganisasjonBestillingController {
     private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping()
+    @PostMapping
     @Operation(description = "Opprett organisasjon")
     @Transactional
     public Mono<RsOrganisasjonBestillingStatus> opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
@@ -56,7 +56,7 @@ public class OrganisasjonBestillingController {
                                 .then(getStatus(bestilling, "Ubestemt")));
     }
 
-    @GetMapping()
+    @GetMapping
     @Operation(description = "Hent status på bestilling basert på bestillingId")
     public Mono<RsOrganisasjonBestillingStatus> hentBestilling(
             @Parameter(description = "ID på bestilling av organisasjon", example = "123") @RequestParam Long bestillingId) {
