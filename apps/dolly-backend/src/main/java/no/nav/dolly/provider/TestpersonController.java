@@ -66,18 +66,20 @@ public class TestpersonController {
     @Operation(description = "Endre status beskrivelse på testperson")
     @PutMapping("/{ident}/beskrivelse")
     @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse beskrivelse) {
+    public Mono<IdentAttributesResponse> oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse beskrivelse) {
 
-        return mapperFacade.map(identService.saveIdentBeskrivelse(ident, beskrivelse.getBeskrivelse()), IdentAttributesResponse.class);
+        return identService.saveIdentBeskrivelse(ident, beskrivelse.getBeskrivelse())
+                .map(testident -> mapperFacade.map(testident, IdentAttributesResponse.class));
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Operation(description = "Endre status \"i-bruk\" på testperson")
     @PutMapping("/{ident}/ibruk")
     @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestidentIbruk(@PathVariable String ident, @RequestParam boolean iBruk) {
+    public Mono<IdentAttributesResponse> oppdaterTestidentIbruk(@PathVariable String ident, @RequestParam boolean iBruk) {
 
-        return mapperFacade.map(identService.saveIdentIBruk(ident, iBruk), IdentAttributesResponse.class);
+        return identService.saveIdentIBruk(ident, iBruk)
+                .map(updatedIdent -> mapperFacade.map(updatedIdent, IdentAttributesResponse.class));
     }
 
     @Operation(description = "Gjenopprett test ident")
