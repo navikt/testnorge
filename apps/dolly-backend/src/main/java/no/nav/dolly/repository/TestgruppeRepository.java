@@ -49,6 +49,8 @@ public interface TestgruppeRepository extends ReactiveSortingRepository<Testgrup
 
     Mono<Testgruppe> findById(Long id);
 
+    Flux<Testgruppe> findByIdIn(List<Long> identer);
+
     @Modifying
     Mono<Testgruppe> save(Testgruppe testgruppe);
 }

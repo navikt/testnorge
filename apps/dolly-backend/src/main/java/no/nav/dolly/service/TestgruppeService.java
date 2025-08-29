@@ -9,6 +9,7 @@ import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
+import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
@@ -20,6 +21,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -37,6 +39,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -60,6 +63,7 @@ public class TestgruppeService {
     private final BestillingRepository bestillingRepository;
     private final IdentRepository identRepository;
     private final BrukerRepository brukerRepository;
+    private final BrukerFavoritterRepository brukerFavoritterRepository;
 
     public Mono<Testgruppe> opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
 
@@ -202,21 +206,21 @@ public class TestgruppeService {
                                 .map(TilgangDTO::getBrukere)
                                 .flatMap(brukere -> Mono.zip(Mono.just(bruker),
                                         testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
-                                                PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
-                                        .collectList(),
+                                                        PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                                .collectList(),
                                         testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)));
                     } else {
 
                         if (isNotBlank(brukerId)) {
                             return Mono.zip(Mono.just(bruker),
                                     testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(bruker.getId(), PageRequest.of(pageNo, pageSize))
-                                    .collectList(),
+                                            .collectList(),
                                     testgruppeRepository.countByOpprettetAvId(bruker.getId()));
 
                         } else {
                             return Mono.zip(Mono.just(bruker),
                                     testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
-                                    .collectList(),
+                                            .collectList(),
                                     testgruppeRepository.countBy());
                         }
                     }
@@ -227,34 +231,47 @@ public class TestgruppeService {
 
     private Mono<RsTestgruppePage> getRsTestgruppePage(Integer pageNo, Integer pageSize, Bruker bruker, List<Testgruppe> testgrupper, Long antall) {
 
-        return Flux.fromIterable(testgrupper)
-                .flatMap(testgruppe -> Mono.zip(
-                        Mono.just(testgruppe),
-                        identRepository.countByGruppeId(testgruppe.getId()),
-                        bestillingRepository.countByGruppeId(testgruppe.getId()),
-                        identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
-                        brukerRepository.findAll()
-                                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
-                                    map.put(bruker1.getId(), bruker1);
-                                    return map;
-                                })))
-                .map(tuple2 -> {
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty("bruker", bruker);
-                    context.setProperty("antallIdenter", tuple2.getT2());
-                    context.setProperty("antallBestillinger", tuple2.getT3());
-                    context.setProperty("antallIBruk", tuple2.getT4());
-                    context.setProperty("alleBrukere", tuple2.getT5());
-                    return mapperFacade.map(tuple2.getT1(), RsTestgruppe.class, context);
+        return brukerRepository.findAll()
+                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                    map.put(bruker1.getId(), bruker1);
+                    return map;
                 })
-                .collectList()
-                .map(contents -> RsTestgruppePage.builder()
+                .flatMap(alleBrukere -> Mono.zip(
+                        Flux.fromIterable(testgrupper)
+                                .flatMap(testgruppe -> getRsTestgruppe(bruker, testgruppe, alleBrukere))
+                                .collectList(),
+                        brukerFavoritterRepository.findByBrukerId(bruker.getId())
+                                .map(BrukerFavoritter::getGruppeId)
+                                .collectList()
+                                .flatMapMany(testgruppeRepository::findByIdIn)
+                                .flatMap(testgruppe -> getRsTestgruppe(bruker, testgruppe, alleBrukere))
+                                .collectList()))
+                .map(grupper -> RsTestgruppePage.builder()
                         .pageNo(pageNo)
                         .antallPages(antall.intValue() / pageSize + 1)
                         .pageSize(pageSize)
                         .antallElementer(antall)
-                        .contents(contents)
+                        .contents(grupper.getT1())
+                        .favoritter(grupper.getT2())
                         .build());
+    }
+
+    private Mono<RsTestgruppe> getRsTestgruppe(Bruker bruker, Testgruppe testgruppe, Map<Long, Bruker> alleBrukere) {
+
+        return Mono.zip(
+                        Mono.just(testgruppe),
+                        identRepository.countByGruppeId(testgruppe.getId()),
+                        bestillingRepository.countByGruppeId(testgruppe.getId()),
+                        identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true))
+                .map(data -> {
+                    var context = MappingContextUtils.getMappingContext();
+                    context.setProperty("bruker", bruker);
+                    context.setProperty("antallIdenter", data.getT2());
+                    context.setProperty("antallBestillinger", data.getT3());
+                    context.setProperty("antallIBruk", data.getT4());
+                    context.setProperty("alleBrukere", alleBrukere);
+                    return mapperFacade.map(data.getT1(), RsTestgruppe.class, context);
+                });
     }
 
     public Mono<Testgruppe> oppdaterTestgruppeMedLaas(Long gruppeId, RsLockTestgruppe lockTestgruppe) {

@@ -18,4 +18,5 @@ public class RsTestgruppePage {
     private Integer pageSize;
     private Long antallElementer;
     private List<RsTestgruppe> contents;
+    private List<RsTestgruppe> favoritter;
 }

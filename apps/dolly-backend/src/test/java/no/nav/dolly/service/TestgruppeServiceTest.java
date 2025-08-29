@@ -5,12 +5,14 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -39,8 +41,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,6 +84,9 @@ class TestgruppeServiceTest {
 
     @Mock
     private MapperFacade mapperFacade;
+
+    @Mock
+    private BrukerFavoritterRepository brukerFavoritterRepository;
 
     @InjectMocks
     private TestgruppeService testgruppeService;
@@ -226,6 +233,8 @@ class TestgruppeServiceTest {
         when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
         when(testgruppeRepository.findByOrderByIdDesc(any())).thenReturn(Flux.just(testgruppe));
         when(testgruppeRepository.countBy()).thenReturn(Mono.just(1L));
+        when(brukerFavoritterRepository.findByBrukerId(anyLong())).thenReturn(Flux.just(BrukerFavoritter.builder().gruppeId(1L).build()));
+        when(testgruppeRepository.findByIdIn(any())).thenReturn(Flux.just(testgruppe));
 
         StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, null))
                 .assertNext(testgruppe1 -> {
@@ -233,7 +242,7 @@ class TestgruppeServiceTest {
                     verify(testgruppeRepository).findByOrderByIdDesc(PageRequest.of(0, 10, Sort.by("id").descending()));
 
                     var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
-                    verify(mapperFacade).map(any(), any(), contextArgumentCaptor.capture());
+                    verify(mapperFacade, times(2)).map(any(), any(), contextArgumentCaptor.capture());
                     assertThat(contextArgumentCaptor.getValue().getProperty("bruker"), is(bruker));
                     assertThat(contextArgumentCaptor.getValue().getProperty("antallIdenter"), is(1));
                     assertThat(contextArgumentCaptor.getValue().getProperty("antallBestillinger"), is(1));
@@ -266,6 +275,8 @@ class TestgruppeServiceTest {
                 .thenReturn(Flux.just(testgruppe));
         when(testgruppeRepository.countByOpprettetAv_BrukerIdIn(any())).thenReturn(Mono.just(1L));
         when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
+        when(brukerFavoritterRepository.findByBrukerId(anyLong())).thenReturn(Flux.just(BrukerFavoritter.builder().gruppeId(1L).build()));
+        when(testgruppeRepository.findByIdIn(any())).thenReturn(Flux.just(testgruppe));
 
         StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, "123"))
                 .assertNext(testgruppe1 -> {
@@ -275,7 +286,7 @@ class TestgruppeServiceTest {
                     verify(testgruppeRepository).countByOpprettetAv_BrukerIdIn(any());
 
                     var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
-                    verify(mapperFacade).map(any(), any(), contextArgumentCaptor.capture());
+                    verify(mapperFacade, times(2)).map(any(), any(), contextArgumentCaptor.capture());
                     assertThat(contextArgumentCaptor.getValue().getProperty("bruker"), is(bruker));
                     assertThat(contextArgumentCaptor.getValue().getProperty("antallIdenter"), is(1));
                     assertThat(contextArgumentCaptor.getValue().getProperty("antallBestillinger"), is(1));
