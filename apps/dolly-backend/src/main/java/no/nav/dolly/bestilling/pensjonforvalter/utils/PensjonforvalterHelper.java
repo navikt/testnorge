@@ -11,7 +11,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,21 +29,21 @@ public class PensjonforvalterHelper {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @SuppressWarnings("java:S3740")
-    public Mono<TransaksjonMapping> saveAPTransaksjonId(String ident, String miljoe, Long bestillingId,
-                                                        SystemTyper type, AtomicReference vedtak) {
+    public void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId,
+                                    SystemTyper type, AtomicReference vedtak) {
 
         log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
+        transaksjonMappingService.delete(ident, miljoe, type.name());
 
-        return transaksjonMappingService.delete(ident, miljoe, type.name())
-                .then(transaksjonMappingService.save(
-                        TransaksjonMapping.builder()
-                                .ident(ident)
-                                .bestillingId(bestillingId)
-                                .transaksjonId(toJson(vedtak.get()))
-                                .datoEndret(LocalDateTime.now())
-                                .miljoe(miljoe)
-                                .system(type.name())
-                                .build()));
+        transaksjonMappingService.save(
+                TransaksjonMapping.builder()
+                        .ident(ident)
+                        .bestillingId(bestillingId)
+                        .transaksjonId(toJson(vedtak.get()))
+                        .datoEndret(LocalDateTime.now())
+                        .miljoe(miljoe)
+                        .system(type.name())
+                        .build());
     }
 
     private String toJson(Object object) {

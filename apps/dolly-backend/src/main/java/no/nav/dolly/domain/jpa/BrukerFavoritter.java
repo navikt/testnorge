@@ -1,30 +1,46 @@
 package no.nav.dolly.domain.jpa;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 
+@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("BRUKER_FAVORITTER")
-public class BrukerFavoritter implements Serializable {
+@Table(name = "BRUKER_FAVORITTER")
+public class BrukerFavoritter {
 
-    @Column("BRUKER_ID")
-    private Long brukerId;
+    @EmbeddedId
+    BrukerFavoritterId id;
 
-    @Column("GRUPPE_ID")
-    private Long gruppeId;
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Embeddable
+    public static class BrukerFavoritterId implements Serializable {
+
+        @Column(name = "BRUKER_ID")
+        private Long brukerId;
+
+        @Column(name= "GRUPPE_ID")
+        private Long gruppeId;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -35,16 +51,14 @@ public class BrukerFavoritter implements Serializable {
         BrukerFavoritter that = (BrukerFavoritter) o;
 
         return new EqualsBuilder()
-                .append(brukerId, that.brukerId)
-                .append(gruppeId, that.gruppeId)
+                .append(id, that.id)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(brukerId)
-                .append(gruppeId)
+                .append(id)
                 .toHashCode();
     }
 
@@ -52,8 +66,7 @@ public class BrukerFavoritter implements Serializable {
     public String
     toString() {
         return "BrukerFavoritter{" +
-                "brukerId=" + brukerId +
-                ", gruppeId=" + gruppeId +
+                "id=" + id +
                 '}';
     }
 }

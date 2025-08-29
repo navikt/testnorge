@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.medl.dto.MedlPostResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -11,9 +12,9 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.medl.MedlData;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,7 @@ public class MedlClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getMedl())) {
 
@@ -45,14 +46,14 @@ public class MedlClient implements ClientRegister {
                     bestilling.getMedl(),
                     MedlData.class, context);
 
-            return medlConsumer.createMedlemskapsperiode(medlRequest)
+            return Flux.from(medlConsumer.createMedlemskapsperiode(medlRequest))
                     .map(this::getStatus)
-                    .flatMap(status -> oppdaterStatus(progress,
+                    .map(status -> futurePersist(progress,
                             formaterStatusResponse(status)
                     ));
         }
 
-        return Mono.empty();
+        return Flux.empty();
     }
 
     @Override
@@ -72,9 +73,12 @@ public class MedlClient implements ClientRegister {
                 .subscribe(response -> log.info("Sletting utført mot Medl"));
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::setMedlStatus, status);
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::setMedlStatus, status);
+            return progress;
+        };
     }
 
     private String getStatus(MedlPostResponse response) {

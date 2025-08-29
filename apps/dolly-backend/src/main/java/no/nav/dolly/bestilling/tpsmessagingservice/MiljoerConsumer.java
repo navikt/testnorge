@@ -25,8 +25,8 @@ public class MiljoerConsumer extends ConsumerStatus {
     public MiljoerConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient webClient) {
-
+            WebClient webClient
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavMiljoerService();
         this.webClient = webClient

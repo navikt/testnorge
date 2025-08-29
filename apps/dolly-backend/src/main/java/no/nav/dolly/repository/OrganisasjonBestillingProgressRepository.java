@@ -1,22 +1,24 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
-import org.springframework.data.r2dbc.repository.Modifying;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.Repository;
 
-@Repository
-public interface OrganisasjonBestillingProgressRepository extends ReactiveCrudRepository<OrganisasjonBestillingProgress, Long> {
+import java.util.List;
+import java.util.Optional;
 
-    Flux<OrganisasjonBestillingProgress> findByBestillingId(Long bestillingId);
+public interface OrganisasjonBestillingProgressRepository extends Repository<OrganisasjonBestillingProgress, Long> {
 
     @Modifying
-    Mono<Void> deleteByBestillingId(Long bestillingId);
+    Optional<OrganisasjonBestillingProgress> save(OrganisasjonBestillingProgress bestillingProgress);
+
+    Optional<List<OrganisasjonBestillingProgress>> findByBestillingId(Long bestillingId);
 
     @Modifying
-    Flux<Void> deleteByOrganisasjonsnummer(String orgnummer);
+    int deleteByBestillingId(Long bestillingId);
 
-    Flux<OrganisasjonBestillingProgress> findByOrganisasjonsnummer(String orgnummer);
+    @Modifying
+    int deleteByOrganisasjonsnummer(String orgnummer);
+
+    Optional<List<OrganisasjonBestillingProgress>> findByOrganisasjonsnummer(String orgnummer);
 }

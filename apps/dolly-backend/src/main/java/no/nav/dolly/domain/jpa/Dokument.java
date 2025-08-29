@@ -1,5 +1,14 @@
 package no.nav.dolly.domain.jpa;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,39 +16,40 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("DOKUMENT")
+@Table(name = "DOKUMENT")
 public class Dokument implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Version
-    @Column("VERSJON")
+    @Column(name = "VERSJON")
     private Long versjon;
 
-    @Column("BESTILLING_ID")
+    @Column(name = "BESTILLING_ID")
     private Long bestillingId;
 
-    @Column("DOKUMENT_TYPE")
+    @Column(name = "DOKUMENT_TYPE")
+    @Enumerated(value = EnumType.STRING)
     private DokumentType dokumentType;
 
-    @Column("SIST_OPPDATERT")
+    @Column(name = "SIST_OPPDATERT")
+    @UpdateTimestamp
     private LocalDateTime sistOppdatert;
 
-    @Column("CONTENTS")
+    @Column(name = "CONTENTS")
     private String contents;
 
     @Override

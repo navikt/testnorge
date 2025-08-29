@@ -1,16 +1,14 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Dokument;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.Collection;
+import java.util.List;
 
-@Repository
-public interface DokumentRepository extends ReactiveCrudRepository<Dokument, Long> {
+public interface DokumentRepository extends CrudRepository<Dokument, Long> {
 
-    Flux<Dokument> getDokumentsByBestillingId(Long bestillingId);
+    List<Dokument> getDokumentsByBestillingId(Long bestillingId);
 
-    Flux<Dokument> getDokumentsByIdIsIn(Collection<Long> dokumentIdListe);
+    List<Dokument> getDokumentsByIdIsIn(Collection<Long> dokumentIdListe);
 }

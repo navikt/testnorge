@@ -1,19 +1,16 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.InfoStripe;
-import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 
-@Repository
-public interface InformasjonsmeldingRepository extends ReactiveCrudRepository<InfoStripe, Long> {
+import java.util.Collection;
 
-    @Query("""
-            select * from info_stripe i where
-            (i.start is null or i.start <= current_timestamp) and
-            (i.expires is null or i.expires >= current_timestamp)
-            order by i.id desc
-            """)
-    Flux<InfoStripe> findGyldigMeldinger();
+public interface InformasjonsmeldingRepository extends CrudRepository<InfoStripe, Long> {
+
+    @Query(value = "SELECT i FROM InfoStripe i WHERE " +
+            " (i.start IS NULL OR i.start <= CURRENT_TIMESTAMP) AND " +
+            " (i.expires IS NULL OR i.expires >= CURRENT_TIMESTAMP) " +
+            "ORDER BY i.id DESC")
+    Collection<InfoStripe> findGyldigMeldinger();
 }

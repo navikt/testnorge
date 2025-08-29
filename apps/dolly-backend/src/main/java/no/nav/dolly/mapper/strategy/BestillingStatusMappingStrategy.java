@@ -85,7 +85,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .count());
 
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
-                        bestillingStatus.setGruppeId(bestilling.getGruppeId());
+                        bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
                         bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlOrdreStatusMap(progresser, objectMapper));

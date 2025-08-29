@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.tagshendelseslager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
@@ -18,7 +19,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,9 +40,9 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return getPdlIdenter(List.of(dollyPerson.getIdent()))
+        return Flux.from(getPdlIdenter(List.of(dollyPerson.getIdent()))
                 .collectList()
                 .flatMap(identer -> Flux.concat(
                                 Flux.just(dollyPerson.getTags())
@@ -54,15 +54,17 @@ public class TagsHendelseslagerClient implements ClientRegister {
                                         .flatMap(tagsHendelseslagerConsumer::publish)
                                         .map(status -> getPublishStatus(identer, status)))
                         .collect(Collectors.joining(", og ")))
-                .flatMap(status -> oppdaterStatus(progress, status));
+                .map(status -> futureComplete(progress, status)));
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+    private ClientFuture futureComplete(BestillingProgress progress, String status) {
 
+        return () -> {
             if (isNotBlank(status)) {
                 log.info(status);
             }
-            return Mono.just(progress);
+            return progress;
+        };
     }
 
     @Override

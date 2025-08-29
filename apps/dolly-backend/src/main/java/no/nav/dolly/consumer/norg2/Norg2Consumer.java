@@ -27,8 +27,8 @@ public class Norg2Consumer extends ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient) {
-
+            WebClient webClient
+    ) {
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavNorg2Proxy();
         this.webClient = webClient

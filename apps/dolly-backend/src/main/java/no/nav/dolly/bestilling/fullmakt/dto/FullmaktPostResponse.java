@@ -55,6 +55,7 @@ public class FullmaktPostResponse {
         private String fullmaktsgiverNavn;
         private String fullmektigsNavn;
 
+
         public List<Omraade> getOmraade() {
             if (isNull(omraade)) {
                 omraade = new ArrayList<>();

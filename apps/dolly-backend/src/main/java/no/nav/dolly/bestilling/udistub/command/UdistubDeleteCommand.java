@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -30,6 +31,7 @@ public class UdistubDeleteCommand implements Callable<Mono<UdiPersonResponse>> {
                 .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> UdiPersonResponse.builder()

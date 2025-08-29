@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClientRequest;
 
 import java.net.http.HttpTimeoutException;
@@ -19,10 +19,11 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class PdlDataOppdateringCommand implements Callable<Mono<PdlResponse>> {
+public class PdlDataOppdateringCommand implements Callable<Flux<PdlResponse>> {
 
     private static final String PDL_FORVALTER_PERSONER_URL = "/api/v1/personer/{ident}";
 
@@ -31,7 +32,7 @@ public class PdlDataOppdateringCommand implements Callable<Mono<PdlResponse>> {
     private final PersonUpdateRequestDTO body;
     private final String token;
 
-    public Mono<PdlResponse> call() {
+    public Flux<PdlResponse> call() {
         return webClient
                 .put()
                 .uri(PDL_FORVALTER_PERSONER_URL, ident)
@@ -40,10 +41,11 @@ public class PdlDataOppdateringCommand implements Callable<Mono<PdlResponse>> {
                     reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
                 })
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(body))
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToFlux(String.class)
                 .map(resultat -> PdlResponse.builder()
                         .ident(resultat)
                         .status(HttpStatus.OK)

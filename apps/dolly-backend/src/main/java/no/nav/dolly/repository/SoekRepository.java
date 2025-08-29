@@ -1,19 +1,20 @@
 package no.nav.dolly.repository;
 
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Soek;
-import org.springframework.data.r2dbc.repository.Modifying;
-import org.springframework.data.repository.reactive.ReactiveSortingRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface SoekRepository extends ReactiveSortingRepository<Soek, Long> {
+import java.util.List;
 
-    Flux<Soek> findByBrukerIdAndSoekTypeOrderByIdDesc(Long brukerId, Soek.SoekType soekType);
+public interface SoekRepository extends PagingAndSortingRepository<Soek, Long> {
 
-    Mono<Boolean> existsByBrukerIdAndSoekTypeAndSoekVerdi(Long brukerId, Soek.SoekType soekType, String soekVerdi);
+    List<Soek> findByBrukerAndSoekTypeOrderByIdDesc(Bruker bruker, Soek.SoekType soekType);
+
+    Boolean existsByBrukerAndSoekTypeAndSoekVerdi(Bruker bruker, Soek.SoekType soekType, String soekVerdi);
 
     @Modifying
-    Mono<Void> delete(Soek soek);
+    void delete(Soek soek);
 
-    Mono<Soek> save(Soek soek);
+    Soek save(Soek soek);
 }

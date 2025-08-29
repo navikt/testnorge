@@ -35,8 +35,8 @@ public class FullmaktConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient){
-
+            WebClient webClient
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavFullmaktProxy();
         this.webClient = webClient
@@ -49,21 +49,22 @@ public class FullmaktConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "fullmakt_createData" })
     public Flux<FullmaktPostResponse> createFullmaktData(List<RsFullmakt> fullmakter, String ident) {
 
-        log.info("Fullmakt opprett  {}", fullmakter);
+        log.info("Fullmakt opprett {}", fullmakter);
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> Flux.fromIterable(fullmakter)
-                        .delayElements(Duration.ofMillis(50))
-                        .flatMap(fullmakt ->
-                                new PostFullmaktDataCommand(webClient, token.getTokenValue(), ident, fullmakt).call()))
-                .doOnNext(fullmaktResponse -> log.info("Fullmakt opprettet for ident {} {}", ident, fullmaktResponse.getMelding()));
+                .flatMapMany(token ->
+                        Flux.range(0, fullmakter.size())
+                                .delayElements(Duration.ofMillis(100))
+                                .flatMap(idx -> new PostFullmaktDataCommand(webClient, token.getTokenValue(), ident, fullmakter.get(idx)).call()));
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
-    public Mono<FullmaktPostResponse.Fullmakt> getFullmaktData(String ident) {
+    public Flux<FullmaktPostResponse.Fullmakt> getFullmaktData(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new GetFullmaktDataCommand(webClient, ident,
-                        token.getTokenValue()).call());
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .delayElements(Duration.ofMillis(50))
+                        .flatMap(idx -> new GetFullmaktDataCommand(webClient, identer.get(idx),
+                                token.getTokenValue()).call()));
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })

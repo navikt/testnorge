@@ -13,6 +13,7 @@ public class TestidentBuilder {
     public Testident convertToRealTestident() {
         Testident testident = new Testident();
         testident.setIdent(this.ident);
+        testident.setTestgruppe(this.testgruppe);
 
         return testident;
     }

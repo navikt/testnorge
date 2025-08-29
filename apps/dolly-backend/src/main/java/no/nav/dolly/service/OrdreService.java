@@ -3,10 +3,12 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingClient;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -19,7 +21,6 @@ import org.slf4j.event.Level;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -37,36 +38,41 @@ public class OrdreService {
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
-    public Mono<RsOrdreStatus> sendOrdre(String ident) {
+    public RsOrdreStatus sendOrdre(String ident) {
 
-        return identRepository.findByIdent(ident)
-                .switchIfEmpty(Mono.error(new NotFoundException(String.format(IKKE_FUNNET, ident))))
-                .map(testident -> BestillingProgress.builder()
+        var testident = identRepository.findByIdent(ident)
+                .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, ident)));
+
+        return Flux.just(BestillingProgress.builder()
                         .ident(ident)
                         .master(testident.getMaster())
-                        .bestillingId(1L)
+                        .bestilling(Bestilling.builder()
+                                .id(1L)
+                                .build())
                         .build())
-                .flatMap(progress -> Mono.just(DollyPerson.builder()
+                .flatMap(progress -> Flux.just(DollyPerson.builder()
                                 .ident(ident)
                                 .master(progress.getMaster())
                                 .isOrdre(true)
                                 .build())
-                        .map(dollyperson -> sendOrdre(dollyperson, progress)
+                        .flatMap(dollyperson -> sendOrdre(dollyperson, progress)
                                 .flatMap(pdlOrdreResponse ->
                                         personServiceClient.syncPerson(dollyperson, progress)
+                                                .map(ClientFuture::get)
                                                 .map(BestillingProgress::isPdlSync)
                                                 .filter(BooleanUtils::isTrue)
-                                                .flatMapMany(opprettet -> Flux.merge(
+                                                .flatMap(opprettet -> Flux.merge(
                                                         pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false),
                                                         tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false)))
+                                                .map(ClientFuture::get)
                                                 .collectList()
                                                 .map(status -> RsOrdreStatus.builder()
                                                         .status(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), objectMapper))
-                                                        .build())))
-                        .flatMap(Mono::from));
+                                                        .build()))))
+                .blockFirst();
     }
 
-    private Mono<BestillingProgress> sendOrdre(DollyPerson dollyPerson, BestillingProgress progress) {
+    private Flux<BestillingProgress> sendOrdre(DollyPerson dollyPerson, BestillingProgress progress) {
 
         return pdlDataConsumer.sendOrdre(dollyPerson.getIdent(), false)
                 .map(response -> {

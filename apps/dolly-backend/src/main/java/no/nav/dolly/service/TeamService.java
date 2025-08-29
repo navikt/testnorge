@@ -3,28 +3,18 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
-import no.nav.dolly.domain.resultset.entity.team.RsTeam;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.List;
 
-import static java.time.LocalDateTime.now;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -36,191 +26,124 @@ public class TeamService {
     private final TeamBrukerRepository teamBrukerRepository;
     private final BrukerRepository brukerRepository;
 
-    public Flux<Team> fetchAllTeam() {
-
-        return fetchTeam(teamRepository::findAll);
+    public List<Team> fetchAllTeam() {
+        return teamRepository.findAll();
     }
 
-    public Mono<Team> fetchTeamById(Long id) {
-
-        return fetchTeamByIdBasic(id)
-                .flatMap(team -> fetchTeam(() -> Flux.from(teamRepository.findById(id)))
-                        .next());
+    public Team fetchTeamById(Long id) {
+        return teamRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Fant ikke team med id=" + id));
     }
 
     @Transactional
-    public Mono<Team> opprettTeam(RsTeam team) {
+    public Team opprettTeam(Team team) {
+        var bruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
-        return assertTeamMember(team)
-                .then(brukerRepository.save(Bruker.builder()
-                                .brukernavn(team.getNavn())
-                                .brukertype(Brukertype.TEAM)
-                                .build())
-                        .flatMap(brukerTeam -> {
-                            brukerTeam.setBrukerId("team-bruker-id-%d".formatted(brukerTeam.getId()));
-                            return brukerRepository.save(brukerTeam);
-                        })
-                        .flatMap(brukerTeam -> brukerService.fetchBrukerWithoutTeam()
-                                .flatMap(bruker -> teamRepository.save(Team.builder()
-                                                .navn(team.getNavn())
-                                                .beskrivelse(team.getBeskrivelse())
-                                                .opprettetAvId(bruker.getId())
-                                                .opprettetTidspunkt(now())
-                                                .brukerId(brukerTeam.getId())
-                                                .build())
-                                        .flatMap(lagretTeam -> teamBrukerRepository.save(TeamBruker.builder()
-                                                        .brukerId(bruker.getId())
-                                                        .teamId(lagretTeam.getId())
-                                                        .opprettetTidspunkt(now())
-                                                        .build())
-                                                .map(ignore -> {
-                                                    lagretTeam.setOpprettetAv(bruker);
-                                                    lagretTeam.getBrukere().add(bruker);
-                                                    return lagretTeam;
-                                                })))));
+        var brukerTeam = brukerService.createBruker(Bruker.builder()
+                .brukernavn(team.getNavn())
+                .brukertype(Bruker.Brukertype.TEAM)
+                .build());
+
+        brukerTeam.setBrukerId("team-bruker-id-" + brukerTeam.getId());
+
+        team.getBrukere().add(bruker);
+        team.setBrukerId(brukerTeam.getId());
+
+        return teamRepository.save(team);
     }
 
     @Transactional
-    public Mono<Team> updateTeam(Long teamId, RsTeamUpdate teamUpdates) {
+    public Team updateTeam(Long teamId, Team teamUpdates) {
+        var existingTeam = fetchTeamById(teamId);
 
-        return fetchTeamByIdBasic(teamId)
-                .then(assertCurrentBrukerIsTeamMember(teamId))
-                .then(teamRepository.findById(teamId)
-                        .flatMap(existingTeam -> {
-                            existingTeam.setNavn(teamUpdates.getNavn());
-                            existingTeam.setBeskrivelse(teamUpdates.getBeskrivelse());
-                            existingTeam.setOpprettetTidspunkt(now());
-                            return teamRepository.save(existingTeam);
-                        }))
-                .flatMap(existingTeam -> brukerRepository.findById(existingTeam.getBrukerId())
-                        .flatMap(bruker -> {
-                            bruker.setBrukernavn(teamUpdates.getNavn());
-                            return brukerRepository.save(bruker);
-                        })
-                        .flatMap(ignore -> {
+        var teamBruker = brukerRepository.findBrukerById(existingTeam.getBrukerId());
 
-                            if (!teamUpdates.getBrukere().isEmpty()) {
+        var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
 
-                                return teamBrukerRepository.deleteByTeamId(teamId)
-                                        .then(brukerService.fetchOrCreateBruker()
-                                                .flatMap(bruker -> {
-                                                    teamUpdates.getBrukere().add(bruker.getBrukerId());
-                                                    return Flux.fromIterable(teamUpdates.getBrukere())
-                                                            .flatMap(brukerRepository::findByBrukerId)
-                                                            .flatMap(tamBruker -> teamBrukerRepository.save(
-                                                                    TeamBruker.builder()
-                                                                            .teamId(teamId)
-                                                                            .brukerId(tamBruker.getId())
-                                                                            .opprettetTidspunkt(now())
-                                                                            .build()))
-                                                            .collectList();
-                                                }));
-                            }
-                            return Mono.empty();
-                        })
-                        .then(fetchTeam(() -> Flux.from(teamRepository.findById(teamId)))
-                                .next()));
-    }
+        assertCurrentBrukerIsTeamMember(existingTeam);
 
-    @Transactional
-    public Mono<Void> deleteTeamById(Long teamId) {
+        existingTeam.setNavn(teamUpdates.getNavn());
+        teamBruker.ifPresent(bruker -> {
+            bruker.setBrukernavn(teamUpdates.getNavn());
+        });
 
-        return fetchTeamByIdBasic(teamId)
-                .flatMap(team -> assertCurrentBrukerIsTeamMember(teamId)
-                        .thenReturn(team))
-                .flatMap(team -> {
-                    var brukerId = team.getBrukerId();
-                    return teamRepository.deleteById(teamId)
-                            .then(teamBrukerRepository.deleteByTeamId(teamId))
-                            .then(brukerRepository.deleteById(brukerId));
-                });
-    }
+        existingTeam.setBeskrivelse(teamUpdates.getBeskrivelse());
 
-    @Transactional
-    public Mono<Void> addBrukerToTeam(Long teamId, String brukerId) {
+        if (nonNull(teamUpdates.getBrukere())) {
+            existingTeam.getBrukere().clear();
 
-        return brukerRepository.findByBrukerId(brukerId)
-                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke bruker med id %s".formatted(brukerId))))
-                .flatMap(bruker -> teamBrukerRepository.existsByTeamIdAndBrukerId(teamId, bruker.getId())
-                        .flatMap(teamBrukerExists ->
-                                BooleanUtils.isTrue(teamBrukerExists) ?
-                                        Mono.error(new IllegalArgumentException("Bruker er allerede medlem av dette teamet")) :
-                                        teamBrukerRepository.save(
-                                                TeamBruker.builder()
-                                                        .teamId(teamId)
-                                                        .brukerId(bruker.getId())
-                                                        .opprettetTidspunkt(now())
-                                                        .build())))
-                .then();
-    }
+            existingTeam.getBrukere().addAll(teamUpdates.getBrukere());
 
-    @Transactional
-    public Mono<Void> removeBrukerFromTeam(Long teamId, String brukerId) {
-
-        return fetchTeamByIdBasic(teamId)
-                .then(brukerRepository.findByBrukerId(brukerId))
-                .flatMap(bruker -> teamBrukerRepository.findByTeamIdAndBrukerId(teamId, bruker.getId())
-                        .switchIfEmpty(Mono.error(new IllegalArgumentException("Bruker er ikke medlem av dette teamet")))
-                        .thenReturn(bruker))
-                .flatMap(bruker -> teamBrukerRepository.findByTeamId(teamId)
-                        .collectList()
-                        .flatMap(teamBrukere -> {
-                            if (teamBrukere.size() == 1 && teamBrukere.stream()
-                                    .anyMatch(teamBruker -> teamBruker.getBrukerId().equals(bruker.getId()))) {
-                                return Mono.error(new IllegalArgumentException(
-                                        "Siste bruker i et team kan ikke fjerne seg selv, forsøk heller å slette teamet"));
-                            } else {
-                                return Mono.just(bruker);
-                            }
-                        }))
-                .flatMap(teamBruker -> teamBrukerRepository.deleteByBrukerId(teamBruker.getId()));
-    }
-
-    public Flux<Team> fetchTeam(Supplier<Flux<Team>> teamSupplier) {
-
-        return brukerRepository.findAll()
-                .reduce(new HashMap<Long, Bruker>(), (acc, bruker) -> {
-                    acc.put(bruker.getId(), bruker);
-                    return acc;
-                })
-                .flatMapMany(brukere -> teamBrukerRepository.findAll()
-                        .collectList()
-                        .flatMapMany(teamBrukere -> teamSupplier.get()
-                                .flatMap(team -> {
-                                    team.setOpprettetAv(brukere.get(team.getOpprettetAvId()));
-                                    team.setBrukere(
-                                            teamBrukere.stream()
-                                                    .filter(teamBruker -> teamBruker.getTeamId().equals(team.getId()))
-                                                    .map(teamBruker -> brukere.get(teamBruker.getBrukerId()))
-                                                    .collect(Collectors.toSet()));
-                                    return Mono.just(team);
-                                })))
-                .sort(Comparator.comparing(Team::getNavn));
-    }
-
-    private Mono<Void> assertCurrentBrukerIsTeamMember(Long teamId) {
-
-        return brukerService.fetchBrukerWithoutTeam()
-                .flatMap(bruker -> teamBrukerRepository.findByTeamIdAndBrukerId(teamId, bruker.getId())
-                        .switchIfEmpty(Mono.error(new IllegalArgumentException("Kan ikke utføre operasjonen på team som bruker ikke er medlem av"))))
-                .then();
-    }
-
-    private Mono<Void> assertTeamMember(RsTeam team) {
-
-        if (isBlank(team.getNavn()) || isBlank(team.getBeskrivelse())) {
-            return Mono.error(new IllegalArgumentException("Navn og beskrivelse må være satt for team"));
+            if (existingTeam.getBrukere().stream()
+                    .noneMatch(bruker -> bruker.getId()
+                            .equals(currentBruker.getId()))) {
+                existingTeam.getBrukere().add(currentBruker);
+            }
         }
 
-        return teamRepository.findByNavn(team.getNavn())
-                .switchIfEmpty(Mono.empty())
-                .flatMap(ignore -> Mono.error(
-                        new IllegalArgumentException("Team med navn '%s' finnes allerede".formatted(team.getNavn()))));
+        return teamRepository.save(existingTeam);
     }
 
-    private Mono<Team> fetchTeamByIdBasic(Long id) {
+    @Transactional
+    public void deleteTeamById(Long teamId) {
 
-        return teamRepository.findById(id)
-                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke team med id %d".formatted(id))));
+        var team = fetchTeamById(teamId);
+
+        assertCurrentBrukerIsTeamMember(team);
+
+        teamRepository.deleteById(teamId);
+        teamBrukerRepository.deleteAllById_TeamId(teamId);
+    }
+
+    @Transactional
+    public void addBrukerToTeam(Long teamId, String brukerId) {
+
+        var nyttMedlem = brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Fant ikke bruker med id=" + brukerId));
+
+        var teamBrukerId = TeamBruker.TeamBrukerId.builder()
+                .teamId(teamId)
+                .brukerId(nyttMedlem.getId())
+                .build();
+
+        if (teamBrukerRepository.existsById(teamBrukerId)) {
+            throw new IllegalArgumentException("Bruker er allerede medlem av dette teamet");
+        }
+        teamBrukerRepository.save(TeamBruker.builder()
+                .id(teamBrukerId)
+                .build());
+    }
+
+    @Transactional
+    public void removeBrukerFromTeam(Long teamId, String brukerId) {
+        var team = fetchTeamById(teamId);
+
+        var brukerToDelete = brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Fant ikke bruker med id=" + brukerId));
+
+        assertCurrentBrukerIsTeamMember(team);
+
+        if (team.getBrukere().size() == 1 &&
+                team.getBrukere().stream().anyMatch(bruker -> bruker.getBrukerId().equals(brukerId))) {
+            throw new IllegalArgumentException("Siste bruker i et team kan ikke fjerne seg selv, forsøk heller å slette teamet");
+        }
+
+        var id = TeamBruker.TeamBrukerId.builder()
+                .teamId(teamId)
+                .brukerId(brukerToDelete.getId())
+                .build();
+
+        teamBrukerRepository.deleteById(id);
+    }
+
+    private void assertCurrentBrukerIsTeamMember(Team team) {
+        var currentBruker = brukerService.fetchCurrentBrukerWithoutTeam();
+
+        var isCurrentUserTeamMember = nonNull(team.getBrukere()) &&
+                team.getBrukere().stream().anyMatch(bruker -> bruker.getId().equals(currentBruker.getId()));
+
+        if (!isCurrentUserTeamMember) {
+            throw new IllegalArgumentException("Kan ikke utføre denne operasjonen på et team som brukeren ikke er medlem av");
+        }
     }
 }

@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+
 @RequiredArgsConstructor
 @Slf4j
 public class ArbeidsplassenDeleteCVCommand implements Callable<Mono<ArbeidsplassenCVStatusDTO>> {
@@ -33,6 +35,7 @@ public class ArbeidsplassenDeleteCVCommand implements Callable<Mono<Arbeidsplass
                                 .build())
                 .header(FNR, ident)
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toBodilessEntity()
                 .map(status -> ArbeidsplassenCVStatusDTO.builder()

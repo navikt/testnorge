@@ -10,7 +10,10 @@ import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -28,10 +31,17 @@ public class RsTestgruppe {
     private LocalDate datoEndret;
 
     private Integer antallIdenter;
-    private Integer antallBestillinger;
+    private Long antallBestillinger;
     private Integer antallIBruk;
 
     private boolean erEierAvGruppe;
     private Boolean erLaast;
     private String laastBeskrivelse;
+
+    public List<Tags> getTags() {
+        if (isNull(tags)) {
+            tags = new ArrayList<>();
+        }
+        return tags;
+    }
 }

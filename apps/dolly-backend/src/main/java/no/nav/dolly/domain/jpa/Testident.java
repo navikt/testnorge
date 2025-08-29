@@ -1,6 +1,18 @@
 package no.nav.dolly.domain.jpa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,49 +20,58 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+
+@Entity
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table("TEST_IDENT")
+@Table(name = "TEST_IDENT")
 public class Testident implements Serializable {
 
     @Id
-    @Column("ID")
+    @GeneratedValue(generator = "gruppeIdGenerator")
+    @GenericGenerator(name = "gruppeIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
+            @Parameter(name = "sequence_name", value = "TEST_IDENT_SEQ"),
+            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "increment_size", value = "1")
+    })
+    @Column(name = "ID")
     private Long id;
 
     @Version
-    @Column("VERSJON")
+    @Column(name = "VERSJON")
     private Long versjon;
 
-    @Column("IDENT")
+    @Column(name = "IDENT")
     private String ident;
 
-    @Column("IBRUK")
+    @Column(name = "IBRUK")
     private Boolean iBruk;
 
-    @Column("BESKRIVELSE")
+    @Column(name = "BESKRIVELSE")
     private String beskrivelse;
 
-    @Column("TILHOERER_GRUPPE")
-    private Long gruppeId;
+    @ManyToOne
+    @JoinColumn(name = "TILHOERER_GRUPPE", nullable = false)
+    private Testgruppe testgruppe;
 
-    @Column("MASTER")
+    @Column(name = "MASTER")
+    @Enumerated(EnumType.STRING)
     private Master master;
 
+    @OneToMany(fetch = FetchType.LAZY)
     @Builder.Default
-    @Transient
+    @JoinColumn(name = "IDENT", referencedColumnName = "ident", insertable = false, updatable = false)
     private List<BestillingProgress> bestillingProgress = new ArrayList<>();
 
     @JsonIgnore
@@ -79,7 +100,7 @@ public class Testident implements Serializable {
                 .append(ident, testident.ident)
                 .append(iBruk, testident.iBruk)
                 .append(beskrivelse, testident.beskrivelse)
-                .append(gruppeId, testident.gruppeId)
+                .append(testgruppe, testident.testgruppe)
                 .append(master, testident.master)
                 .isEquals();
     }
@@ -92,7 +113,7 @@ public class Testident implements Serializable {
                 .append(ident)
                 .append(iBruk)
                 .append(beskrivelse)
-                .append(gruppeId)
+                .append(testgruppe)
                 .append(master)
                 .toHashCode();
     }
@@ -105,7 +126,7 @@ public class Testident implements Serializable {
                 ", ident='" + ident + '\'' +
                 ", iBruk=" + iBruk +
                 ", beskrivelse='" + beskrivelse + '\'' +
-                ", testgruppe=" + gruppeId +
+                ", testgruppe=" + testgruppe.getId() +
                 ", master=" + master +
                 '}';
     }

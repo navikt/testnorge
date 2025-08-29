@@ -20,7 +20,7 @@ public class IdentAttributesMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Testident testident, IdentAttributesResponse attributesResponse, MappingContext context) {
 
-                        attributesResponse.setGruppeId(testident.getGruppeId());
+                        attributesResponse.setGruppeId(testident.getTestgruppe().getId());
                         attributesResponse.setIbruk(isTrue(testident.getIBruk()));
                     }
                 })

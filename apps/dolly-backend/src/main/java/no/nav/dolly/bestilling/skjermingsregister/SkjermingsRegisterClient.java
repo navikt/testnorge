@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingBestilling;
@@ -14,10 +15,9 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,18 +41,18 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling)) {
 
-            return getPersonData(dollyPerson.getIdent())
+            return Flux.from(getPersonData(dollyPerson.getIdent())
                             .map(person -> prepRequest(bestilling, person))
                             .flatMap(request -> skjermingsRegisterConsumer.oppdaterPerson(request)
                                     .map(this::getStatus))
-                            .collect(Collectors.joining())
-                    .flatMap(status -> oppdaterStatus(progress, status));
+                            .collect(Collectors.joining()))
+                    .map(status -> futurePersist(progress, status));
         }
-        return Mono.empty();
+        return Flux.empty();
     }
 
     @Override
@@ -84,9 +84,12 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 SkjermingDataRequest.class, context);
     }
 
-    Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+    ClientFuture futurePersist(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::setSkjermingsregisterStatus, status);
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::setSkjermingsregisterStatus, status);
+            return progress;
+        };
     }
 
     String getStatus(SkjermingDataResponse resultat) {

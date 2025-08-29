@@ -4,21 +4,26 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.Tags;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.dolly.service.BrukerService;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.Collections;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Component
 @RequiredArgsConstructor
 public class TestgruppeMappingStrategy implements MappingStrategy {
+
+    private final GetUserInfo getUserInfo;
+    private final BrukerService brukerService;
 
     @Override
     public void register(MapperFactory factory) {
@@ -27,28 +32,19 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
 
-                        var bruker = (Bruker) context.getProperty("bruker");
-                        var antallIdenter = (Integer) context.getProperty("antallIdenter");
-                        var antallBestillinger = (Integer) context.getProperty("antallBestillinger");
-                        var antallIBruk = (Integer) context.getProperty("antallIBruk");
-                        var alleBrukere = (Map<Long, Bruker>) context.getProperty("alleBrukere");
-                        var opprettetAv = nonNull(testgruppe.getOpprettetAv()) ?
-                                testgruppe.getOpprettetAv() :
-                                alleBrukere.get(testgruppe.getOpprettetAvId());
-                        var sistEndretAv = nonNull(testgruppe.getSistEndretAv()) ?
-                                testgruppe.getSistEndretAv() :
-                                alleBrukere.get(testgruppe.getSistEndretAvId());
+                        var brukerId = nonNull(context.getProperty("brukerId")) ? (String) context.getProperty("brukerId") : getUserId(getUserInfo);
+                        var bruker = brukerService.fetchBrukerOrTeamBruker(brukerId);
 
-                        rsTestgruppe.setAntallIdenter(antallIdenter);
-                        rsTestgruppe.setAntallIBruk(antallIBruk);
-                        rsTestgruppe.setAntallIdenter(antallIdenter);
-                        rsTestgruppe.setAntallBestillinger(antallBestillinger);
-                        rsTestgruppe.setErEierAvGruppe(bruker.getId().equals(testgruppe.getOpprettetAvId()));
-                        rsTestgruppe.setOpprettetAv(mapperFacade.map(opprettetAv, RsBrukerUtenFavoritter.class));
-                        rsTestgruppe.setSistEndretAv(mapperFacade.map(sistEndretAv, RsBrukerUtenFavoritter.class));
-                        rsTestgruppe.setTags(testgruppe.getTags().stream()
+                        rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
+                        rsTestgruppe.setAntallIBruk((int) testgruppe.getTestidenter().stream()
+                                .filter(ident -> isTrue(ident.getIBruk()))
+                                .count());
+                        rsTestgruppe.setErEierAvGruppe(bruker.getBrukerId().equals(testgruppe.getOpprettetAv().getBrukerId()));
+                        rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
+                        rsTestgruppe.setTags(nonNull(testgruppe.getTags()) ? testgruppe.getTags().stream()
                                 .filter(tag -> Tags.DOLLY != tag)
-                                .toList());
+                                .toList() : Collections.emptyList()
+                        );
                     }
                 })
                 .byDefault()

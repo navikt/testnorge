@@ -11,6 +11,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+
 @RequiredArgsConstructor
 @Slf4j
 public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
@@ -22,19 +24,19 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
 
     @Override
     public Mono<List<String>> call() {
-
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(INSTMILJO_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(MiljoerResponse.class)
                 .map(MiljoerResponse::getInstitusjonsoppholdEnvironments)
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(error ->
-                        Mono.just(List.of("q1", "q2")))
+                .onErrorResume(error -> Mono.just(List.of("q1", "q2")))
                 .retryWhen(WebClientError.is5xxException());
     }
+
 }

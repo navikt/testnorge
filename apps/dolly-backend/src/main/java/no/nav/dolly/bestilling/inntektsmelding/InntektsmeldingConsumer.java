@@ -12,7 +12,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
@@ -31,8 +31,8 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             WebClient webClient,
-            WebClientLogger webClientLogger) {
-
+            WebClientLogger webClientLogger
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavInntektsmeldingService();
         var webClientBuilder = webClient.mutate();
@@ -43,14 +43,14 @@ public class InntektsmeldingConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inntektsmelding_opprett"})
-    public Mono<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
+    public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
         log.info("Inntektsmelding med ident {} callId {} sendt {}",
                 inntekstsmelding.getArbeidstakerFnr(), callId, inntekstsmelding);
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new OpprettInntektsmeldingCommand(webClient,
+                .flatMapMany(token -> new OpprettInntektsmeldingCommand(webClient,
                         token.getTokenValue(), inntekstsmelding, callId).call());
     }
 

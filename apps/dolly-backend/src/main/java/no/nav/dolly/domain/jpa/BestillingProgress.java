@@ -1,6 +1,18 @@
 package no.nav.dolly.domain.jpa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,134 +22,129 @@ import no.nav.dolly.domain.jpa.Testident.Master;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("BESTILLING_PROGRESS")
+@Table(name = "BESTILLING_PROGRESS")
 @Builder
 public class BestillingProgress implements Serializable {
 
     private static final int MAX_DOKARKIV_STATUS_LENGTH = 2000;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Version
-    @Column("VERSJON")
+    @Column(name = "VERSJON")
     private Long versjon;
 
-    @Column("BESTILLING_ID")
-    private Long bestillingId;
-
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "BESTILLING_ID", nullable = false)
     private Bestilling bestilling;
 
-    @Column("IDENT")
     private String ident;
 
-    @Column("SIGRUNSTUB_STATUS")
+    @Column(name = "SIGRUNSTUB_STATUS")
     private String sigrunstubStatus;
 
-    @Column("KRRSTUB_STATUS")
+    @Column(name = "KRRSTUB_STATUS")
     private String krrstubStatus;
 
-    @Column("FULLMAKT_STATUS")
+    @Column(name = "FULLMAKT_STATUS")
     private String fullmaktStatus;
 
-    @Column("MEDL_STATUS")
+    @Column(name = "MEDL_STATUS")
     private String medlStatus;
 
-    @Column("UDISTUB_STATUS")
+    @Column(name = "UDISTUB_STATUS")
     private String udistubStatus;
 
-    @Column("AAREG_STATUS")
+    @Column(name = "AAREG_STATUS")
     private String aaregStatus;
 
-    @Column("ARENAFORVALTER_STATUS")
+    @Column(name = "ARENAFORVALTER_STATUS")
     private String arenaforvalterStatus;
 
-    @Column("INSTDATA_STATUS")
+    @Column(name = "INSTDATA_STATUS")
     private String instdataStatus;
 
-    @Column("INNTEKTSSTUB_STATUS")
+    @Column(name = "INNTEKTSSTUB_STATUS")
     private String inntektstubStatus;
 
-    @Column("PENSJONFORVALTER_STATUS")
+    @Column(name = "PENSJONFORVALTER_STATUS")
     private String pensjonforvalterStatus;
 
-    @Column("INNTEKTSMELDING_STATUS")
+    @Column(name = "INNTEKTSMELDING_STATUS")
     private String inntektsmeldingStatus;
 
-    @Column("BREGSTUB_STATUS")
+    @Column(name = "BREGSTUB_STATUS")
     private String brregstubStatus;
 
-    @Column("DOKARKIV_STATUS")
+    @Column(name = "DOKARKIV_STATUS")
     private String dokarkivStatus;
 
-    @Column("HISTARK_STATUS")
+    @Column(name = "HISTARK_STATUS")
     private String histarkStatus;
 
-    @Column("SYKEMELDING_STATUS")
+    @Column(name = "SYKEMELDING_STATUS")
     private String sykemeldingStatus;
 
-    @Column("SKJERMINGSREGISTER_STATUS")
+    @Column(name = "SKJERMINGSREGISTER_STATUS")
     private String skjermingsregisterStatus;
 
-    @Column("TPS_MESSAGING_STATUS")
+    @Column(name = "TPS_MESSAGING_STATUS")
     private String tpsMessagingStatus;
 
-    @Column("PDL_IMPORT_STATUS")
+    @Column(name = "PDL_IMPORT_STATUS")
     private String pdlImportStatus;
 
-    @Column("PDL_FORVALTER_STATUS")
+    @Column(name = "PDL_FORVALTER_STATUS")
     private String pdlForvalterStatus;
 
-    @Column("PDL_ORDRE_STATUS")
+    @Column(name = "PDL_ORDRE_STATUS")
     private String pdlOrdreStatus;
 
-    @Column("KONTOREGISTER_STATUS")
+    @Column(name = "KONTOREGISTER_STATUS")
     private String kontoregisterStatus;
 
-    @Column("PDL_PERSON_STATUS")
+    @Column(name = "PDL_PERSON_STATUS")
     private String pdlPersonStatus;
 
-    @Column("ARBEIDSPLASSENCV_STATUS")
+    @Column(name = "ARBEIDSPLASSENCV_STATUS")
     private String arbeidsplassenCVStatus;
 
-    @Column("SKATTEKORT_STATUS")
+    @Column(name = "SKATTEKORT_STATUS")
     private String skattekortStatus;
 
-    @Column("YRKESSKADE_STATUS")
+    @Column(name = "YRKESSKADE_STATUS")
     private String yrkesskadeStatus;
 
-    @Column("ARBEIDSSOEKERREGISTERET_STATUS")
+    @Column(name = "ARBEIDSSOEKERREGISTERET_STATUS")
     private String arbeidssoekerregisteretStatus;
 
-    @Column("ETTERLATTE_STATUS")
+    @Column(name = "ETTERLATTE_STATUS")
     private  String etterlatteStatus;
 
-    @Column("master")
+    @Column(name = "master")
+    @Enumerated(EnumType.STRING)
     private Master master;
 
     @Transient
-    private boolean pdlSync;
+    private boolean isPdlSync;
 
     private String feil;
 
-    public BestillingProgress(Long bestillingId, String ident, Master master) {
+    public BestillingProgress(Bestilling bestilling, String ident, Master master) {
         this.ident = ident;
-        this.bestillingId = bestillingId;
+        this.bestilling = bestilling;
         this.master = master;
     }
 
@@ -172,7 +179,7 @@ public class BestillingProgress implements Serializable {
         return new EqualsBuilder()
                 .append(getId(), that.getId())
                 .append(getVersjon(), that.getVersjon())
-                .append(getBestillingId(), that.getBestillingId())
+                .append(getBestilling(), that.getBestilling())
                 .append(getIdent(), that.getIdent())
                 .append(getSigrunstubStatus(), that.getSigrunstubStatus())
                 .append(getFullmaktStatus(), that.getFullmaktStatus())
@@ -211,7 +218,7 @@ public class BestillingProgress implements Serializable {
         return new HashCodeBuilder(17, 37)
                 .append(getId())
                 .append(getVersjon())
-                .append(getBestillingId())
+                .append(getBestilling())
                 .append(getIdent())
                 .append(getSigrunstubStatus())
                 .append(getKrrstubStatus())
@@ -250,7 +257,7 @@ public class BestillingProgress implements Serializable {
         return "BestillingProgress{" +
                 "id=" + id +
                 ", versjon=" + versjon +
-                ", bestilling=" + bestillingId +
+                ", bestilling=" + bestilling +
                 ", ident='" + ident + '\'' +
                 ", sigrunstubStatus='" + sigrunstubStatus + '\'' +
                 ", krrstubStatus='" + krrstubStatus + '\'' +
@@ -280,7 +287,7 @@ public class BestillingProgress implements Serializable {
                 ", arbeidssoekerregisteretStatus=" + arbeidssoekerregisteretStatus + '\'' +
                 ", etterlatteStatus='" + etterlatteStatus + '\'' +
                 ", master=" + master +
-                ", pdlSync=" + pdlSync +
+                ", isPdlSync=" + isPdlSync +
                 ", feil='" + feil + '\'' +
                 '}';
     }

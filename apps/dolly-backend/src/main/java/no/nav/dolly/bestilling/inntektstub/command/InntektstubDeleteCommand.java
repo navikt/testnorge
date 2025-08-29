@@ -10,6 +10,8 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+
 @RequiredArgsConstructor
 @Slf4j
 public class InntektstubDeleteCommand implements Callable<Flux<String>> {
@@ -29,6 +31,7 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
                         .queryParam(NORSKE_IDENTER_QUERY, identer)
                         .build())
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .map(respons -> "")

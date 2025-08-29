@@ -35,8 +35,7 @@ class ArenaMappingStrategyTest {
     private MapperFacade mapperFacade;
 
     @BeforeEach
-    void setup() {
-
+    public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new ArenaMappingStrategy());
     }
 

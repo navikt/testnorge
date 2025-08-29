@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -29,19 +29,19 @@ public class SoekController {
 
     @GetMapping
     @Operation(description = "Hent lagrede søk for bruker")
-    public Flux<RsSoek> getSoek(@RequestParam Soek.SoekType soekType) {
+    public List<RsSoek> getSoek(@RequestParam Soek.SoekType soekType) {
 
-        return soekService.getSoek(soekType)
-                .map(soek -> mapperFacade.map(soek, RsSoek.class));
+        var soek = soekService.getSoek(soekType);
+        return mapperFacade.mapAsList(soek, RsSoek.class);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(description = "Lagre søk for bruker")
-    public Mono<RsSoek> lagreSoek(@RequestParam Soek.SoekType soekType,
-                                 @RequestBody String soekVerdi) {
+    public RsSoek lagreSoek(@RequestParam Soek.SoekType soekType,
+                           @RequestBody String soekVerdi) {
 
-        return soekService.lagreSoek(soekType, soekVerdi)
-        .map(soek -> mapperFacade.map(soek, RsSoek.class));
+        var soek = soekService.lagreSoek(soekType, soekVerdi);
+        return mapperFacade.map(soek, RsSoek.class);
     }
 }

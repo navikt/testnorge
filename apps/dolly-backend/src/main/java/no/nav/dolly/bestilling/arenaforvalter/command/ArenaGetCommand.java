@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+
 @RequiredArgsConstructor
 @Slf4j
 public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
@@ -32,6 +34,7 @@ public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
                         .path(ARENA_URL)
                         .build(miljoe))
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header(FODSELSNR, ident)
                 .retrieve()
                 .onStatus(HttpStatus.NO_CONTENT::equals, ClientResponse::createException)

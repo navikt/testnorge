@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
@@ -24,9 +25,8 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DokumentService;
 import no.nav.dolly.service.TransaksjonMappingService;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -65,36 +65,36 @@ public class DokarkivClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (bestilling.getDokarkiv().isEmpty()) {
-            return Mono.empty();
+        if (!bestilling.getDokarkiv().isEmpty()) {
+
+            updateProgress(progress, bestilling.getEnvironments());
+
+            return Flux.from(getPersonData(dollyPerson.getIdent())
+                    .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
+                            .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
+                                    .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
+                                            .flatMap(isOpprettDokument -> isTrue(isOpprettDokument)
+                                                            ?
+                                                            Flux.fromIterable(bestilling.getDokarkiv())
+                                                                    .flatMap(dokarkiv ->
+                                                                            buildRequest(dokarkiv, person, bestilling.getId())
+                                                                                    .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
+                                                                    .collectList()
+                                                                    .map(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
+                                                            :
+                                                            Mono.just(miljoe + ":OK")
+                                            )
+                                    )
+                                    .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                    .onErrorResume(error -> getErrors(error, miljoer))
+                            ))
+                    .collect(Collectors.joining(","))
+                    .map(status -> futurePersist(progress, status)));
+        } else {
+            return Flux.empty();
         }
-
-        return oppdaterStatus(progress, bestilling.getEnvironments().stream()
-                .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(DOKARKIV.name())))
-                .collect(Collectors.joining(",")))
-                .then(getPersonData(dollyPerson.getIdent())
-                .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
-                        .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
-                                .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
-                                        .flatMap(isOpprettDokument -> isTrue(isOpprettDokument)
-                                                ?
-                                                Flux.fromIterable(bestilling.getDokarkiv())
-                                                        .flatMap(dokarkiv ->
-                                                                buildRequest(dokarkiv, person, bestilling.getId())
-                                                                        .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
-                                                        .collectList()
-                                                        .flatMap(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
-                                                :
-                                                Mono.just(miljoe + ":OK")
-                                        )
-                                )
-                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                                .onErrorResume(error -> getErrors(error, miljoer))
-                        ))
-                .collect(Collectors.joining(","))
-                .flatMap(status -> oppdaterStatus(progress, status)));
     }
 
     private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {
@@ -103,7 +103,8 @@ public class DokarkivClient implements ClientRegister {
             return Mono.just(true);
         }
 
-        return transaksjonMappingService.getTransaksjonMapping(DOKARKIV.name(), ident, bestillingId)
+        var eksisterende = transaksjonMappingService.getTransaksjonMapping(DOKARKIV.name(), ident, bestillingId);
+        return Flux.fromIterable(eksisterende)
                 .doOnNext(transaksjonMapping -> log.info("Eksisterende transaksjonmapping {}", transaksjonMapping))
                 .filter(transaksjonMapping -> transaksjonMapping.getMiljoe().equals(miljoe))
                 .mapNotNull(transaksjon -> fromJson(transaksjon.getTransaksjonId()))
@@ -114,16 +115,24 @@ public class DokarkivClient implements ClientRegister {
                 .map(status -> isBlank(status.getFeilmelding()) && isNotBlank(status.getDokument()))
                 .doOnNext(status -> log.info("Dokument eksisterer {}", status))
                 .reduce(true, (a, b) -> a && b)
-                .flatMap(status -> {
-                    if (isFalse(status)) {
-                        return transaksjonMappingService.delete(ident, miljoe, DOKARKIV.name(), bestillingId)
-                                .thenReturn(status);
+                .doOnNext(ok -> {
+                    if (isFalse(ok)) {
+                        transaksjonMappingService.delete(ident, miljoe, DOKARKIV.name(), bestillingId);
                     }
-                    return Mono.just(status);
                 })
-                .map(BooleanUtils::isFalse)
+                .map(ok -> !ok)
                 .doOnNext(ok -> log.info("Opprett dokument {}", ok))
                 .defaultIfEmpty(true);
+    }
+
+    private void updateProgress(BestillingProgress progress, Set<String> miljoer) {
+
+        transactionHelperService.persister(progress,
+                BestillingProgress::getDokarkivStatus,
+                BestillingProgress::setDokarkivStatus,
+                miljoer.stream()
+                        .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(DOKARKIV.name())))
+                        .collect(Collectors.joining(",")));
     }
 
     private Flux<String> getErrors(Throwable error, List<String> miljoer) {
@@ -132,11 +141,14 @@ public class DokarkivClient implements ClientRegister {
                 .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(WebClientError.describe(error).getMessage())));
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress,
-                BestillingProgress::getDokarkivStatus,
-                BestillingProgress::setDokarkivStatus, status);
+        return () -> {
+            transactionHelperService.persister(progress,
+                    BestillingProgress::getDokarkivStatus,
+                    BestillingProgress::setDokarkivStatus, status);
+            return progress;
+        };
     }
 
     private Mono<List<String>> getFilteredMiljoer(Set<String> miljoer) {
@@ -147,27 +159,28 @@ public class DokarkivClient implements ClientRegister {
                 .collectList();
     }
 
-    private Mono<String> getStatus(String ident, Long bestillingId, List<DokarkivResponse> response) {
+    private String getStatus(String ident, Long bestillingId, List<DokarkivResponse> response) {
 
         log.info("Dokarkiv response {} for ident {}", response, ident);
 
         if (isNull(response)) {
-            return Mono.just("UKJENT:Intet svar");
+            return "UKJENT:Intet svar";
         }
 
         if (response.stream().allMatch(arkiv -> isBlank(arkiv.getFeilmelding()))) {
 
-            return saveTransaksjonId(response, ident, bestillingId, response.getFirst().getMiljoe())
-                    .then(Mono.just(response.getFirst().getMiljoe() + ":OK"));
+            saveTransaksjonId(response, ident, bestillingId, response.getFirst().getMiljoe());
+            return response.getFirst().getMiljoe() + ":OK";
 
         } else {
 
-            return Mono.just("%s:FEIL=Teknisk feil se logg! %s".formatted(response.getFirst().getMiljoe(),
+            return String.format("%s:FEIL=Teknisk feil se logg! %s", response.getFirst().getMiljoe(),
+
                     response.stream()
                             .filter(arkiv -> isNotBlank(arkiv.getFeilmelding()))
                             .map(arkiv -> encodeStatus(errorStatusDecoder.getStatusMessage(arkiv.getFeilmelding())))
                             .findFirst()
-                            .orElse("UKJENT")));
+                            .orElse("UKJENT"));
         }
     }
 
@@ -189,22 +202,18 @@ public class DokarkivClient implements ClientRegister {
 
     private Mono<DokarkivRequest> buildRequest(RsDokarkiv rsDokarkiv, PdlPersonBolk.PersonBolk personBolk, Long bestillingId) {
 
-        return dokumentService.getDokumenterByBestilling(bestillingId)
-                .collectList()
-                .map(dokumenter -> {
-                    var context = new MappingContext.Factory().getContext();
-                    context.setProperty("personBolk", personBolk);
-                    context.setProperty("dokumenter", dokumenter);
-                    return context;
-                })
-                .map(context -> mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context));
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("personBolk", personBolk);
+        context.setProperty("dokumenter", dokumentService.getDokumenterByBestilling(bestillingId));
+
+        return Mono.just(mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context));
     }
 
-    private Mono<TransaksjonMapping> saveTransaksjonId(List<DokarkivResponse> response, String ident, Long bestillingId, String miljoe) {
+    private void saveTransaksjonId(List<DokarkivResponse> response, String ident, Long bestillingId, String miljoe) {
 
         log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
 
-        return transaksjonMappingService.save(
+        transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
                         .bestillingId(bestillingId)

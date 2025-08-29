@@ -8,15 +8,16 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.ARBEIDSPLASSEN_CALL_ID;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenCVStatusDTO>> {
+public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenCVStatusDTO>> {
 
     private static final String ARBEIDSPLASSEN_CV_URL = "/rest/v3/cv";
     private static final String FNR = "fnr";
@@ -28,7 +29,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
     private final String token;
 
     @Override
-    public Mono<ArbeidsplassenCVStatusDTO> call() {
+    public Flux<ArbeidsplassenCVStatusDTO> call() {
         return webClient
                 .put()
                 .uri(
@@ -38,9 +39,10 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
                 .header(FNR, ident)
                 .header(ARBEIDSPLASSEN_CALL_ID, uuid)
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(arbeidsplassenCV)
                 .retrieve()
-                .bodyToMono(PAMCVDTO.class)
+                .bodyToFlux(PAMCVDTO.class)
                 .map(response -> ArbeidsplassenCVStatusDTO.builder()
                         .status(HttpStatus.OK)
                         .arbeidsplassenCV(response)

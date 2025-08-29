@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
@@ -11,7 +12,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,13 +97,13 @@ class ArenaForvalterClientTest {
         when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaStansYtelseService.stopYtelse(any(), any(), any())).thenReturn(Flux.empty());
-        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                                .build(), progress, false))
+                                .build(), progress, false)
+                        .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -134,10 +135,10 @@ class ArenaForvalterClientTest {
         when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaStansYtelseService.stopYtelse(any(), any(), any())).thenReturn(Flux.empty());
-        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                                .build(), progress, false))
+                                .build(), progress, false)
+                        .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -158,10 +159,10 @@ class ArenaForvalterClientTest {
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
-        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                                .build(), progress, false))
+                                .build(), progress, false)
+                        .map(ClientFuture::get))
                 .assertNext(status -> assertThat(status.getArenaforvalterStatus(), is(nullValue())))
                 .verifyComplete();
     }
@@ -175,10 +176,10 @@ class ArenaForvalterClientTest {
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton("t3"));
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
-        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                progress, false))
+                                progress, false)
+                        .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());

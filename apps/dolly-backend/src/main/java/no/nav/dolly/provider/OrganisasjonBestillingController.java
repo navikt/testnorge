@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
-import no.nav.dolly.domain.jpa.OrganisasjonBestillingMal;
+import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingS
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper;
 import no.nav.dolly.service.OrganisasjonBestillingMalService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
+import no.nav.dolly.service.OrganisasjonProgressService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +27,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -43,22 +43,30 @@ public class OrganisasjonBestillingController {
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
     private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
+    private final OrganisasjonProgressService progressService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
+    @PostMapping()
     @Operation(description = "Opprett organisasjon")
     @Transactional
-    public Mono<RsOrganisasjonBestillingStatus> opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
+    public RsOrganisasjonBestillingStatus opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
 
-        return bestillingService.saveBestilling(request)
-                .flatMap(bestilling ->
-                        organisasjonClient.opprett(request, bestilling)
-                                .then(getStatus(bestilling, "Ubestemt")));
+        OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
+
+        progressService.save(OrganisasjonBestillingProgress.builder()
+                .bestilling(bestilling)
+                .organisasjonsnummer("Ubestemt")
+                .organisasjonsforvalterStatus(request.getEnvironments().stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
+                .build());
+
+        organisasjonClient.opprett(request, bestilling);
+
+        return getStatus(bestilling, "Ubestemt");
     }
 
-    @GetMapping
+    @GetMapping()
     @Operation(description = "Hent status på bestilling basert på bestillingId")
-    public Mono<RsOrganisasjonBestillingStatus> hentBestilling(
+    public RsOrganisasjonBestillingStatus hentBestilling(
             @Parameter(description = "ID på bestilling av organisasjon", example = "123") @RequestParam Long bestillingId) {
 
         return bestillingService.fetchBestillingStatusById(bestillingId);
@@ -67,23 +75,15 @@ public class OrganisasjonBestillingController {
     @DeleteMapping("/{orgnummer}")
     @Operation(description = "Slett bestilling ved orgnummer")
     @Transactional
-    public Mono<Void> slettBestillingByOrgnummer(@PathVariable("orgnummer") String orgnummer) {
+    public void slettBestilling(@PathVariable("orgnummer") String orgnummer) {
 
-        return bestillingService.slettBestillingByOrgnummer(orgnummer);
-    }
-
-    @DeleteMapping("/id/{id}")
-    @Operation(description = "Slett bestilling ved bestillingId")
-    @Transactional
-    public Mono<Void> slettBestillingById(@PathVariable("id") Long id) {
-
-        return bestillingService.slettBestillingById(id);
+        bestillingService.slettBestillingByOrgnummer(orgnummer);
     }
 
     @GetMapping("/bestillingsstatus")
     @Operation(description = "Hent status på bestilling basert på brukerId")
-    public Flux<RsOrganisasjonBestillingStatus> hentBestillingStatus(
-            @Parameter(description = "BrukerID som er unik til en Azure bruker",
+    public List<RsOrganisasjonBestillingStatus> hentBestillingStatus(
+            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autensiering)",
                     example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
 
         return bestillingService.fetchBestillingStatusByBrukerId(brukerId);
@@ -91,41 +91,40 @@ public class OrganisasjonBestillingController {
 
     @GetMapping("/malbestilling")
     @Operation(description = "Hent mal-bestilling")
-    public Mono<RsOrganisasjonMalBestillingWrapper> getMalBestillinger(@RequestParam(required = false, value = "brukerId") String brukerId) {
+    public RsOrganisasjonMalBestillingWrapper getMalBestillinger(@RequestParam(required = false, value = "brukerId") String brukerId) {
 
         return isBlank(brukerId) ?
-                organisasjonBestillingMalService.getOrganisasjonMalBestillinger() :
-                organisasjonBestillingMalService.getMalbestillingerByUser(brukerId);
+                organisasjonBestillingMalService.getOrganisasjonMalBestillinger() : organisasjonBestillingMalService.getMalbestillingerByUser(brukerId);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PostMapping("/malbestilling")
     @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
     @Transactional
-    public Mono<OrganisasjonBestillingMal> opprettMalbestilling(Long bestillingId, String malNavn) {
+    public void opprettMalbestilling(Long bestillingId, String malNavn) {
 
-        return organisasjonBestillingMalService.saveOrganisasjonBestillingMalFromBestillingId(bestillingId, malNavn);
+        organisasjonBestillingMalService.saveOrganisasjonBestillingMalFromBestillingId(bestillingId, malNavn);
     }
 
     @DeleteMapping("/malbestilling/{id}")
     @Operation(description = "Slett mal-bestilling")
     @Transactional
-    public Mono<Void> deleteMalBestilling(@PathVariable Long id) {
+    public void deleteMalBestilling(@PathVariable Long id) {
 
-        return organisasjonBestillingMalService.deleteOrganisasjonMalbestillingById(id);
+        organisasjonBestillingMalService.deleteOrganisasjonMalbestillingById(id);
     }
 
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
     @Transactional
-    public Mono<OrganisasjonBestillingMal> redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
+    public int redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
 
         return organisasjonBestillingMalService.updateOrganisasjonMalNavnById(id, malNavn);
     }
 
-    static Mono<RsOrganisasjonBestillingStatus> getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
+    static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
 
-        return Mono.just(RsOrganisasjonBestillingStatus.builder()
+        return RsOrganisasjonBestillingStatus.builder()
                 .id(bestilling.getId())
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .antallLevert(0)
@@ -144,6 +143,6 @@ public class OrganisasjonBestillingController {
                                         .toList())
                                 .build()))
                         .build()))
-                .build());
+                .build();
     }
 }

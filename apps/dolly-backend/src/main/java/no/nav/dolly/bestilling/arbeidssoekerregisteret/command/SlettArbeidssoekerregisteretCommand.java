@@ -10,6 +10,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+
 @Slf4j
 @RequiredArgsConstructor
 public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpStatus>> {
@@ -25,6 +27,7 @@ public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpSt
                         .path("/api/v1/arbeidssoekerregistrering/{identitetsnummer}")
                         .build(ident))
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> HttpStatus.valueOf(response.getStatusCode().value()))

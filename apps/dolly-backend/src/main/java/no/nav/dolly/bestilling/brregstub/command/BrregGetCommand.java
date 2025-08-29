@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -30,6 +31,7 @@ public class BrregGetCommand implements Callable<Mono<RolleoversiktTo>> {
                         .path(ROLLEOVERSIKT_URL).build())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(RolleoversiktTo.class)
                 .onErrorResume(throwable -> RolleoversiktTo.of(WebClientError.describe(throwable)))

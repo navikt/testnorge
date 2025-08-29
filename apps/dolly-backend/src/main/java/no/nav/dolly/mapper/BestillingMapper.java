@@ -10,7 +10,7 @@ public class BestillingMapper {
 
         return Bestilling.builder()
                 .id(bestilling.getId())
-                .gruppeId(bestilling.getGruppeId())
+                .gruppe(bestilling.getGruppe())
                 .antallIdenter(bestilling.getAntallIdenter())
                 .bestKriterier(bestilling.getBestKriterier())
                 .beskrivelse(bestilling.getBeskrivelse())

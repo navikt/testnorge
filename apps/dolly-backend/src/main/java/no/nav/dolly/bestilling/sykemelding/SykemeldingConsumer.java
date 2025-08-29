@@ -29,8 +29,8 @@ public class SykemeldingConsumer extends ConsumerStatus {
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient) {
-
+            WebClient webClient
+    ) {
         this.tokenService = accessTokenService;
         serverProperties = consumers.getTestnavSykemeldingApi();
         this.webClient = webClient

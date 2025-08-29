@@ -37,8 +37,8 @@ public class KontoregisterConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient) {
-
+            WebClient webClient
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavKontoregisterPersonProxy();
         this.webClient = webClient

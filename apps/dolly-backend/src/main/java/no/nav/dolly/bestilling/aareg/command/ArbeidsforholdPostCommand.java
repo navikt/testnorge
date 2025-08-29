@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_ARBEIDSFORHOLD;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,6 +34,7 @@ public class ArbeidsforholdPostCommand implements Callable<Flux<ArbeidsforholdRe
                         .build(miljoe))
                 .header(HEADER_NAV_ARBEIDSFORHOLD, CallIdUtil.generateCallId())
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .body(BodyInserters.fromValue(arbeidsforhold))
                 .retrieve()
                 .bodyToFlux(Arbeidsforhold.class)

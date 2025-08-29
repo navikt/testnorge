@@ -36,8 +36,7 @@ class DigitalKontaktMappingStrategyTest {
     private MappingContext context;
 
     @BeforeEach
-    void setup() {
-
+    public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new DigitalKontaktMappingStrategy());
 
         context = new MappingContext.Factory().getContext();

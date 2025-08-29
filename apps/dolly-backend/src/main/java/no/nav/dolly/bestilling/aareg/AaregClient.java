@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.aareg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.ApplicationConfig;
@@ -12,7 +13,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
@@ -55,30 +56,33 @@ public class AaregClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (bestilling.getAareg().isEmpty() ||
-                bestilling.getAareg().stream().noneMatch(aareg -> nonNull(aareg.getArbeidsgiver()))) {
+        if (!bestilling.getAareg().isEmpty() &&
+                bestilling.getAareg().stream().anyMatch(aareg -> nonNull(aareg.getArbeidsgiver()))) {
 
-            return Mono.empty();
+            var miljoer = bestilling.getEnvironments().stream()
+                    .filter(MILJOER_SUPPORTED::contains)
+                    .collect(Collectors.toSet());
+
+            if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
+                miljoer = crossConnect(miljoer, Q1_AND_Q2);
+            }
+            var miljoerTrygg = new AtomicReference<>(miljoer);
+
+            var initStatus = miljoer.stream()
+                    .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SYSTEM)))
+                    .collect(Collectors.joining(","));
+
+            transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
+                    BestillingProgress::setAaregStatus, initStatus);
+
+            return Flux.from(sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre)
+                    .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                    .onErrorResume(error -> getErrors(error, miljoerTrygg.get()))
+                    .map(status -> futurePersist(progress, status)));
         }
-
-        var miljoer = bestilling.getEnvironments().stream()
-                .filter(MILJOER_SUPPORTED::contains)
-                .collect(Collectors.toSet());
-
-        if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
-            miljoer = crossConnect(miljoer, Q1_AND_Q2);
-        }
-        var miljoerTrygg = new AtomicReference<>(miljoer);
-
-        return oppdaterStatus(progress, miljoer.stream()
-                .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SYSTEM)))
-                .collect(Collectors.joining(",")))
-                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre)
-                        .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                        .onErrorResume(error -> getErrors(error, miljoerTrygg.get()))
-                        .flatMap(status -> oppdaterStatus(progress, status)));
+        return Flux.empty();
     }
 
     private Mono<String> getErrors(Throwable error, Set<String> miljoer) {
@@ -96,10 +100,13 @@ public class AaregClient implements ClientRegister {
         // Sletting av arbeidsforhold er pt ikke støttet
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
-                BestillingProgress::setAaregStatus, status);
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
+                    BestillingProgress::setAaregStatus, status);
+            return progress;
+        };
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.sigrunstub;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
@@ -11,7 +12,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,8 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,15 +63,18 @@ class SigrunStubClientTest {
     @InjectMocks
     private SigrunStubClient sigrunStubClient;
 
+    void setup() {
+        statusCaptor = ArgumentCaptor.forClass(String.class);
+    }
+
     @Test
     void gjenopprett_ingendata() {
 
-        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.empty());
+        BestillingProgress progress = new BestillingProgress();
+        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().ident(IDENT).build(),
+                new BestillingProgress(), false);
 
-        StepVerifier.create(sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().ident(IDENT).build(),
-                new BestillingProgress(), false))
-                .expectNextCount(0)
-                .verifyComplete();
+        assertThat(progress.getSigrunstubStatus(), is(nullValue()));
     }
 
     @Test
@@ -80,13 +86,13 @@ class SigrunStubClientTest {
                 .melding("Feil ...")
                 .build()));
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.BAD_REQUEST), anyString())).thenReturn("Feil:");
-        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new RsLignetInntekt()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request,
-                                DollyPerson.builder().ident(IDENT).build(), progress, false))
+                                DollyPerson.builder().ident(IDENT).build(), progress, false)
+                        .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
@@ -110,13 +116,13 @@ class SigrunStubClientTest {
 
         when(mapperFacade.mapAsList(anyList(), eq(SigrunstubPensjonsgivendeInntektRequest.class), any(MappingContext.class)))
                 .thenReturn(List.of(new SigrunstubPensjonsgivendeInntektRequest()));
-        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
         request.setSigrunstubPensjonsgivende(List.of(new RsPensjonsgivendeForFolketrygden()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request,
-                                DollyPerson.builder().ident(IDENT).build(), progress, false))
+                                DollyPerson.builder().ident(IDENT).build(), progress, false)
+                        .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
@@ -130,7 +136,6 @@ class SigrunStubClientTest {
     void gjenopprett_sigrunstubLignetInntekt_ok() {
 
         var request = new RsDollyBestillingRequest();
-        var progress = new BestillingProgress();
         request.setSigrunstub(singletonList(new RsLignetInntekt()));
 
         when(mapperFacade.mapAsList(anyList(), eq(SigrunstubLignetInntektRequest.class), any(MappingContext.class)))
@@ -141,10 +146,10 @@ class SigrunStubClientTest {
                         .status(200)
                         .build()))
                 .build()));
-        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                new BestillingProgress(), true))
+                                new BestillingProgress(), true)
+                        .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
@@ -159,7 +164,6 @@ class SigrunStubClientTest {
     void gjenopprett_sigrunstubPensjonsgivendeInntekt_ok() {
 
         var request = new RsDollyBestillingRequest();
-        var progress = new BestillingProgress();
         request.setSigrunstubPensjonsgivende(singletonList(new RsPensjonsgivendeForFolketrygden()));
 
         when(mapperFacade.mapAsList(anyList(), eq(SigrunstubPensjonsgivendeInntektRequest.class), any(MappingContext.class)))
@@ -170,10 +174,10 @@ class SigrunStubClientTest {
                         .status(200)
                         .build()))
                 .build()));
-        when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                new BestillingProgress(), true))
+                                new BestillingProgress(), true)
+                        .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());

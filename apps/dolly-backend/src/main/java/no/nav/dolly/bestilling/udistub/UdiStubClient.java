@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.udistub;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
@@ -13,7 +14,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,22 +37,22 @@ public class UdiStubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getUdistub())) {
 
             transactionHelperService.persister(progress, BestillingProgress::setUdistubStatus, getInfoVenter("UdiStub"));
 
-            return getPersonData(List.of(dollyPerson.getIdent()))
-                    .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getIdent())
-                            .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),
-                                    eksisterende, persondata))
-                            .flatMap(this::sendUdiPerson)
-                            .map(this::getStatus))
-                    .collect(Collectors.joining())
-                    .flatMap(status -> oppdaterStatus(progress, status));
+            return Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
+                            .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getIdent())
+                                    .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),
+                                            eksisterende, persondata))
+                                    .flatMap(this::sendUdiPerson)
+                                    .map(this::getStatus))
+                            .collect(Collectors.joining()))
+                    .map(status -> futurePersist(progress, status));
         }
-        return Mono.empty();
+        return Flux.empty();
     }
 
     @Override
@@ -87,8 +88,11 @@ public class UdiStubClient implements ClientRegister {
                 errorStatusDecoder.getErrorText(response.getStatus(), response.getReason());
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::setUdistubStatus, status);
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::setUdistubStatus, status);
+            return progress;
+        };
     }
 }

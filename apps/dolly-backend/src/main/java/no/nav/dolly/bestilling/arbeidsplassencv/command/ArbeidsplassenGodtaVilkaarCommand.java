@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.ARBEIDSPLASSEN_CALL_ID;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -27,15 +28,16 @@ public class ArbeidsplassenGodtaVilkaarCommand implements Callable<Mono<Arbeidsp
 
     @Override
     public Mono<ArbeidsplassenCVStatusDTO> call() {
-
         return webClient
                 .post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(ARBEIDSPLASSEN_SAMTYKKE_URL)
-                        .build())
+                .uri(
+                        uriBuilder -> uriBuilder
+                                .path(ARBEIDSPLASSEN_SAMTYKKE_URL)
+                                .build())
                 .header(FNR, ident)
                 .header(ARBEIDSPLASSEN_CALL_ID, uuid)
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> ArbeidsplassenCVStatusDTO.builder()
@@ -46,4 +48,5 @@ public class ArbeidsplassenGodtaVilkaarCommand implements Callable<Mono<Arbeidsp
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> ArbeidsplassenCVStatusDTO.of(WebClientError.describe(throwable), uuid));
     }
+
 }

@@ -6,20 +6,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
-@Service
 @RequiredArgsConstructor
-public class AvailCheckService {
+public class AvailCheckCommand implements Callable<Flux<AvailCheckCommand.AvailStatus>> {
 
+    private final String opprettFraIdenter;
     private final PdlDataConsumer pdlDataConsumer;
 
-    public Flux<AvailStatus> checkAvailable(String opprettFraIdenter) {
+    @Override
+    public Flux<AvailStatus> call() {
 
         return pdlDataConsumer.identCheck(List.of(opprettFraIdenter.split(",")))
                 .map(status -> AvailStatus.builder()

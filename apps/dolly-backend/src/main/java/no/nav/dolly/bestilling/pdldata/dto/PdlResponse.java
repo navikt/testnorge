@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -27,8 +26,8 @@ public class PdlResponse {
     private HttpStatus status;
     private String feilmelding;
 
-    public static Mono<PdlResponse> of(WebClientError.Description description) {
-        return Mono.just(PdlResponse
+    public static Flux<PdlResponse> of(WebClientError.Description description) {
+        return Flux.just(PdlResponse
                 .builder()
                 .status(description.getStatus())
                 .feilmelding(description.getMessage())

@@ -1,41 +1,28 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bruker;
-import org.springframework.data.r2dbc.repository.Modifying;
-import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface BrukerRepository extends ReactiveCrudRepository<Bruker, Long> {
+public interface BrukerRepository extends Repository<Bruker, Long> {
 
-    @Query("""
-            select *
-            from Bruker b
-            where b.brukertype='AZURE'
-            order by b.brukernavn
-            """)
-    Flux<Bruker> findByOrderById();
+    Bruker save(Bruker bruker);
 
-    Flux<Bruker> findByBrukerIdInOrderByBrukernavn(List<String> brukerId);
+    @Query(value = "from Bruker b where (b.brukertype='AZURE' or b.brukertype='TEAM') and b.brukernavn not like 'Systembruker' order by b.brukernavn")
+    List<Bruker> findAllByOrderByBrukernavn();
 
-    @Query("""
-            select * from bruker b
-            where b.bruker_id = :brukerId
-            """)
-    Mono<Bruker> findByBrukerId(String brukerId);
+    List<Bruker> findAllByBrukerIdInOrderByBrukernavn(List<String> brukerId);
+
+    Optional<Bruker> findBrukerByBrukerId(String brukerId);
 
     @Modifying
-    @Query("""
-            delete from bruker_favoritter bf
-            where bf.gruppe_id = :groupId
-            """)
-    Mono<Void> deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
+    @Query(value = "delete from BRUKER_FAVORITTER where gruppe_id = :groupId", nativeQuery = true)
+    void deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
 
-    Flux<Bruker> findByIdIn(List<Long> brukerIds);
+    Optional<Bruker> findBrukerById(Long brukerId);
 }

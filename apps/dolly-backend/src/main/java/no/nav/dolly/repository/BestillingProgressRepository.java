@@ -1,46 +1,36 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import org.springframework.data.r2dbc.repository.Modifying;
-import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface BestillingProgressRepository extends ReactiveCrudRepository<BestillingProgress, Long> {
+public interface BestillingProgressRepository extends CrudRepository<BestillingProgress, Long> {
 
-    Flux<BestillingProgress> findByBestillingId(Long bestillingId);
-
-    @Modifying
-    @Query("""
-            delete from bestilling_progress bp
-            where bp.bestilling_id in (select b.id
-                  from Bestilling b where b.gruppe_id = :gruppeId)
-            """)
-    Mono<Void> deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+    Optional<List<BestillingProgress>> findByBestillingId(Long bestillingId);
 
     @Modifying
-    Mono<Void> deleteByIdent(String ident);
+    @Query("delete from BestillingProgress bp where bp.bestilling.id in (select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
+    int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
     @Modifying
-    Mono<Void> deleteByBestillingId(Long bestillingId);
-
-    Flux<BestillingProgress> findByIdent(String ident);
-    Flux<BestillingProgress> findByIdentIn(List<String> identer);
+    int deleteByIdent(String ident);
 
     @Modifying
-    @Query("""
-            update bestilling_progress
-                        set ident = :newIdent
-                        where ident = :oldIdent
-            """)
-    Mono<BestillingProgress> swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
+    int deleteByBestilling_Id(Long bestillingId);
 
-    @Query(value = "select * from bestilling_progress where id = :id for update")
-    Mono<BestillingProgress> findByIdAndLock(@Param("id") Long id);
+    List<BestillingProgress> findByIdent(String ident);
+
+    List<BestillingProgress> findByBestilling_Id(Long bestillingId);
+
+    @Modifying
+    @Query(value = "update BestillingProgress bp set bp.ident = :newIdent where bp.ident = :oldIdent")
+    void swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
+
+    @Query(value = "select * from bestilling_progress where id = :id for update", nativeQuery = true)
+    Optional<BestillingProgress> findByIdAndLock(@Param("id") Long id);
 }

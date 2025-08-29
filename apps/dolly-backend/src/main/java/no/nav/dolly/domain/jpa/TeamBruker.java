@@ -1,17 +1,23 @@
 package no.nav.dolly.domain.jpa;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
 @Getter
 @Setter
 @Builder
@@ -20,40 +26,44 @@ import java.util.Objects;
 @Table(name = "TEAM_BRUKER")
 public class TeamBruker {
 
-    @Id
-    private Long id;
+    @EmbeddedId
+    private TeamBrukerId id;
 
-    @Column("TEAM_ID")
-    private Long teamId;
-
-    @Column("BRUKER_ID")
-    private Long brukerId;
-
-    @Column("OPPRETTET")
-    private LocalDateTime opprettetTidspunkt;
+    @CreationTimestamp
+    private LocalDateTime opprettet;
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         TeamBruker that = (TeamBruker) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(teamId, that.teamId) &&
-                Objects.equals(brukerId, that.brukerId) &&
-                Objects.equals(opprettetTidspunkt, that.opprettetTidspunkt);
+        return Objects.equals(id, that.id) && Objects.equals(opprettet, that.opprettet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, teamId, brukerId, opprettetTidspunkt);
+        return Objects.hash(id, opprettet);
     }
 
     @Override
     public String toString() {
         return "TeamBruker{" +
                 "id=" + id +
-                ", teamId=" + teamId +
-                ", brukerId=" + brukerId +
-                ", opprettetTidspunkt=" + opprettetTidspunkt +
+                ", opprettet=" + opprettet +
                 '}';
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Embeddable
+    public static class TeamBrukerId implements Serializable {
+
+        @Column(name = "TEAM_ID")
+        private Long teamId;
+
+        @Column(name = "BRUKER_ID")
+        private Long brukerId;
+
     }
 }

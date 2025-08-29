@@ -1,81 +1,84 @@
 package no.nav.dolly.repository;
 
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.projection.GruppeBestillingIdent;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.repository.Modifying;
-import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.reactive.ReactiveSortingRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface IdentRepository extends ReactiveSortingRepository<Testident, Long> {
+public interface IdentRepository extends PagingAndSortingRepository<Testident, Long> {
 
-    Mono<Void> deleteAll();
-    Mono<Testident> save(Testident testident);
-    Mono<Void> deleteById(Long id);
+    Optional<Testident> findByIdent(String ident);
 
-    Mono<Testident> findByIdent(String ident);
+    List<Testident> findByIdentIn(Collection<String> identer);
 
-    Flux<Testident> findByIdentIn(Collection<String> identer);
+    Testident save(Testident testident);
 
-    Mono<Boolean> existsByIdent(String ident);
-
-    @Modifying
-    @Query("""
-            delete from test_ident ti where ti.ident = :testident
-            """)
-    Mono<Void> deleteTestidentByIdent(@Param("testident") String testident);
+    boolean existsByIdent(String ident);
 
     @Modifying
-    Mono<Void> deleteByGruppeId(Long gruppeId);
+    @Query(value = "delete from Testident ti where ti.ident = :testident")
+    int deleteTestidentByIdent(@Param("testident") String testident);
 
     @Modifying
-    @Query(""" 
-            update test_ident ti
-            set ident = :newIdent
-            where ti.ident = :oldIdent
-            """)
-    Mono<Testident> swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
+    @Query(value = "delete from Testident ti where ti.id = :id")
+    void deleteById(@Param("id") Long id);
 
-    @Query("""
-            select bp.ident as ident, b.id as id,
-            b.best_kriterier as bestkriterier, b.miljoer as miljoer
-            from bestilling b
-            join bestilling_progress bp on bp.bestilling_id = b.id
-            and b.gruppe_id = :gruppeId
-            order by b.id
-            """)
-    Flux<GruppeBestillingIdent> getBestillingerFromGruppe(@Param(value = "gruppeId") Long gruppeId);
+    @Modifying
+    @Query(value = "delete from Testident ti where ti.testgruppe.id = :gruppeId")
+    int deleteAllByTestgruppeId(@Param("gruppeId") Long gruppeId);
 
-    @Query("""
-            select bp.ident as ident, b.id as id,
-            b.best_kriterier as bestkriterier, b.miljoer as miljoer from bestilling b
-            join bestilling_progress bp on bp.bestilling_id = b.id
-            and bp.ident = :ident
-            order by b.id
-            """)
-    Flux<GruppeBestillingIdent> getBestillingerByIdent(@Param(value = "ident") String ident);
+    @Modifying
+    @Query(value = "update Testident ti set ti.ident = :newIdent where ti.ident = :oldIdent")
+    int swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
 
-    Flux<Testident> findByGruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
+    @Query(value = "select bp.ident as ident, b.id as bestillingId, " +
+            "b.bestKriterier as bestkriterier, b.miljoer as miljoer from Bestilling b " +
+            "join BestillingProgress bp on bp.bestilling.id = b.id " +
+            "and b.gruppe = :gruppe ")
+    List<GruppeBestillingIdent> getBestillingerFromGruppe(@Param(value = "gruppe") Testgruppe testgruppe);
 
-    Mono<Integer> countByGruppeId(Long id);
+    @Query(value = "select bp.ident as ident, b.id as bestillingId, " +
+            "b.bestKriterier as bestkriterier, b.miljoer as miljoer from Bestilling b " +
+            "join BestillingProgress bp on bp.bestilling.id = b.id " +
+            "and bp.ident = :ident")
+    List<GruppeBestillingIdent> getBestillingerByIdent(@Param(value = "ident") String ident);
 
-    @Query("""
-            select position-1
-            from (select ti.ident, row_number() over (order by ti.id desc) as position
-                  from test_ident ti
-                  where ti.tilhoerer_gruppe = :gruppeId
-                 ) result
-            where ident = :ident
-            """)
-    Mono<Integer> getPaginertTestidentIndex(@Param("ident") String ident, @Param("gruppeId") Long gruppe);
+    @Query("select ti from Testident ti " +
+            "where ti.testgruppe.id = :gruppeId ")
+    Page<Testident> findAllByTestgruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
+    @Query(value = "select position-1 " +
+            "from ( " +
+            "select ti.ident, row_number() over (order by ti.id desc) as position " +
+            "from test_ident ti " +
+            "where ti.tilhoerer_gruppe = :gruppeId" +
+            ") result " +
+            "where ident = :ident",
+            nativeQuery = true)
+    Optional<Integer> getPaginertTestidentIndex(@Param("ident") String ident, @Param("gruppeId") Long gruppe);
 
-    Mono<Integer> countByGruppeIdAndIBruk(Long id, Boolean iBruk);
+    interface GruppeBestillingIdent {
+
+        String getIdent();
+
+        Long getBestillingId();
+
+        String getBestkriterier();
+
+        String getMiljoer();
+    }
+
+    @Query(value = "select count(*) from Testident ti where ti.testgruppe.id = :gruppeId")
+    int countByTestgruppe(@Param("gruppeId") Long gruppeId);
+
+    @Query(value = "select ti from Testident ti where ti.testgruppe.id = :gruppeId")
+    List<Testident> findByTestgruppe(@Param("gruppeId") Long gruppeId);
 }

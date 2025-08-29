@@ -11,33 +11,25 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
-import static no.nav.dolly.domain.jpa.Bruker.Brukertype.BANKID;
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 class NavigasjonServiceTest {
-
-    private static final String IDENT = "12345678901";
-    private static final String TENOR_IDENT = "12845678901";
-    private static final String TESTBRUKER = "123";
 
     @Mock
     private IdentRepository identRepository;
@@ -57,161 +49,156 @@ class NavigasjonServiceTest {
     @Mock
     private PdlDataConsumer pdlDataConsumer;
 
-    @Mock
-    private BrukerService brukerService;
-
-    @Mock
-    private BrukerRepository brukerRepository;
-
-    @Mock
-    private TestgruppeRepository testgruppeRepository;
-
-    @Mock
-    private BestillingRepository bestillingRepository;
-
     @InjectMocks
     private NavigasjonService navigasjonService;
 
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
     @Test
     void testNavigerTilIdentFound() {
-
-        var expected = RsWhereAmI.builder()
-                .identHovedperson(IDENT)
-                .identNavigerTil(IDENT)
+        String ident = "12445678901";
+        RsWhereAmI expected = RsWhereAmI.builder()
+                .identHovedperson(ident)
+                .identNavigerTil(ident)
                 .build();
 
-        var testident = Testident.builder()
-                .ident(IDENT)
-                .gruppeId(1L)
+        Testident testident = Testident.builder()
+                .ident(ident)
+                .testgruppe(
+                        Testgruppe.builder()
+                                .id(1L)
+                                .build()
+                ).build();
+
+        FullPersonDTO fullPersonDTO = FullPersonDTO.builder()
+                .person(PersonDTO.builder().ident(ident).build())
                 .build();
 
-        var fullPersonDTO = FullPersonDTO.builder()
-                .person(PersonDTO.builder().ident(IDENT).build())
-                .build();
-
-        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().brukerId(TESTBRUKER).build()));
-        when(identRepository.findByIdent(any())).thenReturn(Mono.just(testident));
-        when(identService.getPaginertIdentIndex(any(), any())).thenReturn(Mono.just(1));
-        when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
+        when(identRepository.findByIdent(any())).thenReturn(Optional.of(testident));
+        when(identService.getPaginertIdentIndex(any(), any())).thenReturn(Optional.of(1));
+        when(mapperFacade.map(any(), eq(RsWhereAmI.class))).thenReturn(expected);
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fullPersonDTO));
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
-        when(testgruppeRepository.findById(1L)).thenReturn(Mono.just(Testgruppe.builder().id(1L).build()));
-        when(identRepository.countByGruppeId(any())).thenReturn(Mono.just(1));
-        when(bestillingRepository.countByGruppeId(any())).thenReturn(Mono.just(0));
-        when(identRepository.countByGruppeIdAndIBruk(any(), any())).thenReturn(Mono.just(1));
-        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
 
-        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT))
-                .expectNextMatches(rsWhereAmI ->
-                        rsWhereAmI.getIdentHovedperson().equals(expected.getIdentHovedperson()) &&
-                                rsWhereAmI.getIdentNavigerTil().equals(expected.getIdentNavigerTil()))
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(ident, Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
+
+        StepVerifier.create(result)
+                .expectNext(expected)
                 .verifyComplete();
     }
 
     @Test
     void testBankidUserNavigerTilIdentAllowed() {
+        String identAllowed = "12881212345";
 
-        var expected = RsWhereAmI.builder()
-                .identHovedperson(TENOR_IDENT)
-                .identNavigerTil(TENOR_IDENT)
+        RsWhereAmI expected = RsWhereAmI.builder()
+                .identHovedperson(identAllowed)
+                .identNavigerTil(identAllowed)
                 .build();
 
-        var tiAllowed = Testident.builder()
-                .ident(TENOR_IDENT)
-                .gruppeId(1L)
+        Testident tiAllowed = Testident.builder()
+                .ident(identAllowed)
+                .testgruppe(
+                        Testgruppe.builder()
+                                .id(1L)
+                                .build()
+                ).build();
+
+        FullPersonDTO fpAllowed = FullPersonDTO.builder()
+                .person(PersonDTO.builder().ident(identAllowed).build())
                 .build();
 
-        var fpAllowed = FullPersonDTO.builder()
-                .person(PersonDTO.builder().ident(TENOR_IDENT).build())
-                .build();
+        when(identRepository.findByIdent(eq(identAllowed))).thenReturn(Optional.of(tiAllowed));
 
-        when(identRepository.findByIdent(TENOR_IDENT)).thenReturn(Mono.just(tiAllowed));
+        when(identService.getPaginertIdentIndex(any(), any())).thenReturn(Optional.of(1));
+        when(mapperFacade.map(any(), eq(RsWhereAmI.class))).thenReturn(RsWhereAmI.builder().identHovedperson(identAllowed).build());
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fpAllowed));
-        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder()
-                .brukerId(TESTBRUKER)
-                .brukertype(BANKID)
-                .build()));
-        when(identService.getPaginertIdentIndex(any(), any())).thenReturn(Mono.just(1));
-        when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
-        when(testgruppeRepository.findById(1L)).thenReturn(Mono.just(Testgruppe.builder().id(1L).build()));
-        when(identRepository.countByGruppeId(any())).thenReturn(Mono.just(1));
-        when(bestillingRepository.countByGruppeId(any())).thenReturn(Mono.just(0));
-        when(identRepository.countByGruppeIdAndIBruk(any(), any())).thenReturn(Mono.just(1));
-        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
 
-        StepVerifier.create(navigasjonService.navigerTilIdent(TENOR_IDENT))
-                .expectNextMatches(rsWhereAmI ->
-                        rsWhereAmI.getIdentHovedperson().equals(expected.getIdentHovedperson()) &&
-                                rsWhereAmI.getIdentNavigerTil().equals(expected.getIdentNavigerTil()))
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(identAllowed, Bruker.builder().brukertype(Bruker.Brukertype.BANKID).build());
+
+        StepVerifier.create(result)
+                .expectNext(expected)
                 .verifyComplete();
     }
 
     @Test
-    void testBankidUserNavigerTilIdentRefused_GirIngenTreff() {
+    void testBankidUserNavigerTilIdentRefused() {
+        String identRefused = "12441212345";
 
-        var fpRefused = FullPersonDTO.builder()
-                .person(PersonDTO.builder().ident(IDENT).build())
+        Testident tiRefused = Testident.builder()
+                .ident(identRefused)
+                .testgruppe(
+                        Testgruppe.builder()
+                                .id(1L)
+                                .build()
+                ).build();
+
+        FullPersonDTO fpRefused = FullPersonDTO.builder()
+                .person(PersonDTO.builder().ident(identRefused).build())
                 .build();
-        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder()
-                .brukerId(TESTBRUKER)
-                .brukertype(BANKID)
-                .build()));
+
+        when(identRepository.findByIdent(eq(identRefused))).thenReturn(Optional.of(tiRefused));
+
+        when(identService.getPaginertIdentIndex(any(), any())).thenReturn(Optional.of(1));
+        when(mapperFacade.map(any(), eq(RsWhereAmI.class))).thenReturn(RsWhereAmI.builder().identHovedperson(identRefused).build());
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.just(fpRefused));
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.just(PdlPersonBolk.builder().build()));
 
-        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT))
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(identRefused, Bruker.builder().brukertype(Bruker.Brukertype.BANKID).build());
+
+        StepVerifier.create(result)
                 .expectError(NotFoundException.class)
                 .verify();
     }
 
     @Test
     void testNavigerTilIdentNotFound() {
+        String ident = "12445678901";
 
-        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder()
-                .brukerId(TESTBRUKER)
-                .brukertype(AZURE)
-                .build()));
+        when(identRepository.findByIdent(any())).thenReturn(Optional.empty());
         when(pdlDataConsumer.getPersoner(any())).thenReturn(Flux.empty());
         when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.empty());
 
-        StepVerifier.create(navigasjonService.navigerTilIdent(IDENT))
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilIdent(ident, Bruker.builder().brukertype(Bruker.Brukertype.AZURE).build());
+
+        StepVerifier.create(result)
                 .expectError(NotFoundException.class)
                 .verify();
     }
 
     @Test
     void testNavigerTilBestillingFound() {
+        Long bestillingId = 1L;
 
-        var bestillingId = 1L;
-        var bestilling = Bestilling.builder()
-                .id(bestillingId)
-                .gruppeId(1L)
-                .build();
+        Testgruppe testgruppe = new Testgruppe();
 
-        when(bestillingService.fetchBestillingById(any())).thenReturn(Mono.just(bestilling));
-        when(testgruppeRepository.findByBestillingId(bestilling.getId())).thenReturn(Mono.just(Testgruppe.builder().id(bestilling.getGruppeId()).build()));
-        when(bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppeId())).thenReturn(Mono.just(1));
-        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().brukerId(TESTBRUKER).build()));
-        when(identRepository.countByGruppeId(1L)).thenReturn(Mono.just(1));
-        when(bestillingRepository.countByGruppeId(bestilling.getGruppeId())).thenReturn(Mono.just(1));
-        when(identRepository.countByGruppeIdAndIBruk(bestilling.getGruppeId(), true)).thenReturn(Mono.just(1));
-        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().brukerId(TESTBRUKER).brukertype(AZURE).build()));
+        Bestilling bestilling = new Bestilling();
+        bestilling.setGruppe(testgruppe);
 
-        Mono<RsWhereAmI> result = navigasjonService.navigerTilBestilling(1L);
+        when(bestillingService.fetchBestillingById(any())).thenReturn(bestilling);
+        when(bestillingService.getPaginertBestillingIndex(any(), any())).thenReturn(Optional.of(1));
+        when(mapperFacade.map(any(Testgruppe.class), eq(RsTestgruppe.class))).thenReturn(new RsTestgruppe());
+
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilBestilling(bestillingId);
 
         StepVerifier.create(result)
-                .expectNextMatches(rsWhereAmI -> rsWhereAmI.getBestillingNavigerTil().equals(1L))
+                .expectNextMatches(rsWhereAmI -> rsWhereAmI.getBestillingNavigerTil().equals(bestillingId))
                 .verifyComplete();
     }
 
     @Test
     void testNavigerTilBestillingNotFound() {
+        Long bestillingId = 1L;
 
-        var bestillingId = 1L;
-        when(bestillingService.fetchBestillingById(any())).thenReturn(Mono.empty());
+        when(bestillingService.fetchBestillingById(any())).thenReturn(null);
 
-        StepVerifier.create(navigasjonService.navigerTilBestilling(bestillingId))
+        Mono<RsWhereAmI> result = navigasjonService.navigerTilBestilling(bestillingId);
+
+        StepVerifier.create(result)
                 .expectError(NotFoundException.class)
                 .verify();
     }

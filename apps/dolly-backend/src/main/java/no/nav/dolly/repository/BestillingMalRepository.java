@@ -1,72 +1,73 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingMal;
-import no.nav.dolly.domain.projection.MalBestilling;
-import no.nav.dolly.domain.projection.MalBestillingFragment;
-import org.springframework.data.r2dbc.repository.Modifying;
-import org.springframework.data.r2dbc.repository.Query;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bestilling.MalBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.MalBestillingFragment;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-@Repository
-public interface BestillingMalRepository extends ReactiveCrudRepository<BestillingMal, Long> {
+public interface BestillingMalRepository extends CrudRepository<BestillingMal, Long> {
 
     @Modifying
-    @Query("update bestilling_mal b set mal_navn = :malNavn where b.id = :id")
-    Mono<Integer> updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
+    @Query("update BestillingMal b set b.malNavn = :malNavn where b.id = :id")
+    void updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
-    Flux<BestillingMal> findByBrukerIdAndMalNavn(Long brukerId, String navn);
+    List<BestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
 
-    Flux<BestillingMal> findByBrukerId(Long brukerId);
+    List<BestillingMal> findByBruker(Bruker bruker);
 
 
     @Query(value = """
-            select distinct bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
-                               bm.sist_oppdatert sistoppdatert
+            select distinct bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+                               bm.sist_oppdatert sistOppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
             where (b.brukertype = 'AZURE' or b.brukertype = 'TEAM')
             order by bm.mal_navn;
-            """)
-    Flux<MalBestilling> findAllByBrukerAzureOrTeam();
+            """, nativeQuery = true)
+    List<MalBestilling> findAllByBrukerAzureOrTeam();
+
 
     @Query(value = """
-            select distinct bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
-                               bm.sist_oppdatert sistoppdatert
+            select distinct bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+                               bm.sist_oppdatert sistOppdatert
                         from bestilling_mal bm
             join bruker b on bm.bruker_id = b.id
             where b.bruker_id = :brukerId
             order by bm.mal_navn;
-            """)
-    Flux<MalBestilling> findAllByBrukerId(@Param("brukerId") String brukerId);
+            """, nativeQuery = true)
+    List<MalBestilling> findAllByBrukerId(@Param("brukerId") String brukerId);
 
     @Query(value = """
-            select distinct bm.id, bm.mal_navn malnavn, bm.best_kriterier malbestilling, bm.miljoer,
-                               bm.sist_oppdatert sistoppdatert
+            select distinct bm.id, bm.mal_navn malNavn, bm.best_kriterier malBestilling, bm.miljoer,
+                               bm.sist_oppdatert sistOppdatert
                         from bestilling_mal bm
             where bm.bruker_id is null
             order by bm.mal_navn;
-            """)
-    Flux<MalBestilling> findAllByBrukerIsNull();
+            """, nativeQuery = true)
+    List<MalBestilling> findAllByBrukerIsNull();
 
     @Query(value = """
-            select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
+            select distinct (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
                 where (b.brukertype = 'AZURE' or b.brukertype = 'TEAM')
-                order by brukernavn
-            """)
-    Flux<MalBestillingFragment> findAllByBrukertypeAzureOrTeam();
+                group by malBruker
+                order by malBruker
+            """, nativeQuery = true)
+    List<MalBestillingFragment> findAllByBrukertypeAzureOrTeam();
+
 
     @Query(value = """
-            select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
+            select distinct (b.brukernavn || ':' || b.bruker_id) malBruker from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
                 where b.bruker_id in :brukerIds
-                order by brukernavn
-            """)
-    Flux<MalBestillingFragment> findAllByBrukerIdIn(@Param("brukerIds") List<String> brukerIds);
+                group by malBruker
+                order by malBruker
+            """, nativeQuery = true)
+    List<MalBestillingFragment> findAllByBrukerIdIn(@Param("brukerIds") List<String> brukerIds);
 }

@@ -1,5 +1,14 @@
 package no.nav.dolly.domain.jpa;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,54 +16,62 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+
+@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("organisasjon_bestilling")
+@Table(name = "organisasjon_bestilling")
 public class OrganisasjonBestilling {
 
     @Id
+    @GeneratedValue(generator = "organisasjonBestillingIdGenerator")
+    @GenericGenerator(name = "organisasjonBestillingIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
+            @Parameter(name = "sequence_name", value = "ORGANISASJON_BESTILLING_SEQ"),
+            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "increment_size", value = "1")
+    })
     private Long id;
 
-    @Column("MILJOER")
+    @Column(name = "miljoer", nullable = false)
     private String miljoer;
 
-    @Column("ANTALL")
+    @Column(name = "antall", nullable = false)
     private Integer antall;
 
-    @Column("SIST_OPPDATERT")
+    @Column(name = "sist_oppdatert", nullable = false)
+    @UpdateTimestamp
     private LocalDateTime sistOppdatert;
 
-    @Column("FEIL")
+    @Column(name = "feil")
     private String feil;
 
-    @Column("FERDIG")
+    @Column(name = "ferdig", columnDefinition = "Boolean default false")
     private Boolean ferdig;
 
-    @Column("OPPRETTET_FRA_ID")
+    @Column(name = "opprettet_fra_id")
     private Long opprettetFraId;
 
-    @Column("BEST_KRITERIER")
+    @Column(name = "best_kriterier")
     private String bestKriterier;
 
-    @Column("BRUKER_ID")
-    private Long brukerId;
-
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "bruker_id", nullable = false)
     private Bruker bruker;
 
-    @Transient
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bestilling_id")
     @Builder.Default
     private List<OrganisasjonBestillingProgress> progresser = new ArrayList<>();
 
@@ -75,7 +92,7 @@ public class OrganisasjonBestilling {
                 .append(ferdig, that.ferdig)
                 .append(opprettetFraId, that.opprettetFraId)
                 .append(bestKriterier, that.bestKriterier)
-                .append(brukerId, that.brukerId)
+                .append(bruker, that.bruker)
                 .isEquals();
     }
 
@@ -90,7 +107,7 @@ public class OrganisasjonBestilling {
                 .append(ferdig)
                 .append(opprettetFraId)
                 .append(bestKriterier)
-                .append(brukerId)
+                .append(bruker)
                 .toHashCode();
     }
 
@@ -105,7 +122,7 @@ public class OrganisasjonBestilling {
                 ", ferdig=" + ferdig +
                 ", opprettetFraId=" + opprettetFraId +
                 ", bestKriterier='" + bestKriterier + '\'' +
-                ", brukerId=" + brukerId +
+                ", bruker=" + bruker +
                 '}';
     }
 }

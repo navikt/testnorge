@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,6 +37,7 @@ public class SigrunstubSummertSkattgrunnlagDeleteCommand implements Callable<Mon
                 .header(HEADER_NAV_CALL_ID, CallIdUtil.generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .headers(WebClientHeader.bearer(token))
+                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header("personidentifikator", ident)
                 .retrieve()
                 .toBodilessEntity()

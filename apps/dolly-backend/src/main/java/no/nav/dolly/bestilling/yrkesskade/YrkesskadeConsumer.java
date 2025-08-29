@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.yrkesskade;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.yrkesskade.command.YrkesskadeGetCommand;
 import no.nav.dolly.bestilling.yrkesskade.command.YrkesskadePostCommand;
 import no.nav.dolly.bestilling.yrkesskade.dto.SaksoversiktDTO;
@@ -16,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-public class YrkesskadeConsumer extends ConsumerStatus {
+public class YrkesskadeConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
@@ -25,8 +24,8 @@ public class YrkesskadeConsumer extends ConsumerStatus {
     public YrkesskadeConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            WebClient webClient) {
-
+            WebClient webClient
+    ) {
         this.tokenExchange = tokenExchange;
         serverProperties = consumers.getYrkesskadeProxy();
         this.webClient = webClient
@@ -51,15 +50,5 @@ public class YrkesskadeConsumer extends ConsumerStatus {
                 .flatMap(token -> new YrkesskadeGetCommand(webClient, ident, token.getTokenValue()).call())
                 .doOnNext(response ->
                         log.info("Mottatt saksoversikt fra yrkesskade service {}", response));
-    }
-
-    @Override
-    public String serviceUrl() {
-        return serverProperties.getUrl();
-    }
-
-    @Override
-    public String consumerName() {
-        return "testnav-yrkesskade-proxy";
     }
 }

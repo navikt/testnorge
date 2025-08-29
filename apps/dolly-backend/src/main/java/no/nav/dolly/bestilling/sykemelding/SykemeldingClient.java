@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
@@ -22,9 +23,8 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -58,38 +58,41 @@ public class SykemeldingClient implements ClientRegister {
     private final ApplicationConfig applicationConfig;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Mono.just(bestilling)
+        return Flux.just(bestilling)
                 .filter(bestillling -> nonNull(bestillling.getSykemelding()))
                 .map(RsDollyUtvidetBestilling::getSykemelding)
-                .flatMap(sykemelding -> transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null, bestilling.getId())
-                        .flatMap(exists -> {
+                .flatMap(sykemelding -> {
 
-                            if (BooleanUtils.isTrue(exists) && !isOpprettEndre) {
-                                return setProgress(progress, "OK");
+                    if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null, bestilling.getId()) && !isOpprettEndre) {
+                        setProgress(progress, "OK");
+                        return Mono.empty();
 
-                            } else {
-                                return setProgress(progress, getGenereringStartet())
-                                        .then(getPerson(dollyPerson.getIdent())
-                                                .flatMap(persondata ->
-                                                        postDetaljertSykemelding(sykemelding, persondata)
-                                                                .filter(Objects::nonNull)
-                                                                .flatMap(status -> saveTransaksjonId(status, bestilling.getId())
-                                                                        .thenReturn(status))
-                                                                .map(this::getStatus))
-                                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                                                .onErrorResume(error -> Mono.just(encodeStatus(WebClientError.describe(error).getMessage())))
-                                                .collect(Collectors.joining())
-                                                .flatMap(status -> oppdaterStatus(progress, status)));
-                            }
-                        }));
+                    } else {
+                        setProgress(progress, getGenereringStartet());
+
+                        return getPerson(dollyPerson.getIdent())
+                                .flatMap(persondata ->
+                                                postDetaljertSykemelding(sykemelding, persondata)
+                                        .filter(Objects::nonNull)
+                                        .doOnNext(status -> saveTransaksjonId(status, bestilling.getId()))
+                                        .map(this::getStatus))
+                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                .onErrorResume(error -> Mono.just(encodeStatus(WebClientError.describe(error).getMessage())))
+                                .collect(Collectors.joining())
+                                .map(status -> futurePersist(progress, status));
+                    }
+                });
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
-                BestillingProgress::setSykemeldingStatus, status);
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
+                    BestillingProgress::setSykemeldingStatus, status);
+            return progress;
+        };
     }
 
     @Override
@@ -105,9 +108,9 @@ public class SykemeldingClient implements ClientRegister {
                 errorStatusDecoder.getErrorText(status.getStatus(), status.getAvvik());
     }
 
-    private Mono<BestillingProgress> setProgress(BestillingProgress progress, String status) {
+    private void setProgress(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
+        transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
                 BestillingProgress::setSykemeldingStatus, status);
     }
 
@@ -159,14 +162,14 @@ public class SykemeldingClient implements ClientRegister {
                                 }));
     }
 
-    private Mono<TransaksjonMapping> saveTransaksjonId(SykemeldingResponse sykemelding, Long bestillingId) {
+    private void saveTransaksjonId(SykemeldingResponse sykemelding, Long bestillingId) {
 
         if (sykemelding.getStatus().is2xxSuccessful()) {
 
             log.info("Lagrer transaksjon for {} i q1 ", sykemelding.getIdent());
 
             sykemelding.getSykemeldingRequest().setSykemeldingId(sykemelding.getMsgId());
-            return transaksjonMappingService.save(TransaksjonMapping.builder()
+            transaksjonMappingService.save(TransaksjonMapping.builder()
                     .ident(sykemelding.getIdent())
                     .bestillingId(bestillingId)
                     .transaksjonId(toJson(sykemelding.getSykemeldingRequest()))
@@ -174,8 +177,6 @@ public class SykemeldingClient implements ClientRegister {
                     .system(SYKEMELDING.name())
                     .miljoe("q1")
                     .build());
-        } else {
-            return Mono.empty();
         }
     }
 

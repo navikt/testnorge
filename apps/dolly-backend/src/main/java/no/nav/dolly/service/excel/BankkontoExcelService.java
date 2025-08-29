@@ -3,16 +3,16 @@ package no.nav.dolly.service.excel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.data.kontoregister.v1.KontoDTO;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
@@ -34,8 +34,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class BankkontoExcelService {
 
-    private final BestillingProgressRepository bestillingProgressRepository;
-    private final BestillingRepository bestillingRepository;
     private final KontoregisterConsumer kontoregisterConsumer;
 
     private static String getAdresse1(KontoDTO konto) {
@@ -124,8 +122,9 @@ public class BankkontoExcelService {
     private Mono<List<Object[]>> getBankkontoDetaljer(Testgruppe testgruppe) {
 
         var start = System.currentTimeMillis();
-        return bestillingRepository.findByGruppeId(testgruppe.getId())
-                .flatMap(bestilling -> bestillingProgressRepository.findByBestillingId(bestilling.getId()))
+        return Flux.fromIterable(testgruppe.getBestillinger())
+                .map(Bestilling::getProgresser)
+                .flatMap(Flux::fromIterable)
                 .filter(progress -> isNotBlank(progress.getKontoregisterStatus()))
                 .map(BestillingProgress::getIdent)
                 .distinct()

@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -57,26 +54,24 @@ public class StatusController {
     private final List<ConsumerStatus> consumerRegister;
     private final WebClient webClient;
 
-    @GetMapping
+    @GetMapping()
     @Operation(description = "Hent status for Dolly forbrukere")
-    public Mono<Map<String, Map<String, TestnavStatusResponse>>> clientsStatus() {
-
-        return Flux.fromIterable(consumerRegister)
+    public Map<Object, Map<String, TestnavStatusResponse>> clientsStatus() {
+        return consumerRegister
+                .parallelStream()
                 .filter(StatusController::isNotExcluded)
-                .flatMap(client -> client.checkStatus(webClient)
-                        .zipWith(Mono.just(getConsumerNavn(client.getClass().getSimpleName()))))
-                .collectMap(Tuple2::getT2, Tuple2::getT1);
+                .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
+                .collect(Collectors.toMap(key -> key.getFirst(), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
     }
 
     @GetMapping("/oppsummert")
     @Operation(description = "Hent oppsummert status for Dolly forbrukere")
-    public Mono<NavStatus> clientsStatusSummary() {
-
-        return clientsStatus()
-                .map(this::buildNavStatus);
-    }
-
-    private NavStatus buildNavStatus(Map<String, Map<String, TestnavStatusResponse>> status) {
+    public NavStatus clientsStatusSummary() {
+        var status = consumerRegister
+                .parallelStream()
+                .filter(StatusController::isNotExcluded)
+                .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
+                .collect(Collectors.toMap(key -> (String) key.getFirst(), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
 
         return NavStatus.builder()
                 .status(status.values().stream()

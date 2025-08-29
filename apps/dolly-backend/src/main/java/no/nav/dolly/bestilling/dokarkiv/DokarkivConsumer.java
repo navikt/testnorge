@@ -31,8 +31,8 @@ public class DokarkivConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient webClient) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavDokarkivProxy();
         this.tokenService = tokenService;
         this.webClient = webClient

@@ -9,7 +9,6 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.util.DatoFraIdentUtil;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -24,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -78,7 +76,6 @@ public class PersonExcelService {
 
     private final PersonServiceConsumer personServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
-    private final IdentRepository identRepository;
 
     private static String getFornavn(PdlPerson.Navn navn) {
 
@@ -355,8 +352,11 @@ public class PersonExcelService {
 
     private Mono<List<Object[]>> getPersondataRowContents(Testgruppe testgruppe) {
 
-        var start = new AtomicLong(System.currentTimeMillis());
-        return identRepository.findByGruppeId(testgruppe.getId(), Pageable.unpaged())
+        var start = new AtomicLong();
+        return Flux.just(testgruppe)
+                .doOnNext(gruppe -> start.set(System.currentTimeMillis()))
+                .map(gruppe -> testgruppe.getTestidenter())
+                .flatMap(Flux::fromIterable)
                 .collectList()
                 .flatMap(testidenter -> getPersoner(testidenter)
                         .doOnNext(personer ->

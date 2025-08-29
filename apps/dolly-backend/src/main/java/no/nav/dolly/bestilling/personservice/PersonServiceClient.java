@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.PdlPerson;
@@ -14,14 +15,13 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -41,8 +41,6 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class PersonServiceClient {
 
     private static final String PDL_SYNC_START = "Info: Synkronisering mot PDL startet ...";
-    private static final String HENDELSER = "hendelser";
-
     private static final int TIMEOUT = 500;
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -50,28 +48,22 @@ public class PersonServiceClient {
     private final ObjectMapper objectMapper;
     private final ApplicationConfig applicationConfig;
 
-    public Mono<BestillingProgress> syncPerson(DollyPerson dollyPerson, BestillingProgress progress) {
+    public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, BestillingProgress progress) {
 
-        return Mono.just(dollyPerson)
-                .flatMap(dp -> {
-                    if (!dollyPerson.isOrdre()) {
-                        return transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, PDL_SYNC_START);
-                    }
-                    return Mono.just(progress);
-                })
-                .flatMap(ignore -> {
-                    var startTime = System.currentTimeMillis();
+        if (!dollyPerson.isOrdre()) {
+            transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, PDL_SYNC_START);
+        }
+        var startTime = System.currentTimeMillis();
 
-                    return Mono.from(getIdentWithRelasjoner(dollyPerson, progress)
-                            .flatMap(status -> getPersonService(LocalTime.now().plusSeconds(applicationConfig.getClientTimeout()), LocalTime.now(),
-                                    new PersonServiceResponse(), status))
-                            .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                            .onErrorResume(error -> getError(error, dollyPerson))
-                            .doOnNext(status -> logStatus(status, startTime))
-                            .collectList()
-                            .flatMap(status -> oppdaterStatus(dollyPerson, progress, status))
-                    );
-                });
+        return Flux.from(getIdentWithRelasjoner(dollyPerson, progress)
+                .flatMap(status -> getPersonService(LocalTime.now().plusSeconds(applicationConfig.getClientTimeout()), LocalTime.now(),
+                        new PersonServiceResponse(), status))
+                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                .onErrorResume(error -> getError(error, dollyPerson))
+                .doOnNext(status -> logStatus(status, startTime))
+                .collectList()
+                .map(status -> futurePersist(dollyPerson, progress, status))
+        );
     }
 
     private Flux<PersonServiceResponse> getError(Throwable throwable, DollyPerson person) {
@@ -85,41 +77,43 @@ public class PersonServiceClient {
                 .build());
     }
 
-    private Mono<Map<String, Set<String>>> getHendelseIder(boolean isOrdre, BestillingProgress progress) {
+    private Map<String, Set<String>> getHendelseIder(boolean isOrdre, BestillingProgress progress) {
 
-        return Mono.just(HENDELSER)
-                .flatMap(ignore -> isOrdre ?
-                        Mono.just(progress.getPdlOrdreStatus()) :
-                        transactionHelperService.getProgress(progress, BestillingProgress::getPdlOrdreStatus))
-                .flatMap(json -> {
-                    try {
-                        return Mono.just(objectMapper.readTree(json));
-                    } catch (JsonProcessingException e) {
-                        return Mono.error(new DollyFunctionalException("Feilet å hente hendelseId fra oppretting.", e));
-                    }
-                })
-                .flatMap(tree -> Mono.just(Map.of(tree.path("hovedperson").path("ident").asText(),
-                                toStream(tree.path("hovedperson").path("ordrer"))
-                                        .map(entry -> toStream(entry.path(HENDELSER))
-                                                .map(hendelse -> hendelse.path("hendelseId").asText())
-                                                .collect(Collectors.toSet()))
-                                        .flatMap(Collection::stream)
-                                        .filter(StringUtil::isNotBlank)
-                                        .collect(Collectors.toSet())))
-                        .flatMap(hovedperson -> Mono.just(toStream(tree.path("relasjoner"))
-                                        .collect(Collectors.toMap(relasjon -> relasjon.path("ident").asText(),
-                                                relasjon -> toStream(relasjon.path("ordrer"))
-                                                        .map(entry -> toStream(entry.path(HENDELSER))
-                                                                .map(hendelse -> hendelse.path("hendelseId").asText())
-                                                                .collect(Collectors.toSet()))
-                                                        .flatMap(Collection::stream)
-                                                        .filter(StringUtils::isNotBlank)
-                                                        .collect(Collectors.toSet()))))
-                                .map(relasjoner -> Stream.of(hovedperson, relasjoner)
-                                        .map(Map::entrySet)
-                                        .flatMap(Collection::stream)
-                                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-                        ));
+        var json = isOrdre ?
+                progress.getPdlOrdreStatus() :
+                transactionHelperService.getProgress(progress, BestillingProgress::getPdlOrdreStatus);
+
+        try {
+            var tree = objectMapper.readTree(json);
+
+            var hovedperson = Map.of(tree.path("hovedperson").path("ident").asText(),
+                    toStream(tree.path("hovedperson").path("ordrer"))
+                            .map(entry -> toStream(entry.path("hendelser"))
+                                    .map(hendelse -> hendelse.path("hendelseId").asText())
+                                    .collect(Collectors.toSet()))
+                            .flatMap(Collection::stream)
+                            .filter(StringUtil::isNotBlank)
+                            .collect(Collectors.toSet()));
+
+            var relasjoner = toStream(tree.path("relasjoner"))
+                    .collect(Collectors.toMap(relasjon -> relasjon.path("ident").asText(),
+                            relasjon -> toStream(relasjon.path("ordrer"))
+                                    .map(entry -> toStream(entry.path("hendelser"))
+                                            .map(hendelse -> hendelse.path("hendelseId").asText())
+                                            .collect(Collectors.toSet()))
+                                    .flatMap(Collection::stream)
+                                    .filter(StringUtils::isNotBlank)
+                                    .collect(Collectors.toSet())));
+
+            return Stream.of(hovedperson, relasjoner)
+                    .map(Map::entrySet)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        } catch (JsonProcessingException e) {
+
+            throw new DollyFunctionalException("Feilet å hente hendelseId fra oppretting.", e);
+        }
     }
 
     private Stream<JsonNode> toStream(JsonNode node) {
@@ -136,8 +130,7 @@ public class PersonServiceClient {
 
         if (dollyPerson.getMaster() == Testident.Master.PDLF) {
 
-            return getHendelseIder(dollyPerson.isOrdre(), progress)
-                    .flatMapMany(hendelser -> Flux.fromIterable(hendelser.entrySet()));
+            return Flux.fromIterable(getHendelseIder(dollyPerson.isOrdre(), progress).entrySet());
 
         } else {
 
@@ -166,20 +159,20 @@ public class PersonServiceClient {
         }
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(DollyPerson dollyPerson, BestillingProgress progress,
-                                                    List<PersonServiceResponse> status) {
+    private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress,
+                                       List<PersonServiceResponse> status) {
 
-                return Flux.fromIterable(status)
-                        .filter(entry -> dollyPerson.getIdent().equals(entry.getIdent()))
-                        .flatMap(entry -> {
-                            progress.setPdlSync(entry.getStatus().is2xxSuccessful() && isTrue(entry.getExists()));
-                            if (!dollyPerson.isOrdre()) {
-                                return transactionHelperService.persister(progress, no.nav.dolly.domain.jpa.BestillingProgress::setPdlPersonStatus, entry.getFormattertMelding());
-                            }
-                            return Mono.just(progress);
-                        })
-                        .collectList()
-                        .thenReturn(progress);
+        return () -> {
+            status.stream()
+                    .filter(entry -> dollyPerson.getIdent().equals(entry.getIdent()))
+                    .forEach(entry -> {
+                        progress.setPdlSync(entry.getStatus().is2xxSuccessful() && isTrue(entry.getExists()));
+                        if (!dollyPerson.isOrdre()) {
+                            transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, entry.getFormattertMelding());
+                        }
+                    });
+            return progress;
+        };
     }
 
     private void logStatus(PersonServiceResponse status, long startTime) {

@@ -13,24 +13,21 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.service.MalBestillingService.getBruker;
 
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonBestillingMalService {
 
-    private static final String FINNES_IKKE = "Mal med id %d finnes ikke";
     private static final String ANONYM = "FELLES";
     private static final String ALLE = "ALLE";
 
@@ -39,110 +36,104 @@ public class OrganisasjonBestillingMalService {
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final MapperFacade mapperFacade;
 
-    public Mono<OrganisasjonBestillingMal> saveOrganisasjonBestillingMal(OrganisasjonBestilling bestilling, String malNavn) {
+    public void saveOrganisasjonBestillingMal(OrganisasjonBestilling organisasjonBestilling, String malNavn, Bruker bruker) {
 
-        return slettMalbestillingerMedMatchendeNavn(malNavn, bestilling.getBrukerId())
-                .then(Mono.just(OrganisasjonBestillingMal.builder()
-                        .bestKriterier(bestilling.getBestKriterier())
-                        .brukerId(bestilling.getBrukerId())
-                        .malNavn(malNavn)
-                        .miljoer(bestilling.getMiljoer())
-                        .build()))
-                .flatMap(organisasjonBestillingMalRepository::save);
+        overskrivDuplikateMalbestillinger(malNavn, bruker);
+        organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
+                .bestKriterier(organisasjonBestilling.getBestKriterier())
+                .bruker(bruker)
+                .malNavn(malNavn)
+                .miljoer(organisasjonBestilling.getMiljoer())
+                .build());
     }
 
-    public Mono<OrganisasjonBestillingMal> saveOrganisasjonBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
+    public void saveOrganisasjonBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
-        return organisasjonBestillingRepository.findById(bestillingId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(bestillingId))))
-                .flatMap(bestilling -> brukerService.fetchOrCreateBruker()
-                        .flatMap(bruker -> slettMalbestillingerMedMatchendeNavn(malNavn, bruker.getId())
-                                .then(Mono.just(OrganisasjonBestillingMal.builder()
-                                        .bestKriterier(bestilling.getBestKriterier())
-                                        .bruker(bruker)
-                                        .malNavn(malNavn)
-                                        .miljoer(bestilling.getMiljoer())
-                                        .sistOppdatert(LocalDateTime.now())
-                                        .build()))
-                                .flatMap(organisasjonBestillingMalRepository::save)));
+        Bruker bruker = brukerService.fetchOrCreateBruker();
+
+        var organisasjonBestilling = organisasjonBestillingRepository.findById(bestillingId)
+                .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
+
+        overskrivDuplikateMalbestillinger(malNavn, bruker);
+        organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
+                .bestKriterier(organisasjonBestilling.getBestKriterier())
+                .bruker(bruker)
+                .malNavn(malNavn)
+                .miljoer(organisasjonBestilling.getMiljoer())
+                .build());
     }
 
-    public Mono<RsOrganisasjonMalBestillingWrapper> getOrganisasjonMalBestillinger() {
+    public RsOrganisasjonMalBestillingWrapper getOrganisasjonMalBestillinger() {
 
-        return brukerService.fetchBrukere()
-                .collect(Collectors.toMap(Bruker::getId, bruker -> bruker))
-                .flatMap(brukere -> organisasjonBestillingMalRepository.findByOrderByMalNavn()
-                        .collect(Collectors.groupingBy(bestilling -> getBruker(brukere, bestilling.getBrukerId())))
-                        .flatMap(maler -> Flux.fromIterable(maler.entrySet())
-                                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
-                                        .stream()
-                                        .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
-                                                .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
-                                                .malNavn(bestilling1.getMalNavn())
-                                                .id(bestilling1.getId())
-                                                .bruker(mapperFacade.map(nonNull(bestilling1.getBrukerId()) ?
-                                                        brukere.get(bestilling1.getBrukerId()) :
-                                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
-                                                .build())
-                                        .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
-                                        .toList()))
-                                .map(malBestillinger -> {
-                                    var wrapper = RsOrganisasjonMalBestillingWrapper.builder()
-                                            .malbestillinger(new HashMap<>(malBestillinger))
-                                            .build();
-                                    wrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
-                                            .flatMap(Collection::stream)
-                                            .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
-                                            .toList());
-                                    return wrapper;
-                                })));
-    }
+        var malBestillingWrapper = new RsOrganisasjonMalBestillingWrapper();
 
-    public Mono<RsOrganisasjonMalBestillingWrapper> getMalbestillingerByUser(String brukerId) {
+        var bestillinger = IterableUtils.toList(organisasjonBestillingMalRepository.findAll());
 
-        return brukerService.fetchBruker(brukerId)
-                .flatMap(bruker -> organisasjonBestillingMalRepository.findByBrukerIdOrderByMalNavn(bruker.getId())
+        var malBestillinger = bestillinger.parallelStream()
+                .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
                                 .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
                                 .malNavn(bestilling1.getMalNavn())
                                 .id(bestilling1.getId())
-                                .bruker(mapperFacade.map(bruker, RsBrukerUtenFavoritter.class))
+                                .bruker(mapperFacade.map(nonNull(bestilling1.getBruker()) ?
+                                        bestilling1.getBruker() :
+                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
                                 .build())
-                        .sort(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
-                        .collectList()
-                        .map(orgBestillinger -> RsOrganisasjonMalBestillingWrapper.builder()
-                                .malbestillinger(Map.of(bruker.getBrukernavn(), orgBestillinger))
-                                .build()));
+                        .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
+                        .toList()));
+
+        malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
+        malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
+                .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
+                .toList());
+
+        return malBestillingWrapper;
     }
 
-    public Mono<OrganisasjonBestillingMal> updateOrganisasjonMalNavnById(Long id, String nyttMalNavn) {
+    public RsOrganisasjonMalBestillingWrapper getMalbestillingerByUser(String brukerId) {
 
-        return organisasjonBestillingMalRepository.updateMalNavnById(id, nyttMalNavn)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(id))));
+        var bruker = brukerService.fetchOrCreateBruker(brukerId);
+
+        var malBestillinger = organisasjonBestillingMalRepository.findByBruker(bruker).parallelStream()
+                .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                        .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
+                                .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
+                                .malNavn(bestilling1.getMalNavn())
+                                .id(bestilling1.getId())
+                                .bruker(mapperFacade.map(nonNull(bestilling1.getBruker()) ?
+                                        bestilling1.getBruker() :
+                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
+                                .build())
+                        .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
+                        .toList()));
+
+        return RsOrganisasjonMalBestillingWrapper.builder()
+                .malbestillinger(malBestillinger)
+                .build();
     }
 
-    public Mono<Void> deleteOrganisasjonMalbestillingById(Long id) {
+    public int updateOrganisasjonMalNavnById(Long id, String nyttMalNavn) {
 
-        return organisasjonBestillingMalRepository.findById(id)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(id))))
-                .then(organisasjonBestillingMalRepository.deleteById(id));
+        return organisasjonBestillingMalRepository.updateMalNavnById(id, nyttMalNavn);
     }
 
-    private Mono<Void> slettMalbestillingerMedMatchendeNavn(String malNavn, Long brukerId) {
+    public void deleteOrganisasjonMalbestillingById(Long id) {
+
+        organisasjonBestillingMalRepository.deleteById(id);
+    }
+
+    void overskrivDuplikateMalbestillinger(String malNavn, Bruker bruker) {
 
         if (StringUtils.isBlank(malNavn)) {
-            return Mono.empty();
+            return;
         }
-        return organisasjonBestillingMalRepository.findByBrukerIdAndMalNavnOrderByMalNavn(brukerId, malNavn)
-                .flatMap(malBestilling -> organisasjonBestillingMalRepository.deleteById(malBestilling.getId()))
-                .collectList()
-                .then();
-    }
-
-    public static String getBruker(Map<Long, Bruker> brukere, Long brukerId) {
-
-        return nonNull(brukerId) ?
-                brukere.get(brukerId).getBrukernavn() :
-                ANONYM;
+        var gamleMalBestillinger = organisasjonBestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
+        gamleMalBestillinger.forEach(malBestilling ->
+                organisasjonBestillingMalRepository.deleteById(malBestilling.getId()));
     }
 }

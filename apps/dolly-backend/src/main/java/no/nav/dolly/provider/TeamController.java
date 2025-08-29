@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
-import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.service.TeamService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
@@ -22,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 
@@ -35,80 +32,63 @@ public class TeamController {
 
     private final TeamService teamService;
     private final MapperFacade mapperFacade;
-    private final BrukerRepository brukerRepository;
 
     @GetMapping
     @Operation(description = "Hent alle team")
-    public Flux<RsTeamWithBrukere> getAllTeams() {
-
-        return teamService.fetchAllTeam()
-                .flatMap(this::mapTeam);
+    public List<RsTeamWithBrukere> getAllTeams() {
+        var teams = teamService.fetchAllTeam();
+        return mapperFacade.mapAsList(teams, RsTeamWithBrukere.class);
     }
 
     @GetMapping("/{id}")
     @Operation(description = "Hent team med angitt ID")
-    public Mono<RsTeamWithBrukere> getTeamById(@PathVariable("id") Long id) {
-
-        return teamService.fetchTeamById(id)
-                .flatMap(this::mapTeam);
+    public RsTeamWithBrukere getTeamById(@PathVariable("id") Long id) {
+        var team = teamService.fetchTeamById(id);
+        return mapperFacade.map(team, RsTeamWithBrukere.class);
     }
 
     @PostMapping
     @Operation(description = "Opprett nytt team")
-    @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<RsTeamWithBrukere> createTeam(@RequestBody RsTeam rsTeam) {
-
-        return teamService.opprettTeam(rsTeam)
-                .flatMap(this::mapTeam);
+    public RsTeamWithBrukere createTeam(@RequestBody RsTeam rsTeam) {
+        var team = mapperFacade.map(rsTeam, Team.class);
+        var savedTeam = teamService.opprettTeam(team);
+        return mapperFacade.map(savedTeam, RsTeamWithBrukere.class);
     }
 
     @PutMapping("/{id}")
-    @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Oppdater eksisterende team")
-    public Mono<RsTeamWithBrukere> updateTeam(@PathVariable("id") Long id, @RequestBody RsTeamUpdate rsTeam) {
-
-        return teamService.updateTeam(id, rsTeam)
-                .flatMap(this::mapTeam);
+    public RsTeamWithBrukere updateTeam(@PathVariable("id") Long id, @RequestBody RsTeam rsTeam) {
+        var team = mapperFacade.map(rsTeam, Team.class);
+        var updatedTeam = teamService.updateTeam(id, team);
+        return mapperFacade.map(updatedTeam, RsTeamWithBrukere.class);
     }
 
     @DeleteMapping("/{id}")
-    @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Slett team")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteTeam(@PathVariable("id") Long id) {
-
-        return teamService.deleteTeamById(id);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void deleteTeam(@PathVariable("id") Long id) {
+        teamService.deleteTeamById(id);
     }
 
     @PostMapping("/{teamId}/medlem/{brukerId}")
-    @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Legg til bruker i team")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Void> addTeamMember(@PathVariable("teamId") Long teamId,
+    public void addTeamMember(@PathVariable("teamId") Long teamId,
                               @PathVariable("brukerId") String brukerId) {
-
-        return teamService.addBrukerToTeam(teamId, brukerId);
+        teamService.addBrukerToTeam(teamId, brukerId);
     }
 
     @DeleteMapping("/{teamId}/medlem/{brukerId}")
-    @CacheEvict(value = {CACHE_BRUKER}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
     @Operation(description = "Fjern bruker fra team")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> removeTeamMember(@PathVariable("teamId") Long teamId,
-                                       @PathVariable("brukerId") String brukerId) {
-
-        return teamService.removeBrukerFromTeam(teamId, brukerId);
-    }
-
-    private Mono<RsTeamWithBrukere> mapTeam(Team team) {
-
-        return brukerRepository.findById(team.getBrukerId())
-                .zipWith(Mono.just(team))
-                .map(tuple -> {
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty("brukerId", tuple.getT1().getBrukerId());
-                    return mapperFacade.map(tuple.getT2(), RsTeamWithBrukere.class, context);
-                });
+    public void removeTeamMember(@PathVariable("teamId") Long teamId,
+                                 @PathVariable("brukerId") String brukerId) {
+        teamService.removeBrukerFromTeam(teamId, brukerId);
     }
 }

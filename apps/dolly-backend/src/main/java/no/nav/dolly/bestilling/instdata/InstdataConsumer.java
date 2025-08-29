@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.instdata;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
@@ -21,6 +22,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+
 @Slf4j
 @Service
 public class InstdataConsumer extends ConsumerStatus {
@@ -32,13 +35,15 @@ public class InstdataConsumer extends ConsumerStatus {
     public InstdataConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            WebClient webClient) {
-
+            ObjectMapper objectMapper,
+            WebClient webClient
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavInstProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 

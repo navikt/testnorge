@@ -24,7 +24,6 @@ public class SoekMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Soek soek, RsSoek rsSoek, MappingContext context) {
 
-                        rsSoek.setOpprettet(soek.getOpprettetTidspunkt());
                         try {
                             rsSoek.setSoekVerdi(objectMapper.readTree(soek.getSoekVerdi()));
                         } catch (JsonProcessingException e) {

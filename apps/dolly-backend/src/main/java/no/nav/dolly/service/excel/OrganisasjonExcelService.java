@@ -5,8 +5,9 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
-import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.dolly.service.excel.dto.ExceldataOrdering;
 import no.nav.dolly.service.excel.dto.OrganisasjonDTO;
@@ -59,10 +60,9 @@ public class OrganisasjonExcelService {
     private static final int FETCH_BLOCK_SIZE = 10;
     private static final int UNDERENHET = 14;
 
-    private final KodeverkConsumer kodeverkConsumer;
-    private final OrganisasjonBestillingProgressRepository organisasjonBestillingProgressRepository;
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final OrganisasjonConsumer organisasjonConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
 
     private static ExceldataOrdering unpackOrganisasjon(Integer posisjon, OrganisasjonDetaljer organisasjon,
                                                         Map<String, String> postnumre,
@@ -168,61 +168,62 @@ public class OrganisasjonExcelService {
                 .findFirst().orElse("");
     }
 
-    public Mono<Void> prepareOrganisasjonSheet(XSSFWorkbook workbook, Long brukerId) {
+    public void prepareOrganisasjonSheet(XSSFWorkbook workbook, Bruker bruker) {
 
-        return getOrganisasjonsdetaljer(brukerId)
-                .collectList()
-                .flatMap(rows -> {
-                    var sheet = workbook.createSheet(ORGANISASJON_FANE);
-                    sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
-                            CALCULATED_COLUMN,
-                            EMPTY_CELL_REFERENCE,
-                            EVALUATION_ERROR,
-                            FORMULA,
-                            FORMULA_RANGE,
-                            LIST_DATA_VALIDATION,
-                            NUMBER_STORED_AS_TEXT,
-                            TWO_DIGIT_TEXT_YEAR,
-                            UNLOCKED_FORMULA);
+        var rows = getOrganisasjonsdetaljer(bruker);
 
-                    var columnNo = new AtomicInteger(0);
-                    Arrays.stream(COL_WIDTHS)
-                            .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
+        if (nonNull(rows) && !rows.isEmpty()) {
+            var sheet = workbook.createSheet(ORGANISASJON_FANE);
 
-                    ExcelService.appendRows(workbook, ORGANISASJON_FANE,
-                            Stream.of(Collections.singletonList(HEADER), rows)
-                                    .flatMap(Collection::stream)
-                                    .toList());
-                    appendHyperlinkRelasjon(workbook, ORGANISASJON_FANE, rows, 1, UNDERENHET);
-                    return Mono.empty();
-                });
+            sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
+                    CALCULATED_COLUMN,
+                    EMPTY_CELL_REFERENCE,
+                    EVALUATION_ERROR,
+                    FORMULA,
+                    FORMULA_RANGE,
+                    LIST_DATA_VALIDATION,
+                    NUMBER_STORED_AS_TEXT,
+                    TWO_DIGIT_TEXT_YEAR,
+                    UNLOCKED_FORMULA);
+
+            var columnNo = new AtomicInteger(0);
+            Arrays.stream(COL_WIDTHS)
+                    .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
+
+            ExcelService.appendRows(workbook, ORGANISASJON_FANE,
+                    Stream.of(Collections.singletonList(HEADER), rows)
+                            .flatMap(Collection::stream)
+                            .toList());
+
+            appendHyperlinkRelasjon(workbook, ORGANISASJON_FANE, rows, 1, UNDERENHET);
+        }
     }
 
-    private Flux<Object[]> getOrganisasjonsdetaljer(Long brukerId) {
+    private List<Object[]> getOrganisasjonsdetaljer(Bruker bruker) {
 
-        var counter = new AtomicInteger(0);
-
-        return organisasjonBestillingRepository.findByBrukerId(brukerId)
-                .flatMap(orgBestilling ->
-                    organisasjonBestillingProgressRepository.findByBestillingId(orgBestilling.getId()))
-                .sort(Comparator.comparing(OrganisasjonBestillingProgress::getId).reversed())
+        var organisasjoner = organisasjonBestillingRepository.findByBruker(bruker).stream()
+                .map(OrganisasjonBestilling::getProgresser)
+                .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(OrganisasjonBestillingProgress::getId).reversed())
                 .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
                 .filter(orgnr -> !"NA".equals(orgnr))
                 .distinct()
-                .collectList()
-                .flatMap(organisasjoner -> Mono.zip(
-                        kodeverkConsumer.getKodeverkByName("Postnummer"),
-                        kodeverkConsumer.getKodeverkByName("LandkoderISO2"),
-                                Mono.just(organisasjoner)))
-                .flatMapMany(tuple -> Flux.range(0, tuple.getT3().size() / FETCH_BLOCK_SIZE + 1)
+                .toList();
+
+        var counter = new AtomicInteger(0);
+        return Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
+                        kodeverkConsumer.getKodeverkByName("LandkoderISO2"))
+                .flatMapMany(kodeverk -> Flux.range(0, organisasjoner.size() / FETCH_BLOCK_SIZE + 1)
                         .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
-                                tuple.getT3().subList(index * FETCH_BLOCK_SIZE,
-                                        Math.min((index + 1) * FETCH_BLOCK_SIZE, tuple.getT3().size()))))
+                                organisasjoner.subList(index * FETCH_BLOCK_SIZE,
+                                        Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size()))))
                         .sort(Comparator.comparing(OrganisasjonDetaljer::getId).reversed())
                         .map(organisasjon -> unpackOrganisasjon(counter.incrementAndGet(), organisasjon,
-                                tuple.getT1(), tuple.getT2())))
+                                kodeverk.getT1(), kodeverk.getT2())))
                 .sort(Comparator.comparing(ExceldataOrdering::organisasjonId).reversed())
                 .map(ExceldataOrdering::exceldata)
-                .flatMap(Flux::fromIterable);
+                .flatMap(Flux::fromIterable)
+                .collectList()
+                .block();
     }
 }

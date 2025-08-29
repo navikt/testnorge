@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.yrkesskade.dto.ResponseDTO;
@@ -17,7 +18,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
-import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -45,39 +46,43 @@ public class YrkesskadeClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getYrkesskader().isEmpty()) {
 
             var index = new AtomicInteger(0);
-            return oppdaterStatus(progress, "Yrkesskade#1:%s".formatted(ErrorStatusDecoder.getInfoVenter(YRKESSKADE.getBeskrivelse())))
-                    .flatMap(progres1 -> yrkesskadeConsumer.hentSaksoversikt(dollyPerson.getIdent())
-                            .map(resultat -> !resultat.getSaker().isEmpty())
-                            .map(eksisterendeSak -> !eksisterendeSak || isOpprettEndre)
-                            .flatMap(nysak -> TRUE.equals(nysak) ?
-                                    personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
-                                            .doOnNext(personBolk -> log.info("Hentet pdlPersonBolk"))
-                                            .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
-                                                    .map(yrkesskade -> {
-                                                        var context = MappingContextUtils.getMappingContext();
-                                                        context.setProperty("ident", dollyPerson.getIdent());
-                                                        context.setProperty("personBolk", personbolk);
-                                                        return mapper.map(yrkesskade, YrkesskadeRequest.class, context);
-                                                    })
-                                                    .flatMap(yrkesskade -> yrkesskadeConsumer.lagreYrkesskade(yrkesskade)
-                                                            .flatMap(status -> lagreTransaksjon(status, yrkesskade, progress.getBestillingId()))))
-                                            .map(status -> encodeStatus(status, index.incrementAndGet()))
-                                            .collectList()
-                                            .flatMap(resultat -> oppdaterStatus(progress, resultat)) :
+            transactionHelperService.persister(progress, BestillingProgress::getYrkesskadeStatus,
+                    BestillingProgress::setYrkesskadeStatus, "Yrkesskade#1:%s".formatted(ErrorStatusDecoder.getInfoVenter(
+                            YRKESSKADE.getBeskrivelse())));
 
-                                    oppdaterStatus(progress, List.of(ResponseDTO.builder()
-                                            .id(index.incrementAndGet())
-                                            .status(Status.OK)
-                                            .build()))
-                            ));
+            return Flux.from(yrkesskadeConsumer.hentSaksoversikt(dollyPerson.getIdent())
+                    .map(resultat -> !resultat.getSaker().isEmpty())
+                    .map(eksisterendeSak -> !eksisterendeSak || isOpprettEndre)
+                    .flatMap(nysak -> TRUE.equals(nysak) ?
+                            personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
+                                    .doOnNext(personBolk -> log.info("Hentet pdlPersonBolk"))
+                                    .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
+                                            .map(yrkesskade -> {
+                                                var context = MappingContextUtils.getMappingContext();
+                                                context.setProperty("ident", dollyPerson.getIdent());
+                                                context.setProperty("personBolk", personbolk);
+                                                return mapper.map(yrkesskade, YrkesskadeRequest.class, context);
+                                            })
+                                            .map(yrkesskade -> yrkesskadeConsumer.lagreYrkesskade(yrkesskade)
+                                                    .map(status -> lagreTransaksjon(status, yrkesskade, progress.getBestilling().getId()))))
+                                    .flatMap(Flux::from)
+                                    .map(status -> encodeStatus(status, index.incrementAndGet()))
+                                    .collectList()
+                                    .map(resultat -> futurePersist(progress, resultat)) :
+
+                            Mono.just(futurePersist(progress, List.of(ResponseDTO.builder()
+                                    .id(index.incrementAndGet())
+                                    .status(Status.OK)
+                                    .build())))
+                    ));
         }
 
-        return Mono.empty();
+        return Flux.empty();
     }
 
     @Override
@@ -104,34 +109,36 @@ public class YrkesskadeClient implements ClientRegister {
                 .build();
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::setYrkesskadeStatus, status);
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::setYrkesskadeStatus, status);
+            return progress;
+        };
     }
 
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, List<ResponseDTO> response) {
+    private ClientFuture futurePersist(BestillingProgress progress, List<ResponseDTO> response) {
 
-        return oppdaterStatus(progress, response.stream()
+        return futurePersist(progress, response.stream()
                 .map(entry -> "Yrkesskade#%d:%s".formatted(entry.getId(),
                         entry.getStatus() == Status.OK ? "OK" :
                                 ErrorStatusDecoder.encodeStatus("FEIL: %s".formatted(entry.getMelding()))))
                 .collect(Collectors.joining(",")));
     }
 
-    private Mono<YrkesskadeResponseDTO> lagreTransaksjon(YrkesskadeResponseDTO status, YrkesskadeRequest request,
+    private YrkesskadeResponseDTO lagreTransaksjon(YrkesskadeResponseDTO status, YrkesskadeRequest request,
                                                    Long bestillingId) {
 
         if (status.getStatus().is2xxSuccessful()) {
-            return transaksjonMappingService.save(TransaksjonMapping.builder()
+            transaksjonMappingService.save(TransaksjonMapping.builder()
                     .bestillingId(bestillingId)
                     .transaksjonId(toJson(request))
                     .ident(request.getSkadelidtIdentifikator())
                     .datoEndret(LocalDateTime.now())
                     .system(YRKESSKADE.name())
-                    .build())
-                    .thenReturn(status);
+                    .build());
         }
-        return Mono.just(status);
+        return status;
     }
 
     private String toJson(Object object) {

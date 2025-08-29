@@ -3,13 +3,7 @@ package no.nav.dolly.bestilling.pdldata;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataHentCommand;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataStanaloneCommand;
+import no.nav.dolly.bestilling.pdldata.command.*;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
@@ -40,8 +34,8 @@ public class PdlDataConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient) {
-
+            WebClient webClient
+    ) {
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavPdlForvalter();
         this.webClient = webClient
@@ -52,10 +46,10 @@ public class PdlDataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
-    public Mono<PdlResponse> sendOrdre(String ident, boolean ekskluderEksternePersoner) {
+    public Flux<PdlResponse> sendOrdre(String ident, boolean ekskluderEksternePersoner) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new PdlDataOrdreCommand(webClient, ident, ekskluderEksternePersoner,
+                .flatMapMany(token -> new PdlDataOrdreCommand(webClient, ident, ekskluderEksternePersoner,
                         token.getTokenValue()).call());
     }
 
@@ -71,17 +65,17 @@ public class PdlDataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
-    public Mono<PdlResponse> opprettPdl(BestillingRequestDTO request) {
+    public Flux<PdlResponse> opprettPdl(BestillingRequestDTO request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
+                .flatMapMany(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
-    public Mono<PdlResponse> oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
+    public Flux<PdlResponse> oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new PdlDataOppdateringCommand(webClient, ident, request, token.getTokenValue()).call());
+                .flatMapMany(token -> new PdlDataOppdateringCommand(webClient, ident, request, token.getTokenValue()).call());
     }
 
     public Flux<FullPersonDTO> getPersoner(List<String> identer) {

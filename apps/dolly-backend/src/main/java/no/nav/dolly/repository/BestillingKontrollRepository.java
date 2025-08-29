@@ -1,29 +1,23 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingKontroll;
-import org.springframework.data.r2dbc.repository.Modifying;
-import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
 
-@Repository
-public interface BestillingKontrollRepository extends ReactiveCrudRepository<BestillingKontroll, Long> {
+import java.util.Optional;
 
-    Mono<BestillingKontroll> findByBestillingId(Long bestillingId);
+public interface BestillingKontrollRepository extends CrudRepository<BestillingKontroll, Long> {
+
+    Optional<BestillingKontroll> findByBestillingId(Long bestillingId);
 
     @Modifying
-    @Query("delete from bestilling_kontroll bk where bk.bestilling_id in " +
-            "(select b.id from Bestilling b where b.gruppe_id = :gruppeId)")
-    Mono<Void> deleteByGruppeId(Long gruppeId);
+    @Query("delete from BestillingKontroll bk where bk.bestillingId in (select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
+    int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
     @Modifying
-    @Query("""
-            delete from bestilling_kontroll bk
-                        where bk.bestilling_id = :bestillingId
-                        and bk.bestilling_id not in (select bp.bestilling_id
-                        from Bestilling_Progress bp where bp.bestilling_id = :bestillingId)
-            """)
-    Mono<Void> deleteByBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
+    @Query("delete from BestillingKontroll bk where bk.bestillingId = :bestillingId and bk.bestillingId "
+            + "not in (select bp.bestilling.id from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
+    int deleteByBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 }

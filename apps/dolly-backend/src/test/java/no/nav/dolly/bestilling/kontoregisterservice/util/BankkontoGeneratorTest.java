@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 class BankkontoGeneratorTest {
 

@@ -1,18 +1,27 @@
 package no.nav.dolly.domain.jpa;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
 @Getter
 @Setter
 @Builder
@@ -22,18 +31,22 @@ import java.util.Objects;
 public class Soek implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column("SOEK_VERDI")
+    @Column(name = "SOEK_VERDI")
     private String soekVerdi;
 
-    @Column("OPPRETTET")
-    private LocalDateTime opprettetTidspunkt;
+    @CreationTimestamp
+    @Column(name = "OPPRETTET")
+    private LocalDateTime opprettet;
 
-    @Column("BRUKER_ID")
-    private Long brukerId;
+    @ManyToOne
+    @JoinColumn(name = "BRUKER_ID")
+    private Bruker bruker;
 
-    @Column("SOEK_TYPE")
+    @Column(name = "SOEK_TYPE")
+    @Enumerated(EnumType.STRING)
     private SoekType soekType;
 
     public enum SoekType {
@@ -45,12 +58,12 @@ public class Soek implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Soek soek = (Soek) o;
-        return Objects.equals(id, soek.id) && Objects.equals(soekVerdi, soek.soekVerdi) && Objects.equals(opprettetTidspunkt, soek.opprettetTidspunkt) && Objects.equals(brukerId, soek.brukerId) && soekType == soek.soekType;
+        return Objects.equals(id, soek.id) && Objects.equals(soekVerdi, soek.soekVerdi) && Objects.equals(opprettet, soek.opprettet) && Objects.equals(bruker, soek.bruker) && soekType == soek.soekType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, soekVerdi, opprettetTidspunkt, brukerId, soekType);
+        return Objects.hash(id, soekVerdi, opprettet, bruker, soekType);
     }
 
     @Override
@@ -58,8 +71,8 @@ public class Soek implements Serializable {
         return "Soek{" +
                 "id=" + id +
                 ", soekVerdi='" + soekVerdi + '\'' +
-                ", opprettetTidspunkt=" + opprettetTidspunkt +
-                ", brukerId=" + brukerId +
+                ", opprettet=" + opprettet +
+                ", bruker=" + bruker +
                 ", soekType=" + soekType +
                 '}';
     }

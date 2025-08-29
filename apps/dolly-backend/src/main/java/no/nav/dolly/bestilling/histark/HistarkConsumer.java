@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.histark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.histark.command.HistarkPostCommand;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
@@ -22,7 +21,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class HistarkConsumer extends ConsumerStatus {
+public class HistarkConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -32,8 +31,8 @@ public class HistarkConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient webClient) {
-
+            WebClient webClient
+    ) {
         serverProperties = consumers.getTestnavHistarkProxy();
         this.tokenService = tokenService;
         this.webClient = webClient
@@ -58,13 +57,4 @@ public class HistarkConsumer extends ConsumerStatus {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
-    @Override
-    public String serviceUrl() {
-        return serverProperties.getUrl();
-    }
-
-    @Override
-    public String consumerName() {
-        return "testnav-histark-proxy";
-    }
 }
