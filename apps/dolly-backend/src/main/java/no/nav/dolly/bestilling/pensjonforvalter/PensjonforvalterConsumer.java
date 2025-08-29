@@ -129,18 +129,18 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
-    public Flux<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request) {
+    public Mono<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
+                .flatMap(token ->
                         new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreUforetrygd"})
-    public Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonUforetrygdRequest request) {
+    public Mono<PensjonforvalterResponse> lagreUforetrygd(PensjonUforetrygdRequest request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new LagreUforetrygdCommand(webClient, token.getTokenValue(), request).call());
+                .flatMap(token -> new LagreUforetrygdCommand(webClient, token.getTokenValue(), request).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})

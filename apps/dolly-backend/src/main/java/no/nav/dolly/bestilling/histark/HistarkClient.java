@@ -67,7 +67,7 @@ public class HistarkClient implements ClientRegister {
                                 .flatMap(dokument -> buildRequest(dokument, dollyPerson.getIdent(), progress.getBestillingId()))
                                 .flatMap(histarkConsumer::postHistark)
                                 .collectList()
-                                .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status));
+                                .flatMap(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status));
                     } else {
                         return Mono.just("OK");
                     }
@@ -93,21 +93,20 @@ public class HistarkClient implements ClientRegister {
         return Mono.just(encodeStatus(WebClientError.describe(error).getMessage()));
     }
 
-    private String getStatus(String ident, Long bestillingId, List<HistarkResponse> response) {
+    private Mono<String> getStatus(String ident, Long bestillingId, List<HistarkResponse> response) {
 
         log.info("Histark response {} mottatt for ident {}", response, ident);
 
         if (isNull(response)) {
-            return null;
+            return Mono.empty();
         }
 
-        saveTransaksjonId(response, ident, bestillingId);
-
-        return response.stream()
+        return saveTransaksjonId(response, ident, bestillingId)
+                .then(Flux.fromIterable(response)
                 .map(status ->
                         status.isOk() ? "OK: %s".formatted(status.getDokument()) :
                                 "FEIL: %s".formatted(encodeStatus(errorStatusDecoder.getStatusMessage(status.getFeilmelding()))))
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(",")));
     }
 
     private Mono<HistarkRequest> buildRequest(RsHistark.RsHistarkDokument dokument, String ident, Long bestillingId) {
@@ -123,13 +122,13 @@ public class HistarkClient implements ClientRegister {
                 .map(context -> mapperFacade.map(dokument, HistarkRequest.class, context));
     }
 
-    private void saveTransaksjonId(List<HistarkResponse> histarkIds, String ident, Long bestillingId) {
+    private Mono<Void> saveTransaksjonId(List<HistarkResponse> histarkIds, String ident, Long bestillingId) {
 
         log.info("Lagrer transaksjon for ident {}", ident);
 
         if (histarkIds.stream().anyMatch(HistarkResponse::isOk)) {
 
-            transaksjonMappingService.save(
+            return transaksjonMappingService.save(
                     TransaksjonMapping.builder()
                             .ident(ident)
                             .bestillingId(bestillingId)
@@ -143,7 +142,11 @@ public class HistarkClient implements ClientRegister {
                             .datoEndret(LocalDateTime.now())
                             .miljoe("NA")
                             .system(HISTARK.name())
-                            .build());
+                            .build())
+                    .then();
+        } else {
+
+            return Mono.empty();
         }
     }
 
