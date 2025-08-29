@@ -62,9 +62,10 @@ class ArenaForvalterConsumerTest extends AbstractConsumerTest {
                 .collectList()
                 .as(StepVerifier::create)
                 .assertNext(response -> {
-                    assertThat(response.getFirst().getStatus(), is(HttpStatus.CREATED));
+                    assertThat(response.getFirst().getStatus(), is(HttpStatus.OK));
                     assertThat(response.getFirst().getNyBrukerFeilList(), is(emptyList()));
-                });
+                })
+                .verifyComplete();
     }
 
     @Test

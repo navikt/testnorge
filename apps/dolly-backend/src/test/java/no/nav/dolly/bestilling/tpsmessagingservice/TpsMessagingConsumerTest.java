@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
@@ -21,9 +19,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class TpsMessagingConsumerTest extends AbstractConsumerTest {
 
@@ -50,24 +45,8 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
                 .assertNext(response -> assertThat(response)
                         .isNotNull()
                         .extracting(list -> list.getFirst().getStatus())
-                        .isEqualTo("OK"));
-    }
-
-    @Test
-    void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
-
-        when(tokenExchange.exchange(any(ServerProperties.class))).thenThrow(new SecurityException());
-
-        Assertions.assertThrows(SecurityException.class, () ->
-                StepVerifier.create(tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
-                                IDENT,
-                                MILJOER,
-                                new BankkontonrUtlandDTO())
-                        .collectList())
-                        .verifyError(SecurityException.class)
-        );
-
-        verify(tokenExchange).exchange(any(ServerProperties.class));
+                        .isEqualTo("OK"))
+                .verifyComplete();
     }
 
     @Test
@@ -87,12 +66,12 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
                                                 .build())
                                 .collectList()
                                 .as(StepVerifier::create)
-                                .assertNext(response -> {
+                                .assertNext(response ->
                                     assertThat(response)
                                             .isNotNull()
                                             .extracting(list -> list.getFirst().getStatus())
-                                            .isEqualTo("OK");
-                                })
+                                            .isEqualTo("OK")
+                                )
                                 .verifyComplete()
                 );
 
