@@ -12,8 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @Slf4j
 @RequiredArgsConstructor
 public class LagreTilArbeidsoekerregisteret implements Callable<Mono<ArbeidssoekerregisteretResponse>> {
@@ -30,7 +28,6 @@ public class LagreTilArbeidsoekerregisteret implements Callable<Mono<Arbeidssoek
                         builder.path("/api/v1/arbeidssoekerregistrering")
                                 .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(request)
                 .retrieve()
                 .toBodilessEntity()

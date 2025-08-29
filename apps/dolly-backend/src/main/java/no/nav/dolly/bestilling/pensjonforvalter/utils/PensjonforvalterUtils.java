@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.PdlPersonBolk;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -40,9 +40,9 @@ public class PensjonforvalterUtils {
                 .replace("/annuller", "");
     }
 
-    public static Flux<PensjonforvalterResponse> getStatus(String miljoe, Integer status, String reasonPhrase) {
+    public static Mono<PensjonforvalterResponse> getStatus(String miljoe, Integer status, String reasonPhrase) {
 
-        return Flux.just(PensjonforvalterResponse.builder()
+        return Mono.just(PensjonforvalterResponse.builder()
                 .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                         .miljo(miljoe)
                         .response(PensjonforvalterResponse.Response.builder()

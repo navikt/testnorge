@@ -26,6 +26,7 @@ spring:
     import: "classpath:dolly-application.yml"
   main:
     allow-bean-definition-overriding: true
+    web-application-type: reactive
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
     locations: classpath:db/migration

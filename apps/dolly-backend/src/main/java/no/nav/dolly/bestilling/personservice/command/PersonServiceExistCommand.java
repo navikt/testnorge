@@ -11,8 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 public class PersonServiceExistCommand implements Callable<Mono<PersonServiceResponse>> {
 
@@ -31,7 +29,6 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                         .queryParamIfPresent("opplysningId", Optional.ofNullable(opplysningId.isEmpty() ? null : opplysningId))
                         .build(ident))
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toEntity(Boolean.class)
                 .map(resultat -> PersonServiceResponse.builder()

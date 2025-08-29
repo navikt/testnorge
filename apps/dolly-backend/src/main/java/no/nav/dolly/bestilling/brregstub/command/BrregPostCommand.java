@@ -10,8 +10,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class BrregPostCommand implements Callable<Mono<RolleoversiktTo>> {
@@ -28,7 +26,6 @@ public class BrregPostCommand implements Callable<Mono<RolleoversiktTo>> {
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(ROLLEOVERSIKT_URL).build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(rolleoversiktTo)
                 .retrieve()
                 .bodyToMono(RolleoversiktTo.class)

@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer.ARBEIDSPLASSEN_CALL_ID;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -37,7 +36,6 @@ public class ArbeidsplassenPostPersonCommand implements Callable<Mono<Arbeidspla
                 .header(FNR, ident)
                 .header(ARBEIDSPLASSEN_CALL_ID, uuid)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> ArbeidsplassenCVStatusDTO.builder()

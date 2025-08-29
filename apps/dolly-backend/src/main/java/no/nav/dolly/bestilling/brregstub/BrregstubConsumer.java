@@ -31,8 +31,8 @@ public class BrregstubConsumer extends ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavBrregStubProxy();
         this.webClient = webClient
