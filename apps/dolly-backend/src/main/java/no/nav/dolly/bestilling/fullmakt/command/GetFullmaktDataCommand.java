@@ -8,18 +8,17 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
-public class GetFullmaktDataCommand implements Callable<Flux<FullmaktPostResponse.Fullmakt>> {
+public class GetFullmaktDataCommand implements Callable<Mono<FullmaktPostResponse.Fullmakt>> {
 
     private static final String HENT_FULLMAKT_URL = "/api/fullmaktsgiver";
 
@@ -27,7 +26,7 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktPostRespons
     private final String ident;
     private final String token;
 
-    public Flux<FullmaktPostResponse.Fullmakt> call() {
+    public Mono<FullmaktPostResponse.Fullmakt> call() {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -37,13 +36,16 @@ public class GetFullmaktDataCommand implements Callable<Flux<FullmaktPostRespons
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("fnr", ident)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
-                .bodyToFlux(FullmaktPostResponse.Fullmakt.class)
-                .doOnError(
-                        throwable -> !(throwable instanceof WebClientResponseException.NotFound),
-                        WebClientError.logTo(log))
+                .bodyToMono(FullmaktPostResponse.Fullmakt.class)
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(FullmaktPostResponse.Fullmakt.builder()
+                            .status(description.getStatus().getReasonPhrase())
+                            .build());
+                })
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Flux.empty());
+                .onErrorResume(WebClientResponseException.NotFound.class::isInstance, throwable -> Mono.empty());
     }
 }

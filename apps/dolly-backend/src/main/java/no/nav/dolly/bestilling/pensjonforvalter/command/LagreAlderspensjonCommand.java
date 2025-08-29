@@ -8,20 +8,21 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClientRequest;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class LagreAlderspensjonCommand implements Callable<Flux<PensjonforvalterResponse>> {
+public class LagreAlderspensjonCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
     private static final String PENSJON_AP_VEDTAK_URL = "/api/v4/vedtak/ap";
     private static final String PENSJON_AP_SOKNAD_URL = "/api/v4/vedtak/ap/soknad";
@@ -33,7 +34,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
     private final AlderspensjonRequest alderspensjonRequest;
 
     @Override
-    public Flux<PensjonforvalterResponse> call() {
+    public Mono<PensjonforvalterResponse> call() {
         var callId = generateCallId();
         log.info("Pensjon lagre alderspensjon {}, callId: {}", alderspensjonRequest, callId);
         return webClient
@@ -52,7 +53,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(alderspensjonRequest)
                 .retrieve()
-                .bodyToFlux(PensjonforvalterResponse.class)
+                .bodyToMono(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable ->
@@ -81,5 +82,4 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                                         .toList())
                                 .build()));
     }
-
 }

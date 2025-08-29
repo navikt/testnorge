@@ -11,9 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,7 +36,6 @@ public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)

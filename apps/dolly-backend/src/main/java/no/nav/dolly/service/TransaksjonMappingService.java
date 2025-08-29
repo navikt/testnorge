@@ -11,6 +11,8 @@ import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,46 +29,48 @@ public class TransaksjonMappingService {
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
-    public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
+    public Flux<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
 
-        return transaksjonMappingRepository.findAllByBestillingIdAndIdent(bestillingId, ident).stream()
+        return transaksjonMappingRepository.findAllByBestillingIdAndIdent(bestillingId, ident)
                 .filter(transaksjon -> isNull(system) || system.equals(transaksjon.getSystem()))
-                .map(this::toDTO)
-                .toList();
+                .map(this::toDTO);
     }
 
-    public boolean existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
+    public Mono<Boolean> existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
-                .stream()
-                .anyMatch(mapping -> (isBlank(miljoe) || miljoe.equals(mapping.getMiljoe())) &&
-                        (isNull(bestillingId) || bestillingId.equals(mapping.getBestillingId())));
+                .filter(mapping -> (isBlank(miljoe) || miljoe.equals(mapping.getMiljoe())) &&
+                        (isNull(bestillingId) || bestillingId.equals(mapping.getBestillingId())))
+                .collectList()
+                .thenReturn(true)
+                .switchIfEmpty(Mono.just(false));
     }
 
-    public void saveAll(Collection<TransaksjonMapping> entries) {
-        entries.forEach(this::save);
-    }
+    public Mono<Void> saveAll(Collection<TransaksjonMapping> entries) {
 
-    @Transactional
-    public void save(TransaksjonMapping entry) {
-        transaksjonMappingRepository.save(entry);
-    }
-
-    @Transactional
-    public void slettTransaksjonMappingByTestident(String ident) {
-        transaksjonMappingRepository.deleteAllByIdent(ident);
+        return Flux.fromIterable(entries)
+                .flatMap(this::save)
+                .collectList()
+                .then();
     }
 
     @Transactional
-    public void delete(String ident, String miljoe, String system) {
+    public Mono<TransaksjonMapping> save(TransaksjonMapping entry) {
 
-        transaksjonMappingRepository.deleteByIdentAndMiljoeAndSystem(ident, miljoe, system);
+        return transaksjonMappingRepository.save(entry);
+    }
+
+
+    @Transactional
+    public Mono<Void> delete(String ident, String miljoe, String system) {
+
+        return transaksjonMappingRepository.deleteByIdentAndMiljoeAndSystem(ident, miljoe, system);
     }
 
     @Transactional
-    public void delete(String ident, String miljoe, String system, Long bestillingId) {
+    public Mono<Void> delete(String ident, String miljoe, String system, Long bestillingId) {
 
-        transaksjonMappingRepository.deleteByIdentAndMiljoeAndSystemAndBestillingId(ident, miljoe, system, bestillingId);
+        return transaksjonMappingRepository.deleteByIdentAndMiljoeAndSystemAndBestillingId(ident, miljoe, system, bestillingId);
     }
 
     private RsTransaksjonMapping toDTO(TransaksjonMapping transaksjonMapping) {

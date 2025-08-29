@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pensjonforvalter.service.PensjonPdlPersonService;
 import no.nav.dolly.bestilling.pensjonforvalter.service.PensjonPensjonsdataService;
@@ -13,12 +12,12 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.IdentTypeUtil;
-import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;
@@ -26,8 +25,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.*;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.ANNET;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PENSJON_FORVALTER;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SEP;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SYSTEM;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
 @Slf4j
 @Service
@@ -43,29 +46,28 @@ public class PensjonforvalterClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (IdentTypeUtil.getIdentType(dollyPerson.getIdent()) == IdentType.NPID) {
-            return Flux.empty();
+            return Mono.empty();
         }
 
         var bestilteMiljoer = new AtomicReference<>(bestilling.getEnvironments().stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet()));
 
-        return Flux.from(Flux.from(pensjonforvalterConsumer.getMiljoer())
+        return Flux.from(pensjonforvalterConsumer.getMiljoer())
                 .flatMap(tilgjengeligeMiljoer -> {
                     bestilteMiljoer.set(bestilteMiljoer.get().stream()
                             .filter(tilgjengeligeMiljoer::contains)
                             .collect(Collectors.toSet()));
                     return Flux.just(bestilling)
-                            .doOnNext(bestilling1 -> {
+                            .flatMap(bestilling1 -> {
                                 if (!dollyPerson.isOrdre()) {
-                                    transactionHelperService.persister(progress,
-                                            BestillingProgress::getPensjonforvalterStatus,
-                                            BestillingProgress::setPensjonforvalterStatus,
-                                            prepInitStatus(tilgjengeligeMiljoer), SEP);
+                                    return oppdaterStatus(dollyPerson, progress, prepInitStatus(tilgjengeligeMiljoer))
+                                            .thenReturn(bestilling1);
                                 }
+                                return Mono.just(bestilling1);
                             })
                             .flatMap(bestilling1 -> pensjonPdlPersonService.getUtvidetPersondata(dollyPerson.getIdent())
                                     .flatMapMany(utvidetPersondata ->
@@ -79,14 +81,14 @@ public class PensjonforvalterClient implements ClientRegister {
                             .onErrorResume(error -> getErrors(tilgjengeligeMiljoer, error));
 
                 })
-                .collect(Collectors.joining("$"))
-                .map(status2 -> futurePersist(dollyPerson, progress, status2)));
+                .collect(Collectors.joining(SEP))
+                .flatMap(status2 -> oppdaterStatus(dollyPerson, progress, status2));
     }
 
     private Flux<String> getErrors(Set<String> miljoer, Throwable throwable) {
 
         return Flux.fromIterable(miljoer)
-                .map(miljo -> "%s%s:Feil= %s".formatted(ANNET, miljo,
+                .map(miljo -> "%s%s:Feil= %s" .formatted(ANNET, miljo,
                         encodeStatus(WebClientError.describe(throwable).getMessage())));
     }
 
@@ -105,18 +107,16 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return PENSJON_FORVALTER +
                 miljoer.stream()
-                        .map(miljo -> String.format("%s:%s", miljo, ErrorStatusDecoder.getInfoVenter(SYSTEM)))
+                        .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
                         .collect(Collectors.joining(","));
     }
 
-    private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(DollyPerson dollyPerson, BestillingProgress progress, String status) {
 
-        return () -> {
-            if (!dollyPerson.isOrdre()) {
-                transactionHelperService.persister(progress, BestillingProgress::getPensjonforvalterStatus,
-                        BestillingProgress::setPensjonforvalterStatus, status, SEP);
-            }
-            return progress;
-        };
+        if (!dollyPerson.isOrdre()) {
+            return transactionHelperService.persister(progress, BestillingProgress::getPensjonforvalterStatus,
+                    BestillingProgress::setPensjonforvalterStatus, status, SEP);
+        }
+        return Mono.just(new BestillingProgress());
     }
 }

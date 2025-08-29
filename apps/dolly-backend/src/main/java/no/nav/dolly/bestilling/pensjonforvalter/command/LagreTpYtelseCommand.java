@@ -17,7 +17,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,7 +44,6 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                     reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
                 })
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonTpYtelseRequest)
