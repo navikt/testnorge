@@ -20,9 +20,11 @@ import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
+import org.apache.http.auth.AUTH;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +62,11 @@ public class BrukerController {
     private final BrukerRepository brukerRepository;
     private final TeamService teamService;
     private final TestgruppeRepository testgruppeRepository;
+
+    @GetMapping("/authentication")
+    public Mono<Authentication> getAuthentication() {
+        return brukerService.getAuthentication();
+    }
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
