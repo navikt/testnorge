@@ -1,5 +1,6 @@
 package no.nav.dolly.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
@@ -7,11 +8,13 @@ import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
+import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -24,6 +27,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
@@ -43,6 +49,8 @@ public class BrukerService {
     private final TestgruppeRepository testgruppeRepository;
     private final TeamBrukerRepository teamBrukerRepository;
     private final TeamRepository teamRepository;
+    private final DokumentRepository dokumentRepository;
+    private final ObjectMapper objectMapper;
 
     public Mono<Authentication> getAuthentication() {
 
@@ -103,7 +111,24 @@ public class BrukerService {
 
     public Mono<Bruker> fetchBrukerWithoutTeam() {
 
-        return fetchBrukerWithoutTeam(null);
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(authentication -> {
+                    try {
+                        return new String(objectMapper.writeValueAsBytes(authentication), StandardCharsets.UTF_8);
+                    } catch (Exception e) {
+                        log.error("Feil ved serialisering av authentication: {}", e.getMessage(), e);
+                        return "Feil ved serialisering av authentication: %s".formatted(e.getMessage());
+                    }
+                })
+                .map(bytes -> Dokument.builder()
+                        .dokumentType(Dokument.DokumentType.TEST_TEST)
+                        .bestillingId(11111111L)
+                        .contents(bytes)
+                        .sistOppdatert(LocalDateTime.now())
+                        .build())
+                .flatMap(dokumentRepository::save)
+                .then(fetchBrukerWithoutTeam(null));
     }
 
     public Flux<Team> fetchTeamsForCurrentBruker() {

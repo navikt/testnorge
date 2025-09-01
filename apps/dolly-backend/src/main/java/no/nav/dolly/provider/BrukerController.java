@@ -20,7 +20,6 @@ import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
-import org.apache.http.auth.AUTH;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -52,7 +51,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 public class BrukerController {
 
     private static final String FAVORITTER = "favoritter";
-    
+
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
     private final GetUserInfo getUserInfo;
@@ -115,7 +114,7 @@ public class BrukerController {
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public Mono<RsBruker> fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
 
-        return mapFavoritter(() ->brukerService.fjernFavoritt(request.getGruppeId()));
+        return mapFavoritter(() -> brukerService.fjernFavoritt(request.getGruppeId()));
     }
 
     @Transactional
