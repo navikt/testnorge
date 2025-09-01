@@ -7,7 +7,6 @@ import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
@@ -75,13 +74,14 @@ class BrukerControllerTest {
                 .build();
 
         when(brukerService.fetchBrukerWithoutTeam(BRUKERID)).thenReturn(Mono.just(bruker));
-        when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(RsBrukerAndClaims.builder()
+        when(mapperFacade.map(eq(bruker), eq(RsBruker.class), any())).thenReturn(RsBruker.builder()
                 .brukerId(BRUKERID)
                 .build());
-        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
         when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
-                BrukerFavoritter.builder()
-                        .build()));
+                BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
+        when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.getBrukerBybrukerId(BRUKERID))
                 .assertNext(resultat -> assertThat(resultat.getBrukerId(), is(BRUKERID)))
@@ -97,14 +97,18 @@ class BrukerControllerTest {
                 .brukernavn("brukernavn")
                 .brukertype(Bruker.Brukertype.AZURE)
                 .build();
-        var brukerAndClaims = RsBrukerAndClaims.builder()
+        var brukerAndClaims = RsBruker.builder()
                 .brukerId(BRUKERID)
                 .build();
 
         when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(bruker));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
-        when(mapperFacade.map(eq(bruker), eq(RsBrukerAndClaims.class), any())).thenReturn(brukerAndClaims);
-        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(BrukerFavoritter.builder().build()));
+        when(mapperFacade.map(eq(bruker), eq(RsBruker.class), any())).thenReturn(brukerAndClaims);
+        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
+                BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
+        when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.getCurrentBruker())
                 .assertNext(resultat ->
@@ -130,8 +134,14 @@ class BrukerControllerTest {
         var req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1L);
 
-        when(brukerService.fjernFavoritt(1L)).thenReturn(Mono.just(Bruker.builder().build()));
-        when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class))).thenReturn(RsBruker.builder().build());
+        when(brukerService.fjernFavoritt(1L)).thenReturn(Mono.just(Bruker.builder().id(1L).build()));
+        when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class), any(MappingContext.class)))
+                .thenReturn(RsBruker.builder().build());
+        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
+                BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
+        when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.fjernFavoritt(req))
                 .assertNext(resultat -> verify(brukerService).fjernFavoritt(anyLong()))
@@ -151,6 +161,7 @@ class BrukerControllerTest {
                 BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
         when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
         when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.leggTilFavoritt(req))
                 .assertNext(resultat -> verify(brukerService).leggTilFavoritt(anyLong()))
@@ -188,6 +199,7 @@ class BrukerControllerTest {
                 BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
         when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
         when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.setRepresentererTeam(1L))
                 .assertNext(result -> assertThat(result, is(rsBruker)))
@@ -205,7 +217,7 @@ class BrukerControllerTest {
                 BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
         when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
         when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
-
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.clearRepresentererTeam())
                 .assertNext(result -> assertThat(result, is(rsBruker)))

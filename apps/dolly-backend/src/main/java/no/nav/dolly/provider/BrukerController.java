@@ -9,7 +9,6 @@ import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.mapper.MappingContextUtils;
@@ -66,19 +65,17 @@ public class BrukerController {
     @GetMapping("/{brukerId}")
     @Transactional
     @Operation(description = "Hent Bruker med brukerId")
-    public Mono<RsBrukerAndClaims> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
+    public Mono<RsBruker> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
-        return brukerService.fetchBrukerWithoutTeam(brukerId)
-                .flatMap(this::getFavoritterOgMedlemmer);
+        return mapFavoritter(() -> brukerService.fetchBrukerWithoutTeam(brukerId));
     }
 
     @Transactional
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
-    public Mono<RsBrukerAndClaims> getCurrentBruker() {
+    public Mono<RsBruker> getCurrentBruker() {
 
-        return brukerService.fetchBrukerWithoutTeam()
-                .flatMap(this::getFavoritterOgMedlemmer);
+        return mapFavoritter(brukerService::fetchBrukerWithoutTeam);
     }
 
     @Transactional
@@ -111,8 +108,7 @@ public class BrukerController {
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public Mono<RsBruker> fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
 
-        return brukerService.fjernFavoritt(request.getGruppeId())
-                .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
+        return mapFavoritter(() ->brukerService.fjernFavoritt(request.getGruppeId()));
     }
 
     @Transactional
@@ -142,37 +138,6 @@ public class BrukerController {
         return mapFavoritter(() -> brukerService.setRepresentererTeam(null));
     }
 
-    private Mono<RsBrukerAndClaims> getFavoritterOgMedlemmer(Bruker bruker) {
-
-        return Mono.zip(Mono.just(bruker),
-                        brukerFavoritterRepository.findByBrukerId(bruker.getId())
-                                .collectList(),
-                        getUserInfo.call(),
-                        isNull(bruker.getRepresentererTeam()) ? Mono.just(new Team()) :
-                                teamRepository.findById(bruker.getRepresentererTeam()),
-                        isNull(bruker.getRepresentererTeam()) ? Mono.just(emptyList()) :
-                                teamBrukerRepository.findByTeamId(bruker.getRepresentererTeam())
-                                        .map(TeamBruker::getBrukerId)
-                                        .collectList()
-                                        .flatMapMany(brukerRepository::findByIdIn)
-                                        .sort(Comparator.comparing(Bruker::getBrukernavn))
-                                        .collectList(),
-                        isNull(bruker.getRepresentererTeam()) ? Mono.just("") :
-                                teamRepository.findById(bruker.getRepresentererTeam())
-                                        .map(Team::getBrukerId)
-                                        .flatMap(brukerRepository::findById)
-                                        .map(Bruker::getBrukerId))
-                .map(tuple -> {
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty(FAVORITTER, tuple.getT2());
-                    context.setProperty("brukerInfo", tuple.getT3());
-                    context.setProperty("representererTeam", tuple.getT4());
-                    context.setProperty("teamMedlemmer", tuple.getT5());
-                    context.setProperty("brukerId", tuple.getT6());
-                    return mapperFacade.map(tuple.getT1(), RsBrukerAndClaims.class, context);
-                });
-    }
-
     private Mono<RsTeamWithBrukere> mapTeam(Team team) {
 
         return brukerRepository.findById(team.getBrukerId())
@@ -198,11 +163,24 @@ public class BrukerController {
                                 .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
                                     map.put(bruker1.getId(), bruker1);
                                     return map;
-                                })))
+                                }),
+                        getUserInfo.call(),
+                        isNull(bruker.getRepresentererTeam()) ? Mono.just(new Team()) :
+                                teamRepository.findById(bruker.getRepresentererTeam()),
+                        isNull(bruker.getRepresentererTeam()) ? Mono.just(emptyList()) :
+                                teamBrukerRepository.findByTeamId(bruker.getRepresentererTeam())
+                                        .map(TeamBruker::getBrukerId)
+                                        .collectList()
+                                        .flatMapMany(brukerRepository::findByIdIn)
+                                        .sort(Comparator.comparing(Bruker::getBrukernavn))
+                                        .collectList()))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty(FAVORITTER, tuple.getT2());
                     context.setProperty("alleBrukere", tuple.getT3());
+                    context.setProperty("brukerInfo", tuple.getT4());
+                    context.setProperty("representererTeam", tuple.getT5());
+                    context.setProperty("teamMedlemmer", tuple.getT6());
                     return mapperFacade.map(tuple.getT1(), RsBruker.class, context);
                 });
     }
