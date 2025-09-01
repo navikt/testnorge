@@ -3,7 +3,7 @@ import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import React, { SyntheticEvent } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import { adressePath } from '../SoekForm'
 
 export const Adresser = ({ handleChangeAdresse }: any) => {
