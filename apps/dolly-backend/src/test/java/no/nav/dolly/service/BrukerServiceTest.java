@@ -6,6 +6,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -51,6 +51,9 @@ class BrukerServiceTest {
     @Mock
     private TestgruppeRepository testgruppeRepository;
 
+    @Mock
+    private DokumentRepository dokumentRepository;
+
     @InjectMocks
     private BrukerService brukerService;
 
@@ -81,16 +84,13 @@ class BrukerServiceTest {
         var bruker = Bruker.builder().id(ID).brukerId(BRUKERID).brukertype(Bruker.Brukertype.AZURE).build();
         when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BRUKERID));
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(bruker));
-        when(brukerRepository.findByOrderById()).thenReturn(Flux.just(bruker));
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(bruker));
-        when(brukerRepository.findByOrderById()).thenReturn(Flux.just(bruker));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
 
-        StepVerifier.create(brukerService.fetchBrukere())
+        StepVerifier.create(brukerService.fetchBrukerWithoutTeam())
                 .assertNext(bruker1 -> {
                     assertThat(bruker1, is(notNullValue()));
                     assertThat(bruker1.getBrukertype(), is(Bruker.Brukertype.AZURE));
-                    verify(brukerRepository).findByOrderById();
                 })
                 .verifyComplete();
     }
