@@ -5,12 +5,14 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
@@ -27,6 +29,7 @@ import reactor.test.StepVerifier;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -39,6 +42,9 @@ class BrukerControllerTest {
 
     @Mock
     private BrukerService brukerService;
+
+    @Mock
+    private TestgruppeRepository testgruppeRepository;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -138,8 +144,13 @@ class BrukerControllerTest {
         var req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1L);
 
-        when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class))).thenReturn(RsBruker.builder().build());
-        when(brukerService.leggTilFavoritt(any())).thenReturn(Mono.just(Bruker.builder().build()));
+        when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class), any(MappingContext.class)))
+                .thenReturn(RsBruker.builder().build());
+        when(brukerService.leggTilFavoritt(any())).thenReturn(Mono.just(Bruker.builder().id(1L).build()));
+        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
+                BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
+        when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
 
         StepVerifier.create(controller.leggTilFavoritt(req))
                 .assertNext(resultat -> verify(brukerService).leggTilFavoritt(anyLong()))
@@ -172,7 +183,11 @@ class BrukerControllerTest {
         var rsBruker = new RsBruker();
 
         when(brukerService.setRepresentererTeam(1L)).thenReturn(Mono.just(bruker));
-        when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
+        when(mapperFacade.map(eq(bruker), eq(RsBruker.class), any(MappingContext.class))).thenReturn(rsBruker);
+        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
+                BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
+        when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
 
         StepVerifier.create(controller.setRepresentererTeam(1L))
                 .assertNext(result -> assertThat(result, is(rsBruker)))
@@ -185,7 +200,12 @@ class BrukerControllerTest {
         var rsBruker = new RsBruker();
 
         when(brukerService.setRepresentererTeam(null)).thenReturn(Mono.just(bruker));
-        when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
+        when(mapperFacade.map(eq(bruker), eq(RsBruker.class), any(MappingContext.class))).thenReturn(rsBruker);
+        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
+                BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
+        when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
+        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
+
 
         StepVerifier.create(controller.clearRepresentererTeam())
                 .assertNext(result -> assertThat(result, is(rsBruker)))
