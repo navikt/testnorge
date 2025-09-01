@@ -7,9 +7,11 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndClaims;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,8 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class BrukerMappingStrategy implements MappingStrategy {
 
+    private static final String FAVORITTER = "favoritter";
+    
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Bruker.class, RsBrukerAndClaims.class)
@@ -48,7 +52,11 @@ public class BrukerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Bruker bruker, RsBruker rsBruker, MappingContext context) {
 
-                        rsBruker.setFavoritter(getFavoritter(context));
+                        context.setProperty("bruker", bruker);
+                        var favoritter = (List<Testgruppe>) context.getProperty(FAVORITTER);
+                        rsBruker.setFavoritter(favoritter.stream()
+                                .map(favoritt -> mapperFacade.map(favoritt, RsTestgruppe.class, context))
+                                .toList());
                     }
                 })
                 .byDefault()
@@ -57,8 +65,8 @@ public class BrukerMappingStrategy implements MappingStrategy {
 
     private static List<String> getFavoritter(MappingContext context) {
 
-        var favoritter = (List<BrukerFavoritter>) (nonNull(context.getProperty("favoritter")) ?
-                context.getProperty("favoritter") :
+        var favoritter = (List<BrukerFavoritter>) (nonNull(context.getProperty(FAVORITTER)) ?
+                context.getProperty(FAVORITTER) :
                 emptyList());
 
         return favoritter.stream()

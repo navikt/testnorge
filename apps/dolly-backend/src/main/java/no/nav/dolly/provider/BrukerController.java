@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
@@ -16,6 +17,7 @@ import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
@@ -35,6 +37,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
@@ -47,6 +51,8 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 @RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BrukerController {
 
+    private static final String FAVORITTER = "favoritter";
+    
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
     private final GetUserInfo getUserInfo;
@@ -55,6 +61,7 @@ public class BrukerController {
     private final TeamBrukerRepository teamBrukerRepository;
     private final BrukerRepository brukerRepository;
     private final TeamService teamService;
+    private final TestgruppeRepository testgruppeRepository;
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
@@ -85,7 +92,7 @@ public class BrukerController {
                         .collectList()
                         .map(favoritter -> {
                             var context = MappingContextUtils.getMappingContext();
-                            context.setProperty("favoritter", favoritter);
+                            context.setProperty(FAVORITTER, favoritter);
                             return mapperFacade.map(bruker, RsBruker.class, context);
                         }));
     }
@@ -96,8 +103,7 @@ public class BrukerController {
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
     public Mono<RsBruker> leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
 
-        return brukerService.leggTilFavoritt(request.getGruppeId())
-                .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
+        return mapFavoritter(() -> brukerService.leggTilFavoritt(request.getGruppeId()));
     }
 
     @Transactional
@@ -125,8 +131,7 @@ public class BrukerController {
     @Operation(description = "Sett aktivt team for innlogget bruker")
     public Mono<RsBruker> setRepresentererTeam(@PathVariable("teamId") Long teamId) {
 
-        return brukerService.setRepresentererTeam(teamId)
-                .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
+        return mapFavoritter(() -> brukerService.setRepresentererTeam(teamId));
     }
 
     @Transactional
@@ -135,8 +140,7 @@ public class BrukerController {
     @Operation(description = "Fjern aktivt team for innlogget bruker")
     public Mono<RsBruker> clearRepresentererTeam() {
 
-        return brukerService.setRepresentererTeam(null)
-                .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
+        return mapFavoritter(() -> brukerService.setRepresentererTeam(null));
     }
 
     private Mono<RsBrukerAndClaims> getFavoritterOgMedlemmer(Bruker bruker) {
@@ -161,12 +165,12 @@ public class BrukerController {
                                         .map(Bruker::getBrukerId))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
-                    context.setProperty("favoritter", tuple.getT2());
+                    context.setProperty(FAVORITTER, tuple.getT2());
                     context.setProperty("brukerInfo", tuple.getT3());
                     context.setProperty("representererTeam", tuple.getT4());
                     context.setProperty("teamMedlemmer", tuple.getT5());
                     context.setProperty("brukerId", tuple.getT6());
-                    return mapperFacade.map(tuple.getT1(),  RsBrukerAndClaims.class, context);
+                    return mapperFacade.map(tuple.getT1(), RsBrukerAndClaims.class, context);
                 });
     }
 
@@ -178,6 +182,29 @@ public class BrukerController {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty("brukerId", tuple.getT1().getBrukerId());
                     return mapperFacade.map(tuple.getT2(), RsTeamWithBrukere.class, context);
+                });
+    }
+
+    private Mono<RsBruker> mapFavoritter(Supplier<Mono<Bruker>> brukerSupplier) {
+
+        return brukerSupplier.get()
+                .flatMap(bruker -> Mono.zip(
+                        Mono.just(bruker),
+                        brukerFavoritterRepository.findByBrukerId(bruker.getId())
+                                .map(BrukerFavoritter::getGruppeId)
+                                .collectList()
+                                .flatMapMany(testgruppeRepository::findByIdIn)
+                                .collectList(),
+                        brukerRepository.findAll()
+                                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                                    map.put(bruker1.getId(), bruker1);
+                                    return map;
+                                })))
+                .map(tuple -> {
+                    var context = MappingContextUtils.getMappingContext();
+                    context.setProperty(FAVORITTER, tuple.getT2());
+                    context.setProperty("alleBrukere", tuple.getT3());
+                    return mapperFacade.map(tuple.getT1(), RsBruker.class, context);
                 });
     }
 }

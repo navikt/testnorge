@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 
 import java.util.List;
 
@@ -24,5 +25,5 @@ public class RsBruker {
     private String navIdent;
     private RsTeamWithBrukere representererTeam;
     private List<String> grupper;
-    private List<String> favoritter;
+    private List<RsTestgruppe> favoritter;
 }
