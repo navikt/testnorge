@@ -26,6 +26,7 @@ public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoEx
                     if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
 
                         var attrib = jwtAuthenticationToken.getTokenAttributes();
+                        log.info("GetUserInfo jwtAuthenticationToken {}", jwtAuthenticationToken.getTokenAttributes());
                         return new UserInfoExtended(
                                 (String) attrib.get("oid"),
                                 "889640782",
