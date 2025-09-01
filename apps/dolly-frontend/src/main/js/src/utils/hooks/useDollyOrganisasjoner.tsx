@@ -9,7 +9,7 @@ import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljo
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 type MiljoDataListe = {
 	miljo: string
@@ -174,8 +174,15 @@ const fetchAllOrganisasjoner = async (urls: (string | null)[]) => {
 }
 
 export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => {
-	const filteredOrgnummere = orgnummere.filter((orgnummer) => orgnummer !== undefined)
+	const filteredOrgnummere = orgnummere.filter((orgnummer) => orgnummer?.length === 9)
 	const urls = filteredOrgnummere.map((orgnummer) => getOrganisasjonForvalterUrl(orgnummer))
+
+	const hasBeenCalledRef = useRef<boolean>(false)
+	useEffect(() => {
+		if (urls.length > 0) {
+			hasBeenCalledRef.current = true
+		}
+	}, [urls.length])
 
 	const { data, isLoading, error } = useSWR<OrganisasjonForvalterData[], Error>(
 		urls.length > 0 ? urls : null,
@@ -191,6 +198,7 @@ export const useOrganisasjonForvalter = (orgnummere: (string | undefined)[]) => 
 		organisasjoner: dataFiltered,
 		loading: isLoading,
 		error: error,
+		hasBeenCalled: hasBeenCalledRef.current,
 	}
 }
 

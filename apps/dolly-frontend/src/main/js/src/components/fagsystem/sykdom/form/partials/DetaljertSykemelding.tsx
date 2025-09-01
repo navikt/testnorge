@@ -7,7 +7,11 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { SelectOptionsDiagnoser } from './SelectOptionsDiagnoser'
 import { ArbeidKodeverk } from '@/config/kodeverk'
-import { Arbeidsgiver, Helsepersonell, SykemeldingForm } from '@/components/fagsystem/sykdom/SykemeldingTypes'
+import {
+	Arbeidsgiver,
+	Helsepersonell,
+	SykemeldingForm,
+} from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
 import React, { BaseSyntheticEvent, useContext, useEffect, useRef, useState } from 'react'
@@ -19,6 +23,7 @@ import { SwrMutateContext } from '@/components/bestillingsveileder/SwrMutateCont
 import { ArbeidsforholdToggle } from '@/components/fagsystem/aareg/form/partials/arbeidsforholdToggle'
 import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
 import Icon from '@/components/ui/icon/Icon'
+import Loading from '@/components/ui/loading/Loading'
 
 type DiagnoseSelect = {
 	diagnoseNavn: string
@@ -98,7 +103,9 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	}
 
 	const [selectedOrgnummer, setSelectedOrgnummer] = useState<string | undefined>(undefined)
-	const { organisasjoner } = useOrganisasjonForvalter([selectedOrgnummer])
+	const { organisasjoner, loading, error, hasBeenCalled } = useOrganisasjonForvalter([
+		selectedOrgnummer,
+	])
 	const lastAppliedOrg = useRef<string | undefined>(undefined)
 
 	const mapForvalterOrganisasjon = (org: any) => {
@@ -205,7 +212,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	useEffect(() => {
 		const org = organisasjoner?.[0]?.q1
-		if (organisasjoner.length > 0 && !org) {
+		if (hasBeenCalled && !loading && !org) {
 			formMethods.setError('manual.sykemelding.detaljertSykemelding.mottaker.orgNr', {
 				message: 'Organisasjon ikke funnet i Q1',
 			})
@@ -250,12 +257,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	return (
 		<div className="flexbox--wrap">
-			<DollyErrorMessageWrapper
-				name={[
-					'manual.sykemelding.detaljertSykemelding',
-					'sykemelding.detaljertSykemelding.arbeidsgiver.navn',
-				]}
-			/>
+			<DollyErrorMessageWrapper name={['manual.sykemelding.detaljertSykemelding']} />
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker name="sykemelding.detaljertSykemelding.startDato" label="Startdato" />
 				<FormCheckbox
@@ -336,6 +338,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 					/>
 					{
 						<div style={{ position: 'absolute', translate: '415px 70px' }}>
+							{loading && <Loading label="Leter etter organisasjon" />}
 							{!!formMethods.watch('sykemelding.detaljertSykemelding.mottaker.navn') && (
 								<>
 									<Icon kind="feedback-check-circle" style={{ marginRight: '5px' }} />
@@ -349,6 +352,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 									name={[
 										'sykemelding.detaljertSykemelding.mottaker.orgNr',
 										'manual.sykemelding.detaljertSykemelding.mottaker.orgNr',
+										'sykemelding.detaljertSykemelding.arbeidsgiver.navn',
 									]}
 								/>
 							</div>
