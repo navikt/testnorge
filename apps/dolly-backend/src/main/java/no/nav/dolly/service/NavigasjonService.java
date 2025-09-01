@@ -54,7 +54,7 @@ public class NavigasjonService {
     private final BrukerService brukerService;
     private final BrukerRepository brukerRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Mono<RsWhereAmI> navigerTilIdent(String ident) {
         return brukerService.fetchOrCreateBruker()
                 .flatMapMany(bruker -> Flux.merge(

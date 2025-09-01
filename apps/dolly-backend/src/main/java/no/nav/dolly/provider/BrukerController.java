@@ -64,7 +64,7 @@ public class BrukerController {
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
-    @Transactional(readOnly = true)
+    @Transactional
     @Operation(description = "Hent Bruker med brukerId")
     public Mono<RsBrukerAndClaims> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
@@ -81,7 +81,7 @@ public class BrukerController {
                 .flatMap(this::getFavoritterOgMedlemmer);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
     public Flux<RsBruker> getAllBrukere() {
@@ -115,7 +115,7 @@ public class BrukerController {
                 .map(bruker -> mapperFacade.map(bruker, RsBruker.class));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @GetMapping("/teams")
     @Operation(description = "Hent alle team gjeldende bruker er medlem av")
     public Flux<RsTeamWithBrukere> getUserTeams() {

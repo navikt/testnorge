@@ -80,7 +80,7 @@ public class TestgruppeService {
                 .flatMap(testgruppeRepository::save);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Mono<RsTestgruppeMedBestillingId> fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize,
                                                                          String sortColumn, String sortRetning) {
         return harTilgang(gruppeId)

@@ -15,7 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -28,7 +27,7 @@ public class TransaksjonMappingService {
     private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final ObjectMapper objectMapper;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Flux<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllByBestillingIdAndIdent(bestillingId, ident)

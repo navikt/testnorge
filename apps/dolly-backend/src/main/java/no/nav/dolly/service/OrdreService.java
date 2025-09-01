@@ -36,7 +36,7 @@ public class OrdreService {
     private final PensjonforvalterClient pensjonforvalterClient;
     private final ObjectMapper objectMapper;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Mono<RsOrdreStatus> sendOrdre(String ident) {
 
         return identRepository.findByIdent(ident)

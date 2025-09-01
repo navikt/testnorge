@@ -41,7 +41,7 @@ public class MalBestillingController {
 
     @Cacheable(value = CACHE_BESTILLING_MAL)
     @GetMapping("/brukerId/{brukerId}")
-    @Transactional(readOnly = true)
+    @Transactional
     @Operation(description = "Hent mal-bestilling, for angitt brukerId, evt ALLE eller FELLES (for anonyme maler)")
     public Flux<RsMalBestilling> getMalBestillingerBrukerId(@PathVariable("brukerId") String brukerId) {
 
@@ -49,7 +49,7 @@ public class MalBestillingController {
     }
 
     @GetMapping("/oversikt")
-    @Transactional(readOnly = true)
+    @Transactional
     @Operation(description = "Hent oversikt maler")
     public Mono<RsMalBestillingSimple> getMalBestillinger() {
 

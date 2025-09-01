@@ -30,13 +30,13 @@ public class DokumentService {
     private final BestillingMalRepository bestillingMalRepository;
     private final ObjectMapper objectMapper;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Flux<Dokument> getDokumenterByBestilling(Long bestillingId) {
 
         return dokumentRepository.getDokumentsByBestillingId(bestillingId);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Flux<Dokument> getDokumenterByMal(Long malId) {
 
         return bestillingMalRepository.findById(malId)
@@ -56,7 +56,7 @@ public class DokumentService {
                 .flatMapMany(dokumentRepository::getDokumentsByIdIsIn);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Flux<Dokument> getDokumenter(List<Long> dokumentIdListe) {
 
         return dokumentRepository.getDokumentsByIdIsIn(dokumentIdListe);

@@ -53,7 +53,7 @@ public class IdentService {
                 .switchIfEmpty(Mono.error(new NotFoundException(format(IDENT_NOT_FOUND, ident))));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Mono<Boolean> exists(String ident) {
 
         return identRepository.existsByIdent(ident);

@@ -31,7 +31,7 @@ public class ExcelController {
 
     @SneakyThrows
     @GetMapping(value = "/organisasjoner")
-    @Transactional(readOnly = true)
+    @Transactional
     public Mono<ResponseEntity<Resource>> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId) {
 
         return excelService.getExcelOrganisasjonerWorkbook(brukerId)
