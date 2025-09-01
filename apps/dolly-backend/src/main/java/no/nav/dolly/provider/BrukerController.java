@@ -24,7 +24,6 @@ import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,7 +72,7 @@ public class BrukerController {
                 .flatMap(this::getFavoritterOgMedlemmer);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
+    @Transactional
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
     public Mono<RsBrukerAndClaims> getCurrentBruker() {
