@@ -22,7 +22,7 @@ public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoEx
 
         return getJwtAuthenticationToken()
                 .map(authentication -> {
-
+                    log.info("GetUserInfo authentication {}", authentication.getClass().getCanonicalName());
                     if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
 
                         var attrib = jwtAuthenticationToken.getTokenAttributes();
