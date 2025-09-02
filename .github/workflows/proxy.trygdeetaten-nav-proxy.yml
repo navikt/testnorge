@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/proxy.trygdeetaten-nav-proxy.yml
       - libs/reactive-core/**
+      - libs/reactive-security/**
       - libs/reactive-proxy/**
       - libs/testing/**
       - plugins/**
