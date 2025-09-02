@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - .github/workflows/proxy.trygdeetaten-nav-proxy.yml
+      - libs/data-transfer-objects/**
+      - libs/security-core/**
       - libs/reactive-core/**
       - libs/reactive-security/**
       - libs/reactive-proxy/**
