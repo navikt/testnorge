@@ -1,57 +1,84 @@
 package no.nav.testnav.libs.reactivesecurity.action;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.libs.security.config.ReactiveRequestContext;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_EMAIL;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_ID;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_ORG;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_USERNAME;
 
 @Slf4j
 @Component
 public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoExtended>> {
 
+    private final String secret;
+
+    public GetUserInfo(@Value("${JWT_SECRET:#{null}}") String secret) {
+        this.secret = secret;
+    }
+
     @Override
     public Mono<UserInfoExtended> call() {
 
-        return getJwtAuthenticationToken()
-                .map(authentication -> {
-
-                    if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
-
-                        var attrib = jwtAuthenticationToken.getTokenAttributes();
-
+        return Mono.zip(ReactiveRequestContext.getContext()
+                                .map(ServerHttpRequest::getHeaders)
+                                .map(headers -> nonNull(headers.getFirst(UserConstant.USER_HEADER_JWT)) ?
+                                        headers.getFirst(UserConstant.USER_HEADER_JWT) : ""),
+                        ReactiveSecurityContextHolder.getContext()
+                                .map(SecurityContext::getAuthentication)
+                                .filter(JwtAuthenticationToken.class::isInstance)
+                                .map(JwtAuthenticationToken.class::cast)
+                                .map(JwtAuthenticationToken::getTokenAttributes))
+                .map(auth -> {
+                    if (((String) auth.getT2().get(JwtClaimNames.ISS)).contains("microsoftonline")) {
                         return new UserInfoExtended(
-                                (String) attrib.get("oid"),
+                                (String) auth.getT2().get("oid"),
                                 "889640782",
-                                (String) attrib.get("iss"),
-                                (String) attrib.get("name"),
-                                (String) attrib.get("preferred_username"),
+                                (String) auth.getT2().get(JwtClaimNames.ISS),
+                                (String) auth.getT2().get("name"),
+                                (String) auth.getT2().get("preferred_username"),
                                 false,
-                                (List<String>) attrib.get("groups"));
-
-                    } else if (authentication instanceof OAuth2AuthenticationToken oauth2AuthenticationToken) {
-
-                        var attrib = oauth2AuthenticationToken.getPrincipal().getAttributes();
-                        return new UserInfoExtended(
-                                (String) attrib.get("pid"),
-                                (String) attrib.get(UserConstant.USER_CLAIM_ORG),
-                                (String) attrib.get("issuer"),
-                                (String) attrib.get(UserConstant.USER_CLAIM_USERNAME),
-                                "",
-                                true,
-                                emptyList());
+                                auth.getT2().get("groups") instanceof List ?
+                                        (List<String>) auth.getT2().get("groups") : emptyList());
                     } else {
-
-                        return new UserInfoExtended(null, null, null,
-                                null, null, false, emptyList());
+                        var jwt = JWT.decode(auth.getT1());
+                        var verifier = JWT.require(Algorithm.HMAC256(secret)).build();
+                        verifier.verify(jwt);
+                        return new UserInfoExtended(
+                                getClaim(jwt, USER_CLAIM_ID),
+                                getClaim(jwt, USER_CLAIM_ORG),
+                                jwt.getIssuer(),
+                                getClaim(jwt, USER_CLAIM_USERNAME),
+                                getClaim(jwt, USER_CLAIM_EMAIL),
+                                String.valueOf(auth.getT2().get(JwtClaimNames.ISS))
+                                        .contains("tokenx"),
+                                emptyList());
                     }
                 });
+    }
+
+    private static String getClaim(DecodedJWT jwt, String claimName) {
+
+        return Objects.requireNonNullElse(jwt.getClaim(claimName).asString(), "");
     }
 }
