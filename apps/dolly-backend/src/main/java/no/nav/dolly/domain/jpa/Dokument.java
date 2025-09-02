@@ -86,7 +86,6 @@ public class Dokument implements Serializable {
         BESTILLING_DOKARKIV,
         BESTILLING_HISTARK,
         MAL_BESTILLING_DOKARKIV,
-        MAL_BESTILLING_HISTARK,
-        TEST_AUTH
+        MAL_BESTILLING_HISTARK
     }
 }
