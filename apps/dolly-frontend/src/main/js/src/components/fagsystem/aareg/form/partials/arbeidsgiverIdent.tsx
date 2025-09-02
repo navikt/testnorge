@@ -39,7 +39,7 @@ export const ArbeidsgiverIdent = ({
 	const handleChange = (event: React.ChangeEvent<any>) => {
 		setSuccess(false)
 		const personnr = event.target.value
-		formMethods.setValue(path, '123', { shouldTouch: true })
+		formMethods.setValue(path, personnr, { shouldTouch: true })
 		formMethods.clearErrors(`manual.${path}`)
 		formMethods.trigger(path)
 		setPersonnummer(personnr)

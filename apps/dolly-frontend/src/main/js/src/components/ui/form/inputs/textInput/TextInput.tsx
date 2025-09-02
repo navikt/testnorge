@@ -20,6 +20,7 @@ const StyledIcon = styled(Icon)`
 type TextInputProps = {
 	name: string
 	label?: string
+	title?: string
 	placeholder?: string
 	defaultValue?: string
 	value?: string
@@ -172,6 +173,7 @@ export const TextInput = ({
 				onBlur={handleBlur}
 				onClick={props.onClick}
 				onFocus={props.onFocus}
+				title={props.title}
 				onKeyDown={props.onKeyDown}
 				style={style}
 				data-testid={dataTestId}
