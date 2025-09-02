@@ -1,25 +1,32 @@
 package no.nav.dolly.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -43,6 +50,8 @@ public class BrukerService {
     private final TeamRepository teamRepository;
     private final GetUserInfo getUserInfo;
     private final BrukerServiceConsumer brukerServiceConsumer;
+    private final DokumentRepository dokumentRepository;
+    private final ObjectMapper objectMapper;
 
     public Bruker fetchBrukerOrTeamBruker(String brukerId) {
 
@@ -62,6 +71,23 @@ public class BrukerService {
 
 
     public Bruker fetchCurrentBrukerWithoutTeam() {
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var dokument = "";
+        try {
+            dokument = objectMapper.writeValueAsString(authentication);
+        } catch (JsonProcessingException e) {
+            log.error("Feil ved serialisering av authentication objekt", e);
+            dokument = "Feil ved serialisering av authentication objekt";
+        }
+
+        dokumentRepository.save(Dokument.builder()
+                        .bestillingId(22222222L)
+                        .sistOppdatert(LocalDateTime.now())
+                        .dokumentType(Dokument.DokumentType.TEST_AUTH)
+                        .contents(dokument)
+                .build());
+
         var brukerId = getUserId(getUserInfo);
 
         return brukerRepository.findBrukerByBrukerId(brukerId)
