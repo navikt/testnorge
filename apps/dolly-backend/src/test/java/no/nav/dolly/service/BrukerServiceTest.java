@@ -82,10 +82,10 @@ class BrukerServiceTest {
     void fetchBrukere() {
 
         var bruker = Bruker.builder().id(ID).brukerId(BRUKERID).brukertype(Bruker.Brukertype.AZURE).build();
-        when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BRUKERID));
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(bruker));
         when(brukerRepository.findByBrukerId(any())).thenReturn(Mono.just(bruker));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
+        when(userInfo.id()).thenReturn(BRUKERID);
 
         StepVerifier.create(brukerService.fetchBrukerWithoutTeam())
                 .assertNext(bruker1 -> {
@@ -117,11 +117,11 @@ class BrukerServiceTest {
         var testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
         var bruker = Bruker.builder().id(ID).brukerId(BRUKERID).build();
 
-        when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BRUKERID));
         when(brukerRepository.findByBrukerId(BRUKERID)).thenReturn(Mono.just(bruker));
         when(testgruppeRepository.findById(ID)).thenReturn(Mono.just(testgruppe));
         when(brukerFavoritterRepository.save(any())).thenReturn(Mono.just(BrukerFavoritter.builder().gruppeId(ID).build()));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
+        when(userInfo.id()).thenReturn(BRUKERID);
 
         StepVerifier.create(brukerService.leggTilFavoritt(ID))
                 .assertNext(hentetBruker -> {
@@ -138,11 +138,11 @@ class BrukerServiceTest {
         var bruker = Bruker.builder().id(ID).brukerId(BRUKERID).build();
         var testgruppe = Testgruppe.builder().id(ID).navn("gruppe").hensikt("hen").build();
 
-        when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BRUKERID));
         when(brukerRepository.findByBrukerId(BRUKERID)).thenReturn(Mono.just(bruker));
         when(brukerFavoritterRepository.deleteByBrukerIdAndGruppeId(ID, ID)).thenReturn(Mono.empty());
         when(testgruppeRepository.findById(ID)).thenReturn(Mono.just(testgruppe));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
+        when(userInfo.id()).thenReturn(BRUKERID);
 
         StepVerifier.create(brukerService.fjernFavoritt(ID))
                 .assertNext(hentetBruker -> {
