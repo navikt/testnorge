@@ -271,9 +271,9 @@ class TestgruppeServiceTest {
         when(brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())).thenReturn(Mono.just(TilgangDTO.builder()
                 .brukere(List.of(bruker.getBrukerId()))
                 .build()));
-        when(testgruppeRepository.findByOpprettetAv_BrukerIdIn(any(), any()))
+        when(testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(any(), any()))
                 .thenReturn(Flux.just(testgruppe));
-        when(testgruppeRepository.countByOpprettetAv_BrukerIdIn(any())).thenReturn(Mono.just(1L));
+        when(testgruppeRepository.countByOpprettetAvId(any())).thenReturn(Mono.just(1L));
         when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
         when(brukerFavoritterRepository.findByBrukerId(anyLong())).thenReturn(Flux.just(BrukerFavoritter.builder().gruppeId(1L).build()));
         when(testgruppeRepository.findByIdIn(any())).thenReturn(Flux.just(testgruppe));
@@ -282,8 +282,8 @@ class TestgruppeServiceTest {
                 .assertNext(testgruppe1 -> {
 
                     assertThat(testgruppe1, is(notNullValue()));
-                    verify(testgruppeRepository).findByOpprettetAv_BrukerIdIn(any(), any());
-                    verify(testgruppeRepository).countByOpprettetAv_BrukerIdIn(any());
+                    verify(testgruppeRepository).findByOpprettetAvIdOrderByIdDesc(any(), any());
+                    verify(testgruppeRepository).countByOpprettetAvId(any());
 
                     var contextArgumentCaptor = ArgumentCaptor.forClass(MappingContext.class);
                     verify(mapperFacade, times(2)).map(any(), any(), contextArgumentCaptor.capture());

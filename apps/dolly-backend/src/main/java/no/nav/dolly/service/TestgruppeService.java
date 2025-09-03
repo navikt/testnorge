@@ -201,7 +201,21 @@ public class TestgruppeService {
 
         return brukerService.fetchOrCreateBruker(brukerId)
                 .flatMap(bruker -> {
-                    if (bruker.getBrukertype() == Brukertype.BANKID) {
+                    if (isNotBlank(brukerId)) {
+
+                        return Mono.zip(Mono.just(bruker),
+                                testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(bruker.getId(), PageRequest.of(pageNo, pageSize))
+                                        .collectList(),
+                                testgruppeRepository.countByOpprettetAvId(bruker.getId()));
+
+                    } else if (bruker.getBrukertype() == Brukertype.AZURE) {
+
+                        return Mono.zip(Mono.just(bruker),
+                                testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                        .collectList(),
+                                testgruppeRepository.countBy());
+
+                    } else {
 
                         return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                                 .map(TilgangDTO::getBrukere)
@@ -210,20 +224,6 @@ public class TestgruppeService {
                                                         PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
                                                 .collectList(),
                                         testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)));
-                    } else {
-
-                        if (isNotBlank(brukerId)) {
-                            return Mono.zip(Mono.just(bruker),
-                                    testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(bruker.getId(), PageRequest.of(pageNo, pageSize))
-                                            .collectList(),
-                                    testgruppeRepository.countByOpprettetAvId(bruker.getId()));
-
-                        } else {
-                            return Mono.zip(Mono.just(bruker),
-                                    testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
-                                            .collectList(),
-                                    testgruppeRepository.countBy());
-                        }
                     }
                 })
                 .flatMap(tuple ->
