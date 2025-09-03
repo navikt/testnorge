@@ -10,6 +10,7 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.TeamBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
@@ -82,9 +83,10 @@ public class BrukerController {
     @Transactional
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
-    public Flux<Bruker> getAllBrukere() {
+    public Flux<RsBrukerUtenFavoritter> getAllBrukere() {
 
-        return brukerService.fetchBrukere();
+        return brukerService.fetchBrukere()
+                .map(bruker -> mapperFacade.map(bruker, RsBrukerUtenFavoritter.class));
     }
 
     @Transactional
