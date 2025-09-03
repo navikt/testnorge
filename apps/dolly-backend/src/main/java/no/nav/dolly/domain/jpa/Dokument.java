@@ -1,14 +1,5 @@
 package no.nav.dolly.domain.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,40 +7,39 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "DOKUMENT")
+@Table("DOKUMENT")
 public class Dokument implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Version
-    @Column(name = "VERSJON")
+    @Column("VERSJON")
     private Long versjon;
 
-    @Column(name = "BESTILLING_ID")
+    @Column("BESTILLING_ID")
     private Long bestillingId;
 
-    @Column(name = "DOKUMENT_TYPE")
-    @Enumerated(value = EnumType.STRING)
+    @Column("DOKUMENT_TYPE")
     private DokumentType dokumentType;
 
-    @Column(name = "SIST_OPPDATERT")
-    @UpdateTimestamp
+    @Column("SIST_OPPDATERT")
     private LocalDateTime sistOppdatert;
 
-    @Column(name = "CONTENTS")
+    @Column("CONTENTS")
     private String contents;
 
     @Override
@@ -86,6 +76,7 @@ public class Dokument implements Serializable {
         BESTILLING_DOKARKIV,
         BESTILLING_HISTARK,
         MAL_BESTILLING_DOKARKIV,
-        MAL_BESTILLING_HISTARK
+        MAL_BESTILLING_HISTARK,
+        TEST_TEST
     }
 }

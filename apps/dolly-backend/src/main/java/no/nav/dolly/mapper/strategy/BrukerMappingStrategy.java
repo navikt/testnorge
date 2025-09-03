@@ -5,54 +5,46 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.dolly.service.BrukerService;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
 import org.springframework.stereotype.Component;
 
-import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
+import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @Component
 @RequiredArgsConstructor
 public class BrukerMappingStrategy implements MappingStrategy {
 
-    private final GetUserInfo getUserInfo;
-    private final BrukerService brukerService;
-
+    private static final String FAVORITTER = "favoritter";
+    
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(Bruker.class, RsBrukerAndGruppeId.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(Bruker bruker, RsBrukerAndGruppeId rsBruker, MappingContext context) {
-
-                        if (!bruker.getFavoritter().isEmpty()) {
-                            rsBruker.setFavoritter(bruker.getFavoritter().stream()
-                                    .map(gruppe -> gruppe.getId().toString())
-                                    .toList());
-                        }
-                    }
-                })
-                .byDefault()
-                .register();
 
         factory.classMap(Bruker.class, RsBruker.class)
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Bruker bruker, RsBruker rsBruker, MappingContext context) {
 
-                        var brukerInfo = getAuthUser(getUserInfo);
-                        var aktivBruker = brukerService.fetchBrukerOrTeamBruker(brukerInfo.getBrukerId());
-                        rsBruker.setFavoritter(mapperFacade.mapAsList(aktivBruker.getFavoritter(), RsTestgruppe.class));
-
-                        rsBruker.setGrupper(brukerInfo.getGrupper());
+                        context.setProperty("bruker", bruker);
+                        var favoritter = (List<Testgruppe>) context.getProperty(FAVORITTER);
+                        rsBruker.setGrupper(((UserInfoExtended) context.getProperty("brukerInfo")).grupper());
+                        rsBruker.setFavoritter(favoritter.stream()
+                                .map(favoritt -> mapperFacade.map(favoritt, RsTestgruppe.class, context))
+                                .toList());
+                        var representererTeam = (Team) context.getProperty("representererTeam");
+                        if (nonNull(representererTeam) && nonNull(representererTeam.getId())) {
+                            rsBruker.setRepresentererTeam(mapperFacade.map(representererTeam, RsTeamWithBrukere.class, context));
+                        }
                     }
                 })
                 .byDefault()
                 .register();
     }
-
 }

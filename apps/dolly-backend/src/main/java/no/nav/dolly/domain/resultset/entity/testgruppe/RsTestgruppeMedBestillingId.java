@@ -39,5 +39,13 @@ public class RsTestgruppeMedBestillingId extends RsTestgruppe {
         private List<Long> bestillingId;
         private List<RsBestillingStatus> bestillinger;
         private Testident.Master master;
+
+        public List<Long> getBestillingId() {
+
+            if (isNull(bestillingId)) {
+                bestillingId = new ArrayList<>();
+            }
+            return bestillingId;
+        }
     }
 }
