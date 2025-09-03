@@ -82,10 +82,9 @@ public class BrukerController {
     @Transactional
     @GetMapping
     @Operation(description = "Hent alle Brukerne")
-    public Flux<RsBruker> getAllBrukere() {
+    public Flux<Bruker> getAllBrukere() {
 
-        return brukerService.fetchBrukere()
-                .flatMap(this::mapFavoritter);
+        return brukerService.fetchBrukere();
     }
 
     @Transactional

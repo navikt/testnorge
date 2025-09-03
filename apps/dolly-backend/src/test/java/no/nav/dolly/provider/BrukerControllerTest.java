@@ -120,13 +120,6 @@ class BrukerControllerTest {
     void getAllBrukere() {
 
         when(brukerService.fetchBrukere()).thenReturn(Flux.just(Bruker.builder().build()));
-        when(mapperFacade.map(any(Bruker.class), eq(RsBruker.class), any(MappingContext.class)))
-                .thenReturn(RsBruker.builder().build());
-        when(brukerFavoritterRepository.findByBrukerId(any())).thenReturn(Flux.just(
-                BrukerFavoritter.builder().brukerId(1L).gruppeId(1L).build()));
-        when(testgruppeRepository.findByIdIn(anyList())).thenReturn(Flux.just(Testgruppe.builder().id(1L).build()));
-        when(brukerRepository.findAll()).thenReturn(Flux.just(Bruker.builder().id(1L).build()));
-        when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.getAllBrukere())
                 .assertNext(bruker -> verify(brukerService).fetchBrukere())
