@@ -56,11 +56,14 @@ public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoEx
                                 (String) auth.getT2().get("oid"),
                                 "889640782",
                                 (String) auth.getT2().get(JwtClaimNames.ISS),
-                                (String) auth.getT2().get("name"),
+                                nonNull(auth.getT2().get("name")) ?
+                                        (String) auth.getT2().get("name") :
+                                        (String) auth.getT2().get("azp_name"),
                                 (String) auth.getT2().get("preferred_username"),
                                 false,
-                                auth.getT2().get("groups") instanceof List ?
-                                        (List<String>) auth.getT2().get("groups") : emptyList());
+                                nonNull(auth.getT2().get("groups")) ?
+                                        (List<String>) auth.getT2().get("groups") :
+                                        emptyList());
 
                     } else { // Henter fra header
                         var jwt = JWT.decode(auth.getT1());

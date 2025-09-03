@@ -93,10 +93,6 @@ public class BrukerService {
 
         if (isBlank(brukerId)) {
             return getUserInfo.call()
-                    .doOnNext(userInfo ->
-                            log.info("Fant bruker med id {}, navn {}, epost {}, issuer {}, isBankId {}, grupper {}", userInfo.id(),
-                                    userInfo.brukernavn(), userInfo.epost(), userInfo.issuer(),
-                                    userInfo.isBankId(), userInfo.grupper()))
                     .map(UserInfoExtended::id)
                     .flatMap(brukerRepository::findByBrukerId)
                     .switchIfEmpty(createBruker());

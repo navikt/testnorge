@@ -129,7 +129,8 @@ public class TestgruppeService {
                 .filter(bruker -> Brukertype.BANKID == bruker.getBrukertype())
                 .flatMap(bruker -> brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
                         .map(TilgangDTO::getBrukere)
-                        .flatMap(brukere -> testgruppeRepository.findAllIdsByOpprettetAv_BrukerIdIn(brukere)
+                        .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere, Pageable.unpaged())
+                                .map(Testgruppe::getId)
                                 .collectList())
                         .map(grupper -> grupper.stream().anyMatch(gruppe -> gruppe.equals(gruppeId))))
                 .switchIfEmpty(Mono.just(true));
