@@ -36,7 +36,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
@@ -67,8 +66,8 @@ public class BrukerController {
     @Operation(description = "Hent Bruker med brukerId")
     public Mono<RsBruker> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
-        return mapFavoritter(() -> Flux.from(brukerService.fetchBrukerWithoutTeam(brukerId)))
-                .next();
+        return brukerService.fetchBrukerWithoutTeam(brukerId)
+                .flatMap(this::mapFavoritter);
     }
 
     @Transactional
@@ -76,8 +75,8 @@ public class BrukerController {
     @Operation(description = "Hent pålogget Bruker")
     public Mono<RsBruker> getCurrentBruker() {
 
-        return mapFavoritter(() -> Flux.from(brukerService.fetchBrukerWithoutTeam()))
-                .next();
+        return brukerService.fetchBrukerWithoutTeam()
+                .flatMap(this::mapFavoritter);
     }
 
     @Transactional
@@ -85,7 +84,8 @@ public class BrukerController {
     @Operation(description = "Hent alle Brukerne")
     public Flux<RsBruker> getAllBrukere() {
 
-        return mapFavoritter(brukerService::fetchBrukere);
+        return brukerService.fetchBrukere()
+                .flatMap(this::mapFavoritter);
     }
 
     @Transactional
@@ -94,8 +94,8 @@ public class BrukerController {
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
     public Mono<RsBruker> leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
 
-        return mapFavoritter(() -> Flux.from(brukerService.leggTilFavoritt(request.getGruppeId())))
-                .next();
+        return brukerService.leggTilFavoritt(request.getGruppeId())
+                .flatMap(this::mapFavoritter);
     }
 
     @Transactional
@@ -104,8 +104,8 @@ public class BrukerController {
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public Mono<RsBruker> fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
 
-        return mapFavoritter(() -> Flux.from(brukerService.fjernFavoritt(request.getGruppeId())))
-                .next();
+        return brukerService.fjernFavoritt(request.getGruppeId())
+                .flatMap(this::mapFavoritter);
     }
 
     @Transactional
@@ -123,8 +123,8 @@ public class BrukerController {
     @Operation(description = "Sett aktivt team for innlogget bruker")
     public Mono<RsBruker> setRepresentererTeam(@PathVariable("teamId") Long teamId) {
 
-        return mapFavoritter(() -> Flux.from(brukerService.setRepresentererTeam(teamId)))
-                .next();
+        return brukerService.setRepresentererTeam(teamId)
+                .flatMap(this::mapFavoritter);
     }
 
     @Transactional
@@ -133,8 +133,8 @@ public class BrukerController {
     @Operation(description = "Fjern aktivt team for innlogget bruker")
     public Mono<RsBruker> clearRepresentererTeam() {
 
-        return mapFavoritter(() -> Flux.from(brukerService.setRepresentererTeam(null)))
-                .next();
+        return brukerService.setRepresentererTeam(null)
+                .flatMap(this::mapFavoritter);
     }
 
     private Mono<RsTeamWithBrukere> mapTeam(Team team) {
@@ -148,10 +148,10 @@ public class BrukerController {
                 });
     }
 
-    private Flux<RsBruker> mapFavoritter(Supplier<Flux<Bruker>> brukerSupplier) {
+    private Mono<RsBruker> mapFavoritter(Bruker bruker) {
 
-        return brukerSupplier.get()
-                .flatMap(bruker -> Mono.zip(
+        return Mono.just(bruker)
+                .flatMap(bruker1 -> Mono.zip(
                         Mono.just(bruker),
                         brukerFavoritterRepository.findByBrukerId(bruker.getId())
                                 .map(BrukerFavoritter::getGruppeId)
@@ -159,8 +159,8 @@ public class BrukerController {
                                 .flatMapMany(testgruppeRepository::findByIdIn)
                                 .collectList(),
                         brukerRepository.findAll()
-                                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
-                                    map.put(bruker1.getId(), bruker1);
+                                .reduce(new HashMap<Long, Bruker>(), (map, bruker2) -> {
+                                    map.put(bruker2.getId(), bruker2);
                                     return map;
                                 }),
                         getUserInfo.call(),
