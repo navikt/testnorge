@@ -60,7 +60,7 @@ public class TransactionHelperService {
                                 })
                                 .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
-                .map(list -> list.isEmpty() ? null : list.getFirst());
+                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
     }
 
     public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress,
@@ -87,7 +87,7 @@ public class TransactionHelperService {
                                 .flatMap(bestillingProgressRepository::save)
                                 .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
-                .map(list -> list.isEmpty() ? null : list.getFirst());
+                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
     }
 
     private String applyChanges(String value, String status, String separator) {
@@ -146,6 +146,6 @@ public class TransactionHelperService {
                     })
                     .switchIfEmpty(Mono.error(new RuntimeException("Bestilling med id " + id + " finnes ikke."))))
                     .collectList()
-                    .map(list -> list.isEmpty() ? null : list.getFirst());
+                    .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
     }
 }

@@ -34,7 +34,7 @@ public class CheckAliveUtil {
                 .toBodilessEntity()
                 .map(response -> response.getStatusCode().is2xxSuccessful() ? "OK" :
                         "Error: " + response.getStatusCode())
-                .onErrorResume(throwable -> Mono.just("Error: " + throwable.getMessage())
-                        .doOnError(error -> log.error(PATTERN.formatted("Error during health check", url), error)));
+                .onErrorResume(throwable -> Mono.just("Error: " + throwable.getMessage()))
+                .doOnError(error -> log.error(PATTERN.formatted("Error during health check", url), error));
     }
 }

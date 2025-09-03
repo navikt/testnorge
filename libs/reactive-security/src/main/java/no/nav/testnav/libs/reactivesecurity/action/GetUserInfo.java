@@ -49,7 +49,8 @@ public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoEx
                                 .filter(JwtAuthenticationToken.class::isInstance)
                                 .map(JwtAuthenticationToken.class::cast)
                                 .map(JwtAuthenticationToken::getTokenAttributes))
-                .map(auth -> {
+                .map(auth -> { // Henter fra token
+
                     if (((String) auth.getT2().get(JwtClaimNames.ISS)).contains("microsoftonline")) {
                         return new UserInfoExtended(
                                 (String) auth.getT2().get("oid"),
@@ -60,18 +61,18 @@ public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoEx
                                 false,
                                 auth.getT2().get("groups") instanceof List ?
                                         (List<String>) auth.getT2().get("groups") : emptyList());
-                    } else {
+
+                    } else { // Henter fra header
                         var jwt = JWT.decode(auth.getT1());
                         var verifier = JWT.require(Algorithm.HMAC256(secret)).build();
                         verifier.verify(jwt);
                         return new UserInfoExtended(
                                 getClaim(jwt, USER_CLAIM_ID),
                                 getClaim(jwt, USER_CLAIM_ORG),
-                                jwt.getIssuer(),
+                                (String) auth.getT2().get(JwtClaimNames.ISS),
                                 getClaim(jwt, USER_CLAIM_USERNAME),
                                 getClaim(jwt, USER_CLAIM_EMAIL),
-                                String.valueOf(auth.getT2().get(JwtClaimNames.ISS))
-                                        .contains("tokenx"),
+                                true,
                                 emptyList());
                     }
                 });
