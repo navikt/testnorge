@@ -23,7 +23,6 @@ import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,18 +61,14 @@ public class BrukerController {
     private final TeamService teamService;
     private final TestgruppeRepository testgruppeRepository;
 
-    @GetMapping("/authentication")
-    public Mono<Authentication> getAuthentication() {
-        return brukerService.getAuthentication();
-    }
-
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
     @Transactional
     @Operation(description = "Hent Bruker med brukerId")
     public Mono<RsBruker> getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
 
-        return mapFavoritter(() -> brukerService.fetchBrukerWithoutTeam(brukerId));
+        return mapFavoritter(() -> Flux.from(brukerService.fetchBrukerWithoutTeam(brukerId)))
+                .next();
     }
 
     @Transactional
@@ -81,7 +76,8 @@ public class BrukerController {
     @Operation(description = "Hent pålogget Bruker")
     public Mono<RsBruker> getCurrentBruker() {
 
-        return mapFavoritter(brukerService::fetchBrukerWithoutTeam);
+        return mapFavoritter(() -> Flux.from(brukerService.fetchBrukerWithoutTeam()))
+                .next();
     }
 
     @Transactional
@@ -89,14 +85,7 @@ public class BrukerController {
     @Operation(description = "Hent alle Brukerne")
     public Flux<RsBruker> getAllBrukere() {
 
-        return brukerService.fetchBrukere()
-                .flatMap(bruker -> brukerFavoritterRepository.findByBrukerId(bruker.getId())
-                        .collectList()
-                        .map(favoritter -> {
-                            var context = MappingContextUtils.getMappingContext();
-                            context.setProperty(FAVORITTER, favoritter);
-                            return mapperFacade.map(bruker, RsBruker.class, context);
-                        }));
+        return mapFavoritter(brukerService::fetchBrukere);
     }
 
     @Transactional
@@ -105,7 +94,8 @@ public class BrukerController {
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
     public Mono<RsBruker> leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
 
-        return mapFavoritter(() -> brukerService.leggTilFavoritt(request.getGruppeId()));
+        return mapFavoritter(() -> Flux.from(brukerService.leggTilFavoritt(request.getGruppeId())))
+                .next();
     }
 
     @Transactional
@@ -114,7 +104,8 @@ public class BrukerController {
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public Mono<RsBruker> fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
 
-        return mapFavoritter(() -> brukerService.fjernFavoritt(request.getGruppeId()));
+        return mapFavoritter(() -> Flux.from(brukerService.fjernFavoritt(request.getGruppeId())))
+                .next();
     }
 
     @Transactional
@@ -132,7 +123,8 @@ public class BrukerController {
     @Operation(description = "Sett aktivt team for innlogget bruker")
     public Mono<RsBruker> setRepresentererTeam(@PathVariable("teamId") Long teamId) {
 
-        return mapFavoritter(() -> brukerService.setRepresentererTeam(teamId));
+        return mapFavoritter(() -> Flux.from(brukerService.setRepresentererTeam(teamId)))
+                .next();
     }
 
     @Transactional
@@ -141,7 +133,8 @@ public class BrukerController {
     @Operation(description = "Fjern aktivt team for innlogget bruker")
     public Mono<RsBruker> clearRepresentererTeam() {
 
-        return mapFavoritter(() -> brukerService.setRepresentererTeam(null));
+        return mapFavoritter(() -> Flux.from(brukerService.setRepresentererTeam(null)))
+                .next();
     }
 
     private Mono<RsTeamWithBrukere> mapTeam(Team team) {
@@ -155,7 +148,7 @@ public class BrukerController {
                 });
     }
 
-    private Mono<RsBruker> mapFavoritter(Supplier<Mono<Bruker>> brukerSupplier) {
+    private Flux<RsBruker> mapFavoritter(Supplier<Flux<Bruker>> brukerSupplier) {
 
         return brukerSupplier.get()
                 .flatMap(bruker -> Mono.zip(
