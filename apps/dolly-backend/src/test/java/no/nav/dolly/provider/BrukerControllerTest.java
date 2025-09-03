@@ -8,6 +8,7 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
@@ -120,6 +121,8 @@ class BrukerControllerTest {
     void getAllBrukere() {
 
         when(brukerService.fetchBrukere()).thenReturn(Flux.just(Bruker.builder().build()));
+        when(mapperFacade.map(any(Bruker.class), eq(RsBrukerUtenFavoritter.class)))
+                .thenReturn(RsBrukerUtenFavoritter.builder().build());
 
         StepVerifier.create(controller.getAllBrukere())
                 .assertNext(bruker -> verify(brukerService).fetchBrukere())
