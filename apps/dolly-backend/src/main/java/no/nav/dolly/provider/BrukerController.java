@@ -150,8 +150,7 @@ public class BrukerController {
 
     private Mono<RsBruker> mapFavoritter(Bruker bruker) {
 
-        return Mono.just(bruker)
-                .flatMap(bruker1 -> Mono.zip(
+        return Mono.zip(
                         Mono.just(bruker),
                         brukerFavoritterRepository.findByBrukerId(bruker.getId())
                                 .map(BrukerFavoritter::getGruppeId)
@@ -159,8 +158,8 @@ public class BrukerController {
                                 .flatMapMany(testgruppeRepository::findByIdIn)
                                 .collectList(),
                         brukerRepository.findAll()
-                                .reduce(new HashMap<Long, Bruker>(), (map, bruker2) -> {
-                                    map.put(bruker2.getId(), bruker2);
+                                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                                    map.put(bruker1.getId(), bruker1);
                                     return map;
                                 }),
                         getUserInfo.call(),
@@ -172,7 +171,7 @@ public class BrukerController {
                                         .collectList()
                                         .flatMapMany(brukerRepository::findByIdIn)
                                         .sort(Comparator.comparing(Bruker::getBrukernavn))
-                                        .collectList()))
+                                        .collectList())
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty(FAVORITTER, tuple.getT2());
