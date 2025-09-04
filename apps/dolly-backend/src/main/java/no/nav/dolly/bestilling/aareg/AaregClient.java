@@ -73,7 +73,7 @@ public class AaregClient implements ClientRegister {
         return oppdaterStatus(progress, miljoer.stream()
                 .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SYSTEM)))
                 .collect(Collectors.joining(",")))
-                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre)
+                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get())
                         .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                         .onErrorResume(error -> getErrors(error, miljoerTrygg.get()))
                         .flatMap(status -> oppdaterStatus(progress, status)));
@@ -101,7 +101,7 @@ public class AaregClient implements ClientRegister {
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                            Set<String> miljoer, boolean isOpprettEndre) {
+                                            Set<String> miljoer) {
 
         var context = MappingContextUtils.getMappingContext();
         context.setProperty(IDENT, dollyPerson.getIdent());
@@ -112,12 +112,11 @@ public class AaregClient implements ClientRegister {
                         .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
                         .map(aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context))
                         .collectList()
-                        .flatMapMany(arbeidsforholdRequest -> doInsertOrUpdate(arbeidsforholdRequest, eksisterende, isOpprettEndre)))
-                        .collect(Collectors.joining(","));
+                        .flatMapMany(arbeidsforholdRequest -> doInsertOrUpdate(arbeidsforholdRequest, eksisterende)))
+                .collect(Collectors.joining(","));
     }
 
-    private Flux<String> doInsertOrUpdate(List<Arbeidsforhold> request, ArbeidsforholdRespons eksisterendeArbeidsforhold,
-                                          boolean isOpprettEndre) {
+    private Flux<String> doInsertOrUpdate(List<Arbeidsforhold> request, ArbeidsforholdRespons eksisterendeArbeidsforhold) {
 
         var miljoe = eksisterendeArbeidsforhold.getMiljoe();
         var eksisterende = eksisterendeArbeidsforhold.getEksisterendeArbeidsforhold();
@@ -128,27 +127,18 @@ public class AaregClient implements ClientRegister {
                 getMaxPermisjonPermitteringId(request),
                 getMaxPermisjonPermitteringId(eksisterende)));
 
-        if (isOpprettEndre) {
-            return Flux.fromIterable(request)
-                    .map(arbeidsforhold ->
-                        appendArbeidsforholdId(arbeidsforhold, true, eksisterende, antallArbeidsforhold, antallPermisjonPermittering))
-                    .flatMap(arbeidsforhold -> aaregConsumer.opprettArbeidsforhold(arbeidsforhold, miljoe))
-                    .map(reply -> decodeStatus(miljoe, reply));
-        } else {
-
-            return Flux.fromIterable(request)
-                    .flatMap(arbeidsforhold -> {
-                        if (eksisterende.stream().anyMatch(eksisterende1 -> isEqualArbeidsforhold(eksisterende1, arbeidsforhold))) {
-                            appendArbeidsforholdId(arbeidsforhold, false, eksisterende, antallArbeidsforhold, antallPermisjonPermittering);
-                            return aaregConsumer.endreArbeidsforhold(arbeidsforhold, miljoe)
-                                    .map(reply -> decodeStatus(miljoe, reply));
-                        } else {
-                            appendArbeidsforholdId(arbeidsforhold, true, eksisterende, antallArbeidsforhold, antallPermisjonPermittering);
-                            return aaregConsumer.opprettArbeidsforhold(arbeidsforhold, miljoe)
-                            .map(reply -> decodeStatus(miljoe, reply));
-                        }
-                    });
-        }
+        return Flux.fromIterable(request)
+                .flatMap(arbeidsforhold -> {
+                    if (eksisterende.stream().anyMatch(eksisterende1 -> isEqualArbeidsforhold(eksisterende1, arbeidsforhold))) {
+                        appendArbeidsforholdId(arbeidsforhold, false, eksisterende, antallArbeidsforhold, antallPermisjonPermittering);
+                        return aaregConsumer.endreArbeidsforhold(arbeidsforhold, miljoe)
+                                .map(reply -> decodeStatus(miljoe, reply));
+                    } else {
+                        appendArbeidsforholdId(arbeidsforhold, true, eksisterende, antallArbeidsforhold, antallPermisjonPermittering);
+                        return aaregConsumer.opprettArbeidsforhold(arbeidsforhold, miljoe)
+                                .map(reply -> decodeStatus(miljoe, reply));
+                    }
+                });
     }
 
     private String decodeStatus(String miljoe, ArbeidsforholdRespons reply) {
