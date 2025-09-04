@@ -47,11 +47,11 @@ public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRes
                 .bodyToMono(Arbeidsforhold[].class)
                 .map(arbeidsforhold1 -> ArbeidsforholdRespons.builder()
                         .eksisterendeArbeidsforhold(Arrays.asList(arbeidsforhold1))
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .error(error)
                         .build()))
                 .retryWhen(WebClientError.is5xxException());

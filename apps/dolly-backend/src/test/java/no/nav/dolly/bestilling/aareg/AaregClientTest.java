@@ -33,7 +33,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -78,7 +77,7 @@ class AaregClientTest {
     private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
 
         return ArbeidsforholdRespons.builder()
-                .miljo(ENV)
+                .miljoe(ENV)
                 .eksisterendeArbeidsforhold(singletonList(
                         Arbeidsforhold.builder()
                                 .arbeidstaker(Person.builder()
@@ -132,11 +131,9 @@ class AaregClientTest {
                         buildArbeidsforhold(false)));
         when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
                 .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
-                        .miljo(ENV)
+                        .miljoe(ENV)
                         .arbeidsforholdId("1")
                         .build()));
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
-                .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold());
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold().getFirst());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
@@ -169,11 +166,9 @@ class AaregClientTest {
                 .thenReturn(Mono.just(buildArbeidsforhold(true)));
         when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
                 .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
-                        .miljo(ENV)
+                        .miljoe(ENV)
                         .arbeidsforholdId("1")
                         .build()));
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
-                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold().getFirst());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));

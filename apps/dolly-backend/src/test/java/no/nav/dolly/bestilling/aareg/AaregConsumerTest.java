@@ -66,7 +66,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                 .build();
 
         arbeidsforholdRespons = ArbeidsforholdRespons.builder()
-                .miljo(MILJOE)
+                .miljoe(MILJOE)
                 .arbeidsforholdId("1")
                 .build();
     }
@@ -82,7 +82,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                         assertThat(response)
                                 .isNotNull()
                                 .extracting(List::getFirst)
-                                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
+                                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljoe)
                                 .containsExactly("1", MILJOE))
                 .verifyComplete();
     }
@@ -99,7 +99,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                         assertThat(response)
                                 .isNotNull()
                                 .extracting(List::getFirst)
-                                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
+                                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljoe)
                                 .containsExactly("1", MILJOE))
                 .verifyComplete();
     }

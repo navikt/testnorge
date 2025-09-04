@@ -19,7 +19,7 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ArbeidsforholdRespons {
 
-    private String miljo;
+    private String miljoe;
     private List<Arbeidsforhold> eksisterendeArbeidsforhold;
     private Arbeidsforhold arbeidsforhold;
     private String arbeidsforholdId;
