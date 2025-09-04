@@ -56,9 +56,7 @@ public class AaregUtility {
 
         if (nyttArbeidsforhold) {
 
-            arbeidsforhold.setArbeidsforholdId(isBlank(arbeidsforhold.getArbeidsforholdId()) ?
-                    Integer.toString(arbeidsforholdId.incrementAndGet()) :
-                    arbeidsforhold.getArbeidsforholdId());
+            arbeidsforhold.setArbeidsforholdId(Integer.toString(arbeidsforholdId.incrementAndGet()));
             arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
                     arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
             appendPermisjonPermitteringId(arbeidsforhold, permisjonPermitteringId);
