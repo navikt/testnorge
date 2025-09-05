@@ -113,7 +113,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                     .map(coBestilling -> createBestilling(bestilling, coBestilling))
                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                             request.getId(), testident.getIdent()))
-                                                                    .flatMap(bestillingRequest ->
+                                                                    .concatMap(bestillingRequest ->
                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                     fase2Klienter(),
                                                                                     progress, false)

@@ -6,6 +6,7 @@ import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
@@ -33,7 +34,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -78,7 +78,10 @@ class AaregClientTest {
     private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
 
         return ArbeidsforholdRespons.builder()
-                .miljo(ENV)
+                .arbeidsforhold(Arbeidsforhold.builder()
+                        .arbeidsforholdId("1")
+                        .build())
+                .miljoe(ENV)
                 .eksisterendeArbeidsforhold(singletonList(
                         Arbeidsforhold.builder()
                                 .arbeidstaker(Person.builder()
@@ -131,15 +134,11 @@ class AaregClientTest {
                 .thenReturn(Mono.just(
                         buildArbeidsforhold(false)));
         when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
-                .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
-                        .miljo(ENV)
-                        .arbeidsforholdId("1")
-                        .build()));
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
-                .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold());
+                .thenReturn(Flux.just(buildArbeidsforhold(true)));
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold().getFirst());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
+        when(transactionHelperService.persister(any(), any(RsDollyUtvidetBestilling.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT)
@@ -168,15 +167,12 @@ class AaregClientTest {
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
                 .thenReturn(Mono.just(buildArbeidsforhold(true)));
         when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
-                .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
-                        .miljo(ENV)
-                        .arbeidsforholdId("1")
-                        .build()));
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
-                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
+                .thenReturn(Flux.just(buildArbeidsforhold(true)));
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold().getFirst());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
+        when(transactionHelperService.persister(any(), any(RsDollyUtvidetBestilling.class))).thenReturn(Mono.empty());
+
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)

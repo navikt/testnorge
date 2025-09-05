@@ -41,6 +41,7 @@ public class BrukerMappingStrategy implements MappingStrategy {
                         var representererTeam = (Team) context.getProperty("representererTeam");
                         if (nonNull(representererTeam) && nonNull(representererTeam.getId())) {
                             rsBruker.setRepresentererTeam(mapperFacade.map(representererTeam, RsTeamWithBrukere.class, context));
+                            rsBruker.getRepresentererTeam().setBrukerId((String) context.getProperty("teamBrukerId"));
                         }
                     }
                 })
