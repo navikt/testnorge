@@ -6,6 +6,7 @@ import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
@@ -77,6 +78,9 @@ class AaregClientTest {
     private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
 
         return ArbeidsforholdRespons.builder()
+                .arbeidsforhold(Arbeidsforhold.builder()
+                        .arbeidsforholdId("1")
+                        .build())
                 .miljoe(ENV)
                 .eksisterendeArbeidsforhold(singletonList(
                         Arbeidsforhold.builder()
@@ -130,13 +134,11 @@ class AaregClientTest {
                 .thenReturn(Mono.just(
                         buildArbeidsforhold(false)));
         when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
-                .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
-                        .miljoe(ENV)
-                        .arbeidsforholdId("1")
-                        .build()));
+                .thenReturn(Flux.just(buildArbeidsforhold(true)));
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold().getFirst());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
+        when(transactionHelperService.persister(any(), any(RsDollyUtvidetBestilling.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT)
@@ -165,13 +167,12 @@ class AaregClientTest {
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV))
                 .thenReturn(Mono.just(buildArbeidsforhold(true)));
         when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)))
-                .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
-                        .miljoe(ENV)
-                        .arbeidsforholdId("1")
-                        .build()));
+                .thenReturn(Flux.just(buildArbeidsforhold(true)));
         when(mapperFacade.map(any(), eq(Arbeidsforhold.class), any()))
                 .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold().getFirst());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(bestillingProgress));
+        when(transactionHelperService.persister(any(), any(RsDollyUtvidetBestilling.class))).thenReturn(Mono.empty());
+
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)
