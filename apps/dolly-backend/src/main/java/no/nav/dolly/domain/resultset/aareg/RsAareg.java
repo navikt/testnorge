@@ -3,21 +3,21 @@ package no.nav.dolly.domain.resultset.aareg;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,6 +43,8 @@ public class RsAareg {
     private List<RsUtenlandsopphold> utenlandsopphold;
 
     private RsAktoer arbeidsgiver;
+
+    private Map<String, Identifikasjon> identifikasjon;
 
     @Schema(description = "Angir periode oppdateringen gjelder fra", type = "string", pattern="^\\d{4}-\\d{2}$")
     @Field(type = FieldType.Date, format = DateFormat.year_month, pattern = "uuuu-MM")
@@ -84,5 +86,22 @@ public class RsAareg {
             utenlandsopphold = new ArrayList<>();
         }
         return utenlandsopphold;
+    }
+
+    public Map<String, Identifikasjon> getIdentifikasjon() {
+        if (isNull(identifikasjon)) {
+            identifikasjon = new HashMap<>();
+        }
+        return identifikasjon;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Identifikasjon {
+
+        private String arbeidsforholdId;
+        private Long navArbeidsforholdId;
     }
 }

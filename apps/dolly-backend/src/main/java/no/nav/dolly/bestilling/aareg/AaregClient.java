@@ -9,6 +9,7 @@ import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
@@ -103,41 +104,57 @@ public class AaregClient implements ClientRegister {
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                             Set<String> miljoer) {
 
-        var context = MappingContextUtils.getMappingContext();
-        context.setProperty(IDENT, dollyPerson.getIdent());
-
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getIdent(), miljoe))
-                .flatMap(eksisterende -> Flux.fromIterable(bestilling.getAareg())
-                        .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
-                        .map(aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context))
-                        .collectList()
-                        .flatMapMany(arbeidsforholdRequest -> doInsertOrUpdate(arbeidsforholdRequest, eksisterende)))
-                .collect(Collectors.joining(","));
+                .flatMap(eksisterende -> doInsertOrUpdate(dollyPerson.getIdent(), bestilling.getAareg(), eksisterende))
+                .doOnNext(status ->
+                        log.info("AAREG respons: {}", status))
+                .map(reply -> decodeStatus(reply.getMiljoe(), reply))
+                .collect(Collectors.joining(","))
+                .flatMap(status -> transactionHelperService.persister(bestilling.getId(), bestilling)
+                .thenReturn(status));
     }
 
-    private Flux<String> doInsertOrUpdate(List<Arbeidsforhold> request, ArbeidsforholdRespons eksisterendeArbeidsforhold) {
+    private Flux<ArbeidsforholdRespons> doInsertOrUpdate(String ident, List<RsAareg> request, ArbeidsforholdRespons eksisterendeArbeidsforhold) {
 
         var miljoe = eksisterendeArbeidsforhold.getMiljoe();
         var eksisterende = eksisterendeArbeidsforhold.getEksisterendeArbeidsforhold();
+        var context = MappingContextUtils.getMappingContext();
+        context.setProperty(IDENT, ident);
+        var bestilteArbeidsforhold = request.stream()
+                .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
+                .collect(Collectors.toMap(RsAareg::hashCode, aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context)));
+
         var antallArbeidsforhold = new AtomicInteger(Math.max(
-                getMaxArbeidsforholdId(request),
+                getMaxArbeidsforholdId(bestilteArbeidsforhold.values()),
                 getMaxArbeidsforholdId(eksisterende)));
         var antallPermisjonPermittering = new AtomicInteger(Math.max(
-                getMaxPermisjonPermitteringId(request),
+                getMaxPermisjonPermitteringId(bestilteArbeidsforhold.values()),
                 getMaxPermisjonPermitteringId(eksisterende)));
 
         return Flux.fromIterable(request)
                 .flatMap(arbeidsforhold -> {
-                    if (eksisterende.stream().anyMatch(eksisterende1 -> isEqualArbeidsforhold(eksisterende1, arbeidsforhold))) {
-                        appendArbeidsforholdId(arbeidsforhold, false, eksisterende, antallArbeidsforhold, antallPermisjonPermittering);
-                        return aaregConsumer.endreArbeidsforhold(arbeidsforhold, miljoe)
-                                .map(reply -> decodeStatus(miljoe, reply));
+                    if (eksisterende.stream().anyMatch(eksisterende1 -> isEqualArbeidsforhold(eksisterende1,
+                            bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), arbeidsforhold.getIdentifikasjon()))) {
+                        appendArbeidsforholdId(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), false, eksisterende,
+                                arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold, antallPermisjonPermittering);
+                        return aaregConsumer.endreArbeidsforhold(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), miljoe)
+                                .zipWith(Mono.just(arbeidsforhold));
                     } else {
-                        appendArbeidsforholdId(arbeidsforhold, true, eksisterende, antallArbeidsforhold, antallPermisjonPermittering);
-                        return aaregConsumer.opprettArbeidsforhold(arbeidsforhold, miljoe)
-                                .map(reply -> decodeStatus(miljoe, reply));
+                        appendArbeidsforholdId(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), true, eksisterende,
+                                arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold, antallPermisjonPermittering);
+                        return aaregConsumer.opprettArbeidsforhold(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), miljoe)
+                                .zipWith(Mono.just(arbeidsforhold));
                     }
+                })
+                .map(reply -> {
+                    if (isNull(reply.getT1().getError())) {
+                        reply.getT2().getIdentifikasjon().put(miljoe, RsAareg.Identifikasjon.builder()
+                                        .arbeidsforholdId(reply.getT1().getArbeidsforhold().getArbeidsforholdId())
+                                        .navArbeidsforholdId(reply.getT1().getArbeidsforhold().getNavArbeidsforholdId())
+                                .build());
+                    }
+                    return reply.getT1();
                 });
     }
 
@@ -145,7 +162,7 @@ public class AaregClient implements ClientRegister {
         log.info("AAREG respons fra miljø {} : {} ", miljoe, reply);
         return "%s: arbforhold=%s$%s".formatted(
                 miljoe,
-                reply.getArbeidsforholdId(),
+                nonNull(reply.getArbeidsforhold()) ? reply.getArbeidsforhold().getArbeidsforholdId() : "1",
                 isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError())
         );
     }

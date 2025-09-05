@@ -22,7 +22,6 @@ public class ArbeidsforholdRespons {
     private String miljoe;
     private List<Arbeidsforhold> eksisterendeArbeidsforhold;
     private Arbeidsforhold arbeidsforhold;
-    private String arbeidsforholdId;
     private Throwable error;
 
     public List<Arbeidsforhold> getEksisterendeArbeidsforhold() {
