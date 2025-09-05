@@ -112,7 +112,7 @@ public class AaregClient implements ClientRegister {
                 .map(reply -> decodeStatus(reply.getMiljoe(), reply))
                 .collect(Collectors.joining(","))
                 .flatMap(status -> transactionHelperService.persister(bestilling.getId(), bestilling)
-                .thenReturn(status));
+                        .thenReturn(status));
     }
 
     private Flux<ArbeidsforholdRespons> doInsertOrUpdate(String ident, List<RsAareg> request, ArbeidsforholdRespons eksisterendeArbeidsforhold) {
@@ -125,12 +125,8 @@ public class AaregClient implements ClientRegister {
                 .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
                 .collect(Collectors.toMap(RsAareg::hashCode, aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context)));
 
-        var antallArbeidsforhold = new AtomicInteger(Math.max(
-                getMaxArbeidsforholdId(bestilteArbeidsforhold.values()),
-                getMaxArbeidsforholdId(eksisterende)));
-        var antallPermisjonPermittering = new AtomicInteger(Math.max(
-                getMaxPermisjonPermitteringId(bestilteArbeidsforhold.values()),
-                getMaxPermisjonPermitteringId(eksisterende)));
+        var antallArbeidsforhold = new AtomicInteger(getMaxArbeidsforholdId(eksisterende));
+        var antallPermisjonPermittering = new AtomicInteger(getMaxPermisjonPermitteringId(eksisterende));
 
         return Flux.fromIterable(request)
                 .flatMap(arbeidsforhold -> {
@@ -150,8 +146,8 @@ public class AaregClient implements ClientRegister {
                 .map(reply -> {
                     if (isNull(reply.getT1().getError())) {
                         reply.getT2().getIdentifikasjon().put(miljoe, RsAareg.Identifikasjon.builder()
-                                        .arbeidsforholdId(reply.getT1().getArbeidsforhold().getArbeidsforholdId())
-                                        .navArbeidsforholdId(reply.getT1().getArbeidsforhold().getNavArbeidsforholdId())
+                                .arbeidsforholdId(reply.getT1().getArbeidsforhold().getArbeidsforholdId())
+                                .navArbeidsforholdId(reply.getT1().getArbeidsforhold().getNavArbeidsforholdId())
                                 .build());
                     }
                     return reply.getT1();
