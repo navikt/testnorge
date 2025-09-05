@@ -47,19 +47,19 @@ export const useDokumenterFraMal = (malId: string) => {
 }
 
 export const useJoarkPDF = (journalpostId?: number, dokumentInfoId?: number, miljo?: string) => {
-	const { data, isLoading, error } = useSWR<Blob, Error>(
+	const { data, isLoading, error } = useSWR<string, Error>(
 		journalpostId && dokumentInfoId && miljo
 			? `/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}/pdf`
 			: null,
-		fetcher,
-		{
-			revalidateOnFocus: false,
-			headers: {
-				miljo,
-				Accept: 'application/pdf',
-				'Content-Type': 'application/pdf',
-			},
-		},
+		(url) =>
+			imageFetcher(url, {
+				headers: {
+					miljo,
+					Accept: 'application/pdf',
+					'Content-Type': 'application/pdf',
+				},
+			}),
+		{ revalidateOnFocus: false },
 	)
 
 	return {
