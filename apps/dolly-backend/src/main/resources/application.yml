@@ -32,7 +32,7 @@ spring:
     baseline-on-migrate: true
   mvc:
     async:
-      request-timeout: -1
+      request-timeout: 30
   security:
     oauth2:
       resourceserver:
