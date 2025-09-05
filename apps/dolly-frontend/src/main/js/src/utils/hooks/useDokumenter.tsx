@@ -70,7 +70,7 @@ export const useJoarkPDF = (journalpostId?: number, dokumentInfoId?: number, mil
 }
 
 export const useHistarkPDF = (dokumentInfoId?: number) => {
-	const { data, isLoading, error } = useSWR<Blob, Error>(
+	const { data, isLoading, error } = useSWR<string, Error>(
 		dokumentInfoId ? `/testnav-histark-proxy/api/saksmapper/${dokumentInfoId}/pdf` : null,
 		pdfFetcher,
 		{
