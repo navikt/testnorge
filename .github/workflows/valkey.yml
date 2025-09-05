@@ -1,14 +1,18 @@
-name: Deploy redis
+name: valkey
 
 on:
   push:
+    branches:
+      - master
+      - change/redis_to_valkey
     paths:
-      - .nais/redis-dev.yml
+      - .github/workflows/valkey.yml
+      - .nais/valkey-dolly-idporten.yml
   workflow_dispatch:
 
 jobs:
-  deploy-redis:
-    name: Deploy redis
+  deploy:
+    name: "Deploy Valkey instance(s)"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,4 +22,4 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: ".nais/redis-dev.yml"
+          RESOURCE: .nais/valkey-dolly-idporten.yml
