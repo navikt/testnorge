@@ -172,7 +172,10 @@ public class BrukerController {
                                         .collectList()
                                         .flatMapMany(brukerRepository::findByIdIn)
                                         .sort(Comparator.comparing(Bruker::getBrukernavn))
-                                        .collectList())
+                                        .collectList(),
+                        isNull(bruker.getRepresentererTeam()) ? Mono.just(new Bruker()) :
+                                teamRepository.findById(bruker.getRepresentererTeam())
+                                        .flatMap(team -> brukerRepository.findById(team.getBrukerId())))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty(FAVORITTER, tuple.getT2());
@@ -180,6 +183,7 @@ public class BrukerController {
                     context.setProperty("brukerInfo", tuple.getT4());
                     context.setProperty("representererTeam", tuple.getT5());
                     context.setProperty("teamMedlemmer", tuple.getT6());
+                    context.setProperty("teamBrukerId", tuple.getT7().getBrukerId());
                     return mapperFacade.map(tuple.getT1(), RsBruker.class, context);
                 });
     }
