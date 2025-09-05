@@ -1,6 +1,6 @@
 # Testnav-trygdeetaten-nav-proxy
-Proxy brukt av aktører fra trygdeetaten teannt for å nå "dolly-backend"-applikasjonen. Applikasjonen kjører med 
-trygdeetaten.no-tenant (som aktørene bruker) og bytter om til access token for nav.no-tenant for å 
+Proxy brukt av aktører fra trygdeetaten tenant for å nå "dolly-backend"-applikasjonen. Applikasjonen kjører med 
+trygdeetaten.no tenant (som aktørene bruker) og bytter om til access token for nav.no tenant for å 
 nå dolly-applikasjonen.
 
 ## Lokal kjøring
