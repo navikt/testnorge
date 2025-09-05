@@ -149,6 +149,23 @@ export const imageFetcher = (...args: Argument[]) =>
 		res.ok ? res.blob().then((blob: Blob) => URL.createObjectURL(blob)) : null,
 	)
 
+export const pdfFetcher = (...args: Argument[]) =>
+	originalFetch(...args)
+		.then((res: Response) => {
+			if (!res.ok) {
+				throw new Error(`Feil ved henting av PDF: ${res.status} ${res.statusText}`)
+			}
+			return res
+				.blob()
+				.then((blob: Blob) => URL.createObjectURL(blob))
+				.catch((error) => {
+					throw new Error(`Feil ved prosessering av PDF: ${error.message}`)
+				})
+		})
+		.catch((error: Error) => {
+			throw error
+		})
+
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
 
 type Config = {

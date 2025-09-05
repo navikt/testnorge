@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher, imageFetcher } from '@/api'
+import { fetcher, pdfFetcher } from '@/api'
 
 export type Journalpost = {
 	journalpostId: number
@@ -52,7 +52,7 @@ export const useJoarkPDF = (journalpostId?: number, dokumentInfoId?: number, mil
 			? `/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}/pdf`
 			: null,
 		(url) =>
-			imageFetcher(url, {
+			pdfFetcher(url, {
 				headers: {
 					miljo,
 					Accept: 'application/pdf',
@@ -72,7 +72,7 @@ export const useJoarkPDF = (journalpostId?: number, dokumentInfoId?: number, mil
 export const useHistarkPDF = (dokumentInfoId?: number) => {
 	const { data, isLoading, error } = useSWR<Blob, Error>(
 		dokumentInfoId ? `/testnav-histark-proxy/api/saksmapper/${dokumentInfoId}/pdf` : null,
-		imageFetcher,
+		pdfFetcher,
 		{
 			revalidateOnFocus: false,
 			headers: {
