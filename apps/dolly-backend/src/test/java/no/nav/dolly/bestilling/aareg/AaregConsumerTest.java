@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,7 +42,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
 
     private Arbeidsforhold opprettRequest;
 
-    private ArbeidsforholdRespons arbeidsforholdRespons;
+    private Arbeidsforhold arbeidsforhold;
 
     private static String asJsonString(final Object object) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(object);
@@ -66,20 +65,16 @@ class AaregConsumerTest extends AbstractConsumerTest {
                 .arbeidsforholdId("1")
                 .build();
 
-        arbeidsforholdRespons = ArbeidsforholdRespons.builder()
-                .arbeidsforhold(Arbeidsforhold.builder()
+        arbeidsforhold = Arbeidsforhold.builder()
                         .arbeidsforholdId("1")
                         .navArbeidsforholdId(123456789L)
-                        .build())
-                .miljoe(MILJOE)
-                .build();
+                        .build();
     }
 
-    @Disabled
     @Test
     void opprettArbeidsforhold() throws Exception {
 
-        stubOpprettArbeidsforhold(arbeidsforholdRespons);
+        stubOpprettArbeidsforhold(arbeidsforhold);
 
         StepVerifier.create(aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
                 .collectList())
@@ -96,7 +91,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
     @Test
     void oppdaterArbeidsforhold() throws Exception {
 
-        stubOppdaterArbeidsforhold(arbeidsforholdRespons);
+        stubOppdaterArbeidsforhold(arbeidsforhold);
 
         aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
                 .collectList()
@@ -113,7 +108,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
     @Test
     void hentArbeidsforhold() throws Exception {
 
-        stubHentArbeidsforhold(arbeidsforholdRespons);
+        stubHentArbeidsforhold(arbeidsforhold);
 
         aaregConsumer.hentArbeidsforhold(IDENT, MILJOE)
                 .as(StepVerifier::create)
@@ -125,7 +120,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                 .verifyComplete();
     }
 
-    private void stubOpprettArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
+    private void stubOpprettArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
                 .willReturn(created()
@@ -133,7 +128,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubOppdaterArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
+    private void stubOppdaterArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
 
         stubFor(put(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
                 .willReturn(created()
@@ -141,7 +136,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubHentArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
+    private void stubHentArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
 
         stubFor(get(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
                 .withQueryParam("ident", matching(IDENT))
