@@ -160,6 +160,8 @@ public class SykemeldingValidateMappingStrategy implements MappingStrategy {
                         .avventendeInnspillTilArbeidsgiver(nonNull(periode.getAvventendeSykmelding()) ?
                                 periode.getAvventendeSykmelding().getInnspillTilArbeidsgiver() : null)
                         .gradert(ReceivedSykemeldingDTO.Gradert.builder()
+                                .grad(nonNull(periode.getGradertSykmelding()) ?
+                                        periode.getGradertSykmelding().getSykmeldingsgrad() : null)
                                 .reisetilskudd(nonNull(periode.getGradertSykmelding()) ?
                                         periode.getGradertSykmelding().isReisetilskudd() : null)
                                 .build())
