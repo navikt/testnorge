@@ -31,8 +31,7 @@ export default ({ journalpost, miljoe }: Props) => {
 
 	useEffect(() => {
 		if (pdf) {
-			const fileURL = URL.createObjectURL(pdf)
-			window.open(fileURL)
+			window.open(pdf)
 			setSelectedDoc({})
 		}
 	}, [pdf])
