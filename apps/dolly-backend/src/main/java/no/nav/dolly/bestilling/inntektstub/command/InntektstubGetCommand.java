@@ -13,6 +13,7 @@ public class InntektstubGetCommand implements Callable<Flux<Inntektsinformasjon>
 
     private static final String INNTEKTER_URL = "/api/v2/inntektsinformasjon";
     private static final String NORSKE_IDENTER_QUERY = "norske-identer";
+    private static final String HISTORISK_QUERY = "historikk";
 
     private final WebClient webClient;
     private final String ident;
@@ -25,6 +26,7 @@ public class InntektstubGetCommand implements Callable<Flux<Inntektsinformasjon>
                 .uri(uriBuilder -> uriBuilder
                         .path(INNTEKTER_URL)
                         .queryParam(NORSKE_IDENTER_QUERY, ident)
+                        .queryParam(HISTORISK_QUERY, true)
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
