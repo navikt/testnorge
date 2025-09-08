@@ -16,4 +16,9 @@ public class PeriodeDTO {
     private LocalDate fom;
     private LocalDate tom;
     private AktivitetDTO aktivitet;
+    private AktivitetIkkeMuligDTO aktivitetIkkeMulig;
+    private String avventendeInnspillTilArbeidsgiver;
+    private Integer behandlingsdager;
+    private GradertDTO gradert;
+    private Boolean reisetilskudd;
 }
