@@ -42,7 +42,7 @@ public class FrontChannelLogoutController {
                 .filter(session -> {
                     var securityContext = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
                     if (securityContext == null) {
-                        log.info("No security context found for session {}", session.getId());
+                        log.warn("No security context found for session {}", session.getId());
                         return false;
                     }
                     if (securityContext.getAuthentication().getPrincipal() instanceof DefaultOidcUser user) {
@@ -61,7 +61,7 @@ public class FrontChannelLogoutController {
                 .stream()
                 .map(session -> session.split(":")[session.split(":").length - 1])
                 .toList();
-        log.info("Found {} session(s)", sessionIds.size());
+        log.info("Found {} session(s) to invalidate during logout", sessionIds.size());
         return sessionIds;
     }
 }
