@@ -1,42 +1,55 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.projection.TestgruppeUtenIdenter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveSortingRepository;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface TestgruppeRepository extends PagingAndSortingRepository<Testgruppe, Long> {
+@Repository
+public interface TestgruppeRepository extends ReactiveSortingRepository<Testgruppe, Long> {
 
-    Optional<Testgruppe> findById(Long id);
+    Flux<Testgruppe> findByOpprettetAvIdOrderByIdDesc(Long brukerId, Pageable pageable);
+    Mono<Long> countByOpprettetAvId(Long brukerId);
 
-    Optional<TestgruppeUtenIdenter> findByIdOrderById(Long id);
-
-    Testgruppe save(Testgruppe testgruppe);
-
-    Page<Testgruppe> findAllByOpprettetAv(Bruker brukere, Pageable pageable);
-
-    Page<Testgruppe> findAllByOrderByIdDesc(Pageable pageable);
+    Flux<Testgruppe> findByOrderByIdDesc(Pageable pageable);
 
     @Modifying
-    @Query(value = "delete from Testgruppe tg where tg.id = :testgruppeId")
-    int deleteAllById(@Param("testgruppeId") Long id);
+    Mono<Void> deleteById(Long id);
 
-    @Query(value = "select tg.* from gruppe tg " +
-            "join bruker b on tg.opprettet_av = b.id " +
-            "and b.bruker_Id in  (:brukere) ", nativeQuery = true)
-    Page<Testgruppe> findAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere, PageRequest id);
+    @Query("""
+            select tg.* from gruppe tg
+            join bruker b on b.id = tg.opprettet_av
+            where b.bruker_id in (:brukere)
+            """)
+    Flux<Testgruppe> findByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere, Pageable pageable);
 
-    @Query(value = "select tg.id from gruppe tg " +
-            "join bruker b on tg.opprettet_av = b.id " +
-            "and b.bruker_Id in  (:brukere) ", nativeQuery = true)
-    List<Long> findAllByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere);
+    @Query("""
+            select count(tg.id) from gruppe tg
+            join bruker b on b.id = tg.opprettet_av
+            where b.bruker_id in (:brukere)
+            """)
+    Mono<Long> countByOpprettetAv_BrukerIdIn(@Param("brukere") List<String> brukere);
+
+    Mono<Long> countBy();
+
+    @Query("""
+            select tg.* from gruppe tg
+            join bestilling b on b.gruppe_id = tg.id
+            where b.id = :bestillingId
+            """)
+    Mono<Testgruppe> findByBestillingId(@Param("bestillingId") Long bestillingId);
+
+    Mono<Testgruppe> findById(Long id);
+
+    Flux<Testgruppe> findByIdIn(List<Long> identer);
+
+    @Modifying
+    Mono<Testgruppe> save(Testgruppe testgruppe);
 }

@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.bestilling.inntektsmelding.domain.TransaksjonMappingDTO;
 import no.nav.dolly.bestilling.inntektsmelding.dto.TransaksjonmappingIdDTO;
 import no.nav.dolly.config.ApplicationConfig;
@@ -21,9 +21,10 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
-import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -60,23 +61,22 @@ public class InntektsmeldingClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(
-                Flux.just(bestilling)
-                        .filter(RsDollyBestilling::isExistInntekstsmelding)
-                        .map(RsDollyBestilling::getInntektsmelding)
-                        .flatMap(inntektsmelding -> Flux.just(bestilling.getEnvironments())
-                                .flatMap(miljoer -> Flux.fromIterable(miljoer)
-                                        .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
-                                                .flatMapMany(isOpprett -> isTrue(isOpprett) ?
-                                                        postInntektsmelding(bestilling.getInntektsmelding(), dollyPerson.getIdent(), miljoe, bestilling.getId()) :
-                                                        Mono.just(miljoe + ":OK")))))
+        return Mono.just(bestilling)
+                .filter(RsDollyBestilling::isExistInntekstsmelding)
+                .map(RsDollyBestilling::getInntektsmelding)
+                .flatMap(inntektsmelding -> Flux.fromIterable(bestilling.getEnvironments())
+                        .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
+                                .flatMapMany(isOpprett -> isTrue(isOpprett) ?
+                                        postInntektsmelding(bestilling.getInntektsmelding(), dollyPerson.getIdent(), miljoe, bestilling.getId()) :
+                                        Mono.just(miljoe + ":OK")))
+                        .doOnNext(status ->
+                                log.info("Inntektsmelding status for {} ", status))
                         .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                         .onErrorResume(error -> getErrors(error, bestilling.getEnvironments()))
                         .collect(Collectors.joining(","))
-                        .map(status -> futurePersist(progress, status))
-        );
+                        .flatMap(status -> oppdaterStatus(progress, status)));
     }
 
     private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {
@@ -85,8 +85,7 @@ public class InntektsmeldingClient implements ClientRegister {
             return Mono.just(true);
         }
 
-        var eksisterende = transaksjonMappingService.getTransaksjonMapping(INNTKMELD.name(), ident, bestillingId);
-        return Flux.fromIterable(eksisterende)
+        return transaksjonMappingService.getTransaksjonMapping(INNTKMELD.name(), ident, bestillingId)
                 .doOnNext(transaksjonMapping -> log.info("Eksisterende transaksjonmapping {}", transaksjonMapping))
                 .filter(transaksjonMapping -> miljoe.equals(transaksjonMapping.getMiljoe()))
                 .map(transaksjon -> fromJson(transaksjon.getTransaksjonId()))
@@ -98,12 +97,14 @@ public class InntektsmeldingClient implements ClientRegister {
                         Mono.just(false))
                 .doOnNext(status -> log.info("Dokument eksisterer {}", status))
                 .reduce(true, (a, b) -> a && b)
-                .doOnNext(ok -> {
-                    if (isFalse(ok)) {
-                        transaksjonMappingService.delete(ident, miljoe, INNTKMELD.name(), bestillingId);
+                .flatMap(finnes -> {
+                    if (isFalse(finnes)) {
+                        return transaksjonMappingService.delete(ident, miljoe, INNTKMELD.name(), bestillingId)
+                                .thenReturn(finnes);
                     }
+                    return Mono.just(false);
                 })
-                .map(ok -> !ok)
+                .map(BooleanUtils::isFalse)
                 .doOnNext(ok -> log.info("Opprett dokument {}", ok))
                 .defaultIfEmpty(true);
     }
@@ -121,18 +122,14 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String
-            status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress,
-                    BestillingProgress::getInntektsmeldingStatus,
-                    BestillingProgress::setInntektsmeldingStatus, status);
-            return progress;
-        };
+        return transactionHelperService.persister(progress,
+                BestillingProgress::getInntektsmeldingStatus,
+                BestillingProgress::setInntektsmeldingStatus, status);
     }
 
-    private Flux<String> postInntektsmelding(
+    private Mono<String> postInntektsmelding(
 
             RsInntektsmelding inntektsmelding,
             String ident,
@@ -146,45 +143,47 @@ public class InntektsmeldingClient implements ClientRegister {
 
         return inntektsmeldingConsumer
                 .postInntektsmelding(inntektsmeldingRequest)
-                .map(response -> {
+                .flatMap(response -> {
                     if (isBlank(response.getError())) {
-                        transaksjonMappingService.saveAll(
-                                response
-                                        .getDokumenter()
-                                        .stream()
-                                        .map(dokument ->
-                                                TransaksjonMapping
-                                                        .builder()
-                                                        .ident(ident)
-                                                        .bestillingId(bestillingid)
-                                                        .transaksjonId(toJson(TransaksjonMappingDTO
-                                                                .builder()
-                                                                .request(InntektsmeldingRequest
-                                                                        .builder()
-                                                                        .arbeidstakerFnr(ident)
-                                                                        .inntekter(singletonList(inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
-                                                                        .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
-                                                                        .miljoe(miljoe)
-                                                                        .build())
-                                                                .dokument(dokument)
-                                                                .build()))
-                                                        .datoEndret(LocalDateTime.now())
-                                                        .miljoe(miljoe)
-                                                        .system(INNTKMELD.name())
-                                                        .build()
-                                        )
-                                        .toList());
-
-                        return miljoe + ":OK";
-
+                        return transaksjonMappingService.saveAll(getMapping(response, ident, bestillingid, miljoe, inntektsmeldingRequest))
+                                .thenReturn(miljoe + ":OK");
                     } else {
                         log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
                                 inntektsmeldingRequest.getArbeidstakerFnr(), miljoe, response.getError());
 
-                        return String.format(STATUS_FMT, miljoe,
-                                errorStatusDecoder.getErrorText(response.getStatus(), response.getError()));
+                        return Mono.just(String.format(STATUS_FMT, miljoe,
+                                errorStatusDecoder.getErrorText(response.getStatus(), response.getError())));
                     }
                 });
+    }
+
+    private List<TransaksjonMapping> getMapping(InntektsmeldingResponse response, String ident, Long bestillingid,
+                                                String miljoe, InntektsmeldingRequest inntektsmeldingRequest) {
+
+        return response
+                .getDokumenter()
+                .stream()
+                .map(dokument ->
+                        TransaksjonMapping
+                                .builder()
+                                .ident(ident)
+                                .bestillingId(bestillingid)
+                                .transaksjonId(toJson(TransaksjonMappingDTO.builder()
+                                        .request(InntektsmeldingRequest.builder()
+                                                .arbeidstakerFnr(ident)
+                                                .inntekter(singletonList(inntektsmeldingRequest.getInntekter()
+                                                        .get(response.getDokumenter().indexOf(dokument))))
+                                                .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
+                                                .miljoe(miljoe)
+                                                .build())
+                                        .dokument(dokument)
+                                        .build()))
+                                .datoEndret(LocalDateTime.now())
+                                .miljoe(miljoe)
+                                .system(INNTKMELD.name())
+                                .build()
+                )
+                .toList();
     }
 
     private String toJson(Object object) {
