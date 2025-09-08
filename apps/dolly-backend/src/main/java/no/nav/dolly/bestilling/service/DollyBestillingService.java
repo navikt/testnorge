@@ -144,7 +144,7 @@ public class DollyBestillingService {
                 !fase2Klienter().apply(register);
     }
 
-    protected Mono<Void> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
+    protected Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
                                              GjenopprettSteg steg,
                                              BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -160,7 +160,7 @@ public class DollyBestillingService {
                     return transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
                 })
                 .collectList()
-                .then();
+                .then(Mono.just(progress));
     }
 
     protected Mono<Testident> leggIdentTilGruppe(BestillingProgress progress, String beskrivelse) {

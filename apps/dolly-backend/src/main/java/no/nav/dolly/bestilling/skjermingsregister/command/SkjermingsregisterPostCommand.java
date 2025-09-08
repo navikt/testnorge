@@ -31,8 +31,6 @@ public class SkjermingsregisterPostCommand implements Callable<Flux<SkjermingDat
                 .retrieve()
                 .bodyToFlux(SkjermingDataResponse.class)
                 .onErrorResume(throwable -> SkjermingDataResponse.of(WebClientError.describe(throwable)))
-                .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException());
+                .doOnError(WebClientError.logTo(log));
     }
-
 }

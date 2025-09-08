@@ -31,7 +31,7 @@ public class BrregDeleteCommand implements Callable<Flux<Void>> {
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+
                 .onErrorResume(error -> Mono.empty());
     }
 

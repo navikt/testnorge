@@ -32,7 +32,6 @@ public class OpprettInntektsmeldingCommand implements Callable<Mono<Inntektsmeld
                 .bodyToMono(InntektsmeldingResponse.class)
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable ->
-                        InntektsmeldingResponse.of(WebClientError.describe(throwable), request.getArbeidstakerFnr(), request.getMiljoe()))
-                .retryWhen(WebClientError.is5xxException());
+                        InntektsmeldingResponse.of(WebClientError.describe(throwable), request.getArbeidstakerFnr(), request.getMiljoe()));
     }
 }

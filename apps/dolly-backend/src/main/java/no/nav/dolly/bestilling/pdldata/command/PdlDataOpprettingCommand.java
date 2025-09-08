@@ -49,7 +49,6 @@ public class PdlDataOpprettingCommand implements Callable<Mono<PdlResponse>> {
                         .build())
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on POST"))
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> PdlResponse.of(WebClientError.describe(throwable)))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> PdlResponse.of(WebClientError.describe(throwable)));
     }
 }
