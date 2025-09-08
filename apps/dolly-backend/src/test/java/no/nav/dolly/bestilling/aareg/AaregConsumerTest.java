@@ -42,7 +42,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
 
     private Arbeidsforhold opprettRequest;
 
-    private ArbeidsforholdRespons arbeidsforholdRespons;
+    private Arbeidsforhold arbeidsforhold;
 
     private static String asJsonString(final Object object) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(object);
@@ -65,16 +65,16 @@ class AaregConsumerTest extends AbstractConsumerTest {
                 .arbeidsforholdId("1")
                 .build();
 
-        arbeidsforholdRespons = ArbeidsforholdRespons.builder()
-                .miljo(MILJOE)
-                .arbeidsforholdId("1")
-                .build();
+        arbeidsforhold = Arbeidsforhold.builder()
+                        .arbeidsforholdId("1")
+                        .navArbeidsforholdId(123456789L)
+                        .build();
     }
 
     @Test
     void opprettArbeidsforhold() throws Exception {
 
-        stubOpprettArbeidsforhold(arbeidsforholdRespons);
+        stubOpprettArbeidsforhold(arbeidsforhold);
 
         StepVerifier.create(aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
                 .collectList())
@@ -82,15 +82,16 @@ class AaregConsumerTest extends AbstractConsumerTest {
                         assertThat(response)
                                 .isNotNull()
                                 .extracting(List::getFirst)
-                                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
-                                .containsExactly("1", MILJOE))
+                                .extracting(ArbeidsforholdRespons::getArbeidsforhold)
+                                .extracting(Arbeidsforhold::getArbeidsforholdId)
+                                .isEqualTo("1"))
                 .verifyComplete();
     }
 
     @Test
     void oppdaterArbeidsforhold() throws Exception {
 
-        stubOppdaterArbeidsforhold(arbeidsforholdRespons);
+        stubOppdaterArbeidsforhold(arbeidsforhold);
 
         aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE)
                 .collectList()
@@ -99,15 +100,15 @@ class AaregConsumerTest extends AbstractConsumerTest {
                         assertThat(response)
                                 .isNotNull()
                                 .extracting(List::getFirst)
-                                .extracting(ArbeidsforholdRespons::getArbeidsforholdId, ArbeidsforholdRespons::getMiljo)
-                                .containsExactly("1", MILJOE))
+                                .extracting(ArbeidsforholdRespons::getMiljoe)
+                                .isEqualTo(MILJOE))
                 .verifyComplete();
     }
 
     @Test
     void hentArbeidsforhold() throws Exception {
 
-        stubHentArbeidsforhold(arbeidsforholdRespons);
+        stubHentArbeidsforhold(arbeidsforhold);
 
         aaregConsumer.hentArbeidsforhold(IDENT, MILJOE)
                 .as(StepVerifier::create)
@@ -119,7 +120,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                 .verifyComplete();
     }
 
-    private void stubOpprettArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
+    private void stubOpprettArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
                 .willReturn(created()
@@ -127,7 +128,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubOppdaterArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
+    private void stubOppdaterArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
 
         stubFor(put(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
                 .willReturn(created()
@@ -135,7 +136,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubHentArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
+    private void stubHentArbeidsforhold(Arbeidsforhold response) throws JsonProcessingException {
 
         stubFor(get(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
                 .withQueryParam("ident", matching(IDENT))

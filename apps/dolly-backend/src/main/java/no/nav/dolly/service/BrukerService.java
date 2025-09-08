@@ -18,9 +18,6 @@ import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,12 +39,6 @@ public class BrukerService {
     private final TestgruppeRepository testgruppeRepository;
     private final TeamBrukerRepository teamBrukerRepository;
     private final TeamRepository teamRepository;
-
-    public Mono<Authentication> getAuthentication() {
-
-        return ReactiveSecurityContextHolder.getContext()
-                .map(SecurityContext::getAuthentication);
-    }
 
     public Mono<Bruker> fetchBruker(String brukerId) {
 

@@ -47,8 +47,6 @@ public class ArenaforvalterPostArenadagpenger implements Callable<Flux<ArenaNyeD
                     return response;
                 })
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> ArenaNyeDagpengerResponse.of(WebClientError.describe(throwable), arenaDagpenger.getMiljoe()))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> ArenaNyeDagpengerResponse.of(WebClientError.describe(throwable), arenaDagpenger.getMiljoe()));
     }
-
 }

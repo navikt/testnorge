@@ -9,6 +9,7 @@ import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
@@ -20,9 +21,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.time.YearMonth;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,9 +29,11 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendPermisjonPermitteringId;
-import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendArbeidsforholdId;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.getMaxArbeidsforholdId;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.getMaxPermisjonPermitteringId;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isNyttArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q1_AND_Q2;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
@@ -105,67 +105,64 @@ public class AaregClient implements ClientRegister {
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                             Set<String> miljoer, boolean isOpprettEndre) {
 
-        var context = MappingContextUtils.getMappingContext();
-        context.setProperty(IDENT, dollyPerson.getIdent());
-
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getIdent(), miljoe))
-                .collect(Collectors.toMap(ArbeidsforholdRespons::getMiljo, ArbeidsforholdRespons::getEksisterendeArbeidsforhold))
-                .doOnNext(eksisterendeArbeidsforhold -> updateBestilling(bestilling, eksisterendeArbeidsforhold.values()))
-                .flatMap(eksisterende -> Flux.fromIterable(bestilling.getAareg())
-                        .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
-                        .map(aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context))
-                        .collectList()
-                        .flatMap(arbeidsforholdRequest -> Flux.fromIterable(miljoer)
-                                .flatMap(miljoe -> doInsertOrUpdate(arbeidsforholdRequest, eksisterende.get(miljoe), miljoe, isOpprettEndre))
-                                .collect(Collectors.joining(","))));
+                .flatMap(eksisterende -> doInsertOrUpdate(dollyPerson.getIdent(),
+                        bestilling.getAareg(), eksisterende, isOpprettEndre))
+                .doOnNext(status ->
+                        log.info("AAREG respons: {}", status))
+                .map(reply -> decodeStatus(reply.getMiljoe(), reply))
+                .collect(Collectors.joining(","))
+                .flatMap(status -> transactionHelperService.persister(bestilling.getId(), bestilling)
+                        .thenReturn(status));
     }
 
-    private void updateBestilling(RsDollyUtvidetBestilling bestilling, Collection<List<Arbeidsforhold>> eksisterendeArbeidsforhold) {
+    private Flux<ArbeidsforholdRespons> doInsertOrUpdate(String ident, List<RsAareg> request,
+                                                         ArbeidsforholdRespons eksisterendeArbeidsforhold,
+                                                         boolean isOpprettEndre) {
 
-        var antallArbeidsforhold = new AtomicInteger(eksisterendeArbeidsforhold.stream()
-                .map(List::size)
-                .max(Comparator.comparing(Integer::intValue))
-                .orElse(null));
+        var miljoe = eksisterendeArbeidsforhold.getMiljoe();
+        var eksisterende = eksisterendeArbeidsforhold.getEksisterendeArbeidsforhold();
+        var context = MappingContextUtils.getMappingContext();
+        context.setProperty(IDENT, ident);
+        var bestilteArbeidsforhold = request.stream()
+                .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
+                .collect(Collectors.toMap(RsAareg::hashCode, aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context)));
 
-        if (bestilling.getAareg().stream()
-                .anyMatch(aareg -> nonNull(aareg.getArbeidsgiver()) && isBlank(aareg.getArbeidsforholdId()))) {
+        var antallArbeidsforhold = new AtomicInteger(getMaxArbeidsforholdId(eksisterende));
+        var antallPermisjonPermittering = new AtomicInteger(getMaxPermisjonPermitteringId(eksisterende));
 
-            bestilling.getAareg().stream()
-                    .filter(aareg -> nonNull(aareg.getArbeidsgiver()) &&
-                            isBlank(aareg.getArbeidsforholdId()))
-                    .forEach(aareg ->
-                            aareg.setArbeidsforholdId(Integer.toString(antallArbeidsforhold.incrementAndGet())));
-
-            transactionHelperService.persister(bestilling.getId(), bestilling);
-        }
-    }
-
-    private Flux<String> doInsertOrUpdate(List<Arbeidsforhold> request, List<Arbeidsforhold> eksisterende,
-                                          String miljoe, boolean isOpprettEndre) {
-
-        var eksistens = doEksistenssjekk(mapperFacade.mapAsList(request, Arbeidsforhold.class), eksisterende, isOpprettEndre);
-        return Flux.merge(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
-                                .flatMap(entry -> {
-                                    appendPermisjonPermitteringId(entry, null);
-                                    return aaregConsumer.opprettArbeidsforhold(entry, miljoe);
-                                }),
-                        Flux.fromIterable(eksistens.getEksisterendeArbeidsforhold())
-                                .doOnNext(arbeidsforhold -> appendArbeidsforholdId(arbeidsforhold, eksisterende))
-                                .flatMap(arbeidsforhold -> aaregConsumer.endreArbeidsforhold(arbeidsforhold, miljoe)))
-                .map(reply -> decodeStatus(miljoe, reply));
-    }
-
-    private void appendArbeidsforholdId(Arbeidsforhold arbeidsforhold, List<Arbeidsforhold> eksisterende) {
-
-        eksisterende
-                .forEach(eksisterende1 -> {
-                    if (isEqualArbeidsforhold(eksisterende1, arbeidsforhold)) {
-                        arbeidsforhold.setNavArbeidsforholdId(eksisterende1.getNavArbeidsforholdId());
-                        arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
-                                arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
-                        appendPermisjonPermitteringId(arbeidsforhold, eksisterende1);
+        return Flux.fromIterable(request)
+                .flatMap(arbeidsforhold -> {
+                    if (eksisterende.stream().anyMatch(eksisterende1 -> isEqualArbeidsforhold(eksisterende1,
+                            bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), arbeidsforhold.getIdentifikasjon()))) {
+                        appendArbeidsforholdId(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), false, eksisterende,
+                                arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold, antallPermisjonPermittering);
+                        return aaregConsumer.endreArbeidsforhold(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), miljoe)
+                                .zipWith(Mono.just(arbeidsforhold));
+                    } else if (isOpprettEndre || isNyttArbeidsforhold(eksisterende, bestilteArbeidsforhold.get(arbeidsforhold.hashCode()))) {
+                        appendArbeidsforholdId(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), true, eksisterende,
+                                arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold, antallPermisjonPermittering);
+                        return aaregConsumer.opprettArbeidsforhold(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), miljoe)
+                                .zipWith(Mono.just(arbeidsforhold));
+                    } else {
+                        return Flux.just(ArbeidsforholdRespons.builder()
+                                        .miljoe(miljoe)
+                                        .build())
+                                .zipWith(Mono.just(arbeidsforhold));
                     }
+                })
+                .map(reply -> {
+
+                    if (nonNull(reply.getT1().getError())) {
+                        return reply.getT1();
+                    } else if (nonNull(reply.getT1().getArbeidsforhold())) {
+                        reply.getT2().getIdentifikasjon().put(miljoe, RsAareg.Identifikasjon.builder()
+                                .arbeidsforholdId(reply.getT1().getArbeidsforhold().getArbeidsforholdId())
+                                .navArbeidsforholdId(reply.getT1().getArbeidsforhold().getNavArbeidsforholdId())
+                                .build());
+                    }
+                    return reply.getT1();
                 });
     }
 
@@ -173,7 +170,7 @@ public class AaregClient implements ClientRegister {
         log.info("AAREG respons fra miljø {} : {} ", miljoe, reply);
         return "%s: arbforhold=%s$%s".formatted(
                 miljoe,
-                reply.getArbeidsforholdId(),
+                nonNull(reply.getArbeidsforhold()) ? reply.getArbeidsforhold().getArbeidsforholdId() : "1",
                 isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError())
         );
     }

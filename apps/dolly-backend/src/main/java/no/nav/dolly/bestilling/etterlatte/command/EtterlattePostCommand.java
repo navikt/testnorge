@@ -35,7 +35,7 @@ public class EtterlattePostCommand implements Callable<Mono<VedtakResponseDTO>> 
                 .bodyValue(vedtakRequest)
                 .retrieve()
                 .bodyToMono(VedtakResponseDTO.class)
-                .retryWhen(WebClientError.is5xxException())
+
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> VedtakResponseDTO.of(WebClientError.describe(throwable)));
     }

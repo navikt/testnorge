@@ -45,8 +45,6 @@ public class SigrunstubPensjonsgivendeDeleteCommand implements Callable<Mono<Sig
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
-                .onErrorResume(throwable -> SigrunstubResponse.of(WebClientError.describe(throwable), ident))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> SigrunstubResponse.of(WebClientError.describe(throwable), ident));
     }
-
 }

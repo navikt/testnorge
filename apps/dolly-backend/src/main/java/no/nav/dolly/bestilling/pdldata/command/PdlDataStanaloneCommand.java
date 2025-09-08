@@ -35,8 +35,6 @@ public class PdlDataStanaloneCommand implements Callable<Mono<String>> {
                 .toBodilessEntity()
                 .map(response -> "OK")
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on PUT for ident %s".formatted(ident)))
-                .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException());
+                .doOnError(WebClientError.logTo(log));
     }
-
 }

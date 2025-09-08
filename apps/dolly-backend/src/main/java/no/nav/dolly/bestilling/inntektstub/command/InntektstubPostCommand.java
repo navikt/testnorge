@@ -36,8 +36,6 @@ public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon
                     var description = WebClientError.describe(throwable);
                     log.error("Lagring av Instdata feilet: {}", description.getMessage(), throwable);
                     return Inntektsinformasjon.of(description);
-                })
-                .retryWhen(WebClientError.is5xxException());
+                });
     }
-
 }

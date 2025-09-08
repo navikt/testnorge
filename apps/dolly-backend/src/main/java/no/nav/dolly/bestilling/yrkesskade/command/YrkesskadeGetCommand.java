@@ -38,8 +38,6 @@ public class YrkesskadeGetCommand implements Callable<Mono<SaksoversiktDTO>> {
                         .saker(resultat.getSaker())
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> SaksoversiktDTO.of(WebClientError.describe(throwable)))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> SaksoversiktDTO.of(WebClientError.describe(throwable)));
     }
-
 }

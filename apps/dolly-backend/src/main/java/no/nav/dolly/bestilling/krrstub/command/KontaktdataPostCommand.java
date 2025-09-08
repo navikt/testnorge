@@ -43,8 +43,6 @@ public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataR
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> DigitalKontaktdataResponse.of(WebClientError.describe(throwable)))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> DigitalKontaktdataResponse.of(WebClientError.describe(throwable)));
     }
-
 }

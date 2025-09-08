@@ -23,9 +23,12 @@ import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -88,6 +91,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
             var counterIdentBestilling = new HashMap<String, Boolean>();
             identService.getTestidenterByGruppeId(bestilling.getGruppeId())
+                    .delayElements(Duration.ofMillis(1500))
                     .flatMap(testident -> bestillingService.isStoppet(bestilling.getId())
                             .zipWith(Mono.just(testident)))
                     .takeWhile(tuple -> isFalse(tuple.getT1()))
@@ -113,14 +117,14 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                     .map(coBestilling -> createBestilling(bestilling, coBestilling))
                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                             request.getId(), testident.getIdent()))
-                                                                    .flatMap(bestillingRequest ->
+                                                                    .concatMap(bestillingRequest ->
                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                     fase2Klienter(),
                                                                                     progress, false)
                                                                                     .then(gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                             fase3Klienter(),
-                                                                                            progress, false))))
-                                                            .flatMap(Mono::from)))))
+                                                                                            progress, false))))))))
+                    .flatMap(Flux::from)
                     .collectList()
                     .then(doFerdig(bestilling))
                     .doOnTerminate(new ClearCacheUtil(cacheManager))

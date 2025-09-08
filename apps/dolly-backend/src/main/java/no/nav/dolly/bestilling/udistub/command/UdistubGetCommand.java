@@ -46,8 +46,6 @@ public class UdistubGetCommand implements Callable<Mono<UdiPersonResponse>> {
                         .status(throwable instanceof WebClientResponseException webClientResponseException ?
                                 HttpStatus.valueOf(webClientResponseException.getStatusCode().value()) : HttpStatus.INTERNAL_SERVER_ERROR)
                         .reason(WebClientError.describe(throwable).getMessage())
-                        .build()))
-                .retryWhen(WebClientError.is5xxException());
+                        .build()));
     }
-
 }

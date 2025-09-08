@@ -38,16 +38,12 @@ public class ArbeidsforholdPostCommand implements Callable<Flux<ArbeidsforholdRe
                 .bodyToFlux(Arbeidsforhold.class)
                 .map(arbeidsforhold1 -> ArbeidsforholdRespons.builder()
                         .arbeidsforhold(arbeidsforhold1)
-                        .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Flux.just(ArbeidsforholdRespons.builder()
-                        .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .error(error)
-                        .build()))
-                .retryWhen(WebClientError.is5xxException());
+                        .build()));
     }
-
 }
