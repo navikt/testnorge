@@ -46,8 +46,6 @@ public class KontoregisterDeleteCommand implements Callable<Mono<KontoregisterRe
                             .status(description.getStatus())
                             .feilmelding(description.getMessage())
                             .build());
-                })
-                .retryWhen(WebClientError.is5xxException());
+                });
     }
-
 }

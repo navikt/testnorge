@@ -43,7 +43,6 @@ public class PensjonHentVedtakCommand implements Callable<Flux<PensjonVedtakResp
                 .header("fnr", ident)
                 .retrieve()
                 .bodyToFlux(PensjonVedtakResponse.class)
-                .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(Exception.class, error -> Mono.empty());
     }

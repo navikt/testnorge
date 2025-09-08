@@ -29,7 +29,7 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(Void.class)
-                .retryWhen(WebClientError.is5xxException())
+
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on DELETE of ident %s".formatted(ident)))
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),

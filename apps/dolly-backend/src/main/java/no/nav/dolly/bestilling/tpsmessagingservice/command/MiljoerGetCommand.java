@@ -31,7 +31,6 @@ public class MiljoerGetCommand implements Callable<Mono<List<String>>> {
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
                 .cache(Duration.ofHours(8));
     }
 

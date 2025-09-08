@@ -28,8 +28,6 @@ public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpSt
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> HttpStatus.valueOf(response.getStatusCode().value()))
-                .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException());
+                .doOnError(WebClientError.logTo(log));
     }
-
 }
