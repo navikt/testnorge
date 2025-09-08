@@ -33,6 +33,7 @@ import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendArbeidsforho
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.getMaxArbeidsforholdId;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.getMaxPermisjonPermitteringId;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isNyttArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q1_AND_Q2;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
@@ -74,7 +75,7 @@ public class AaregClient implements ClientRegister {
         return oppdaterStatus(progress, miljoer.stream()
                 .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SYSTEM)))
                 .collect(Collectors.joining(",")))
-                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get())
+                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre)
                         .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                         .onErrorResume(error -> getErrors(error, miljoerTrygg.get()))
                         .flatMap(status -> oppdaterStatus(progress, status)));
@@ -102,11 +103,12 @@ public class AaregClient implements ClientRegister {
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                            Set<String> miljoer) {
+                                            Set<String> miljoer, boolean isOpprettEndre) {
 
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getIdent(), miljoe))
-                .flatMap(eksisterende -> doInsertOrUpdate(dollyPerson.getIdent(), bestilling.getAareg(), eksisterende))
+                .flatMap(eksisterende -> doInsertOrUpdate(dollyPerson.getIdent(),
+                        bestilling.getAareg(), eksisterende, isOpprettEndre))
                 .doOnNext(status ->
                         log.info("AAREG respons: {}", status))
                 .map(reply -> decodeStatus(reply.getMiljoe(), reply))
@@ -115,7 +117,9 @@ public class AaregClient implements ClientRegister {
                         .thenReturn(status));
     }
 
-    private Flux<ArbeidsforholdRespons> doInsertOrUpdate(String ident, List<RsAareg> request, ArbeidsforholdRespons eksisterendeArbeidsforhold) {
+    private Flux<ArbeidsforholdRespons> doInsertOrUpdate(String ident, List<RsAareg> request,
+                                                         ArbeidsforholdRespons eksisterendeArbeidsforhold,
+                                                         boolean isOpprettEndre) {
 
         var miljoe = eksisterendeArbeidsforhold.getMiljoe();
         var eksisterende = eksisterendeArbeidsforhold.getEksisterendeArbeidsforhold();
@@ -136,15 +140,23 @@ public class AaregClient implements ClientRegister {
                                 arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold, antallPermisjonPermittering);
                         return aaregConsumer.endreArbeidsforhold(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), miljoe)
                                 .zipWith(Mono.just(arbeidsforhold));
-                    } else {
+                    } else if (isOpprettEndre || isNyttArbeidsforhold(eksisterende, bestilteArbeidsforhold.get(arbeidsforhold.hashCode()))) {
                         appendArbeidsforholdId(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), true, eksisterende,
                                 arbeidsforhold.getIdentifikasjon(), antallArbeidsforhold, antallPermisjonPermittering);
                         return aaregConsumer.opprettArbeidsforhold(bestilteArbeidsforhold.get(arbeidsforhold.hashCode()), miljoe)
                                 .zipWith(Mono.just(arbeidsforhold));
+                    } else {
+                        return Flux.just(ArbeidsforholdRespons.builder()
+                                        .miljoe(miljoe)
+                                        .build())
+                                .zipWith(Mono.just(arbeidsforhold));
                     }
                 })
                 .map(reply -> {
-                    if (isNull(reply.getT1().getError())) {
+
+                    if (nonNull(reply.getT1().getError())) {
+                        return reply.getT1();
+                    } else if (nonNull(reply.getT1().getArbeidsforhold())) {
                         reply.getT2().getIdentifikasjon().put(miljoe, RsAareg.Identifikasjon.builder()
                                 .arbeidsforholdId(reply.getT1().getArbeidsforhold().getArbeidsforholdId())
                                 .navArbeidsforholdId(reply.getT1().getArbeidsforhold().getNavArbeidsforholdId())
