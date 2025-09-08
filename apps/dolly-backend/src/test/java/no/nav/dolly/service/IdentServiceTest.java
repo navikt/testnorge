@@ -1,20 +1,18 @@
 package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,6 +21,7 @@ import static org.mockito.Mockito.when;
 class IdentServiceTest {
 
     private static final String STANDARD_IDENTER_1 = "en";
+    private static final Long GRUPPE_ID = 1L;
 
     @Mock
     private IdentRepository identRepository;
@@ -33,49 +32,51 @@ class IdentServiceTest {
     @Mock
     private MapperFacade mapperFacade;
 
+    @Mock
+    private BestillingService bestillingService;
+
+    @Mock
+    private PersonService personService;
+
     @InjectMocks
     private IdentService identService;
 
-    private Testgruppe testgruppe = new Testgruppe();
-    private Testgruppe standardGruppe = new Testgruppe();
-
-    @BeforeEach
-    public void setup() {
-        testgruppe.setId(1L);
-    }
-
     @Test
     void saveIdentTilGruppe_saveAvIdentInnholderInputIdentstringOgTestgruppe() {
-        when(identRepository.save(any())).thenReturn(new Testident());
 
-        identService.saveIdentTilGruppe(STANDARD_IDENTER_1, standardGruppe, Testident.Master.PDLF, null);
+        var testident = Testident.builder()
+                .ident(STANDARD_IDENTER_1)
+                .gruppeId(GRUPPE_ID)
+                .master(Testident.Master.PDL)
+                .build();
+        when(identRepository.findByIdent(STANDARD_IDENTER_1)).thenReturn(Mono.empty());
+        when(identRepository.save(any())).thenReturn(Mono.just(testident));
 
-        ArgumentCaptor<Testident> cap = ArgumentCaptor.forClass(Testident.class);
-        verify(identRepository).save(cap.capture());
-
-        Testident testident = cap.getValue();
-
-        assertThat(testident.getIdent(), is(STANDARD_IDENTER_1));
-        assertThat(testident.getTestgruppe(), is(standardGruppe));
+        StepVerifier.create(identService.saveIdentTilGruppe(STANDARD_IDENTER_1, 1L, Testident.Master.PDLF, null))
+                .expectNext(testident)
+                .verifyComplete();
     }
 
     @Test
     void slettTestident_ok() {
 
-        String ident = "1";
+        var testident = Testident.builder()
+                .ident(STANDARD_IDENTER_1)
+                .gruppeId(GRUPPE_ID)
+                .master(Testident.Master.PDL)
+                .build();
 
-        identService.slettTestident(ident);
+        when(mapperFacade.map(any(), any())).thenReturn(new TestidentDTO());
+        when(identRepository.findByIdent(STANDARD_IDENTER_1)).thenReturn(Mono.just(testident));
+        when(transaksjonMappingRepository.deleteAllByIdent(STANDARD_IDENTER_1)).thenReturn(Mono.empty());
+        when(bestillingService.slettBestillingByTestIdent(STANDARD_IDENTER_1)).thenReturn(Mono.empty());
+        when(identRepository.deleteTestidentByIdent(STANDARD_IDENTER_1)).thenReturn(Mono.empty());
+        when(personService.recyclePersoner(any())).thenReturn(Mono.empty());
 
-        verify(identRepository).deleteTestidentByIdent(ident);
-    }
+        StepVerifier.create(identService.slettTestident(STANDARD_IDENTER_1))
+                .expectNextCount(0)
+                .verifyComplete();
 
-    @Test
-    void slettTestidenterByGruppeId_ok() {
-
-        long gruppeId = 1L;
-
-        identService.slettTestidenterByGruppeId(gruppeId);
-
-        verify(identRepository).deleteAllByTestgruppeId(gruppeId);
+        verify(identRepository).deleteTestidentByIdent(any());
     }
 }

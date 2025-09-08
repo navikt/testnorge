@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingContextUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 import java.util.List;
@@ -75,12 +76,13 @@ public class PensjonVedtakService {
                                                              String ident, Set<String> miljoer,
                                                              Long bestillingId) {
 
-        return Flux.just(pensjonData)
+       return Mono.just(pensjonData)
                 .filter(PensjonData::hasAlderspensjon)
                 .map(PensjonData::getAlderspensjon)
-                .flatMap(alderspensjon -> Flux.fromIterable(miljoer)
+                .flatMapMany(alderspensjon -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
                                 .collectList()
+
                                 .map(vedtakResponse -> !hasVedtak(vedtakResponse, PensjonVedtakResponse.SakType.AP))
                                 .map(skalOpprette -> {
                                     if (isTrue(skalOpprette)) {
@@ -101,50 +103,49 @@ public class PensjonVedtakService {
 
                                         var finalPensjonRequest = new AtomicReference<>(pensjonRequest);
                                         return pensjonforvalterConsumer.lagreAlderspensjon(pensjonRequest)
-                                                .map(response -> {
-                                                    response.getStatus().forEach(status ->
+                                                .flatMap(response ->
+                                                    Flux.fromIterable(response.getStatus())
+                                                            .filter(status -> status.getResponse().isResponse2xx())
+                                                            .flatMap(status ->
                                                             pensjonforvalterHelper.saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                    PEN_AP, finalPensjonRequest));
-                                                    return response;
-                                                });
+                                                                    PEN_AP, finalPensjonRequest))
+                                                            .then(Mono.just(response)));
 
                                     } else {
                                         return getStatus(miljoe, 200, "OK");
                                     }
                                 })))
-                .flatMap(Flux::from);
+                .flatMap(response -> response);
     }
 
     private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata, String navEnhetNr,
                                                           String ident, Set<String> miljoer, Long bestillingId) {
 
-        return Flux.just(pensjondata)
+        return Mono.just(pensjondata)
                 .filter(PensjonData::hasUforetrygd)
                 .map(PensjonData::getUforetrygd)
-                .flatMap(uforetrygd -> Flux.fromIterable(miljoer)
+                .flatMapMany(uforetrygd -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
                                 .collectList()
-                                .map(vedtak -> {
+                                .flatMap(vedtak -> {
                                     if (!hasVedtak(vedtak, PensjonVedtakResponse.SakType.UT)) {
 
                                         var context = MappingContextUtils.getMappingContext();
                                         context.setProperty(IDENT, ident);
                                         context.setProperty(MILJOER, List.of(miljoe));
                                         context.setProperty(NAV_ENHET, navEnhetNr);
-                                        return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
+                                        return  Mono.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
                                                 .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
-                                                        .map(response -> {
-                                                            response.getStatus().stream()
+                                                        .flatMap(response -> Flux.fromIterable(response.getStatus())
                                                                     .filter(status -> status.getResponse().isResponse2xx())
-                                                                    .forEach(status ->
+                                                                    .flatMap(status ->
                                                                             pensjonforvalterHelper.saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                                    PEN_UT, new AtomicReference<>(request)));
-                                                            return response;
-                                                        }));
+                                                                                    PEN_UT, new AtomicReference<>(request)))
+                                                                .then(Mono.just(response))));
+
                                     } else {
                                         return getStatus(miljoe, 200, "OK");
                                     }
-                                })))
-                .flatMap(Flux::from);
+                                })));
     }
 }

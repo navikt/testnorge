@@ -83,7 +83,6 @@ const DataVisning = ({ data, miljo }) => {
 			<div className="person-visning_content">
 				<TitleValue title="Vedtaksstatus" value={getSisteOppdatering(vedtakUT?.sisteOppdatering)} />
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
-				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
 				<TitleValue title="Inntekt før uførhet" value={data?.inntektForUforhet} />
 				<TitleValue title="Inntekt etter uførhet" value={data?.inntektEtterUforhet} />

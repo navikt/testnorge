@@ -9,8 +9,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 public class InntektstubGetCommand implements Callable<Flux<Inntektsinformasjon>> {
 
@@ -30,7 +28,6 @@ public class InntektstubGetCommand implements Callable<Flux<Inntektsinformasjon>
                         .queryParam(NORSKE_IDENTER_QUERY, ident)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(Inntektsinformasjon.class)
                 .retryWhen(WebClientError.is5xxException());

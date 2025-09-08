@@ -1,10 +1,4 @@
 dolly:
-  api:
-    v1:
-      name: Dolly V2.0
-      description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
-        Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
-      version: Versjon 1
   client:
     general:
       timeout: 30
@@ -22,25 +16,23 @@ server:
   max-http-request-header-size: 128KB
 
 spring:
+  application:
+    name: Dolly V2.0
+    description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
+      Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
+    version: Versjon 1
   config:
     import: "classpath:dolly-application.yml"
   main:
     allow-bean-definition-overriding: true
+    web-application-type: reactive
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
     locations: classpath:db/migration
     baseline-on-migrate: true
   mvc:
     async:
-      request-timeout: -1
-  jpa:
-    properties:
-      hibernate:
-        default-schema: public
-    hibernate:
-      naming:
-        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      request-timeout: 30
   security:
     oauth2:
       resourceserver:

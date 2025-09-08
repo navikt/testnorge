@@ -7,6 +7,7 @@ import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { gyldigeSivilstander } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 
 interface DeltBostedValues {
 	formMethods: UseFormReturn
@@ -28,27 +29,38 @@ const sjekkGyldigEksisterende = (pdlForvalterValues: any) => {
 
 export const DeltBostedForm = ({ formMethods, path }: DeltBostedValues) => {
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
+
 	const { harEksisterendeEktefellePartner, harEksisterendeFamilierelasjonBarn } =
 		sjekkGyldigEksisterende(opts.personFoerLeggTil?.pdlforvalter)
 
-	const harPartner =
-		formMethods.watch('pdldata.person.sivilstand')?.length > 0 || harEksisterendeEktefellePartner
-	const harForelderBarnRelasjon =
-		formMethods.watch('pdldata.person.forelderBarnRelasjon')?.length > 0 ||
-		harEksisterendeFamilierelasjonBarn
+	const gyldigePartnere = formMethods
+		.watch('pdldata.person.sivilstand')
+		?.filter(
+			(sivilstand: any) =>
+				gyldigeSivilstander.includes(sivilstand.type) && sivilstand.borIkkeSammen,
+		)
+
+	const harPartner = gyldigePartnere?.length > 0 || harEksisterendeEktefellePartner
+
+	const gyldigeBarn = formMethods
+		.watch('pdldata.person.forelderBarnRelasjon')
+		?.filter((forelderBarn: any) => forelderBarn.relatertPersonsRolle === 'BARN')
+
+	const harForelderBarnRelasjon = gyldigeBarn?.length > 0 || harEksisterendeFamilierelasjonBarn
 
 	return (
 		<>
 			{!harPartner && (
 				<StyledAlert variant={'warning'} size={'small'}>
-					For at delt bosted skal fungere, må bestilt ident ha en gjeldende sivilstand med en annen
-					adresse enn hovedperson, dette kan velges i Steg 2 under familierelasjoner panel
+					For at delt bosted skal fungere, må personen ha en gjeldende partner med en annen adresse.
+					Velg sivilstand (partner) i steg 2 under familierelasjoner-panelet, og huk av for "bor
+					ikke sammen" i steg 3.
 				</StyledAlert>
 			)}
 			{!harForelderBarnRelasjon && (
 				<StyledAlert variant={'warning'} size={'small'}>
-					For at delt bosted skal fungere, må bestilt ident ha en relasjon til et barn, dette kan
-					velges i Steg 2 under familierelasjoner panel
+					For at delt bosted skal fungere, må personen ha en relasjon til et barn. Dette kan velges
+					i steg 2 under familierelasjoner-panelet.
 				</StyledAlert>
 			)}
 			<div className="flexbox--flex-wrap">

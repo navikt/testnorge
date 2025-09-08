@@ -2,7 +2,6 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -15,9 +14,9 @@ import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 
 import static java.lang.String.format;
@@ -36,82 +35,79 @@ public class SplittGruppeService {
     private final IdentRepository identRepository;
     private final BestillingKontrollRepository bestillingKontrollRepository;
 
-    public void flyttIdenterTilDenneGruppe(Long gruppeId, Set<String> identer) {
+    public Mono<Void> flyttIdenterTilDenneGruppe(Long gruppeId, Set<String> identer) {
 
-        var testgruppe = testgruppeRepository.findById(gruppeId)
-                .orElseThrow(() -> new NotFoundException(format(GRUPPE_IKKE_FUNNET, gruppeId)));
-
-        bestillingRepository.findBestillingerByIdentIn(identer).stream()
-                .filter(bestilling -> isNull(bestilling.getOpprettetFraGruppeId()))
-                .filter(bestilling -> isNull(bestilling.getOpprettetFraId()))
-                .filter(bestilling -> isNull(bestilling.getGjenopprettetFraIdent()))
-                .forEach(bestilling -> moveBestillinger(bestilling, identer, testgruppe));
-
-        moveIdenter(identer, testgruppe);
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException(format(GRUPPE_IKKE_FUNNET, gruppeId))))
+                .flatMap(testgruppe -> bestillingRepository.findBestillingerByIdentIn(identer)
+                        .filter(bestilling ->
+                                isNull(bestilling.getOpprettetFraGruppeId()) &&
+                                        isNull(bestilling.getOpprettetFraId()) &&
+                                        isNull(bestilling.getGjenopprettetFraIdent()))
+                        .flatMap(bestilling -> moveBestilling(bestilling, identer, testgruppe))
+                        .collectList()
+                        .thenReturn(testgruppe))
+                .flatMap(testgruppe -> moveIdenter(identer, testgruppe));
     }
 
-    private void moveIdenter(Set<String> identer, Testgruppe testgruppe) {
+    private Mono<Void> moveIdenter(Set<String> identer, Testgruppe testgruppe) {
 
-        identRepository.findByIdentIn(identer).stream()
-                .sorted(Comparator.comparing(Testident::getId))
-                .forEach(testident -> {
+        return identRepository.findByIdentIn(identer)
+                .sort(Comparator.comparing(Testident::getId))
+                .flatMap(testident -> {
                     var nyTestident = SerializationUtils.clone(testident);
-                    identRepository.deleteById(testident.getId());
-                    nyTestident.setTestgruppe(testgruppe);
+                    nyTestident.setGruppeId(testgruppe.getId());
                     nyTestident.setId(null);
-                    identRepository.save(nyTestident);
-                });
+                    return identRepository.deleteById(testident.getId())
+                            .then(identRepository.save(nyTestident));
+                })
+                .collectList()
+                .then();
     }
 
-    private Bestilling moveBestillinger(Bestilling bestilling, Set<String> identer, Testgruppe testgruppe) {
-
-        var progresser = bestilling.getProgresser().stream()
-                .filter(progress -> identer.contains(progress.getIdent()))
-                .toList();
-        var transaksjonMappinger = bestilling.getTransaksjonmapping().stream()
-                .filter(mapping -> identer.contains(mapping.getIdent()))
-                .toList();
+    private Mono<Bestilling> moveBestilling(Bestilling bestilling, Set<String> identer, Testgruppe testgruppe) {
 
         var nyBestilling = BestillingMapper.shallowCopyBestilling(bestilling);
         nyBestilling.setId(null);
-        nyBestilling.setGruppe(testgruppe);
-
-        var oppdatertBestilling = bestillingRepository.save(nyBestilling);
-
-        progresser
-                .forEach(progress -> {
-                    var nyProgress = SerializationUtils.clone(progress);
-                    bestillingProgressRepository.deleteById(progress.getId());
-
-                    nyProgress.setId(null);
-                    nyProgress.setBestilling(oppdatertBestilling);
-                    bestillingProgressRepository.save(nyProgress);
-                });
-
-        transaksjonMappinger
-                .forEach(transaksjonMapping -> {
-                    var nyTransaksjonMapping = SerializationUtils.clone(transaksjonMapping);
-                    transaksjonMappingRepository.deleteById(transaksjonMapping.getId());
-
-                    nyTransaksjonMapping.setId(null);
-                    nyTransaksjonMapping.setBestillingId(oppdatertBestilling.getId());
-                    transaksjonMappingRepository.save(nyTransaksjonMapping);
-                });
-
-        deleteKildeBestilling(bestilling, progresser);
-
-        return oppdatertBestilling;
+        nyBestilling.setGruppeId(testgruppe.getId());
+        return bestillingRepository.save(nyBestilling)
+                .flatMap(oppdatertBestilling ->
+                        transaksjonMappingRepository.findAllByBestillingId(oppdatertBestilling.getId())
+                                .flatMap(transaksjonMapping -> {
+                                    if (identer.contains(transaksjonMapping.getIdent())) {
+                                        var nyTransaksjonMapping = SerializationUtils.clone(transaksjonMapping);
+                                        nyTransaksjonMapping.setId(null);
+                                        nyTransaksjonMapping.setBestillingId(oppdatertBestilling.getId());
+                                        return transaksjonMappingRepository.deleteById(transaksjonMapping.getId())
+                                                .then(transaksjonMappingRepository.save(nyTransaksjonMapping));
+                                    }
+                                    return Mono.empty();
+                                })
+                                .collectList()
+                                .then(bestillingProgressRepository.findByBestillingId(bestilling.getId())
+                                        .flatMap(progress -> {
+                                            if (identer.contains(progress.getIdent())) {
+                                                var nyProgress = SerializationUtils.clone(progress);
+                                                nyProgress.setId(null);
+                                                nyProgress.setBestillingId(oppdatertBestilling.getId());
+                                                return bestillingProgressRepository.deleteById(progress.getId())
+                                                        .then(bestillingProgressRepository.save(nyProgress));
+                                            }
+                                            return Mono.empty();
+                                        })
+                                        .collectList()
+                                        .flatMap(progresser ->
+                                                deleteKildeBestilling(oppdatertBestilling)
+                                                        .thenReturn(oppdatertBestilling)
+                                                        .flatMap(oppdatert -> {
+                                                            oppdatertBestilling.setAntallIdenter(bestilling.getAntallIdenter() - progresser.size());
+                                                            return bestillingRepository.save(oppdatertBestilling);
+                                                        }))));
     }
 
-    private void deleteKildeBestilling(Bestilling bestilling, List<BestillingProgress> progresser) {
+    private Mono<Void> deleteKildeBestilling(Bestilling bestilling) {
 
-        if (bestilling.getProgresser().size() == progresser.size()) {
-            bestilling.getKontroller()
-                    .forEach(bestillingKontroll -> bestillingKontrollRepository.deleteById(bestilling.getId()));
-            bestillingRepository.deleteById(bestilling.getId());
-
-        } else {
-            bestilling.setAntallIdenter(bestilling.getProgresser().size() - progresser.size());
-        }
+        return bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestilling.getId())
+                        .then(bestillingRepository.deleteById(bestilling.getId()));
     }
 }

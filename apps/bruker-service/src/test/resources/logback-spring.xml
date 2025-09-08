@@ -5,5 +5,5 @@
     </springProfile>
 
     <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
-    <logger level="TRACE" name="no.nav.testnav.apps.brukerservice.controller.BrukerController" />
+    <logger level="TRACE" name="no.nav.testnav.apps.brukerservice.controller.v1.BrukerController" />
 </configuration>

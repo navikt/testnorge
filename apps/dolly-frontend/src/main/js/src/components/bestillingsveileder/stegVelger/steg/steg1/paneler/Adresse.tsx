@@ -13,9 +13,14 @@ import {
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { adresseAttributter } from '@/components/fagsystem/pdlf/form/partials/adresser/Adresser'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const AdressePanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)
+	const opts: any = useContext(BestillingsveilederContext)
+	const testNorgePerson = opts?.identMaster === 'PDL'
+
 	return (
 		// @ts-ignore
 		<Panel
@@ -38,6 +43,7 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 						'Opplysningstypen “Delt bosted” legges til på barnet(barna), men kan bestilles på hovedperson/partner/barn. ' +
 						'Vilkåret er at barn(a) har to foreldre med forskjellig norsk bostedsadresse.  Gjelder kun for master FREG.'
 					}
+					vis={!testNorgePerson}
 				/>
 			</AttributtKategori>
 

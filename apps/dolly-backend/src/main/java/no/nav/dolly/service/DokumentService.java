@@ -13,9 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,14 +30,14 @@ public class DokumentService {
     private final BestillingMalRepository bestillingMalRepository;
     private final ObjectMapper objectMapper;
 
-    @Transactional(readOnly = true)
-    public List<Dokument> getDokumenterByBestilling(Long bestillingId) {
+    @Transactional
+    public Flux<Dokument> getDokumenterByBestilling(Long bestillingId) {
 
         return dokumentRepository.getDokumentsByBestillingId(bestillingId);
     }
 
-    @Transactional(readOnly = true)
-    public List<Dokument> getDokumenterByMal(Long malId) {
+    @Transactional
+    public Flux<Dokument> getDokumenterByMal(Long malId) {
 
         return bestillingMalRepository.findById(malId)
                 .map(malBestilling -> fromJson(malBestilling.getBestKriterier()))
@@ -53,12 +53,11 @@ public class DokumentService {
                                 )
                                 .collect(Collectors.toSet())
                 )
-                .map(dokumentRepository::getDokumentsByIdIsIn)
-                .orElse(Collections.emptyList());
+                .flatMapMany(dokumentRepository::getDokumentsByIdIsIn);
     }
 
-    @Transactional(readOnly = true)
-    public List<Dokument> getDokumenter(List<Long> dokumentIdListe) {
+    @Transactional
+    public Flux<Dokument> getDokumenter(List<Long> dokumentIdListe) {
 
         return dokumentRepository.getDokumentsByIdIsIn(dokumentIdListe);
     }

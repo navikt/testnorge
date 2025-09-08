@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.etterlatte;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.etterlatte.command.EtterlattePostCommand;
 import no.nav.dolly.bestilling.etterlatte.dto.VedtakRequestDTO;
 import no.nav.dolly.bestilling.etterlatte.dto.VedtakResponseDTO;
@@ -15,7 +16,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-public class EtterlatteConsumer {
+public class EtterlatteConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -26,6 +27,7 @@ public class EtterlatteConsumer {
             Consumers consumers,
             WebClient webClient,
             WebClientLogger webClientLogger) {
+
         this.tokenService = tokenService;
         this.serverProperties = consumers.getEtterlatte();
         var webClientBuilder = webClient
@@ -42,5 +44,15 @@ public class EtterlatteConsumer {
         log.info("Etterlatte opprett {}", vedtakRequest);
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new EtterlattePostCommand(webClient, vedtakRequest, token.getTokenValue()).call());
+    }
+
+    @Override
+    public String serviceUrl() {
+        return serverProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-etterlatte-proxy";
     }
 }

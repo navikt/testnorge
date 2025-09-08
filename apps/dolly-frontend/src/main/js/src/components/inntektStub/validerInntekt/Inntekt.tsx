@@ -63,7 +63,6 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 				visHvisAvhuket={false}
 				name={`${path}.${fieldName}`}
 				label={texts(field)}
-				afterChange={handleChange}
 				feil={sjekkFelt(formMethods, field, options, values, path)}
 			/>
 		)
