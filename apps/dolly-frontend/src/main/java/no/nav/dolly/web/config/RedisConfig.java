@@ -3,6 +3,8 @@ package no.nav.dolly.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.valkey.DefaultJedisClientConfig;
 import io.valkey.Jedis;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -36,6 +38,7 @@ import java.net.URI;
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
+@Slf4j
 class RedisConfig {
 
     @Value("${spring.data.redis.host}")
@@ -49,6 +52,11 @@ class RedisConfig {
 
     @Value("${spring.data.redis.password}")
     private String password;
+
+    @PostConstruct
+    void postConstruct() {
+        log.info("Valkey configured on {}:{}", host, port);
+    }
 
     @Bean
     Jedis jedis() {
