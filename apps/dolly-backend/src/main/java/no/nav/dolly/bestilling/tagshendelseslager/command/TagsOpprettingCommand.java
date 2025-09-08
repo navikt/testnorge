@@ -49,8 +49,6 @@ public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingRespon
                         .details(Optional.ofNullable(status.getBody()).map(TagsOpprettingResponse::getDetails).orElse(null))
                         .status(HttpStatus.valueOf(status.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException());
+                .doOnError(WebClientError.logTo(log));
     }
-
 }

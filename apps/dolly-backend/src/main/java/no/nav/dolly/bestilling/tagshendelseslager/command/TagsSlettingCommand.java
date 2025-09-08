@@ -37,8 +37,6 @@ public class TagsSlettingCommand implements Callable<Flux<String>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(String.class)
-                .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException());
+                .doOnError(WebClientError.logTo(log));
     }
-
 }

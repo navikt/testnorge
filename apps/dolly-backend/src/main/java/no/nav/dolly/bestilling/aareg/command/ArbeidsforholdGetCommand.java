@@ -53,8 +53,6 @@ public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRes
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
                         .miljoe(miljoe)
                         .error(error)
-                        .build()))
-                .retryWhen(WebClientError.is5xxException());
+                        .build()));
     }
-
 }

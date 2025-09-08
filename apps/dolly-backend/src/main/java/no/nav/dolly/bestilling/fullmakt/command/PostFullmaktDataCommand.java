@@ -65,7 +65,6 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktPostRespon
                                 .melding(description.getMessage())
                                 .status(description.getStatus())
                         .build());
-                })
-                .retryWhen(WebClientError.is5xxException());
+                });
     }
 }

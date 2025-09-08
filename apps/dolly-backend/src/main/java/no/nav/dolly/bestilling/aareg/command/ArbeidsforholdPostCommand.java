@@ -44,8 +44,6 @@ public class ArbeidsforholdPostCommand implements Callable<Flux<ArbeidsforholdRe
                 .onErrorResume(error -> Flux.just(ArbeidsforholdRespons.builder()
                         .miljoe(miljoe)
                         .error(error)
-                        .build()))
-                .retryWhen(WebClientError.is5xxException());
+                        .build()));
     }
-
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -78,6 +79,15 @@ public class AaregUtility {
         }
 
         return arbeidsforhold;
+    }
+
+    public static boolean isNyttArbeidsforhold(List<Arbeidsforhold> response, Arbeidsforhold request) {
+
+        return isNull(request.getArbeidsforholdId()) &&
+                response.stream().noneMatch(eksisterende ->
+                                (isArbeidsgiverOrganisasjonAlike(eksisterende, request) ||
+                                        isArbeidsgiverPersonAlike(eksisterende, request)) &&
+                                        eksisterende.getType().equals(request.getType()));
     }
 
     private static void appendPermisjonPermitteringId(Arbeidsforhold arbeidsforhold, AtomicInteger permisjonPermitteringId) {

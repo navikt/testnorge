@@ -38,7 +38,7 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
                     response.setMiljoe(environment);
                     return response;
                 })
-                .retryWhen(WebClientError.is5xxException())
+
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> DokarkivResponse.of(WebClientError.describe(throwable), environment));
     }

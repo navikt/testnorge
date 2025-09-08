@@ -53,7 +53,6 @@ public class LagreTpForholdCommand implements Callable<Flux<PensjonforvalterResp
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(PensjonforvalterResponse

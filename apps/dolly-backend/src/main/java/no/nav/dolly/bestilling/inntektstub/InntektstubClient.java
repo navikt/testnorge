@@ -51,10 +51,12 @@ public class InntektstubClient implements ClientRegister {
 
         return inntektstubConsumer.getInntekter(dollyPerson.getIdent())
                 .collectList()
-                .flatMap(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
+                .flatMap(eksisterende ->
+                        Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
                         .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
                                 entry.getAarMaaned().equals(nyinntekt.getAarMaaned()) &&
-                                        entry.getVirksomhet().equals(nyinntekt.getVirksomhet())))
+                                        entry.getVirksomhet().equals(nyinntekt.getVirksomhet()) &&
+                        entry.getInntektsliste().stream().anyMatch(gammelt -> nyinntekt.getInntektsliste().contains(gammelt))))
                         .collectList()
                         .flatMapMany(inntektstubConsumer::postInntekter)
                         .collectList()

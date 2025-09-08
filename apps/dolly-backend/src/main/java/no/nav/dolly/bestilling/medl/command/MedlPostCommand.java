@@ -42,8 +42,6 @@ public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
                             .build();
                 })
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> MedlPostResponse.of(WebClientError.describe(throwable)))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> MedlPostResponse.of(WebClientError.describe(throwable)));
     }
-
 }

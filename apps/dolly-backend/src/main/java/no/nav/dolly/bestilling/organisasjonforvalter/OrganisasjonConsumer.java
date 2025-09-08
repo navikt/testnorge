@@ -100,7 +100,7 @@ public class OrganisasjonConsumer {
                         .bodyValue(bestillingRequest)
                         .retrieve()
                         .bodyToMono(BestillingResponse.class)
-                        .retryWhen(WebClientError.is5xxException()));
+                       );
     }
 
     @Timed(name = "providers", tags = {"operation", "organisasjon-deploy"})
@@ -125,7 +125,7 @@ public class OrganisasjonConsumer {
                         .bodyValue(deployRequest)
                         .retrieve()
                         .bodyToMono(DeployResponse.class)
-                        .retryWhen(WebClientError.is5xxException()));
+                       );
     }
 
     private static String getNavCallId() {

@@ -47,7 +47,6 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.BadRequest),
                         WebClientError.logTo(log))
-                .onErrorResume(throwable -> DeleteResponse.of(WebClientError.describe(throwable), ident))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> DeleteResponse.of(WebClientError.describe(throwable), ident));
     }
 }

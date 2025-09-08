@@ -47,7 +47,7 @@ public class ArbeidsplassenPutCVCommand implements Callable<Mono<ArbeidsplassenC
                         .uuid(uuid)
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+
                 .onErrorResume(throwable -> ArbeidsplassenCVStatusDTO.of(WebClientError.describe(throwable), uuid));
     }
 

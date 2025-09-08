@@ -42,7 +42,7 @@ public class DeleteFullmaktDataCommand implements Callable<Mono<HttpStatusCode>>
                 .map(ResponseEntity::getStatusCode)
                 .doOnError(WebClientError.logTo(log))
                 .doOnSuccess(response -> log.info("Fullmakt with id {} deleted for person with ident {}", fullmaktId, ident))
-                .retryWhen(WebClientError.is5xxException())
+
                 .doOnError(WebClientError.logTo(log));
     }
 

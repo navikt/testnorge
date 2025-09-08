@@ -38,8 +38,6 @@ public class UdistubDeleteCommand implements Callable<Mono<UdiPersonResponse>> {
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
-                .onErrorResume(throwable -> Mono.empty())
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> Mono.empty());
     }
-
 }
