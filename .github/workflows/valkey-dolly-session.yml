@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - change/redis_to_valkey_nocode
+      - change/redis_to_valkey_restart
     paths:
       - .github/workflows/valkey-dolly-session.yml
       - .nais/valkey-dolly-session.yml
