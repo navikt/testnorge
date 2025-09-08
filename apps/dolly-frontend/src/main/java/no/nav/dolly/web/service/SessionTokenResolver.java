@@ -44,7 +44,10 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                                                 exchange)
                                         .publishOn(Schedulers.boundedElastic())
                                         .mapNotNull(oAuth2AuthorizedClient -> {
-                                            if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
+                                            var expiresAt = oAuth2AuthorizedClient
+                                                    .getAccessToken()
+                                                    .getExpiresAt();
+                                            if (expiresAt != null && expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
                                                 log.warn("Auth client har utløpt, fjerner den som authenticated");
                                                 authenticationToken.setAuthenticated(false);
                                                 authenticationToken.eraseCredentials();
