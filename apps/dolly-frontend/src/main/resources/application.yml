@@ -8,7 +8,8 @@ spring:
     import: "dolly-application.yml"
   data:
     redis:
-      url: ${VALKEY_URI_SESSION}
+      host: ${VALKEY_HOST_SESSION}
+      port: ${VALKEY_PORT_SESSION}
       username: ${VALKEY_USERNAME_SESSION}
       password: ${VALKEY_PASSWORD_SESSION}
   security:

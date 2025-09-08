@@ -1,6 +1,8 @@
 package no.nav.dolly.web.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.valkey.DefaultJedisClientConfig;
+import io.valkey.Jedis;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -22,9 +24,6 @@ import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
-import redis.clients.jedis.DefaultJedisClientConfig;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisClientConfig;
 
 import java.net.URI;
 
@@ -39,8 +38,11 @@ import java.net.URI;
 })
 class RedisConfig {
 
-    @Value("${spring.data.redis.url}")
-    private String url;
+    @Value("${spring.data.redis.host}")
+    private String host;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
 
     @Value("${spring.data.redis.username}")
     private String username;
@@ -50,14 +52,13 @@ class RedisConfig {
 
     @Bean
     Jedis jedis() {
-        var uri = URI.create(url);
         var config = DefaultJedisClientConfig
                 .builder()
                 .user(username)
                 .password(password)
                 .ssl(true)
                 .build();
-        return new Jedis(uri, config);
+        return new Jedis(host, port, config);
     }
 
     @Bean
@@ -86,10 +87,9 @@ class RedisConfig {
     @Bean
     @ConditionalOnMissingBean
     RedisStandaloneConfiguration redisStandaloneConfiguration() {
-        var uri = URI.create(url);
         var config = new RedisStandaloneConfiguration();
-        config.setHostName(uri.getHost());
-        config.setPort(uri.getPort());
+        config.setHostName(host);
+        config.setPort(port);
         config.setUsername(username);
         config.setPassword(password);
         return config;

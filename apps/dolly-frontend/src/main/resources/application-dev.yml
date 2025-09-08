@@ -4,7 +4,8 @@ POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/logi
 spring:
   data:
     redis:
-      url: ${VALKEY_URI_SESSION}
+      host: ${VALKEY_HOST_SESSION}
+      port: ${VALKEY_PORT_SESSION}
       username: ${VALKEY_USERNAME_SESSION}
       password: ${VALKEY_PASSWORD_SESSION}
 
