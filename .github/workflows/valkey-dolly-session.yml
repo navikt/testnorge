@@ -8,6 +8,7 @@ on:
     paths:
       - .github/workflows/valkey-dolly-session.yml
       - .nais/valkey-dolly-session.yml
+      - apps/dolly-frontend/**
   workflow_dispatch:
 
 jobs:
