@@ -28,7 +28,7 @@ import static java.util.Objects.nonNull;
 @Profile({ "prod", "dev", "idporten" })
 @Slf4j
 @RequiredArgsConstructor
-public class RedisTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
+public class SessionTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
     private final ServerOAuth2AuthorizedClientRepository clientRepository;
 
     @Override

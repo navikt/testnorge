@@ -27,8 +27,6 @@ import org.springframework.security.oauth2.client.web.server.ServerOAuth2Authori
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
-import java.net.URI;
-
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
 @EnableRedisWebSession
@@ -38,8 +36,7 @@ import java.net.URI;
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
-@Slf4j
-class RedisConfig {
+class SessionConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -52,11 +49,6 @@ class RedisConfig {
 
     @Value("${spring.data.redis.password}")
     private String password;
-
-    @PostConstruct
-    void postConstruct() {
-        log.info("Valkey configured on {}:{}", host, port);
-    }
 
     @Bean
     Jedis jedis() {
