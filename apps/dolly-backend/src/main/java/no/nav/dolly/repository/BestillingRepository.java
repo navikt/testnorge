@@ -81,18 +81,13 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Flux<Bestilling> findBestillingerByIdent(@Param("ident") String ident);
 
     @Query("""
-            select * from Bestilling b
+            select b.* from Bestilling b
             join Bestilling_Progress bp on b.id = bp.bestilling_id
             and bp.ident in (:identer) order by b.id
             """)
     Flux<Bestilling> findBestillingerByIdentIn(@Param("identer") Collection<String> identer);
 
-    @Query("""
-            select * from Bestilling b
-            where b.gruppe_id = :gruppeId
-            order by b.id desc
-            """)
-    Flux<Bestilling> getBestillingerFromGruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
+    Flux<Bestilling> findByGruppeIdOrderByIdDesc(Long gruppeId, Pageable pageable);
 
     @Modifying
     Mono<Void> deleteByGruppeId(Long gruppeId);
