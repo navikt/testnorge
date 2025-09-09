@@ -111,26 +111,21 @@ public class PensjonPersondataService {
         }
 
         return transaksjonMappingService.getTransaksjonMapping(SystemTyper.PEN_AP.name(), ident)
-                .collectList()
-                .map(transaksjonMapping ->
-                        transaksjonMapping.stream()
-                                .map(mapping -> {
-                                    try {
-                                        return objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakRequest.class);
-                                    } catch (JsonProcessingException e) {
-                                        log.error("Feil ved deserialisering av transaksjonId", e);
-                                        return dummyAlderspensjonRequest(ident, miljoer);
-                                    }
-                                })
-                                .findFirst()
-                                .orElse(dummyAlderspensjonRequest(ident, miljoer)))
+                .map(mapping -> {
+                    try {
+                        return objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakRequest.class);
+                    } catch (JsonProcessingException e) {
+                        log.error("Feil ved deserialisering av transaksjonId", e);
+                        return dummyAlderspensjonRequest(ident, miljoer);
+                    }
+                })
                 .map(transaksjonMapping -> {
 
                     var context = new MappingContext.Factory().getContext();
                     context.setProperty(NAV_ENHET, navEnhetId);
                     return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
                 })
-                .flatMapMany(pensjonforvalterConsumer::lagreRevurderingVedtak);
+                .flatMap(pensjonforvalterConsumer::lagreRevurderingVedtak);
     }
 
     private AlderspensjonVedtakRequest dummyAlderspensjonRequest(String ident, Set<String> miljoer) {

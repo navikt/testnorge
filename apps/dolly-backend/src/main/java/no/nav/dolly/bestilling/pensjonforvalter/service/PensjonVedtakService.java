@@ -90,7 +90,7 @@ public class PensjonVedtakService {
                                         AlderspensjonRequest pensjonRequest;
                                         var context = new MappingContext.Factory().getContext();
                                         context.setProperty(IDENT, ident);
-                                        context.setProperty(MILJOER, List.of(miljoe));
+                                        context.setProperty(MILJOER, Set.of(miljoe));
 
                                         if (alderspensjon.isSoknad()) {
                                             context.setProperty("relasjoner", utvidetPersondata.getT1());

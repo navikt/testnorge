@@ -20,7 +20,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @RequiredArgsConstructor
 public class LagreApRevurderingVedtak implements Callable<Mono<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_AP_REVURDERING_VEDTAK_URL = "/api/v1/revurdering-vedtak/ap";
+    private static final String PENSJON_AP_REVURDERING_VEDTAK_URL = "/api/v1/ap/revurdering-vedtak";
 
     private final WebClient webClient;
     private final RevurderingVedtakRequest revurderingVedtakRequest;
@@ -30,7 +30,7 @@ public class LagreApRevurderingVedtak implements Callable<Mono<PensjonforvalterR
     public Mono<PensjonforvalterResponse> call() {
 
         var callId = generateCallId();
-        log.info("AP lagre refurdering-vedtak {}, callId: {}", revurderingVedtakRequest, callId);
+        log.info("AP lagre revurdering-vedtak {}, callId: {}", revurderingVedtakRequest, callId);
 
         return webClient
                 .post()
