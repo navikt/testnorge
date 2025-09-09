@@ -1,4 +1,4 @@
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import React from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useTenorOrganisasjonDomain } from '@/utils/hooks/useTenorSoek'

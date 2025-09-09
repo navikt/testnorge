@@ -20,5 +20,9 @@ async function enableMocking() {
 enableMocking().then(() => {
 	const root = ReactDOM.createRoot(document.getElementById('root'))
 
-	root.render(<RootComponent />)
+	root.render(
+		<React.StrictMode>
+			<RootComponent />
+		</React.StrictMode>,
+	)
 })

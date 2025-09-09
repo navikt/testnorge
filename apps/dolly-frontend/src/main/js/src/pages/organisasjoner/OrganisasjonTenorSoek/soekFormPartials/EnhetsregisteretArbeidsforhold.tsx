@@ -1,4 +1,4 @@
-import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
+import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 import React, { SyntheticEvent } from 'react'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
