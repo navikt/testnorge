@@ -60,9 +60,9 @@ export default function BestillingResultat({
 	const antallOpprettet = antallIdenterOpprettet(bestilling)
 	const harIdenterOpprettet = bestilling?.antallIdenterOpprettet > 0 || bestilling?.antallLevert > 0
 	const disableGjenopprett =
+		bestilling?.gjenopprettetFraIdent ||
 		bestilling?.opprettetFraId ||
-		bestilling?.opprettetFraGruppeId ||
-		bestilling?.gjenopprettetFraIdent
+		bestilling?.opprettetFraGruppeId
 
 	return (
 		<div className="bestilling-status" key={`ferdig-bestilling-${bestilling.id}`}>
