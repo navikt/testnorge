@@ -10,7 +10,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getNesteMaaned;
 import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getRandomAnsatt;
@@ -28,7 +28,7 @@ public class PensjonAlderspensjonVedtakMappingStrategy implements MappingStrateg
                     public void mapAtoB(PensjonData.Alderspensjon alderspensjon, AlderspensjonVedtakRequest request, MappingContext context) {
 
                         request.setFnr((String) context.getProperty("ident"));
-                        request.setMiljoer((List<String>) context.getProperty("miljoer"));
+                        request.setMiljoer((Set<String>) context.getProperty("miljoer"));
 
                         request.setKravFremsattDato(
                                 nullcheckSetDefaultValue(alderspensjon.getKravFremsattDato(), LocalDate.now()));

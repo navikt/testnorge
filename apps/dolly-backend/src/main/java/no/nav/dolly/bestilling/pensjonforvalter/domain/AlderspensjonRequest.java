@@ -3,27 +3,29 @@ package no.nav.dolly.bestilling.pensjonforvalter.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class AlderspensjonRequest {
 
-    private List<String> miljoer;
+    private Set<String> miljoer;
 
     private String fnr;
     private LocalDate iverksettelsesdato;
     private Integer uttaksgrad;
 
-    public List<String> getMiljoer() {
+    public Set<String> getMiljoer() {
         if (isNull(miljoer)) {
-            miljoer = new ArrayList<>();
+            miljoer = new HashSet<>();
         }
         return miljoer;
     }

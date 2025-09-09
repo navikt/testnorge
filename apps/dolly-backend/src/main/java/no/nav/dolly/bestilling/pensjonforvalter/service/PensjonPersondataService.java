@@ -1,26 +1,35 @@
 package no.nav.dolly.bestilling.pensjonforvalter.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterHelper;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
+import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PENSJON_FORVALTER;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_REVURDERING_AP;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SAMBOER_REGISTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.getPeriodeId;
 
@@ -29,23 +38,31 @@ import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUti
 @RequiredArgsConstructor
 public class PensjonPersondataService {
 
+    private static final String NAV_ENHET = "navEnhetId";
+
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final PdlDataConsumer pdlDataConsumer;
     private final PensjonforvalterHelper pensjonforvalterHelper;
     private final MapperFacade mapperFacade;
+    private final TransaksjonMappingService transaksjonMappingService;
+    private final ObjectMapper objectMapper;
 
-    public Flux<String> lagrePersondata(String ident, List<PdlPersonBolk.PersonBolk> persondata, Set<String> miljoer) {
+    public Flux<String> lagrePersondata(String ident, List<PdlPersonBolk.PersonBolk> persondata,
+                                        PdlPersondata pdlData, String navEnhet, Set<String> miljoer) {
 
         return Flux.merge(
-                opprettPersoner(ident, miljoer, persondata)
-                        .map(response -> PENSJON_FORVALTER + pensjonforvalterHelper.decodeStatus(response, ident)),
+                Flux.concat(
+                        opprettPersoner(ident, miljoer, persondata)
+                                .map(response -> PENSJON_FORVALTER + pensjonforvalterHelper.decodeStatus(response, ident)),
+                        revurderingVedNySivilstand(ident, miljoer, pdlData, navEnhet)
+                                .map(response -> PEN_REVURDERING_AP + pensjonforvalterHelper.decodeStatus(response, ident))),
                 lagreSamboer(ident, miljoer)
                         .map(response -> SAMBOER_REGISTER + pensjonforvalterHelper.decodeStatus(response, ident))
         );
     }
 
     private Flux<PensjonforvalterResponse> opprettPersoner(String hovedperson, Set<String> miljoer,
-                                                          List<PdlPersonBolk.PersonBolk> personer) {
+                                                           List<PdlPersonBolk.PersonBolk> personer) {
 
         return Flux.fromIterable(personer)
                 .map(person -> mapperFacade.map(person, PensjonPersonRequest.class))
@@ -83,5 +100,44 @@ public class PensjonPersondataService {
                                                 .filter(response1 -> samboer.getPidBruker().equals(ident) &&
                                                         response1.getStatus().stream()
                                                                 .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200))))));
+    }
+
+    private Flux<PensjonforvalterResponse> revurderingVedNySivilstand(String ident, Set<String> miljoer,
+                                                                      PdlPersondata pdlPersondata, String navEnhetId) {
+
+        if (nonNull(pdlPersondata) && nonNull(pdlPersondata.getPerson()) &&
+                pdlPersondata.getPerson().getSivilstand().isEmpty()) {
+            return Flux.empty();
+        }
+
+        return transaksjonMappingService.getTransaksjonMapping(SystemTyper.PEN_AP.name(), ident)
+                .collectList()
+                .map(transaksjonMapping ->
+                        transaksjonMapping.stream()
+                                .map(mapping -> {
+                                    try {
+                                        return objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakRequest.class);
+                                    } catch (JsonProcessingException e) {
+                                        log.error("Feil ved deserialisering av transaksjonId", e);
+                                        return dummyAlderspensjonRequest(ident, miljoer);
+                                    }
+                                })
+                                .findFirst()
+                                .orElse(dummyAlderspensjonRequest(ident, miljoer)))
+                .map(transaksjonMapping -> {
+
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty(NAV_ENHET, navEnhetId);
+                    return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
+                })
+                .flatMapMany(pensjonforvalterConsumer::lagreRevurderingVedtak);
+    }
+
+    private AlderspensjonVedtakRequest dummyAlderspensjonRequest(String ident, Set<String> miljoer) {
+
+        return AlderspensjonVedtakRequest.builder()
+                .fnr(ident)
+                .miljoer(miljoer)
+                .build();
     }
 }

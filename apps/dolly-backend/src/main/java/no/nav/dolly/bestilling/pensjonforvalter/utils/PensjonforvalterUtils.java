@@ -23,6 +23,7 @@ public class PensjonforvalterUtils {
     public static final String POPP_INNTEKTSREGISTER = "PoppInntekt#";
     public static final String TP_FORHOLD = "TpForhold#";
     public static final String PEN_ALDERSPENSJON = "AP#";
+    public static final String PEN_REVURDERING_AP = "RevurderingAP#";
     public static final String PEN_UFORETRYGD = "Ufoer#";
     public static final String PEN_PENSJONSAVTALE = "Pensjonsavtale#";
     public static final String PEN_AFP_OFFENTLIG = "AfpOffentlig#";

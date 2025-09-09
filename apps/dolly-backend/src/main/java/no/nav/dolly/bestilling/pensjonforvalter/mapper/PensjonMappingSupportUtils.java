@@ -11,19 +11,19 @@ public class PensjonMappingSupportUtils {
 
     private static final Random ansatt = new SecureRandom();
 
-    static LocalDate getForrigeMaaned() {
+    public static LocalDate getForrigeMaaned() {
 
         var forrigeMaaned = LocalDate.now().minusMonths(1);
         return LocalDate.of(forrigeMaaned.getYear(), forrigeMaaned.getMonth(), 1);
     }
 
-    static LocalDate getNesteMaaned() {
+    public static LocalDate getNesteMaaned() {
 
         var nesteMaaned = LocalDate.now().plusMonths(1);
         return LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1);
     }
 
-    static String getRandomAnsatt() {
+    public static String getRandomAnsatt() {
 
         return String.format("Z9%05d", ansatt.nextInt(99999));
     }

@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAfpOffentligCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreApRevurderingVedtak;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreGenerertPoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePensjonsavtaleCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
@@ -34,6 +35,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -225,6 +227,14 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
                 .collectList()
                 .subscribe(resultat -> log.info("Slettet AfpOffentlig (PEN), alle miljøer"));
     }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreRevurderingVedtakAP"})
+    public Flux<PensjonforvalterResponse> lagreRevurderingVedtak(RevurderingVedtakRequest revurderingVedtakRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagreApRevurderingVedtak(webClient, revurderingVedtakRequest, token.getTokenValue()).call());
+    }
+
 
     @Override
     public String serviceUrl() {

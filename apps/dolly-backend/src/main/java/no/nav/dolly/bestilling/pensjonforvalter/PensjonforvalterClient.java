@@ -72,9 +72,13 @@ public class PensjonforvalterClient implements ClientRegister {
                             .flatMap(bestilling1 -> pensjonPdlPersonService.getUtvidetPersondata(dollyPerson.getIdent())
                                     .flatMapMany(utvidetPersondata ->
                                             Flux.concat(
-                                                    pensjonPersondataService.lagrePersondata(dollyPerson.getIdent(), utvidetPersondata.getT1(), tilgjengeligeMiljoer),
-                                                    pensjonPensjonsdataService.lagrePensjonsdata(bestilling1, dollyPerson.getIdent(), bestilteMiljoer.get()),
-                                                    pensjonVedtakService.lagrePensjonVedtak(bestilling1, dollyPerson.getIdent(), utvidetPersondata, bestilteMiljoer.get())
+                                                    pensjonPersondataService.lagrePersondata(dollyPerson.getIdent(),
+                                                            utvidetPersondata.getT1(), bestilling.getPdldata(), utvidetPersondata.getT2(),
+                                                            tilgjengeligeMiljoer),
+                                                    pensjonPensjonsdataService.lagrePensjonsdata(bestilling1,
+                                                            dollyPerson.getIdent(), bestilteMiljoer.get()),
+                                                    pensjonVedtakService.lagrePensjonVedtak(bestilling1,
+                                                            dollyPerson.getIdent(), utvidetPersondata, bestilteMiljoer.get())
                                             )))
 
                             .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))

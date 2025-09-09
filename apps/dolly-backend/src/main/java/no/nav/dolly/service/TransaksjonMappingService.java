@@ -35,6 +35,11 @@ public class TransaksjonMappingService {
                 .map(this::toDTO);
     }
 
+    public Flux<TransaksjonMapping> getTransaksjonMapping(String system, String ident) {
+
+        return transaksjonMappingRepository.findAllBySystemAndIdent(system, ident);
+    }
+
     public Mono<Boolean> existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
