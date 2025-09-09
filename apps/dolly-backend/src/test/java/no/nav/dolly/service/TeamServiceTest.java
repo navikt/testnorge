@@ -174,7 +174,7 @@ class TeamServiceTest {
                 .build();
 
         when(teamRepository.findById(10L)).thenReturn(Mono.just(team));
-        when(brukerService.findById(team.getBrukerId())).thenReturn(Mono.just(teamBruker1));
+        when(brukerRepository.findById(team.getBrukerId())).thenReturn(Mono.just(teamBruker1));
         when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(currentBruker));
         when(teamRepository.save(any(Team.class))).thenReturn(Mono.just(team));
         when(brukerRepository.findAll()).thenReturn(Flux.just(currentBruker));

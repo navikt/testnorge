@@ -6,7 +6,7 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
-import no.nav.dolly.service.BrukerService;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class TeamControllerTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private BrukerService brukerService;
+    private BrukerRepository brukerRepository;
 
     @InjectMocks
     private TeamController teamController;
@@ -81,7 +81,7 @@ class TeamControllerTest {
 
         when(teamService.fetchAllTeam()).thenReturn(Flux.just(team));
         when(mapperFacade.map(eq(team), eq(RsTeamWithBrukere.class), any())).thenReturn(rsTeamWithBrukere);
-        when(brukerService.findById(anyLong())).thenReturn(Mono.just(new Bruker()));
+        when(brukerRepository.findById(anyLong())).thenReturn(Mono.just(new Bruker()));
 
         StepVerifier.create(teamController.getAllTeams()
                         .collectList())
@@ -98,7 +98,7 @@ class TeamControllerTest {
 
         when(teamService.fetchTeamById(1L)).thenReturn(Mono.just(team));
         when(mapperFacade.map(eq(team), eq(RsTeamWithBrukere.class), any())).thenReturn(rsTeamWithBrukere);
-        when(brukerService.findById(anyLong())).thenReturn(Mono.just(new Bruker()));
+        when(brukerRepository.findById(anyLong())).thenReturn(Mono.just(new Bruker()));
 
         StepVerifier.create(teamController.getTeamById(1L))
                 .assertNext(response -> {
@@ -113,7 +113,7 @@ class TeamControllerTest {
 
         when(teamService.opprettTeam(rsTeam)).thenReturn(Mono.just(team));
         when(mapperFacade.map(eq(team), eq(RsTeamWithBrukere.class), any())).thenReturn(rsTeamWithBrukere);
-        when(brukerService.findById(anyLong())).thenReturn(Mono.just(new Bruker()));
+        when(brukerRepository.findById(anyLong())).thenReturn(Mono.just(new Bruker()));
 
         StepVerifier.create(teamController.createTeam(rsTeam))
                 .assertNext(response -> {
@@ -128,7 +128,7 @@ class TeamControllerTest {
 
         when(teamService.updateTeam(eq(1L), any(RsTeamUpdate.class))).thenReturn(Mono.just(team));
         when(mapperFacade.map(eq(team), eq(RsTeamWithBrukere.class), any())).thenReturn(rsTeamWithBrukere);
-        when(brukerService.findById(anyLong())).thenReturn(Mono.just(new Bruker()));
+        when(brukerRepository.findById(anyLong())).thenReturn(Mono.just(new Bruker()));
 
         StepVerifier.create(teamController.updateTeam(1L, rsTeamUpdate))
                 .assertNext(response -> {
