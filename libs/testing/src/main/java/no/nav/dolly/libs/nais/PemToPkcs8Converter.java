@@ -1,28 +1,37 @@
-package no.nav.testnav.levendearbeidsforholdansettelse;
+package no.nav.dolly.libs.nais;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.security.PrivateKey;
 
+/**
+ * Converts NAIS provided key.pem to PKCS#8 PEM format, which can be used by R2dbc.
+ */
 @Slf4j
-class PemToPkcs8Converter {
+public class PemToPkcs8Converter {
 
-    static void convertIfNeeded(String inputPath, String outputPath) {
+    private static final String INPUT_PATH = "/var/run/secrets/nais.io/sqlcertificate/key.pem";
+    private static final String OUTPUT_PATH = "/tmp/pk8.pem"; // Note: Should match configuration in spring.r2dbc.properties.sslKey.
 
-        var inputFile = new File(inputPath);
+    public static void convertIfNeeded() {
+
+        var inputFile = new File(INPUT_PATH);
         if (!inputFile.exists()) {
-            log.warn("Input PEM file {} does not exist; hopefully you're running locally", inputPath);
+            log.warn("Input PEM file {} does not exist; hopefully you're running locally", INPUT_PATH);
             return;
         }
-        var outputFile = new File(outputPath);
+        var outputFile = new File(OUTPUT_PATH);
         if (outputFile.exists()) {
+            log.info("Output file {} already exists; skipping conversion", OUTPUT_PATH);
             return;
         }
 
@@ -43,6 +52,7 @@ class PemToPkcs8Converter {
         } catch (Exception e) {
             throw new RuntimeException("Failed to convert PEM to PKCS#8", e);
         }
+        log.info("Successfully converted {} to {}", INPUT_PATH, OUTPUT_PATH);
 
     }
 }

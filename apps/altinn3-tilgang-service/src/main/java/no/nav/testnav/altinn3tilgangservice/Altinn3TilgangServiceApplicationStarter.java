@@ -1,6 +1,7 @@
 package no.nav.testnav.altinn3tilgangservice;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
+import no.nav.dolly.libs.nais.PemToPkcs8Converter;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +22,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 public class Altinn3TilgangServiceApplicationStarter {
 
     public static void main(String[] args) {
+        PemToPkcs8Converter.convertIfNeeded();
         new SpringApplicationBuilder(Altinn3TilgangServiceApplicationStarter.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
