@@ -1,7 +1,8 @@
-FROM gcr.io/distroless/java21-debian12
+FROM gcr.io/distroless/java21-debian12:nonroot
 
 LABEL maintainer="Team Dolly"
 EXPOSE 8080
 
-COPY build/libs/app.jar /app.jar
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app.jar"]
+COPY build/libs/app.jar /my/app.jar
+WORKDIR /my
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
