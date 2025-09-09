@@ -1,4 +1,7 @@
-FROM ghcr.io/navikt/baseimages/temurin:21
+FROM gcr.io/distroless/java21-debian12:nonroot
+
 LABEL maintainer="Team Dolly"
 
-COPY build/libs/*.jar /app/
+COPY build/libs/app.jar /my/app.jar
+WORKDIR /my
+ENTRYPOINT ["java", "-jar", "app.jar"]

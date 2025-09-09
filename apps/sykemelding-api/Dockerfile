@@ -1,7 +1,8 @@
-FROM ghcr.io/navikt/baseimages/temurin:21
+FROM gcr.io/distroless/java21-debian12:nonroot
+
 LABEL maintainer="Team Dolly"
-
-ENV JAVA_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"
-COPY /build/libs/app.jar /app/app.jar
-
 EXPOSE 8080
+
+COPY build/libs/app.jar /my/app.jar
+WORKDIR /my
+ENTRYPOINT ["java", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-jar", "app.jar"]
