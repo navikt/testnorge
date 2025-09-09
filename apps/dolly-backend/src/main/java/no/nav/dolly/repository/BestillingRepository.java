@@ -24,6 +24,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Void> deleteById(Long id);
 
     Flux<Bestilling> findByGruppeId(Long gruppeId);
+
     Mono<Integer> countByGruppeId(Long gruppeId);
 
     @Query("""
@@ -44,7 +45,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and g.navn ilike :gruppenavn
             fetch first 10 rows only
             """)
-    Flux<RsBestillingFragment> findByGruppenavnContaining(@Param ("gruppenavn") String gruppenavn);
+    Flux<RsBestillingFragment> findByGruppenavnContaining(@Param("gruppenavn") String gruppenavn);
 
     @Query("""
             select b.id as id, g.navn as navn
