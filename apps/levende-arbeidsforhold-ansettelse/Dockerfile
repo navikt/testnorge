@@ -1,9 +1,12 @@
-FROM ghcr.io/navikt/baseimages/temurin:21
+FROM alpine:latest AS builder
+RUN apk add --no-cache openssl
+
+FROM gcr.io/distroless/java21-debian12:nonroot
+
 LABEL maintainer="Team Dolly"
-
-ENV JAVA_OPTS="-Dspring.profiles.active=prod"
-
-COPY 99-dolly-convert-to-pk8.sh /init-scripts/
-COPY /build/libs/app.jar /app/
-
 EXPOSE 8080
+
+#COPY 99-dolly-convert-to-pk8.sh /init-scripts/
+COPY build/libs/app.jar /my/app.jar
+WORKDIR /my
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]

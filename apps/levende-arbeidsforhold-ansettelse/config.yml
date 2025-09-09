@@ -8,6 +8,37 @@ metadata:
 spec:
   image: "{{image}}"
   port: 8080
+  volumes:
+    - name: pk8-volume
+      emptyDir: {}
+    - name: sqlcertificate
+      secret:
+        secretName: sqlcertificate
+  initContainers:
+    - name: pk8-converter
+      image: debian:stable-slim
+      command:
+        - openssl
+        - pkey
+        - -in
+        - /var/run/secrets/nais.io/sqlcertificate/key.pem
+        - -out
+        - /pk8-volume/pk8.pem
+      volumeMounts:
+        - name: pk8-volume
+          mountPath: /pk8-volume
+        - name: sqlcertificate
+          mountPath: /var/run/secrets/nais.io/sqlcertificate
+  containers:
+    - name: main
+      image: "{{image}}"
+      volumeMounts:
+        - name: pk8-volume
+          mountPath: /tmp
+        - name: sqlcertificate
+          mountPath: /var/run/secrets/nais.io/sqlcertificate
+      ports:
+        - containerPort: 8080
   accessPolicy:
     inbound:
       rules:
