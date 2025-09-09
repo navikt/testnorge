@@ -23,6 +23,10 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 public class LevendeArbeidsforholdAnsettelseApplication {
 
     public static void main(String[] args) {
+        PemToPkcs8Converter.convertIfNeeded(
+            "/var/run/secrets/nais.io/sqlcertificate/key.pem",
+            "/tmp/pk8.pem" // Note: Should match configuration in spring.r2dbc.properties.sslKey.
+        );
         new SpringApplicationBuilder(LevendeArbeidsforholdAnsettelseApplication.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);

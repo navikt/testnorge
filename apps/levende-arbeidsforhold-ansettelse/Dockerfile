@@ -1,6 +1,3 @@
-FROM alpine:latest AS builder
-RUN apk add --no-cache openssl
-
 FROM gcr.io/distroless/java21-debian12:nonroot
 
 LABEL maintainer="Team Dolly"
