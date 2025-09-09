@@ -1,5 +1,4 @@
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
-REDIS_HOST: localhost
 
 server:
   port: 8020

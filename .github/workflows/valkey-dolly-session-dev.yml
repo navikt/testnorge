@@ -1,14 +1,15 @@
-name: Deploy redis
+name: Deploy Valkey (valkey-dolly-session-dev)
 
 on:
   push:
     paths:
-      - .nais/redis-dev.yml
+      - .github/workflows/valkey-dolly-session-dev.yml
+      - .nais/valkey-dolly-session-dev.yml
   workflow_dispatch:
 
 jobs:
-  deploy-redis:
-    name: Deploy redis
+  deploy:
+    name: Deploy Valkey
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,4 +19,4 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: ".nais/redis-dev.yml"
+          RESOURCE: ".nais/valkey-dolly-session-dev.yml"

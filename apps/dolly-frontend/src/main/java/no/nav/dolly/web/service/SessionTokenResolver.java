@@ -1,8 +1,11 @@
-package no.nav.testnav.libs.reactivesessionsecurity.resolver;
+package no.nav.dolly.web.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.Oauth2AuthenticationToken;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
 import no.nav.testnav.libs.securitycore.domain.Token;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -22,9 +25,10 @@ import static java.util.Objects.nonNull;
 
 
 @Service
+@Profile({ "prod", "dev", "idporten" })
 @Slf4j
 @RequiredArgsConstructor
-public class RedisTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
+public class SessionTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
     private final ServerOAuth2AuthorizedClientRepository clientRepository;
 
     @Override
@@ -40,7 +44,10 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                                                 exchange)
                                         .publishOn(Schedulers.boundedElastic())
                                         .mapNotNull(oAuth2AuthorizedClient -> {
-                                            if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
+                                            var expiresAt = oAuth2AuthorizedClient
+                                                    .getAccessToken()
+                                                    .getExpiresAt();
+                                            if (expiresAt != null && expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
                                                 log.warn("Auth client har utløpt, fjerner den som authenticated");
                                                 authenticationToken.setAuthenticated(false);
                                                 authenticationToken.eraseCredentials();
