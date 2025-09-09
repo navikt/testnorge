@@ -83,6 +83,11 @@ public class BestillingService {
                         .map(progresser -> {
                             bestilling.setProgresser(progresser);
                             return bestilling;
+                        }))
+                .flatMap(bestilling -> brukerService.findById(bestilling.getBrukerId())
+                        .map(bruker -> {
+                            bestilling.setBruker(bruker);
+                            return bestilling;
                         }));
     }
 
