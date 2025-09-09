@@ -8,7 +8,6 @@ import {
 	useRouteError,
 } from 'react-router'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import BrukerPage from '@/pages/brukerPage'
 import LoginPage from '@/pages/loginPage'
 import { store } from '@/Store'
 import { SWRConfig } from 'swr'
@@ -18,6 +17,7 @@ import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import allRoutes from '@/allRoutes'
 import React, { useEffect } from 'react'
 import { locationChange } from '@/ducks/finnPerson'
+import BrukerPage from '@/pages/brukerPage'
 
 const ErrorView = () => {
 	console.error('Applikasjonen har støtt på en feil')
@@ -50,7 +50,7 @@ export function RouteChangeHandler() {
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<>
-			<Route path="/login" element={<LoginPage />} />
+			<Route path="/login" element={<LoginPage />} errorElement={<ErrorView />} />
 			<Route path="/bruker" element={<BrukerPage />} errorElement={<ErrorView />} />
 			<Route
 				path="/"

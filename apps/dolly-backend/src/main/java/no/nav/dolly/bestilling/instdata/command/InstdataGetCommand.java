@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @Slf4j
 @RequiredArgsConstructor
 public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdRespons>> {
@@ -37,7 +35,6 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
                         .build())
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(InstdataRequest.builder()
                         .personident(ident)
                         .environments(List.of(miljoe))
@@ -49,8 +46,6 @@ public class InstdataGetCommand implements Callable<Mono<InstitusjonsoppholdResp
                         .institusjonsopphold(resultat)
                         .build())
                 .doOnError(error -> log.error("Henting av institusjonsopphold feilet", error))
-                .onErrorResume(error -> Mono.just(new InstitusjonsoppholdRespons()))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(error -> Mono.just(new InstitusjonsoppholdRespons()));
     }
-
 }

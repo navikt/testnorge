@@ -1,2 +1,10 @@
 IDPORTEN_CLIENT_ID: dummy
 IDPORTEN_CLIENT_JWK: dummy
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 1234
+      username: not_in_use
+      password: not_in_use

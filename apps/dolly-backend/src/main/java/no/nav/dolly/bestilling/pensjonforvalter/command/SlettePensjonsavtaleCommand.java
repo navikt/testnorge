@@ -11,9 +11,10 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,13 +33,11 @@ public class SlettePensjonsavtaleCommand implements Callable<Flux<Pensjonforvalt
                         .path(PENSJON_TP_PERSON_FORHOLD_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("ident", ident)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
-                .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(Exception.class, error -> Mono.empty());
     }

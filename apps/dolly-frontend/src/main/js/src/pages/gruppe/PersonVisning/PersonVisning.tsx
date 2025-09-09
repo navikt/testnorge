@@ -406,6 +406,8 @@ export default ({
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
 
+	const isLoadingFagsystemer = loadingAareg || loadingArbeidsplassencvData || loadingArenaData
+
 	return (
 		<ErrorBoundary>
 			<div className="person-visning">
@@ -439,6 +441,7 @@ export default ({
 								)
 							}}
 							kind="add-circle"
+							loading={isLoadingFagsystemer}
 						>
 							LEGG TIL/ENDRE
 						</Button>

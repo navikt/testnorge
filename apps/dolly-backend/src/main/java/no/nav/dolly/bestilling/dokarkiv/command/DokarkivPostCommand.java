@@ -11,7 +11,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @RequiredArgsConstructor
@@ -32,7 +31,6 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
                                 .queryParam("forsoekFerdigstill", isTrue(dokarkivRequest.getFerdigstill()))
                                 .build(environment))
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(dokarkivRequest)
                 .retrieve()
                 .bodyToMono(DokarkivResponse.class)
@@ -40,7 +38,7 @@ public class DokarkivPostCommand implements Callable<Mono<DokarkivResponse>> {
                     response.setMiljoe(environment);
                     return response;
                 })
-                .retryWhen(WebClientError.is5xxException())
+
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> DokarkivResponse.of(WebClientError.describe(throwable), environment));
     }

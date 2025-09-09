@@ -45,22 +45,22 @@ class InntektsinformasjonMappingStrategyTest {
 
         InntektsinformasjonWrapper result = mapperFacade.map(prepInntektMultiplierWrapper(), InntektsinformasjonWrapper.class);
 
-        assertThat(result.getInntektsinformasjon().get(0).getAarMaaned(), is(equalTo(AAR_MAANED_STR)));
-        assertThat(result.getInntektsinformasjon().get(0).getVirksomhet(), is(equalTo(ORG_NR)));
-        assertThat(result.getInntektsinformasjon().get(0).getOpplysningspliktig(), is(equalTo(ORG_NR)));
-        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getStartOpptjeningsperiode(), is(equalTo(AAR_MAANED)));
-        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getSluttOpptjeningsperiode(), is(equalTo(AAR_MAANED.plusMonths(1).minusDays(1))));
-        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getBeskrivelse(), is(equalTo(BESKRIVELSE)));
-        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getTilleggsinformasjon().getBonusFraForsvaret().getAaretUtbetalingenGjelderFor(),
+        assertThat(result.getInntektsinformasjon().getFirst().getAarMaaned(), is(equalTo(AAR_MAANED_STR)));
+        assertThat(result.getInntektsinformasjon().getFirst().getVirksomhet(), is(equalTo(ORG_NR)));
+        assertThat(result.getInntektsinformasjon().getFirst().getOpplysningspliktig(), is(equalTo(ORG_NR)));
+        assertThat(result.getInntektsinformasjon().getFirst().getInntektsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().getFirst().getInntektsliste().getFirst().getStartOpptjeningsperiode(), is(equalTo(AAR_MAANED)));
+        assertThat(result.getInntektsinformasjon().getFirst().getInntektsliste().getFirst().getSluttOpptjeningsperiode(), is(equalTo(AAR_MAANED.plusMonths(1).minusDays(1))));
+        assertThat(result.getInntektsinformasjon().getFirst().getInntektsliste().getFirst().getBeskrivelse(), is(equalTo(BESKRIVELSE)));
+        assertThat(result.getInntektsinformasjon().getFirst().getInntektsliste().getFirst().getTilleggsinformasjon().getBonusFraForsvaret().getAaretUtbetalingenGjelderFor(),
                 is(equalTo(AARET_BETALINGEN_GJELDER_FOR)));
-        assertThat(result.getInntektsinformasjon().get(0).getFradragsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(0).getFradragsliste().get(0).getBeskrivelse(), is(equalTo(BESKRIVELSE)));
-        assertThat(result.getInntektsinformasjon().get(0).getArbeidsforholdsliste().get(0).getAvloenningstype(), is(equalTo(AVLOENNING_TYPE)));
-        assertThat(result.getInntektsinformasjon().get(0).getArbeidsforholdsliste().get(0).getArbeidsforholdstype(), is(equalTo(BESKRIVELSE)));
-        assertThat(result.getInntektsinformasjon().get(0).getArbeidsforholdsliste().get(0).getYrke(), is(equalTo(YRKE)));
-        assertThat(result.getInntektsinformasjon().get(0).getForskuddstrekksliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(0).getForskuddstrekksliste().get(0).getBeskrivelse(), is(equalTo(BESKRIVELSE)));
+        assertThat(result.getInntektsinformasjon().getFirst().getFradragsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().getFirst().getFradragsliste().getFirst().getBeskrivelse(), is(equalTo(BESKRIVELSE)));
+        assertThat(result.getInntektsinformasjon().getFirst().getArbeidsforholdsliste().getFirst().getAvloenningstype(), is(equalTo(AVLOENNING_TYPE)));
+        assertThat(result.getInntektsinformasjon().getFirst().getArbeidsforholdsliste().getFirst().getArbeidsforholdstype(), is(equalTo(BESKRIVELSE)));
+        assertThat(result.getInntektsinformasjon().getFirst().getArbeidsforholdsliste().getFirst().getYrke(), is(equalTo(YRKE)));
+        assertThat(result.getInntektsinformasjon().getFirst().getForskuddstrekksliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().getFirst().getForskuddstrekksliste().getFirst().getBeskrivelse(), is(equalTo(BESKRIVELSE)));
     }
 
     @Test
@@ -70,11 +70,11 @@ class InntektsinformasjonMappingStrategyTest {
 
         InntektsinformasjonWrapper result = mapperFacade.map(inntektMultiplierWrapper, InntektsinformasjonWrapper.class);
 
-        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(11).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(12).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(24).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(35).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().getFirst().getInntektsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(11).getInntektsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(12).getInntektsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(24).getInntektsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(35).getInntektsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
     }
 
     private InntektMultiplierWrapper prepInntektMultiplierWrapper() {

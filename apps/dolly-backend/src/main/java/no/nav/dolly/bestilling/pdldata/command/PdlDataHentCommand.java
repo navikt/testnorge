@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static java.lang.String.join;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -39,12 +38,11 @@ public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
                         .queryParam("pagesize", sidestorrelse)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(FullPersonDTO.class)
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on GET of idents %s".formatted(join(",", identer))))
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
     }

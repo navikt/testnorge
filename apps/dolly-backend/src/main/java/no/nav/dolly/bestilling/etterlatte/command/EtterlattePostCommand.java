@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
 
 @Slf4j
@@ -33,11 +32,10 @@ public class EtterlattePostCommand implements Callable<Mono<VedtakResponseDTO>> 
                 .uri(uriBuilder -> uriBuilder.path(VEDTAK_URL).build())
                 .header(ACCEPT_ENCODING, ContentType.APPLICATION_JSON)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(vedtakRequest)
                 .retrieve()
                 .bodyToMono(VedtakResponseDTO.class)
-                .retryWhen(WebClientError.is5xxException())
+
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> VedtakResponseDTO.of(WebClientError.describe(throwable)));
     }

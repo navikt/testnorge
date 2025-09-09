@@ -20,6 +20,7 @@
       "node",
       "./support"
     ],
+    "noEmit": true,
     "target": "ESNext",
     "useDefineForClassFields": true,
     "allowJs": false,

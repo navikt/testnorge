@@ -7,11 +7,10 @@ on:
       - apps/dolly-backend/**
       - libs/data-transfer-objects/**
       - libs/data-transfer-search-objects/**
-      - libs/reactive-core/**
       - libs/security-core/**
-      - libs/servlet-core/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
       - libs/servlet-insecure-security/**
-      - libs/servlet-security/**
       - libs/testing/**
       - plugins/**
 
