@@ -70,10 +70,10 @@ public final class BestillingPensjonforvalterStatusMapper {
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJON_FORVALTER, PEN_FORVALTER));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, SAMBOER, PEN_SAMBOER));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, POPP_INNTEKTSREGISTER, PEN_INNTEKT));
-        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, TP_FORHOLD, TP_FORVALTER));
-        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PEN_REVURDERING_AP, PEN_AP_REVURDERING));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, UFORETRYGD, PEN_UT));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ALDERSPENSJON, PEN_AP));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PEN_REVURDERING_AP, PEN_AP_REVURDERING));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, TP_FORHOLD, TP_FORVALTER));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJONSAVTALE, PEN_PENSJONSAVTALE));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PEN_AFPOFFENTLIG, PEN_AFP_OFFENTLIG));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ANNET, PEN_ANNET));

@@ -30,7 +30,7 @@ public class LagreApRevurderingVedtak implements Callable<Mono<PensjonforvalterR
     public Mono<PensjonforvalterResponse> call() {
 
         var callId = generateCallId();
-        log.info("AP lagre revurdering-vedtak {}, callId: {}", revurderingVedtakRequest, callId);
+        log.info("PEN sende ap/revurdering-vedtak {}, callId: {}", revurderingVedtakRequest, callId);
 
         return webClient
                 .post()
