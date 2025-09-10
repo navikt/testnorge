@@ -12,12 +12,12 @@ import no.nav.dolly.budpro.ressursnummer.ResourceNumberGenerator;
 import no.nav.dolly.budpro.stillinger.StillingService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -87,95 +87,98 @@ class BudProService {
         var random = seed == null ? new Random() : new Random(seed);
         var numberOfLeaders = (int) Math.ceil((double) numberOfEmployees / 10);
         return nameService.getNames(seed, numberOfEmployees + numberOfLeaders)
-            .collectList()
-            .flatMapMany(allNamesList -> {
-                String[] allNames = allNamesList.toArray(new String[0]);
-                String[] employeeNames = Arrays.copyOfRange(allNames, numberOfLeaders, numberOfEmployees + numberOfLeaders);
-                String[] leaderNames = Arrays.copyOfRange(allNames, 0, numberOfLeaders);
-                var resourceNumberGenerator = new ResourceNumberGenerator(random);
-                var leaderResourceNumbers = resourceNumberGenerator.get(numberOfLeaders);
-                var leaderGenerator = new LeaderGenerator(leaderNames, leaderResourceNumbers);
-                return Flux.range(0, numberOfEmployees)
-                    .map(i -> {
-                        var leader = leaderGenerator.getRandom(random);
-                        var municipality = kommuneService.getRandom(random);
-                        var aga = "060501180000";
-                        var agaBeskrivelse = "NAV Trygder, pensjon";
-                        var ansettelsestype = ansettelsestypeService.getRandom(random);
-                        var arbeidsstedKommune = municipality.getId();
-                        var felles = UNSPECIFIED_ID;
-                        var fellesBeskrivelse = UNSPECIFIED_NAME;
-                        var fraDato = fraDato(random);
-                        var foedselsdato = foedselsdato(random);
-                        var koststed = koststedService.getRandom(random);
-                        var koststedUtlaantFra = koststedUtlaantFra(random, koststed);
-                        var lederUtlaantFra = leader.utlaantFra();
-                        var ledersNavn = leader.navn();
-                        var ledersRessursnummer = leader.ressursnummer();
-                        var navn = employeeNames[i];
-                        var oppgave = UNSPECIFIED_ID;
-                        var oppgaveBeskrivelse = UNSPECIFIED_NAME;
-                        var oppgaveUtlaantFra = UNSPECIFIED_ID;
-                        var oppgaveUtlaantFraBeskrivelse = UNSPECIFIED_NAME;
-                        var organisasjonsenhet = organisasjonsenhetService.getRandom(random);
-                        var orgenhet = organisasjonsenhet.getId();
-                        var orgenhetNavn = organisasjonsenhet.getName();
-                        var permisjonskode = "";
-                        var produkt = UNSPECIFIED_ID;
-                        var produktBeskrivelse = UNSPECIFIED_NAME;
-                        var produktUtlaantFra = UNSPECIFIED_ID;
-                        var produktUtlaantFraBeskrivelse = UNSPECIFIED_NAME;
-                        var ressursnummer = resourceNumberGenerator.next();
-                        var sluttetDato = LocalDate.of(2099, 12, 31).format(DATE_FORMATTER);
-                        var skattekommune = municipality.getId();
-                        var statskonto = "060501000000";
-                        var statskontoKapittel = "0605";
-                        var statskontoPost = "01";
-                        var stillingsnummer = stillingService.getRandom(random).getNumber();
-                        var stillingsprosent = stillingsprosent(random);
-                        var tilDato = tilDato(random);
-                        var aarsloennInklFasteTillegg = aarsloenn(random);
-                        return new BudproRecord(
-                            aga,
-                            agaBeskrivelse,
-                            ansettelsestype,
-                            arbeidsstedKommune,
-                            felles,
-                            fellesBeskrivelse,
-                            fraDato,
-                            foedselsdato,
-                            koststed.getId(),
-                            koststed.getDescription(),
-                            koststedUtlaantFra.orElse(Koststed.EMPTY).getId(),
-                            koststedUtlaantFra.orElse(Koststed.EMPTY).getDescription(),
-                            lederUtlaantFra,
-                            ledersNavn,
-                            ledersRessursnummer,
-                            navn,
-                            oppgave,
-                            oppgaveBeskrivelse,
-                            oppgaveUtlaantFra,
-                            oppgaveUtlaantFraBeskrivelse,
-                            orgenhet,
-                            orgenhetNavn,
-                            permisjonskode,
-                            produkt,
-                            produktBeskrivelse,
-                            produktUtlaantFra,
-                            produktUtlaantFraBeskrivelse,
-                            ressursnummer,
-                            skattekommune,
-                            sluttetDato,
-                            statskonto,
-                            statskontoKapittel,
-                            statskontoPost,
-                            stillingsnummer,
-                            stillingsprosent,
-                            tilDato,
-                            aarsloennInklFasteTillegg
-                        );
-                    });
-            });
+                .collectList()
+                .flatMapMany(allNamesList -> {
+                    if (allNamesList.size() < numberOfEmployees + numberOfLeaders) {
+                        return Flux.error(new IllegalArgumentException("Not enough names received: required " + (numberOfEmployees + numberOfLeaders) + ", but got " + allNamesList.size()));
+                    }
+                    var allNames = allNamesList.toArray(new String[0]);
+                    var employeeNames = Arrays.copyOfRange(allNames, numberOfLeaders, numberOfEmployees + numberOfLeaders);
+                    var leaderNames = Arrays.copyOfRange(allNames, 0, numberOfLeaders);
+                    var resourceNumberGenerator = new ResourceNumberGenerator(random);
+                    var leaderResourceNumbers = resourceNumberGenerator.get(numberOfLeaders);
+                    var leaderGenerator = new LeaderGenerator(leaderNames, leaderResourceNumbers);
+                    return Flux.range(0, numberOfEmployees)
+                            .map(i -> {
+                                var leader = leaderGenerator.getRandom(random);
+                                var municipality = kommuneService.getRandom(random);
+                                var aga = "060501180000";
+                                var agaBeskrivelse = "NAV Trygder, pensjon";
+                                var ansettelsestype = ansettelsestypeService.getRandom(random);
+                                var arbeidsstedKommune = municipality.getId();
+                                var felles = UNSPECIFIED_ID;
+                                var fellesBeskrivelse = UNSPECIFIED_NAME;
+                                var fraDato = fraDato(random);
+                                var foedselsdato = foedselsdato(random);
+                                var koststed = koststedService.getRandom(random);
+                                var koststedUtlaantFra = koststedUtlaantFra(random, koststed);
+                                var lederUtlaantFra = leader.utlaantFra();
+                                var ledersNavn = leader.navn();
+                                var ledersRessursnummer = leader.ressursnummer();
+                                var navn = employeeNames[i];
+                                var oppgave = UNSPECIFIED_ID;
+                                var oppgaveBeskrivelse = UNSPECIFIED_NAME;
+                                var oppgaveUtlaantFra = UNSPECIFIED_ID;
+                                var oppgaveUtlaantFraBeskrivelse = UNSPECIFIED_NAME;
+                                var organisasjonsenhet = organisasjonsenhetService.getRandom(random);
+                                var orgenhet = organisasjonsenhet.getId();
+                                var orgenhetNavn = organisasjonsenhet.getName();
+                                var permisjonskode = "";
+                                var produkt = UNSPECIFIED_ID;
+                                var produktBeskrivelse = UNSPECIFIED_NAME;
+                                var produktUtlaantFra = UNSPECIFIED_ID;
+                                var produktUtlaantFraBeskrivelse = UNSPECIFIED_NAME;
+                                var ressursnummer = resourceNumberGenerator.next();
+                                var sluttetDato = LocalDate.of(2099, 12, 31).format(DATE_FORMATTER);
+                                var skattekommune = municipality.getId();
+                                var statskonto = "060501000000";
+                                var statskontoKapittel = "0605";
+                                var statskontoPost = "01";
+                                var stillingsnummer = stillingService.getRandom(random).getNumber();
+                                var stillingsprosent = stillingsprosent(random);
+                                var tilDato = tilDato(random);
+                                var aarsloennInklFasteTillegg = aarsloenn(random);
+                                return new BudproRecord(
+                                        aga,
+                                        agaBeskrivelse,
+                                        ansettelsestype,
+                                        arbeidsstedKommune,
+                                        felles,
+                                        fellesBeskrivelse,
+                                        fraDato,
+                                        foedselsdato,
+                                        koststed.getId(),
+                                        koststed.getDescription(),
+                                        koststedUtlaantFra.orElse(Koststed.EMPTY).getId(),
+                                        koststedUtlaantFra.orElse(Koststed.EMPTY).getDescription(),
+                                        lederUtlaantFra,
+                                        ledersNavn,
+                                        ledersRessursnummer,
+                                        navn,
+                                        oppgave,
+                                        oppgaveBeskrivelse,
+                                        oppgaveUtlaantFra,
+                                        oppgaveUtlaantFraBeskrivelse,
+                                        orgenhet,
+                                        orgenhetNavn,
+                                        permisjonskode,
+                                        produkt,
+                                        produktBeskrivelse,
+                                        produktUtlaantFra,
+                                        produktUtlaantFraBeskrivelse,
+                                        ressursnummer,
+                                        skattekommune,
+                                        sluttetDato,
+                                        statskonto,
+                                        statskontoKapittel,
+                                        statskontoPost,
+                                        stillingsnummer,
+                                        stillingsprosent,
+                                        tilDato,
+                                        aarsloennInklFasteTillegg
+                                );
+                            });
+                });
     }
 
     private String aarsloenn(Random random) {
