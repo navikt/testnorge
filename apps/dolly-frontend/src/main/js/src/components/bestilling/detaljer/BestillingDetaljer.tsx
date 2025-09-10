@@ -29,7 +29,10 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const forelderBarnRelasjon = _.get(bestilling, 'bestilling.pdldata.person.forelderBarnRelasjon')
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
-	const gjenopprettingsId = bestilling.opprettetFraGruppeId || bestilling.opprettetFraId
+	const gjenopprettingsId =
+		bestilling?.opprettetFraGruppeId ||
+		bestilling?.opprettetFraId ||
+		bestilling?.gjenopprettetFraIdent
 
 	const gjenopprettTitle = gjenopprettingsId
 		? 'Kan ikke gjenopprette gjenoppretting av bestilling'

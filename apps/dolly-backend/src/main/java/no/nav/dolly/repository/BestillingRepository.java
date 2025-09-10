@@ -24,6 +24,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Void> deleteById(Long id);
 
     Flux<Bestilling> findByGruppeId(Long gruppeId);
+
     Mono<Integer> countByGruppeId(Long gruppeId);
 
     @Query("""
@@ -44,7 +45,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and g.navn ilike :gruppenavn
             fetch first 10 rows only
             """)
-    Flux<RsBestillingFragment> findByGruppenavnContaining(@Param ("gruppenavn") String gruppenavn);
+    Flux<RsBestillingFragment> findByGruppenavnContaining(@Param("gruppenavn") String gruppenavn);
 
     @Query("""
             select b.id as id, g.navn as navn
@@ -99,6 +100,9 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and not exists (select *
                             from Bestilling_Progress bp
                             where bp.bestilling_id = :bestillingId)
+            and not exists (select *
+                            from transaksjon_mapping tm
+                            where tm.bestilling_id = :bestillingId)
             """)
     Mono<Void> deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 

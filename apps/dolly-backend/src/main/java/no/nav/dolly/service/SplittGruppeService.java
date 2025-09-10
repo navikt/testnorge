@@ -58,6 +58,7 @@ public class SplittGruppeService {
                     var nyTestident = SerializationUtils.clone(testident);
                     nyTestident.setGruppeId(testgruppe.getId());
                     nyTestident.setId(null);
+                    nyTestident.setVersjon(null);
                     return identRepository.deleteById(testident.getId())
                             .then(identRepository.save(nyTestident));
                 })
@@ -69,6 +70,7 @@ public class SplittGruppeService {
 
         var nyBestilling = BestillingMapper.shallowCopyBestilling(bestilling);
         nyBestilling.setId(null);
+        nyBestilling.setVersjon(null);
         nyBestilling.setGruppeId(testgruppe.getId());
         return bestillingRepository.save(nyBestilling)
                 .flatMap(oppdatertBestilling ->
@@ -89,6 +91,7 @@ public class SplittGruppeService {
                                             if (identer.contains(progress.getIdent())) {
                                                 var nyProgress = SerializationUtils.clone(progress);
                                                 nyProgress.setId(null);
+                                                nyProgress.setVersjon(null);
                                                 nyProgress.setBestillingId(oppdatertBestilling.getId());
                                                 return bestillingProgressRepository.deleteById(progress.getId())
                                                         .then(bestillingProgressRepository.save(nyProgress));
@@ -97,7 +100,7 @@ public class SplittGruppeService {
                                         })
                                         .collectList()
                                         .flatMap(progresser ->
-                                                deleteKildeBestilling(oppdatertBestilling)
+                                                deleteKildeBestilling(bestilling)
                                                         .thenReturn(oppdatertBestilling)
                                                         .flatMap(oppdatert -> {
                                                             oppdatertBestilling.setAntallIdenter(bestilling.getAntallIdenter() - progresser.size());
@@ -108,6 +111,6 @@ public class SplittGruppeService {
     private Mono<Void> deleteKildeBestilling(Bestilling bestilling) {
 
         return bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestilling.getId())
-                        .then(bestillingRepository.deleteById(bestilling.getId()));
+                .then(bestillingRepository.deleteBestillingWithNoChildren(bestilling.getId()));
     }
 }
