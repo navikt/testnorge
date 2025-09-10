@@ -16,6 +16,7 @@ interface MonthpickerProps {
 	maxDate?: Date
 }
 
+//TODO: Maaned vises ikke naar den settes fra siste soek
 export const Monthpicker = ({
 	name,
 	label,

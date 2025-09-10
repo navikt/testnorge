@@ -8,6 +8,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { codeToNorskLabel, formatDate, oversettBoolean } from '@/utils/DataFormatter'
 
 export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChangeList }: any) => {
 	const { domain: identifikatorTypeOptions, loading: loadingIdentifikatorType } =
@@ -30,80 +31,140 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 				name="identifikator"
 				label="Fødselsnummer / D-nummer"
 				// @ts-ignore
-				onBlur={(val: any) => handleChange(val?.target?.value || null, 'identifikator')}
+				onBlur={(val: any) =>
+					handleChange(
+						val?.target?.value || null,
+						'identifikator',
+						`Fødselsnummer/D-nummer: ${val?.target?.value}`,
+					)
+				}
 				visHvisAvhuket={false}
 			/>
 			<FormSelect
 				name="identifikatorType"
 				options={createOptions(identifikatorTypeOptions?.data, true)}
 				label="Identifikatortype"
-				onChange={(val: any) => handleChange(val?.value || null, 'identifikatorType')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value || null,
+						'identifikatorType',
+						`Identifikatortype: ${codeToNorskLabel(val?.value)}`,
+					)
+				}
 				isLoading={loadingIdentifikatorType}
 			/>
 			<FormDatepicker
 				name="foedselsdato.fraOgMed"
 				label="Fødselsdato f.o.m."
-				onChange={(val: SyntheticEvent) => handleChange(val || null, 'foedselsdato.fraOgMed')}
+				onChange={(val: SyntheticEvent) =>
+					handleChange(
+						val || null,
+						'foedselsdato.fraOgMed',
+						`Fødselsdato f.o.m.: ${formatDate(val)}`,
+					)
+				}
 				visHvisAvhuket={false}
 			/>
 			<FormDatepicker
 				name="foedselsdato.tilOgMed"
 				label="Fødselsdato t.o.m."
-				onChange={(val: SyntheticEvent) => handleChange(val || null, 'foedselsdato.tilOgMed')}
+				onChange={(val: SyntheticEvent) =>
+					handleChange(
+						val || null,
+						'foedselsdato.tilOgMed',
+						`Fødselsdato t.o.m.: ${formatDate(val)}`,
+					)
+				}
 				visHvisAvhuket={false}
 			/>
 			<FormDatepicker
 				name="doedsdato.fraOgMed"
 				label="Dødsdato f.o.m."
-				onChange={(val: SyntheticEvent) => handleChange(val || null, 'doedsdato.fraOgMed')}
+				onChange={(val: SyntheticEvent) =>
+					handleChange(val || null, 'doedsdato.fraOgMed', `Dødsdato f.o.m.: ${formatDate(val)}`)
+				}
 				visHvisAvhuket={false}
 			/>
 			<FormDatepicker
 				name="doedsdato.tilOgMed"
 				label="Dødsdato t.o.m."
-				onChange={(val: SyntheticEvent) => handleChange(val || null, 'doedsdato.tilOgMed')}
+				onChange={(val: SyntheticEvent) =>
+					handleChange(val || null, 'doedsdato.tilOgMed', `Dødsdato t.o.m.: ${formatDate(val)}`)
+				}
 				visHvisAvhuket={false}
 			/>
 			<FormSelect
 				name="kjoenn"
 				options={createOptions(kjoennOptions?.data)}
 				label="Kjønn"
-				onChange={(val: any) => handleChange(val?.value || null, 'kjoenn')}
+				onChange={(val: any) =>
+					handleChange(val?.value || null, 'kjoenn', `Kjønn: ${codeToNorskLabel(val?.value)}`)
+				}
 				isLoading={loadingKjoenn}
 			/>
 			<FormSelect
 				name="personstatus"
 				options={createOptions(personstatusOptions?.data)}
 				label="Personstatus"
-				onChange={(val: any) => handleChange(val?.value || null, 'personstatus')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value || null,
+						'personstatus',
+						`Personstatus: ${codeToNorskLabel(val?.value)}`,
+					)
+				}
 				isLoading={loadingPersonstatus}
 			/>
 			<FormSelect
 				name="sivilstand"
 				options={createOptions(sivilstatusOptions?.data)}
 				label="Sivilstand"
-				onChange={(val: any) => handleChange(val?.value || null, 'sivilstand')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value || null,
+						'sivilstand',
+						`Sivilstand: ${codeToNorskLabel(val?.value)}`,
+					)
+				}
 				isLoading={loadingSivilstatus}
 			/>
 			<FormSelect
 				name="identitetsgrunnlagStatus"
 				options={createOptions(identitetsgrunnlagStatusOptions?.data)}
 				label="Identitetsgrunnlagsstatus"
-				onChange={(val: any) => handleChange(val?.value || null, 'identitetsgrunnlagStatus')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value || null,
+						'identitetsgrunnlagStatus',
+						`Identitetsgrunnlagsstatus: ${codeToNorskLabel(val?.value)}`,
+					)
+				}
 				isLoading={loadingIdentgrunnlag}
 			/>
 			<FormSelect
 				name="adressebeskyttelse"
 				options={createOptions(adressebeskyttelseOptions?.data)}
 				label="Adressebeskyttelse"
-				onChange={(val: any) => handleChange(val?.value || null, 'adressebeskyttelse')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value || null,
+						'adressebeskyttelse',
+						`Adressebeskyttelse: ${codeToNorskLabel(val?.value)}`,
+					)
+				}
 				isLoading={loadingAdressebeskyttelse}
 			/>
 			<FormSelect
 				name="harFalskIdentitet"
 				options={Options('boolean')}
 				label="Har falsk identitet"
-				onChange={(val: any) => handleChange(val?.value, 'harFalskIdentitet')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value,
+						'harFalskIdentitet',
+						`Har falsk identitet: ${oversettBoolean(val?.value)}`,
+					)
+				}
 			/>
 			<div className="flexbox--full-width">
 				<FormSelect
@@ -112,9 +173,13 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 					isMulti={true}
 					size="grow"
 					label="Utenlandsk identifikasjonsnummertype"
-					onChange={(val: SyntheticEvent) =>
-						handleChangeList(val || null, 'utenlandskPersonIdentifikasjon')
-					}
+					onChange={(val: SyntheticEvent) => {
+						return handleChangeList(
+							val?.map((item: any) => item.value) || null,
+							'utenlandskPersonIdentifikasjon',
+							'Utenlandsk ident.nr.type',
+						)
+					}}
 					isLoading={loadingUtenlandsid}
 				/>
 			</div>
@@ -123,7 +188,11 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 				data-testid={TestComponentSelectors.CHECKBOX_TENORSOEK}
 				label="Har legitimasjonsdokument"
 				onChange={(val: any) =>
-					handleChange(val?.target?.checked || undefined, 'harLegitimasjonsdokument')
+					handleChange(
+						val?.target?.checked || undefined,
+						'harLegitimasjonsdokument',
+						'Har legitimasjonsdokument',
+					)
 				}
 			/>
 		</SoekKategori>

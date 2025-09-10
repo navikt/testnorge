@@ -15,7 +15,13 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChangeList }: any) =>
 					isMulti={true}
 					size="grow"
 					label="Roller"
-					onChange={(val: SyntheticEvent) => handleChangeList(val || null, 'roller')}
+					onChange={(val: SyntheticEvent) =>
+						handleChangeList(
+							val?.map((item: any) => item.value) || null,
+							'roller',
+							'Rolle i Enhetsregisteret/Foretaksregisteret',
+						)
+					}
 					isLoading={loadingRoller}
 				/>
 			</div>

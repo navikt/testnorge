@@ -161,7 +161,7 @@ export default () => {
 				</Hjelpetekst>
 			</div>
 			<SisteSoek
-				soekType={soekType.dolly}
+				type={soekType.dolly}
 				formValues={formMethods.watch()}
 				handleChange={handleChange}
 				handleChangeAdresse={handleChangeAdresse}

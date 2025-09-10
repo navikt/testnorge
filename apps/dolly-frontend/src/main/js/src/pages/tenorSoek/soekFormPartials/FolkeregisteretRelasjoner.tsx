@@ -15,9 +15,12 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 				name="relasjoner.relasjon"
 				options={createOptions(relasjonOptions?.data)}
 				label="Relasjon"
-				onChange={(val: any) => handleChange(val?.value || null, 'relasjoner.relasjon')}
+				onChange={(val: any) =>
+					handleChange(val?.value || null, 'relasjoner.relasjon', `Relasjon: ${val?.label}`)
+				}
 				isLoading={loadingRelasjon}
 			/>
+			{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 			<div className="flexbox--flex-wrap">
 				<FormTextInput
 					name="relasjoner.antallBarn.fraOgMed"
@@ -25,39 +28,58 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					type="number"
 					// @ts-ignore
 					onBlur={(val: any) =>
-						handleChange(val?.target?.value || null, 'relasjoner.antallBarn.fraOgMed')
+						handleChange(
+							val?.target?.value || null,
+							'relasjoner.antallBarn.fraOgMed',
+							`Antall barn f.o.m.: ${val?.target?.value}`,
+						)
 					}
 					visHvisAvhuket={false}
 				/>
+				{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 				<FormTextInput
 					name="relasjoner.antallBarn.tilOgMed"
 					label="Antall barn t.o.m."
 					type="number"
 					// @ts-ignore
 					onBlur={(val: any) =>
-						handleChange(val?.target?.value || null, 'relasjoner.antallBarn.tilOgMed')
+						handleChange(
+							val?.target?.value || null,
+							'relasjoner.antallBarn.tilOgMed',
+							`Antall barn t.o.m.: ${val?.target?.value}`,
+						)
 					}
 					visHvisAvhuket={false}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
+				{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 				<FormTextInput
 					name="relasjoner.relasjonMedFoedselsaar.fraOgMed"
 					label="Relasjon med fødselsår f.o.m."
 					type="number"
 					// @ts-ignore
 					onBlur={(val: any) =>
-						handleChange(val?.target?.value || null, 'relasjoner.relasjonMedFoedselsaar.fraOgMed')
+						handleChange(
+							val?.target?.value || null,
+							'relasjoner.relasjonMedFoedselsaar.fraOgMed',
+							`Relasjon med fødselsår f.o.m.: ${val?.target?.value}`,
+						)
 					}
 					visHvisAvhuket={false}
 				/>
+				{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 				<FormTextInput
 					name="relasjoner.relasjonMedFoedselsaar.tilOgMed"
 					label="Relasjon med fødselsår t.o.m."
 					type="number"
 					// @ts-ignore
 					onBlur={(val: any) =>
-						handleChange(val?.target?.value || null, 'relasjoner.relasjonMedFoedselsaar.tilOgMed')
+						handleChange(
+							val?.target?.value || null,
+							'relasjoner.relasjonMedFoedselsaar.tilOgMed',
+							`Relasjon med fødselsår t.o.m.: ${val?.target?.value}`,
+						)
 					}
 					visHvisAvhuket={false}
 				/>
@@ -67,14 +89,22 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					name="relasjoner.harForeldreAnsvar"
 					label="Har foreldreansvar"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.harForeldreAnsvar')
+						handleChange(
+							val?.target?.checked || undefined,
+							'relasjoner.harForeldreAnsvar',
+							'Har foreldreansvar',
+						)
 					}
 				/>
 				<FormCheckbox
 					name="relasjoner.harDeltBosted"
 					label="Har delt bosted"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.harDeltBosted')
+						handleChange(
+							val?.target?.checked || undefined,
+							'relasjoner.harDeltBosted',
+							'Har delt bosted',
+						)
 					}
 				/>
 				<FormCheckbox
@@ -84,6 +114,7 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 						handleChange(
 							val?.target?.checked || undefined,
 							'relasjoner.harVergemaalEllerFremtidsfullmakt',
+							'Har vergemål eller fremtidsfullmakt',
 						)
 					}
 				/>
@@ -91,28 +122,36 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					name="relasjoner.borMedMor"
 					label="Bor med mor"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedMor')
+						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedMor', 'Bor med mor')
 					}
 				/>
 				<FormCheckbox
 					name="relasjoner.borMedFar"
 					label="Bor med far"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedFar')
+						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedFar', 'Bor med far')
 					}
 				/>
 				<FormCheckbox
 					name="relasjoner.borMedMedmor"
 					label="Bor med medmor"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedMedmor')
+						handleChange(
+							val?.target?.checked || undefined,
+							'relasjoner.borMedMedmor',
+							'Bor med medmor',
+						)
 					}
 				/>
 				<FormCheckbox
 					name="relasjoner.foreldreHarSammeAdresse"
 					label="Foreldre har samme adresse"
 					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'relasjoner.foreldreHarSammeAdresse')
+						handleChange(
+							val?.target?.checked || undefined,
+							'relasjoner.foreldreHarSammeAdresse',
+							'Foreldre har samme adresse',
+						)
 					}
 				/>
 			</div>

@@ -65,7 +65,10 @@ export const DateInput = ({
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
 	const fieldValue = name ? watch(name) : ''
+	// console.log('fieldValue: ', fieldValue) //TODO - SLETT MEG
 	const [formattedValue, setFormattedValue] = useState(fieldValue ? formatDate(fieldValue) : '')
+	// console.log('formattedValue: ', formattedValue) //TODO - SLETT MEG
+	//TODO: Dato vises paa feil format naar man setter dato fra siste soek
 
 	useEffect(() => {
 		if (!fieldValue) {

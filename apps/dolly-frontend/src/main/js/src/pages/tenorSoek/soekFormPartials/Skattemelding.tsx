@@ -25,7 +25,13 @@ export const Skattemelding = ({ handleChange }: any) => {
 				name="skattemelding.inntektsaar"
 				options={inntektsaarOptions}
 				label="Inntektsår"
-				onChange={(val: any) => handleChange(val?.value || null, 'skattemelding.inntektsaar')}
+				onChange={(val: any) =>
+					handleChange(
+						val?.value || null,
+						'skattemelding.inntektsaar',
+						`Inntektsår skattemelding: ${val?.label}`,
+					)
+				}
 			/>
 			<FormSelect
 				name="skattemelding.skattemeldingstype"
@@ -33,7 +39,11 @@ export const Skattemelding = ({ handleChange }: any) => {
 				label="Type skattemelding"
 				size="large"
 				onChange={(val: any) =>
-					handleChange(val?.value || null, 'skattemelding.skattemeldingstype')
+					handleChange(
+						val?.value || null,
+						'skattemelding.skattemeldingstype',
+						`Type skattemelding: ${val?.label}`,
+					)
 				}
 				isLoading={loadingSkattemeldingstype}
 			/>

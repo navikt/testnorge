@@ -1,4 +1,4 @@
-import { Form, FormProvider, useForm } from 'react-hook-form'
+import { Form, FormProvider } from 'react-hook-form'
 import styled from 'styled-components'
 import { Table } from '@navikt/ds-react'
 import React from 'react'
@@ -10,8 +10,6 @@ import { FolkeregisteretNavn } from '@/pages/tenorSoek/soekFormPartials/Folkereg
 import { FolkeregisteretAdresse } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretAdresse'
 import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretRelasjoner'
 import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
-import { isDate } from 'date-fns'
-import { fixTimezone } from '@/components/ui/form/formUtils'
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
@@ -34,59 +32,8 @@ const Soekefelt = styled.div`
 	padding: 15px;
 `
 
-export const SoekForm = ({ request, setRequest, setMarkertePersoner, mutate }: any) => {
-	const formMethods = useForm({
-		mode: 'onChange',
-		defaultValues: request || {},
-	})
-
-	const { getValues, control, setValue, watch }: any = formMethods
-
-	function getUpdatedRequest(request: any) {
-		for (let key of Object.keys(request)) {
-			if (request[key] === '' || request[key] === null || request[key] === undefined) {
-				delete request[key]
-			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
-				request[key] = getUpdatedRequest(request[key])
-				if (Object.keys(request[key]).length === 0) {
-					delete request[key]
-				} else {
-					request[key] = getUpdatedRequest(request[key])
-				}
-			}
-		}
-		return Array.isArray(request) ? request.filter((val) => val) : request
-	}
-
-	const handleChange = (value: any, path: string) => {
-		if (isDate(value)) {
-			value = fixTimezone(value)
-		}
-		setValue(path, value)
-		const request = getUpdatedRequest(watch())
-		setRequest({ ...request })
-		setMarkertePersoner([])
-		mutate()
-	}
-
-	const handleChangeList = (value: any, path: string) => {
-		const list = value.map((item: any) => item.value)
-		setValue(path, list)
-		const request = getUpdatedRequest(watch())
-		setRequest({ ...request })
-		setMarkertePersoner([])
-		mutate()
-	}
-
-	const emptyCategory = (paths: Array<string>) => {
-		paths.forEach((path) => {
-			setValue(path, undefined)
-		})
-		const request = getUpdatedRequest(watch())
-		setRequest({ ...request })
-		setMarkertePersoner([])
-		mutate()
-	}
+export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCategory }: any) => {
+	const { getValues, control, watch }: any = formMethods
 
 	const devEnabled =
 		window.location.hostname.includes('localhost') ||

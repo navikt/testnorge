@@ -2,9 +2,20 @@ import Title from '../../components/title'
 import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
 import { SoekForm } from '@/pages/tenorSoek/SoekForm'
 import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
+import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
+import { useForm } from 'react-hook-form'
+import { isDate } from 'date-fns'
+import { fixTimezone } from '@/components/ui/form/formUtils'
+import { DollyApi } from '@/service/Api'
+import {
+	codeToNorskLabel,
+	formatDate,
+	formatDateTime,
+	oversettBoolean,
+} from '@/utils/DataFormatter'
 
 const initialState = {
 	personListe: [],
@@ -33,6 +44,24 @@ export const tenorSoekLocalStorageKey = 'tenorSoek'
 export const tenorSoekStateLocalStorageKey = 'tenorSoekState'
 
 export default () => {
+	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
+	const lagreSoekRequestRef = useRef(lagreSoekRequest)
+	console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
+
+	useEffect(() => {
+		lagreSoekRequestRef.current = lagreSoekRequest
+	}, [lagreSoekRequest])
+
+	useEffect(() => {
+		return () => {
+			if (Object.keys(lagreSoekRequestRef.current).length > 0) {
+				DollyApi.lagreSoek(lagreSoekRequestRef.current, soekType.tenor)
+					.then((response) => console.log(response))
+					.catch((error) => console.error(error))
+			}
+		}
+	}, [])
+
 	const initialRequest = localStorage.getItem(tenorSoekLocalStorageKey)
 		? JSON.parse(localStorage.getItem(tenorSoekLocalStorageKey) as string)
 		: {}
@@ -51,6 +80,13 @@ export default () => {
 	)
 	const [markertePersoner, setMarkertePersoner] = useState([])
 	const [inkluderPartnere, setInkluderPartnere] = useState(false)
+
+	const formMethods = useForm({
+		mode: 'onChange',
+		defaultValues: formRequest || {},
+	})
+
+	const { setValue, watch }: any = formMethods
 
 	useEffect(() => {
 		setState(initialState)
@@ -129,11 +165,117 @@ export default () => {
 		window.scrollTo({ top: treff, behavior: 'smooth' })
 	}
 
+	const getLabel = (value: any, path: string) => {
+		const splitPath = path?.split('.')
+		const fieldName = splitPath[splitPath.length - 1]?.trim()
+		if (typeof value === 'boolean') {
+			return `${codeToNorskLabel(fieldName)}: ${oversettBoolean(value)}`
+		} else if (value.length > 3) {
+			return `${codeToNorskLabel(fieldName)}: ${codeToNorskLabel(value)}`
+		} else if (isDate(value)) {
+			return `${codeToNorskLabel(path)}: ${formatDate(value)}`
+		}
+		//TODO: Tall f.o.m. t.o.m.?
+		//TODO: Paths med flere nivaaer?
+		return `${codeToNorskLabel(fieldName)}: ${value}`
+	}
+
+	function getUpdatedRequest(request: any) {
+		for (let key of Object.keys(request)) {
+			if (request[key] === '' || request[key] === null || request[key] === undefined) {
+				delete request[key]
+			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
+				request[key] = getUpdatedRequest(request[key])
+				if (Object.keys(request[key]).length === 0) {
+					delete request[key]
+				} else {
+					request[key] = getUpdatedRequest(request[key])
+				}
+			}
+		}
+		return Array.isArray(request) ? request.filter((val) => val) : request
+	}
+
+	const handleChange = (value: any, path: string, label: string) => {
+		if (isDate(value)) {
+			value = fixTimezone(value)
+		}
+		setValue(path, value)
+		const request = getUpdatedRequest(watch())
+		setRequest({ ...request })
+		setMarkertePersoner([])
+		mutate()
+		if (value || typeof value === 'boolean') {
+			setLagreSoekRequest({
+				...lagreSoekRequest,
+				[path]: {
+					path: path,
+					value: value,
+					label: label,
+				},
+			})
+		} else {
+			setLagreSoekRequest({
+				...lagreSoekRequest,
+				[path]: undefined,
+			})
+		}
+	}
+
+	//TODO: Test og skriv ferdig denne
+	//TODO: Boer value kun vaere en liste av strings? Sjekk der handleChangeList brukes
+	const handleChangeList = (value: any, path: string, label: string) => {
+		console.log('value: ', value) //TODO - SLETT MEG
+		// const list = value.map((item: any) => item.value || item)
+		setValue(path, value)
+		const request = getUpdatedRequest(watch())
+		setRequest({ ...request })
+		setMarkertePersoner([])
+		mutate()
+		if (value?.length > 0) {
+			const request = value.map((i) => ({
+				path: path,
+				// value: i.value,
+				value: i,
+				// label: label,
+				label: label.includes(':') ? label : `${label}: ${codeToNorskLabel(i)}`,
+			}))
+			setLagreSoekRequest({
+				...lagreSoekRequest,
+				[path]: request,
+			})
+		} else {
+			setLagreSoekRequest({
+				...lagreSoekRequest,
+				[path]: [],
+			})
+		}
+	}
+
+	const emptyCategory = (paths: Array<string>) => {
+		paths.forEach((path) => {
+			setValue(path, undefined)
+		})
+		const request = getUpdatedRequest(watch())
+		setRequest({ ...request })
+		setMarkertePersoner([])
+		mutate()
+	}
+
+	// console.log('watch(): ', watch()) //TODO - SLETT MEG
+	// console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
+
 	return (
 		<div>
 			<div className="flexbox--align-center--justify-start">
 				<Title title="Søk etter personer i Tenor (Test-Norge)" />
 			</div>
+			<SisteSoek
+				type={soekType.tenor}
+				formValues={formMethods.watch()}
+				handleChange={handleChange}
+				handleChangeList={handleChangeList}
+			/>
 			<div className="flexbox--flex-wrap" id="soek">
 				<NavigateButton
 					className="gaa-til-treff"
@@ -143,10 +285,10 @@ export default () => {
 					GÅ TIL TREFF
 				</NavigateButton>
 				<SoekForm
-					request={formRequest}
-					setRequest={setRequest}
-					setMarkertePersoner={setMarkertePersoner}
-					mutate={mutate}
+					formMethods={formMethods}
+					handleChange={handleChange}
+					handleChangeList={handleChangeList}
+					emptyCategory={emptyCategory}
 				/>
 			</div>
 			<div id="treff">
