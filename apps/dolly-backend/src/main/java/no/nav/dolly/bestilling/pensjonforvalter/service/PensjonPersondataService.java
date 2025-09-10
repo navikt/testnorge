@@ -20,6 +20,7 @@ import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.service.TransaksjonMappingService;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -39,6 +40,7 @@ import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUti
 public class PensjonPersondataService {
 
     private static final String NAV_ENHET = "navEnhetId";
+    private static final String SIVILSTAND = "sivilstand";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final PdlDataConsumer pdlDataConsumer;
@@ -106,7 +108,7 @@ public class PensjonPersondataService {
                                                                       PdlPersondata pdlPersondata, String navEnhetId) {
 
         if (nonNull(pdlPersondata) && nonNull(pdlPersondata.getPerson()) &&
-                pdlPersondata.getPerson().getSivilstand().isEmpty()) {
+                pdlPersondata.getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isGift)) {
             return Flux.empty();
         }
 
@@ -123,6 +125,7 @@ public class PensjonPersondataService {
 
                     var context = new MappingContext.Factory().getContext();
                     context.setProperty(NAV_ENHET, navEnhetId);
+                    context.setProperty(SIVILSTAND, pdlPersondata.getPerson().getSivilstand());
                     return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
                 })
                 .flatMap(pensjonforvalterConsumer::lagreRevurderingVedtak);
