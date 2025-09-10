@@ -44,6 +44,9 @@ public class PensjonData {
     @Schema(description = "Data for alderspensjon (AP)")
     private Alderspensjon alderspensjon;
 
+    @Schema(description = "Data for endring av AP uttaksgrad")
+    private AlderspensjonNyUtaksgrad alderspensjonNyUtaksgrad;
+
     @Schema(description = "Data for uføretrygd (UT)")
     private Uforetrygd uforetrygd;
 
@@ -471,4 +474,16 @@ public class PensjonData {
     }
 
     public enum StatusAfp {UKJENT, INNVILGET, SOKT, AVSLAG, IKKE_SOKT}
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AlderspensjonNyUtaksgrad {
+
+        private Integer nyUttaksgrad;
+        private LocalDate fom;
+        private String saksbehandler;
+        private String attesterer;
+        private String navEnhetId;
+    }
 }

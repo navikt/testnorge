@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAPNyUttaksgrad;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAfpOffentligCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreApRevurderingVedtak;
@@ -23,6 +24,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePensjonsavtaleComm
 import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AfpOffentligRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonNyUtaksgradRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
@@ -233,6 +235,13 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreApRevurderingVedtak(webClient, revurderingVedtakRequest, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreAPNyUttaksgrad"})
+    public Flux<PensjonforvalterResponse> lagreAPNyUttaksgrad(AlderspensjonNyUtaksgradRequest nyUtaksgradRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagreAPNyUttaksgrad(webClient, nyUtaksgradRequest, token.getTokenValue()).call());
     }
 
 

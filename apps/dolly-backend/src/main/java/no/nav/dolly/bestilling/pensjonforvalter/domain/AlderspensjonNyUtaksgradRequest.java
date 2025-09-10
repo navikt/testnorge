@@ -20,5 +20,5 @@ public class AlderspensjonNyUtaksgradRequest {
     private String saksbehandler;
     private String attesterer;
     private String navEnhetId;
-    private Set<String> miljoe;
+    private Set<String> miljoer;
 }
