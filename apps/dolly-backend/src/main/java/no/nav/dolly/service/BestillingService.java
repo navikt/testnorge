@@ -83,6 +83,11 @@ public class BestillingService {
                         .map(progresser -> {
                             bestilling.setProgresser(progresser);
                             return bestilling;
+                        }))
+                .flatMap(bestilling -> brukerService.findById(bestilling.getBrukerId())
+                        .map(bruker -> {
+                            bestilling.setBruker(bruker);
+                            return bestilling;
                         }));
     }
 
@@ -141,7 +146,7 @@ public class BestillingService {
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
                 .flatMapMany(gruppe ->
-                        bestillingRepository.getBestillingerFromGruppeId(gruppeId, PageRequest.of(pageNo, pageSize))
+                        bestillingRepository.findByGruppeIdOrderByIdDesc(gruppeId, PageRequest.of(pageNo, pageSize))
                                 .flatMap(bestilling -> Mono.zip(
                                         Mono.just(bestilling),
                                         Mono.just(gruppe),

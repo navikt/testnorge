@@ -76,6 +76,7 @@ class BestillingServiceTest {
         var bestilling = Bestilling.builder().id(BEST_ID).build();
         when(bestillingRepository.findById(any())).thenReturn(Mono.just(bestilling));
         when(bestillingProgressRepository.findByBestillingId(BEST_ID)).thenReturn(Flux.empty());
+        when(brukerService.findById(any())).thenReturn(Mono.just(Bruker.builder().build()));
 
         StepVerifier.create(bestillingService.fetchBestillingById(BEST_ID))
                 .assertNext(bestilling1 -> assertThat(bestilling1, is(bestilling)))
@@ -169,6 +170,7 @@ class BestillingServiceTest {
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
         when(bestillingRepository.save(any())).thenReturn(Mono.just(bestilling));
+        when(brukerService.findById(any())).thenReturn(Mono.just(Bruker.builder().build()));
 
         StepVerifier.create(bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, miljoe))
                 .assertNext(bestilling1 -> {
@@ -198,6 +200,7 @@ class BestillingServiceTest {
                 .build()));
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
+        when(brukerService.findById(any())).thenReturn(Mono.just(Bruker.builder().build()));
 
         StepVerifier.create(bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, miljoe))
                 .expectError(DollyFunctionalException.class)
@@ -219,6 +222,7 @@ class BestillingServiceTest {
         when(bestillingProgressRepository.findByBestillingId(BEST_ID)).thenReturn(Flux.empty());
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
+        when(brukerService.findById(any())).thenReturn(Mono.just(Bruker.builder().build()));
 
         StepVerifier.create(bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, miljoe))
                 .expectError(NotFoundException.class)

@@ -48,7 +48,7 @@ export const initialValuesDetaljertSykemelding = {
 				aktivitet: {
 					aktivitet: null as unknown as string,
 					behandlingsdager: 0,
-					grad: 0,
+					grad: 50,
 					reisetilskudd: false,
 				},
 				fom: addDays(new Date(), -7),

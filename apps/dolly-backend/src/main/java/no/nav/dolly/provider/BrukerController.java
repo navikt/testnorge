@@ -140,7 +140,7 @@ public class BrukerController {
 
     private Mono<RsTeamWithBrukere> mapTeam(Team team) {
 
-        return brukerRepository.findById(team.getBrukerId())
+        return brukerService.findById(team.getBrukerId())
                 .zipWith(Mono.just(team))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
@@ -175,7 +175,7 @@ public class BrukerController {
                                         .collectList(),
                         isNull(bruker.getRepresentererTeam()) ? Mono.just(new Bruker()) :
                                 teamRepository.findById(bruker.getRepresentererTeam())
-                                        .flatMap(team -> brukerRepository.findById(team.getBrukerId())))
+                                        .flatMap(team -> brukerService.findById(team.getBrukerId())))
                 .map(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty(FAVORITTER, tuple.getT2());

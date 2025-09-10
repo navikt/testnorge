@@ -18,7 +18,6 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
@@ -59,13 +58,12 @@ public class MalBestillingService {
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
     private final CacheManager cacheManager;
-    private final BrukerRepository brukerRepository;
 
     public Mono<BestillingMal> saveBestillingMal(Bestilling bestilling, String malNavn, Long brukerId) {
 
         return bestillingMalRepository.findByBrukerIdAndMalNavn(brukerId, malNavn)
                 .doOnNext(bestillingMal -> log.info("bestillingMal {}", bestillingMal))
-                .switchIfEmpty(brukerRepository.findById(brukerId)
+                .switchIfEmpty(brukerService.findById(brukerId)
                         .map(bruker -> BestillingMal.builder()
                                 .brukerId(bruker.getId())
                                 .malNavn(malNavn)

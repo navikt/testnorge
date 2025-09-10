@@ -1,20 +1,24 @@
-package no.nav.testnav.libs.reactivesessionsecurity.config;
+package no.nav.dolly.web.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import io.valkey.DefaultJedisClientConfig;
+import io.valkey.Jedis;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
-import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -24,20 +28,42 @@ import org.springframework.security.oauth2.client.web.server.WebSessionServerOAu
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
 @Configuration
+@Profile({ "prod", "dev", "idporten" })
 @EnableRedisWebSession
 @Import({
-        RedisTokenResolver.class,
         AzureAdTokenExchange.class,
         TokenXExchange.class,
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
-@RequiredArgsConstructor
-public class OidcRedisSessionConfiguration {
+class SessionConfig {
+
+    @Value("${spring.data.redis.host}")
+    private String host;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
+
+    @Value("${spring.data.redis.username}")
+    private String username;
+
+    @Value("${spring.data.redis.password}")
+    private String password;
+
+    @Bean
+    Jedis jedis() {
+        var config = DefaultJedisClientConfig
+                .builder()
+                .user(username)
+                .password(password)
+                .ssl(true)
+                .build();
+        return new Jedis(host, port, config);
+    }
 
     @Bean
     @ConditionalOnMissingBean
-    public TokenExchange tokenExchange(
+    TokenExchange tokenExchange(
             TokenXExchange tokenXExchange,
             AzureAdTokenExchange azureAdTokenExchange,
             ClientRegistrationIdResolver clientRegistrationIdResolver,
@@ -51,35 +77,43 @@ public class OidcRedisSessionConfiguration {
     }
 
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory(RedisStandaloneConfiguration redisStandaloneConfiguration) {
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    LettuceConnectionFactory redisConnectionFactory(
+            RedisStandaloneConfiguration redisStandaloneConfiguration,
+            LettuceClientConfiguration lettuceClientConfiguration
+    ) {
+        return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RedisStandaloneConfiguration redisStandaloneConfiguration(
-            @Value("${spring.data.redis.host}") String host,
-            @Value("${spring.data.redis.port}") Integer post
-    ) {
-        var redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(host);
-        redisStandaloneConfiguration.setPort(post);
-        return redisStandaloneConfiguration;
+    RedisStandaloneConfiguration redisStandaloneConfiguration() {
+        var config = new RedisStandaloneConfiguration();
+        config.setHostName(host);
+        config.setPort(port);
+        config.setUsername(username);
+        config.setPassword(password);
+        return config;
     }
 
     @Bean
-    public ServerOAuth2AuthorizedClientRepository authorizedClientRepository() {
+    @ConditionalOnMissingBean
+    LettuceClientConfiguration lettuceClientConfiguration() {
+        return LettuceClientConfiguration
+                .builder()
+                .useSsl()
+                .build();
+    }
+
+    @Bean
+    ServerOAuth2AuthorizedClientRepository authorizedClientRepository() {
         return new WebSessionServerOAuth2AuthorizedClientRepository();
     }
 
     @Bean
-    public RedisSerializer<Object> springSessionRedisSerializer() {
-        return new GenericJackson2JsonRedisSerializer(objectMapper());
+    RedisSerializer<Object> springSessionRedisSerializer() {
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
     }
 
-    private ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        return mapper;
-    }
 }

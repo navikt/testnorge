@@ -177,7 +177,7 @@ class BrukerControllerTest {
 
         when(mapperFacade.map(eq(team), eq(RsTeamWithBrukere.class), any(MappingContext.class))).thenReturn(rsTeam);
         when(teamService.fetchTeam(any())).thenReturn(Flux.just(team));
-        when(brukerRepository.findById(anyLong())).thenReturn(Mono.just(Bruker.builder().id(1L).build()));
+        when(brukerService.findById(anyLong())).thenReturn(Mono.just(Bruker.builder().id(1L).build()));
 
         StepVerifier.create(controller.getUserTeams()
                         .collectList())

@@ -1,16 +1,17 @@
 POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.intern.dev.nav.no/login
-REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
   application:
     name: dolly-frontend
     allow-circular-references: true
   config:
-    import: "classpath:dolly-application.yml"
+    import: "dolly-application.yml"
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: 6379
+      host: ${VALKEY_HOST_SESSION}
+      port: ${VALKEY_PORT_SESSION}
+      username: ${VALKEY_USERNAME_SESSION}
+      password: ${VALKEY_PASSWORD_SESSION}
   security:
     oauth2:
       resourceserver:

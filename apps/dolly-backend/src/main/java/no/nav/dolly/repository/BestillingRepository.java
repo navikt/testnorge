@@ -24,6 +24,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Void> deleteById(Long id);
 
     Flux<Bestilling> findByGruppeId(Long gruppeId);
+
     Mono<Integer> countByGruppeId(Long gruppeId);
 
     @Query("""
@@ -44,7 +45,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and g.navn ilike :gruppenavn
             fetch first 10 rows only
             """)
-    Flux<RsBestillingFragment> findByGruppenavnContaining(@Param ("gruppenavn") String gruppenavn);
+    Flux<RsBestillingFragment> findByGruppenavnContaining(@Param("gruppenavn") String gruppenavn);
 
     @Query("""
             select b.id as id, g.navn as navn
@@ -81,18 +82,13 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Flux<Bestilling> findBestillingerByIdent(@Param("ident") String ident);
 
     @Query("""
-            select * from Bestilling b
+            select b.* from Bestilling b
             join Bestilling_Progress bp on b.id = bp.bestilling_id
             and bp.ident in (:identer) order by b.id
             """)
     Flux<Bestilling> findBestillingerByIdentIn(@Param("identer") Collection<String> identer);
 
-    @Query("""
-            select * from Bestilling b
-            where b.gruppe_id = :gruppeId
-            order by b.id desc
-            """)
-    Flux<Bestilling> getBestillingerFromGruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
+    Flux<Bestilling> findByGruppeIdOrderByIdDesc(Long gruppeId, Pageable pageable);
 
     @Modifying
     Mono<Void> deleteByGruppeId(Long gruppeId);
@@ -104,6 +100,9 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and not exists (select *
                             from Bestilling_Progress bp
                             where bp.bestilling_id = :bestillingId)
+            and not exists (select *
+                            from transaksjon_mapping tm
+                            where tm.bestilling_id = :bestillingId)
             """)
     Mono<Void> deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 

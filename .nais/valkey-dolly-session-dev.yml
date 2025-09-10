@@ -2,9 +2,9 @@ apiVersion: aiven.io/v1alpha1
 kind: Valkey
 metadata:
   labels:
-    app: valkey-dolly-dev-session
+    app: valkey-dolly-session-dev
     team: dolly
-  name: valkey-dolly-dev-session
+  name: valkey-dolly-session-dev
   namespace: dolly
 spec:
   plan: startup-4
@@ -15,10 +15,10 @@ kind: ServiceIntegration
 metadata:
   labels:
     team: dolly
-  name: valkey-dolly-dev-session
+  name: valkey-dolly-session-dev
   namespace: dolly
 spec:
   project: nav-dev
   integrationType: prometheus
   destinationEndpointId: f20f5b48-18f4-4e2a-8e5f-4ab3edb19733
-  sourceServiceName: valkey-dolly-dev-session
+  sourceServiceName: valkey-dolly-session-dev

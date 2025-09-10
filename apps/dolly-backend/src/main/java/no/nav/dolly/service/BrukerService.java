@@ -165,4 +165,9 @@ public class BrukerService {
                     }
                 });
     }
+
+    public Mono<Bruker> findById(Long id) {
+
+        return brukerRepository.findById(id);
+    }
 }
