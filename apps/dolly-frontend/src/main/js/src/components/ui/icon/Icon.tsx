@@ -191,7 +191,7 @@ const px = (v: number) => `${v}px`
 
 const Icon = ({
 	kind = null as unknown as string,
-	title = undefined,
+	title = undefined as unknown as string,
 	size = 24,
 	fontSize = '1rem',
 	style = undefined as unknown as React.CSSProperties,
@@ -228,7 +228,7 @@ const Icon = ({
 
 	return DesignSystemIcon ? (
 		<DesignSystemIcon
-			title={kind}
+			title={title || kind}
 			fontSize={fontSize}
 			className={className}
 			data-testid={props['data-testid']}
