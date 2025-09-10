@@ -5,4 +5,4 @@ EXPOSE 8080
 
 COPY build/libs/app.jar /my/app.jar
 WORKDIR /my
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-jar", "app.jar"]
+ENTRYPOINT ["java", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-jar", "app.jar"]
