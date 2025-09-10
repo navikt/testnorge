@@ -27,6 +27,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PENSJON_FORVALTER;
@@ -107,7 +108,7 @@ public class PensjonPersondataService {
     private Flux<PensjonforvalterResponse> revurderingVedNySivilstand(String ident, Set<String> miljoer,
                                                                       PdlPersondata pdlPersondata, String navEnhetId) {
 
-        if (nonNull(pdlPersondata) && nonNull(pdlPersondata.getPerson()) &&
+        if (isNull(pdlPersondata) || isNull(pdlPersondata.getPerson()) ||
                 pdlPersondata.getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isGift)) {
             return Flux.empty();
         }
@@ -118,7 +119,7 @@ public class PensjonPersondataService {
                         return objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakRequest.class);
                     } catch (JsonProcessingException e) {
                         log.error("Feil ved deserialisering av transaksjonId", e);
-                        return dummyAlderspensjonRequest(ident, miljoer);
+                        return basicAlderspensjonRequest(ident, miljoer);
                     }
                 })
                 .map(transaksjonMapping -> {
@@ -131,7 +132,7 @@ public class PensjonPersondataService {
                 .flatMap(pensjonforvalterConsumer::lagreRevurderingVedtak);
     }
 
-    private AlderspensjonVedtakRequest dummyAlderspensjonRequest(String ident, Set<String> miljoer) {
+    private AlderspensjonVedtakRequest basicAlderspensjonRequest(String ident, Set<String> miljoer) {
 
         return AlderspensjonVedtakRequest.builder()
                 .fnr(ident)
