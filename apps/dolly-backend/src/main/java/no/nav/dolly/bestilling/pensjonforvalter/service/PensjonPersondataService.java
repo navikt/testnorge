@@ -16,6 +16,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterHelper;
+import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
@@ -28,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PENSJON_FORVALTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_REVURDERING_AP;
@@ -57,7 +57,7 @@ public class PensjonPersondataService {
                 Flux.concat(
                         opprettPersoner(ident, miljoer, persondata)
                                 .map(response -> PENSJON_FORVALTER + pensjonforvalterHelper.decodeStatus(response, ident)),
-                        revurderingVedNySivilstand(ident, miljoer, pdlData, navEnhet)
+                        revurderingVedNySivilstand(ident, miljoer, persondata, pdlData, navEnhet)
                                 .map(response -> PEN_REVURDERING_AP + pensjonforvalterHelper.decodeStatus(response, ident))),
                 lagreSamboer(ident, miljoer)
                         .map(response -> SAMBOER_REGISTER + pensjonforvalterHelper.decodeStatus(response, ident))
@@ -106,6 +106,7 @@ public class PensjonPersondataService {
     }
 
     private Flux<PensjonforvalterResponse> revurderingVedNySivilstand(String ident, Set<String> miljoer,
+                                                                      List<PdlPersonBolk.PersonBolk> persondata,
                                                                       PdlPersondata pdlPersondata, String navEnhetId) {
 
         if (isNull(pdlPersondata) || isNull(pdlPersondata.getPerson()) ||
@@ -126,7 +127,11 @@ public class PensjonPersondataService {
 
                     var context = new MappingContext.Factory().getContext();
                     context.setProperty(NAV_ENHET, navEnhetId);
-                    context.setProperty(SIVILSTAND, pdlPersondata.getPerson().getSivilstand());
+                    context.setProperty(SIVILSTAND, persondata.stream()
+                            .filter(personBolk -> personBolk.getIdent().equals(ident))
+                            .map(PdlPersonBolk.PersonBolk::getPerson)
+                            .map(PdlPerson.Person::getSivilstand)
+                            .findFirst().orElse(List.of(new PdlPerson.Sivilstand())));
                     return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
                 })
                 .flatMap(pensjonforvalterConsumer::lagreRevurderingVedtak);
