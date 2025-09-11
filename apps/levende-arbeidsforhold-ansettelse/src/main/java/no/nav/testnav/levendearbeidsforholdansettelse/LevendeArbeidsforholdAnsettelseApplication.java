@@ -1,8 +1,7 @@
 package no.nav.testnav.levendearbeidsforholdansettelse;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import no.nav.dolly.libs.nais.InitScripts;
-import no.nav.dolly.libs.nais.init.PemToPkcs8Converter;
+import no.nav.dolly.libs.nais.NaisPkcs8ConversionInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,9 +24,10 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 public class LevendeArbeidsforholdAnsettelseApplication {
 
     public static void main(String[] args) {
-        InitScripts.run(new PemToPkcs8Converter());
         new SpringApplicationBuilder(LevendeArbeidsforholdAnsettelseApplication.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .initializers(
+                        new NaisEnvironmentApplicationContextInitializer(),
+                        new NaisPkcs8ConversionInitializer())
                 .run(args);
     }
 

@@ -1,4 +1,4 @@
-package no.nav.dolly.libs.nais.init;
+package no.nav.dolly.libs.nais;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -7,6 +7,9 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.lang.NonNull;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,12 +20,13 @@ import java.security.PrivateKey;
  * Converts NAIS provided key.pem to PKCS#8 PEM format, which can be used by R2dbc.
  */
 @Slf4j
-public class PemToPkcs8Converter implements Runnable {
+public class NaisPkcs8ConversionInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     private static final String INPUT_PATH = "/var/run/secrets/nais.io/sqlcertificate/key.pem";
     private static final String OUTPUT_PATH = "/tmp/pk8.pem"; // Note: Should match configuration in spring.r2dbc.properties.sslKey.
 
-    public void run() {
+    @Override
+    public void initialize(@NonNull ConfigurableApplicationContext applicationContext) {
 
         var inputFile = new File(INPUT_PATH);
         if (!inputFile.exists()) {

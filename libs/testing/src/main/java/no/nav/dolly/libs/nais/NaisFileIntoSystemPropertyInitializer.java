@@ -1,19 +1,24 @@
-package no.nav.dolly.libs.nais.init;
+package no.nav.dolly.libs.nais;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.lang.NonNull;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SystemPropertyInitializer implements Runnable {
+public class NaisFileIntoSystemPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     private final String systemProperty;
     private final String sourceFile;
 
-    public void run() {
+    @Override
+    public void initialize(@NonNull ConfigurableApplicationContext applicationContext) {
+
         try {
             var path = Paths.get(sourceFile);
             if (Files.exists(path)) {
@@ -26,6 +31,6 @@ public class SystemPropertyInitializer implements Runnable {
         } catch (Exception e) {
             throw new RuntimeException("Error setting system property %s from file %s".formatted(systemProperty, sourceFile), e);
         }
-    }
 
+    }
 }
