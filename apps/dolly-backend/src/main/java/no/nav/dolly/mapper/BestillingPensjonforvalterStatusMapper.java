@@ -18,6 +18,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AFP_OFFENTLIG;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_ANNET;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP_NY_UTTAKSGRAD;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP_REVURDERING;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
@@ -40,6 +41,7 @@ public final class BestillingPensjonforvalterStatusMapper {
     private static final String PENSJONSAVTALE = "Pensjonsavtale";
     private static final String PEN_AFPOFFENTLIG = "AfpOffentlig";
     private static final String PEN_REVURDERING_AP = "RevurderingAP";
+    private static final String PEN_NY_UTTAKSGRAD_AP = "NyUttaksgradAP";
     private static final String ANNET = "Annet";
 
     public static List<RsStatusRapport> buildPensjonforvalterStatusMap(List<BestillingProgress> progressList) {
@@ -73,6 +75,7 @@ public final class BestillingPensjonforvalterStatusMapper {
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, UFORETRYGD, PEN_UT));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ALDERSPENSJON, PEN_AP));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PEN_REVURDERING_AP, PEN_AP_REVURDERING));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PEN_NY_UTTAKSGRAD_AP, PEN_AP_NY_UTTAKSGRAD));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, TP_FORHOLD, TP_FORVALTER));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJONSAVTALE, PEN_PENSJONSAVTALE));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PEN_AFPOFFENTLIG, PEN_AFP_OFFENTLIG));

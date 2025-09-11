@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
@@ -13,14 +14,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getRandomAnsatt;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getRandomAnsatt;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Component
-public class PensjonAlederspensjonRevurderingVedtakMappingStrategy implements MappingStrategy {
+public class PensjonAlderspensjonRevurderingVedtakMappingStrategy implements MappingStrategy {
 
-    private static final String NAV_ENHET = "navEnhetId";
     private static final String SIVILSTAND = "sivilstand";
 
     @Override
@@ -58,24 +59,18 @@ public class PensjonAlederspensjonRevurderingVedtakMappingStrategy implements Ma
     private static LocalDate getNesteMaaned(PdlPerson.Sivilstand sivilstand) {
 
         if (nonNull(sivilstand.getGyldigFraOgMed())) {
-            return getNesteMaaned(sivilstand.getGyldigFraOgMed());
+            return PensjonMappingSupportUtils.getNesteMaaned(sivilstand.getGyldigFraOgMed());
         }
 
         if (nonNull(sivilstand.getBekreftelsesdato())) {
-            return getNesteMaaned(sivilstand.getBekreftelsesdato());
+            return PensjonMappingSupportUtils.getNesteMaaned(sivilstand.getBekreftelsesdato());
         }
 
         if (nonNull(sivilstand.getFolkeregistermetadata()) &&
                 nonNull(sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt())) {
-            return getNesteMaaned(sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt().toLocalDate());
+            return PensjonMappingSupportUtils.getNesteMaaned(sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt().toLocalDate());
         }
 
-        return getNesteMaaned(LocalDate.now());
-    }
-
-    private static LocalDate getNesteMaaned(LocalDate dato) {
-
-            var nesteMaaned = dato.plusMonths(1);
-            return LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1);
+        return PensjonMappingSupportUtils.getNesteMaaned(LocalDate.now());
     }
 }

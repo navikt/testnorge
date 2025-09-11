@@ -1,54 +1,51 @@
 package no.nav.dolly.bestilling.pensjonforvalter.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterHelper;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
-import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PENSJON_FORVALTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_REVURDERING_AP;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SAMBOER_REGISTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.getPeriodeId;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.hasVedtak;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PensjonPersondataService {
 
-    private static final String NAV_ENHET = "navEnhetId";
     private static final String SIVILSTAND = "sivilstand";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final PdlDataConsumer pdlDataConsumer;
     private final PensjonforvalterHelper pensjonforvalterHelper;
     private final MapperFacade mapperFacade;
-    private final TransaksjonMappingService transaksjonMappingService;
-    private final ObjectMapper objectMapper;
 
     public Flux<String> lagrePersondata(String ident, List<PdlPersonBolk.PersonBolk> persondata,
                                         PdlPersondata pdlData, String navEnhet, Set<String> miljoer) {
@@ -114,17 +111,14 @@ public class PensjonPersondataService {
             return Flux.empty();
         }
 
-        return transaksjonMappingService.getTransaksjonMapping(SystemTyper.PEN_AP.name(), ident)
-                .map(mapping -> {
-                    try {
-                        return objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakRequest.class);
-                    } catch (JsonProcessingException e) {
-                        log.error("Feil ved deserialisering av transaksjonId", e);
-                        return basicAlderspensjonRequest(ident, miljoer);
-                    }
-                })
+        return Flux.fromIterable(miljoer)
+                .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
+                        .collectList()
+                        .map(vedtakResponse -> hasVedtak(vedtakResponse, PensjonVedtakResponse.SakType.AP))
+                        .flatMapMany(harVedtak -> isTrue(harVedtak) ?
+                                pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe) :
+                                Mono.empty()))
                 .map(transaksjonMapping -> {
-
                     var context = new MappingContext.Factory().getContext();
                     context.setProperty(NAV_ENHET, navEnhetId);
                     context.setProperty(SIVILSTAND, persondata.stream()
@@ -135,13 +129,5 @@ public class PensjonPersondataService {
                     return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
                 })
                 .flatMap(pensjonforvalterConsumer::lagreRevurderingVedtak);
-    }
-
-    private AlderspensjonVedtakRequest basicAlderspensjonRequest(String ident, Set<String> miljoer) {
-
-        return AlderspensjonVedtakRequest.builder()
-                .fnr(ident)
-                .miljoer(miljoer)
-                .build();
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.pensjonforvalter.mapper;
+package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
 import lombok.experimental.UtilityClass;
 
@@ -26,5 +26,11 @@ public class PensjonMappingSupportUtils {
     public static String getRandomAnsatt() {
 
         return String.format("Z9%05d", ansatt.nextInt(99999));
+    }
+
+    public static LocalDate getNesteMaaned(LocalDate dato) {
+
+        var nesteMaaned = dato.plusMonths(1);
+        return LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1);
     }
 }

@@ -71,7 +71,7 @@ class PensjonAlderspensjonVedtakMappingStrategyTest {
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", "123");
         context.setProperty("miljoer", Set.of("q2"));
-        context.setProperty("navEnhet", "1234");
+        context.setProperty("navEnhetId", "1234");
 
         var target = mapperFacade.map(pensjon, AlderspensjonVedtakRequest.class, context);
 
