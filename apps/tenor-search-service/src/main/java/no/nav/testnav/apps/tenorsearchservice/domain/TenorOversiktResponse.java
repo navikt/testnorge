@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -43,16 +41,6 @@ public class TenorOversiktResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Rollegruppe {
-        private Type type;
-        private List<String> fritekst;
-        private List<Rolle> roller;
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Data {
 
         private Integer treff;
@@ -60,15 +48,9 @@ public class TenorOversiktResponse {
         private Integer offset;
         private Integer nesteSide;
         private Integer seed;
-        private List<Person> personer;
 
-        public List<Person> getPersoner() {
-
-            if (isNull(personer)) {
-                personer = new ArrayList<>();
-            }
-            return personer;
-        }
+        @Builder.Default
+        private List<Person> personer= new ArrayList<>();
     }
 
     @lombok.Data
@@ -99,36 +81,5 @@ public class TenorOversiktResponse {
                         .build())
                 .error(this.getError())
                 .build();
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Type {
-        private String kode;
-        private String beskrivelse;
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Virksomhet {
-        private String organisasjonsnummer;
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Rolle {
-        private Type type;
-        private Person person;
-        private Virksomhet virksomhet;
-        private Object valgtAv;
-        private String fratraadt;
-        private List<String> fritekst;
-        private int rekkefolge;
     }
 }

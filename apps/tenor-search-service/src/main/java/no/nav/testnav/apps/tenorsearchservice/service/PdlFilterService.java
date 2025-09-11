@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO.hasDollyTag;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -22,6 +23,7 @@ public class PdlFilterService {
     public Mono<TenorOversiktResponse> filterPdlPerson(TenorOversiktResponse oversikt, DollyBackendSelector selector) {
 
         if (oversikt.getStatus() != HttpStatus.OK ||
+                isNull(oversikt.getData()) ||
                 oversikt.getData().getPersoner().isEmpty()) {
 
             return Mono.just(oversikt);
