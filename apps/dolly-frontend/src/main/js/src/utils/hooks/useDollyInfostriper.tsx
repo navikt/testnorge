@@ -5,7 +5,7 @@ import { fetcher } from '@/api'
 export interface InfoStripeType {
 	id: number
 	message: string
-	type: 'info' | 'warning' | 'error' | 'success'
+	type: 'INFO' | 'WARNING' | 'ERROR' | 'SUCCESS'
 	start: Date
 	expires: Date
 }
@@ -84,7 +84,7 @@ export const useDollyInfostriper = () => {
 	)
 
 	return {
-		infostriper: data,
+		infostriper: data || [],
 		loading: isLoading,
 		error,
 		createInfostripe,
