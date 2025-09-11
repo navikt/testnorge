@@ -1,6 +1,6 @@
 {
   "name": "endringsmelding-frontend",
-  "version": "1.2.35",
+  "version": "1.2.36",
   "private": true,
   "type": "module",
   "homepage": "/",
@@ -26,7 +26,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@types/react-router-dom": "^5.3.3",
-    "@vitejs/plugin-react": "^4.0.0",
+    "@vitejs/plugin-react": "^5.0.2",
     "babel-plugin-styled-components": "^2.0.7",
     "isomorphic-fetch": "^3.0.0",
     "less": "^4.1.3",
