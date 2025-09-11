@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -58,6 +61,14 @@ public class TenorOversiktResponse {
         private Integer nesteSide;
         private Integer seed;
         private List<Person> personer;
+
+        public List<Person> getPersoner() {
+
+            if (isNull(personer)) {
+                personer = new ArrayList<>();
+            }
+            return personer;
+        }
     }
 
     @lombok.Data
