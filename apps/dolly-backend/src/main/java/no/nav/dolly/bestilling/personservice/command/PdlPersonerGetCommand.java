@@ -35,7 +35,7 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
                 .retrieve()
                 .bodyToFlux(PdlPersonBolk.class)
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
     }

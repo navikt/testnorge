@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.arbeidssoekerregisteret;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.arbeidssoekerregisteret.dto.ArbeidssoekerregisteretRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -11,9 +10,10 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -30,9 +30,9 @@ public class ArbeidssoekerregisteretClient implements ClientRegister {
 
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.just(bestilling)
+        return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getArbeidssoekerregisteret()))
                 .map(RsDollyUtvidetBestilling::getArbeidssoekerregisteret)
                 .map(soknad -> {
@@ -50,17 +50,14 @@ public class ArbeidssoekerregisteretClient implements ClientRegister {
                         return "FEIL=" + ErrorStatusDecoder.encodeStatus(arbeidssokerregisteretResponse.getFeilmelding());
                     }
                 }))
-                .map(status -> futurePersist(progress, status));
+                .flatMap(status -> oppdaterStatus(progress, status));
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress,
+        return transactionHelperService.persister(progress,
                     BestillingProgress::getArbeidssoekerregisteretStatus,
                     BestillingProgress::setArbeidssoekerregisteretStatus, status);
-            return progress;
-        };
     }
 
     @Override

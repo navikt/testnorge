@@ -42,8 +42,6 @@ public class KodeverkGetCommand implements Callable<Mono<KodeverkDTO>> {
                             .status(description.getStatus())
                             .message(description.getMessage())
                             .build());
-                })
-                .retryWhen(WebClientError.is5xxException());
+                });
     }
-
 }

@@ -13,8 +13,9 @@ import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_ARBEIDSFORHOLD;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -37,22 +38,17 @@ public class ArbeidsforholdPutCommand implements Callable<Flux<ArbeidsforholdRes
                 .header(HEADER_NAV_ARBEIDSFORHOLD, CallIdUtil.generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .body(BodyInserters.fromValue(arbeidsforhold))
                 .retrieve()
                 .bodyToFlux(Arbeidsforhold.class)
                 .map(arbeidsforhold1 -> ArbeidsforholdRespons.builder()
                         .arbeidsforhold(arbeidsforhold1)
-                        .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Flux.just(ArbeidsforholdRespons.builder()
-                        .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .error(error)
-                        .build()))
-                .retryWhen(WebClientError.is5xxException());
+                        .build()));
     }
-
 }

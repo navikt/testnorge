@@ -3,7 +3,11 @@ package no.nav.dolly.bestilling.arbeidsplassencv;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.arbeidsplassencv.command.*;
+import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenDeleteCVCommand;
+import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGodtaHjemmelCommand;
+import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGodtaVilkaarCommand;
+import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostPersonCommand;
+import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPutCVCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.config.Consumers;
@@ -33,8 +37,8 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
             Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            WebClient webClient) {
+
         serverProperties = consumers.getTestnavArbeidsplassenCVProxy();
         this.tokenService = tokenService;
         this.webClient = webClient
@@ -45,34 +49,34 @@ public class ArbeidsplassenCVConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arbeidsplassen_oppdaterCV"})
-    public Flux<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, PAMCVDTO arbeidsplassenCV, String uuid) {
+    public Mono<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, PAMCVDTO arbeidsplassenCV, String uuid) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new ArbeidsplassenPutCVCommand(webClient, ident, arbeidsplassenCV, uuid, token.getTokenValue()).call())
+                .flatMap(token -> new ArbeidsplassenPutCVCommand(webClient, ident, arbeidsplassenCV, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Oppdatert CV for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = {"operation", "arbeidsplassen_godtaVilkaar"})
-    public Flux<ArbeidsplassenCVStatusDTO> godtaVilkaar(String ident, String uuid) {
+    public Mono<ArbeidsplassenCVStatusDTO> godtaVilkaar(String ident, String uuid) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new ArbeidsplassenGodtaVilkaarCommand(webClient, ident, uuid, token.getTokenValue()).call())
+                .flatMap(token -> new ArbeidsplassenGodtaVilkaarCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Opprettet vilkaar for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = {"operation", "arbeidsplassen_godtaHjemmel"})
-    public Flux<ArbeidsplassenCVStatusDTO> godtaHjemmel(String ident, String uuid) {
+    public Mono<ArbeidsplassenCVStatusDTO> godtaHjemmel(String ident, String uuid) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new ArbeidsplassenGodtaHjemmelCommand(webClient, ident, uuid, token.getTokenValue()).call())
+                .flatMap(token -> new ArbeidsplassenGodtaHjemmelCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Opprettet hjemmel for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = {"operation", "arbeidsplassen_opprettPerson"})
-    public Flux<ArbeidsplassenCVStatusDTO> opprettPerson(String ident, String uuid) {
+    public Mono<ArbeidsplassenCVStatusDTO> opprettPerson(String ident, String uuid) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new ArbeidsplassenPostPersonCommand(webClient, ident, uuid, token.getTokenValue()).call())
+                .flatMap(token -> new ArbeidsplassenPostPersonCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Opprettet person for ident {} {}", ident, resultat));
     }
 

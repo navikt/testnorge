@@ -10,6 +10,9 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   port: 8080
   webproxy: true
   tokenx:

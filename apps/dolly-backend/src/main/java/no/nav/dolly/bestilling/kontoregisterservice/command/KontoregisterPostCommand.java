@@ -46,8 +46,6 @@ public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResp
                             .status(description.getStatus())
                             .feilmelding(description.getMessage())
                             .build());
-                })
-                .retryWhen(WebClientError.is5xxException());
+                });
     }
-
 }

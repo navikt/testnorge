@@ -1,177 +1,168 @@
 package no.nav.dolly.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.config.TestSecurityConfig;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
-import no.nav.dolly.provider.TeamController;
-import no.nav.dolly.service.TeamService;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
+import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = TeamController.class,
-        excludeAutoConfiguration = { SecurityAutoConfiguration.class })
-@Import(TestSecurityConfig.class)
-public class TeamIntegrationTest {
+class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
     @Autowired
-    private WebApplicationContext context;
-
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private WebTestClient webTestClient;
 
     @MockitoBean
-    private TeamService teamService;
-
-    @MockitoBean
-    private MapperFacade mapperFacade;
-
-    private Team team;
-    private RsTeam rsTeam;
-    private RsTeamWithBrukere rsTeamWithBrukere;
+    private BrukerService brukerService;
 
     @BeforeEach
     void setUp() {
 
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .apply(SecurityMockMvcConfigurers.springSecurity())
-                .build();
+        var bruker = saveBruker(Bruker.builder()
+                .brukerId(UUID.randomUUID().toString())
+                .brukertype(Bruker.Brukertype.AZURE)
+                .brukernavn("personlig bruker")
+                .build()).block();
 
-        var bruker = Bruker.builder()
-                .id(1L)
-                .brukernavn("user1")
-                .build();
+        var brukerForTeam = createTeamBruker()
+                .block();
 
-        team = Team.builder()
-                .id(1L)
-                .navn("Test Team")
-                .beskrivelse("Test Team Description")
-                .brukere(Set.of(bruker))
-                .build();
+        var team = createTeam("Test Team", brukerForTeam, bruker)
+                .block();
 
-        rsTeam = RsTeam.builder()
-                .id(1L)
-                .navn("Test Team")
-                .beskrivelse("Test Team Description")
-                .build();
+        createTeamBruker(bruker, team)
+                .block();
 
-        rsTeamWithBrukere = new RsTeamWithBrukere();
-        rsTeamWithBrukere.setId(1L);
-        rsTeamWithBrukere.setNavn("Test Team");
-        rsTeamWithBrukere.setBeskrivelse("Test Team Description");
-        rsTeamWithBrukere.setBrukerId("user1");
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerService.fetchBrukerWithoutTeam()).thenReturn(Mono.just(bruker));
     }
 
     @Test
-    void getAllTeams_shouldReturnListOfTeams() throws Exception {
-        when(teamService.fetchAllTeam()).thenReturn(List.of(team));
-        when(mapperFacade.mapAsList(List.of(team), RsTeamWithBrukere.class))
-                .thenReturn(List.of(rsTeamWithBrukere));
+    void getAllTeams_shouldReturnListOfTeams() {
 
-        mockMvc.perform(get("/api/v1/team")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].navn").value("Test Team"));
+        var teams = getAllTeams().collectList().block();
+
+        webTestClient
+                .get()
+                .uri("/api/v1/team")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$[0].id").isEqualTo(teams.getFirst().getId())
+                .jsonPath("$[0].navn").isEqualTo("Test Team");
     }
 
     @Test
-    void getTeamById_shouldReturnTeam() throws Exception {
-        when(teamService.fetchTeamById(1L)).thenReturn(team);
-        when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
+    void getTeamById_shouldReturnTeam() {
 
-        mockMvc.perform(get("/api/v1/team/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.navn").value("Test Team"));
+        var teams = getAllTeams().collectList().block();
+
+        webTestClient
+                .get()
+                .uri("/api/v1/team/" + teams.getFirst().getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(teams.getFirst().getId())
+                .jsonPath("$.navn").isEqualTo("Test Team");
     }
 
     @Test
-    void createTeam_shouldReturnCreatedTeam() throws Exception {
-        when(mapperFacade.map(any(RsTeam.class), eq(Team.class))).thenReturn(team);
-        when(teamService.opprettTeam(team)).thenReturn(team);
-        when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
+    void createTeam_shouldReturnCreatedTeam() {
 
-        var result = mockMvc.perform(post("/api/v1/team")
+        webTestClient
+                .post()
+                .uri("/api/v1/team")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(RsTeam.builder()
+                        .navn("Test Team 2")
+                        .beskrivelse("Test Team Description")
+                        .build())
+                .exchange()
+                .expectStatus()
+                .isCreated()
+                .expectBody()
+                .jsonPath("$.navn").isEqualTo("Test Team 2")
+                .jsonPath("$.beskrivelse").isEqualTo("Test Team Description");
+    }
+
+    @Test
+    void updateTeam_shouldReturnUpdatedTeam() {
+
+        var teams = getAllTeams().collectList().block();
+
+        webTestClient
+                .put()
+                .uri("/api/v1/team/" + teams.getFirst().getId())
+                .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(rsTeam)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        var responseContent = result.getResponse().getContentAsString();
-        var response = objectMapper.readValue(responseContent, RsTeamWithBrukere.class);
-
-        assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getNavn()).isEqualTo("Test Team");
-        assertThat(response.getBeskrivelse()).isEqualTo("Test Team Description");
+                        .bodyValue(RsTeamUpdate.builder()
+                                .navn("Test Team 2")
+                                .beskrivelse("Test Team Description")
+                                .build())
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(teams.getFirst().getId())
+                .jsonPath("$.navn").isEqualTo("Test Team 2");
     }
 
     @Test
-    void updateTeam_shouldReturnUpdatedTeam() throws Exception {
-        when(mapperFacade.map(any(RsTeam.class), eq(Team.class))).thenReturn(team);
-        when(teamService.updateTeam(eq(1L), any(Team.class))).thenReturn(team);
-        when(mapperFacade.map(team, RsTeamWithBrukere.class)).thenReturn(rsTeamWithBrukere);
+    void deleteTeam_shouldReturnNotFound() {
 
-        mockMvc.perform(put("/api/v1/team/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(rsTeam)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.navn").value("Test Team"));
+        webTestClient
+                .delete()
+                .uri("/api/v1/team/33")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
     }
 
     @Test
-    void deleteTeam_shouldReturnNotFound() throws Exception {
-        mockMvc.perform(delete("/api/v1/team/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+    void addTeamMember_shouldReturnCreated()  {
+
+        var bruker2 = saveBruker(Bruker.builder()
+                .brukerId(UUID.randomUUID().toString())
+                .brukertype(Bruker.Brukertype.AZURE)
+                .brukernavn("personlig bruker 2")
+                .build()).block();
+
+        webTestClient
+                .post()
+                .uri("/api/v1/team/1/medlem/" + bruker2.getBrukerId())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isCreated();
     }
 
     @Test
-    void addTeamMember_shouldReturnCreated() throws Exception {
-        mockMvc.perform(post("/api/v1/team/1/medlem/user2")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-    }
+    void removeTeamMember_shouldReturnNoContent() {
 
-    @Test
-    void removeTeamMember_shouldReturnNoContent() throws Exception {
-        mockMvc.perform(delete("/api/v1/team/1/medlem/user1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+        var teams = getAllTeams().collectList().block();
+
+        webTestClient
+                .delete()
+                .uri("/api/v1/team/"+ teams.getFirst().getId()+ "/medlem/user1")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isNoContent();
     }
 }

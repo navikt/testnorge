@@ -16,7 +16,6 @@ import { validation } from '@/components/fagsystem/alderspensjon/form/validation
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { getAlder } from '@/ducks/fagsystem'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
@@ -302,13 +301,6 @@ export const AlderspensjonForm = () => {
 							</ToggleGroup.Item>
 						</ToggleGroup>
 					</div>
-					{!soknad && (
-						<FormDatepicker
-							name={`${alderspensjonPath}.kravFremsattDato`}
-							label="Krav fremsatt dato"
-							date={formMethods.getValues(`${alderspensjonPath}.kravFremsattDato`)}
-						/>
-					)}
 					<Monthpicker
 						name={`${alderspensjonPath}.iverksettelsesdato`}
 						label="Iverksettelsesdato"

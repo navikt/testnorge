@@ -17,7 +17,6 @@ import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -43,7 +42,6 @@ public class KontaktadataDeleteCommand implements Callable<Mono<DigitalKontaktda
                 .bodyValue(body)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> DigitalKontaktdataResponse.builder()
@@ -52,8 +50,6 @@ public class KontaktadataDeleteCommand implements Callable<Mono<DigitalKontaktda
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
-                .onErrorResume(throwable -> DigitalKontaktdataResponse.of(WebClientError.describe(throwable)))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> DigitalKontaktdataResponse.of(WebClientError.describe(throwable)));
     }
-
 }

@@ -18,7 +18,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.http.util.TextUtils.isBlank;
 
 @Slf4j
@@ -52,19 +51,20 @@ public class PostFullmaktDataCommand implements Callable<Mono<FullmaktPostRespon
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("fnr", ident)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(FullmaktPostResponse.class)
-                .doOnError(WebClientError.logTo(log))
                 .doOnError(throwable -> {
-                    if (throwable instanceof WebClientResponseException ex && ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                        log.error("Bad request mot repr-fullmakt, response: {}", ex.getResponseBodyAsString());
+                    if (throwable instanceof WebClientResponseException webClienResponseException
+                            && !webClienResponseException.getStatusCode().is4xxClientError()) {
+                       WebClientError.logTo(log).accept(throwable);
                     }
                 })
-                .doOnSuccess(response -> log.info("Fullmakt opprettet for person {}, response: {}", ident, response))
-                .retryWhen(WebClientError.is5xxException())
-                .doOnError(WebClientError.logTo(log));
-
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    return Mono.just(FullmaktPostResponse.builder()
+                                .melding(description.getMessage())
+                                .status(description.getStatus())
+                        .build());
+                });
     }
-
 }

@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.organisasjonforvalter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
@@ -9,6 +8,7 @@ import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,7 +29,6 @@ import static java.util.Collections.singleton;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,7 +49,7 @@ class OrganisasjonClientTest {
     private OrganisasjonBestillingService organisasjonBestillingService;
 
     @Mock
-    private ObjectMapper objectMapper;
+    private OrganisasjonBestillingProgressRepository organisasjonBestillingProgressRepository;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -60,14 +60,10 @@ class OrganisasjonClientTest {
     @InjectMocks
     private OrganisasjonClient organisasjonClient;
 
-
     private RsOrganisasjonBestilling bestilling;
 
     @BeforeEach
     void setUp() {
-
-        DeployResponse deployResponse = DeployResponse.builder()
-                .build();
 
         BestillingRequest.SyntetiskOrganisasjon requestOrganisasjon = BestillingRequest.SyntetiskOrganisasjon.builder()
                 .formaal("Testing")
@@ -98,18 +94,24 @@ class OrganisasjonClientTest {
         Set<String> orgnummer = new HashSet<>();
         orgnummer.add(ORG_NUMMER);
 
-        lenient().when(mapperFacade.map(any(), eq(BestillingRequest.SyntetiskOrganisasjon.class))).thenReturn(requestOrganisasjon);
-        lenient().when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(new BestillingResponse(orgnummer), HttpStatus.CREATED));
-        lenient().when(organisasjonConsumer.deployOrganisasjon(any())).thenReturn(new ResponseEntity<>(deployResponse, HttpStatus.OK));
-        lenient().when(organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(any())).thenReturn(Collections.singletonList(new OrganisasjonBestillingProgress()));
-    }
+        when(mapperFacade.map(any(), eq(BestillingRequest.SyntetiskOrganisasjon.class))).thenReturn(requestOrganisasjon);
+        when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(Mono.just(new BestillingResponse(orgnummer)));
+           }
 
     @Test
     void should_run_deploy_organisasjon_exactly_one_time_for_one_hovedorganisasjon() {
 
-        organisasjonClient.opprett(bestilling, OrganisasjonBestilling.builder()
+        var deployResponse = DeployResponse.builder().build();
+
+        when(organisasjonConsumer.deployOrganisasjon(any())).thenReturn(Mono.just(deployResponse));
+        when(organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(any())).thenReturn(Flux.just(new OrganisasjonBestillingProgress()));
+        when(organisasjonBestillingProgressRepository.save(any())).thenReturn(Mono.just(new OrganisasjonBestillingProgress()));
+
+        StepVerifier.create(organisasjonClient.opprett(bestilling, OrganisasjonBestilling.builder()
                 .id(BESTILLING_ID)
-                .build());
+                .build()))
+                .expectNextCount(0)
+                .verifyComplete();
 
         verify(organisasjonConsumer, times(1)
                 .description("Skal bare deploye organisasjoner en gang for en hoved organisasjon"))
@@ -119,14 +121,18 @@ class OrganisasjonClientTest {
     @Test
     void should_set_bestillingfeil_for_invalid_orgnummer_response() {
 
-        when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
+        when(organisasjonConsumer.postOrganisasjon(any())).thenThrow(new RuntimeException("Feil ved opprettelse av organisasjon"));
+        when(organisasjonBestillingService.setBestillingFeil(any(), any())).thenReturn(Mono.empty());
+        when(organisasjonProgressService.setBestillingFeil(anyLong(), any())).thenReturn(Mono.empty());
 
-        organisasjonClient.opprett(bestilling, OrganisasjonBestilling.builder()
+        StepVerifier.create(organisasjonClient.opprett(bestilling, OrganisasjonBestilling.builder()
                 .id(BESTILLING_ID)
-                .build());
+                .build()))
+                .expectNextCount(0)
+                .verifyComplete();
 
-        verify(organisasjonBestillingService, times(1)
-                .description("Skal sette feil på bestillingen nøyaktig en gang"))
-                .setBestillingFeil(anyLong(), any());
+        verify(organisasjonConsumer).postOrganisasjon(any());
+        verify(organisasjonBestillingService).setBestillingFeil(any(), any());
+        verify(organisasjonProgressService).setBestillingFeil(anyLong(), any());
     }
 }

@@ -13,8 +13,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @Slf4j
 @RequiredArgsConstructor
 public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
@@ -34,7 +32,6 @@ public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(medlData)
                 .retrieve()
                 .toBodilessEntity()
@@ -45,8 +42,6 @@ public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
                             .build();
                 })
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> MedlPostResponse.of(WebClientError.describe(throwable)))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> MedlPostResponse.of(WebClientError.describe(throwable)));
     }
-
 }

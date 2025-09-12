@@ -1,17 +1,20 @@
 package no.nav.dolly.domain.jpa;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import no.nav.dolly.domain.resultset.entity.infostripe.InfoStripeType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @Builder
@@ -21,29 +24,18 @@ import java.time.LocalDateTime;
 public class InfoStripe implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "infoStripeIdGenerator")
-    @GenericGenerator(
-            name = "infoStripeIdGenerator",
-            type = org.hibernate.id.enhanced.SequenceStyleGenerator.class,
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "info_stripe_seq"),
-                    @Parameter(name = "initial_value", value = "1"),
-                    @Parameter(name = "increment_size", value = "1")
-            }
-    )
     private Long id;
 
-    @Builder.Default
-    @Column(nullable = false)
-    private InfoStripeType type = InfoStripeType.INFO;
+    @Column("TYPE")
+    private InfoStripeType type;
 
-    @Column(nullable = false)
+    @Column("MESSAGE")
     private String message;
 
-    @Column
+    @Column("START")
     private LocalDateTime start;
 
-    @Column
+    @Column("EXPIRES")
     private LocalDateTime expires;
 
     @Override

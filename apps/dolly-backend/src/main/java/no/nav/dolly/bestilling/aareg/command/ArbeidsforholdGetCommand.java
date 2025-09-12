@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -44,19 +43,16 @@ public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRes
                 .header(HEADER_NAV_CALL_ID, CallIdUtil.generateCallId())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(Arbeidsforhold[].class)
                 .map(arbeidsforhold1 -> ArbeidsforholdRespons.builder()
                         .eksisterendeArbeidsforhold(Arrays.asList(arbeidsforhold1))
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
-                        .miljo(miljoe)
+                        .miljoe(miljoe)
                         .error(error)
-                        .build()))
-                .retryWhen(WebClientError.is5xxException());
+                        .build()));
     }
-
 }

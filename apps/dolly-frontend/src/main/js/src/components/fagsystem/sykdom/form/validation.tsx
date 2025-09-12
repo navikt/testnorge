@@ -54,6 +54,17 @@ export const validation = {
 						diagnose: requiredString,
 						diagnosekode: requiredString,
 					}),
+					mottaker: Yup.object({
+						navn: requiredString,
+					}),
+					organisasjon: Yup.object({
+						arbeidsgiver: Yup.object({
+							orgnummer: Yup.string()
+								.required('Må ha gyldig organisasjonsnummer')
+								.min(9, 'Orgnummer må være 9 siffer')
+								.max(9, 'Orgnummer må være 9 siffer'),
+						}),
+					}),
 					biDiagnoser: Yup.array().of(
 						ifPresent(
 							'$sykemelding.detaljertSykemelding.biDiagnoser[0].diagnose',
@@ -70,7 +81,7 @@ export const validation = {
 						hprId: requiredString,
 					}),
 					arbeidsgiver: Yup.object({
-						navn: testHarArbeidsforhold(Yup.string().nullable()),
+						navn: testHarArbeidsforhold(Yup.string().required('Må ha gyldig arbeidsgiver')),
 						stillingsprosent: requiredNumber.transform((num) => (isNaN(num) ? undefined : num)),
 						yrkesbetegnelse: requiredString,
 					}),

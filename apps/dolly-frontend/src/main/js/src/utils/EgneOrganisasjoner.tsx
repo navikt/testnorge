@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import * as _ from 'lodash-es'
 import { Adresse, Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'
@@ -13,7 +12,9 @@ import Icon from '@/components/ui/icon/Icon'
 interface OrgProps {
 	path: string
 	label?: string
-	handleChange: (event: React.ChangeEvent<any>) => void
+	handleChange: (event: React.ChangeEvent<any>) => any
+	afterChange?: (event: React.ChangeEvent<any>) => any
+	showMiljoeInfo?: boolean
 	warningMessage?: React.ReactElement
 	filterValidEnhetstyper?: boolean
 	isDisabled?: boolean
@@ -125,6 +126,8 @@ export const EgneOrganisasjoner = ({
 	path,
 	label,
 	handleChange,
+	afterChange,
+	showMiljoeInfo = true,
 	warningMessage,
 	filterValidEnhetstyper,
 	isDisabled = false,
@@ -175,17 +178,6 @@ export const EgneOrganisasjoner = ({
 				}
 			})
 	}
-
-	const sjekkOrganisasjoner = () => {
-		if (formMethods.watch(path) === '') {
-			if (!_.has(formMethods.formState.errors, `manual.${path}`)) {
-				formMethods.setError(`manual.${path}`, { message: 'Feltet er påkrevd' })
-			}
-			return { feilmelding: 'Feltet er påkrevd' }
-		}
-		return null
-	}
-
 	return (
 		<>
 			{error && (
@@ -217,15 +209,15 @@ export const EgneOrganisasjoner = ({
 					onChange={(event) => {
 						setOrgnr(event.value)
 						handleChange(event)
+						afterChange && afterChange(event)
 						formMethods.trigger(path)
 					}}
 					value={formMethods.watch(path)}
-					feil={sjekkOrganisasjoner()}
 					isClearable={false}
 					isDisabled={isDisabled}
 				/>
 			)}
-			{orgnr && (
+			{showMiljoeInfo && orgnr && (
 				<OrgMiljoeInfoVisning miljoer={miljoer} loading={miljoeLoading} error={miljoeError} />
 			)}
 		</>
