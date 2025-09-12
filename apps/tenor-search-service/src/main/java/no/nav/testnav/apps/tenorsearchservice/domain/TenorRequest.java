@@ -109,9 +109,9 @@ public class TenorRequest {
     private Boolean harFalskIdentitet;
     private Boolean harNorskStatsborgerskap;
     private Boolean harFlereStatsborgerskap;
-    private Boolean harEuEoesStatsborgerskap;
     private Boolean harNordenStatsborgerskap;
-    private Boolean harTredjelandsStatsborgerskap;
+    private Boolean harEuEoesStatsborgerskap;
+    private Boolean harTredjelandStatsborgerskap;
     private Boolean harUtgaattStatsborgerskap;
     private Boolean harStatsborgerskapHistorikk;
     private Navn navn;

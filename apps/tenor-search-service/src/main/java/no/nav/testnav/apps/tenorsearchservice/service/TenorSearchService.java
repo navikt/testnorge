@@ -68,7 +68,7 @@ public class TenorSearchService {
                 .append(convertObject("flereStatsborgerskap", searchData.getHarFlereStatsborgerskap()))
                 .append(convertObject("nordenStatsborgerskap", searchData.getHarNordenStatsborgerskap()))
                 .append(convertObject("euEoesStatsborgerskap", searchData.getHarEuEoesStatsborgerskap()))
-                .append(convertObject("tredjelandStatsborgerskap", searchData.getHarTredjelandsStatsborgerskap()))
+                .append(convertObject("tredjelandStatsborgerskap", searchData.getHarTredjelandStatsborgerskap()))
                 .append(convertObject("utgaattStatsborgerskap", searchData.getHarUtgaattStatsborgerskap()))
                 .append(convertObject("harStatsborgerskapHistorikk", searchData.getHarStatsborgerskapHistorikk()));
 
