@@ -3,10 +3,9 @@ package no.nav.dolly.bestilling.instdata.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
-import no.nav.dolly.util.TokenXUtil;
+import no.nav.dolly.bestilling.instdata.domain.InstdataRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -19,10 +18,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
 
-    private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person";
-
-    private static final String ENVIRONMENTS = "environments";
-    private static final String INST_IDENT = "norskident";
+    private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person/slett";
 
     private final WebClient webClient;
     private final String ident;
@@ -31,15 +27,17 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
 
     @Override
     public Mono<DeleteResponse> call() {
+
         return webClient
-                .delete()
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(INSTDATA_URL)
-                        .queryParam(ENVIRONMENTS, miljoer)
                         .build())
-                .header(INST_IDENT, ident)
                 .headers(WebClientHeader.bearer(token))
-                .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
+                .bodyValue(InstdataRequest.builder()
+                        .personident(ident)
+                        .environments(miljoer)
+                        .build())
                 .retrieve()
                 .toBodilessEntity()
                 .map(resultat -> DeleteResponse.builder()
@@ -49,8 +47,6 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.BadRequest),
                         WebClientError.logTo(log))
-                .onErrorResume(throwable -> DeleteResponse.of(WebClientError.describe(throwable), ident))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> DeleteResponse.of(WebClientError.describe(throwable), ident));
     }
-
 }

@@ -12,7 +12,9 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
 @Slf4j
@@ -41,7 +43,6 @@ public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterRes
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, periodeId, HttpStatus.valueOf(response.getStatusCode().value())))
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, periodeId, error)));
     }
 

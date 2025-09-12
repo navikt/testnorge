@@ -12,8 +12,6 @@ import reactor.core.publisher.Flux;
 import java.net.http.HttpTimeoutException;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class PdlDataSlettCommand implements Callable<Flux<Void>> {
@@ -29,10 +27,9 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
                 .delete()
                 .uri(PDL_FORVALTER_URL, ident)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(Void.class)
-                .retryWhen(WebClientError.is5xxException())
+
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on DELETE of ident %s".formatted(ident)))
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException.NotFound),

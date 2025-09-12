@@ -13,8 +13,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
@@ -36,7 +34,6 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                         .queryParam(ENVIRONMENTS, miljoe)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(instdata)
                 .retrieve()
                 .toBodilessEntity()
@@ -47,8 +44,6 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                         .environments(List.of(miljoe))
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable), instdata, List.of(miljoe)))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> InstdataResponse.of(WebClientError.describe(throwable), instdata, List.of(miljoe)));
     }
-
 }

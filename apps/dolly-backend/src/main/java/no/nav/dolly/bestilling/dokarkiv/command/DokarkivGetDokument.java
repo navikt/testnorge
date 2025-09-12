@@ -16,7 +16,6 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
 
 @Slf4j
@@ -43,7 +42,6 @@ public class DokarkivGetDokument implements Callable<Mono<DokarkivResponse>> {
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(ACCEPT_ENCODING, ContentType.APPLICATION_JSON)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToMono(String.class)
                 .map(response -> DokarkivResponse.builder()
@@ -53,7 +51,7 @@ public class DokarkivGetDokument implements Callable<Mono<DokarkivResponse>> {
                                 .build()))
                         .dokument(response)
                         .build())
-                .retryWhen(WebClientError.is5xxException())
+
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> DokarkivResponse.of(WebClientError.describe(throwable), miljoe));
     }

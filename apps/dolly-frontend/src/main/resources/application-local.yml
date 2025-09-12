@@ -1,5 +1,4 @@
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
-REDIS_HOST: localhost
 
 server:
   port: 8020
@@ -7,6 +6,12 @@ server:
 spring:
   config:
     import: "sm://"
+  data:
+    redis:
+      host: localhost
+      port: 1234
+      username: not_in_use
+      password: not_in_use
   security:
     oauth2:
       client:

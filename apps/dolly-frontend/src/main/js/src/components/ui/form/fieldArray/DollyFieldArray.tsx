@@ -235,6 +235,7 @@ export const FormDollyFieldArray = ({
 	maxReachedDescription = null,
 	buttonText = null as unknown as string,
 	errorText = null,
+	lockedEntriesLength = 0 as unknown as number,
 }) => {
 	const formMethods = useFormContext()
 	const { append, remove } = useFieldArray({
@@ -253,7 +254,9 @@ export const FormDollyFieldArray = ({
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 				{values?.map((curr, idx) => {
-					const showDeleteButton = canBeEmpty ? true : values.length >= 2
+					const showDeleteButton = canBeEmpty
+						? true
+						: values.length >= 2 && idx >= lockedEntriesLength
 					const path = `${name}.${idx}`
 					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
 					const handleRemove = () => {

@@ -5,9 +5,10 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
-  annotations:
-    texas.nais.io/enabled: "true"
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: "{{image}}"
   port: 8080
   webproxy: true

@@ -12,8 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse>> {
@@ -30,7 +28,6 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(DETALJERT_SYKEMELDING_URL).build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(SykemeldingResponseDTO.class)
@@ -43,8 +40,6 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                                 .build())
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(error -> SykemeldingResponse.of(WebClientError.describe(error), request.getPasient().getIdent()))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(error -> SykemeldingResponse.of(WebClientError.describe(error), request.getPasient().getIdent()));
     }
-
 }

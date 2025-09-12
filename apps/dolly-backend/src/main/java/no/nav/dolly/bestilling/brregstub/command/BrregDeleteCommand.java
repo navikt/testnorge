@@ -11,7 +11,6 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,11 +28,10 @@ public class BrregDeleteCommand implements Callable<Flux<Void>> {
                 .uri(uriBuilder -> uriBuilder.path(ROLLEOVERSIKT_URL).build())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
+
                 .onErrorResume(error -> Mono.empty());
     }
 

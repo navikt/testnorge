@@ -97,6 +97,9 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
+  valkey:
+    - instance: session-dev
+      access: readwrite
   readiness:
     path: /internal/health/readiness
     initialDelay: 20

@@ -29,6 +29,9 @@ spec:
         - application: testnorge-profil-api-dev
         - application: logging
           namespace: nais-system
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   liveness:
     path: /internal/health/liveness
     periodSeconds: 30

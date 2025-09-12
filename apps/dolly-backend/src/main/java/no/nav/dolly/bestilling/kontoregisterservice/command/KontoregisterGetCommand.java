@@ -39,7 +39,7 @@ public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseD
                         .aktivKonto(Objects.nonNull(response.getBody()) ? response.getBody() : null)
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-                .retryWhen(WebClientError.is5xxException())
+
                 .onErrorResume(throwable -> Mono.just(HentKontoResponseDTO
                         .builder()
                         .status(WebClientError.describe(throwable).getStatus())

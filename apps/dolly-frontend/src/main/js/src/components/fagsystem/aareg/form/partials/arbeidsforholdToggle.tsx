@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import { ToggleGroup } from '@navikt/ds-react'
 import { initialArbeidsgiverOrg, initialArbeidsgiverPers } from '../initialValues'
@@ -50,30 +50,36 @@ const DisabledToggleArbeidsgiver = styled(ToggleGroup)`
 
 type ArbeidsforholdToggleProps = {
 	path: string
-	idx: number
-	fasteOrganisasjoner: any
-	brukerOrganisasjoner: any
-	egneOrganisasjoner: any
-	loadingOrganisasjoner: boolean
+	idx?: number
+	afterChange?: (value: any) => any
+	showMiljoeInfo?: boolean
+	onToggle?: (value: any) => any
+	disablePrivat?: boolean
+	fasteOrganisasjoner?: any
+	egneOrganisasjoner?: any
+	loadingOrganisasjoner?: boolean
 }
 
 export const ArbeidsforholdToggle = ({
 	path,
 	idx,
+	onToggle,
+	afterChange,
+	showMiljoeInfo = true,
+	disablePrivat = false,
 	fasteOrganisasjoner,
-	brukerOrganisasjoner,
 	egneOrganisasjoner,
 	loadingOrganisasjoner,
 }: ArbeidsforholdToggleProps) => {
 	const formMethods = useFormContext()
 	const aaregData = formMethods.getValues(path)
 
-	//@ts-ignore
 	const { personFoerLeggTil } = useContext(
 		BestillingsveilederContext,
 	) as BestillingsveilederContextType
 	const tidligereAaregdata = hentAaregEksisterendeData(personFoerLeggTil)
-	const erLaastArbeidsforhold = idx < tidligereAaregdata?.length
+
+	const erLaastArbeidsforhold = typeof idx === 'number' && idx < (tidligereAaregdata?.length ?? 0)
 
 	const getArbeidsgiverType = () => {
 		const orgnr = aaregData?.arbeidsgiver?.orgnummer
@@ -97,18 +103,32 @@ export const ArbeidsforholdToggle = ({
 		}
 	}
 
-	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType())
+	const arbeidsgiverType = formMethods.watch(`${path}.arbeidsgiverType`) as
+		| ArbeidsgiverTyper
+		| undefined
 
 	useEffect(() => {
-		setTypeArbeidsgiver(getArbeidsgiverType())
-	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('aareg')?.length])
+		if (!arbeidsgiverType) {
+			formMethods.setValue(`${path}.arbeidsgiverType`, getArbeidsgiverType(), {
+				shouldDirty: false,
+			})
+		}
+	}, [path])
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
-		setTypeArbeidsgiver(value)
+		onToggle && onToggle(value)
+		formMethods.setValue(`${path}.arbeidsgiverType`, value, {
+			shouldDirty: true,
+			shouldTouch: true,
+		})
 		if (value === ArbeidsgiverTyper.privat) {
-			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverPers })
+			formMethods.resetField(`${path}.arbeidsgiver`, {
+				defaultValue: initialArbeidsgiverPers,
+			})
 		} else {
-			formMethods.resetField(`${path}.arbeidsgiver`, { defaultValue: initialArbeidsgiverOrg })
+			formMethods.resetField(`${path}.arbeidsgiver`, {
+				defaultValue: initialArbeidsgiverOrg,
+			})
 		}
 		formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
 		formMethods.clearErrors(`${path}.arbeidsgiver`)
@@ -122,56 +142,64 @@ export const ArbeidsforholdToggle = ({
 		? 'Kan ikke endre arbeidsgiver på eksisterende arbeidsforhold'
 		: ''
 
+	const renderArbeidsgiverToggleItems = (disablePrivat: boolean) =>
+		arbeidsgiverToggleValues
+			.filter((t) => !(disablePrivat && t.value === ArbeidsgiverTyper.privat))
+			.map((t) => (
+				<ToggleGroup.Item key={t.value} value={t.value}>
+					{t.label}
+				</ToggleGroup.Item>
+			))
+
+	const currentValue = arbeidsgiverType ?? ArbeidsgiverTyper.felles
+
 	return (
-		<div className="toggle--wrapper" key={idx}>
+		<div className="toggle--wrapper" key={idx ?? `${path}-toggle`}>
 			{erLaastArbeidsforhold ? (
 				<DisabledToggleArbeidsgiver
 					onChange={() => null}
-					value={typeArbeidsgiver}
+					value={currentValue}
 					size={'small'}
 					fill
-					key={idx}
+					key={idx ?? `${path}-disabled`}
 					title={'Kan ikke endre arbeidsgivertype på eksisterende arbeidsforhold'}
 				>
-					{arbeidsgiverToggleValues.map((type) => (
-						<ToggleGroup.Item key={type.value} value={type.value}>
-							{type.label}
-						</ToggleGroup.Item>
-					))}
+					{renderArbeidsgiverToggleItems(disablePrivat)}
 				</DisabledToggleArbeidsgiver>
 			) : (
 				<ToggleArbeidsgiver
-					// @ts-ignore
 					onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
-					value={typeArbeidsgiver}
+					value={currentValue}
 					size={'small'}
 					fill
-					key={idx}
+					key={idx ?? `${path}-enabled`}
 				>
-					{arbeidsgiverToggleValues.map((type) => (
-						<ToggleGroup.Item key={type.value} value={type.value}>
-							{type.label}
-						</ToggleGroup.Item>
-					))}
+					{renderArbeidsgiverToggleItems(disablePrivat)}
 				</ToggleArbeidsgiver>
 			)}
-			<div className="flexbox--full-width">
-				{typeArbeidsgiver === ArbeidsgiverTyper.felles && (
+			<div style={{ marginTop: '10px' }} className="flexbox--full-width">
+				{currentValue === ArbeidsgiverTyper.felles && (
 					<div title={title}>
 						<OrganisasjonMedArbeidsforholdSelect
 							path={`${path}.arbeidsgiver.orgnummer`}
 							label={'Organisasjonsnummer'}
 							isDisabled={erLaastArbeidsforhold}
 							placeholder={'Velg organisasjon ...'}
+							afterChange={afterChange}
 						/>
 					</div>
 				)}
-				{typeArbeidsgiver === ArbeidsgiverTyper.egen && (
+				{currentValue === ArbeidsgiverTyper.egen && (
 					<div className="flex-box" title={title}>
 						<EgneOrganisasjoner
 							path={`${path}.arbeidsgiver.orgnummer`}
+							afterChange={afterChange}
+							showMiljoeInfo={showMiljoeInfo}
 							handleChange={(selected: any) => {
-								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value)
+								formMethods.setValue(`${path}.arbeidsgiver.orgnummer`, selected?.value, {
+									shouldDirty: true,
+									shouldTouch: true,
+								})
 								formMethods.clearErrors(`manual.${path}.arbeidsgiver`)
 								formMethods.clearErrors(`${path}.arbeidsgiver`)
 							}}
@@ -180,20 +208,20 @@ export const ArbeidsforholdToggle = ({
 						/>
 					</div>
 				)}
-				{typeArbeidsgiver === ArbeidsgiverTyper.fritekst && (
+				{currentValue === ArbeidsgiverTyper.fritekst && (
 					<FormTextInput
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						defaultValue={formMethods.watch(`${path}.arbeidsgiver.orgnummer`)}
+						onBlur={afterChange}
 						isDisabled={erLaastArbeidsforhold}
 						title={title}
 					/>
 				)}
-				{typeArbeidsgiver === ArbeidsgiverTyper.privat && (
+				{currentValue === ArbeidsgiverTyper.privat && (
 					<ArbeidsgiverIdent
 						path={`${path}.arbeidsgiver.ident`}
-						isDisabled={erLaastArbeidsforhold}
+						isDisabled={erLaastArbeidsforhold || disablePrivat}
 						title={title}
 					/>
 				)}

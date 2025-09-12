@@ -34,8 +34,6 @@ public class BrukerServiceGetTilgangCommand implements Callable<Mono<TilgangDTO>
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(error -> Mono.just(TilgangDTO.builder()
                         .brukere(List.of(brukerId))
-                        .build()))
-                .retryWhen(WebClientError.is5xxException());
+                        .build()));
     }
-
 }

@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingResponse>> {
@@ -41,7 +39,6 @@ public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingRespon
                         .queryParam(TAGS, tagVerdier)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(identer))
                 .retrieve()
@@ -52,8 +49,6 @@ public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingRespon
                         .details(Optional.ofNullable(status.getBody()).map(TagsOpprettingResponse::getDetails).orElse(null))
                         .status(HttpStatus.valueOf(status.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException());
+                .doOnError(WebClientError.logTo(log));
     }
-
 }

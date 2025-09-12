@@ -8,12 +8,11 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.net.http.HttpTimeoutException;
 import java.util.concurrent.Callable;
-
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,14 +31,12 @@ public class PdlDataStanaloneCommand implements Callable<Mono<String>> {
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_IDENTER_STANDALONE_URL)
                         .build(ident, standalone))
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> "OK")
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on PUT for ident %s".formatted(ident)))
-                .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.just(ident))
+                .doOnError(WebClientError.logTo(log));
     }
-
 }

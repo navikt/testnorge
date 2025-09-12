@@ -22,7 +22,7 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
 
     // Session
-    implementation "redis.clients:jedis:5.2.0"
+    implementation 'io.valkey:valkey-java:5.4.0'
     implementation "org.springframework.session:spring-session-core"
     implementation "org.springframework.session:spring-session-data-redis"
 

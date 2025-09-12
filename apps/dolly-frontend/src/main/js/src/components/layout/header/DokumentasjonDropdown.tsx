@@ -20,7 +20,7 @@ export const DokumentasjonDropdown = () => {
 		window.location.hostname.includes('frontend') || window.location.hostname.includes('localhost')
 	const apiUrl = isDevVersion
 		? 'https://dolly-backend-dev.intern.dev.nav.no/swagger'
-		: 'https://dolly-backend.intern.dev.nav.no/swagger'
+		: 'https://dolly-backend.ekstern.dev.nav.no/swagger'
 
 	return (
 		<ActionMenuWrapper
@@ -47,14 +47,14 @@ export const DokumentasjonDropdown = () => {
 						Brukerdokumentasjon
 					</DropdownStyledLink>
 				</ActionMenu.Item>
+				<ActionMenu.Item onClick={() => window.open(apiUrl, '_blank', 'noopener')}>
+					<Icon kind="file-code" fontSize="1.5rem" style={{ color: 'black' }} />
+					<DropdownStyledLink href={apiUrl} target="_blank" rel="noopener noreferrer">
+						API-dokumentasjon (Dolly backend)
+					</DropdownStyledLink>
+				</ActionMenu.Item>
 				{currentBruker?.brukertype === 'AZURE' && (
 					<>
-						<ActionMenu.Item onClick={() => window.open(apiUrl, '_blank', 'noopener')}>
-							<Icon kind="file-code" fontSize="1.5rem" style={{ color: 'black' }} />
-							<DropdownStyledLink href={apiUrl} target="_blank" rel="noopener noreferrer">
-								API-dokumentasjon (Dolly backend)
-							</DropdownStyledLink>
-						</ActionMenu.Item>
 						<PreloadableActionMenuItem
 							route="/oversikt"
 							dataTestId={TestComponentSelectors.BUTTON_HEADER_OVERSIKT}

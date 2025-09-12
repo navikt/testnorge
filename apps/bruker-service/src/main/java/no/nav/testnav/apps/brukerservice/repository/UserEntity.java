@@ -24,6 +24,9 @@ public class UserEntity implements Persistable<String> {
     @Column("USERNAME")
     private String brukernavn;
 
+    @Column("EMAIL")
+    private String epost;
+
     @Column("ORGANISASJONSNUMMER")
     private String organisasjonsnummer;
 

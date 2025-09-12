@@ -16,8 +16,6 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-
 @RequiredArgsConstructor
 @Slf4j
 public class UdistubPostCommand implements Callable<Mono<UdiPersonResponse>> {
@@ -35,7 +33,6 @@ public class UdistubPostCommand implements Callable<Mono<UdiPersonResponse>> {
                 .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
                 .accept(MediaType.APPLICATION_JSON)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))
                 .retrieve()
                 .toEntity(UdiPersonResponse.class)
@@ -51,8 +48,6 @@ public class UdistubPostCommand implements Callable<Mono<UdiPersonResponse>> {
                                 HttpStatus.valueOf(webClientResponseException.getStatusCode().value()) : HttpStatus.INTERNAL_SERVER_ERROR)
                         .reason(WebClientError.describe(throwable).getMessage())
                         .type(UdiPersonResponse.InnsendingType.NEW)
-                        .build()))
-                .retryWhen(WebClientError.is5xxException());
+                        .build()));
     }
-
 }

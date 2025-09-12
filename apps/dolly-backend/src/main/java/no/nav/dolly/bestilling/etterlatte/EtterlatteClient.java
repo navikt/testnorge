@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.etterlatte;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.etterlatte.dto.VedtakRequestDTO;
 import no.nav.dolly.bestilling.etterlatte.dto.VedtakResponseDTO;
@@ -15,7 +14,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.util.FoedselsdatoUtility;
-import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,27 +44,27 @@ public class EtterlatteClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (!bestilling.getEtterlatteYtelser().isEmpty()) {
-
-            return Flux.from(getPersoner(dollyPerson.getIdent())
-                    .flatMapMany(vedtakRequestDTO -> Flux.fromIterable(bestilling.getEtterlatteYtelser())
-                            .flatMap(etterlattYtelse -> {
-                                var context = MappingContextUtils.getMappingContext();
-                                context.setProperty("etterlattYtelse", etterlattYtelse);
-                                var nyVedtakRequest = mapperFacade.map(vedtakRequestDTO, VedtakRequestDTO.class, context);
-                                return etterlatteConsumer.opprettVedtak(nyVedtakRequest)
-                                        .map(EtterlatteClient::decodeResponse);
-                            })
-                    )
-                    .collectList()
-                    .map(statusList -> statusList.stream()
-                            .filter(status -> !OKAY.equals(status))
-                            .findFirst().orElse(OKAY))
-                    .map(status -> futurePersist(progress, status)));
+        if (bestilling.getEtterlatteYtelser().isEmpty()) {
+            return Mono.empty();
         }
-        return Flux.empty();
+
+        return getPersoner(dollyPerson.getIdent())
+                .flatMapMany(vedtakRequestDTO -> Flux.fromIterable(bestilling.getEtterlatteYtelser())
+                        .flatMap(etterlattYtelse -> {
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty("etterlattYtelse", etterlattYtelse);
+                            var nyVedtakRequest = mapperFacade.map(vedtakRequestDTO, VedtakRequestDTO.class, context);
+                            return etterlatteConsumer.opprettVedtak(nyVedtakRequest)
+                                    .map(EtterlatteClient::decodeResponse);
+                        })
+                )
+                .collectList()
+                .map(statusList -> statusList.stream()
+                        .filter(status -> !OKAY.equals(status))
+                        .findFirst().orElse(OKAY))
+                .flatMap(status -> oppdaterStatus(progress, status));
     }
 
     @Override
@@ -74,12 +73,9 @@ public class EtterlatteClient implements ClientRegister {
         // Etterlatte tilbyr pt ikke sletting
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-        return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setEtterlatteStatus, status);
-            return progress;
-        };
+        return transactionHelperService.persister(progress, BestillingProgress::setEtterlatteStatus, status);
     }
 
     private static String decodeResponse(VedtakResponseDTO response) {

@@ -14,9 +14,10 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -45,15 +46,12 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .retrieve()
                 .toBodilessEntity()
                 .map(resultat -> InaktiverResponse.builder()
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> InaktiverResponse.of(WebClientError.describe(throwable)))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable -> InaktiverResponse.of(WebClientError.describe(throwable)));
     }
-
 }

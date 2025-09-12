@@ -7,6 +7,9 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Bruker.Brukertype;
+import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
@@ -14,35 +17,39 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
-import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static java.lang.String.format;
-import static no.nav.dolly.domain.jpa.Bruker.Brukertype.BANKID;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TestgruppeService {
+
+    private static final String GRUPPE_MELDING = "Gruppe med id %s ble ikke funnet.";
 
     private final MapperFacade mapperFacade;
     private final TestgruppeRepository testgruppeRepository;
@@ -51,208 +58,267 @@ public class TestgruppeService {
     private final IdentService identService;
     private final BestillingService bestillingService;
     private final PersonService personService;
-    private final GetUserInfo getUserInfo;
     private final PdlDataConsumer pdlDataConsumer;
     private final BrukerServiceConsumer brukerServiceConsumer;
+    private final BestillingRepository bestillingRepository;
+    private final IdentRepository identRepository;
+    private final BrukerRepository brukerRepository;
+    private final BrukerFavoritterRepository brukerFavoritterRepository;
 
-    public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
-        var bruker = brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo));
+    public Mono<Testgruppe> opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
 
-        return saveGruppeTilDB(Testgruppe.builder()
-                .navn(rsTestgruppe.getNavn())
-                .hensikt(rsTestgruppe.getHensikt())
-                .datoEndret(LocalDate.now())
-                .opprettetAv(bruker)
-                .sistEndretAv(bruker)
-                .build()
-        );
-    }
-
-    @Transactional(readOnly = true)
-    public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
-
-        sjekkTilgang(gruppeId);
-
-        var testgruppeUtenIdenter = testgruppeRepository.findByIdOrderById(gruppeId)
-                .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
-
-        var testidentPage = identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
-
-        var testgruppe = Testgruppe.builder()
-                .id(testgruppeUtenIdenter.getId())
-                .navn(testgruppeUtenIdenter.getNavn())
-                .hensikt(testgruppeUtenIdenter.getHensikt())
-                .favorisertAv(testgruppeUtenIdenter.getFavorisertAv())
-                .bestillinger(testgruppeUtenIdenter.getBestillinger())
-                .opprettetAv(testgruppeUtenIdenter.getOpprettetAv())
-                .datoEndret(testgruppeUtenIdenter.getDatoEndret())
-                .sistEndretAv(testgruppeUtenIdenter.getSistEndretAv())
-                .erLaast(testgruppeUtenIdenter.getErLaast())
-                .laastBeskrivelse(testgruppeUtenIdenter.getLaastBeskrivelse())
-                .tags(testgruppeUtenIdenter.getTags())
-                .testidenter(testidentPage.toList())
-                .build();
-
-        var rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
-        rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
-
-        var bestillingerPage = bestillingService.getBestillingerFromGruppeIdPaginert(testgruppe.getId(), 0, 1);
-        rsTestgruppe.setAntallBestillinger(bestillingerPage.getTotalElements());
-        return rsTestgruppe;
-    }
-
-    public Testgruppe fetchTestgruppeById(Long gruppeId) {
-        return testgruppeRepository.findById(gruppeId).orElseThrow(() ->
-                new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
-    }
-
-    public Mono<Page<Testgruppe>> getAllTestgrupper(Integer pageNo, Integer pageSize) {
-
-        var bruker = brukerService.fetchOrCreateBruker();
-        if (bruker.getBrukertype() == BANKID) {
-            return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
-                            PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
-        } else {
-            return Mono.just(testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending())));
-        }
-    }
-
-    public Page<Testgruppe> fetchTestgrupperByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
-
-        var bruker = isBlank(brukerId) ? brukerService.fetchOrCreateBruker() : brukerService.fetchBrukerWithoutTeam(brukerId);
-
-        return testgruppeRepository.findAllByOpprettetAv(bruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
-    }
-
-    public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
-        try {
-            return testgruppeRepository.save(testgruppe);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
-        } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getMessage(), e);
-        }
-    }
-
-    public List<Testgruppe> saveGrupper(Collection<Testgruppe> testgrupper) {
-        try {
-            return testgrupper.stream()
-                    .map(testgruppeRepository::save)
-                    .toList();
-        } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
-        } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getMessage(), e);
-        }
+        return brukerService.fetchOrCreateBruker()
+                .map(bruker -> Testgruppe.builder()
+                        .navn(rsTestgruppe.getNavn())
+                        .hensikt(rsTestgruppe.getHensikt())
+                        .datoEndret(LocalDate.now())
+                        .opprettetAvId(bruker.getId())
+                        .opprettetAv(bruker)
+                        .sistEndretAvId(bruker.getId())
+                        .sistEndretAv(bruker)
+                        .build())
+                .flatMap(testgruppeRepository::save);
     }
 
     @Transactional
-    public Long deleteGruppeById(Long gruppeId) {
-        var testgruppe = fetchTestgruppeById(gruppeId);
-        var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
-
-        transaksjonMappingRepository.deleteByGruppeId(gruppeId);
-
-        bestillingService.slettBestillingerByGruppeId(gruppeId);
-        identService.slettTestidenterByGruppeId(gruppeId);
-
-        personService.recyclePersoner(testIdenter);
-        brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
-        testgruppeRepository.deleteAllById(gruppeId);
-
-        return gruppeId;
+    public Mono<RsTestgruppeMedBestillingId> fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize,
+                                                                         String sortColumn, String sortRetning) {
+        return harTilgang(gruppeId)
+                .flatMap(tilgang -> {
+                    if (isTrue(tilgang)) {
+                        return brukerService.fetchOrCreateBruker()
+                                .flatMap(bruker ->
+                                        this.fetchTestgruppeById(gruppeId)
+                                                .flatMap(testgruppe -> Mono.zip(
+                                                        Mono.just(testgruppe),
+                                                        Mono.just(bruker),
+                                                        identRepository.countByGruppeId(testgruppe.getId()),
+                                                        bestillingRepository.countByGruppeId(testgruppe.getId()),
+                                                        identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true),
+                                                        brukerRepository.findAll()
+                                                                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                                                                    map.put(bruker1.getId(), bruker1);
+                                                                    return map;
+                                                                }),
+                                                        identService.getTestidenterFromGruppePaginert(gruppeId, pageNo,
+                                                                pageSize, sortColumn, sortRetning)))
+                                                .flatMap(tuple -> {
+                                                    var context = MappingContextUtils.getMappingContext();
+                                                    context.setProperty("bruker", tuple.getT2());
+                                                    context.setProperty("antallIdenter", tuple.getT3());
+                                                    context.setProperty("antallBestillinger", tuple.getT4());
+                                                    context.setProperty("antallIBruk", tuple.getT5());
+                                                    context.setProperty("alleBrukere", tuple.getT6());
+                                                    return Mono.just(mapperFacade.map(tuple.getT1(), RsTestgruppe.class, context))
+                                                            .zipWith(Mono.just(tuple.getT7()));
+                                                })
+                                                .map(tuple -> {
+                                                    var context = MappingContextUtils.getMappingContext();
+                                                    context.setProperty("identer", tuple.getT2());
+                                                    return mapperFacade.map(tuple.getT1(), RsTestgruppeMedBestillingId.class, context);
+                                                }));
+                    } else {
+                        return Mono.error(new NotFoundException(GRUPPE_MELDING.formatted(gruppeId)));
+                    }
+                });
     }
 
-    public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
-        var testgruppe = fetchTestgruppeById(gruppeId);
+    private Mono<Boolean> harTilgang(Long gruppeId) {
 
-        testgruppe.setHensikt(endreGruppe.getHensikt());
-        testgruppe.setNavn(endreGruppe.getNavn());
-        testgruppe.setSistEndretAv(brukerService.fetchBrukerOrTeamBruker(getUserId(getUserInfo)));
-        testgruppe.setDatoEndret(LocalDate.now());
-
-        return saveGruppeTilDB(testgruppe);
+        return brukerService.fetchOrCreateBruker()
+                .filter(bruker -> Brukertype.BANKID == bruker.getBrukertype())
+                .flatMap(bruker -> brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                        .map(TilgangDTO::getBrukere)
+                        .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere, Pageable.unpaged())
+                                .map(Testgruppe::getId)
+                                .collectList())
+                        .map(grupper -> grupper.stream().anyMatch(gruppe -> gruppe.equals(gruppeId))))
+                .switchIfEmpty(Mono.just(true));
     }
 
-    public RsTestgruppePage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
+    public Mono<Testgruppe> fetchTestgruppeById(Long gruppeId) {
 
-        var bruker = isBlank(brukerId) ? brukerService.fetchOrCreateBruker() : brukerService.fetchBrukerWithoutTeam(brukerId);
-
-        Page<Testgruppe> paginertGruppe;
-
-        if (isBlank(brukerId) && bruker.getBrukertype() == BANKID) {
-            paginertGruppe = brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .map(brukere -> testgruppeRepository.findAllByOpprettetAv_BrukerIdIn(brukere,
-                            PageRequest.of(pageNo, pageSize, Sort.by("id").descending())))
-                    .block();
-
-        } else if (isBlank(brukerId)) {
-            paginertGruppe = testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize));
-
-        } else {
-            paginertGruppe = fetchTestgrupperByBrukerId(pageNo, pageSize, brukerId);
-        }
-
-        return RsTestgruppePage.builder()
-                .pageNo(paginertGruppe.getNumber())
-                .antallPages(paginertGruppe.getTotalPages())
-                .pageSize(paginertGruppe.getSize())
-                .antallElementer(paginertGruppe.getTotalElements())
-                .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppe.class))
-                .favoritter(mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class))
-                .build();
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException(GRUPPE_MELDING.formatted(gruppeId))));
     }
 
-    public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, RsLockTestgruppe lockTestgruppe) {
+    public Mono<RsTestgruppePage> getAllTestgrupper(Integer pageNo, Integer pageSize) {
 
-        var testgruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke testgruppe med id = " + gruppeId));
-        if (isTrue(lockTestgruppe.getErLaast())) {
-            testgruppe.setErLaast(true);
-            testgruppe.setLaastBeskrivelse(lockTestgruppe.getLaastBeskrivelse());
+        return brukerService.fetchOrCreateBruker()
+                .flatMap(bruker ->
+                        (bruker.getBrukertype() == Brukertype.BANKID
+                                ? brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                                .map(TilgangDTO::getBrukere)
+                                .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
+                                                PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                        .collectList()
+                                        .zipWith(testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)))
+                                :
+                                testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                        .collectList()
+                                        .zipWith(testgruppeRepository.countBy()))
+                                .flatMap(tuple ->
+                                        getRsTestgruppePage(pageNo, pageSize, bruker, tuple.getT1(), tuple.getT2())));
+    }
 
-        } else {
-            testgruppe.setErLaast(false);
-            testgruppe.setLaastBeskrivelse(null);
-        }
+    public Flux<Testgruppe> saveGrupper(Collection<Testgruppe> testgrupper) {
 
-        return testgruppe;
+        return Flux.fromIterable(testgrupper)
+                .flatMap(testgruppeRepository::save);
+    }
+
+    @Transactional
+    public Mono<Void> deleteGruppeById(Long gruppeId) {
+
+        return fetchTestgruppeById(gruppeId)
+                .then(transaksjonMappingRepository.deleteByGruppeId(gruppeId))
+                .then(bestillingService.slettBestillingerByGruppeId(gruppeId))
+                .then(identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
+                        .collectList()
+                        .map(testidenter -> mapperFacade.mapAsList(testidenter, TestidentDTO.class))
+                        .flatMap(personService::recyclePersoner))
+                .then(identRepository.deleteByGruppeId(gruppeId))
+                .then(brukerRepository.deleteBrukerFavoritterByGroupId(gruppeId))
+                .then(testgruppeRepository.deleteById(gruppeId));
+    }
+
+    public Mono<Testgruppe> oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
+
+        return fetchTestgruppeById(gruppeId)
+                .zipWith(brukerService.fetchOrCreateBruker())
+                .map(tuple -> {
+                    tuple.getT1().setHensikt(endreGruppe.getHensikt());
+                    tuple.getT1().setNavn(endreGruppe.getNavn());
+                    tuple.getT1().setSistEndretAvId(tuple.getT2().getId());
+                    tuple.getT1().setSistEndretAv(tuple.getT2());
+                    tuple.getT1().setDatoEndret(LocalDate.now());
+                    return tuple.getT1();
+                })
+                .flatMap(testgruppeRepository::save);
+    }
+
+    public Mono<RsTestgruppePage> getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
+
+        return brukerService.fetchOrCreateBruker(brukerId)
+                .flatMap(bruker -> {
+                    if (isNotBlank(brukerId)) {
+
+                        return Mono.zip(Mono.just(bruker),
+                                testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(bruker.getId(), PageRequest.of(pageNo, pageSize))
+                                        .collectList(),
+                                testgruppeRepository.countByOpprettetAvId(bruker.getId()));
+
+                    } else if (bruker.getBrukertype() == Brukertype.AZURE) {
+
+                        return Mono.zip(Mono.just(bruker),
+                                testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                        .collectList(),
+                                testgruppeRepository.countBy());
+
+                    } else {
+
+                        return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                                .map(TilgangDTO::getBrukere)
+                                .flatMap(brukere -> Mono.zip(Mono.just(bruker),
+                                        testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
+                                                        PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                                .collectList(),
+                                        testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)));
+                    }
+                })
+                .flatMap(tuple ->
+                        getRsTestgruppePage(pageNo, pageSize, tuple.getT1(), tuple.getT2(), tuple.getT3()));
+    }
+
+    private Mono<RsTestgruppePage> getRsTestgruppePage(Integer pageNo, Integer pageSize, Bruker bruker, List<Testgruppe> testgrupper, Long antall) {
+
+        return brukerRepository.findAll()
+                .reduce(new HashMap<Long, Bruker>(), (map, bruker1) -> {
+                    map.put(bruker1.getId(), bruker1);
+                    return map;
+                })
+                .flatMap(alleBrukere -> Mono.zip(
+                        Flux.fromIterable(testgrupper)
+                                .flatMap(testgruppe -> getRsTestgruppe(bruker, testgruppe, alleBrukere))
+                                .collectList(),
+                        brukerFavoritterRepository.findByBrukerId(bruker.getId())
+                                .map(BrukerFavoritter::getGruppeId)
+                                .collectList()
+                                .flatMapMany(testgruppeRepository::findByIdIn)
+                                .flatMap(testgruppe -> getRsTestgruppe(bruker, testgruppe, alleBrukere))
+                                .collectList()))
+                .map(grupper -> RsTestgruppePage.builder()
+                        .pageNo(pageNo)
+                        .antallPages(antall.intValue() / pageSize + 1)
+                        .pageSize(pageSize)
+                        .antallElementer(antall)
+                        .contents(grupper.getT1())
+                        .favoritter(grupper.getT2())
+                        .build());
+    }
+
+    private Mono<RsTestgruppe> getRsTestgruppe(Bruker bruker, Testgruppe testgruppe, Map<Long, Bruker> alleBrukere) {
+
+        return Mono.zip(
+                        Mono.just(testgruppe),
+                        identRepository.countByGruppeId(testgruppe.getId()),
+                        bestillingRepository.countByGruppeId(testgruppe.getId()),
+                        identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true))
+                .map(data -> {
+                    var context = MappingContextUtils.getMappingContext();
+                    context.setProperty("bruker", bruker);
+                    context.setProperty("antallIdenter", data.getT2());
+                    context.setProperty("antallBestillinger", data.getT3());
+                    context.setProperty("antallIBruk", data.getT4());
+                    context.setProperty("alleBrukere", alleBrukere);
+                    return mapperFacade.map(data.getT1(), RsTestgruppe.class, context);
+                });
+    }
+
+    public Mono<Testgruppe> oppdaterTestgruppeMedLaas(Long gruppeId, RsLockTestgruppe lockTestgruppe) {
+
+        return testgruppeRepository.findById(gruppeId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Finner ikke testgruppe med id = " + gruppeId)))
+                .zipWith(brukerService.fetchOrCreateBruker())
+                .map(tuple -> {
+                    tuple.getT1().setSistEndretAvId(tuple.getT2().getId());
+                    tuple.getT1().setSistEndretAv(tuple.getT2());
+                    tuple.getT1().setDatoEndret(LocalDate.now());
+                    tuple.getT1().setErLaast(isTrue(lockTestgruppe.getErLaast()));
+                    tuple.getT1().setLaastBeskrivelse(isTrue(lockTestgruppe.getErLaast()) ?
+                            lockTestgruppe.getLaastBeskrivelse() : null);
+                    return tuple.getT1();
+                })
+                .flatMap(testgruppeRepository::save);
     }
 
     public Mono<String> leggTilIdent(Long gruppeId, String ident, Testident.Master master) {
 
-        var testgruppe = fetchTestgruppeById(gruppeId);
-        identService.saveIdentTilGruppe(ident, testgruppe, master, null);
-        return pdlDataConsumer.putStandalone(ident, true);
+        return fetchTestgruppeById(gruppeId)
+                .flatMap(testgruppe -> identService.saveIdentTilGruppe(ident, testgruppe.getId(), master, null))
+                .flatMap(testIdent -> pdlDataConsumer.putStandalone(ident, true));
     }
 
-    public void endreGruppeTilknytning(Long gruppeId, String brukerId) {
+    public Mono<Page<Testident>> getIdenter(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
 
-        var gruppe = fetchTestgruppeById(gruppeId);
-        var nyEier = brukerService.fetchBrukerByBrukerId(brukerId);
-
-        if (gruppe.getOpprettetAv().equals(nyEier)) {
-            throw new DollyFunctionalException(format("Gruppe med id %s er allerede tilknyttet bruker %s.", gruppeId, nyEier.getBrukernavn()));
-        } else {
-
-            gruppe.setOpprettetAv(nyEier);
-            gruppe.setSistEndretAv(nyEier);
-            testgruppeRepository.save(gruppe);
-        }
+        return identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
     }
 
-    private void sjekkTilgang(Long gruppeId) {
+    public Mono<Void> endreGruppeTilknytning(Long gruppeId, String brukerId) {
 
-        var bruker = brukerService.fetchOrCreateBruker();
-        if (bruker.getBrukertype() == BANKID) {
-            brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                    .map(TilgangDTO::getBrukere)
-                    .map(testgruppeRepository::findAllByOpprettetAv_BrukerIdIn)
-                    .filter(page -> page.stream().anyMatch(gruppe -> gruppe.equals(gruppeId)))
-                    .switchIfEmpty(Mono.error(new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId))))
-                    .block();
-        }
+        return Mono.zip(fetchTestgruppeById(gruppeId),
+                        brukerService.fetchBruker(brukerId))
+                .flatMap(tuple -> {
+
+                    if (tuple.getT1().getOpprettetAvId().equals(tuple.getT2().getId())) {
+                        return Mono.error(new DollyFunctionalException(
+                                "Gruppe med id %d er allerede tilknyttet bruker %s.".formatted(gruppeId, tuple.getT2().getBrukernavn())));
+                    } else {
+                        tuple.getT1().setOpprettetAvId(tuple.getT2().getId());
+                        tuple.getT1().setSistEndretAvId(tuple.getT2().getId());
+                        return testgruppeRepository.save(tuple.getT1());
+                    }
+                })
+                .then();
     }
 }

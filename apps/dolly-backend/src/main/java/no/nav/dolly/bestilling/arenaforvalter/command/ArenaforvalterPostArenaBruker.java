@@ -12,9 +12,10 @@ import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -37,7 +38,6 @@ public class ArenaforvalterPostArenaBruker implements Callable<Flux<ArenaNyeBruk
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .headers(WebClientHeader.bearer(token))
-                .headers(WebClientHeader.jwt(getUserJwt()))
                 .bodyValue(arenaNyeBrukere)
                 .retrieve()
                 .bodyToFlux(ArenaNyeBrukereResponse.class)
@@ -47,8 +47,8 @@ public class ArenaforvalterPostArenaBruker implements Callable<Flux<ArenaNyeBruk
                     return response;
                 })
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(throwable -> ArenaNyeBrukereResponse.of(WebClientError.describe(throwable), arenaNyeBrukere.getNyeBrukere().getFirst().getMiljoe()))
-                .retryWhen(WebClientError.is5xxException());
+                .onErrorResume(throwable ->
+                        ArenaNyeBrukereResponse.of(WebClientError.describe(throwable),
+                                arenaNyeBrukere.getNyeBrukere().getFirst().getMiljoe()));
     }
-
 }
