@@ -30,10 +30,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
-      - name: "Auth"
-        uses: nais/login@v0
-        with:
-          team: dolly
       - name: "Build"
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
