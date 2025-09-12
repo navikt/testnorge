@@ -15,13 +15,10 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -493,23 +490,5 @@ public class PensjonData {
         private String saksbehandler;
         private String attesterer;
         private String navEnhetId;
-
-        @JsonIgnore
-        private Map<String, Boolean> isProcessed;
-
-        public Map<String, Boolean> getIsProcessed() {
-
-            if (isNull(isProcessed)) {
-                isProcessed = new HashMap<>();
-            }
-            return isProcessed;
-        }
-
-        @JsonIgnore
-        public boolean isNotProcessed(String miljoe) {
-
-            return !getIsProcessed().containsKey(miljoe) ||
-                    isFalse(isProcessed.get(miljoe));
-        }
     }
 }

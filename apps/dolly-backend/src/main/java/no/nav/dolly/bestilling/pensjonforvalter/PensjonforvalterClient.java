@@ -73,7 +73,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                     .flatMapMany(utvidetPersondata ->
                                             Flux.concat(
                                                     pensjonPersondataService.lagrePersondata(dollyPerson.getIdent(),
-                                                            utvidetPersondata.getT1(), bestilling.getPdldata(), utvidetPersondata.getT2(),
+                                                            utvidetPersondata.getT1(), bestilling, utvidetPersondata.getT2(),
                                                             tilgjengeligeMiljoer),
                                                     pensjonPensjonsdataService.lagrePensjonsdata(bestilling1,
                                                             dollyPerson.getIdent(), bestilteMiljoer.get()),

@@ -18,7 +18,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -47,7 +46,6 @@ public class PensjonVedtakService {
     private final MapperFacade mapperFacade;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final PensjonforvalterHelper pensjonforvalterHelper;
-    private final TransactionHelperService transactionHelperService;
 
     private static final String ALDERSPENSJON_VEDTAK = "AlderspensjonVedtak";
 
@@ -82,42 +80,6 @@ public class PensjonVedtakService {
                                 bestilling.getId())
                                 .map(response -> PEN_UFORETRYGD + pensjonforvalterHelper.decodeStatus(response, ident))
                 ));
-    }
-
-    private Flux<PensjonforvalterResponse> lagreNyVurdering(PensjonData pensjondata, String ident, Set<String> miljoer,
-                                                            String navEnhetId, RsDollyBestilling bestilling) {
-
-        if  (!pensjondata.hasNyUttaksgrad()) {
-            return Flux.empty();
-        }
-
-        return Flux.fromIterable(miljoer)
-                .filter(miljoe -> pensjondata.getAlderspensjonNyUtaksgrad().isNotProcessed(miljoe))
-                .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
-                        .collectList()
-                        .map(vedtakResponse -> hasVedtak(vedtakResponse, PensjonVedtakResponse.SakType.AP))
-                        .flatMapMany(harVedtak -> isTrue(harVedtak) ?
-                                pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe) :
-                                Mono.empty())
-                        .map(vedtak -> {
-                            var context = new MappingContext.Factory().getContext();
-                            context.setProperty(ALDERSPENSJON_VEDTAK, vedtak);
-                            context.setProperty(NAV_ENHET, navEnhetId);
-                            return mapperFacade.map(pensjondata.getAlderspensjonNyUtaksgrad(),
-                                    AlderspensjonNyUtaksgradRequest.class, context);
-                        })
-                        .flatMap(request -> pensjonforvalterConsumer.lagreAPNyUttaksgrad(request)
-                                .zipWith(Mono.just(request)))
-                        .flatMap(tuple -> Flux.fromIterable(tuple.getT1().getStatus())
-                                .filter(status -> status.getResponse().isResponse2xx())
-                                .flatMap(status ->
-                                        pensjonforvalterHelper.saveAPTransaksjonId(ident, status.getMiljo(), bestilling.getId(),
-                                                SystemTyper.PEN_AP_NY_UTTAKSGRAD, tuple.getT2()))
-                                .flatMap(ignore -> {
-                                    bestilling.getPensjonforvalter().getAlderspensjonNyUtaksgrad().getIsProcessed().put(miljoe, true);
-                                    return transactionHelperService.persister(bestilling.getId(), bestilling)
-                                            .thenReturn(tuple.getT1());
-                                })));
     }
 
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData,
@@ -164,6 +126,37 @@ public class PensjonVedtakService {
                                     }
                                 })))
                 .flatMap(response -> response);
+    }
+
+    private Flux<PensjonforvalterResponse> lagreNyVurdering(PensjonData pensjondata, String ident, Set<String> miljoer,
+                                                            String navEnhetId, RsDollyBestilling bestilling) {
+
+        if (!pensjondata.hasNyUttaksgrad()) {
+            return Flux.empty();
+        }
+
+        return Flux.fromIterable(miljoer)
+                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAP(ident, miljoe)
+                        .flatMapMany(vedtakResponse ->
+                                pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe)
+                                        .map(vedtak -> {
+                                            var context = new MappingContext.Factory().getContext();
+                                            context.setProperty(ALDERSPENSJON_VEDTAK, vedtak);
+                                            context.setProperty(NAV_ENHET, navEnhetId);
+                                            return mapperFacade.map(pensjondata.getAlderspensjonNyUtaksgrad(),
+                                                    AlderspensjonNyUtaksgradRequest.class, context);
+                                        })
+                                        .flatMap(request ->
+                                                request.getFom().isBefore(vedtakResponse.getFom()) ||
+                                                        request.getFom().isEqual(vedtakResponse.getFom()) ? Mono.empty() :
+                                                        pensjonforvalterConsumer.lagreAPNyUttaksgrad(request)
+                                                                .zipWith(Mono.just(request)))))
+                .flatMap(tuple -> Flux.fromIterable(tuple.getT1().getStatus())
+                        .filter(status -> status.getResponse().isResponse2xx())
+                        .flatMap(status ->
+                                pensjonforvalterHelper.saveTransaksjonId(ident, status.getMiljo(), bestilling.getId(),
+                                                SystemTyper.PEN_AP_NY_UTTAKSGRAD, tuple.getT2())
+                                        .thenReturn(tuple.getT1())));
     }
 
     private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata, String navEnhetNr,

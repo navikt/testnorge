@@ -10,13 +10,13 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterHelper;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
-import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -32,8 +32,6 @@ import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUti
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_REVURDERING_AP;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SAMBOER_REGISTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.getPeriodeId;
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.hasVedtak;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -48,13 +46,13 @@ public class PensjonPersondataService {
     private final MapperFacade mapperFacade;
 
     public Flux<String> lagrePersondata(String ident, List<PdlPersonBolk.PersonBolk> persondata,
-                                        PdlPersondata pdlData, String navEnhet, Set<String> miljoer) {
+                                        RsDollyBestilling bestilling, String navEnhet, Set<String> miljoer) {
 
         return Flux.merge(
                 Flux.concat(
                         opprettPersoner(ident, miljoer, persondata)
                                 .map(response -> PENSJON_FORVALTER + pensjonforvalterHelper.decodeStatus(response, ident)),
-                        revurderingVedNySivilstand(ident, miljoer, persondata, pdlData, navEnhet)
+                        revurderingVedNySivilstand(ident, miljoer, persondata, bestilling, navEnhet)
                                 .map(response -> PEN_REVURDERING_AP + pensjonforvalterHelper.decodeStatus(response, ident))),
                 lagreSamboer(ident, miljoer)
                         .map(response -> SAMBOER_REGISTER + pensjonforvalterHelper.decodeStatus(response, ident))
@@ -104,30 +102,35 @@ public class PensjonPersondataService {
 
     private Flux<PensjonforvalterResponse> revurderingVedNySivilstand(String ident, Set<String> miljoer,
                                                                       List<PdlPersonBolk.PersonBolk> persondata,
-                                                                      PdlPersondata pdlPersondata, String navEnhetId) {
+                                                                      RsDollyBestilling bestilling, String navEnhetId) {
 
-        if (isNull(pdlPersondata) || isNull(pdlPersondata.getPerson()) ||
-                pdlPersondata.getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isGift)) {
+        if (isNull(bestilling.getPdldata()) || isNull(bestilling.getPdldata().getPerson()) ||
+                bestilling.getPdldata().getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isGift)) {
             return Flux.empty();
         }
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> pensjonforvalterConsumer.hentVedtak(ident, miljoe)
-                        .collectList()
-                        .map(vedtakResponse -> hasVedtak(vedtakResponse, PensjonVedtakResponse.SakType.AP))
-                        .flatMapMany(harVedtak -> isTrue(harVedtak) ?
-                                pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe) :
-                                Mono.empty()))
-                .map(transaksjonMapping -> {
-                    var context = new MappingContext.Factory().getContext();
-                    context.setProperty(NAV_ENHET, navEnhetId);
-                    context.setProperty(SIVILSTAND, persondata.stream()
-                            .filter(personBolk -> personBolk.getIdent().equals(ident))
-                            .map(PdlPersonBolk.PersonBolk::getPerson)
-                            .map(PdlPerson.Person::getSivilstand)
-                            .findFirst().orElse(List.of(new PdlPerson.Sivilstand())));
-                    return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
-                })
-                .flatMap(pensjonforvalterConsumer::lagreRevurderingVedtak);
+                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAP(ident, miljoe)
+                        .flatMapMany(vedtak ->
+                                pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe)
+                                        .map(transaksjonMapping -> {
+                                            var context = new MappingContext.Factory().getContext();
+                                            context.setProperty(NAV_ENHET, navEnhetId);
+                                            context.setProperty(SIVILSTAND, persondata.stream()
+                                                    .filter(personBolk -> personBolk.getIdent().equals(ident))
+                                                    .map(PdlPersonBolk.PersonBolk::getPerson)
+                                                    .map(PdlPerson.Person::getSivilstand)
+                                                    .findFirst().orElse(List.of(new PdlPerson.Sivilstand())));
+                                            return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
+                                        })
+                                        .flatMap(request ->
+                                                request.getFom().isAfter(vedtak.getFom()) ?
+                                                        pensjonforvalterConsumer.lagreRevurderingVedtak(request)
+                                                                .flatMap(response ->
+                                                                        pensjonforvalterHelper.saveTransaksjonId(ident, miljoe,
+                                                                                        bestilling.getId(), SystemTyper.PEN_AP_REVURDERING, request)
+                                                                                .thenReturn(response)) :
+                                                        Mono.empty()
+                                        )));
     }
 }
