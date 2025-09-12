@@ -65,7 +65,7 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     @Query(value = """
             select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
                 join bestilling_mal bm on b.id = bm.bruker_id
-                where b.bruker_id in :brukerIds
+                where b.bruker_id in (:brukerIds)
                 order by brukernavn
             """)
     Flux<MalBestillingFragment> findAllByBrukerIdIn(@Param("brukerIds") List<String> brukerIds);
