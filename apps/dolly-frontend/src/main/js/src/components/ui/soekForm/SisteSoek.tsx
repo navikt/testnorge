@@ -1,27 +1,12 @@
 import { useHentLagredeSoek } from '@/utils/hooks/useSoek'
 import { Chips, VStack } from '@navikt/ds-react'
 import * as _ from 'lodash-es'
-import { codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
-import { isDate } from 'date-fns'
+import { codeToNorskLabel } from '@/utils/DataFormatter'
+import { isDate, isSameDay } from 'date-fns'
 
 export enum soekType {
 	dolly = 'DOLLY',
 	tenor = 'TENOR',
-}
-
-export const getLabel = (value: any, path: string) => {
-	const splitPath = path?.split('.')
-	const fieldName = splitPath[splitPath.length - 1]?.trim()
-	if (value === true) {
-		return `${codeToNorskLabel(fieldName)}`
-	} else if (value.length > 3) {
-		return `${codeToNorskLabel(fieldName)}: ${codeToNorskLabel(value)}`
-	} else if (isDate(value)) {
-		return `${codeToNorskLabel(path)}: ${formatDate(value)}`
-	}
-	//TODO: Tall f.o.m. t.o.m.?
-	//TODO: Paths med flere nivaaer?
-	return `${codeToNorskLabel(fieldName)}: ${value}`
 }
 
 const listOptions = [
@@ -65,19 +50,21 @@ export const SisteSoek = ({
 				formValue?.length === value.length &&
 				formValue?.every((item) => value?.map((v) => v.value).includes(item))
 			)
+		} else if (formValue?.length > 8 && isDate(new Date(formValue))) {
+			return isSameDay(new Date(formValue), new Date(value))
 		}
 		return formValue === value
 	}
 
 	const handleClick = (option) => {
-		console.log('option: ', option) //TODO - SLETT MEG
+		// console.log('option: ', option) //TODO - SLETT MEG
 		// console.log('formValues: ', formValues) //TODO - SLETT MEG
 		// console.log("option.path?.split('.'): ", option.path?.split('.')) //TODO - SLETT MEG
 		//TODO: Handleclick generell for lister?
 
 		if (listOptions.includes(option.path)) {
 			const listValues = _.get(formValues, option.path) || []
-			console.log('listValues: ', listValues) //TODO - SLETT MEG
+			// console.log('listValues: ', listValues) //TODO - SLETT MEG
 			handleChangeList(
 				!listValues?.includes(option.value)
 					? [...listValues, { value: option.value, label: codeToNorskLabel(option.value) }]
@@ -115,10 +102,9 @@ export const SisteSoek = ({
 
 	//TODO: Denne ser ut til aa funke naa. Gjoer det samme paa handleClick?
 	const handleClickTenor = (option) => {
-		console.log('option: ', option) //TODO - SLETT MEG
+		const formValue = _.get(formValues, option.path)
 		if (listOptions.includes(option.path)) {
-			const listValues = _.get(formValues, option.path) || []
-			console.log('listValues: ', listValues) //TODO - SLETT MEG
+			const listValues = formValue || []
 			handleChangeList(
 				!listValues?.includes(option.value)
 					? [...listValues, option.value]
@@ -126,19 +112,15 @@ export const SisteSoek = ({
 				option.path,
 				option.label,
 			)
-		} else {
+		} else if (formValue?.length > 8 && isDate(new Date(formValue))) {
 			handleChange(
-				_.get(formValues, option.path) !== option.value ? option.value : null,
+				!isSameDay(new Date(formValue), new Date(option.value)) ? option.value : null,
 				option.path,
 				option.label,
 			)
+		} else {
+			handleChange(formValue !== option.value ? option.value : null, option.path, option.label)
 		}
-		// if (isDate(option.value)) {
-		// 	console.log('Is date!!!') //TODO - SLETT MEG
-		// 	handleChange(
-		// 		_.get(formValues, option.path) !== option.value ? option.value : null,
-		// 		option.path,
-		// 	)
 	}
 
 	return (

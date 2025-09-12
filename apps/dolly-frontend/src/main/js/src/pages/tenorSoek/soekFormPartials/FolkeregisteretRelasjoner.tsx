@@ -20,7 +20,6 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 				}
 				isLoading={loadingRelasjon}
 			/>
-			{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 			<div className="flexbox--flex-wrap">
 				<FormTextInput
 					name="relasjoner.antallBarn.fraOgMed"
@@ -36,7 +35,6 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					}
 					visHvisAvhuket={false}
 				/>
-				{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 				<FormTextInput
 					name="relasjoner.antallBarn.tilOgMed"
 					label="Antall barn t.o.m."
@@ -53,7 +51,6 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
-				{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 				<FormTextInput
 					name="relasjoner.relasjonMedFoedselsaar.fraOgMed"
 					label="Relasjon med fødselsår f.o.m."
@@ -68,7 +65,6 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 					}
 					visHvisAvhuket={false}
 				/>
-				{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 				<FormTextInput
 					name="relasjoner.relasjonMedFoedselsaar.tilOgMed"
 					label="Relasjon med fødselsår t.o.m."

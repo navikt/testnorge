@@ -7,13 +7,14 @@ import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
 import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
 import { useForm } from 'react-hook-form'
-import { isDate } from 'date-fns'
+import { formatISO, isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { DollyApi } from '@/service/Api'
 import {
 	codeToNorskLabel,
 	formatDate,
 	formatDateTime,
+	formatDateTimeWithSeconds,
 	oversettBoolean,
 } from '@/utils/DataFormatter'
 
@@ -165,21 +166,6 @@ export default () => {
 		window.scrollTo({ top: treff, behavior: 'smooth' })
 	}
 
-	const getLabel = (value: any, path: string) => {
-		const splitPath = path?.split('.')
-		const fieldName = splitPath[splitPath.length - 1]?.trim()
-		if (typeof value === 'boolean') {
-			return `${codeToNorskLabel(fieldName)}: ${oversettBoolean(value)}`
-		} else if (value.length > 3) {
-			return `${codeToNorskLabel(fieldName)}: ${codeToNorskLabel(value)}`
-		} else if (isDate(value)) {
-			return `${codeToNorskLabel(path)}: ${formatDate(value)}`
-		}
-		//TODO: Tall f.o.m. t.o.m.?
-		//TODO: Paths med flere nivaaer?
-		return `${codeToNorskLabel(fieldName)}: ${value}`
-	}
-
 	function getUpdatedRequest(request: any) {
 		for (let key of Object.keys(request)) {
 			if (request[key] === '' || request[key] === null || request[key] === undefined) {
@@ -199,6 +185,11 @@ export default () => {
 	const handleChange = (value: any, path: string, label: string) => {
 		if (isDate(value)) {
 			value = fixTimezone(value)
+			// value = formatDate(fixTimezone(value))
+			// value = formatDate(value)
+			// value = formatDateTimeWithSeconds(fixTimezone(value))
+			// value = formatISO(fixTimezone(value))
+			// value = '2025-09-01T00:00:00'
 		}
 		setValue(path, value)
 		const request = getUpdatedRequest(watch())
@@ -222,8 +213,6 @@ export default () => {
 		}
 	}
 
-	//TODO: Test og skriv ferdig denne
-	//TODO: Boer value kun vaere en liste av strings? Sjekk der handleChangeList brukes
 	const handleChangeList = (value: any, path: string, label: string) => {
 		console.log('value: ', value) //TODO - SLETT MEG
 		// const list = value.map((item: any) => item.value || item)

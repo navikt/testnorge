@@ -83,6 +83,7 @@ export default () => {
 		}
 	}
 
+	//TODO: Slaa sammen med handleChange?
 	const handleChangeAdresse = (value: any, path: string) => {
 		const updatedAdresseRequest = { ...values.personRequest.adresse, [path]: value }
 		const updatedRequest = {
@@ -110,6 +111,7 @@ export default () => {
 		}
 	}
 
+	//TODO: Sende inn values som liste av string?
 	const handleChangeList = (value: any, path: string) => {
 		const list = value?.map((item: any) => item.value || item)
 		const updatedRequest = { ...values, [path]: list, side: 0, seed: null }

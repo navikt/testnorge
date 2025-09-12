@@ -65,14 +65,18 @@ export const DateInput = ({
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
 	const fieldValue = name ? watch(name) : ''
-	// console.log('fieldValue: ', fieldValue) //TODO - SLETT MEG
 	const [formattedValue, setFormattedValue] = useState(fieldValue ? formatDate(fieldValue) : '')
-	// console.log('formattedValue: ', formattedValue) //TODO - SLETT MEG
-	//TODO: Dato vises paa feil format naar man setter dato fra siste soek
+
+	// if (name === 'foedselsdato.fraOgMed') {
+	// 	console.log('fieldValue: ', fieldValue) //TODO - SLETT MEG
+	// 	console.log('formattedValue: ', formattedValue) //TODO - SLETT MEG
+	// }
 
 	useEffect(() => {
 		if (!fieldValue) {
 			setFormattedValue('')
+		} else {
+			setFormattedValue(formatDate(fieldValue))
 		}
 	}, [fieldValue])
 
@@ -95,6 +99,7 @@ export const DateInput = ({
 		setValue(name, e.target.value, { shouldTouch: true })
 		props.onChange?.(e)
 		setFormattedValue(e.target.value)
+		// setFormattedValue(formatDate(e.target.value))
 	}
 
 	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {

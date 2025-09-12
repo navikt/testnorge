@@ -9,7 +9,6 @@ import { oversettBoolean } from '@/utils/DataFormatter'
 export const FolkeregisteretNavn = ({ handleChange }: any) => {
 	return (
 		<SoekKategori>
-			{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 			<FormTextInput
 				name="navn.navnLengde.fraOgMed"
 				label="Lengde på navn f.o.m."
@@ -24,7 +23,6 @@ export const FolkeregisteretNavn = ({ handleChange }: any) => {
 				}
 				visHvisAvhuket={false}
 			/>
-			{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 			<FormTextInput
 				name="navn.navnLengde.tilOgMed"
 				label="Lengde på navn t.o.m."

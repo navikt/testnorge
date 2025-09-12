@@ -94,9 +94,7 @@ export const TextInput = ({
 			setFieldValue(formValue || '')
 		} else if (!useControlled) {
 			const propValue = value
-			if (propValue !== undefined) {
-				setFieldValue(propValue || '')
-			}
+			setFieldValue(propValue || '')
 		}
 	}, [value, formValue, useControlled])
 
@@ -156,6 +154,13 @@ export const TextInput = ({
 	const inputClassNames = cn('skjemaelement__input', className, {
 		'skjemaelement__input--harFeil': shouldShowError,
 	})
+
+	// if (name === 'relasjoner.relasjonMedFoedselsaar.fraOgMed' || name === 'identifikator') {
+	// 	console.log(`fieldValue ${name}: `, fieldValue) //TODO - SLETT MEG
+	// 	console.log(`value ${name}: `, value) //TODO - SLETT MEG
+	// 	console.log(`defaultValue ${name}: `, defaultValue) //TODO - SLETT MEG
+	// 	console.log(`watch ${name}: `, watch(name)) //TODO - SLETT MEG
+	// }
 
 	return (
 		<>

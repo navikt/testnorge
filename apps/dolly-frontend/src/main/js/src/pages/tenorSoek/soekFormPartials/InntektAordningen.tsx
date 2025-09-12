@@ -44,7 +44,6 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 				}}
 				date={getValue('inntekt.periode.tilOgMed')}
 			/>
-			{/*TODO: Slettes ikke ved fjerning av siste soek*/}
 			<FormTextInput
 				name="inntekt.opplysningspliktig"
 				label="Opplysningspliktig org.nr."
