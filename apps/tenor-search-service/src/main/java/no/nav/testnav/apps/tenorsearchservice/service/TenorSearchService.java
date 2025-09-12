@@ -65,7 +65,12 @@ public class TenorSearchService {
                 .append(convertBooleanWildcard("legitimasjonsdokument", searchData.getHarLegitimasjonsdokument()))
                 .append(convertObject("falskIdentitet", searchData.getHarFalskIdentitet()))
                 .append(convertObject("norskStatsborgerskap", searchData.getHarNorskStatsborgerskap()))
-                .append(convertObject("flereStatsborgerskap", searchData.getHarFlereStatsborgerskap()));
+                .append(convertObject("flereStatsborgerskap", searchData.getHarFlereStatsborgerskap()))
+                .append(convertObject("nordenStatsborgerskap", searchData.getHarNordenStatsborgerskap()))
+                .append(convertObject("euEoesStatsborgerskap", searchData.getHarEuEoesStatsborgerskap()))
+                .append(convertObject("tredjelandStatsborgerskap", searchData.getHarTredjelandStatsborgerskap()))
+                .append(convertObject("utgaattStatsborgerskap", searchData.getHarUtgaattStatsborgerskap()))
+                .append(convertObject("harStatsborgerskapHistorikk", searchData.getHarStatsborgerskapHistorikk()));
 
         if (nonNull(searchData.getNavn())) {
             builder.append(convertObject("flereFornavn", searchData.getNavn().getHarFlereFornavn()))
