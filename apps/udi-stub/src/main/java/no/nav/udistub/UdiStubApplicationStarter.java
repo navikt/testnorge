@@ -1,7 +1,7 @@
 package no.nav.udistub;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import no.nav.dolly.libs.nais.NaisVaultKeyInitializer;
+import no.nav.dolly.libs.vault.NaisVaultKeyInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
