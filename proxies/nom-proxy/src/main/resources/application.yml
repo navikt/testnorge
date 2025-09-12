@@ -1,7 +1,7 @@
 spring:
   application:
-    name: testnav-yrkesskade-proxy
-    description: Proxy for yrkesskade som legger på TokenX sikkerhet ...
+    name: testnav-nom-proxy
+    description: Proxy for NOM som legger på AzureAd sikkerhet for trygdeetaten.no tenant
   config:
     import: "classpath:dolly-application.yml"
   security:
@@ -29,8 +29,8 @@ logging:
           gateway: INFO
 
 consumers:
-  yrkesskade:
-    url: http://yrkesskade-datagenerator-service.yrkesskade.svc.cluster.local
+  noma-api:
+    url: http://nom-api.nom.svc.cluster.local
     cluster: dev-gcp
-    name: yrkesskade-datagenerator-service
-    namespace: yrkesskade
+    name: name-api
+    namespace: nom
