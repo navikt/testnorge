@@ -26,7 +26,6 @@ public class VaultKeyInitializer implements EnvironmentPostProcessor {
                 if (Files.exists(path)) {
                     var value = Files.readString(path).trim();
                     System.setProperty(KEY, value); // System property.
-                    environment.getSystemEnvironment().put(KEY, value); // Environment property.
                     environment.getPropertySources().addFirst( // Spring property.
                             new MapPropertySource("spring.cloud.vault.token", Map.of(KEY, value))
                     );
