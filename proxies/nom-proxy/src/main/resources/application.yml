@@ -29,7 +29,7 @@ logging:
           gateway: INFO
 
 consumers:
-  noma-api:
+  nom-api:
     url: http://nom-api.nom.svc.cluster.local
     cluster: dev-gcp
     name: name-api
