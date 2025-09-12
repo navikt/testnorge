@@ -9,7 +9,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 @SpringBootApplication
 public class StatiskDataForvalterApplicationStarter {
     public static void main(String[] args) {
-        NaisVaultKeyInitializer.run();
         new SpringApplicationBuilder(StatiskDataForvalterApplicationStarter.class)
                 .initializers(
                         new NaisEnvironmentApplicationContextInitializer(),
