@@ -1,7 +1,18 @@
+#dolly:
+#  nais:
+#    cluster: dev-gcp
+#    name: testnav-nom-proxy
+#    variables:
+#      - AZURE_TRYGDEETATEN_APP_CLIENT_ID
+#      - AZURE_TRYGDEETATEN_APP_CLIENT_SECRET
+
 spring:
   config:
     import: "sm://"
 
 consumers:
   yrkesskade:
-    url: https://yrkesskade-datagenerator-service.intern.dev.nav.no
+    url: https://nom-api.intern.dev.nav.no
+
+AZURE_TRYGDEETATEN_APP_CLIENT_ID: dummy
+AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: dummy
