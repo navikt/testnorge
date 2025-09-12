@@ -2,7 +2,6 @@ package no.nav.testnav.apps.tenorsearchservice.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorRawResponse;
@@ -42,7 +41,6 @@ public class TenorResultMapperService {
     private TenorOversiktResponse.Data convert(TenorResponse tenorResponse) {
 
         if (tenorResponse.getStatus().is2xxSuccessful()) {
-            log.info("Mottok tenor respons: {}", Json.pretty(tenorResponse.getData()));
             try {
                 var preamble = new StringBuilder();
                 var noHyphenCharsInValues = new StringTokenizer(tenorResponse.getData().toString(), "-");

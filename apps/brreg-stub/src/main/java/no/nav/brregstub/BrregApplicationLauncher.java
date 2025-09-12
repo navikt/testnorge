@@ -1,6 +1,7 @@
 package no.nav.brregstub;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
+import no.nav.dolly.libs.nais.NaisVaultKeyInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 

@@ -48,7 +48,6 @@ public class DollyBackendConsumer {
         var properties = selector == REGULAR ? dollyBackendProperties : dollyBackendPropertiesDev;
         var client = selector == REGULAR ? webClient : webClientDev;
         return tokenExchange.exchange(properties)
-                .flatMap(token -> new FinnesIDollyGetCommand(client, identer, token.getTokenValue()).call())
-                .doOnNext(status -> log.info("Mottatt status fra Dolly backend: {}", status));
+                .flatMap(token -> new FinnesIDollyGetCommand(client, identer, token.getTokenValue()).call());
     }
 }
