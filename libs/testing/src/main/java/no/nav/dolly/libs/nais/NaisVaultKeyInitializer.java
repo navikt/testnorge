@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 public class NaisVaultKeyInitializer {
 
     private static final String KEY = "SPRING_CLOUD_VAULT_TOKEN";
-    private static final String PATH = "/var/run/secrets/nais.io/vault/kv/vault_key";
+    private static final String PATH = "/var/run/secrets/nais.io/vault/vault_token";
 
     public static void run() {
 
