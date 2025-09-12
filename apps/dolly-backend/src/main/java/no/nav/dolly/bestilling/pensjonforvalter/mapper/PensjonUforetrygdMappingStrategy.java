@@ -11,9 +11,12 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
-import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getForrigeMaaned;
-import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getNesteMaaned;
-import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getRandomAnsatt;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getForrigeMaaned;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getNesteMaaned;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getRandomAnsatt;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
@@ -26,9 +29,9 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PensjonData.Uforetrygd uforetrygd, PensjonUforetrygdRequest pensjonUforetrygdRequest, MappingContext context) {
 
-                        var ident = (String) context.getProperty("ident");
-                        var miljoer = (List<String>) context.getProperty("miljoer");
-                        var navEnhet = (String) context.getProperty("navEnhet");
+                        var ident = (String) context.getProperty(IDENT);
+                        var miljoer = (List<String>) context.getProperty(MILJOER);
+                        var navEnhet = (String) context.getProperty(NAV_ENHET);
 
                         pensjonUforetrygdRequest.setFnr(ident);
                         pensjonUforetrygdRequest.setMiljoer(miljoer);

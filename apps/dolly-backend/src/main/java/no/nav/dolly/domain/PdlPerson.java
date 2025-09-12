@@ -411,10 +411,11 @@ public class PdlPerson {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Sivilstand extends DbVersjonDTO {
+    public static class Sivilstand extends MetadataInformasjon {
 
         private SivilstandType type;
         private LocalDate gyldigFraOgMed;
+        private LocalDate bekreftelsesdato;
         private String relatertVedSivilstand;
 
         public boolean isGift() {
@@ -572,5 +573,23 @@ public class PdlPerson {
 
             return nonNull(utenlandskAdresse);
         }
+    }
+
+    @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MetadataInformasjon extends DbVersjonDTO implements Serializable {
+
+        private Metadata metadata;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Metadata implements Serializable {
+
+        private Boolean historisk;
     }
 }

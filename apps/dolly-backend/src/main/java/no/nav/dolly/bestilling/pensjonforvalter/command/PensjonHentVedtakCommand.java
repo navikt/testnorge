@@ -46,5 +46,4 @@ public class PensjonHentVedtakCommand implements Callable<Flux<PensjonVedtakResp
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(Exception.class, error -> Mono.empty());
     }
-
 }

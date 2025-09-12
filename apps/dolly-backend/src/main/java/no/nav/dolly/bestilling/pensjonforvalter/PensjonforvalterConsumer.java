@@ -6,8 +6,10 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAPNyUttaksgrad;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAfpOffentligCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreApRevurderingVedtak;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreGenerertPoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePensjonsavtaleCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
@@ -22,6 +24,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePensjonsavtaleComm
 import no.nav.dolly.bestilling.pensjonforvalter.command.SlettePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AfpOffentligRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonNyUtaksgradRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
@@ -34,6 +37,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -225,6 +229,21 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
                 .collectList()
                 .subscribe(resultat -> log.info("Slettet AfpOffentlig (PEN), alle miljøer"));
     }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreRevurderingVedtakAP"})
+    public Flux<PensjonforvalterResponse> lagreRevurderingVedtak(RevurderingVedtakRequest revurderingVedtakRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagreApRevurderingVedtak(webClient, revurderingVedtakRequest, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreAPNyUttaksgrad"})
+    public Flux<PensjonforvalterResponse> lagreAPNyUttaksgrad(AlderspensjonNyUtaksgradRequest nyUtaksgradRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagreAPNyUttaksgrad(webClient, nyUtaksgradRequest, token.getTokenValue()).call());
+    }
+
 
     @Override
     public String serviceUrl() {

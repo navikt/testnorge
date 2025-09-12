@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
@@ -72,7 +73,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
 
                         var hovedperson = (String) context.getProperty("ident");
                         request.setFnr(hovedperson);
-                        request.setMiljoer((List<String>) context.getProperty("miljoer"));
+                        request.setMiljoer((Set<String>) context.getProperty("miljoer"));
 
                         var personer = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
                         request.setStatsborgerskap(personer.stream()

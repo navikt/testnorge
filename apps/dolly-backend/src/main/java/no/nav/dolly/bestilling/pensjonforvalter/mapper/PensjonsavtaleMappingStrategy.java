@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
+
 @Component
 public class PensjonsavtaleMappingStrategy implements MappingStrategy {
 
@@ -20,8 +23,8 @@ public class PensjonsavtaleMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PensjonData.Pensjonsavtale pensjonsavtale, PensjonsavtaleRequest pensjonsavtaleRequest, MappingContext context) {
 
-                        var ident = (String) context.getProperty("ident");
-                        var miljoer = (Set<String>) context.getProperty("miljoer");
+                        var ident = (String) context.getProperty(IDENT);
+                        var miljoer = (Set<String>) context.getProperty(MILJOER);
 
                         pensjonsavtaleRequest.setIdent(ident);
                         pensjonsavtaleRequest.setMiljoer(miljoer.stream().toList());

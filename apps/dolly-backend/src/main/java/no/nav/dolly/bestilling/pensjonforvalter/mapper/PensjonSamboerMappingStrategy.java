@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Component
@@ -27,7 +28,7 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PensjonSivilstandWrapper sivilstander, List list, MappingContext context) {
 
-                        var ident = (String) context.getProperty("ident");
+                        var ident = (String) context.getProperty(IDENT);
                         sivilstander.getSivilstander().stream()
                                 .sorted(Comparator.comparing(SivilstandDTO::getId).reversed())
                                 .filter(SivilstandDTO::isSamboer)

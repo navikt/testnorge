@@ -9,23 +9,14 @@ import lombok.experimental.SuperBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PensjonforvalterResponse {
 
-    private List<ResponseEnvironment> status;
-
-    public List<ResponseEnvironment> getStatus() {
-
-        if (isNull(status)) {
-            status = new ArrayList<>();
-        }
-        return status;
-    }
+    @Builder.Default
+    private List<ResponseEnvironment> status = new ArrayList<>();
 
     @Data
     @Builder

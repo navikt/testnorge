@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,4 +19,10 @@ public class PensjonVedtakResponse {
     private SakType sakType;
     private String vedtakStatus;
     private String sisteOppdatering;
+    private LocalDate fom;
+
+    public boolean isSaktypeAP() {
+
+        return SakType.AP.equals(this.sakType);
+    }
 }

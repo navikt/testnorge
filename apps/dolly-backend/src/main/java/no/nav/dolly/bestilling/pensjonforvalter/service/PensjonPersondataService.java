@@ -11,16 +11,25 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.RevurderingVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterHelper;
+import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PENSJON_FORVALTER;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.PEN_REVURDERING_AP;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.SAMBOER_REGISTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.getPeriodeId;
 
@@ -29,23 +38,29 @@ import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUti
 @RequiredArgsConstructor
 public class PensjonPersondataService {
 
+    private static final String SIVILSTAND = "sivilstand";
+
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final PdlDataConsumer pdlDataConsumer;
     private final PensjonforvalterHelper pensjonforvalterHelper;
     private final MapperFacade mapperFacade;
 
-    public Flux<String> lagrePersondata(String ident, List<PdlPersonBolk.PersonBolk> persondata, Set<String> miljoer) {
+    public Flux<String> lagrePersondata(String ident, List<PdlPersonBolk.PersonBolk> persondata,
+                                        RsDollyBestilling bestilling, String navEnhet, Set<String> miljoer) {
 
         return Flux.merge(
-                opprettPersoner(ident, miljoer, persondata)
-                        .map(response -> PENSJON_FORVALTER + pensjonforvalterHelper.decodeStatus(response, ident)),
+                Flux.concat(
+                        opprettPersoner(ident, miljoer, persondata)
+                                .map(response -> PENSJON_FORVALTER + pensjonforvalterHelper.decodeStatus(response, ident)),
+                        revurderingVedNySivilstand(ident, miljoer, persondata, bestilling, navEnhet)
+                                .map(response -> PEN_REVURDERING_AP + pensjonforvalterHelper.decodeStatus(response, ident))),
                 lagreSamboer(ident, miljoer)
                         .map(response -> SAMBOER_REGISTER + pensjonforvalterHelper.decodeStatus(response, ident))
         );
     }
 
     private Flux<PensjonforvalterResponse> opprettPersoner(String hovedperson, Set<String> miljoer,
-                                                          List<PdlPersonBolk.PersonBolk> personer) {
+                                                           List<PdlPersonBolk.PersonBolk> personer) {
 
         return Flux.fromIterable(personer)
                 .map(person -> mapperFacade.map(person, PensjonPersonRequest.class))
@@ -83,5 +98,39 @@ public class PensjonPersondataService {
                                                 .filter(response1 -> samboer.getPidBruker().equals(ident) &&
                                                         response1.getStatus().stream()
                                                                 .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200))))));
+    }
+
+    private Flux<PensjonforvalterResponse> revurderingVedNySivilstand(String ident, Set<String> miljoer,
+                                                                      List<PdlPersonBolk.PersonBolk> persondata,
+                                                                      RsDollyBestilling bestilling, String navEnhetId) {
+
+        if (isNull(bestilling.getPdldata()) || isNull(bestilling.getPdldata().getPerson()) ||
+                bestilling.getPdldata().getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isGift)) {
+            return Flux.empty();
+        }
+
+        return Flux.fromIterable(miljoer)
+                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAP(ident, miljoe)
+                        .flatMapMany(vedtak ->
+                                pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe)
+                                        .map(transaksjonMapping -> {
+                                            var context = new MappingContext.Factory().getContext();
+                                            context.setProperty(NAV_ENHET, navEnhetId);
+                                            context.setProperty(SIVILSTAND, persondata.stream()
+                                                    .filter(personBolk -> personBolk.getIdent().equals(ident))
+                                                    .map(PdlPersonBolk.PersonBolk::getPerson)
+                                                    .map(PdlPerson.Person::getSivilstand)
+                                                    .findFirst().orElse(List.of(new PdlPerson.Sivilstand())));
+                                            return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
+                                        })
+                                        .flatMap(request ->
+                                                request.getFom().isAfter(vedtak.getFom()) ?
+                                                        pensjonforvalterConsumer.lagreRevurderingVedtak(request)
+                                                                .flatMap(response ->
+                                                                        pensjonforvalterHelper.saveTransaksjonId(ident, miljoe,
+                                                                                        bestilling.getId(), SystemTyper.PEN_AP_REVURDERING, request)
+                                                                                .thenReturn(response)) :
+                                                        Mono.empty()
+                                        )));
     }
 }
