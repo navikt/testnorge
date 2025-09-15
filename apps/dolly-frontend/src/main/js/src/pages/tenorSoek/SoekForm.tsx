@@ -129,6 +129,7 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 													'adresser.kommunenummer',
 													'adresser.harAdresseSpesialtegn',
 													'adresser.harBostedsadresse',
+													'avansert.harBostedsadresseHistorikk',
 													'adresser.harOppholdAnnetSted',
 													'adresser.harPostadresseNorge',
 													'adresser.harPostadresseUtland',
