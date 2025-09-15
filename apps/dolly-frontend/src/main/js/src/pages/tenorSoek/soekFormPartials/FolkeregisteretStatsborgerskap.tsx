@@ -31,6 +31,66 @@ export const FolkeregisteretStatsborgerskap = ({ handleChange }: any) => {
 					)
 				}
 			/>
+			<FormSelect
+				name="harNordenStatsborgerskap"
+				options={Options('boolean')}
+				label="Har statsborgerskap i Norden"
+				onChange={(val: any) =>
+					handleChange(
+						val?.value,
+						'harNordenStatsborgerskap',
+						`Har statsborgerskap i Norden: ${oversettBoolean(val?.value)}`,
+					)
+				}
+			/>
+			<FormSelect
+				name="harEuEoesStatsborgerskap"
+				options={Options('boolean')}
+				label="Har statsborgerskap i EU/EØS"
+				onChange={(val: any) =>
+					handleChange(
+						val?.value,
+						'harEuEoesStatsborgerskap',
+						`Har statsborgerskap i EU/EØS: ${oversettBoolean(val?.value)}`,
+					)
+				}
+			/>
+			<FormSelect
+				name="harTredjelandStatsborgerskap"
+				options={Options('boolean')}
+				label="Har st.borgerskap i tredjeland"
+				onChange={(val: any) =>
+					handleChange(
+						val?.value,
+						'harTredjelandStatsborgerskap',
+						`Har statsborgerskap i tredjeland: ${oversettBoolean(val?.value)}`,
+					)
+				}
+			/>
+			<FormSelect
+				name="harUtgaattStatsborgerskap"
+				options={Options('boolean')}
+				label="Har utgått statsborgerskap"
+				onChange={(val: any) =>
+					handleChange(
+						val?.value,
+						'harUtgaattStatsborgerskap',
+						`Har utgått statsborgerskap: ${oversettBoolean(val?.value)}`,
+					)
+				}
+			/>
+			<FormSelect
+				name="harStatsborgerskapHistorikk"
+				options={Options('boolean')}
+				label="Har statsborgerskapshistorikk"
+				onChange={(val: any) =>
+					handleChange(
+						val?.value,
+						'harStatsborgerskapHistorikk',
+						`Har statsborgerskapshistorikk: ${oversettBoolean(val?.value)}`,
+					)
+				}
+			/>
 		</SoekKategori>
 	)
 }

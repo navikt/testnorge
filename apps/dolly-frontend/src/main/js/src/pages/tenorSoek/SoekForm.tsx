@@ -86,7 +86,15 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 										<Table.HeaderCell>
 											<Header
 												title="Folkeregisteret - statsborgerskap"
-												paths={['harNorskStatsborgerskap', 'harFlereStatsborgerskap']}
+												paths={[
+													'harNorskStatsborgerskap',
+													'harFlereStatsborgerskap',
+													'harNordenStatsborgerskap',
+													'harEuEoesStatsborgerskap',
+													'harTredjelandStatsborgerskap',
+													'harUtgaattStatsborgerskap',
+													'harStatsborgerskapHistorikk',
+												]}
 												getValues={getValues}
 												emptyCategory={emptyCategory}
 											/>
