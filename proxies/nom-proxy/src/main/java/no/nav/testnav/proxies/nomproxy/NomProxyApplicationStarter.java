@@ -6,20 +6,13 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.nomproxy.config.Consumers;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.Buildable;
-import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-
-import java.util.function.Function;
 
 @Import({
         SecurityConfig.class,
@@ -41,27 +34,17 @@ public class NomProxyApplicationStarter {
 
         return builder
                 .routes()
-                .route(createRoute(consumers.getNomApi(), tokenService))
+                .route(spec -> spec
+                        .path("/**")
+                        .and()
+                        .not(not -> not.path("/internal/**"))
+                        .filters(filterSpec -> filterSpec.filters(
+                                AddAuthenticationRequestGatewayFilterFactory.bearerAuthenticationHeaderFilter(
+                                        () -> tokenService
+                                                .exchange(consumers.getNomApi())
+                                                .map(AccessToken::getTokenValue))))
+                        .uri(consumers.getNomApi().getUrl())
+                )
                 .build();
-    }
-
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
-        return spec -> spec
-                .path("/" + segment + "/**")
-                .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filter(filter)
-                ).uri(host);
-    }
-
-    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, AzureTrygdeetatenTokenService tokenService) {
-        var segment = serverProperties.getName();
-        var host = serverProperties.getUrl();
-        var filter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(
-                        () -> tokenService
-                                .exchange(serverProperties)
-                                .map(AccessToken::getTokenValue));
-        return createRoute(segment, host, filter);
     }
 }
