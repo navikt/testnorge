@@ -228,6 +228,9 @@ public class MalBestillingService {
                     } else {
 
                         return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
+                                .switchIfEmpty(Mono.just(TilgangDTO.builder()
+                                        .brukere(List.of(bruker.getBrukerId()))
+                                        .build()))
                                 .map(TilgangDTO::getBrukere)
                                 .map(bestillingMalRepository::findAllByBrukerIdIn)
                                 .flatMap(Flux::collectList)
