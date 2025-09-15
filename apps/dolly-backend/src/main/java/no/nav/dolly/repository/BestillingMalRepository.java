@@ -61,7 +61,7 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
     Flux<MalBestillingFragment> findAllByBrukertypeAzureOrTeam();
 
     @Query(value = """
-            select b.brukernavn as brukernavn, b.bruker_id as brukerid from bruker b
+            select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
                 join bestilling_mal bm on bm.bruker_id = b.id
                 where b.bruker_id = :brukerId
             """)
