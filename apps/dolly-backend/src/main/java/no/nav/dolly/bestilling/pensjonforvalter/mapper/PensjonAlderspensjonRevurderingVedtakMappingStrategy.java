@@ -66,11 +66,6 @@ public class PensjonAlderspensjonRevurderingVedtakMappingStrategy implements Map
             return PensjonMappingSupportUtils.getNesteMaaned(sivilstand.getBekreftelsesdato());
         }
 
-        if (nonNull(sivilstand.getFolkeregistermetadata()) &&
-                nonNull(sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt())) {
-            return PensjonMappingSupportUtils.getNesteMaaned(sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt().toLocalDate());
-        }
-
-        return PensjonMappingSupportUtils.getNesteMaaned(LocalDate.now());
+        return null;
     }
 }

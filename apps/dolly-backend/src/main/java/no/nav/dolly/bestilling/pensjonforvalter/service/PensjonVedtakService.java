@@ -136,7 +136,7 @@ public class PensjonVedtakService {
         }
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAP(ident, miljoe)
+                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAPHvisOK(ident, miljoe)
                         .flatMapMany(vedtakResponse ->
                                 pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe)
                                         .map(vedtak -> {
