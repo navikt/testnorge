@@ -28,6 +28,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -228,12 +229,11 @@ public class MalBestillingService {
                     } else {
 
                         return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                                .switchIfEmpty(Mono.just(TilgangDTO.builder()
-                                        .brukere(List.of(bruker.getBrukerId()))
-                                        .build()))
                                 .map(TilgangDTO::getBrukere)
-                                .map(bestillingMalRepository::findAllByBrukerIdIn)
-                                .flatMap(Flux::collectList)
+                                .flatMapMany(Flux::fromIterable)
+                                .flatMap(bestillingMalRepository::findFragmentByBrukerId)
+                                .sort(Comparator.comparing(MalBestillingFragment::getBrukernavn))
+                                .collectList()
                                 .map(MalBestillingService::mapFragment)
                                 .map(RsMalBestillingSimple::new);
                     }

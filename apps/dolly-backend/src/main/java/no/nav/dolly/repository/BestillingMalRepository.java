@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @Repository
 public interface BestillingMalRepository extends ReactiveCrudRepository<BestillingMal, Long> {
 
@@ -56,17 +54,16 @@ public interface BestillingMalRepository extends ReactiveCrudRepository<Bestilli
 
     @Query(value = """
             select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
-                join bestilling_mal bm on b.id = bm.bruker_id
+                join bestilling_mal bm on bm.bruker_id = b.id
                 where (b.brukertype = 'AZURE' or b.brukertype = 'TEAM')
                 order by brukernavn
             """)
     Flux<MalBestillingFragment> findAllByBrukertypeAzureOrTeam();
 
     @Query(value = """
-            select distinct(b.brukernavn) as brukernavn, b.bruker_id as brukerid from bruker b
-                join bestilling_mal bm on b.id = bm.bruker_id
-                where b.bruker_id in :brukerIds
-                order by brukernavn
+            select b.brukernavn as brukernavn, b.bruker_id as brukerid from bruker b
+                join bestilling_mal bm on bm.bruker_id = b.id
+                where b.bruker_id = :brukerId
             """)
-    Flux<MalBestillingFragment> findAllByBrukerIdIn(@Param("brukerIds") List<String> brukerIds);
+    Mono<MalBestillingFragment> findFragmentByBrukerId(@Param("brukerId") String brukerId);
 }
