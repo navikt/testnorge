@@ -174,7 +174,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 					size="grow"
 					label="Utenlandsk identifikasjonsnummertype"
 					onChange={(val: SyntheticEvent) => {
-						return handleChangeList(
+						handleChangeList(
 							val?.map((item: any) => item.value) || null,
 							'utenlandskPersonIdentifikasjon',
 							'Utenlandsk ident.nr.type',

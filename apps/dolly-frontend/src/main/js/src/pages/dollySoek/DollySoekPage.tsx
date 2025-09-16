@@ -1,12 +1,7 @@
 import Title from '../../components/title'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
-import {
-	adressePath,
-	dollySoekLocalStorageKey,
-	personPath,
-	SoekForm,
-} from '@/pages/dollySoek/SoekForm'
+import { dollySoekLocalStorageKey, SoekForm } from '@/pages/dollySoek/SoekForm'
 import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -18,6 +13,7 @@ import { codeToNorskLabel } from '@/utils/DataFormatter'
 export default () => {
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
 	const lagreSoekRequestRef = useRef(lagreSoekRequest)
+	console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
 
 	useEffect(() => {
 		lagreSoekRequestRef.current = lagreSoekRequest
@@ -52,27 +48,18 @@ export default () => {
 	const { watch, reset, control, getValues } = formMethods
 	const values = watch()
 
-	const getLabel = (value: any, path: string) => {
-		if (value === true) {
-			return `${codeToNorskLabel(path)}`
-		} else if (value.length > 3) {
-			return `${codeToNorskLabel(path)}: ${codeToNorskLabel(value)}`
-		}
-		return `${codeToNorskLabel(path)}: ${value}`
-	}
-
-	const handleChange = (value: any, path: string) => {
-		const updatedPersonRequest = { ...values.personRequest, [path]: value }
-		const updatedRequest = { ...values, personRequest: updatedPersonRequest, side: 0, seed: null }
+	const handleChange = (value: any, path: string, label: string) => {
+		const updatedRequest = { ...values, side: 0, seed: null }
+		_.set(updatedRequest, path, value)
 		reset(updatedRequest)
 		setRequest(updatedRequest)
 		if (value) {
 			setLagreSoekRequest({
 				...lagreSoekRequest,
 				[path]: {
-					path: `${personPath}.${path}`,
+					path: path,
 					value: value,
-					label: getLabel(value, path),
+					label: label,
 				},
 			})
 		} else {
@@ -83,73 +70,26 @@ export default () => {
 		}
 	}
 
-	//TODO: Slaa sammen med handleChange?
-	const handleChangeAdresse = (value: any, path: string) => {
-		const updatedAdresseRequest = { ...values.personRequest.adresse, [path]: value }
-		const updatedRequest = {
-			...values,
-			side: 0,
-			seed: null,
-		}
-		_.set(updatedRequest, 'personRequest.adresse', updatedAdresseRequest)
-		reset(updatedRequest)
-		setRequest(updatedRequest)
-		if (value) {
-			setLagreSoekRequest({
-				...lagreSoekRequest,
-				[path]: {
-					path: `${adressePath}.${path}`,
-					value: value,
-					label: getLabel(value, path),
-				},
-			})
-		} else {
-			setLagreSoekRequest({
-				...lagreSoekRequest,
-				[path]: undefined,
-			})
-		}
-	}
-
-	//TODO: Sende inn values som liste av string?
-	const handleChangeList = (value: any, path: string) => {
-		const list = value?.map((item: any) => item.value || item)
+	const handleChangeList = (value: any, path: string, label: string) => {
+		const list = value?.map((item: any) => item.value ?? item)
 		const updatedRequest = { ...values, [path]: list, side: 0, seed: null }
 		reset(updatedRequest)
 		setRequest(updatedRequest)
-		if (path === 'registreRequest') {
-			if (value?.length > 0) {
-				const fagsystemer = value.map((system) => ({
-					path: 'registreRequest',
-					value: system.value,
-					label: `Fagsystem: ${system.label}`,
-				}))
-				setLagreSoekRequest({
-					...lagreSoekRequest,
-					registreRequest: fagsystemer,
-				})
-			} else {
-				setLagreSoekRequest({
-					...lagreSoekRequest,
-					registreRequest: [],
-				})
-			}
-		} else if (path === 'miljoer') {
-			if (value?.length > 0) {
-				setLagreSoekRequest({
-					...lagreSoekRequest,
-					miljoer: {
-						path: 'miljoer',
-						value: value,
-						label: `Miljøer: ${value.map((item: any) => item.label).join(', ')}`,
-					},
-				})
-			} else {
-				setLagreSoekRequest({
-					...lagreSoekRequest,
-					miljoer: [],
-				})
-			}
+		if (value?.length > 0) {
+			const request = value.map((i) => ({
+				path: path,
+				value: i.value ?? i,
+				label: label?.includes(':') ? label : `${label}: ${i.label ?? codeToNorskLabel(i)}`,
+			}))
+			setLagreSoekRequest({
+				...lagreSoekRequest,
+				[path]: request,
+			})
+		} else {
+			setLagreSoekRequest({
+				...lagreSoekRequest,
+				[path]: [],
+			})
 		}
 	}
 
@@ -166,14 +106,12 @@ export default () => {
 				type={soekType.dolly}
 				formValues={formMethods.watch()}
 				handleChange={handleChange}
-				handleChangeAdresse={handleChangeAdresse}
 				handleChangeList={handleChangeList}
 			/>
 			<SoekForm
 				formMethods={formMethods}
 				localStorageValue={localStorageValue}
 				handleChange={handleChange}
-				handleChangeAdresse={handleChangeAdresse}
 				handleChangeList={handleChangeList}
 				setRequest={setRequest}
 				formRequest={formRequest}

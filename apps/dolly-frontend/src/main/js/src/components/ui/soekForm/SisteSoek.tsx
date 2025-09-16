@@ -2,7 +2,7 @@ import { useHentLagredeSoek } from '@/utils/hooks/useSoek'
 import { Chips, VStack } from '@navikt/ds-react'
 import * as _ from 'lodash-es'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
-import { isDate, isSameDay } from 'date-fns'
+import { isDate, isSameDay, isValid } from 'date-fns'
 
 export enum soekType {
 	dolly = 'DOLLY',
@@ -11,20 +11,16 @@ export enum soekType {
 
 const listOptions = [
 	'registreRequest',
+	'miljoer',
 	'utenlandskPersonIdentifikasjon',
 	'roller',
 	'inntekt.inntektstyper',
 	'inntekt.forskuddstrekk',
 ]
 
-export const SisteSoek = ({
-	type,
-	formValues,
-	handleChange,
-	handleChangeAdresse,
-	handleChangeList,
-}) => {
-	const { lagredeSoek, loading, error } = useHentLagredeSoek(type)
+export const SisteSoek = ({ type, formValues, handleChange, handleChangeList }) => {
+	const { lagredeSoek } = useHentLagredeSoek(type)
+
 	const lagredeSoekData = []
 	lagredeSoek?.forEach((soek) => {
 		Object.entries(soek?.soekVerdi)?.forEach((verdi) => {
@@ -45,62 +41,39 @@ export const SisteSoek = ({
 		const formValue = _.get(formValues, path)
 		if (listOptions.includes(path)) {
 			return formValue?.includes(value)
-		} else if (path === 'miljoer') {
-			return (
-				formValue?.length === value.length &&
-				formValue?.every((item) => value?.map((v) => v.value).includes(item))
-			)
-		} else if (formValue?.length > 8 && isDate(new Date(formValue))) {
+		} else if (
+			formValue?.length > 8 &&
+			isDate(new Date(formValue)) &&
+			isValid(new Date(formValue))
+		) {
 			return isSameDay(new Date(formValue), new Date(value))
 		}
 		return formValue === value
 	}
 
 	const handleClick = (option) => {
-		// console.log('option: ', option) //TODO - SLETT MEG
-		// console.log('formValues: ', formValues) //TODO - SLETT MEG
-		// console.log("option.path?.split('.'): ", option.path?.split('.')) //TODO - SLETT MEG
 		//TODO: Handleclick generell for lister?
-
+		console.log('option: ', option) //TODO - SLETT MEG
 		if (listOptions.includes(option.path)) {
 			const listValues = _.get(formValues, option.path) || []
-			// console.log('listValues: ', listValues) //TODO - SLETT MEG
 			handleChangeList(
 				!listValues?.includes(option.value)
 					? [...listValues, { value: option.value, label: codeToNorskLabel(option.value) }]
 					: listValues?.filter((item) => item !== option.value),
 				option.path,
-				//TODO: Label
-			)
-		} else if (option.path === 'miljoer') {
-			const miljoerValues = _.get(formValues, option.path) || []
-			const miljoerErLike =
-				miljoerValues?.length === option.value?.length &&
-				miljoerValues?.every((v) => option.value?.map((i) => i.value).includes(v))
-			handleChangeList(
-				miljoerErLike
-					? miljoerValues?.filter((i) => option.value?.map((v) => v.value) === i.value)
-					: option.value,
-				option.path,
-				//TODO: Label
-			)
-		} else if (option.path.includes('adresse') || option.path.includes('harDeltBosted')) {
-			const pathArray = option.path?.split('.')
-			handleChangeAdresse(
-				_.get(formValues, option.path) !== option.value ? option.value : null,
-				pathArray[pathArray.length - 1],
+				option.label,
 			)
 		} else {
-			const splitPath = option.path?.split('.')
 			handleChange(
 				_.get(formValues, option.path) !== option.value ? option.value : null,
-				// option.path?.split('.')[1].trim(),
-				splitPath[splitPath.length - 1]?.trim(),
+				option.path,
+				option.label,
 			)
 		}
 	}
 
 	//TODO: Denne ser ut til aa funke naa. Gjoer det samme paa handleClick?
+	//TODO: Evt. slaa sammen begge handleChanges?
 	const handleClickTenor = (option) => {
 		const formValue = _.get(formValues, option.path)
 		if (listOptions.includes(option.path)) {
@@ -125,7 +98,6 @@ export const SisteSoek = ({
 
 	return (
 		<VStack gap="3" style={{ marginBottom: '15px' }}>
-			{/*<h4>SISTE SØK:</h4>*/}
 			<Chips>
 				{lagredeSoekData?.slice(0, 10).map((option, idx) => (
 					<Chips.Toggle

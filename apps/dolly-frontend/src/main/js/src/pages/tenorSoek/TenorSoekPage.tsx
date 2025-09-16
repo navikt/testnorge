@@ -7,16 +7,10 @@ import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
 import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
 import { useForm } from 'react-hook-form'
-import { formatISO, isDate } from 'date-fns'
+import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { DollyApi } from '@/service/Api'
-import {
-	codeToNorskLabel,
-	formatDate,
-	formatDateTime,
-	formatDateTimeWithSeconds,
-	oversettBoolean,
-} from '@/utils/DataFormatter'
+import { codeToNorskLabel } from '@/utils/DataFormatter'
 
 const initialState = {
 	personListe: [],
@@ -185,11 +179,6 @@ export default () => {
 	const handleChange = (value: any, path: string, label: string) => {
 		if (isDate(value)) {
 			value = fixTimezone(value)
-			// value = formatDate(fixTimezone(value))
-			// value = formatDate(value)
-			// value = formatDateTimeWithSeconds(fixTimezone(value))
-			// value = formatISO(fixTimezone(value))
-			// value = '2025-09-01T00:00:00'
 		}
 		setValue(path, value)
 		const request = getUpdatedRequest(watch())
@@ -214,8 +203,6 @@ export default () => {
 	}
 
 	const handleChangeList = (value: any, path: string, label: string) => {
-		console.log('value: ', value) //TODO - SLETT MEG
-		// const list = value.map((item: any) => item.value || item)
 		setValue(path, value)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
@@ -224,9 +211,7 @@ export default () => {
 		if (value?.length > 0) {
 			const request = value.map((i) => ({
 				path: path,
-				// value: i.value,
 				value: i,
-				// label: label,
 				label: label.includes(':') ? label : `${label}: ${codeToNorskLabel(i)}`,
 			}))
 			setLagreSoekRequest({
@@ -241,6 +226,7 @@ export default () => {
 		}
 	}
 
+	// TODO: Test og evt fiks denne
 	const emptyCategory = (paths: Array<string>) => {
 		paths.forEach((path) => {
 			setValue(path, undefined)
@@ -250,9 +236,6 @@ export default () => {
 		setMarkertePersoner([])
 		mutate()
 	}
-
-	// console.log('watch(): ', watch()) //TODO - SLETT MEG
-	// console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
 
 	return (
 		<div>

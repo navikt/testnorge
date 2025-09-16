@@ -31,16 +31,12 @@ export const SoekForm = ({
 	formMethods,
 	localStorageValue,
 	handleChange,
-	handleChangeAdresse,
 	handleChangeList,
 	setRequest,
 	formRequest,
 	lagreSoekRequest,
 	setLagreSoekRequest,
 }) => {
-	//TODO: Felter/kategorier som maa fikses
-	// Miljoer
-
 	const [result, setResult] = useState(null)
 	const [soekPaagaar, setSoekPaagaar] = useState(false)
 	const [soekError, setSoekError] = useState(null)
@@ -91,18 +87,21 @@ export const SoekForm = ({
 		const lagreSoekRequestClone = { ...lagreSoekRequest }
 		paths.forEach((path) => {
 			_.set(requestClone, path, _.get(dollySoekInitialValues, path))
+			delete lagreSoekRequestClone[path]
 			if (path === 'personRequest.harSkjerming') {
 				_.set(
 					requestClone,
 					'registreRequest',
 					watch('registreRequest')?.filter((item: string) => item !== 'SKJERMING'),
 				)
+				_.set(
+					lagreSoekRequestClone,
+					'registreRequest',
+					lagreSoekRequestClone.registreRequest?.filter(
+						(item: string) => item.value !== 'SKJERMING',
+					),
+				)
 			}
-			Object.entries(lagreSoekRequestClone)?.forEach((item, idx) => {
-				if (item[1]?.path === path) {
-					delete lagreSoekRequestClone[item[0]]
-				}
-			})
 		})
 		const updatedRequest = { ...requestClone, side: 0, seed: null }
 		reset(updatedRequest)
@@ -182,9 +181,7 @@ export const SoekForm = ({
 												/>
 											</Table.HeaderCell>
 										</Table.ExpandableRow>
-										<Table.ExpandableRow
-											content={<Adresser handleChangeAdresse={handleChangeAdresse} />}
-										>
+										<Table.ExpandableRow content={<Adresser handleChange={handleChange} />}>
 											<Table.HeaderCell>
 												<Header
 													title="Adresser"
@@ -196,12 +193,7 @@ export const SoekForm = ({
 											</Table.HeaderCell>
 										</Table.ExpandableRow>
 										<Table.ExpandableRow
-											content={
-												<Familierelasjoner
-													handleChange={handleChange}
-													handleChangeAdresse={handleChangeAdresse}
-												/>
-											}
+											content={<Familierelasjoner handleChange={handleChange} />}
 										>
 											<Table.HeaderCell>
 												<Header
