@@ -51,11 +51,11 @@ public class PensjonPersondataService {
                                         RsDollyBestilling bestilling, String navEnhet, Set<String> miljoer) {
 
         return Flux.merge(
-//                Flux.concat(
+                Flux.concat(
                         opprettPersoner(ident, miljoer, persondata)
                                 .map(response -> PENSJON_FORVALTER + pensjonforvalterHelper.decodeStatus(response, ident)),
-//                        revurderingVedNySivilstand(ident, miljoer, persondata, bestilling, navEnhet)
-//                                .map(response -> PEN_REVURDERING_AP + pensjonforvalterHelper.decodeStatus(response, ident))),
+                        revurderingVedNySivilstand(ident, miljoer, persondata, bestilling, navEnhet)
+                                .map(response -> PEN_REVURDERING_AP + pensjonforvalterHelper.decodeStatus(response, ident))),
                 lagreSamboer(ident, miljoer)
                         .map(response -> SAMBOER_REGISTER + pensjonforvalterHelper.decodeStatus(response, ident))
         );
@@ -111,34 +111,33 @@ public class PensjonPersondataService {
             return Flux.empty();
         }
 
-        return Flux.empty();
-//        return Flux.fromIterable(miljoer)
-//                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAPHvisOK(ident, miljoe)
-//                        .flatMapMany(vedtak ->
-//                                pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe)
-//                                        .map(transaksjonMapping -> {
-//                                            var context = new MappingContext.Factory().getContext();
-//                                            context.setProperty(NAV_ENHET, navEnhetId);
-//                                            context.setProperty(SIVILSTAND, persondata.stream()
-//                                                    .filter(personBolk -> personBolk.getIdent().equals(ident))
-//                                                    .map(PdlPersonBolk.PersonBolk::getPerson)
-//                                                    .map(PdlPerson.Person::getSivilstand)
-//                                                    .findFirst().orElse(List.of(new PdlPerson.Sivilstand())));
-//                                            return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
-//                                        })
-//                                        .flatMap(request -> {
-//                                            if (nonNull(request.getFom()) &&
-//                                                    request.getFom().isAfter(vedtak.getFom())) {
-//                                                return pensjonforvalterConsumer.lagreRevurderingVedtak(request)
-//                                                        .flatMap(response ->
-//                                                                pensjonforvalterHelper.saveTransaksjonId(ident, miljoe,
-//                                                                                bestilling.getId(), SystemTyper.PEN_AP_REVURDERING, request)
-//                                                                        .thenReturn(response));
-//                                            } else {
-//                                                return miscRevurderingResponse(request, vedtak);
-//                                            }
-//                                        })
-//                        ));
+        return Flux.fromIterable(miljoer)
+                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAPHvisOK(ident, miljoe)
+                        .flatMapMany(vedtak ->
+                                pensjonforvalterHelper.hentTransaksjonMappingAP(ident, miljoe)
+                                        .map(transaksjonMapping -> {
+                                            var context = new MappingContext.Factory().getContext();
+                                            context.setProperty(NAV_ENHET, navEnhetId);
+                                            context.setProperty(SIVILSTAND, persondata.stream()
+                                                    .filter(personBolk -> personBolk.getIdent().equals(ident))
+                                                    .map(PdlPersonBolk.PersonBolk::getPerson)
+                                                    .map(PdlPerson.Person::getSivilstand)
+                                                    .findFirst().orElse(List.of(new PdlPerson.Sivilstand())));
+                                            return mapperFacade.map(transaksjonMapping, RevurderingVedtakRequest.class, context);
+                                        })
+                                        .flatMap(request -> {
+                                            if (nonNull(request.getFom()) &&
+                                                    request.getFom().isAfter(vedtak.getFom())) {
+                                                return pensjonforvalterConsumer.lagreRevurderingVedtak(request)
+                                                        .flatMap(response ->
+                                                                pensjonforvalterHelper.saveTransaksjonId(ident, miljoe,
+                                                                                bestilling.getId(), SystemTyper.PEN_AP_REVURDERING, request)
+                                                                        .thenReturn(response));
+                                            } else {
+                                                return miscRevurderingResponse(request, vedtak);
+                                            }
+                                        })
+                        ));
     }
 
     private Mono<PensjonforvalterResponse> miscRevurderingResponse(RevurderingVedtakRequest request, PensjonVedtakResponse response) {
@@ -148,7 +147,7 @@ public class PensjonPersondataService {
             message = "Automatisk revurderingsvedtak ikke mulig når dato for sivilstandsendring mangler.";
 
         } else if (request.getFom().isBefore(response.getFom())) {
-            message = "Automatisk revurderingsvedtak kan ikke settes tidligere enn et eksisterende vedtak.";
+            message = "Automatisk revurderingsvedtak ikke mulig når sivilstandsendring skjer tidligere enn siste vedtak.";
 
         } else {
             return Mono.empty();
