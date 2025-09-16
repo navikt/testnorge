@@ -342,7 +342,7 @@ public class PdlPerson {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Navn extends DbVersjonDTO {
+    public static class Navn extends MetadataInformasjon {
 
         private String fornavn;
         private String mellomnavn;
@@ -572,5 +572,23 @@ public class PdlPerson {
 
             return nonNull(utenlandskAdresse);
         }
+    }
+
+    @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MetadataInformasjon extends DbVersjonDTO implements Serializable {
+
+        private Metadata metadata;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Metadata implements Serializable {
+
+        private Boolean historisk;
     }
 }
