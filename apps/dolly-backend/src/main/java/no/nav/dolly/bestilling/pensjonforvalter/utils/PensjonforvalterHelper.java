@@ -115,9 +115,11 @@ public class PensjonforvalterHelper {
                 });
     }
 
-    public Mono<PensjonVedtakResponse> hentSisteVedtakAPHvisOK(String ident, String miljoe) {
+    public Mono<PensjonVedtakResponse> hentSisteVedtakAP(String ident, String miljoe) {
 
-        return pensjonforvalterConsumer.hentVedtak(ident, miljoe)
+        return transaksjonMappingService.getTransaksjonMapping
+
+                pensjonforvalterConsumer.hentVedtak(ident, miljoe)
                 .filter(PensjonVedtakResponse::isSaktypeAP)
                 .sort(Comparator.comparing(PensjonVedtakResponse::getFom).reversed())
                 .collectList()
