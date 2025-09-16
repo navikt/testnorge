@@ -41,6 +41,13 @@ export const FolkeregisteretAdresse = ({ handleChange }: any) => {
 					}
 				/>
 				<FormCheckbox
+					name="avansert.harBostedsadresseHistorikk"
+					label="Har bostedsadressehistorikk"
+					onChange={(val: any) =>
+						handleChange(val?.target?.checked || undefined, 'avansert.harBostedsadresseHistorikk')
+					}
+				/>
+				<FormCheckbox
 					name="adresser.harOppholdAnnetSted"
 					label="Har opphold annet sted"
 					onChange={(val: any) =>

@@ -2,13 +2,14 @@ package no.nav.registre.sdforvalter;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.dolly.libs.nais.NaisFileIntoSystemPropertyInitializer;
-import no.nav.dolly.libs.nais.NaisVaultKeyInitializer;
+import no.nav.dolly.libs.vault.NaisVaultKeyInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class StatiskDataForvalterApplicationStarter {
     public static void main(String[] args) {
+        NaisVaultKeyInitializer.run();
         new SpringApplicationBuilder(StatiskDataForvalterApplicationStarter.class)
                 .initializers(
                         new NaisEnvironmentApplicationContextInitializer(),
