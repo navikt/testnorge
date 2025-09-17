@@ -74,11 +74,12 @@ public class PensjonforvalterClient implements ClientRegister {
                                             Flux.concat(
                                                     pensjonPersondataService.lagrePersondata(dollyPerson.getIdent(),
                                                             utvidetPersondata.getT1(), bestilling, utvidetPersondata.getT2(),
-                                                            tilgjengeligeMiljoer),
+                                                            tilgjengeligeMiljoer, isOpprettEndre),
                                                     pensjonPensjonsdataService.lagrePensjonsdata(bestilling1,
                                                             dollyPerson.getIdent(), bestilteMiljoer.get()),
                                                     pensjonVedtakService.lagrePensjonVedtak(bestilling1,
-                                                            dollyPerson.getIdent(), utvidetPersondata, bestilteMiljoer.get())
+                                                            dollyPerson.getIdent(), utvidetPersondata,
+                                                            bestilteMiljoer.get(), isOpprettEndre)
                                             )))
 
                             .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
@@ -92,7 +93,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<String> getErrors(Set<String> miljoer, Throwable throwable) {
 
         return Flux.fromIterable(miljoer)
-                .map(miljo -> "%s%s:Feil= %s" .formatted(ANNET, miljo,
+                .map(miljo -> "%s%s:Feil= %s".formatted(ANNET, miljo,
                         encodeStatus(WebClientError.describe(throwable).getMessage())));
     }
 

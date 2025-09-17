@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakDTO;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
@@ -76,6 +77,14 @@ public class PensjonforvalterUtils {
     public static AlderspensjonVedtakRequest basicAlderspensjonRequest(String ident, Set<String> miljoer) {
 
         return AlderspensjonVedtakRequest.builder()
+                .fnr(ident)
+                .miljoer(miljoer)
+                .build();
+    }
+
+    public static AlderspensjonVedtakDTO basicAlderspensjonRequestDTO(String ident, Set<String> miljoer) {
+
+        return AlderspensjonVedtakDTO.builder()
                 .fnr(ident)
                 .miljoer(miljoer)
                 .build();

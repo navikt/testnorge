@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakDTO;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonVedtakResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -19,11 +19,11 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.basicAlderspensjonRequest;
+import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.basicAlderspensjonRequestDTO;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.poi.util.StringUtil.isNotBlank;
@@ -49,7 +49,7 @@ public class PensjonforvalterHelper {
     }
 
     public Mono<TransaksjonMapping> saveTransaksjonId(String ident, String miljoe, Long bestillingId,
-                                                        SystemTyper type, Object vedtak) {
+                                                      SystemTyper type, Object vedtak) {
 
         return transaksjonMappingService.delete(ident, miljoe, type.name())
                 .then(transaksjonMappingService.save(
@@ -115,16 +115,19 @@ public class PensjonforvalterHelper {
                 });
     }
 
-    public Mono<PensjonVedtakResponse> hentSisteVedtakAP(String ident, String miljoe) {
+    public Mono<AlderspensjonVedtakDTO> hentSisteVedtakAP(String ident, String miljoe) {
 
-        return transaksjonMappingService.getTransaksjonMapping
-
-                pensjonforvalterConsumer.hentVedtak(ident, miljoe)
-                .filter(PensjonVedtakResponse::isSaktypeAP)
-                .sort(Comparator.comparing(PensjonVedtakResponse::getFom).reversed())
-                .collectList()
-                .flatMap(vedtakResponse -> !vedtakResponse.isEmpty() &&
-                        vedtakResponse.getFirst().getSisteOppdatering().contains("opprettet") ?
-                        Mono.just(vedtakResponse.getFirst()) : Mono.empty());
+        return transaksjonMappingService.getTransaksjonMapping(ident, miljoe)
+                .filter(transaksjonMapping -> transaksjonMapping.getSystem().contains("AP"))
+                .sort(Comparator.comparing(TransaksjonMapping::getDatoEndret).reversed())
+                .next()
+                .map(mapping -> {
+                    try {
+                        return objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakDTO.class);
+                    } catch (JsonProcessingException e) {
+                        log.error("Feil ved deserialisering av transaksjonId", e);
+                        return basicAlderspensjonRequestDTO(ident, Set.of(miljoe));
+                    }
+                });
     }
 }

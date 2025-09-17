@@ -40,6 +40,11 @@ public class TransaksjonMappingService {
         return transaksjonMappingRepository.findAllBySystemAndIdentAndMiljoe(system, ident, miljoe);
     }
 
+    public Flux<TransaksjonMapping> getTransaksjonMapping(String ident, String miljoe) {
+
+        return transaksjonMappingRepository.findAllByIdentAndMiljoe(ident, miljoe);
+    }
+
     public Mono<Boolean> existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)

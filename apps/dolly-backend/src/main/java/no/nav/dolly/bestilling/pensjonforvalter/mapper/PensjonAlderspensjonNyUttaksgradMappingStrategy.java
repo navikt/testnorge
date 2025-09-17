@@ -5,13 +5,16 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonNyUtaksgradRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getNesteMaaned;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getRandomAnsatt;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -48,11 +51,26 @@ public class PensjonAlderspensjonNyUttaksgradMappingStrategy implements MappingS
                                     vedtak.getNavEnhetId() : (String) context.getProperty(NAV_ENHET));
                         }
 
-                        nyUtaksgradRequest.setFom(nonNull(alderspensjonVedtakRequest.getFom()) ?
-                                getNesteMaaned(alderspensjonVedtakRequest.getFom()) : getNesteMaaned());
+                        var fom = nonNull(alderspensjonVedtakRequest.getFom()) ?
+                                alderspensjonVedtakRequest.getFom() : vedtak.getIverksettelsesdato();
+
+                        nyUtaksgradRequest.setFom(getNesteMaaned(fom));
                     }
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static LocalDate getNesteMaaned(LocalDate date) {
+
+        if (isNull(date)) {
+            return PensjonMappingSupportUtils.getNesteMaaned();
+
+        } else if (date.getDayOfMonth() == 1) {
+            return date;
+
+        } else {
+            return PensjonMappingSupportUtils.getNesteMaaned(date);
+        }
     }
 }
