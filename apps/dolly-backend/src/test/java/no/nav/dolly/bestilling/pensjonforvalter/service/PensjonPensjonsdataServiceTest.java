@@ -65,7 +65,6 @@ class PensjonPensjonsdataServiceTest {
     private PensjonforvalterHelper pensjonforvalterHelper =
             new PensjonforvalterHelper(new ErrorStatusDecoder(new ObjectMapper()),
                     new ObjectMapper(),
-                    pensjonforvalterConsumer,
                     new TransaksjonMappingService(transaksjonMappingRepository, new ObjectMapper()));
 
     @Mock
