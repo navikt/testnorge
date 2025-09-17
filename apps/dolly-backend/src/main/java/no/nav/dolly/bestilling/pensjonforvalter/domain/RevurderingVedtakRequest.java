@@ -12,7 +12,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RevurderingVedtakRequest {
+public class RevurderingVedtakRequest implements PensjonTransaksjonId {
 
     private String fnr;
     private LocalDate fom;

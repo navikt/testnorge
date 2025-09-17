@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.pensjonforvalter.utils;
+package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 
 import lombok.experimental.UtilityClass;
 

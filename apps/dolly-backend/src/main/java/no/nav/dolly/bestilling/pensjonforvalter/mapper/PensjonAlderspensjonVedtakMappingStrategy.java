@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Set;
 
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getNesteMaaned;
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getRandomAnsatt;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getNesteMaaned;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getRandomAnsatt;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;

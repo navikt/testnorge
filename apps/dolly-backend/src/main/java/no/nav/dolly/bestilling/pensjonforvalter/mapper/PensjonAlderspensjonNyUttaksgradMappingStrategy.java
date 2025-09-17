@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonNyUtaksgradRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonMappingSupportUtils.getRandomAnsatt;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getRandomAnsatt;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 

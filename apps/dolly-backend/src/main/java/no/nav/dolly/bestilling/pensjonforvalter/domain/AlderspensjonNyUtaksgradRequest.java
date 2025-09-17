@@ -12,7 +12,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlderspensjonNyUtaksgradRequest {
+public class AlderspensjonNyUtaksgradRequest implements PensjonTransaksjonId {
 
     private String fnr;
     private Integer nyUttaksgrad;

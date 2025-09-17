@@ -15,7 +15,7 @@ import static java.util.Objects.isNull;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class AlderspensjonRequest {
+public abstract class AlderspensjonRequest implements PensjonTransaksjonId {
 
     private Set<String> miljoer;
 
