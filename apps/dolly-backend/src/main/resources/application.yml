@@ -42,6 +42,11 @@ spring:
   jackson:
     parser:
       include-source-in-location: true
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
+      enabled: true
 
 springdoc:
   swagger-ui:
@@ -58,7 +63,7 @@ logging:
 
 open:
   search:
-    total-fields: 1500
+    total-fields: 2000
     index: bestilling
 
 consumers:
