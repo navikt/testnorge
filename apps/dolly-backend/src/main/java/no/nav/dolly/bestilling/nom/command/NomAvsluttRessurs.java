@@ -9,6 +9,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -39,7 +40,8 @@ public class NomAvsluttRessurs implements Callable<Mono<NomRessursResponse>> {
                         .builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-                .doOnError(WebClientError.logTo(log))
+                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound),
+                        WebClientError.logTo(log))
                 .onErrorResume(throwable ->
                         Mono.just(NomRessursResponse.of(WebClientError.describe(throwable))));
     }
