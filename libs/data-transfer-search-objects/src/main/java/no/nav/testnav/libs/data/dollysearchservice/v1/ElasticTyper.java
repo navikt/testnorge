@@ -28,6 +28,7 @@ public enum ElasticTyper {
     INST("Institusjonsopphold (INST2)", true),
     KRRSTUB("Kontakt- og reservasjonsregister-stub", false),
     MEDL("Medlemskap (MEDL)", false),
+    NOM("NAV-ansatt (NOM)", false),
     PEN_AFP_OFFENTLIG("Pensjon - AFP offentlig", true),
     PEN_AP("Pensjon - Alderspensjon (AP)", true),
     PEN_INNTEKT("Pensjon - Pensjonsinntekt/opptjening", true),

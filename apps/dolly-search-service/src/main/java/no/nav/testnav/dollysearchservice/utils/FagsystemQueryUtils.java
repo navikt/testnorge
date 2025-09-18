@@ -47,6 +47,7 @@ public class FagsystemQueryUtils {
             case INST -> QueryBuilders.existsQuery("instdata");
             case KRRSTUB -> QueryBuilders.existsQuery("krrstub");
             case MEDL -> QueryBuilders.existsQuery("medl");
+            case NOM -> QueryBuilders.existsQuery("nomdata");
             case PEN_AFP_OFFENTLIG -> QueryBuilders.existsQuery("pensjonforvalter.afpOffentlig");
             case PEN_AP -> QueryBuilders.existsQuery("pensjonforvalter.alderspensjon");
             case PEN_INNTEKT -> QueryBuilders.existsQuery("pensjonforvalter.inntekt");
