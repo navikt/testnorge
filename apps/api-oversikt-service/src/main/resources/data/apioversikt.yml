@@ -65,7 +65,7 @@ system:
     kubernetes-name: inntektstub
     cluster: dev-fss
     read:
-      url: https://inntektstub.dev.adeo.no/swagger-ui.html
+      url: https://inntektstub.intern.dev.nav.no/swagger-ui.html
   - register: inst
     namespace: team-rocket
     kubernetes-name: opphold-testdata
@@ -94,6 +94,16 @@ system:
     cluster: dev-gcp
     write:
       url: https://digdir-krr-stub.intern.dev.nav.no/swagger-ui/index.html
+  - register: nom
+    kubernetes-name: nom-api
+    namespace: nom
+    cluster: dev-gcp
+    read:
+      url: https://nom-api.intern.dev.nav.no/swagger-ui/index.html#/Dolly/hentRessurs
+    write:
+      url: https://nom-api.intern.dev.nav.no/swagger-ui/index.html#/Dolly/opprettRessurs
+    delete:
+      url: https://nom-api.intern.dev.nav.no/swagger-ui/index.html#/Dolly/avsluttRessurs
   - register: pensjon-testdata
     write:
       kubernetes-name: pensjon-testdata-facade
@@ -150,7 +160,7 @@ system:
     namespace: team-inntekt
     cluster: dev-gcp
     write:
-      url: https://sigrun-skd-stub.dev.adeo.no/swagger-ui/index.html?urls.primaryName=Endepunkter+for+testdata
+      url: https://sigrun-skd-stub.intern.dev.nav.no/swagger-ui/index.html?urls.primaryName=Endepunkter+for+testdata
   - register: sykemelding
     kubernetes-name: syfosmregler
     namespace: teamsykmelding
