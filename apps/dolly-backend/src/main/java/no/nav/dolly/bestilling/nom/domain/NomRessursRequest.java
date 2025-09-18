@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -12,6 +14,9 @@ import lombok.NoArgsConstructor;
 public class NomRessursRequest {
 
     private String personident;
-    private String fornavn;
     private String etternavn;
+    private String fornavn;
+    private String mellomnavn;
+    private LocalDate startDato;
+    private LocalDate sluttDato;
 }

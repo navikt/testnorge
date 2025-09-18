@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Service
 public class NomConsumer {
 
@@ -32,10 +34,10 @@ public class NomConsumer {
                 .build();
     }
 
-    public Mono<NomRessursResponse> hentRessurs(NomRessursRequest nomRessursRequest) {
+    public Mono<NomRessursResponse> hentRessurs(String ident) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new NomHentRessurs(webClient, nomRessursRequest, token.getTokenValue()).call());
+                .flatMap(token -> new NomHentRessurs(webClient, ident, token.getTokenValue()).call());
     }
 
     public Mono<NomRessursResponse> opprettRessurs(NomRessursRequest nomRessursRequest) {
@@ -44,9 +46,14 @@ public class NomConsumer {
                 .flatMap(token -> new NomOpprettRessurs(webClient, nomRessursRequest, token.getTokenValue()).call());
     }
 
-    public Mono<NomRessursResponse> avsluttRessurs(NomRessursRequest nomRessursRequest) {
+    public Mono<NomRessursResponse> avsluttRessurs(String ident, LocalDate sluttdato) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new NomAvsluttRessurs(webClient, nomRessursRequest, token.getTokenValue()).call());
+                .flatMap(token -> new NomAvsluttRessurs(webClient,
+                        NomRessursRequest.builder()
+                                .personident(ident)
+                                .sluttDato(sluttdato)
+                                .build(),
+                        token.getTokenValue()).call());
     }
 }

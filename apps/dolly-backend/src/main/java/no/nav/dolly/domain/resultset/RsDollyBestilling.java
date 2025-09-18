@@ -62,7 +62,7 @@ public class RsDollyBestilling {
     @Schema(description = "Navn på malbestillling")
     private String beskrivelse;
     private String malBestillingNavn;
-    private Boolean harNomIdent;
+    private RsNomData nomdata;
     private PdlPersondata pdldata;
     private RsDigitalKontaktdata krrstub;
     private List<RsFullmakt> fullmakt;
