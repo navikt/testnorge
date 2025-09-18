@@ -27,6 +27,7 @@ public enum SystemTyper {
     KONTOREGISTER("Bankkontoregister"),
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
     MEDL("Medlemskap (MEDL)"),
+    NOM("NAV-ansatt (NOM)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDLIMPORT("Import av personer (TESTNORGE)"),
     PDL_FORVALTER("Opprett persondetaljer"),

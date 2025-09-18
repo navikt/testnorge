@@ -232,4 +232,9 @@ consumers:
     namespace: etterlatte
     url: http://etterlatte-testdata.etterlatte.svc.cluster.local
     cluster: dev-gcp
+  nom-proxy:
+    name: testnav-nom-proxy
+    namespace: dolly
+    url: http://nom-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
     

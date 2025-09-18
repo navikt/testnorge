@@ -36,6 +36,7 @@ spec:
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
+        - application: testnav-nom-proxy
         - application: testnav-pdl-forvalter
         - application: testnav-person-service
         - application: testnav-skattekort-service

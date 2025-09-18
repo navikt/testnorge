@@ -49,4 +49,5 @@ public class Consumers {
     private ServerProperties brukerService;
     private ServerProperties safProxy;
     private ServerProperties etterlatte;
+    private ServerProperties nomProxy;
 }

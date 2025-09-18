@@ -1,0 +1,25 @@
+name:  nom-proxy
+
+on:
+  push:
+    paths:
+      - .github/workflows/proxy.nom-proxy.yml
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+      - proxies/nom-proxy/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      cluster: "dev-gcp"
+      working-directory: "proxies/nom-proxy"
+      deploy-tag: "#deploy-proxy-nom"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
