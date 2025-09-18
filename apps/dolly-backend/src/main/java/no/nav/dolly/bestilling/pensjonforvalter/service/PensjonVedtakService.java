@@ -213,7 +213,7 @@ public class PensjonVedtakService {
          } else if (isUpdateEndre && !request.getNyUttaksgrad().equals(0) && !request.getNyUttaksgrad().equals(100) &&
                  (request.getFom().getMonth().getValue() != 1 || request.getFom().getDayOfMonth() != 1)) {
 
-             message = "Automatisk vedtak av gradert uttaksgrad ikke mulig unntatt ved nytt år (1. janauar).";
+             message = "Automatisk vedtak av gradert uttaksgrad ikke mulig unntatt ved nytt år (1. januar).";
 
         } else {
             return Mono.empty();
