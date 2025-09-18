@@ -31,6 +31,7 @@ public enum ElasticTyper {
     NOM("NAV-ansatt (NOM)", false),
     PEN_AFP_OFFENTLIG("Pensjon - AFP offentlig", true),
     PEN_AP("Pensjon - Alderspensjon (AP)", true),
+    PEN_AP_NY_UTTAKSGRAD("Pensjon - AP ny uttaksgrad", true),
     PEN_INNTEKT("Pensjon - Pensjonsinntekt/opptjening", true),
     PEN_PENSJONSAVTALE("Pensjon - Pensjonsavtaler", true),
     PEN_TP("Pensjon - Tjenestepensjon (TP)", true),

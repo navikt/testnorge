@@ -36,6 +36,8 @@ public enum SystemTyper {
     PEN_AFP_OFFENTLIG("AFP offentlig (PEN)"),
     PEN_ANNET("Pensjon (PEN)"),
     PEN_AP("Alderspensjon (AP)"),
+    PEN_AP_REVURDERING("Revurdering sivilstandsendring (AP)"),
+    PEN_AP_NY_UTTAKSGRAD("Ny uttaksgrad (AP)"),
     PEN_FORVALTER("Pensjon persondata (PEN)"),
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
     PEN_PENSJONSAVTALE("Pensjonsavtale (PEN)"),

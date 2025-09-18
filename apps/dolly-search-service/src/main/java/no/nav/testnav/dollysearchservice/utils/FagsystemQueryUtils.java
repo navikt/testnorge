@@ -50,6 +50,7 @@ public class FagsystemQueryUtils {
             case NOM -> QueryBuilders.existsQuery("nomdata");
             case PEN_AFP_OFFENTLIG -> QueryBuilders.existsQuery("pensjonforvalter.afpOffentlig");
             case PEN_AP -> QueryBuilders.existsQuery("pensjonforvalter.alderspensjon");
+            case PEN_AP_NY_UTTAKSGRAD -> QueryBuilders.existsQuery("pensjonforvalter.alderspensjonNyUtaksgrad");
             case PEN_INNTEKT -> QueryBuilders.existsQuery("pensjonforvalter.inntekt");
             case PEN_PENSJONSAVTALE -> QueryBuilders.existsQuery("pensjonforvalter.pensjonsavtale");
             case PEN_TP -> QueryBuilders.existsQuery("pensjonforvalter.tp");

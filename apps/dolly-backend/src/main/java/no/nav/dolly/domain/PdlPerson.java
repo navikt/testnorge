@@ -411,10 +411,11 @@ public class PdlPerson {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Sivilstand extends DbVersjonDTO {
+    public static class Sivilstand extends MetadataInformasjon {
 
         private SivilstandType type;
         private LocalDate gyldigFraOgMed;
+        private LocalDate bekreftelsesdato;
         private String relatertVedSivilstand;
 
         public boolean isGift() {

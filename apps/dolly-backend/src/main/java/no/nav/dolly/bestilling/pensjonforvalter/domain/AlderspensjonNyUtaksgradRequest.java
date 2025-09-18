@@ -1,26 +1,24 @@
 package no.nav.dolly.bestilling.pensjonforvalter.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlderspensjonVedtakRequest extends AlderspensjonRequest {
+public class AlderspensjonNyUtaksgradRequest implements PensjonTransaksjonId {
 
-    private LocalDate kravFremsattDato;
-
+    private String fnr;
+    private Integer nyUttaksgrad;
+    private LocalDate fom;
     private String saksbehandler;
     private String attesterer;
-
     private String navEnhetId;
+    private Set<String> miljoer;
 }

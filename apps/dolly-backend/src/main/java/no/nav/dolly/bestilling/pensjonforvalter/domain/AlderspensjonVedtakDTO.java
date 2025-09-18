@@ -10,17 +10,15 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDate;
 
 @Data
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlderspensjonVedtakRequest extends AlderspensjonRequest {
+public class AlderspensjonVedtakDTO extends AlderspensjonVedtakRequest {
 
-    private LocalDate kravFremsattDato;
+    private LocalDate fom;
 
-    private String saksbehandler;
-    private String attesterer;
-
-    private String navEnhetId;
+    private LocalDate datoForrigeGraderteUttak;
+    private Integer nyUttaksgrad;
 }
