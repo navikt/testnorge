@@ -24,10 +24,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
+import java.time.Period;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
@@ -193,27 +193,22 @@ public class PensjonVedtakService {
 
     private static boolean isValid(AlderspensjonNyUtaksgradRequest request, AlderspensjonVedtakDTO response) {
 
-        var eksisterendeFom = nonNull(response.getFom()) ? response.getFom() : response.getIverksettelsesdato();
-
-        return request.getFom().isAfter(eksisterendeFom) &&
+        return request.getFom().isAfter(response.getFom()) &&
                 (request.getNyUttaksgrad().equals(0) || request.getNyUttaksgrad().equals(100) ||
-                        (request.getFom().getMonth().getValue() == 1 && request.getFom().getDayOfMonth() == 1));
+                        Period.between(response.getDatoForrigeGraderteUttak(), request.getFom()).getYears() >= 1);
     }
 
     private static Mono<PensjonforvalterResponse> miscRevurderingResponse(AlderspensjonNyUtaksgradRequest request,
                                                                    AlderspensjonVedtakDTO response, String miljoe,
                                                                           boolean isUpdateEndre) {
 
-        var eksisterendeFom = nonNull(response.getFom()) ? response.getFom() : response.getIverksettelsesdato();
-
         String message;
-         if (isUpdateEndre && request.getFom().isBefore(eksisterendeFom)) {
+         if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
              message = "Automatisk vedtak av ny uttaksgrad ikke mulig for dato tidligere enn dato på forrige vedtak.";
 
          } else if (isUpdateEndre && !request.getNyUttaksgrad().equals(0) && !request.getNyUttaksgrad().equals(100) &&
-                 (request.getFom().getMonth().getValue() != 1 || request.getFom().getDayOfMonth() != 1)) {
-
-             message = "Automatisk vedtak av gradert uttaksgrad ikke mulig unntatt ved nytt år (1. januar).";
+                 Period.between(response.getDatoForrigeGraderteUttak(), request.getFom()).getYears() < 1) {
+             message = "Automatisk vedtak med gradert uttak ikke mulig oftere enn hver 12 måned.";
 
         } else {
             return Mono.empty();

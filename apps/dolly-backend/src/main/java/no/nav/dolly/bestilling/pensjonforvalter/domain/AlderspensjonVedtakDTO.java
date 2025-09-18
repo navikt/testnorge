@@ -18,4 +18,7 @@ import java.time.LocalDate;
 public class AlderspensjonVedtakDTO extends AlderspensjonVedtakRequest {
 
     private LocalDate fom;
+
+    private LocalDate datoForrigeGraderteUttak;
+    private Integer nyUttaksgrad;
 }

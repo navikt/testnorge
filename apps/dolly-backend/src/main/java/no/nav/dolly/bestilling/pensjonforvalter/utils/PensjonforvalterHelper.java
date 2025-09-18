@@ -18,8 +18,10 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.basicAlderspensjonRequestDTO;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.poi.util.StringUtil.isNotBlank;
@@ -46,8 +48,7 @@ public class PensjonforvalterHelper {
     public Mono<TransaksjonMapping> saveTransaksjonId(String ident, String miljoe, Long bestillingId,
                                                       SystemTyper type, PensjonTransaksjonId vedtak) {
 
-        return transaksjonMappingService.delete(ident, miljoe, type.name())
-                .then(transaksjonMappingService.save(
+        return transaksjonMappingService.save(
                         TransaksjonMapping.builder()
                                 .ident(ident)
                                 .bestillingId(bestillingId)
@@ -55,7 +56,7 @@ public class PensjonforvalterHelper {
                                 .datoEndret(LocalDateTime.now())
                                 .miljoe(miljoe)
                                 .system(type.name())
-                                .build()));
+                                .build());
     }
 
     private String toJson(Object object) {
@@ -101,15 +102,32 @@ public class PensjonforvalterHelper {
 
         return transaksjonMappingService.getTransaksjonMapping(ident, miljoe)
                 .filter(transaksjonMapping -> transaksjonMapping.getSystem().contains("AP"))
-                .sort(Comparator.comparing(TransaksjonMapping::getDatoEndret).reversed())
-                .next()
+                .sort(Comparator.comparing(TransaksjonMapping::getDatoEndret))
                 .map(mapping -> {
                     try {
-                        return objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakDTO.class);
+                        var vedtak = objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakDTO.class);
+                        vedtak.setFom(nonNull(vedtak.getFom()) ? vedtak.getFom() : vedtak.getIverksettelsesdato());
+                        vedtak.setUttaksgrad(nonNull(vedtak.getUttaksgrad()) ? vedtak.getUttaksgrad() : vedtak.getNyUttaksgrad());
+                        return vedtak;
                     } catch (JsonProcessingException e) {
                         log.error("Feil ved deserialisering av transaksjonId", e);
                         return basicAlderspensjonRequestDTO(ident, Set.of(miljoe));
                     }
+                })
+                .collectList()
+                .map(vedtaker -> {
+                    if (vedtaker.isEmpty()) {
+                        return basicAlderspensjonRequestDTO(ident, Set.of(miljoe));
+                    }
+
+                    var datoGradertUttak = new AtomicReference<>(vedtaker.getFirst().getFom());
+                    vedtaker.stream()
+                            .filter(vedtak -> !vedtak.getUttaksgrad().equals(0) &&
+                                    !vedtak.getUttaksgrad().equals(100))
+                            .forEach(vedtak -> datoGradertUttak.set(vedtak.getFom()));
+
+                    vedtaker.getLast().setDatoForrigeGraderteUttak(datoGradertUttak.get());
+                    return vedtaker.getLast();
                 });
     }
 }
