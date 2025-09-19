@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -114,7 +115,7 @@ public class PensjonPersondataService {
         }
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAP(ident, miljoe)
+                .flatMap(miljoe -> pensjonforvalterHelper.hentForrigeVedtakAP(ident, miljoe, getSivilstandDato(bestilling))
                         .flatMap(vedtak -> {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty(NAV_ENHET, navEnhetId);
@@ -141,9 +142,22 @@ public class PensjonPersondataService {
                         }));
     }
 
+    private static LocalDate getSivilstandDato(RsDollyBestilling bestilling) {
+
+        var sivilstand = bestilling.getPdldata().getPerson().getSivilstand().getFirst();
+        if (nonNull(sivilstand.getSivilstandsdato())) {
+            return sivilstand.getSivilstandsdato().toLocalDate();
+        } else if (nonNull(sivilstand.getBekreftelsesdato())) {
+            return sivilstand.getBekreftelsesdato().toLocalDate();
+        } else {
+            return null;
+        }
+    }
+
     private static boolean isNoMatch(AlderspensjonVedtakDTO response, RevurderingVedtakRequest request) {
 
-        return response.getHistorikk().stream()
+        return !response.getFom().equals(request.getFom()) &&
+                response.getHistorikk().stream()
                 .noneMatch(historikk ->
                         historikk.getFom().equals(request.getFom()));
     }

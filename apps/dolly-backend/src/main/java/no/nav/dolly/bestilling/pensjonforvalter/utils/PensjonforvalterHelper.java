@@ -15,12 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.basicAlderspensjonRequestDTO;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
@@ -108,7 +110,7 @@ public class PensjonforvalterHelper {
         }
     }
 
-    public Mono<AlderspensjonVedtakDTO> hentSisteVedtakAP(String ident, String miljoe) {
+    public Mono<AlderspensjonVedtakDTO> hentForrigeVedtakAP(String ident, String miljoe, LocalDate fomDato) {
 
         return transaksjonMappingService.getTransaksjonMapping(ident, miljoe)
                 .filter(transaksjonMapping -> transaksjonMapping.getSystem().contains("AP"))
@@ -124,6 +126,8 @@ public class PensjonforvalterHelper {
                         return basicAlderspensjonRequestDTO(ident, Set.of(miljoe));
                     }
                 })
+                .filter(vedtak -> isNull(vedtak.getFom()) || isNull(fomDato) ||
+                        vedtak.getFom().isBefore(fomDato))
                 .collectList()
                 .map(vedtaker -> {
                     if (vedtaker.isEmpty()) {
@@ -137,7 +141,7 @@ public class PensjonforvalterHelper {
                             .forEach(vedtak -> datoGradertUttak.set(vedtak.getFom()));
 
                     vedtaker.getLast().setDatoForrigeGraderteUttak(datoGradertUttak.get());
-                    vedtaker.getLast().setHistorikk(vedtaker);
+                    vedtaker.getLast().setHistorikk(vedtaker.subList(0, vedtaker.size() - 1));
                     return vedtaker.getLast();
                 });
     }

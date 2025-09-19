@@ -171,7 +171,8 @@ public class PensjonVedtakService {
         }
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> pensjonforvalterHelper.hentSisteVedtakAP(ident, miljoe)
+                .flatMap(miljoe -> pensjonforvalterHelper.hentForrigeVedtakAP(ident, miljoe,
+                                pensjondata.getAlderspensjonNyUtaksgrad().getFom())
                         .flatMap(vedtak -> {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty(ALDERSPENSJON_VEDTAK, vedtak);
@@ -199,7 +200,9 @@ public class PensjonVedtakService {
 
     private static boolean isNoMatch(AlderspensjonVedtakDTO response, AlderspensjonNyUtaksgradRequest request) {
 
-        return response.getHistorikk().stream()
+        return !(response.getFom().equals(request.getFom()) &&
+                response.getUttaksgrad().equals(request.getNyUttaksgrad())) &&
+                response.getHistorikk().stream()
                 .noneMatch(historikk ->
                         historikk.getFom().equals(request.getFom()) &&
                                 historikk.getUttaksgrad().equals(request.getNyUttaksgrad()));
