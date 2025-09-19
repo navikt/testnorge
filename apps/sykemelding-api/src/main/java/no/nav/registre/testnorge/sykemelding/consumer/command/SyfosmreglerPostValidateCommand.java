@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class SyfosmreglerPostValidateCommand implements Callable<Mono<ValidationResultDTO>> {
 
-    private static final String SYFOSMREGLER_VALIDATE_URL = "/v1/rules/validate";
+    private static final String SYFOSMREGLER_VALIDATE_URL = "/syfosmregler/v1/rules/validate";
 
     private final WebClient webClient;
     private final ReceivedSykemeldingDTO receivedSykemelding;
