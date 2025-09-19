@@ -235,6 +235,6 @@ consumers:
   nom-proxy:
     name: testnav-nom-proxy
     namespace: dolly
-    url: http://nom-proxy.dolly.svc.cluster.local
+    url: http://testnav-nom-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
     
