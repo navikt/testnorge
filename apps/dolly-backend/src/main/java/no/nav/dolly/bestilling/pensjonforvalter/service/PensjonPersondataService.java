@@ -129,10 +129,11 @@ public class PensjonPersondataService {
                         .flatMapMany(tuple -> {
                             if (isRevurderingValid(tuple.getT1(), tuple.getT2())) {
                                 return pensjonforvalterConsumer.lagreRevurderingVedtak(tuple.getT1())
-                                        .flatMap(response ->
+                                        .flatMap(response -> isNoMatch(tuple.getT2(), tuple.getT1()) ?
                                                 pensjonforvalterHelper.saveTransaksjonId(ident, miljoe,
                                                                 bestilling.getId(), SystemTyper.PEN_AP_REVURDERING, tuple.getT1())
-                                                        .thenReturn(response));
+                                                        .thenReturn(response) :
+                                                Mono.just(response));
                             } else {
 
                                 return miscRevurderingResponse(tuple.getT1(), tuple.getT2(), miljoe, isUpdateEndre);
@@ -140,24 +141,28 @@ public class PensjonPersondataService {
                         }));
     }
 
+    private static boolean isNoMatch(AlderspensjonVedtakDTO response, RevurderingVedtakRequest request) {
+
+        return response.getHistorikk().stream()
+                .noneMatch(historikk ->
+                        historikk.getFom().equals(request.getFom()));
+    }
+
     private static boolean isRevurderingValid(RevurderingVedtakRequest request, AlderspensjonVedtakDTO response) {
 
-        var eksisterendeFom = nonNull(response.getFom()) ? response.getFom() : response.getIverksettelsesdato();
-
-        return nonNull(request.getFom()) && request.getFom().isAfter(eksisterendeFom);
+        return nonNull(request.getFom()) &&
+                request.getFom().isAfter(response.getFom());
     }
 
     private static Mono<PensjonforvalterResponse> miscRevurderingResponse(RevurderingVedtakRequest request,
                                                                           AlderspensjonVedtakDTO response, String miljoe,
                                                                           boolean isUpdateEndre) {
 
-        var eksisterendeFom = nonNull(response.getFom()) ? response.getFom() : response.getIverksettelsesdato();
-
         String message;
         if (isUpdateEndre && isNull(request.getFom())) {
             message = "Automatisk revurderingsvedtak ikke mulig når dato for sivilstandsendring mangler.";
 
-        } else if (isUpdateEndre && request.getFom().isBefore(eksisterendeFom)) {
+        } else if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
             message = "Automatisk revurderingsvedtak ikke mulig når dato for sivilstandsendring er før dato på forrige vedtak.";
 
         } else {
@@ -172,7 +177,7 @@ public class PensjonPersondataService {
                                         .build())
                                 .message(message)
                                 .build())
-                                .miljo(miljoe)
+                        .miljo(miljoe)
                         .build()))
                 .build());
     }

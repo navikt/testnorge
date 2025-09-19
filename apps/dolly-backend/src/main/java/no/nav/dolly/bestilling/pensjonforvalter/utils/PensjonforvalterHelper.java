@@ -36,18 +36,28 @@ public class PensjonforvalterHelper {
     private final TransaksjonMappingService transaksjonMappingService;
 
     @SuppressWarnings("java:S3740")
-    public Mono<TransaksjonMapping> saveAPTransaksjonId(String ident, String miljoe, Long bestillingId,
-                                                        SystemTyper type, PensjonTransaksjonId vedtak) {
+    public Mono<TransaksjonMapping> saveUTTransaksjonId(String ident, String miljoe,
+                                                        Long bestillingId,
+                                                        PensjonTransaksjonId vedtak) {
 
-        log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
+        return transaksjonMappingService.delete(ident, miljoe, SystemTyper.PEN_UT.name())
+                .then(saveTransaksjonId(ident, miljoe, bestillingId, SystemTyper.PEN_UT, vedtak));
+    }
 
-        return transaksjonMappingService.delete(ident, miljoe, type.name())
-                .then(saveTransaksjonId(ident, miljoe, bestillingId, type, vedtak));
+    public Mono<TransaksjonMapping> saveAPTransaksjonId(String ident, String miljoe,
+                                                        Long bestillingId,
+                                                        PensjonTransaksjonId vedtak) {
+
+        return transaksjonMappingService.delete(ident, miljoe, SystemTyper.PEN_AP.name())
+                .then(transaksjonMappingService.delete(ident, miljoe, SystemTyper.PEN_AP_REVURDERING.name()))
+                .then(transaksjonMappingService.delete(ident, miljoe, SystemTyper.PEN_AP_NY_UTTAKSGRAD.name()))
+                .then(saveTransaksjonId(ident, miljoe, bestillingId, SystemTyper.PEN_AP, vedtak));
     }
 
     public Mono<TransaksjonMapping> saveTransaksjonId(String ident, String miljoe, Long bestillingId,
                                                       SystemTyper type, PensjonTransaksjonId vedtak) {
 
+        log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
         return transaksjonMappingService.save(
                         TransaksjonMapping.builder()
                                 .ident(ident)
@@ -127,6 +137,7 @@ public class PensjonforvalterHelper {
                             .forEach(vedtak -> datoGradertUttak.set(vedtak.getFom()));
 
                     vedtaker.getLast().setDatoForrigeGraderteUttak(datoGradertUttak.get());
+                    vedtaker.getLast().setHistorikk(vedtaker);
                     return vedtaker.getLast();
                 });
     }
