@@ -5,6 +5,7 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -22,29 +23,31 @@ public class RouteLocatorConfig {
     @Bean
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
-            Consumers consumers,
-            GatewayFilter authenticationFilter
-    ) {
+            AzureTrygdeetatenTokenService tokenService,
+            Consumers consumers) {
+
         return builder
                 .routes()
                 .route(spec -> spec
-                        .path("/**")
-                        .and()
-                        .not(not -> not.path("/internal/**"))
-                        .filters(f -> f.filter(authenticationFilter))
-                        .uri(consumers.getSykemelding().getUrl()))
+                        .path("/syfosmregler/**")
+                        .filters(f -> f
+                                .stripPrefix(1)
+                                .filter(authFilter(tokenService, consumers.getSyfosmregler()))
+                        )
+                        .uri(consumers.getSyfosmregler().getUrl()))
+                .route(spec -> spec
+                        .path("/tsm/**")
+                        .filters(f -> f
+                                .stripPrefix(1)
+                                .filter(authFilter(tokenService, consumers.getTsmInputDolly()))
+                        )
+                        .uri(consumers.getTsmInputDolly().getUrl()))
                 .build();
     }
 
-    @Bean
-    GatewayFilter getAuthenticationFilter(
-            AzureTrygdeetatenTokenService tokenService,
-            Consumers consumers
-    ) {
+    private GatewayFilter authFilter(AzureTrygdeetatenTokenService tokenService, ServerProperties serverProperties) {
         return AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService
-                        .exchange(consumers.getSykemelding())
-                        .map(AccessToken::getTokenValue));
+                .bearerAuthenticationHeaderFilter(() ->
+                        tokenService.exchange(serverProperties).map(AccessToken::getTokenValue));
     }
-
 }
