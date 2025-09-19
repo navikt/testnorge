@@ -59,10 +59,10 @@ public class FullmaktConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "fullmakt_getData" })
-    public Mono<FullmaktPostResponse.Fullmakt> getFullmaktData(String ident) {
+    public Flux<FullmaktPostResponse.Fullmakt> getFullmaktData(String ident) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new GetFullmaktDataCommand(webClient, ident,
+                .flatMapMany(token -> new GetFullmaktDataCommand(webClient, ident,
                         token.getTokenValue()).call());
     }
 
