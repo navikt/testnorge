@@ -42,11 +42,8 @@ spring:
   jackson:
     parser:
       include-source-in-location: true
-  servlet:
-    multipart:
-      max-file-size: 1MB
-      max-request-size: 1MB
-      enabled: true
+  codec:
+    max-in-memory-size: 10MB
 
 springdoc:
   swagger-ui:
