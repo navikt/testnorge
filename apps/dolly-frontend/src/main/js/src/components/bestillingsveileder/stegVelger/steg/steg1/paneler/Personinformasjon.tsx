@@ -178,6 +178,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
+				<Attributt attr={sm.attrs.nom} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 			</AttributtKategori>
 		</Panel>
@@ -219,6 +220,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		vergemaal: 'pdldata.person.vergemaal',
 		sikkerhetstiltak: 'pdldata.person.sikkerhetstiltak',
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
+		nom: 'nomdata',
 		egenAnsattDatoFom: {
 			tpsM: 'tpsMessaging.egenAnsattDatoFom',
 			skjerming: 'skjerming.egenAnsattDatoFom',
@@ -408,6 +410,12 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			remove() {
 				del(paths.tilrettelagtKommunikasjon)
 			},
+		},
+		nom: {
+			label: 'Nav-ansatt (NOM)',
+			checked: has(paths.nom),
+			add: () => set(paths.nom, { startDato: new Date(), sluttDato: null as unknown as string }),
+			remove: () => del(paths.nom),
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming (egen ansatt)',

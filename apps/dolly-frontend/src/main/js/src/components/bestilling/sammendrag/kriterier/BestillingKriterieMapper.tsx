@@ -961,6 +961,20 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 	}
 }
 
+const mapNomData = (bestillingData, data) => {
+	if (bestillingData?.nomdata) {
+		const { startDato, sluttDato } = bestillingData.nomdata
+		const nomdata = {
+			header: 'Nav-ansatt (NOM)',
+			items:
+				!startDato && !sluttDato
+					? [obj('Nav-ansatt', 'Ingen verdier satt')]
+					: [obj('Startdato', formatDate(startDato)), obj('Sluttdato', formatDate(sluttDato))],
+		}
+		data.push(nomdata)
+	}
+}
+
 const mapTpsMessaging = (bestillingData, data) => {
 	const tpsMessaging = _.get(bestillingData, 'tpsMessaging')
 	const skjerming = _.get(bestillingData, 'skjerming')
@@ -2468,6 +2482,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	}
 
 	mapFullmakt(bestillingData, data)
+	mapNomData(bestillingData, data)
 	mapTpsMessaging(bestillingData, data)
 	mapAareg(bestillingData, data)
 	mapSigrunstubPensjonsgivende(bestillingData, data)

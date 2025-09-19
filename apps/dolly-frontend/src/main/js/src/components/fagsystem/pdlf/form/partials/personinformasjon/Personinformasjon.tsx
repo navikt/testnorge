@@ -22,6 +22,7 @@ import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bank
 import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
+import { NomForm } from '@/components/fagsystem/nom/form/NomForm'
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -54,6 +55,7 @@ const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['pdldata.person.vergemaal']
 const sikkerhetstiltakPath = ['pdldata.person.sikkerhetstiltak']
 const fullmaktPath = ['pdldata.person.fullmakt', 'fullmakt']
+const nomPath = ['nomdata']
 
 const panelPaths = [
 	alderPaths,
@@ -72,6 +74,7 @@ const panelPaths = [
 	statsborgerskapPath,
 	utenlandskBankkontoPath,
 	norskBankkontoPath,
+	nomPath,
 ].flat()
 
 export const Personinformasjon = ({ formMethods }) => {
@@ -154,6 +157,10 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Tilrettelagt kommunikasjon" vis={tilrettelagtKommunikasjonPath}>
 					<TilrettelagtKommunikasjon />
+				</Kategori>
+
+				<Kategori title="NAV-ansatt (NOM)" vis={nomPath}>
+					<NomForm />
 				</Kategori>
 			</Panel>
 		</Vis>
