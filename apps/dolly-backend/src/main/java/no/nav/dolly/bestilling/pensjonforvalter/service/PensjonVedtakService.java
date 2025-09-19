@@ -28,6 +28,8 @@ import java.time.Period;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.MILJOER;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.NAV_ENHET;
@@ -205,7 +207,8 @@ public class PensjonVedtakService {
 
     private static boolean isValid(AlderspensjonNyUtaksgradRequest request, AlderspensjonVedtakDTO response) {
 
-        return request.getFom().isAfter(response.getFom()) &&
+        return nonNull(response.getFom()) &&
+                request.getFom().isAfter(response.getFom()) &&
                 (request.getNyUttaksgrad().equals(0) || request.getNyUttaksgrad().equals(100) ||
                         Period.between(response.getDatoForrigeGraderteUttak(), request.getFom()).getYears() >= 1);
     }
@@ -215,7 +218,10 @@ public class PensjonVedtakService {
                                                                           boolean isUpdateEndre) {
 
         String message;
-        if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
+        if (isNull(response.getFom())) {
+            message = "Uttaksgrad kan ikke endres da vedtak for alderspensjon mangler.";
+
+        }else if (isUpdateEndre && request.getFom().isBefore(response.getFom())) {
             message = "Automatisk vedtak av ny uttaksgrad ikke mulig for dato tidligere enn dato på forrige vedtak.";
 
         } else if (isUpdateEndre && !request.getNyUttaksgrad().equals(0) && !request.getNyUttaksgrad().equals(100) &&

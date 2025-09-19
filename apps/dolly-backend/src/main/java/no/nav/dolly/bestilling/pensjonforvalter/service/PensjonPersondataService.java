@@ -150,7 +150,7 @@ public class PensjonPersondataService {
 
     private static boolean isRevurderingValid(RevurderingVedtakRequest request, AlderspensjonVedtakDTO response) {
 
-        return nonNull(request.getFom()) &&
+        return nonNull(response.getFom()) && nonNull(request.getFom()) &&
                 request.getFom().isAfter(response.getFom());
     }
 
