@@ -71,9 +71,9 @@ export default () => {
 					})
 					setBrukerResponse(response)
 					setLoading(false)
-					// if (response.epost) {
-					addToSession(org.organisasjonsnummer)
-					// }
+					if (response.epost) {
+						addToSession(org.organisasjonsnummer)
+					}
 				} else {
 					Logger.error({
 						event: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
@@ -126,8 +126,7 @@ export default () => {
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
-				{/*{organisasjon && !loading && !brukerResponse?.epost && (*/}
-				{organisasjon && !loading && (
+				{organisasjon && !loading && !brukerResponse?.epost && (
 					<BrukernavnVelger
 						eksisterendeBrukernavn={brukerResponse?.brukernavn}
 						organisasjon={organisasjon}
