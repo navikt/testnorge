@@ -47,7 +47,7 @@ public class ArbeidssoekerregisteretClient implements ClientRegister {
                     if (arbeidssokerregisteretResponse.getStatus().is2xxSuccessful()) {
                         return "OK";
                     } else {
-                        return "FEIL=" + ErrorStatusDecoder.encodeStatus(arbeidssokerregisteretResponse.getFeilmelding());
+                        return "FEIL= " + ErrorStatusDecoder.encodeStatus(arbeidssokerregisteretResponse.getFeilmelding());
                     }
                 }))
                 .flatMap(status -> oppdaterStatus(progress, status));

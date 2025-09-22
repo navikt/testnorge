@@ -58,13 +58,14 @@ class PensjonPensjonsdataServiceTest {
     @Mock
     private TransaksjonMappingRepository transaksjonMappingRepository;
 
-    @Spy
-    private PensjonforvalterHelper pensjonforvalterHelper =
-            new PensjonforvalterHelper(new TransaksjonMappingService(transaksjonMappingRepository, new ObjectMapper()),
-                    new ObjectMapper(), new ErrorStatusDecoder(new ObjectMapper()));
-
     @Mock
     private PensjonforvalterConsumer pensjonforvalterConsumer;
+
+    @Spy
+    private PensjonforvalterHelper pensjonforvalterHelper =
+            new PensjonforvalterHelper(new ErrorStatusDecoder(new ObjectMapper()),
+                    new ObjectMapper(),
+                    new TransaksjonMappingService(transaksjonMappingRepository, new ObjectMapper()));
 
     @Mock
     private MapperFacade mapperFacade;
@@ -364,12 +365,6 @@ class PensjonPensjonsdataServiceTest {
     }
 
     static class PensjonforvalterClientTestUtil {
-
-        static PensjonData.TpOrdning getTpOrdning(String ordning) {
-            PensjonData.TpOrdning tp = new PensjonData.TpOrdning();
-            tp.setOrdning(ordning);
-            return tp;
-        }
 
         static PensjonforvalterResponse getPensjonforvalterResponse(int httpStatusCode, String... miljoe) {
 

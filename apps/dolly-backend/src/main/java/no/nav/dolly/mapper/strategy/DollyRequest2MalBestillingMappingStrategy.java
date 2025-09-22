@@ -28,6 +28,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
         factory.classMap(RsDollyUtvidetBestilling.class, RsDollyUtvidetBestilling.class)
                 .mapNulls(false)
                 .field("arbeidsplassenCV", "arbeidsplassenCV")
+                .field("arbeidssoekerregisteret", "arbeidssoekerregisteret")
                 .field("arenaforvalter", "arenaforvalter")
                 .field("bankkonto", "bankkonto")
                 .field("brregstub", "brregstub")
@@ -37,13 +38,13 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("inntektstub", "inntektstub")
                 .field("krrstub", "krrstub")
                 .field("medl", "medl")
+                .field("nomdata", "nomdata")
                 .field("navSyntetiskIdent", "navSyntetiskIdent")
                 .field("pdldata", "pdldata")
                 .field("pensjonforvalter", "pensjonforvalter")
                 .field("skjerming", "skjerming")
                 .field("sykemelding", "sykemelding")
                 .field("udistub", "udistub")
-                .field("arbeidssoekerregisteret", "arbeidssoekerregisteret")
 
                 .customize(new CustomMapper<>() {
                     @Override
@@ -156,10 +157,11 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
 
         factory.classMap(PensjonData.class, PensjonData.class)
                 .mapNulls(false)
+                .field("afpOffentlig", "afpOffentlig")
                 .field("alderspensjon", "alderspensjon")
+                .field("alderspensjonNyUtaksgrad", "alderspensjonNyUtaksgrad")
                 .field("inntekt", "inntekt")
                 .field("uforetrygd", "uforetrygd")
-                .field("afpOffentlig", "afpOffentlig")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(PensjonData pensjonData, PensjonData akkumulert, MappingContext context) {

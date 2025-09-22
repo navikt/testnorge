@@ -1,7 +1,7 @@
 spring:
   application:
     name: testnav-pdl-proxy
-    description: Proxy for pdl som legger på AzureAd sikkerhet og lager en sts token..
+    description: Proxy for pdl som legger på AzureAd sikkerhet med trygdeetaten.no tenant
   config:
     import: "classpath:dolly-application.yml"
   security:
@@ -24,11 +24,6 @@ app:
     password: ${ELASTIC_PASSWORD}
   hendelse.lager.api.key: ${HENDELSE_LAGER_API_KEY}
   person.aktor.api.key: ${PERSON_AKTOR_API_KEY}
-
-sts:
-  token:
-    provider:
-      url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
 
 consumers:
   pdl-testdata:

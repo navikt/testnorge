@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -42,7 +43,7 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
                 .build();
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", "123");
-        context.setProperty("miljoer", List.of("q2"));
+        context.setProperty("miljoer", Set.of("q2"));
         context.setProperty("relasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
                 .ident("123")
                 .person(PdlPerson.Person.builder()
@@ -71,7 +72,7 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
                 .build();
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", "123");
-        context.setProperty("miljoer", List.of("q2"));
+        context.setProperty("miljoer", Set.of("q2"));
         context.setProperty("relasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
                         .ident("123")
                         .person(PdlPerson.Person.builder()
@@ -111,7 +112,7 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
                 .build();
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", "123");
-        context.setProperty("miljoer", List.of("q2"));
+        context.setProperty("miljoer", Set.of("q2"));
         context.setProperty("relasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
                         .ident("123")
                         .person(PdlPerson.Person.builder()

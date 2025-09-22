@@ -85,8 +85,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         if (nonNull(bestKriterier)) {
 
             availCheckService.checkAvailable(bestilling.getOpprettFraIdenter())
-                    .flatMap(progress -> bestillingService.isStoppet(bestilling.getId())
-                            .zipWith(Mono.just(progress)))
+                    .flatMap(avail -> bestillingService.isStoppet(bestilling.getId())
+                            .zipWith(Mono.just(avail)))
                     .takeWhile(tuple -> isFalse(tuple.getT1()))
                     .map(Tuple2::getT2)
                     .filter(AvailCheckService.AvailStatus::isAvailable)
