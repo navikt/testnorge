@@ -56,6 +56,9 @@ public class NomClient implements ClientRegister {
                     } else if (isNull(ressurs.getSluttDato()) && nonNull(bestilling.getNomdata().getSluttDato())) {
                         return nomConsumer.avsluttRessurs(dollyPerson.getIdent(),
                                 bestilling.getNomdata().getSluttDato().toLocalDate());
+                    } else if (nonNull(ressurs.getSluttDato()) && ressurs.getSluttDato().isBefore(LocalDate.now())) {
+                        return mapTilNomRequest(bestilling.getNomdata(), dollyPerson)
+                                .flatMap(nomConsumer::opprettRessurs);
                     } else {
                         return Mono.just(ressurs);
                     }
