@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse>> {
+public class SyfosmreglerSykemeldingPostCommand implements Callable<Mono<SykemeldingResponse>> {
 
     private static final String DETALJERT_SYKEMELDING_URL = "/api/v1/sykemeldinger";
 
