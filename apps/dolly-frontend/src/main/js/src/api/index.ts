@@ -173,7 +173,6 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
-			console.log('response: ', response) //TODO - SLETT MEG
 			if (
 				!response?.ok &&
 				response?.status !== 404 &&
