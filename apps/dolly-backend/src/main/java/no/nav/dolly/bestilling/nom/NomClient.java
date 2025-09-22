@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.nom.domain.NomRessursRequest;
 import no.nav.dolly.bestilling.nom.domain.NomRessursResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -15,11 +16,13 @@ import no.nav.dolly.domain.resultset.RsNomData;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,6 +38,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class NomClient implements ClientRegister {
 
+    private final ApplicationConfig applicationConfig;
     private final NomConsumer nomConsumer;
     private final PersonServiceConsumer personServiceConsumer;
     private final MapperFacade mapperFacade;
@@ -63,6 +67,10 @@ public class NomClient implements ClientRegister {
                         return Mono.just(ressurs);
                     }
                 })
+                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                .onErrorResume(error -> Mono.just(NomRessursResponse.builder()
+                                .melding(WebClientError.describe(error).getMessage())
+                                .build()))
                 .map(NomClient::getStatus)
                 .flatMap(status -> oppdaterStatus(progress, status));
     }
@@ -98,7 +106,7 @@ public class NomClient implements ClientRegister {
 
     private static String getStatus(NomRessursResponse response) {
 
-        return isNotBlank(response.getMelding()) ? response.getMelding() : "OK";
+        return isNotBlank(response.getMelding()) ? "FEIL= " + response.getMelding() : "OK";
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

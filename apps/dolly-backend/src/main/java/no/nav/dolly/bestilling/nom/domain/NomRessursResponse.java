@@ -38,8 +38,8 @@ public class NomRessursResponse {
     }
 
     public static NomRessursResponse of(WebClientError.Description description) {
-        return NomRessursResponse
-                .builder()
+
+        return NomRessursResponse.builder()
                 .status(description.getStatus())
                 .melding(description.getMessage())
                 .build();
