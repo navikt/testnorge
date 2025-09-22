@@ -22,7 +22,6 @@ export const useNomData = (ident: any) => {
 				.then((response: any) => ({ data: response }))
 		},
 	)
-
 	return {
 		nomData: data,
 		loading: isLoading,
