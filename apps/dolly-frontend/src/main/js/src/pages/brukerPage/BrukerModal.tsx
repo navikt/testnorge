@@ -64,11 +64,16 @@ export default () => {
 		BrukerApi.getBruker(org.organisasjonsnummer)
 			.then((response: Bruker) => {
 				if (response !== null) {
+					Logger.log({
+						event: 'Bruker funnet i bruker-service',
+						message: `Bruker ${response.brukernavn}, ${response.epost}, som representerer org: ${response.organisasjonsnummer} funnet i bruker-service`,
+						uuid: window.uuid,
+					})
 					setBrukerResponse(response)
 					setLoading(false)
-					if (response.epost) {
-						addToSession(org.organisasjonsnummer)
-					}
+					// if (response.epost) {
+					addToSession(org.organisasjonsnummer)
+					// }
 				} else {
 					Logger.error({
 						event: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
@@ -121,7 +126,8 @@ export default () => {
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
-				{organisasjon && !loading && !brukerResponse?.epost && (
+				{/*{organisasjon && !loading && !brukerResponse?.epost && (*/}
+				{organisasjon && !loading && (
 					<BrukernavnVelger
 						eksisterendeBrukernavn={brukerResponse?.brukernavn}
 						organisasjon={organisasjon}
