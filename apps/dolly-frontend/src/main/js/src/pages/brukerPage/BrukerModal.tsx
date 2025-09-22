@@ -64,7 +64,7 @@ export default () => {
 		BrukerApi.getBruker(org.organisasjonsnummer)
 			.then((response: Bruker) => {
 				if (response !== null) {
-					Logger.log({
+					Logger.trace({
 						event: 'Bruker funnet i bruker-service',
 						message: `Bruker ${response.brukernavn}, ${response.epost}, som representerer org: ${response.organisasjonsnummer} funnet i bruker-service`,
 						uuid: window.uuid,
