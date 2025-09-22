@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -61,14 +62,14 @@ public class PensjonforvalterHelper {
 
         log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
         return transaksjonMappingService.save(
-                        TransaksjonMapping.builder()
-                                .ident(ident)
-                                .bestillingId(bestillingId)
-                                .transaksjonId(toJson(vedtak))
-                                .datoEndret(LocalDateTime.now())
-                                .miljoe(miljoe)
-                                .system(type.name())
-                                .build());
+                TransaksjonMapping.builder()
+                        .ident(ident)
+                        .bestillingId(bestillingId)
+                        .transaksjonId(toJson(vedtak))
+                        .datoEndret(LocalDateTime.now())
+                        .miljoe(miljoe)
+                        .system(type.name())
+                        .build());
     }
 
     private String toJson(Object object) {
@@ -139,6 +140,15 @@ public class PensjonforvalterHelper {
                             .filter(vedtak -> !vedtak.getUttaksgrad().equals(0) &&
                                     !vedtak.getUttaksgrad().equals(100))
                             .forEach(vedtak -> datoGradertUttak.set(vedtak.getFom()));
+
+                    var datoUttaksgrad = new AtomicInteger(vedtaker.getFirst().getUttaksgrad());
+                    vedtaker.forEach(vedtak -> {
+                        if (isNull(vedtak.getUttaksgrad())) {
+                            vedtak.setUttaksgrad(datoUttaksgrad.get());
+                        } else {
+                            datoUttaksgrad.set(vedtak.getUttaksgrad());
+                        }
+                    });
 
                     vedtaker.getLast().setDatoForrigeGraderteUttak(datoGradertUttak.get());
                     vedtaker.getLast().setHistorikk(vedtaker.subList(0, vedtaker.size() - 1));
