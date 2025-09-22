@@ -31,8 +31,7 @@ public class LogService {
         var original = MDC.getCopyOfContextMap() == null ? new HashMap<String, String>() : MDC.getCopyOfContextMap();
         MDC.setContextMap(event.toPropertyMap());
         switch (event.getLevel()) {
-            case TRACE -> log.trace(event.getMessage());
-            case INFO -> log.info(event.getMessage());
+            case TRACE, INFO -> log.info(event.getMessage());
             case WARNING -> log.warn(event.getMessage(), exchange.getResponse());
             case ERROR -> log.error(event.getMessage(), exchange.getResponse());
             default -> log.debug(event.getMessage());
