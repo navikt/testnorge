@@ -16,15 +16,14 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import org.springframework.cache.CacheManager;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -107,11 +106,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                                                             fase3Klienter(),
                                                                                             progress, true)))))
                                             ))))
-                    .collectList()
-                    .then(doFerdig(bestilling))
-                    .then(saveBestillingToElasticServer(bestKriterier, bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
+                    .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                            error -> doFerdig(bestilling).subscribe(),
+                            () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                                    .then(doFerdig(bestilling))
+                                    .subscribe());
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");

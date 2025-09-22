@@ -17,7 +17,6 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +26,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
+import java.time.Duration;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -81,6 +81,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
 
             identService.getTestidenterByGruppeId(bestilling.getGruppeId())
+                    .delayElements(Duration.ofMillis(2000))
                     .flatMap(testident -> bestillingService.isStoppet(bestilling.getId())
                             .zipWith(Mono.just(testident)))
                     .takeWhile(tuple -> isFalse(tuple.getT1()))
@@ -108,11 +109,11 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                                                                                             fase3Klienter(),
                                                                                                             progress, true))))
                                                             ))))))
-                    .collectList()
-                    .then(doFerdig(bestilling))
-                    .then(saveBestillingToElasticServer(bestKriterier, bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
+                    .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                            error -> doFerdig(bestilling).subscribe(),
+                            () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                                    .then(doFerdig(bestilling))
+                                    .subscribe());
         }
     }
 

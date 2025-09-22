@@ -17,7 +17,6 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -100,11 +99,11 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                                     gjenopprettKlienter(dollyPerson, cobestilling,
                                                                             fase2Klienter(), progress, false)
                                                                             .then(gjenopprettKlienter(dollyPerson, cobestilling,
-                                                                                    fase3Klienter(), progress, false)))))
-                            ))
-                    .then(doFerdig(bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
+                                                                                    fase3Klienter(), progress, false)))))))
+
+                    .subscribe(progress -> log.info("Fullført ppretting av ident: {}", progress.getIdent()),
+                            error -> doFerdig(bestilling).subscribe(),
+                            () -> doFerdig(bestilling).subscribe());
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");

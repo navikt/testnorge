@@ -16,7 +16,6 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -106,11 +105,11 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                                                                     progress, true)))
                                                                     .then(oppdaterStatus(progress))))
                                             ))))
-                    .collectList()
-                    .then(doFerdig(bestilling))
-                    .then(saveBestillingToElasticServer(bestKriterier, bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
+                    .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                            error -> doFerdig(bestilling).subscribe(),
+                            () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                                    .then(doFerdig(bestilling))
+                                    .subscribe());
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");

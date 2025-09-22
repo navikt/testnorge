@@ -19,7 +19,6 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -115,9 +114,10 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                                                             fase3Klienter(),
                                                                                             progress, false)))
                                                                     .collectList())))))
-                    .then(doFerdig(bestilling))
-                    .doOnTerminate(new ClearCacheUtil(cacheManager))
-                    .subscribe();
+                    .subscribe(progress -> log.info("Fullført oppretting av ident: {}", bestilling.getIdent()),
+                            error -> doFerdig(bestilling).subscribe(),
+                            () -> doFerdig(bestilling)
+                                    .subscribe());
         }
     }
 }

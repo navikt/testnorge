@@ -17,7 +17,6 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.ClearCacheUtil;
 import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
@@ -101,8 +100,10 @@ public class OppdaterPersonService extends DollyBestillingService {
                                                                                                                 fase3Klienter(),
                                                                                                                 progress, true)))))
                                                         )))))
-                .then(doFerdig(bestilling))
-                .doOnTerminate(new ClearCacheUtil(cacheManager))
-                .subscribe();
+                .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
+                        error -> doFerdig(bestilling).subscribe(),
+                        () -> saveBestillingToElasticServer(request, bestilling)
+                                .then(doFerdig(bestilling))
+                                .subscribe());
     }
 }
