@@ -38,8 +38,8 @@ public class RouteLocatorConfig {
                 .route(spec -> spec
                         .path("/tsm/**")
                         .filters(f -> f
-                                        .stripPrefix(1)
-//                                .filter(authFilter(tokenService, consumers.getTsmInputDolly()))
+                                .stripPrefix(1)
+                                .filter(authFilter(tokenService, consumers.getTsmInputDolly()))
                         )
                         .uri(consumers.getTsmInputDolly().getUrl()))
                 .build();
