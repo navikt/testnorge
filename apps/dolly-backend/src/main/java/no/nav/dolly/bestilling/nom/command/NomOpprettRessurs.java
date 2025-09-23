@@ -40,7 +40,7 @@ public class NomOpprettRessurs implements Callable<Mono<NomRessursResponse>> {
                 .toBodilessEntity()
                 .map(response -> NomRessursResponse
                         .builder()
-                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                        .status(HttpStatus.resolve(response.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable ->

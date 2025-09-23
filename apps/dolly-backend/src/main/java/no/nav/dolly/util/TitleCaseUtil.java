@@ -2,14 +2,14 @@ package no.nav.dolly.util;
 
 import lombok.experimental.UtilityClass;
 
-import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @UtilityClass
 public class TitleCaseUtil {
 
     public static String toTitleCase(String input) {
 
-        if (isNull(input) || input.isEmpty()) {
+        if (isBlank(input)) {
             return input;
         }
 
