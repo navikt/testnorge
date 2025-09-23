@@ -41,6 +41,7 @@ import {
 	sigrunstubSummertSkattegrunnlagAttributt,
 	SigrunstubSummertSkattegrunnlagForm,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/Form'
+import { NavAnsatt } from '@/components/fagsystem/nom/form/NavAnsattForm'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
@@ -81,6 +82,7 @@ const Steg2: React.FC = () => {
 		<div>
 			<PdlfForm />
 			{getValues('fullmakt') && <FullmaktForm />}
+			{(getValues('nomdata') || getValues('egenAnsattDatoFom')) && <NavAnsatt />}
 			{getValues('aareg') && <AaregForm />}
 			{getValues(sigrunstubPensjonsgivendeAttributt) && <SigrunstubPensjonsgivendeForm />}
 			{getValues(sigrunstubSummertSkattegrunnlagAttributt) && (

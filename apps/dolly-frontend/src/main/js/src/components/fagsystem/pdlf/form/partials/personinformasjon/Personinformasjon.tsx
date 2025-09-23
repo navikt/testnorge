@@ -21,8 +21,6 @@ import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/V
 import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
 import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
 import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
-import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
-import { NomForm } from '@/components/fagsystem/nom/form/NomForm'
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -31,8 +29,6 @@ const nasjonalitetPaths = [
 	'pdldata.person.innflytting',
 	'pdldata.person.utflytting',
 ]
-
-const diversePaths = ['skjerming.egenAnsattDatoFom', 'skjerming.egenAnsattDatoTom']
 
 const alderPaths = [
 	'pdldata.opprettNyPerson.alder',
@@ -54,13 +50,10 @@ const foedselsdatoPath = ['pdldata.person.foedselsdato']
 const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['pdldata.person.vergemaal']
 const sikkerhetstiltakPath = ['pdldata.person.sikkerhetstiltak']
-const fullmaktPath = ['pdldata.person.fullmakt', 'fullmakt']
-const nomPath = ['nomdata']
 
 const panelPaths = [
 	alderPaths,
 	nasjonalitetPaths,
-	diversePaths,
 	innvandringPath,
 	utvandringPath,
 	kjoennPath,
@@ -74,7 +67,6 @@ const panelPaths = [
 	statsborgerskapPath,
 	utenlandskBankkontoPath,
 	norskBankkontoPath,
-	nomPath,
 ].flat()
 
 export const Personinformasjon = ({ formMethods }) => {
@@ -131,10 +123,6 @@ export const Personinformasjon = ({ formMethods }) => {
 					<Navn formMethods={formMethods} />
 				</Kategori>
 
-				<Kategori title="Diverse" vis={diversePaths}>
-					<SkjermingForm formMethods={formMethods} />
-				</Kategori>
-
 				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>
 					<NorskBankkonto formMethods={formMethods} />
 				</Kategori>
@@ -157,10 +145,6 @@ export const Personinformasjon = ({ formMethods }) => {
 
 				<Kategori title="Tilrettelagt kommunikasjon" vis={tilrettelagtKommunikasjonPath}>
 					<TilrettelagtKommunikasjon />
-				</Kategori>
-
-				<Kategori title="NAV-ansatt (NOM)" vis={nomPath}>
-					<NomForm />
 				</Kategori>
 			</Panel>
 		</Vis>
