@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sykemelding.command.SyfosmreglerSykemeldingPostCommand;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
+import no.nav.dolly.bestilling.sykemelding.command.TsmSykemeldingPostCommand;
+import no.nav.dolly.bestilling.sykemelding.domain.TsmSykemeldingRequest;
+import no.nav.dolly.bestilling.sykemelding.dto.NySykemeldingResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -19,20 +19,20 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class SykemeldingConsumer extends ConsumerStatus {
+public class TsmSykemeldingConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final ServerProperties serverProperties;
 
-    public SykemeldingConsumer(
+    public TsmSykemeldingConsumer(
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
             WebClient webClient) {
 
         this.tokenService = accessTokenService;
-        serverProperties = consumers.getTestnavSykemeldingApi();
+        serverProperties = consumers.getTestnavSykemeldingProxy();
         this.webClient = webClient
                 .mutate()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -40,14 +40,13 @@ public class SykemeldingConsumer extends ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
-    public Mono<SykemeldingResponse> postDetaljertSykemelding(DetaljertSykemeldingRequest detaljertSykemeldingRequest) {
+    @Timed(name = "providers", tags = { "operation", "nysykemelding_opprett" })
+    public Mono<NySykemeldingResponse> postTsmSykemelding(TsmSykemeldingRequest tsmSykemeldingRequest) {
 
-        log.info("Detaljert Sykemelding sendt {}", Json.pretty(detaljertSykemeldingRequest));
+        log.info("Sykemelding sendt til tsm-input-dolly {}", Json.pretty(tsmSykemeldingRequest));
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new SyfosmreglerSykemeldingPostCommand(webClient, detaljertSykemeldingRequest,
-                        token.getTokenValue()).call());
+                .flatMap(token -> new TsmSykemeldingPostCommand(webClient, tsmSykemeldingRequest, token.getTokenValue()).call());
     }
 
     @Override
@@ -57,6 +56,6 @@ public class SykemeldingConsumer extends ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-sykemelding-api";
+        return "testnav-sykemelding-proxy";
     }
 }
