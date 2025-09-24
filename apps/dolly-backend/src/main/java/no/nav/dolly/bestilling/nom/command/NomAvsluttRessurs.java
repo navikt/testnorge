@@ -26,6 +26,7 @@ public class NomAvsluttRessurs implements Callable<Mono<NomRessursResponse>> {
 
     @Override
     public Mono<NomRessursResponse> call() {
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

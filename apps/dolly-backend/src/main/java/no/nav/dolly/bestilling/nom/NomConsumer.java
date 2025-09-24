@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.nom;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.nom.command.NomAvsluttRessurs;
 import no.nav.dolly.bestilling.nom.command.NomHentRessurs;
 import no.nav.dolly.bestilling.nom.command.NomOpprettRessurs;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
+@Slf4j
 @Service
 public class NomConsumer {
 
@@ -43,7 +45,8 @@ public class NomConsumer {
     public Mono<NomRessursResponse> opprettRessurs(NomRessursRequest nomRessursRequest) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new NomOpprettRessurs(webClient, nomRessursRequest, token.getTokenValue()).call());
+                .flatMap(token -> new NomOpprettRessurs(webClient, nomRessursRequest, token.getTokenValue()).call())
+                .doOnNext(ressursResponse -> log.info("Opprettet ressurs i NOM med respons {}", ressursResponse));
     }
 
     public Mono<NomRessursResponse> avsluttRessurs(String ident, LocalDate sluttdato) {
