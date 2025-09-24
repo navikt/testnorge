@@ -115,7 +115,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						disabled={ukjentGruppe}
 						title={(ukjentGruppe && tekstUkjentGruppe) || ''}
 					/>
-					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+					{/*<Attributt attr={sm.attrs.egenAnsattDatoFom} />*/}
 				</AttributtKategori>
 			</Panel>
 		)

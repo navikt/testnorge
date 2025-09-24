@@ -426,7 +426,9 @@ export default ({
 								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
 									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
 								}
-								//TODO: Ta med Nom-data
+								if (nomData) {
+									personData.nomdata = nomData
+								}
 								if (arbeidsforhold) {
 									personData.aareg = arbeidsforhold
 								}

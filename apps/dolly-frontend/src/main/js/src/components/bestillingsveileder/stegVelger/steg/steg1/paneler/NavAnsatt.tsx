@@ -1,10 +1,4 @@
-import { useFormContext } from 'react-hook-form'
-import React, { useContext } from 'react'
-import {
-	BestillingsveilederContext,
-	BestillingsveilederContextType,
-} from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
+import React from 'react'
 import Panel from '@/components/ui/panel/Panel'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import {
@@ -14,31 +8,12 @@ import {
 import * as _ from 'lodash-es'
 
 export const NavAnsattPanel = ({ stateModifier, formValues }) => {
-	const formMethods = useFormContext()
 	const sm = stateModifier(NavAnsattPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
-	const formGruppeId = formMethods.watch('gruppeId')
 
-	const gruppeId = formGruppeId || opts?.gruppeId || opts?.gruppe?.id
-	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
-	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL')?.length > 0
-
-	const npidPerson = opts?.identtype === 'NPID'
-	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
-
-	// TODO: tilpass denne?
-	const getIgnoreKeys = () => {
-		if (npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)) {
-			return ['skjerming.egenAnsattDatoFom', 'skjerming.egenAnsattDatoTom']
-		}
-		return []
-	}
-
-	// TODO: Trenger vi begrensning paa testnorgeIdent? Se PersoninformasjonPanel
 	return (
 		<Panel
 			heading={NavAnsattPanel.heading}
-			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
+			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="nav"
 			startOpen={harValgtAttributt(formValues, [
@@ -60,6 +35,9 @@ NavAnsattPanel.heading = 'Nav-ansatt'
 NavAnsattPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 	const { personFoerLeggTil } = opts
 
+	const eksisterendeNomdataStartDato = _.get(personFoerLeggTil, 'nomdata.startDato')
+	const eksisterendeNomdataSluttDato = _.get(personFoerLeggTil, 'nomdata.sluttDato')
+
 	const paths = {
 		nom: 'nomdata',
 		egenAnsattDatoFom: {
@@ -77,7 +55,15 @@ NavAnsattPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		nom: {
 			label: 'Er Nav-ansatt (NOM)',
 			checked: has(paths.nom),
-			add: () => set(paths.nom, { startDato: new Date(), sluttDato: null as unknown as string }),
+			add: () =>
+				set(paths.nom, {
+					startDato: eksisterendeNomdataStartDato
+						? new Date(eksisterendeNomdataStartDato)
+						: new Date(),
+					sluttDato: eksisterendeNomdataSluttDato
+						? new Date(eksisterendeNomdataSluttDato)
+						: (null as unknown as string),
+				}),
 			remove: () => del(paths.nom),
 		},
 		egenAnsattDatoFom: {
