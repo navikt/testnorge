@@ -111,7 +111,9 @@ public class SykemeldingClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        // TODO: slette fra TSM
+        identer.forEach(ident -> tsmSykemeldingConsumer.deleteTsmSykemeldinger(ident)
+                .doOnError(WebClientError.logTo(log))
+                .subscribe());
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

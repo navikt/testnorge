@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.bestilling.sykemelding.command.TsmSykemeldingDeleteCommand;
 import no.nav.dolly.bestilling.sykemelding.command.TsmSykemeldingPostCommand;
 import no.nav.dolly.bestilling.sykemelding.domain.TsmSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.NySykemeldingResponse;
@@ -47,6 +48,15 @@ public class TsmSykemeldingConsumer extends ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new TsmSykemeldingPostCommand(webClient, tsmSykemeldingRequest, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "nysykemelding_delete" })
+    public Mono<Void> deleteTsmSykemeldinger(String ident) {
+
+        log.info("Sletter sykemeldinger i tsm for ident: {}", ident);
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new TsmSykemeldingDeleteCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Override
