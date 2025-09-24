@@ -114,6 +114,7 @@ import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidsso
 import { usePensjonsgivendeInntekt, useSummertSkattegrunnlag } from '@/utils/hooks/useSigrunstub'
 import { SigrunstubSummertSkattegrunnlagVisning } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/visning/Visning'
 import { useNomData } from '@/utils/hooks/useNom'
+import { NavAnsattVisning } from '@/components/fagsystem/nom/visning/Visning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -298,7 +299,6 @@ export default ({
 	)
 
 	const { nomData, loading: loadingNom } = useNomData(ident.ident)
-	console.log('nomData: ', nomData) //TODO - SLETT MEG
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
@@ -426,6 +426,7 @@ export default ({
 								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
 									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
 								}
+								//TODO: Ta med Nom-data
 								if (arbeidsforhold) {
 									personData.aareg = arbeidsforhold
 								}
@@ -487,6 +488,12 @@ export default ({
 				{ident.master === 'PDL' && (
 					<PdlVisningConnector pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
+				<NavAnsattVisning
+					nomData={nomData}
+					nomLoading={loadingNom}
+					skjermingData={data.skjermingsregister}
+					skjermingLoading={loading}
+				/>
 				{visArbeidsforhold && (
 					<AaregVisning
 						liste={arbeidsforhold}

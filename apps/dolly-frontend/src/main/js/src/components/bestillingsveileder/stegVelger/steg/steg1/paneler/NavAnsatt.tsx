@@ -26,9 +26,10 @@ export const NavAnsattPanel = ({ stateModifier, formValues }) => {
 	const npidPerson = opts?.identtype === 'NPID'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 
+	// TODO: tilpass denne?
 	const getIgnoreKeys = () => {
 		if (npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)) {
-			return ['kontaktinformasjonForDoedsbo']
+			return ['skjerming.egenAnsattDatoFom', 'skjerming.egenAnsattDatoTom']
 		}
 		return []
 	}
@@ -40,7 +41,11 @@ export const NavAnsattPanel = ({ stateModifier, formValues }) => {
 			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="nav"
-			startOpen={harValgtAttributt(formValues, ['nomdata', 'skjerming'])}
+			startOpen={harValgtAttributt(formValues, [
+				'nomdata',
+				'skjerming.egenAnsattDatoFom',
+				'skjerming.egenAnsattDatoTom',
+			])}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.nom} />

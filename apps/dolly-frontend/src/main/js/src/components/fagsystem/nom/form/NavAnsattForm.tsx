@@ -8,25 +8,31 @@ import { useFormContext } from 'react-hook-form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 
 const nomdataPath = ['nomdata']
-const skjermingPaths = ['skjerming.egenAnsattDatoFom', 'skjerming.egenAnsattDatoTom']
+const skjermingPaths = ['skjerming.egenAnsattDatoFom']
+// const skjermingPaths = ['skjerming.egenAnsattDatoFom', 'skjerming.egenAnsattDatoTom']
+// const skjermingPaths = ['skjerming']
 const panelPaths = [nomdataPath, skjermingPaths].flat()
 
 export const NavAnsatt = () => {
 	const formMethods = useFormContext()
 
+	//TODO: Skjeming vises ikke naar bare den er valgt
 	return (
 		<Vis attributt={panelPaths}>
 			<Panel
 				heading="Nav-ansatt"
 				hasErrors={panelError(panelPaths)}
 				iconType="nav"
-				startOpen={erForsteEllerTest(formMethods.getValues(), panelPaths)}
+				startOpen={
+					erForsteEllerTest(formMethods.getValues(), nomdataPath) ||
+					erForsteEllerTest(formMethods.getValues(), skjermingPaths)
+				}
 			>
 				<Kategori title="Nav-ansatt (NOM)" vis={nomdataPath}>
 					<NomForm />
 				</Kategori>
 				<Kategori title="Skjerming" vis={skjermingPaths}>
-					<SkjermingForm formMethods={formMethods} />
+					<SkjermingForm />
 				</Kategori>
 			</Panel>
 		</Vis>
