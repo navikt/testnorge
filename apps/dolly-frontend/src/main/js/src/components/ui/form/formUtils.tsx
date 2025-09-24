@@ -131,9 +131,7 @@ const getValgteAttributter = (values) => {
 }
 
 export const erForsteEllerTest = (values, attributter) => {
-	console.log('attributter: ', attributter) //TODO - SLETT MEG
 	const valgteAttributter = getValgteAttributter(values)
-	console.log('valgteAttributter: ', valgteAttributter) //TODO - SLETT MEG
 	return runningE2ETest() || attributter.includes(valgteAttributter[0])
 }
 

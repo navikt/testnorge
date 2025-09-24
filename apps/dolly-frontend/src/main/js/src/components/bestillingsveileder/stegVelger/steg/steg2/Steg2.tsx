@@ -82,7 +82,7 @@ const Steg2: React.FC = () => {
 		<div>
 			<PdlfForm />
 			{getValues('fullmakt') && <FullmaktForm />}
-			{(getValues('nomdata') || getValues('egenAnsattDatoFom')) && <NavAnsatt />}
+			{(getValues('nomdata') || getValues('skjerming')) && <NavAnsatt />}
 			{getValues('aareg') && <AaregForm />}
 			{getValues(sigrunstubPensjonsgivendeAttributt) && <SigrunstubPensjonsgivendeForm />}
 			{getValues(sigrunstubSummertSkattegrunnlagAttributt) && (
