@@ -37,11 +37,11 @@ import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.cache.CacheManager;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -145,8 +145,8 @@ public class DollyBestillingService {
     }
 
     protected Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
-                                             GjenopprettSteg steg,
-                                             BestillingProgress progress, boolean isOpprettEndre) {
+                                                           GjenopprettSteg steg,
+                                                           BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)

@@ -50,8 +50,6 @@ public class PdlDataOrdreCommand implements Callable<Mono<PdlResponse>> {
                         .build())
                 .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on POST of ident %s".formatted(ident)))
                 .doOnError(WebClientError.logTo(log))
-
                 .onErrorResume(throwable -> PdlResponse.of(WebClientError.describe(throwable)));
     }
-
 }

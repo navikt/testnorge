@@ -77,7 +77,8 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                                 .status(description.getStatus().value())
                                 .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(description.getMessage())
+                        .message(description.getMessage()
+                                .replaceAll("\"timestamp\":\\d+,", ""))
                         .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();

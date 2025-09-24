@@ -77,7 +77,7 @@ public class LagreAfpOffentligCommand implements Callable<Mono<PensjonforvalterR
                                 .status(description.getStatus().value())
                                 .reasonPhrase(description.getStatus().getReasonPhrase())
                                 .build())
-                        .message(description.getMessage())
+                        .message(description.getMessage().replaceAll("\"timestamp\":\\d+,", ""))
                         .path(PEN_AFP_OFFENTLIG_URL.replace("{miljoe}", miljoe).replace("{ident}", ident))
                         .build())
                 .build();

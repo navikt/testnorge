@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -51,8 +52,8 @@ public class DokarkivGetDokument implements Callable<Mono<DokarkivResponse>> {
                                 .build()))
                         .dokument(response)
                         .build())
-
-                .doOnError(WebClientError.logTo(log))
+                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound),
+                        WebClientError.logTo(log))
                 .onErrorResume(throwable -> DokarkivResponse.of(WebClientError.describe(throwable), miljoe));
     }
 }

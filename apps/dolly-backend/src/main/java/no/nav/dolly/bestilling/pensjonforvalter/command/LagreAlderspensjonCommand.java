@@ -18,7 +18,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
+import static no.nav.dolly.util.RequestTimeout.SHORT_REQUEST_DURATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,7 +46,7 @@ public class LagreAlderspensjonCommand implements Callable<Mono<Pensjonforvalter
                         .build())
                 .httpRequest(httpRequest -> {
                     HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
-                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                    reactorRequest.responseTimeout(Duration.ofSeconds(SHORT_REQUEST_DURATION));
                 })
                 .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CALL_ID, callId)
@@ -72,7 +72,8 @@ public class LagreAlderspensjonCommand implements Callable<Mono<Pensjonforvalter
                                                                     .status(description.getStatus().value())
                                                                     .reasonPhrase(description.getStatus().getReasonPhrase())
                                                                     .build())
-                                                            .message(description.getMessage())
+                                                            .message(description.getMessage()
+                                                                    .replaceAll("\"timestamp\":\\d+,", ""))
                                                             .path(alderspensjonRequest instanceof AlderspensjonVedtakRequest ?
                                                                     PENSJON_AP_VEDTAK_URL : PENSJON_AP_SOKNAD_URL)
                                                             .build())

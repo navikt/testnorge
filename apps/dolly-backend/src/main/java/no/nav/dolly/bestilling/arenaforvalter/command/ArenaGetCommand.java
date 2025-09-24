@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -41,7 +42,8 @@ public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
                     status.setMiljoe(miljoe);
                     return status;
                 })
-                .doOnError(WebClientError.logTo(log))
+                .doOnError(throwable -> !(throwable instanceof WebClientResponseException exception && exception.getStatusCode().value() == 204),
+                        WebClientError.logTo(log))
                 .onErrorResume(throwable -> ArenaStatusResponse.of(WebClientError.describe(throwable), miljoe));
     }
 }
