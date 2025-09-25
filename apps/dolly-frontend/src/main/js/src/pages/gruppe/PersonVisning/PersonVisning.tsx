@@ -494,7 +494,6 @@ export default ({
 					nomData={nomData}
 					nomLoading={loadingNom}
 					skjermingData={data.skjermingsregister}
-					skjermingLoading={loading}
 				/>
 				{visArbeidsforhold && (
 					<AaregVisning

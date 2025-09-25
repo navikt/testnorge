@@ -985,7 +985,7 @@ const mapSkjermingData = (bestillingData, data) => {
 		skjerming?.egenAnsattDatoTom ||
 		tpsMessaging?.egenAnsattDatoTom
 	) {
-		const tpsMessagingData = {
+		const skjermingData = {
 			header: 'Skjerming',
 			items: [
 				obj(
@@ -998,7 +998,7 @@ const mapSkjermingData = (bestillingData, data) => {
 				),
 			],
 		}
-		data.push(tpsMessagingData)
+		data.push(skjermingData)
 	}
 }
 
