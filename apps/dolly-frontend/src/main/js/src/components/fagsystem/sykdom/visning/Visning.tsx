@@ -138,7 +138,7 @@ export const SykemeldingVisning = ({
 			</Alert>
 		)
 	} else if (sjekkManglerSykemeldingData(data) && sykemeldinger?.length === 0) {
-		render = <VisningAvBestilling bestillinger={bestillinger} ident={ident} />
+		render = <VisningAvBestilling bestillinger={bestillinger} />
 	} else if (sykemeldinger?.length > 0) {
 		render = <NySykemeldingVisning ident={ident} />
 	} else {
