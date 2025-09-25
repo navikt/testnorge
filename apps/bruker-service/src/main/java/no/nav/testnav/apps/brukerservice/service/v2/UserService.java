@@ -95,15 +95,4 @@ public class UserService {
                 .then();
     }
 
-    private Mono<Void> validateUpdateUser(String userId, String representing) {
-        var id = cryptographyService.createId(userId, representing);
-        return repository.existsById(id)
-                .doOnNext(exists -> {
-                    if (Boolean.TRUE.equals(exists)) {
-                        throw new UserAlreadyExistsException(id);
-                    }
-                })
-                .then();
-    }
-
 }

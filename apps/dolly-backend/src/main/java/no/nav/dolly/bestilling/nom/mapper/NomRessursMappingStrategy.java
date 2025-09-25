@@ -10,6 +10,8 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.TitleCaseUtil.toTitleCase;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class NomRessursMappingStrategy implements MappingStrategy {
@@ -26,9 +28,9 @@ public class NomRessursMappingStrategy implements MappingStrategy {
 
                         var navn = (PdlPerson.Navn) context.getProperty("navn");
                         if (nonNull(navn)) {
-                            nomRessursRequest.setFornavn(navn.getFornavn());
-                            nomRessursRequest.setMellomnavn(navn.getMellomnavn());
-                            nomRessursRequest.setEtternavn(navn.getEtternavn());
+                            nomRessursRequest.setFornavn(isNotBlank(navn.getFornavn()) ? toTitleCase(navn.getFornavn()) : null);
+                            nomRessursRequest.setMellomnavn(isNotBlank(navn.getMellomnavn()) ? toTitleCase(navn.getMellomnavn()) : null);
+                            nomRessursRequest.setEtternavn(isNotBlank(navn.getEtternavn()) ? toTitleCase(navn.getEtternavn()) : null);
                         }
                     }
                 })
