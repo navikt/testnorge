@@ -49,7 +49,6 @@ export const FolkeregisteretNavn = ({ handleChange }: any) => {
 					)
 				}
 			/>
-			{/*TODO: Denne feiler naar man gjoer soek med den:*/}
 			<FormSelect
 				name="navn.harNavnSpesialtegn"
 				options={Options('boolean')}

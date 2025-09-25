@@ -1,7 +1,6 @@
 import { useHentLagredeSoek } from '@/utils/hooks/useSoek'
 import { Chips, VStack } from '@navikt/ds-react'
 import * as _ from 'lodash-es'
-import { codeToNorskLabel } from '@/utils/DataFormatter'
 import { isDate, isSameDay, isValid } from 'date-fns'
 
 export enum soekType {
@@ -52,29 +51,6 @@ export const SisteSoek = ({ type, formValues, handleChange, handleChangeList }) 
 	}
 
 	const handleClick = (option) => {
-		//TODO: Handleclick generell for lister?
-		console.log('option: ', option) //TODO - SLETT MEG
-		if (listOptions.includes(option.path)) {
-			const listValues = _.get(formValues, option.path) || []
-			handleChangeList(
-				!listValues?.includes(option.value)
-					? [...listValues, { value: option.value, label: codeToNorskLabel(option.value) }]
-					: listValues?.filter((item) => item !== option.value),
-				option.path,
-				option.label,
-			)
-		} else {
-			handleChange(
-				_.get(formValues, option.path) !== option.value ? option.value : null,
-				option.path,
-				option.label,
-			)
-		}
-	}
-
-	//TODO: Denne ser ut til aa funke naa. Gjoer det samme paa handleClick?
-	//TODO: Evt. slaa sammen begge handleChanges?
-	const handleClickTenor = (option) => {
 		const formValue = _.get(formValues, option.path)
 		if (listOptions.includes(option.path)) {
 			const listValues = formValue || []
@@ -103,9 +79,7 @@ export const SisteSoek = ({ type, formValues, handleChange, handleChangeList }) 
 					<Chips.Toggle
 						key={option.label}
 						selected={isSelected(option)}
-						onClick={() =>
-							type === soekType.tenor ? handleClickTenor(option) : handleClick(option)
-						}
+						onClick={() => handleClick(option)}
 					>
 						{option.label}
 					</Chips.Toggle>
