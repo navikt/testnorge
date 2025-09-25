@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.sykemelding.domain;
+package no.nav.dolly.bestilling.sykemelding.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TsmSykemeldingRequest {
+public class NySykemeldingRequestDTO {
 
     private String ident;
     private List<Aktivitet> aktivitet;

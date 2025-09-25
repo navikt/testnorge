@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sykemelding.command.TsmSykemeldingDeleteCommand;
-import no.nav.dolly.bestilling.sykemelding.command.TsmSykemeldingPostCommand;
-import no.nav.dolly.bestilling.sykemelding.domain.TsmSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.dto.NySykemeldingResponse;
+import no.nav.dolly.bestilling.sykemelding.command.NySykemeldingDeleteCommand;
+import no.nav.dolly.bestilling.sykemelding.command.NySykemeldingPostCommand;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingRequestDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingResponseDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -20,13 +20,13 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class TsmSykemeldingConsumer extends ConsumerStatus {
+public class NySykemeldingConsumer extends ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final ServerProperties serverProperties;
 
-    public TsmSykemeldingConsumer(
+    public NySykemeldingConsumer(
             TokenExchange accessTokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
@@ -42,21 +42,21 @@ public class TsmSykemeldingConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "nysykemelding_opprett" })
-    public Mono<NySykemeldingResponse> postTsmSykemelding(TsmSykemeldingRequest tsmSykemeldingRequest) {
+    public Mono<NySykemeldingResponseDTO> postTsmSykemelding(NySykemeldingRequestDTO nySykemeldingRequestDTO) {
 
-        log.info("Sykemelding sendt til tsm-input-dolly {}", Json.pretty(tsmSykemeldingRequest));
+        log.info("Sykemelding sendt til tsm-input-dolly {}", Json.pretty(nySykemeldingRequestDTO));
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new TsmSykemeldingPostCommand(webClient, tsmSykemeldingRequest, token.getTokenValue()).call());
+                .flatMap(token -> new NySykemeldingPostCommand(webClient, nySykemeldingRequestDTO, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "nysykemelding_delete" })
     public Mono<Void> deleteTsmSykemeldinger(String ident) {
 
-        log.info("Sletter sykemeldinger i tsm for ident: {}", ident);
+        log.info("Sletter nye sykemeldinger for ident: {}", ident);
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new TsmSykemeldingDeleteCommand(webClient, ident, token.getTokenValue()).call());
+                .flatMap(token -> new NySykemeldingDeleteCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Override

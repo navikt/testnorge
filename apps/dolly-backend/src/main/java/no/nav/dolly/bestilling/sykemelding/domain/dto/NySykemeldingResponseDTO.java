@@ -1,9 +1,9 @@
-package no.nav.dolly.bestilling.sykemelding.dto;
+package no.nav.dolly.bestilling.sykemelding.domain.dto;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public record NySykemeldingResponse(
+public record NySykemeldingResponseDTO(
         String error,
         String sykmeldingId,
         List<Aktivitet> aktivitet,

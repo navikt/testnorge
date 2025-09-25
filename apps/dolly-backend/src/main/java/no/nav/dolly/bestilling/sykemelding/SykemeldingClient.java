@@ -9,10 +9,10 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.domain.TsmSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.dto.NySykemeldingResponse;
-import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingRequestDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingResponseDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingRequestDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.NySykemeldingResponseDTO;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
@@ -50,7 +50,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class SykemeldingClient implements ClientRegister {
 
     private final SykemeldingConsumer sykemeldingConsumer;
-    private final TsmSykemeldingConsumer tsmSykemeldingConsumer;
+    private final NySykemeldingConsumer nySykemeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransaksjonMappingService transaksjonMappingService;
     private final MapperFacade mapperFacade;
@@ -111,7 +111,7 @@ public class SykemeldingClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        identer.forEach(ident -> tsmSykemeldingConsumer.deleteTsmSykemeldinger(ident)
+        identer.forEach(ident -> nySykemeldingConsumer.deleteTsmSykemeldinger(ident)
                 .doOnError(WebClientError.logTo(log))
                 .subscribe());
     }
@@ -124,14 +124,14 @@ public class SykemeldingClient implements ClientRegister {
                 status);
     }
 
-    private String getStatus(SykemeldingResponse status) {
+    private String getStatus(DetaljertSykemeldingResponseDTO status) {
         log.info("Sykemelding response for {} mottatt, status: {}", status.getIdent(), status.getStatus());
         return status.getStatus().is2xxSuccessful()
                 ? "OK"
                 : errorStatusDecoder.getErrorText(status.getStatus(), status.getAvvik());
     }
 
-    private String getStatus(NySykemeldingResponse status) {
+    private String getStatus(NySykemeldingResponseDTO status) {
         log.info("Ny sykemelding response for {} mottatt, {}", status.ident(), Json.pretty(status));
         return isNull(status.error())
                 ? "OK"
@@ -165,38 +165,38 @@ public class SykemeldingClient implements ClientRegister {
         return isNotBlank(geografiskOmrade) ? norg2Consumer.getNorgEnhet(geografiskOmrade) : Mono.empty();
     }
 
-    private Mono<SykemeldingResponse> postDetaljertSykemelding(RsSykemelding sykemelding,
-                                                               PdlPersonBolk.Data persondata) {
+    private Mono<DetaljertSykemeldingResponseDTO> postDetaljertSykemelding(RsSykemelding sykemelding,
+                                                                           PdlPersonBolk.Data persondata) {
         return Mono.just(sykemelding)
                 .map(RsSykemelding::getDetaljertSykemelding)
                 .flatMap(detaljert ->
                         Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"), getNorgenhet(persondata))
                                 .flatMap(kodeverk -> {
-                                    var req = mapperFacade.map(detaljert, DetaljertSykemeldingRequest.class);
+                                    var req = mapperFacade.map(detaljert, DetaljertSykemeldingRequestDTO.class);
                                     var context = new MappingContext.Factory().getContext();
                                     context.setProperty("postnummer", kodeverk.getT1());
                                     context.setProperty("norg2Enhet", kodeverk.getT2());
                                     req.setPasient(mapperFacade.map(
                                             persondata,
-                                            DetaljertSykemeldingRequest.Pasient.class,
+                                            DetaljertSykemeldingRequestDTO.Pasient.class,
                                             context));
                                     return sykemeldingConsumer.postDetaljertSykemelding(req);
                                 }));
     }
 
-    private Mono<NySykemeldingResponse> postNySykemelding(RsSykemelding.RsNySykemelding rsNySykemelding,
-                                                          String ident) {
+    private Mono<NySykemeldingResponseDTO> postNySykemelding(RsSykemelding.RsNySykemelding rsNySykemelding,
+                                                             String ident) {
 
         var aktivitet = rsNySykemelding.getAktivitet().stream()
-                .map(a -> new TsmSykemeldingRequest.Aktivitet(a.getFom(), a.getTom()))
+                .map(a -> new NySykemeldingRequestDTO.Aktivitet(a.getFom(), a.getTom()))
                 .collect(Collectors.toList());
 
-        TsmSykemeldingRequest request = new TsmSykemeldingRequest(ident, aktivitet);
+        NySykemeldingRequestDTO request = new NySykemeldingRequestDTO(ident, aktivitet);
 
-        return tsmSykemeldingConsumer.postTsmSykemelding(request);
+        return nySykemeldingConsumer.postTsmSykemelding(request);
     }
 
-    private Mono<TransaksjonMapping> saveTransaksjonId(SykemeldingResponse response, Long bestillingId) {
+    private Mono<TransaksjonMapping> saveTransaksjonId(DetaljertSykemeldingResponseDTO response, Long bestillingId) {
         if (response.getStatus().is2xxSuccessful()) {
             response.getSykemeldingRequest().setSykemeldingId(response.getMsgId());
             return transaksjonMappingService.save(TransaksjonMapping.builder()

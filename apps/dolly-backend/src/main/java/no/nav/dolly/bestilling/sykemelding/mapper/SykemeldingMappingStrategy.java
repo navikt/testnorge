@@ -3,10 +3,10 @@ package no.nav.dolly.bestilling.sykemelding.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Adresse;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Organisasjon;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Pasient;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingRequestDTO;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingRequestDTO.Adresse;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingRequestDTO.Organisasjon;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.DetaljertSykemeldingRequestDTO.Pasient;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -29,11 +29,11 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(RsDetaljertSykemelding.class, DetaljertSykemeldingRequest.class)
+        factory.classMap(RsDetaljertSykemelding.class, DetaljertSykemeldingRequestDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsDetaljertSykemelding rsSykemelding,
-                                        DetaljertSykemeldingRequest request,
+                                        DetaljertSykemeldingRequestDTO request,
                                         MappingContext context) {
                         request.setSender(nonNull(request.getSender()) ?
                                 request.getSender() :
@@ -48,7 +48,7 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                                         .orgNr("992741090")
                                         .build());
                         if (isNull(rsSykemelding.getDetaljer())) {
-                            request.setDetaljer(DetaljertSykemeldingRequest.Detaljer.builder()
+                            request.setDetaljer(DetaljertSykemeldingRequestDTO.Detaljer.builder()
                                     .arbeidsforEtterEndtPeriode(true)
                                     .build());
                         }
