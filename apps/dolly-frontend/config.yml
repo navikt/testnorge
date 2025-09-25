@@ -60,6 +60,7 @@ spec:
         - application: testnav-levende-arbeidsforhold-ansettelse
         - application: testnav-levende-arbeidsforhold-scheduler
         - application: testnav-yrkesskade-proxy
+        - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-sykemelding-proxy

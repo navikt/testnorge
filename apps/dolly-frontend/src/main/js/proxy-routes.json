@@ -170,5 +170,8 @@
   },
   "/testnav-oversikt-service/api": {
     "changeOrigin": true
+  },
+  "/testnav-nom-proxy": {
+    "changeOrigin": true
   }
 }

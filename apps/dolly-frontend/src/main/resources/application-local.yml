@@ -95,3 +95,5 @@ consumers:
     url: https://testnav-sykemelding-proxy.intern.dev.nav.no
   testnav-api-oversikt-service:
     url: https://testnav-oversikt-service.intern.dev.nav.no
+  testnav-nom-proxy:
+    url: https://testnav-nom-proxy.intern.dev.nav.no
