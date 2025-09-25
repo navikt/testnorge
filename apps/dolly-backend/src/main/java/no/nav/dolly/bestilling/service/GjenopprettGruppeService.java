@@ -88,7 +88,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             bestKriterier.setEkskluderEksternePersoner(true);
 
             identService.getTestidenterByGruppeId(bestilling.getGruppeId())
-                    .flatMap(testident -> utfoergjenoppretting(bestKriterier, bestilling, testident), 10)
+                    .flatMap(testident -> utfoergjenoppretting(bestKriterier, bestilling, testident), 3)
                     .subscribe(progress -> log.info("Fullført gjenoppretting av ident: {}", progress.getIdent()),
                             error -> doFerdig(bestilling).subscribe(),
                             () -> doFerdig(bestilling).subscribe());

@@ -44,6 +44,7 @@ public class ArbeidsplassenPostPersonCommand implements Callable<Mono<Arbeidspla
                         .build())
                 .doOnError(WebClientError.logTo(log))
 
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> ArbeidsplassenCVStatusDTO.of(WebClientError.describe(throwable), uuid));
     }
 

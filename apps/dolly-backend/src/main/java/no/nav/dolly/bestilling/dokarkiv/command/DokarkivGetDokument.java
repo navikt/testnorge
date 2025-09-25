@@ -54,6 +54,7 @@ public class DokarkivGetDokument implements Callable<Mono<DokarkivResponse>> {
                         .build())
                 .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> DokarkivResponse.of(WebClientError.describe(throwable), miljoe));
     }
 }

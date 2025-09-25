@@ -23,8 +23,8 @@ import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DokumentService;
-import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
@@ -75,26 +75,26 @@ public class DokarkivClient implements ClientRegister {
                 .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(DOKARKIV.name())))
                 .collect(Collectors.joining(",")))
                 .then(getPersonData(dollyPerson.getIdent())
-                .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
-                        .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
-                                .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
-                                        .flatMap(isOpprettDokument -> isTrue(isOpprettDokument)
-                                                ?
-                                                Flux.fromIterable(bestilling.getDokarkiv())
-                                                        .flatMap(dokarkiv ->
-                                                                buildRequest(dokarkiv, person, bestilling.getId())
-                                                                        .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
-                                                        .collectList()
-                                                        .flatMap(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
-                                                :
-                                                Mono.just(miljoe + ":OK")
+                        .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
+                                .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
+                                        .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
+                                                .flatMap(isOpprettDokument -> isTrue(isOpprettDokument)
+                                                        ?
+                                                        Flux.fromIterable(bestilling.getDokarkiv())
+                                                                .flatMap(dokarkiv ->
+                                                                        buildRequest(dokarkiv, person, bestilling.getId())
+                                                                                .flatMap(request -> dokarkivConsumer.postDokarkiv(miljoe, request)))
+                                                                .collectList()
+                                                                .flatMap(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status))
+                                                        :
+                                                        Mono.just(miljoe + ":OK")
+                                                )
                                         )
-                                )
-                                .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                                .onErrorResume(error -> getErrors(error, miljoer))
-                        ))
-                .collect(Collectors.joining(","))
-                .flatMap(status -> oppdaterStatus(progress, status)));
+                                        .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                        .onErrorResume(error -> getErrors(error, miljoer))
+                                ))
+                        .collect(Collectors.joining(","))
+                        .flatMap(status -> oppdaterStatus(progress, status)));
     }
 
     private Mono<Boolean> isOpprettDokument(String miljoe, String ident, Long bestillingId, Boolean isOpprettEndre) {

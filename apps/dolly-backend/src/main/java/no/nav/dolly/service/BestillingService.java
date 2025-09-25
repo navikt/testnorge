@@ -470,6 +470,7 @@ public class BestillingService {
                         .gruppeId(gruppeId)
                         .miljoer(filterAvailable(request.getEnvironments(), tuple.getT3()))
                         .sistOppdatert(now())
+                        .brukerId(tuple.getT1().getId())
                         .bruker(tuple.getT1())
                         .antallIdenter(tuple.getT2())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())

@@ -40,6 +40,7 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                                 .build())
                         .build())
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> SykemeldingResponse.of(WebClientError.describe(error), request.getPasient().getIdent()));
     }
 }

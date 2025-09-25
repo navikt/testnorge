@@ -44,6 +44,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, HttpStatus.valueOf(response.getStatusCode().value())))
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 

@@ -55,6 +55,7 @@ public class LagreAlderspensjonCommand implements Callable<Mono<Pensjonforvalter
                 .retrieve()
                 .bodyToMono(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable ->
                         Mono.just(PensjonforvalterResponse
                                 .builder()

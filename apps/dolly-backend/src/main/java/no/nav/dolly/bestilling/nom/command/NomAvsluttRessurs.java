@@ -42,6 +42,7 @@ public class NomAvsluttRessurs implements Callable<Mono<NomRessursResponse>> {
                         .build())
                 .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound),
                         WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable ->
                         Mono.just(NomRessursResponse.of(WebClientError.describe(throwable))));
     }

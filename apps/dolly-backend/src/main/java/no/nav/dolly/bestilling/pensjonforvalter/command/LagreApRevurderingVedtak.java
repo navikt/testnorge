@@ -44,6 +44,7 @@ public class LagreApRevurderingVedtak implements Callable<Mono<PensjonforvalterR
                 .retrieve()
                 .bodyToMono(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(PensjonforvalterResponse

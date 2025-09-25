@@ -81,7 +81,8 @@ public class OrganisasjonConsumer {
                         .retrieve()
                         .bodyToMono(OrganisasjonDeployStatus.class)
                         .doOnError(WebClientError.logTo(log))
-                        .onErrorResume(throwable -> Mono.empty())
+                        .retryWhen(WebClientError.is5xxException())
+                .onErrorResume(throwable -> Mono.empty())
                 );
     }
 

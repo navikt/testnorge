@@ -36,6 +36,7 @@ public class NomOpprettRessurs implements Callable<Mono<NomRessursResponse>> {
                 .retrieve()
                 .bodyToMono(NomRessursResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable ->
                         Mono.just(NomRessursResponse.of(WebClientError.describe(throwable))));
     }

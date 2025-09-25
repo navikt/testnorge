@@ -40,6 +40,7 @@ public class UdistubPutCommand implements Callable<Mono<UdiPersonResponse>> {
                         .type(UdiPersonResponse.InnsendingType.UPDATE)
                         .build())
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Mono.just(UdiPersonResponse.builder()
                         .person(udiPerson)
                         .status(throwable instanceof WebClientResponseException webClientResponseException ?

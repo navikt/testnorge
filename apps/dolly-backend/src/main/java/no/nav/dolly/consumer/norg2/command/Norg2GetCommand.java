@@ -31,6 +31,7 @@ public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
                 .retrieve()
                 .bodyToMono(Norg2EnhetResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> Norg2EnhetResponse.of(WebClientError.describe(throwable)));
     }
 }

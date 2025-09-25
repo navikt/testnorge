@@ -51,6 +51,7 @@ public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterRespo
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     return Mono.just(PensjonforvalterResponse

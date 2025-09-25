@@ -38,6 +38,7 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                 .retrieve()
                 .bodyToMono(PensjonSamboerResponse.class)
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 
