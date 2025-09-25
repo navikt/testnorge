@@ -52,6 +52,7 @@ spec:
         - application: testnorge-profil-api
         - application: testnorge-tilbakemelding-api
         - application: testnav-yrkesskade-proxy
+        - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-api-oversikt-service

@@ -96,6 +96,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdAnsettelse(), "testnav-levende-arbeidsforhold-ansettelse"))
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdScheduler(), "testnav-levende-arbeidsforhold-scheduler"))
                 .route(createRoute(consumers.getTestnavYrkesskadeProxy()))
+                .route(createRoute(consumers.getTestnavNomProxy()))
                 .route(createRoute(consumers.getTestnavAltinn3TilgangService(), "testnav-altinn3-tilgang-service"))
                 .route(createRoute(consumers.getTestnavArbeidssoekerregisteretProxy()))
                 .route(createRoute(consumers.getTestnavApiOversiktService(), "testnav-oversikt-service"))

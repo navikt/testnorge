@@ -14,11 +14,11 @@ export const SkjermingVisning = ({ data }: SkjermingProps) => {
 	return (
 		<>
 			<TitleValue
-				title="Har skjerming (egen ansatt)"
+				title="Har skjerming"
 				value={
 					data.skjermetTil && isBefore(new Date(data.skjermetTil), addDays(new Date(), -1))
-						? 'NEI'
-						: 'JA'
+						? 'Nei'
+						: 'Ja'
 				}
 			/>
 			<TitleValue title="Skjerming fra" value={formatDate(data.skjermetFra)} />

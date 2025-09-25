@@ -49,6 +49,7 @@ spec:
         - application: testnorge-tilbakemelding-api
         - application: testnav-skattekort-service
         - application: testnav-yrkesskade-proxy
+        - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-service
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-api-oversikt-service

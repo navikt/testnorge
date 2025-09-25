@@ -62,6 +62,7 @@ export const rootPaths = [
 	'fullmakt',
 	'arbeidssoekerregisteret',
 	'arbeidsplassenCV',
+	'nomdata',
 	'skjerming',
 	sigrunstubPensjonsgivendeAttributt,
 	sigrunstubSummertSkattegrunnlagAttributt,
