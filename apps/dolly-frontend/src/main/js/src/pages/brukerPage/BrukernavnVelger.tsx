@@ -115,8 +115,15 @@ export default ({ eksisterendeBrukernavn, organisasjon, addToSession }: Brukerna
 						size="large"
 						defaultValue={eksisterendeBrukernavn}
 						isDisabled={loading || !!eksisterendeBrukernavn}
+						useControlled
 					/>
-					<DollyTextInput name="epost" label="Epost" size="large" isDisabled={loading} />
+					<DollyTextInput
+						name="epost"
+						label="Epost"
+						size="large"
+						isDisabled={loading}
+						useControlled
+					/>
 					<ButtonDiv>
 						<NavButton
 							type="submit"
