@@ -109,7 +109,7 @@ class KrrstubConsumerTest extends AbstractConsumerTest {
                         .build()))
                 .expectNext(DigitalKontaktdataResponse.builder()
                         .status(HttpStatus.CONFLICT)
-                        .melding("")
+                        .melding("409 Conflict")
                         .build())
                 .verifyComplete();
     }

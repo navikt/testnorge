@@ -42,6 +42,8 @@ spring:
   jackson:
     parser:
       include-source-in-location: true
+  codec:
+    max-in-memory-size: 10MB
 
 springdoc:
   swagger-ui:
@@ -58,7 +60,7 @@ logging:
 
 open:
   search:
-    total-fields: 1500
+    total-fields: 2000
     index: bestilling
 
 consumers:
@@ -226,5 +228,10 @@ consumers:
     name: etterlatte-testdata
     namespace: etterlatte
     url: http://etterlatte-testdata.etterlatte.svc.cluster.local
+    cluster: dev-gcp
+  nom-proxy:
+    name: testnav-nom-proxy
+    namespace: dolly
+    url: http://testnav-nom-proxy.dolly.svc.cluster.local
     cluster: dev-gcp
     
