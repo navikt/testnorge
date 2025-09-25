@@ -67,11 +67,6 @@ export const DateInput = ({
 	const fieldValue = name ? watch(name) : ''
 	const [formattedValue, setFormattedValue] = useState(fieldValue ? formatDate(fieldValue) : '')
 
-	// if (name === 'foedselsdato.fraOgMed') {
-	// 	console.log('fieldValue: ', fieldValue) //TODO - SLETT MEG
-	// 	console.log('formattedValue: ', formattedValue) //TODO - SLETT MEG
-	// }
-
 	useEffect(() => {
 		if (!fieldValue) {
 			setFormattedValue('')
@@ -99,7 +94,6 @@ export const DateInput = ({
 		setValue(name, e.target.value, { shouldTouch: true })
 		props.onChange?.(e)
 		setFormattedValue(e.target.value)
-		// setFormattedValue(formatDate(e.target.value))
 	}
 
 	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {

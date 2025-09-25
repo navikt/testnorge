@@ -156,13 +156,6 @@ export const TextInput = ({
 		'skjemaelement__input--harFeil': shouldShowError,
 	})
 
-	// if (name === 'relasjoner.relasjonMedFoedselsaar.fraOgMed' || name === 'identifikator') {
-	// 	console.log(`fieldValue ${name}: `, fieldValue) //TODO - SLETT MEG
-	// 	console.log(`value ${name}: `, value) //TODO - SLETT MEG
-	// 	console.log(`defaultValue ${name}: `, defaultValue) //TODO - SLETT MEG
-	// 	console.log(`watch ${name}: `, watch(name)) //TODO - SLETT MEG
-	// }
-
 	return (
 		<>
 			<input

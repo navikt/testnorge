@@ -13,7 +13,6 @@ import { codeToNorskLabel } from '@/utils/DataFormatter'
 export default () => {
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
 	const lagreSoekRequestRef = useRef(lagreSoekRequest)
-	console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
 
 	useEffect(() => {
 		lagreSoekRequestRef.current = lagreSoekRequest
@@ -45,7 +44,7 @@ export default () => {
 		setFormRequest(request)
 	}
 
-	const { watch, reset, control, getValues } = formMethods
+	const { watch, reset } = formMethods
 	const values = watch()
 
 	const handleChange = (value: any, path: string, label: string) => {

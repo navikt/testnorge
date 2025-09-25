@@ -61,7 +61,11 @@ export const SisteSoek = ({ type, formValues, handleChange, handleChangeList }) 
 				option.path,
 				option.label,
 			)
-		} else if (formValue?.length > 8 && isDate(new Date(formValue))) {
+		} else if (
+			formValue?.length > 8 &&
+			isDate(new Date(formValue)) &&
+			isValid(new Date(formValue))
+		) {
 			handleChange(
 				!isSameDay(new Date(formValue), new Date(option.value)) ? option.value : null,
 				option.path,

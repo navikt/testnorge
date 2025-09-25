@@ -244,15 +244,7 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 											/>
 										</Table.HeaderCell>
 									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={
-											<Arbeidsforhold
-												handleChange={handleChange}
-												handleChangeList={handleChangeList}
-												getValue={watch}
-											/>
-										}
-									>
+									<Table.ExpandableRow content={<Arbeidsforhold handleChange={handleChange} />}>
 										<Table.HeaderCell>
 											<Header
 												title="Arbeidsforhold"

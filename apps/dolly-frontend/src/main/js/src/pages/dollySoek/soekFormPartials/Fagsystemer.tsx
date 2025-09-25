@@ -18,12 +18,7 @@ export const Fagsystemer = ({ handleChangeList }: any) => {
 					isMulti={true}
 					size="grow"
 					onChange={(val: SyntheticEvent) => {
-						handleChangeList(
-							// val?.map((item: any) => item.value) || null,
-							val,
-							'registreRequest',
-							'Fagsystem',
-						)
+						handleChangeList(val, 'registreRequest', 'Fagsystem')
 					}}
 				/>
 			</div>

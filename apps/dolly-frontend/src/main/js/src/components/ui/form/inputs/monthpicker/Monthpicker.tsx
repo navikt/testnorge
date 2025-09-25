@@ -60,13 +60,6 @@ export const Monthpicker = ({
 		}
 	}, [eksisterendeVerdi])
 
-	// if (name === 'inntekt.periode.fraOgMed') {
-	// 	console.log('eksisterendeVerdi: ', eksisterendeVerdi) //TODO - SLETT MEG
-	// 	console.log('inputProps: ', inputProps) //TODO - SLETT MEG
-	// 	console.log('formattedDate: ', formattedDate) //TODO - SLETT MEG
-	// 	console.log('monthpickerProps: ', monthpickerProps) //TODO - SLETT MEG
-	// }
-
 	return (
 		<InputWrapper size={'small'}>
 			<Label name={name} label={label}>

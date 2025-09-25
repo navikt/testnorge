@@ -41,7 +41,6 @@ export const tenorSoekStateLocalStorageKey = 'tenorSoekState'
 export default () => {
 	const [lagreSoekRequest, setLagreSoekRequest] = useState({})
 	const lagreSoekRequestRef = useRef(lagreSoekRequest)
-	console.log('lagreSoekRequest: ', lagreSoekRequest) //TODO - SLETT MEG
 
 	useEffect(() => {
 		lagreSoekRequestRef.current = lagreSoekRequest

@@ -7,7 +7,7 @@ import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicke
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { formatDate } from '@/utils/DataFormatter'
 
-export const Arbeidsforhold = ({ handleChange, handleChangeList, getValue }: any) => {
+export const Arbeidsforhold = ({ handleChange }: any) => {
 	const { domain: arbeidsforholdstypeOptions, loading: loadingArbeidsforholdstype } =
 		useTenorDomain('Arbeidsforholdstype')
 
