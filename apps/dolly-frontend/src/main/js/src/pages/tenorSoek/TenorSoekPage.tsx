@@ -226,14 +226,16 @@ export default () => {
 		}
 	}
 
-	// TODO: Test og evt fiks denne
 	const emptyCategory = (paths: Array<string>) => {
-		paths.forEach((path) => {
+		const lagreSoekRequestClone = { ...lagreSoekRequest }
+		paths.forEach((path: string) => {
 			setValue(path, undefined)
+			delete lagreSoekRequestClone[path]
 		})
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
 		setMarkertePersoner([])
+		setLagreSoekRequest(lagreSoekRequestClone)
 		mutate()
 	}
 
