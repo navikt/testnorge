@@ -149,7 +149,7 @@ export const SykemeldingVisning = ({
 				forsteMiljo={forsteMiljo}
 				data={filteredData ?? mergetData}
 			>
-				<Visning data={filteredData} />
+				<Visning />
 			</MiljoTabs>
 		)
 	}
