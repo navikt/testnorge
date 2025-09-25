@@ -567,6 +567,7 @@ export default ({
 					harArenaBestilling={harArenaBestilling(bestillingerFagsystemer)}
 				/>
 				<SykemeldingVisning
+					ident={ident}
 					data={sykemeldingData}
 					loading={loadingSykemeldingData}
 					bestillingIdListe={bestillingIdListe}

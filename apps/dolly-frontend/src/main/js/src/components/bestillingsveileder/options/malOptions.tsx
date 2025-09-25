@@ -95,7 +95,7 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 		initialValuesMal.dokarkiv = getUpdatedDokarkiv(initialValuesMal.dokarkiv)
 	}
 	if (initialValuesMal.sykemelding?.syntSykemelding) {
-		initialValuesMal.sykemelding = getUpdatedSykemelding(
+		initialValuesMal.sykemelding.detaljertSykemelding = getUpdatedSykemelding(
 			initialValuesMal.sykemelding.syntSykemelding,
 		)
 	}
@@ -430,10 +430,10 @@ const getUpdatedBankkonto = (bankkonto: any) => {
 
 const getUpdatedSykemelding = (syntSykemelding: any) => {
 	let updatedSykemelding = initialValuesDetaljertSykemelding
-	updatedSykemelding.detaljertSykemelding.startDato = new Date()
-	updatedSykemelding.detaljertSykemelding.mottaker.orgNr = syntSykemelding.orgnummer
-	updatedSykemelding.detaljertSykemelding.perioder[0].fom = addDays(syntSykemelding.startDato, -7)
-	updatedSykemelding.detaljertSykemelding.perioder[0].tom = addDays(syntSykemelding.startDato, -1)
+	updatedSykemelding.startDato = new Date()
+	updatedSykemelding.mottaker.orgNr = syntSykemelding.orgnummer
+	updatedSykemelding.perioder[0].fom = addDays(syntSykemelding.startDato, -7)
+	updatedSykemelding.perioder[0].tom = addDays(syntSykemelding.startDato, -1)
 	return updatedSykemelding
 }
 

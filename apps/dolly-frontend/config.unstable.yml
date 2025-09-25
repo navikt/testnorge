@@ -51,6 +51,7 @@ spec:
         - application: testnav-yrkesskade-proxy
         - application: testnav-altinn3-tilgang-service
         - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-sykemelding-proxy
         - application: testnav-api-oversikt-service
         - application: logging
           namespace: nais-system

@@ -35,7 +35,7 @@ import {
 	kategoriKodeverk,
 	tekniskNavnKodeverk,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
-import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon'
+import { useTpOrdningKodeverk } from '@/utils/hooks/usePensjon' // TODO: Flytte til selector?
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1503,7 +1503,7 @@ const mapSykemelding = (bestillingData, data) => {
 	if (sykemeldingKriterier) {
 		const sykemelding = {
 			header: 'Sykemelding',
-			items: null,
+			items: [] as any,
 		}
 		if (sykemeldingKriterier.syntSykemelding) {
 			sykemelding.items = [
@@ -1511,6 +1511,13 @@ const mapSykemelding = (bestillingData, data) => {
 				obj('Organisasjonsnummer', sykemeldingKriterier.syntSykemelding.orgnummer),
 				obj('Arbeidsforhold-ID', sykemeldingKriterier.syntSykemelding.arbeidsforholdId),
 			]
+		} else if (sykemeldingKriterier.nySykemelding) {
+			sykemeldingKriterier.nySykemelding.aktivitet?.forEach((aktivitet: any) => {
+				sykemelding.items.push(
+					obj('Startdato', formatDate(aktivitet.fom)),
+					obj('Sluttdato', formatDate(aktivitet.tom)),
+				)
+			})
 		} else if (sykemeldingKriterier.detaljertSykemelding) {
 			sykemelding.items = [
 				obj('Startdato', formatDate(sykemeldingKriterier.detaljertSykemelding.startDato)),

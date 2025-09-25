@@ -135,6 +135,9 @@
   "/testnav-arbeidsplassencv-proxy": {
     "changeOrigin": true
   },
+  "/testnav-sykemelding-proxy": {
+    "changeOrigin": true
+  },
   "/testnav-helsepersonell-service": {
     "changeOrigin": true
   },
