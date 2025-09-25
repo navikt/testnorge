@@ -21,6 +21,7 @@ import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/s
 import { ArbeidssoekerPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidssoeker'
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
+import { NavAnsattPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/NavAnsatt'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -53,6 +54,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		UdiPanel,
 		DokarkivPanel,
 		PensjonPanel,
+		NavAnsattPanel,
 	]
 		.map((panel) => ({
 			label: panel.heading,
@@ -71,10 +73,9 @@ export const Steg1Person = ({ stateModifier }: any) => {
 			<AdressePanel stateModifier={stateModifier} formValues={formValues} />
 			<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
 			<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
+			<NavAnsattPanel stateModifier={stateModifier} formValues={formValues} />
 			{!testnorgeIdent && (
-				<>
-					<KontaktDoedsboPanel stateModifier={stateModifier} formValues={formValues} />
-				</>
+				<KontaktDoedsboPanel stateModifier={stateModifier} formValues={formValues} />
 			)}
 			<ArbeidInntektPanel stateModifier={stateModifier} formValues={formValues} />
 			<ArbeidssoekerPanel stateModifier={stateModifier} formValues={formValues} />
