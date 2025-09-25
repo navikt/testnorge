@@ -127,14 +127,14 @@ public class SykemeldingClient implements ClientRegister {
     private String getStatus(SykemeldingResponse status) {
         log.info("Sykemelding response for {} mottatt, status: {}", status.getIdent(), status.getStatus());
         return status.getStatus().is2xxSuccessful()
-                ? "DetaljertSykemelding:OK"
+                ? "OK"
                 : errorStatusDecoder.getErrorText(status.getStatus(), status.getAvvik());
     }
 
     private String getStatus(NySykemeldingResponse status) {
         log.info("Ny sykemelding response for {} mottatt, {}", status.ident(), Json.pretty(status));
         return isNull(status.error())
-                ? "NySykemelding:OK"
+                ? "OK"
                 : status.error();
     }
 
