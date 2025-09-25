@@ -7,7 +7,7 @@ import { formatDate } from '@/utils/DataFormatter'
 import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
 
 export const NavAnsattVisning = ({ nomData, nomLoading, skjermingData }) => {
-	if (nomLoading) return nomLoading && <Loading label="Laster NOM-data" />
+	if (nomLoading) return <Loading label="Laster NOM-data" />
 
 	if (!nomData && !skjermingData) {
 		return null
