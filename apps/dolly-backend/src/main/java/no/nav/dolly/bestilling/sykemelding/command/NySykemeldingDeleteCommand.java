@@ -2,8 +2,10 @@ package no.nav.dolly.bestilling.sykemelding.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -27,6 +29,7 @@ public class NySykemeldingDeleteCommand implements Callable<Mono<Void>> {
                 .header("X-ident", ident)
                 .retrieve()
                 .bodyToMono(Void.class)
+                .doOnError(throwable -> !(throwable instanceof WebClientResponseException.NotFound), WebClientError.logTo(log))
                 .doOnSuccess(response -> log.info("Slettet sykemeldinger i tsm for ident: {}", ident));
     }
 }

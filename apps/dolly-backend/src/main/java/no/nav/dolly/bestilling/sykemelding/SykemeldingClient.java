@@ -112,7 +112,6 @@ public class SykemeldingClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
         identer.forEach(ident -> nySykemeldingConsumer.deleteTsmSykemeldinger(ident)
-                .doOnError(WebClientError.logTo(log))
                 .subscribe());
     }
 
@@ -132,10 +131,10 @@ public class SykemeldingClient implements ClientRegister {
     }
 
     private String getStatus(NySykemeldingResponseDTO status) {
-        log.info("Ny sykemelding response for {} mottatt, {}", status.ident(), Json.pretty(status));
-        return isNull(status.error())
+        log.info("Ny sykemelding response for {} mottatt, {}", status.getIdent(), Json.pretty(status));
+        return status.getStatus().is2xxSuccessful()
                 ? "OK"
-                : status.error();
+                : errorStatusDecoder.getErrorText(status.getStatus(), status.getAvvik());
     }
 
     private Mono<BestillingProgress> setProgress(BestillingProgress progress, String status) {
