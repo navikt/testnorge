@@ -131,8 +131,6 @@ export const SykemeldingVisning = ({
 
 	let render: React.ReactNode
 
-	console.log('sykemeldinger: ', sykemeldinger) //TODO - SLETT MEG
-
 	if (manglerFagsystemData) {
 		render = (
 			<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
